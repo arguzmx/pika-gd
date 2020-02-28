@@ -1,0 +1,11 @@
+﻿@inject IViewLocalizer Localizer
+@inject IStringLocalizer<RecursosLayout> Rlocalizer;
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
+}
+
+<h1>Index Home @Rlocalizer["Texto pequeño"]</h1>
+
+@Localizer["ejemplo"]

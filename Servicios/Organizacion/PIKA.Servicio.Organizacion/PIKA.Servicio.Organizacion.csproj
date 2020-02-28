@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20200214205211_InicialOrgaizacion.cs" />
+    <Compile Remove="Data\Migrations\20200214205211_InicialOrgaizacion.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Infraestructura\PIKA.Infraestructura.Comun\PIKA.Infraestructura.Comun.csproj" />
+    <ProjectReference Include="..\..\..\Infraestructura\RepositorioEntidades\RepositorioEntidades.csproj" />
+    <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.Organizaciion\PIKA.Modelo.Organizacion.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Abstracciones\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="8.6.1" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="3.1.2" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
+  </ItemGroup>
+
+</Project>

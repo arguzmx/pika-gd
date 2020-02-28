@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Http.Features
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Options
+@using Microsoft.Extensions.Localization;
+
+@inject IViewLocalizer Localizer
+@inject IOptions<RequestLocalizationOptions> LocOptions
+
+
+@{
+
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var cultureItems = LocOptions.Value.SupportedUICultures
+        .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName })
+        .ToList();
+    var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}";
+}
+
+
+<div id="offsidebar" class="p-3 control-sidebar-content">
+    <h5>@Localizer["Configuración"]</h5><hr class="mb-2" />
+
+    <div class="mb-1">
+        <form id="selectLanguage" asp-controller="Home" asp-area=""
+              asp-action="SetLanguage" asp-route-returnUrl="@returnUrl"
+              method="post" class="form-horizontal" role="form">
+            <div class="form-group">
+                <label for="exampleInputEmail1">@Localizer["Idioma"]</label>
+                <select asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="cultureItems"
+                        onchange="this.form.submit();" class="form-control" id="select-lang" name="culture">
+                </select>
+            </div>
+        </form>
+    </div>
+
+    <div class="mb-1">
+        <input id="set-smalltext" type="checkbox" class="mr-1" />
+        <span>@Localizer["Texto pequeño"]</span>
+    </div>
+
+</div>

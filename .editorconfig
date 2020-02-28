@@ -1,0 +1,7 @@
+﻿[*.cs]
+
+# CA1062: Validar argumentos de métodos públicos
+dotnet_diagnostic.CA1062.severity = none
+
+# CA1031: No capture tipos de excepción generales.
+dotnet_diagnostic.CA1031.severity = none
