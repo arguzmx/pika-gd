@@ -62,7 +62,7 @@ namespace PIKA.Servicio.Organizacion
                 ConstantesAplicacion.Id);
             m.TiposAdministrados.Add( new TipoAdministradorModulo() { AplicacionId= ConstantesAplicacion.Id, 
                 ModuloId = m.ModuloId,  
-                TiposAdministrado= new List<Type>() { typeof(Dominio) } });
+                TiposAdministrados= new List<Type>() { typeof(Dominio) } });
             l.Add(m);
             //------------------------------------------------------------
             //------------------------------------------------------------
@@ -83,7 +83,7 @@ namespace PIKA.Servicio.Organizacion
             {
                 AplicacionId = ConstantesAplicacion.Id,
                 ModuloId = m.ModuloId,
-                TiposAdministrado = new List<Type>() { typeof(UnidadOrganizacional) }
+                TiposAdministrados = new List<Type>() { typeof(UnidadOrganizacional) }
             });
             l.Add(m);
             //------------------------------------------------------------

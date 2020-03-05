@@ -12,11 +12,11 @@ namespace PIKA.Infraestructura.Comun.Seguridad
     public class CacheSeguridadMemoria : ICacheSeguridad
     {
         private readonly ConfiguracionServidor Config;
-        private readonly CacheMemoria Cache;
+        private readonly IServicioCache Cache;
         private readonly IServicioTokenSeguridad SecurityTokenService;
         private readonly ILogger<CacheSeguridadMemoria> Logger;
 
-        public CacheSeguridadMemoria(CacheMemoria Cache,
+        public CacheSeguridadMemoria(IServicioCache Cache,
             IServicioTokenSeguridad SecurityTokenService, 
             IOptions<ConfiguracionServidor> Config,
             ILogger<CacheSeguridadMemoria> Logger)
@@ -40,7 +40,7 @@ namespace PIKA.Infraestructura.Comun.Seguridad
         public async Task<bool> AllowMethod(string UserId, string DomainId, string AppId, string ModuleId, string Method)
         {
 
-            //Return true
+            return true;
 
             SecurityToken Token = await GetSecurityToken(UserId, DomainId, AppId);
 

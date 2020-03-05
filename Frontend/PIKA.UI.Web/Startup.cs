@@ -87,7 +87,7 @@ namespace PIKA.UI.Web
 
 
 
-            services.Configure<ConfiguracionServidor>(o=>this.Configuration.GetSection("ConfiguracionServer").Bind(o));
+            services.Configure<ConfiguracionServidor>(o=>this.Configuration.GetSection("ConfiguracionServidor").Bind(o));
             services.AddSingleton(typeof(IServicioCache), typeof(CacheMemoria));
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddTransient(typeof ( ICompositorConsulta<>), typeof( QueryComposer<>));

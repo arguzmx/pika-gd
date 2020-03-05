@@ -100,5 +100,10 @@ namespace PIKA.Servicio.Organizacion
         {
             throw new NotImplementedException();
         }
+
+        public Task<bool> Existe(Expression<Func<UnidadOrganizacional, bool>> predicado)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

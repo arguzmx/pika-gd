@@ -21,7 +21,7 @@ namespace PIKA.Infraestructura.Comun
         /// <summary>
         /// Tipos del objeto administrador por el módulo
         /// </summary>
-        public List<Type> TiposAdministrado { get; set; }
+        public List<Type> TiposAdministrados { get; set; }
 
 
     }

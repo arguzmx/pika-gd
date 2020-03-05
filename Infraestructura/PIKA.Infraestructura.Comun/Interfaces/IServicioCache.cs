@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Memory;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,6 +7,8 @@ namespace PIKA.Infraestructura.Comun
 {
     public interface IServicioCache
     {
+        MemoryCache Cache { get; set; }
+
         /// <summary>
         /// Obtiene el valore de la entrada del cache especificada por la Clave
         /// </summary>

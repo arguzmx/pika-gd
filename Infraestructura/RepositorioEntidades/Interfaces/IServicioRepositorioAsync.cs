@@ -53,6 +53,8 @@ namespace RepositorioEntidades
 
         Task EjecutarSqlBatch(List<string> sqlCommand);
 
+        Task<bool> Existe(Expression<Func<T, bool>> predicado);
+
     }
 
 
