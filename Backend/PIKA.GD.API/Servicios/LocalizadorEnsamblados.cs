@@ -1,5 +1,6 @@
 ﻿using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Modelo.Metadatos;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -23,6 +24,26 @@ namespace PIKA.GD.API
 
     public static class LocalizadorEnsamblados
     {
+
+        public static Type ObtieneTipoMetadata(Type tipo)
+        {
+
+            foreach(var c in tipo.GetConstructors())
+            {
+               foreach(var p in c.GetParameters())
+                {
+                    if (p.ParameterType.FullName.Contains("IMetadataProvider", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        foreach(var a in p.ParameterType.GenericTypeArguments)
+                        {
+                            return a;
+                        }
+                    }
+                }
+            }
+          
+            return null;
+        }
 
         public static List<TipoAdministradorModulo> ObtieneTiposAdministrados()
         {
@@ -81,9 +102,10 @@ namespace PIKA.GD.API
                             .ToArray();
                     foreach (var t in Tipos)
                     {
+                      
                         foreach (var i in t.GetInterfaces())
                         {
-                            if (("i" + t.Name.ToUpperInvariant()) == i.Name.ToUpperInvariant())
+                            if ((("I" + t.Name).ToUpperInvariant()) == i.Name.ToUpperInvariant())
                             {
                                 ServicioInyectable s = new ServicioInyectable()
                                 {

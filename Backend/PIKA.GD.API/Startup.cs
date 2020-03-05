@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
+using PIKA.GD.API.Middlewares;
 using PIKA.GD.API.Model;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Seguridad;
@@ -64,11 +65,11 @@ namespace PIKA.GD.API
             List<string> ensambladosValidables = LocalizadorEnsamblados.LocalizaConTipo(LocalizadorEnsamblados.ObtieneRutaBin(), typeof(IValidator));
             List<Assembly> ensambladosValidacion = new List<Assembly>();
             List<ServicioInyectable> inyectables = LocalizadorEnsamblados.ObtieneServiciosInyectables();
-            List<TipoAdministradorModulo> TipoPorModelu = LocalizadorEnsamblados.ObtieneTiposAdministrados();
+            List<TipoAdministradorModulo> ModulosAdministrados = LocalizadorEnsamblados.ObtieneTiposAdministrados();
 
-            foreach(var t in TipoPorModelu)
+            foreach(var t in ModulosAdministrados)
             {
-                foreach(var x in t.TiposAdministrado)
+                foreach(var x in t.TiposAdministrados)
                 {
                     Console.WriteLine($"{t.ModuloId} === {x.Name}");
                 }
@@ -77,6 +78,7 @@ namespace PIKA.GD.API
 
             foreach (string item in ensambladosValidables)
             {
+                
                 ensambladosValidacion.Add(Assembly.LoadFrom(item));
             }
 
@@ -89,8 +91,8 @@ namespace PIKA.GD.API
                     ensamblado.GetType(item.NombreImplementacion));
             }
 
-            
-            services.Configure<ConfiguracionServidor>(o => this.Configuration.GetSection("ConfiguracionServer").Bind(o));
+            ServicioAplicacion.ModulosAdministrados = ModulosAdministrados;
+            services.Configure<ConfiguracionServidor>(o => this.Configuration.GetSection("ConfiguracionServidor").Bind(o));
             services.AddSingleton(typeof(IServicioCache), typeof(CacheMemoria));
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddTransient(typeof(ICompositorConsulta<>), typeof(QueryComposer<>));
@@ -101,8 +103,9 @@ namespace PIKA.GD.API
             services.AddTransient<ILocalizadorFiltroACL, LocalizadorFiltroACLReflectivo>();
 
             services.AddScoped<AsyncACLActionFilter>();
-            
 
+
+ 
 
             services.AddDbContext<DbContextOrganizacion>(options =>
                     options.UseMySql(Configuration.GetConnectionString("pika-gd")));
@@ -178,6 +181,11 @@ namespace PIKA.GD.API
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseMiddleware<GlobalExceptionMiddleware>();
+
+            //app.UseHealthChecks("/health");
+
 
             app.UseHttpsRedirection();
 

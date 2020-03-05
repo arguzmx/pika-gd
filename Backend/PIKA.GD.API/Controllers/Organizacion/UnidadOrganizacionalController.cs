@@ -37,7 +37,7 @@ namespace PIKA.GD.API.Controllers.Organizacion
             this.metadataProvider = metadataProvider;
         }
 
-        [HttpGet("metadata")]
+        [HttpGet("metadata", Name ="MetadateUO")]
         [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAplicacion.Id, AplicacionOrganizacion.MODULO_ORGANIZACION_UNIDADES_ORGANIZACIONALES })]
         public async Task<ActionResult<MetadataInfo>> GetMetadate([FromQuery]Consulta query = null)
         {
@@ -45,12 +45,12 @@ namespace PIKA.GD.API.Controllers.Organizacion
         }
 
 
-        [HttpGet]
+        [HttpGet("page", Name = "GetPageUO")]
         [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAplicacion.Id, AplicacionOrganizacion.MODULO_ORGANIZACION_UNIDADES_ORGANIZACIONALES })]
         public async Task<ActionResult<IEnumerable<UnidadOrganizacional>>> GetPage([FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
-            query.Filtros.AddRange(ObtieneFiltrosIdentidad()); 
+            //query.Filtros.AddRange(ObtieneFiltrosIdentidad()); 
             
             var data = await servicioUO.ObtenerPaginadoAsync(query).ConfigureAwait(false);
 

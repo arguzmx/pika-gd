@@ -28,41 +28,79 @@ namespace PIKA.GD.API.Controllers.Organizacion
     {
 
         private ILogger<DominioController> logger;
-        private IServicioDominio servicioUO;
+        private IServicioDominio servicioEntidad;
         private IMetadataProvider<Dominio> metadataProvider;
         public DominioController(ILogger<DominioController> logger,
             IMetadataProvider<Dominio> metadataProvider,
-            IServicioDominio servicioUO)
+            IServicioDominio servicioEntidad)
         {
             this.logger = logger;
-            this.servicioUO = servicioUO;
+            this.servicioEntidad = servicioEntidad;
             this.metadataProvider = metadataProvider;
         }
 
-        [HttpGet("metadata")]
-        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAplicacion.Id, AplicacionOrganizacion.MODULO_ORGANIZACION_DOMINIOS })]
+        [HttpGet("metadata", Name = "MetadataDominio")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<MetadataInfo>> GetMetadate([FromQuery]Consulta query = null)
         {
             return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
         }
 
 
-        [HttpGet]
-        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAplicacion.Id, AplicacionOrganizacion.MODULO_ORGANIZACION_DOMINIOS })]
+
+        [HttpPost]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        public async Task<ActionResult<Dominio>> Post([FromBody]Dominio entidad)
+        {
+
+            entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
+            return Ok(CreatedAtAction("GetDomain", new { id = entidad.Id }, entidad).Value);
+        }
+
+
+        [HttpPut("{id}")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        public async Task<IActionResult> Put(string id, [FromBody]Dominio entidad)
+        {
+            var x = ObtieneFiltrosIdentidad();
+
+
+            if (id != entidad.Id)
+            {
+                return BadRequest();
+            }
+
+            await servicioEntidad.ActualizarAsync(entidad).ConfigureAwait(false);
+            return NoContent();
+
+        }
+
+
+        [HttpGet("page", Name = "GetPageDominio")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<IEnumerable<Dominio>>> GetPage([FromQuery]Consulta query = null)
         {
+            Console.WriteLine("GETPAGING");
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-
-            var data = await servicioUO.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-
+            var data = await servicioEntidad.ObtenerPaginadoAsync(query).ConfigureAwait(false);
             return Ok(data.Elementos.ToList<Dominio>());
         }
 
+
+        //----------------------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------------------
+
+
+
+
         [HttpGet("datatables", Name = "GetDatatablesPluginDominio")]
-        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAplicacion.Id, AplicacionOrganizacion.MODULO_ORGANIZACION_DOMINIOS })]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<RespuestaDatatables<Dominio>>> GetDatatablesPlugin([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
         {
+
             if (query.order.Count == 0)
             {
                 query.order.Add(new DatatatablesOrder() { dir = "asc", column = 0 });
@@ -79,7 +117,7 @@ namespace PIKA.GD.API.Controllers.Organizacion
                 direccion_ordenamiento = query.order[0].dir
             };
 
-            var data = await servicioUO.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
+            var data = await servicioEntidad.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
 
             RespuestaDatatables<Dominio> r = new RespuestaDatatables<Dominio>()
             {
@@ -96,46 +134,22 @@ namespace PIKA.GD.API.Controllers.Organizacion
 
 
         [HttpGet("{id}")]
-        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAplicacion.Id, AplicacionOrganizacion.MODULO_ORGANIZACION_DOMINIOS })]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<Dominio>> Get(string id)
         {
-            var o = await servicioUO.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            var o = await servicioEntidad.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }
 
 
 
-        [HttpPost]
-        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAplicacion.Id, AplicacionOrganizacion.MODULO_ORGANIZACION_DOMINIOS })]
-        public async Task<ActionResult<Dominio>> Post([FromBody]Dominio entidad)
-        {
-
-            entidad = await servicioUO.CrearAsync(entidad).ConfigureAwait(false);
-            return Ok(CreatedAtAction("GetDomain", new { id = entidad.Id }, entidad).Value);
-        }
-
-
-        [HttpPut("{id}")]
-        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAplicacion.Id, AplicacionOrganizacion.MODULO_ORGANIZACION_DOMINIOS })]
-        public async Task<IActionResult> Put(string id, [FromBody]Dominio entidad)
-        {
-            if (id != entidad.Id)
-            {
-                return BadRequest();
-            }
-
-            await servicioUO.ActualizarAsync(entidad).ConfigureAwait(false);
-            return NoContent();
-
-        }
-
 
         [HttpDelete("{id}")]
-        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAplicacion.Id, AplicacionOrganizacion.MODULO_ORGANIZACION_DOMINIOS })]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> Delete([FromBody]string[] id)
         {
-            await servicioUO.Eliminar(id).ConfigureAwait(false);
+            await servicioEntidad.Eliminar(id).ConfigureAwait(false);
             return NoContent();
         }
 
