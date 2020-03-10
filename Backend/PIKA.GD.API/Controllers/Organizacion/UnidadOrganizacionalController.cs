@@ -37,28 +37,61 @@ namespace PIKA.GD.API.Controllers.Organizacion
             this.metadataProvider = metadataProvider;
         }
 
-        [HttpGet("metadata", Name ="MetadateUO")]
-        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAplicacion.Id, AplicacionOrganizacion.MODULO_ORGANIZACION_UNIDADES_ORGANIZACIONALES })]
-        public async Task<ActionResult<MetadataInfo>> GetMetadate([FromQuery]Consulta query = null)
+        [HttpGet("metadata", Name ="MetadataUO")]
+        [TypeFilter(typeof(AsyncACLActionFilter) )]
+        public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
         {
             return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
         }
 
+        [HttpPost]
+        [TypeFilter(typeof(AsyncACLActionFilter) )]
+        public async Task<ActionResult<UnidadOrganizacional>> Post([FromBody]UnidadOrganizacional entidad)
+        {
+
+            entidad = await servicioUO.CrearAsync(entidad).ConfigureAwait(false);
+            return Ok(CreatedAtAction("GetOU", new { id = entidad.Id }, entidad).Value);
+        }
+
+
+        [HttpPut("{id}")]
+        [TypeFilter(typeof(AsyncACLActionFilter) )]
+        public async Task<IActionResult> Put(string id, [FromBody]UnidadOrganizacional entidad)
+        {
+            var x = ObtieneFiltrosIdentidad();
+
+            if (id != entidad.Id)
+            {
+                return BadRequest();
+            }
+
+            await servicioUO.ActualizarAsync(entidad).ConfigureAwait(false);
+            return NoContent();
+
+        }
+
+
 
         [HttpGet("page", Name = "GetPageUO")]
-        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAplicacion.Id, AplicacionOrganizacion.MODULO_ORGANIZACION_UNIDADES_ORGANIZACIONALES })]
+        [TypeFilter(typeof(AsyncACLActionFilter) )]
         public async Task<ActionResult<IEnumerable<UnidadOrganizacional>>> GetPage([FromQuery]Consulta query = null)
         {
+            Console.WriteLine("GETPAGING UO");
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
-            //query.Filtros.AddRange(ObtieneFiltrosIdentidad()); 
-            
+            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
             var data = await servicioUO.ObtenerPaginadoAsync(query).ConfigureAwait(false);
 
             return Ok(data.Elementos.ToList<UnidadOrganizacional>());
         }
 
+        //----------------------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------------------
+
+
         [HttpGet("datatables", Name = "GetDatatablesPluginUnidadesorganizacionales")]
-        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAplicacion.Id, AplicacionOrganizacion.MODULO_ORGANIZACION_UNIDADES_ORGANIZACIONALES })]
+        [TypeFilter(typeof(AsyncACLActionFilter) )]
         public async Task<ActionResult<RespuestaDatatables<UnidadOrganizacional>>> GetDatatablesPlugin([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
         {
             if (query.order.Count == 0)
@@ -94,7 +127,7 @@ namespace PIKA.GD.API.Controllers.Organizacion
 
 
         [HttpGet("{id}")]
-        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAplicacion.Id, AplicacionOrganizacion.MODULO_ORGANIZACION_UNIDADES_ORGANIZACIONALES })]
+        [TypeFilter(typeof(AsyncACLActionFilter) )]
         public async Task<ActionResult<UnidadOrganizacional>> Get(string id)
         {
             var o = await servicioUO.UnicoAsync(x=>x.Id==id).ConfigureAwait(false);
@@ -103,34 +136,8 @@ namespace PIKA.GD.API.Controllers.Organizacion
         }
 
 
-
-        [HttpPost]
-        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAplicacion.Id, AplicacionOrganizacion.MODULO_ORGANIZACION_UNIDADES_ORGANIZACIONALES })]
-        public async Task<ActionResult<UnidadOrganizacional>> Post([FromBody]UnidadOrganizacional entidad)
-        {
-
-            entidad= await servicioUO.CrearAsync(entidad).ConfigureAwait(false);
-            return Ok(CreatedAtAction("GetOU", new { id = entidad.Id }, entidad).Value);
-        }
-
-
-        [HttpPut("{id}")]
-        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAplicacion.Id, AplicacionOrganizacion.MODULO_ORGANIZACION_UNIDADES_ORGANIZACIONALES })]
-        public async Task<IActionResult> Put(string id, [FromBody]UnidadOrganizacional entidad)
-        {
-            if (id != entidad.Id)
-            {
-                return BadRequest();
-            }
-
-            await servicioUO.ActualizarAsync(entidad).ConfigureAwait(false);
-            return NoContent();
-
-        }
-
-
         [HttpDelete("{id}")]
-        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAplicacion.Id, AplicacionOrganizacion.MODULO_ORGANIZACION_UNIDADES_ORGANIZACIONALES })]
+        [TypeFilter(typeof(AsyncACLActionFilter) )]
         public async Task<ActionResult> Delete([FromBody ]string[] id)
         {
             await servicioUO.Eliminar(id).ConfigureAwait(false);

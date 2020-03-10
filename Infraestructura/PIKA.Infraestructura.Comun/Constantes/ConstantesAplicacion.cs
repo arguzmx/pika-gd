@@ -25,7 +25,7 @@ namespace PIKA.Infraestructura.Comun.Constantes
             Aplicacion a = new Aplicacion() { Id = ConstantesAplicacion.Id, 
                 Descripcion="Pika Gestión documental ofrece las funcoines necesarias para el cotnrol del ciclo de vida documental", 
                 Nombre ="PIKA Gestión documental", 
-                UICulture = "ex-MX", 
+                UICulture = "es-MX", 
                 Version =ConstantesAplicacion.Version, 
                 ReleaseIndex =0 };
             return a;
