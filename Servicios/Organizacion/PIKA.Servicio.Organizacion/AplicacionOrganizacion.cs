@@ -14,6 +14,7 @@ namespace PIKA.Servicio.Organizacion
         public const string MODULO_ORGANIZACION_UNIDADES_ORGANIZACIONALES = "PIKA-GD-ORG-UOS";
         public const string MODULO_ORGANIZACION_DOMINIOS = "PIKA-GD-ORG-DOMINIO";
         public const string MODULO_ORGANIZACION_ROLES = "PIKA-GD-ORG-ROLES";
+        public const string MODULO_ORGANIZACION_DIRECCIONES_POSTALES = "PIKA-GD-ORG-DIRPOSTALES";
 
         public static string ID_APLICAICON { get { return ConstantesAplicacion.Id; } }
 
@@ -107,6 +108,26 @@ namespace PIKA.Servicio.Organizacion
                 AplicacionId = ConstantesAplicacion.Id,
                 ModuloId = m.ModuloId,
                 TiposAdministrados = new List<Type>() { typeof(Rol) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+            /// Modulo administarcion de DireccionPostal 
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_ORGANIZACION_DIRECCIONES_POSTALES, true,
+                "Direcciones Postales ",
+                "Administrador de direcciones postales del dominio",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.ModuloId,
+                TiposAdministrados = new List<Type>() { typeof(DireccionPostal) }
             });
             l.Add(m);
             //------------------------------------------------------------
