@@ -12,34 +12,35 @@ using PIKA.Infraestructura.Comun.Constantes;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Organizacion;
 using PIKA.Servicio.Organizacion;
+using PIKA.Servicio.Organizacion.Interfaces;
 using RepositorioEntidades;
 using RepositorioEntidades.DatatablesPlugin;
 
 namespace PIKA.GD.API.Controllers.Organizacion
 {
- 
+
 
 
     [Authorize]
     [ApiVersion("1.0")]
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
-    public class DominioController : ACLController
+    public class DireccionPostalController : ACLController
     {
 
-        private ILogger<DominioController> logger;
-        private IServicioDominio servicioEntidad;
-        private IMetadataProvider<Dominio> metadataProvider;
-        public DominioController(ILogger<DominioController> logger,
-            IMetadataProvider<Dominio> metadataProvider,
-            IServicioDominio servicioEntidad)
+        private ILogger<DireccionPostalController> logger;
+        private IServicioDireccionPostal servicioDirPost;
+        private IMetadataProvider<DireccionPostal> metadataProvider;
+        public DireccionPostalController(ILogger<DireccionPostalController> logger,
+            IMetadataProvider<DireccionPostal> metadataProvider,
+            IServicioDireccionPostal servicioDirPost)
         {
             this.logger = logger;
-            this.servicioEntidad = servicioEntidad;
+            this.servicioDirPost = servicioDirPost;
             this.metadataProvider = metadataProvider;
         }
 
-        [HttpGet("metadata", Name = "MetadataDominio")]
+        [HttpGet("metadata", Name = "MetadataDirPostal")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
         {
@@ -50,16 +51,16 @@ namespace PIKA.GD.API.Controllers.Organizacion
 
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<Dominio>> Post([FromBody]Dominio entidad)
+        public async Task<ActionResult<DireccionPostal>> Post([FromBody]DireccionPostal entidad)
         {
-            entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
+            entidad = await servicioDirPost.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetDomain", new { id = entidad.Id }, entidad).Value);
         }
 
 
         [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<IActionResult> Put(string id, [FromBody]Dominio entidad)
+        public async Task<IActionResult> Put(string id, [FromBody]DireccionPostal entidad)
         {
             var x = ObtieneFiltrosIdentidad();
 
@@ -69,21 +70,21 @@ namespace PIKA.GD.API.Controllers.Organizacion
                 return BadRequest();
             }
 
-            await servicioEntidad.ActualizarAsync(entidad).ConfigureAwait(false);
+            await servicioDirPost.ActualizarAsync(entidad).ConfigureAwait(false);
             return NoContent();
 
         }
 
 
-        [HttpGet("page", Name = "GetPageDominio")]
+        [HttpGet("page", Name = "GetPageDireccionPostal")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<Dominio>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<DireccionPostal>>> GetPage([FromQuery]Consulta query = null)
         {
-            Console.WriteLine("GETPAGING");
+            Console.WriteLine("GETPAGING DirPost");
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioEntidad.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<Dominio>());
+            var data = await servicioDirPost.ObtenerPaginadoAsync(query).ConfigureAwait(false);
+            return Ok(data.Elementos.ToList<DireccionPostal>());
         }
 
 
@@ -95,9 +96,9 @@ namespace PIKA.GD.API.Controllers.Organizacion
 
 
 
-        [HttpGet("datatables", Name = "GetDatatablesPluginDominio")]
+        [HttpGet("datatables", Name = "GetDatatablesPluginDirPostal")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<RespuestaDatatables<Dominio>>> GetDatatablesPlugin([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
+        public async Task<ActionResult<RespuestaDatatables<DireccionPostal>>> GetDatatablesPlugin([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
         {
 
             if (query.order.Count == 0)
@@ -116,9 +117,9 @@ namespace PIKA.GD.API.Controllers.Organizacion
                 direccion_ordenamiento = query.order[0].dir
             };
 
-            var data = await servicioEntidad.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
+            var data = await servicioDirPost.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
 
-            RespuestaDatatables<Dominio> r = new RespuestaDatatables<Dominio>()
+            RespuestaDatatables<DireccionPostal> r = new RespuestaDatatables<DireccionPostal>()
             {
                 data = data.Elementos.ToArray(),
                 draw = query.draw,
@@ -134,9 +135,9 @@ namespace PIKA.GD.API.Controllers.Organizacion
 
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<Dominio>> Get(string id)
+        public async Task<ActionResult<DireccionPostal>> Get(string id)
         {
-            var o = await servicioEntidad.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            var o = await servicioDirPost.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }
@@ -148,7 +149,7 @@ namespace PIKA.GD.API.Controllers.Organizacion
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> Delete([FromBody]string[] id)
         {
-            await servicioEntidad.Eliminar(id).ConfigureAwait(false);
+            await servicioDirPost.Eliminar(id).ConfigureAwait(false);
             return NoContent();
         }
 
