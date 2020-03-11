@@ -23,7 +23,7 @@ namespace PIKA.GD.API.Controllers.Organizacion
     [Authorize]
     [ApiVersion("1.0")]
     [ApiController]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/org/[controller]")]
     public class DominioController : ACLController
     {
 
@@ -79,7 +79,7 @@ namespace PIKA.GD.API.Controllers.Organizacion
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<IEnumerable<Dominio>>> GetPage([FromQuery]Consulta query = null)
         {
-            Console.WriteLine("GETPAGING");
+            Console.WriteLine("------------------------------------------------------");
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
             var data = await servicioEntidad.ObtenerPaginadoAsync(query).ConfigureAwait(false);

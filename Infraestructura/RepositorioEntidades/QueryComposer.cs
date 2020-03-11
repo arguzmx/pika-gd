@@ -10,7 +10,11 @@ namespace RepositorioEntidades
     public  class QueryComposer<T>: ICompositorConsulta<T>
     {
 
+        public QueryComposer()
+        {
+          
 
+        }
 
         #region expression composer
 
@@ -242,7 +246,7 @@ namespace RepositorioEntidades
             Expression toLower = Expression.Call(pe, typeof(string).GetMethod("ToLower", System.Type.EmptyTypes));
 
             Expression final = null;
-
+   
             if (!string.IsNullOrEmpty(Value))
             {
 
@@ -333,17 +337,22 @@ namespace RepositorioEntidades
         {
             Expression final = null;
 
-
+     
             if (q.Filtros.Count > 0)
             {
                 Type type = typeof(T);
                 var Props = type.GetProperties().ToList();
                 List<Expression> expressions = new List<Expression>();
-
+                
                 foreach (var f in q.Filtros)
                 {
+                    
                     Expression e = null;
+ 
                     var p = Props.Where(x => x.Name.ToLower() == f.Propiedad.ToLower()).FirstOrDefault();
+                    if (p == null) continue;
+
+
                     if (p != null)
                     {
 
@@ -389,7 +398,7 @@ namespace RepositorioEntidades
 
             }
 
-
+          
             return final;
         }
 

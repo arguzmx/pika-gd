@@ -21,7 +21,7 @@ namespace PIKA.GD.API.Controllers.Organizacion
     [Authorize]
     [ApiVersion("1.0")]
     [ApiController]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/org/[controller]")]
     public class UnidadOrganizacionalController : ACLController
     {
 

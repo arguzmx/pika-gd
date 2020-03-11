@@ -15,6 +15,7 @@ namespace PIKA.Modelo.GestorDocumental
         {
 
             this._TipoOrigenId = ConstantesModelo.IDORIGEN_ORGANIZACION;
+            this.Elementos = new HashSet<ElementoClasificacion>();
         }
 
 
@@ -57,6 +58,8 @@ namespace PIKA.Modelo.GestorDocumental
         /// Esatdo del cuadro de clasificación
         /// </summary>
         public virtual EstadoCuadroClasificacion Estado { get; set; }
+
+        public virtual ICollection<ElementoClasificacion> Elementos { get; set; }
 
     }
 }

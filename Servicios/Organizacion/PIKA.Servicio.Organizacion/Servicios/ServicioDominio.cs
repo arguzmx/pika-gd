@@ -109,7 +109,6 @@ namespace PIKA.Servicio.Organizacion.Servicios
         public async Task<IPaginado<Dominio>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Dominio>, IIncludableQueryable<Dominio, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             Query = GetDefaultQuery(Query);
-            //Query.Filtros.Add(new FiltroConsulta() { Operador =  operado, Property = COL_OWNERID, Value = OwnerId });
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
 
             return respuesta;
