@@ -22,7 +22,7 @@ namespace RepositorioEntidades
             LambdaExpression lambda = Expression.Lambda(property, parameter);
 
             string methodName = ascendente ? "OrderBy" : "OrderByDescending";
-
+            Console.WriteLine(methodName);
             Expression methodCallExpression = Expression.Call(typeof(Queryable), methodName,
                                   new Type[] { origen.ElementType, property.Type },
                                   origen.Expression, Expression.Quote(lambda));

@@ -19,6 +19,11 @@ namespace PIKA.Modelo.GestorDocumental
         public string ElementoClasificacionId { get; set; }
 
         /// <summary>
+        /// Clave asociada el elemento de clasifaición por ejemplo 1.S
+        /// </summary>
+        public string Clave { get; set; }
+
+        /// <summary>
         /// Nombre del elemento de clasifiación debe ser único en para los elemntos de un mismo padre
         /// </summary>
         public string Nombre { get; set; }
@@ -35,6 +40,11 @@ namespace PIKA.Modelo.GestorDocumental
         public int Posicion { get; set; }
 
         /// <summary>
+        /// Cuadro de clasificación al que pertenecen los elementos
+        /// </summary>
+        public string CuadroClasifiacionId { get; set; }
+
+        /// <summary>
         /// Elemento padre del actual
         /// </summary>
         public virtual ElementoClasificacion Padre { get; set; }
@@ -44,6 +54,9 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         public virtual ICollection<ElementoClasificacion> Hijos { get; set; }
 
-
+        /// <summary>
+        /// Instancia del cuadro de clasificación
+        /// </summary>
+        public virtual CuadroClasificacion CuadroClasificacion { get; set; }
     }
 }

@@ -35,6 +35,8 @@ namespace PIKA.GD.API
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
 
+        public ILogger<Startup> Logger { get; private set; }
+
         public void ConfigureContainer(ContainerBuilder builder)
         {
             //// Add any Autofac modules or registrations.
@@ -50,6 +52,7 @@ namespace PIKA.GD.API
         {
             Configuration = configuration;
             Environment = environment;
+            
         }
 
         
@@ -67,14 +70,17 @@ namespace PIKA.GD.API
             List<ServicioInyectable> inyectables = LocalizadorEnsamblados.ObtieneServiciosInyectables();
             List<TipoAdministradorModulo> ModulosAdministrados = LocalizadorEnsamblados.ObtieneTiposAdministrados();
 
-            foreach(var t in ModulosAdministrados)
+#if DEBUG
+            foreach (var t in ModulosAdministrados)
             {
-                foreach(var x in t.TiposAdministrados)
+                foreach (var x in t.TiposAdministrados)
                 {
                     Console.WriteLine($"{t.ModuloId} === {x.Name}");
                 }
 
             }
+#endif
+
 
             foreach (string item in ensambladosValidables)
             {

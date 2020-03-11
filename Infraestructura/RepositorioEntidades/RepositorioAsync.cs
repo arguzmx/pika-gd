@@ -54,19 +54,21 @@ namespace RepositorioEntidades
 
                 IQueryable<T> query = _dbSet;
 
+                Console.WriteLine($"{consulta.tamano} {consulta.columna_ordenamiento} {consulta.direccion_ordenamiento}");
 
                 if (inhabilitarSeguimiento) query = query.AsNoTracking();
 
                 if (incluir != null) query = incluir(query);
 
-
-
                 if (consulta.Filtros.Count > 0)
                 {
                     var type = typeof(T);
                     ParameterExpression pe = Expression.Parameter(type, "search");
+
+
                     Expression predicateBody = _compositor.Componer(pe, consulta);
 
+     
                     if (predicateBody != null)
                     {
                         MethodCallExpression whereCallExpression = Expression.Call(
@@ -83,7 +85,7 @@ namespace RepositorioEntidades
 
 
 
-                query = query.OrdenarPor(consulta.columna_ordenamiento, consulta.columna_ordenamiento.ToLower() == "desc" ? false : true);
+                query = query.OrdenarPor(consulta.columna_ordenamiento, consulta.direccion_ordenamiento.ToLower() == "desc" ? false : true);
 
                 return query.PaginadoAsync(consulta.indice, consulta.tamano, 0, tokenCancelacion);
             }

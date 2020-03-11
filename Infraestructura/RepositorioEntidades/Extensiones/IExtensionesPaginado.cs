@@ -16,9 +16,10 @@ namespace RepositorioEntidades
             if (desde > indice) throw new ArgumentException($"From: {desde} > Index: {indice}, must From <= Index");
 
             var count = await origen.CountAsync(cancellationToken).ConfigureAwait(false);
+            
             var items = await origen.Skip((indice - desde) * tamano)
-                .Take(indice).ToListAsync(cancellationToken).ConfigureAwait(false);
-
+                .Take(tamano).ToListAsync(cancellationToken).ConfigureAwait(false);
+            
             var list = new Paginado<T>
             {
                 Indice = indice,
