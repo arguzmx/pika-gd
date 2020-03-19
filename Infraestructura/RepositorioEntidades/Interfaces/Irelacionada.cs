@@ -12,6 +12,11 @@ namespace RepositorioEntidades
     {
 
         /// <summary>
+        /// Identificador de tipo de origen por default
+        /// </summary>
+        string TipoOrigenDefault { get; }
+
+        /// <summary>
         /// Especifica el tipo de entidad origen al que pertenece la relación
         /// </summary>
         string TipoOrigenId { get; set; }

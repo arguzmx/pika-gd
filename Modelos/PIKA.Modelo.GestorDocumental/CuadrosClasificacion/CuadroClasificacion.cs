@@ -9,12 +9,12 @@ namespace PIKA.Modelo.GestorDocumental
     public class CuadroClasificacion : Entidad<string>, IEntidadNombrada, IEntidadEliminada, IEntidadRelacionada
     {
 
-       
+        public string TipoOrigenDefault => ConstantesModelo.IDORIGEN_DOMINIO;
+
 
         public CuadroClasificacion()
         {
-
-            this._TipoOrigenId = ConstantesModelo.IDORIGEN_ORGANIZACION;
+            this._TipoOrigenId = this.TipoOrigenDefault;
             this.Elementos = new HashSet<ElementoClasificacion>();
         }
 

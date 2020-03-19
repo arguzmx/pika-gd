@@ -1,4 +1,5 @@
-﻿using RepositorioEntidades;
+﻿using PIKA.Infraestructura.Comun;
+using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,6 +14,15 @@ namespace PIKA.Modelo.Organizacion
     /// </summary>
     public class DireccionPostal : Entidad<string>, IEntidadNombrada, IEntidadRelacionada
     {
+     
+        public string TipoOrigenDefault => ConstantesModelo.IDORIGEN_NULO;
+
+
+        public DireccionPostal()
+        {
+            this.TipoOrigenId = this.TipoOrigenDefault;
+        }
+
         /// <summary>
         /// NOmbre corto para reconocer la dirección por ejemplo: Casa, Oficina, etc
         /// </summary>

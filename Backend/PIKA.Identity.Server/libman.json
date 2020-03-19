@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "js-cookie@2.2.1",
+      "destination": "wwwroot/lib/js-cookie/"
+    },
+    {
+      "library": "oidc-client@1.10.1",
+      "destination": "wwwroot/lib/oidc-client/"
+    }
+  ]
+}

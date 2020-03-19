@@ -1,10 +1,11 @@
-﻿using System;
+﻿using RepositorioEntidades;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace PIKA.Modelo.Metadatos
 {
-    public class TipoDato
+    public class TipoDato : Entidad<string>
     {
         public const string tString = "string";
         public const string tDouble = "double";
@@ -17,13 +18,13 @@ namespace PIKA.Modelo.Metadatos
         /// <summary>
         /// Identificador único del tipo de propiedad
         /// </summary>
-        public string Id { get; set; }
+        public override string Id { get; set; }
 
 
         /// <summary>
         /// Nombre para despliegue del tipo de propiedad
         /// </summary>
-        public string Name { get; set; }
+        public string Nombre { get; set; }
 
 
     }

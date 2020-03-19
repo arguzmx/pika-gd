@@ -1,11 +1,65 @@
 ﻿@inject IViewLocalizer Localizer
 @inject IStringLocalizer<RecursosLayout> Rlocalizer;
+@model PIKA.UI.Web.Areas.Org.Controllers.ViewModelX
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
 
-<h1>Index Home @Rlocalizer["Texto pequeño"]</h1>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Ejemplo @Rlocalizer["Texto pequeño"]</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">@Localizer["ejemplo"]</a></li>
+                        <li class="breadcrumb-item active">Dashboard v3</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header border-0">
+                            <h3 class="card-title">Products</h3>
+                            <div class="card-tools">
+                                @await Component.InvokeAsync("MenuEditorTabular", new { Tipo = Model.Tipo })
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            @await Component.InvokeAsync("EditorTabular", new { Tipo = Model.Tipo })
+                        </div>
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col-md-6 -->
+                <div class="col-lg-6">
+    
+             
+                </div>
+                <!-- /.col-md-6 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+</div>
 
-@Localizer["ejemplo"]
+
+
+@section Scripts{
+    <script src="~/js/componentes/ArbolNavegador/ArbolNavegador.js"></script>
+}

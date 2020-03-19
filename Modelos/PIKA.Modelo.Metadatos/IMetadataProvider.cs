@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Modelo.Metadatos
 {
-    public interface IMetadataProvider<T>
+    public interface IProveedorMetadatos<T>
     {
         Task<MetadataInfo> Obtener();
 

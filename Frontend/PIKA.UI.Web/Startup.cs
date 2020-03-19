@@ -32,6 +32,7 @@ using RepositorioEntidades;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IdentityServer4.Configuration;
 
 namespace PIKA.UI.Web
 {
@@ -66,6 +67,8 @@ namespace PIKA.UI.Web
         {
             ConfiguracionServidor configuracionServidor = new ConfiguracionServidor();
             this.Configuration.GetSection("ConfiguracionServidor").Bind(configuracionServidor);
+            
+            services.AddHttpClient();
 
             // List<string> ensambladosValidables = LozalizadorEnsamblados.LocalizaConTipo(LozalizadorEnsamblados.ObtieneRutaBin(), typeof(IValidator));
             // List<Assembly> ensambladosValidacion = new List<Assembly>();
@@ -138,20 +141,7 @@ namespace PIKA.UI.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            var builder = services.AddIdentityServer(options =>
-                {
-                    options.Events.RaiseErrorEvents = true;
-                    options.Events.RaiseInformationEvents = true;
-                    options.Events.RaiseFailureEvents = true;
-                    options.Events.RaiseSuccessEvents = true;
-                })
-                .AddInMemoryIdentityResources(Config.Ids)
-                .AddInMemoryApiResources(Config.Apis)
-                .AddInMemoryClients(Config.Clients)
-                .AddAspNetIdentity<ApplicationUser>();
-
-            // not recommended for production - you need to store your key material somewhere secure
-            builder.AddDeveloperSigningCredential();
+          
 
             services.AddAuthentication();
 
@@ -215,7 +205,7 @@ namespace PIKA.UI.Web
             app.UseStaticFiles();
 
             app.UseRouting();
-            app.UseIdentityServer();
+   
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
 using PIKA.Infraestructura.Comun.Constantes;
+using PIKA.Modelo.Infraestructura.UI;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Organizacion;
 using PIKA.Servicio.Organizacion;
@@ -17,7 +18,7 @@ using RepositorioEntidades.DatatablesPlugin;
 
 namespace PIKA.GD.API.Controllers.Organizacion
 {
- 
+
 
 
     [Authorize]
@@ -29,9 +30,9 @@ namespace PIKA.GD.API.Controllers.Organizacion
 
         private ILogger<DominioController> logger;
         private IServicioDominio servicioEntidad;
-        private IMetadataProvider<Dominio> metadataProvider;
+        private IProveedorMetadatos<Dominio> metadataProvider;
         public DominioController(ILogger<DominioController> logger,
-            IMetadataProvider<Dominio> metadataProvider,
+            IProveedorMetadatos<Dominio> metadataProvider,
             IServicioDominio servicioEntidad)
         {
             this.logger = logger;
@@ -77,9 +78,9 @@ namespace PIKA.GD.API.Controllers.Organizacion
 
         [HttpGet("page", Name = "GetPageDominio")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<Dominio>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<Dominio>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
-            Console.WriteLine("------------------------------------------------------");
+            Console.WriteLine($"--------------------------------{query.Filtros.Count}");
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
             var data = await servicioEntidad.ObtenerPaginadoAsync(query).ConfigureAwait(false);
@@ -112,8 +113,8 @@ namespace PIKA.GD.API.Controllers.Organizacion
                 Filtros = query.Filters,
                 indice = query.start,
                 tamano = query.length,
-                columna_ordenamiento = sortname,
-                direccion_ordenamiento = query.order[0].dir
+                ord_columna = sortname,
+                ord_direccion = query.order[0].dir
             };
 
             var data = await servicioEntidad.ObtenerPaginadoAsync(newq).ConfigureAwait(false);

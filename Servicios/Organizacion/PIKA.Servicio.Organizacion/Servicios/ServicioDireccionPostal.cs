@@ -99,12 +99,12 @@ namespace PIKA.Servicio.Organizacion.Servicios
             {
                 query.indice = query.indice < 0 ? 0 : query.indice;
                 query.tamano = query.tamano <= 0 ? 20 : query.tamano;
-                query.columna_ordenamiento = string.IsNullOrEmpty(query.columna_ordenamiento) ? DEFAULT_SORT_COL : query.columna_ordenamiento;
-                query.direccion_ordenamiento = string.IsNullOrEmpty(query.direccion_ordenamiento) ? DEFAULT_SORT_DIRECTION : query.direccion_ordenamiento;
+                query.ord_columna = string.IsNullOrEmpty(query.ord_columna) ? DEFAULT_SORT_COL : query.ord_columna;
+                query.ord_direccion = string.IsNullOrEmpty(query.ord_direccion) ? DEFAULT_SORT_DIRECTION : query.ord_direccion;
             }
             else
             {
-                query = new Consulta() { indice = 0, tamano = 20, columna_ordenamiento = DEFAULT_SORT_COL, direccion_ordenamiento = DEFAULT_SORT_DIRECTION };
+                query = new Consulta() { indice = 0, tamano = 20, ord_columna= DEFAULT_SORT_COL, ord_direccion = DEFAULT_SORT_DIRECTION };
             }
             return query;
         }

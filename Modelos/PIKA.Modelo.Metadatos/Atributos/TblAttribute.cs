@@ -17,13 +17,16 @@ namespace PIKA.Modelo.Metadatos
         private string _TableClientId;
 
         public TblAttribute(string TableClientId = "*", bool IncludeIntable = true,
-            bool Visible = true, bool Togglable = true, int OrderIndex = 0)
+            bool Visible = true, bool Togglable = true, bool Searchable=false,
+            bool Orderable = false, int OrderIndex = 0)
         {
             this._IncludeIntable = IncludeIntable;
             this._Visible = Visible;
             this._Togglable = Togglable;
             this._OrderIndex = OrderIndex;
             this._TableClientId = TableClientId;
+            this._Searchable = Searchable;
+            this._Orderable = Orderable;
         }
 
         public virtual string TableClientId
@@ -51,5 +54,14 @@ namespace PIKA.Modelo.Metadatos
             get { return _Visible; }
         }
 
+        public virtual bool Searchable
+        {
+            get { return _Searchable; }
+        }
+
+        public virtual bool Orderable
+        {
+            get { return _Orderable; }
+        }
     }
 }

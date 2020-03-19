@@ -27,9 +27,9 @@ namespace PIKA.GD.API.Controllers.Organizacion
 
         private ILogger<UnidadOrganizacionalController> logger;
         private IServicioUnidadOrganizacional servicioUO;
-        private IMetadataProvider<UnidadOrganizacional> metadataProvider;
+        private IProveedorMetadatos<UnidadOrganizacional> metadataProvider;
         public UnidadOrganizacionalController(ILogger<UnidadOrganizacionalController> logger,
-            IMetadataProvider<UnidadOrganizacional> metadataProvider,
+            IProveedorMetadatos<UnidadOrganizacional> metadataProvider,
             IServicioUnidadOrganizacional servicioUO)
         {
             this.logger = logger;
@@ -106,8 +106,8 @@ namespace PIKA.GD.API.Controllers.Organizacion
                 Filtros = query.Filters,
                 indice = query.start,
                 tamano = query.length,
-                columna_ordenamiento = sortname,
-                direccion_ordenamiento = query.order[0].dir
+                ord_columna = sortname,
+                ord_direccion = query.order[0].dir
             };
 
             var data = await servicioUO.ObtenerPaginadoAsync(newq).ConfigureAwait(false);

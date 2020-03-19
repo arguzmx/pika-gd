@@ -6,7 +6,27 @@ namespace PIKA.Infraestructura.Comun
 {
     public class ConstantesModelo
     {
-        public const string IDORIGEN_ORGANIZACION = "org";
-        public const string IDORIGEN_ELEMENTO_ORGANIZACION = "org-item";
+        /// <summary>
+        /// Identificador de origen para elementos globales
+        /// </summary>
+        public const string IDORIGEN_NULO = "";
+
+        /// <summary>
+        /// Identificador de origen para elementos globales
+        /// </summary>
+        public const string IDORIGEN_GLOBAL = "global";
+
+
+        /// <summary>
+        /// Identificador de origen para elementos que se agrupan por dominio
+        /// </summary>
+        public const string IDORIGEN_DOMINIO = "dominio";
+
+        /// <summary>
+        /// Identificador de origen para elementos de la unidad organizacional
+        /// </summary>
+        public const string IDORIGEN_UNIDAD_ORGANIZACIONAL = "unidad-org";
+
+  
     }
 }

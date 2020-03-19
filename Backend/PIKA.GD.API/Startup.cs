@@ -104,7 +104,7 @@ namespace PIKA.GD.API
             services.AddTransient(typeof(ICompositorConsulta<>), typeof(QueryComposer<>));
             services.AddTransient<IServicioTokenSeguridad, ServicioTokenSeguridad>();
             services.AddTransient<ICacheSeguridad, CacheSeguridadMemoria>();
-            services.AddTransient(typeof(IMetadataProvider<>), typeof(ReflectionMetadataExtractor<>));
+            services.AddTransient(typeof(IProveedorMetadatos<>), typeof(ReflectionMetadataExtractor<>));
 
             services.AddTransient<ILocalizadorFiltroACL, LocalizadorFiltroACLReflectivo>();
 
@@ -125,6 +125,7 @@ namespace PIKA.GD.API
                 //                             new SlugifyParameterTransformer()));
 
                 options.ModelBinderProviders.Insert(0, new DatatablesModelBinderProvider());
+                options.ModelBinderProviders.Insert(0, new GenericDataPageModelBinderProvider());
 
             }).AddFluentValidation(opt =>
             {

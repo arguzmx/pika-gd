@@ -31,6 +31,9 @@ namespace PIKA.Servicio.Organizacion.Data
 
             builder.HasIndex(x => new { x.TipoOrigenId, x.OrigenId });
 
+            builder.Ignore(x => x.TipoOrigenDefault);
+
+
         }
     }
 

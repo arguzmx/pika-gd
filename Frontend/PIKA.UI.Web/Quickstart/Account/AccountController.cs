@@ -17,6 +17,12 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using PIKA.Infraestructura.Comun;
+using System.Net.Http;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text.Json;
 
 namespace IdentityServer4.Quickstart.UI
 {
@@ -30,6 +36,8 @@ namespace IdentityServer4.Quickstart.UI
         private readonly IClientStore _clientStore;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
+        private readonly  ConfiguracionServidor _Configuracion;
+        private readonly IHttpClientFactory _ClientFactory;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -37,8 +45,12 @@ namespace IdentityServer4.Quickstart.UI
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
-            IEventService events)
+            IEventService events,
+            IOptions<ConfiguracionServidor> Configuracion,
+            IHttpClientFactory clientFactory)
         {
+            _ClientFactory = clientFactory;
+            _Configuracion = Configuracion.Value;
             _userManager = userManager;
             _signInManager = signInManager;
             _interaction = interaction;
@@ -47,12 +59,44 @@ namespace IdentityServer4.Quickstart.UI
             _events = events;
         }
 
+        private async Task<JWTTokenResponse> GetJWTToken(LoginInputModel model)
+        {
+
+            JWTTokenResponse token = null;
+ 
+            
+            var client = _ClientFactory.CreateClient();
+
+            IList<KeyValuePair<string, string>> nameValueCollection = 
+                new List<KeyValuePair<string, string>> {
+                    { new KeyValuePair<string, string>("grant_type", "password") },
+                    { new KeyValuePair<string, string>("username", model.Username) },
+                    { new KeyValuePair<string, string>("password", model.Password) },
+                    { new KeyValuePair<string, string>("scope", "openid " + _Configuracion.jwtaud) },
+                    { new KeyValuePair<string, string>("client_id", _Configuracion.jwtclient) },
+                    { new KeyValuePair<string, string>("client_secret", _Configuracion.jwtclientsecret) },
+                };
+
+            var response =  await client.PostAsync(_Configuracion.jwtauth.TrimEnd('/') + "/connect/token",
+                new FormUrlEncodedContent(nameValueCollection));
+
+            if (response.IsSuccessStatusCode)
+            {
+                token = JsonSerializer.Deserialize<JWTTokenResponse>(await response.Content.ReadAsStringAsync());
+            }
+            
+            return token;
+        }
+
+
         /// <summary>
         /// Entry point into the login workflow
         /// </summary>
         [HttpGet]
         public async Task<IActionResult> Login(string returnUrl)
         {
+
+            Console.WriteLine("0:: " + returnUrl);
             // build a model so we know what to show on the login page
             var vm = await BuildLoginViewModelAsync(returnUrl);
 
@@ -78,6 +122,8 @@ namespace IdentityServer4.Quickstart.UI
             // the user clicked the "cancel" button
             if (button != "login")
             {
+
+                Console.WriteLine("-------------------1");
                 if (context != null)
                 {
                     // if the user cancels, send a result back into IdentityServer as if they 
@@ -101,12 +147,27 @@ namespace IdentityServer4.Quickstart.UI
                     return Redirect("~/");
                 }
             }
-
+            Console.WriteLine("-------------------2");
             if (ModelState.IsValid)
             {
+                Console.WriteLine("-------------------3");
+                //Response.Cookies.Delete("jwt");
+                //Response.Cookies.Delete("jwt_to");
+
                 var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
+                    //var JWTToken = await GetJWTToken(model);
+                   
+                    //if (JWTToken != null)
+                    //{
+                    //    var jwt = new JwtSecurityTokenHandler().ReadJwtToken(JWTToken.access_token);
+                    //    Response.Cookies.Append("jwt", JWTToken.access_token);
+                    //    Response.Cookies.Append("jwt_to", jwt.ValidTo.ToLocalTime().Subtract(
+                    //        new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc))
+                    //        .TotalMilliseconds.ToString() );
+                    //}
+
                     var user = await _userManager.FindByNameAsync(model.Username);
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.ClientId));
 
@@ -114,11 +175,12 @@ namespace IdentityServer4.Quickstart.UI
                     {
                         if (await _clientStore.IsPkceClientAsync(context.ClientId))
                         {
+                            Console.WriteLine("-------------------C " + model.ReturnUrl);
                             // if the client is PKCE then we assume it's native, so this change in how to
                             // return the response is for better UX for the end user.
                             return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
                         }
-
+                        Console.WriteLine("-------------------4 " + model.ReturnUrl);
                         // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
                         return Redirect(model.ReturnUrl);
                     }
@@ -126,19 +188,22 @@ namespace IdentityServer4.Quickstart.UI
                     // request for a local page
                     if (Url.IsLocalUrl(model.ReturnUrl))
                     {
+                        Console.WriteLine("-------------------888");
                         return Redirect(model.ReturnUrl);
                     }
                     else if (string.IsNullOrEmpty(model.ReturnUrl))
                     {
+                        Console.WriteLine("-------------------99");
                         return Redirect("~/");
                     }
                     else
                     {
+                        Console.WriteLine("-------------------cuak");
                         // user might have clicked on a malicious link - should be logged
                         throw new Exception("invalid return URL");
                     }
                 }
-
+                Console.WriteLine("-------------------xxx");
                 await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId:context?.ClientId));
                 ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
             }

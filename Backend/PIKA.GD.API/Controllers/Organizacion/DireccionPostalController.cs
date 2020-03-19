@@ -30,9 +30,9 @@ namespace PIKA.GD.API.Controllers.Organizacion
 
         private ILogger<DireccionPostalController> logger;
         private IServicioDireccionPostal servicioDirPost;
-        private IMetadataProvider<DireccionPostal> metadataProvider;
+        private IProveedorMetadatos<DireccionPostal> metadataProvider;
         public DireccionPostalController(ILogger<DireccionPostalController> logger,
-            IMetadataProvider<DireccionPostal> metadataProvider,
+            IProveedorMetadatos<DireccionPostal> metadataProvider,
             IServicioDireccionPostal servicioDirPost)
         {
             this.logger = logger;
@@ -113,8 +113,8 @@ namespace PIKA.GD.API.Controllers.Organizacion
                 Filtros = query.Filters,
                 indice = query.start,
                 tamano = query.length,
-                columna_ordenamiento = sortname,
-                direccion_ordenamiento = query.order[0].dir
+                ord_columna = sortname,
+                ord_direccion = query.order[0].dir
             };
 
             var data = await servicioDirPost.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
