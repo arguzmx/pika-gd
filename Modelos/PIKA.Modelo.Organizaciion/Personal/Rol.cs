@@ -1,4 +1,5 @@
-﻿using RepositorioEntidades;
+﻿using PIKA.Infraestructura.Comun;
+using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,10 +12,15 @@ namespace PIKA.Modelo.Organizacion
     /// </summary>
     public class Rol : Entidad<string>, IEntidadNombrada, IEntidadRelacionada
     {
+
+       
+        public string TipoOrigenDefault => ConstantesModelo.IDORIGEN_DOMINIO;
+
+
         public Rol() {
 
             this.UsuariosRol = new HashSet<UsuariosRol>();
-        
+            this.TipoOrigenId = this.TipoOrigenDefault;
         }
 
         public string Nombre {get; set;}

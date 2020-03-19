@@ -32,7 +32,7 @@ namespace PIKA.GD.API
             {
                foreach(var p in c.GetParameters())
                 {
-                    if (p.ParameterType.FullName.Contains("IMetadataProvider", StringComparison.InvariantCultureIgnoreCase))
+                    if (p.ParameterType.FullName.Contains("IProveedorMetadatos", StringComparison.InvariantCultureIgnoreCase))
                     {
                         foreach(var a in p.ParameterType.GenericTypeArguments)
                         {

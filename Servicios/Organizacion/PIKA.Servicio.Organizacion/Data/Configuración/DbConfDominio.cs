@@ -17,7 +17,6 @@ namespace PIKA.Servicio.Organizacion.Data
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
 
-
             builder.Property(x => x.OrigenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
 
             builder.Property(x => x.TipoOrigenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
@@ -25,6 +24,8 @@ namespace PIKA.Servicio.Organizacion.Data
             builder.HasIndex(x => new { x.TipoOrigenId, x.OrigenId });
 
             builder.HasMany(x => x.UnidadesOrganizacionales).WithOne(y => y.Dominio).HasForeignKey(z => z.DominioId);
+
+            builder.Ignore(x => x.TipoOrigenDefault);
 
         }
     }

@@ -48,7 +48,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Refit.PIKA.GD", "Servicios\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GestionDocumental", "GestionDocumental", "{251B34AC-0CDD-4FAB-9213-02CD465B364B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIKA.Servicio.GestionDocumental", "Servicios\GestionDocumental\PIKA.Servicio.GestionDocumental\PIKA.Servicio.GestionDocumental.csproj", "{BE61CB9E-E066-413C-94D6-0E515DDB8B9B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIKA.Servicio.GestionDocumental", "Servicios\GestionDocumental\PIKA.Servicio.GestionDocumental\PIKA.Servicio.GestionDocumental.csproj", "{BE61CB9E-E066-413C-94D6-0E515DDB8B9B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIKA.Identity.Server", "Backend\PIKA.Identity.Server\PIKA.Identity.Server.csproj", "{46B23A6B-8FD1-4DE2-B988-759DA33DC170}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infraestructura", "Infraestructura", "{6BEDD58A-2372-467F-9930-52A1C8F1BDC5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIKA.Servicio.Infraestructura.UI", "Servicios\Infraestructura\PIKA.Servicio.UI\PIKA.Servicio.Infraestructura.UI.csproj", "{C22260A9-46DA-4183-B35C-4B6E37ABAB93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIKA.Modelo.Infraestructura.UI", "Modelos\PIKA.Modelo.Infraestructura.UI\PIKA.Modelo.Infraestructura.UI.csproj", "{659C367C-39E6-46A1-84A7-358F360DD84B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -104,6 +112,18 @@ Global
 		{BE61CB9E-E066-413C-94D6-0E515DDB8B9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE61CB9E-E066-413C-94D6-0E515DDB8B9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE61CB9E-E066-413C-94D6-0E515DDB8B9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46B23A6B-8FD1-4DE2-B988-759DA33DC170}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46B23A6B-8FD1-4DE2-B988-759DA33DC170}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46B23A6B-8FD1-4DE2-B988-759DA33DC170}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46B23A6B-8FD1-4DE2-B988-759DA33DC170}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C22260A9-46DA-4183-B35C-4B6E37ABAB93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C22260A9-46DA-4183-B35C-4B6E37ABAB93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C22260A9-46DA-4183-B35C-4B6E37ABAB93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C22260A9-46DA-4183-B35C-4B6E37ABAB93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{659C367C-39E6-46A1-84A7-358F360DD84B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{659C367C-39E6-46A1-84A7-358F360DD84B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{659C367C-39E6-46A1-84A7-358F360DD84B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{659C367C-39E6-46A1-84A7-358F360DD84B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,6 +145,10 @@ Global
 		{967DA730-8D35-4557-BF37-AC573601666D} = {4599E796-E8E6-481D-94BF-7D3951712F31}
 		{251B34AC-0CDD-4FAB-9213-02CD465B364B} = {4781D904-DF6E-4F9F-9D11-7CD64988B40B}
 		{BE61CB9E-E066-413C-94D6-0E515DDB8B9B} = {251B34AC-0CDD-4FAB-9213-02CD465B364B}
+		{46B23A6B-8FD1-4DE2-B988-759DA33DC170} = {69654053-84D3-4D80-BADB-DF81D4F77AE2}
+		{6BEDD58A-2372-467F-9930-52A1C8F1BDC5} = {4781D904-DF6E-4F9F-9D11-7CD64988B40B}
+		{C22260A9-46DA-4183-B35C-4B6E37ABAB93} = {6BEDD58A-2372-467F-9930-52A1C8F1BDC5}
+		{659C367C-39E6-46A1-84A7-358F360DD84B} = {9DAE2F36-5E04-47D1-B3CF-5B26511A5A9A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {023A9CA1-A6E7-47B1-A283-AF2339B09C1C}

@@ -25,10 +25,10 @@ namespace PIKA.GD.API.Controllers.Organizacion
     {
         private ILogger<RolController> logger;
         private IServicioRol servicioRol;
-        private IMetadataProvider<Rol> metadataProvider;
+        private IProveedorMetadatos<Rol> metadataProvider;
 
         public RolController(ILogger<RolController> logger,
-          IMetadataProvider<Rol> metadataProvider,
+          IProveedorMetadatos<Rol> metadataProvider,
           IServicioRol servicioRol)
         {
             this.logger = logger;
@@ -100,8 +100,8 @@ namespace PIKA.GD.API.Controllers.Organizacion
                 Filtros = query.Filters,
                 indice = query.start,
                 tamano = query.length,
-                columna_ordenamiento = sortname,
-                direccion_ordenamiento = query.order[0].dir
+                ord_columna = sortname,
+                ord_direccion = query.order[0].dir
             };
 
             var data = await servicioRol.ObtenerPaginadoAsync(newq).ConfigureAwait(false);

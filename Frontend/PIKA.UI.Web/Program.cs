@@ -57,7 +57,7 @@ namespace PIKA.UI.Web
                     Log.Information("Seeding database...");
                     var config = host.Services.GetRequiredService<IConfiguration>();
                     var connectionString = config.GetConnectionString("pika-gd");
-                    SeedData.EnsureSeedData(connectionString);
+                  
                     Log.Information("Done seeding database.");
                     return 0;
                 }

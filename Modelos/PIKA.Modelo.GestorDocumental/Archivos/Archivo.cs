@@ -11,6 +11,8 @@ namespace PIKA.Modelo.GestorDocumental
     public class Archivo : Entidad<string>, IEntidadNombrada, IEntidadEliminada, IEntidadRelacionada
     {
 
+       
+        public string TipoOrigenDefault => ConstantesModelo.IDORIGEN_UNIDAD_ORGANIZACIONAL;
 
         /// <summary>
         /// Espacio físico en el que se deposita la 
@@ -19,8 +21,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         public Archivo()
         {
-
-            this._TipoOrigenId = ConstantesModelo.IDORIGEN_ELEMENTO_ORGANIZACION;
+            this.TipoOrigenId = this.TipoOrigenDefault;
         }
 
 
