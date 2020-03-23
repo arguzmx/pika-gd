@@ -109,7 +109,7 @@ namespace PIKA.Identity.Server
                 new Client
                 {
                     ClientId = "api-pika-gd",
-                    ClientName = "Cliente PIKA Gestión Documental",
+                    ClientName = "Cliente PIKA Gestión Documental WEb",
                     ClientUri = "http://localhost",
 
                     AllowedGrantTypes = GrantTypes.Code,

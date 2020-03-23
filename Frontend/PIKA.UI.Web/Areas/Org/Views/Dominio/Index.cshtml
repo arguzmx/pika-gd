@@ -7,6 +7,18 @@
     Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
 
+@section Styles{
+
+    <link href="~/lib/datatables/css/dataTables.bootstrap4.css" rel="stylesheet" />
+}
+
+
+@section Scripts{
+    <script src="~/lib/datatables/js/jquery.dataTables.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap4.js"></script>
+    <script src="~/js/componentes/EditorTabular/EditorTabular..js"></script>
+}
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -38,7 +50,7 @@
                                 @await Component.InvokeAsync("MenuEditorTabular", new { Tipo = Model.Tipo })
                             </div>
                         </div>
-                        <div class="card-body table-responsive p-0">
+                        <div class="card-body table-responsive p-4">
                             @await Component.InvokeAsync("EditorTabular", new { Tipo = Model.Tipo })
                         </div>
                     </div>
@@ -46,8 +58,8 @@
                 </div>
                 <!-- /.col-md-6 -->
                 <div class="col-lg-6">
-    
-             
+
+
                 </div>
                 <!-- /.col-md-6 -->
             </div>
@@ -59,7 +71,3 @@
 </div>
 
 
-
-@section Scripts{
-    <script src="~/js/componentes/ArbolNavegador/ArbolNavegador.js"></script>
-}
