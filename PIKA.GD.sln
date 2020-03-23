@@ -56,7 +56,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infraestructura", "Infraest
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIKA.Servicio.Infraestructura.UI", "Servicios\Infraestructura\PIKA.Servicio.UI\PIKA.Servicio.Infraestructura.UI.csproj", "{C22260A9-46DA-4183-B35C-4B6E37ABAB93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIKA.Modelo.Infraestructura.UI", "Modelos\PIKA.Modelo.Infraestructura.UI\PIKA.Modelo.Infraestructura.UI.csproj", "{659C367C-39E6-46A1-84A7-358F360DD84B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIKA.Modelo.Infraestructura.UI", "Modelos\PIKA.Modelo.Infraestructura.UI\PIKA.Modelo.Infraestructura.UI.csproj", "{659C367C-39E6-46A1-84A7-358F360DD84B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIKA.Modelo.Seguridad", "Modelos\PIKA.Modelo.Seguridad\PIKA.Modelo.Seguridad.csproj", "{E95E8E4F-599E-48F1-906A-9707B3C401C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -124,6 +126,10 @@ Global
 		{659C367C-39E6-46A1-84A7-358F360DD84B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{659C367C-39E6-46A1-84A7-358F360DD84B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{659C367C-39E6-46A1-84A7-358F360DD84B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E95E8E4F-599E-48F1-906A-9707B3C401C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E95E8E4F-599E-48F1-906A-9707B3C401C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E95E8E4F-599E-48F1-906A-9707B3C401C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E95E8E4F-599E-48F1-906A-9707B3C401C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -149,6 +155,7 @@ Global
 		{6BEDD58A-2372-467F-9930-52A1C8F1BDC5} = {4781D904-DF6E-4F9F-9D11-7CD64988B40B}
 		{C22260A9-46DA-4183-B35C-4B6E37ABAB93} = {6BEDD58A-2372-467F-9930-52A1C8F1BDC5}
 		{659C367C-39E6-46A1-84A7-358F360DD84B} = {9DAE2F36-5E04-47D1-B3CF-5B26511A5A9A}
+		{E95E8E4F-599E-48F1-906A-9707B3C401C0} = {9DAE2F36-5E04-47D1-B3CF-5B26511A5A9A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {023A9CA1-A6E7-47B1-A283-AF2339B09C1C}
