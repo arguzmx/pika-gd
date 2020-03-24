@@ -8,7 +8,10 @@ namespace PIKA.Modelo.GestorDocumental
 {
     public class EstadoCuadroClasificacion : EntidadCatalogo<string, EstadoCuadroClasificacion>
     {
-
+        public EstadoCuadroClasificacion()
+        {
+            Cuadros = new HashSet<CuadroClasificacion>();
+        }
         public override List<EstadoCuadroClasificacion> Seed() {
             List<EstadoCuadroClasificacion> l = new List<EstadoCuadroClasificacion>();
             l.Add(new EstadoCuadroClasificacion() { Id = ConstantesEstado.ESTADO_ACTIVO, Nombre = "Activo" });
@@ -16,6 +19,6 @@ namespace PIKA.Modelo.GestorDocumental
             return l;
         }
 
-
+        public IEnumerable<CuadroClasificacion> Cuadros { get; set; }
     }
 }

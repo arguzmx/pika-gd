@@ -11,6 +11,11 @@ namespace PIKA.Modelo.GestorDocumental
 
     public class TipoArchivo : EntidadCatalogo<string, TipoArchivo>
     {
+
+        public TipoArchivo()
+        {
+            Archivos = new HashSet<Archivo>();
+        }
         public override List<TipoArchivo> Seed()
         {
             List<TipoArchivo> l = new List<TipoArchivo>();
@@ -31,6 +36,8 @@ namespace PIKA.Modelo.GestorDocumental
         /// Fase vital a la que pertenece el archivo
         /// </summary>
         public virtual FaseCicloVital Fase { get; set; }
+
+        public IEnumerable<Archivo> Archivos { get; set; }
 
     }
 }

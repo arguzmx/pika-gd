@@ -26,6 +26,7 @@ using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Organizacion;
 using RepositorioEntidades;
+using PIKA.Servicio.GestionDocumental.Data;
 
 namespace PIKA.GD.API
 {
@@ -114,6 +115,10 @@ namespace PIKA.GD.API
  
 
             services.AddDbContext<DbContextOrganizacion>(options =>
+                    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
+
+            services.AddDbContext<DBContextGestionDocumental>(options =>
                     options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
 
