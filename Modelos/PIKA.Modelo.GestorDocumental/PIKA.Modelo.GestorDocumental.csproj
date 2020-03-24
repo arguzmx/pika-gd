@@ -9,4 +9,12 @@
     <ProjectReference Include="..\..\Infraestructura\RepositorioEntidades\RepositorioEntidades.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.2" />
+  </ItemGroup>
+
 </Project>

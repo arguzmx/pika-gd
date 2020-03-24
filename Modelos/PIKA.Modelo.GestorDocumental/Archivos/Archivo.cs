@@ -21,7 +21,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         public Archivo()
         {
-            this.TipoOrigenId = this.TipoOrigenDefault;
+            this._TipoOrigenId = this.TipoOrigenDefault;
         }
 
 
@@ -47,6 +47,7 @@ namespace PIKA.Modelo.GestorDocumental
             set
             {
                 // el valor no debe cambiarse
+             
             }
         }
 
