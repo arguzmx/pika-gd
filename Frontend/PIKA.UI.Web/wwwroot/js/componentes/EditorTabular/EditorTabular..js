@@ -1,11 +1,9 @@
-﻿$(function () {
+﻿
 
-    console.log(ClienteAPI.jwt());
-  
-    //console.log(ClienteAPI);
+$(function () {
 
-    //var table = $('#example').DataTable();
-
-    //console.log(ClienteAPI.GetMetadata(""));
+    let client = new ClientAPI("http://localhost:5000/api/v1.0/org/Dominio/");
+    console.log("Editor tabulae");    
+   
 });
 

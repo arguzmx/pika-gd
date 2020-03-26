@@ -111,7 +111,7 @@ namespace PIKA.Identity.Server
                     ClientId = "api-pika-gd",
                     ClientName = "Cliente PIKA Gestión Documental WEb",
                     ClientUri = "http://localhost",
-
+                    RequireConsent = false,
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
                     RequireClientSecret = false,

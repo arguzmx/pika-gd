@@ -38,6 +38,9 @@ namespace PIKA.GD.API
 
         public ILogger<Startup> Logger { get; private set; }
 
+        
+        private readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public void ConfigureContainer(ContainerBuilder builder)
         {
             //// Add any Autofac modules or registrations.
@@ -61,6 +64,8 @@ namespace PIKA.GD.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
+
 
             ConfiguracionServidor configuracionServidor = new ConfiguracionServidor();
             this.Configuration.GetSection("ConfiguracionServidor").Bind(configuracionServidor);
@@ -199,9 +204,13 @@ namespace PIKA.GD.API
             //app.UseHealthChecks("/health");
 
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
+            
+            app.UseCors(builder=> builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod() );
+
+
             app.UseAuthentication();
             app.UseAuthorization();
 
