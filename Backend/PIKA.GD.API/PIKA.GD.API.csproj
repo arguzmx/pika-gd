@@ -43,6 +43,7 @@
     <ProjectReference Include="..\..\Servicios\GestionDocumental\PIKA.Servicio.GestionDocumental\PIKA.Servicio.GestionDocumental.csproj" />
     <ProjectReference Include="..\..\Servicios\Infraestructura\PIKA.Servicio.UI\PIKA.Servicio.Infraestructura.UI.csproj" />
     <ProjectReference Include="..\..\Servicios\Organizacion\PIKA.Servicio.Organizacion\PIKA.Servicio.Organizacion.csproj" />
+    <ProjectReference Include="..\..\Servicios\Seguridad\PIKA.Servicio.Seguridad\PIKA.Servicio.Seguridad.csproj" />
   </ItemGroup>
 
   <ItemGroup>
