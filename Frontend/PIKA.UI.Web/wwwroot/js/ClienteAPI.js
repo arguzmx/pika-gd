@@ -1,46 +1,58 @@
-﻿var ClienteAPI = (function () {
+﻿class ClientAPI {
 
-    // Keep this variable private inside this closure scope
-    var myGrades = [93, 95, 88, 0, 55, 91];
-
-    var average = function () {
-        var total = myGrades.reduce(function (accumulator, item) {
-            return accumulator + item;
-        }, 0);
-
-        return 'Your average grade is ' + total / myGrades.length + '.';
-    };
-
-    var failing = function () {
-        var failingGrades = myGrades.filter(function (item) {
-            return item < 70;
-        });
-
-        return 'You failed ' + failingGrades.length + ' times.';
-    };
-
-    var jwt = function () {
-        return "aaaaa";
-        mgr.getUser().then(function (user) {
-            if (user != null) {
-                console.log("0");   
-
-                return user.access_token;
-            } else {
-                console.log("1");   
-                return null;
+    constructor(url) {
+        this.url = url;
+        this.authInfo = null;
+        
+        var me = this;
+        getAuthInfo().then(
+            function (data) {
+                me.authInfo = data;
+                me.initControl();
             }
+        );
+    }
 
-        }).catch(function (err) {
-            console.log("2");   
-            return null;
-        });
+    _getAxiosConfig(method, querystring) {
+
+        if (this.authInfo == null) return null;
+        var url = this.url;
+
+        if (querystring != undefined) {
+            url = url  + querystring;
+        }
+
+       // url = url + "?_=" + new Date().getMilliseconds();
+
+        return {
+            method: method,
+            url: url,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json',
+                'uid': this.authInfo.uid,
+                'Authorization': `Bearer ${this.authInfo.jwt}`
+            }
+        };
 
     }
 
-    return {
-        average: average,
-        failing: failing,
-        jwt: jwt
+    //Inicializa la instancia del editor tabular
+    initControl() {
+        this.getMetadata();
     }
-})();
+
+
+    async getMetadata() {
+        const config = this._getAxiosConfig("get","metadata");
+
+        console.log(config);
+        let res = await axios(config);
+
+        console.log(res);
+
+    }
+
+
+
+}

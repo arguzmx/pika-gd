@@ -1,2 +1,3 @@
-﻿var mgr = new Oidc.UserManager();
-mgr.signinSilentCallback();
+﻿Oidc.Log.logger = console;
+Oidc.Log.level = Oidc.Log.INFO;
+new Oidc.UserManager().signinSilentCallback();

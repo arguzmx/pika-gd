@@ -7,7 +7,16 @@ namespace PIKA.Modelo.Metadatos
 {
     public class MetadataInfo
     {
-        public Type Tipo { get; set; }
+        /// <summary>
+        /// Tipo de elemento basado en el nombre del ensamblado
+        /// </summary>
+       public string Tipo { get; set; }
+
+        /// <summary>
+        /// Fullname del tipo desde el ensamblado
+        /// </summary>
+        public string FullName { get; set; }
+
         public virtual List<Propiedad> Propiedades { get; set; }
 
 

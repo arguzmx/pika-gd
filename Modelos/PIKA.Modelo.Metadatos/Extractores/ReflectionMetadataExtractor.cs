@@ -48,7 +48,7 @@ namespace PIKA.Modelo.Metadatos
         {
 
             var t = typeof(T);
-            MetadataInfo info = new MetadataInfo() { Tipo = t };
+            MetadataInfo info = new MetadataInfo() { Tipo = t.Name , FullName = t.FullName};
             List<Propiedad> properties = new List<Propiedad>();
 
             PropertyInfo[] props = t.GetProperties();

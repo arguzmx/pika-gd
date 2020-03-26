@@ -19,7 +19,7 @@ namespace PIKA.GD.API
         public static MetadataInfo InformacionMetadatos(Type Tipo)
         {
             if (_InformacionMetadatos == null) return null;
-            return _InformacionMetadatos.Where(x => x.Tipo.Name == Tipo.Name).Take(1).SingleOrDefault(); ;
+            return _InformacionMetadatos.Where(x => x.Tipo == Tipo.Name).Take(1).SingleOrDefault(); ;
         }
 
 

@@ -2,31 +2,38 @@
 Oidc.Log.level = Oidc.Log.DEBUG;
 console.log("Using oidc-client version: ", Oidc.Version);
 var url = window.location.origin;
+var eventValidUser = new Event('validuser');
 
-var settings = {
+
+var oidcsettings = {
     authority: 'http://localhost:4000',
     client_id: 'api-pika-gd',
     redirect_uri: url + '/callback.html',
     post_logout_redirect_uri: url + '/logout.html',
     response_type: 'code',
     scope: 'openid profile pika-gd',
-    //scope: 'openid profile api offline_access',
 
-    popup_redirect_uri: url + '/code-identityserver-sample-popup-signin.html',
-    popup_post_logout_redirect_uri: url + '/code-identityserver-sample-popup-signout.html',
+    //popup_redirect_uri: url + '/code-identityserver-sample-popup-signin.html',
+    //popup_post_logout_redirect_uri: url + '/code-identityserver-sample-popup-signout.html',
 
     silent_redirect_uri: url + '/silent.html',
-    automaticSilentRenew: false,
+    automaticSilentRenew: true,
     validateSubOnSilentRenew: true,
-    silentRequestTimeout:10000,
+    silentRequestTimeout: 10000,
 
     monitorAnonymousSession: true,
 
     filterProtocolClaims: true,
     loadUserInfo: true,
-    revokeAccessTokenOnSignout: true
+    revokeAccessTokenOnSignout: true,
+    jwtstoragename: 'cjwt',
+    uidstoragename: 'cuid'
 };
-var mgr = new Oidc.UserManager(settings);
+
+
+
+
+var mgr = new Oidc.UserManager(oidcsettings);
 
 
 ///////////////////////////////
@@ -45,6 +52,11 @@ mgr.events.addAccessTokenExpiring(function () {
 
 mgr.events.addAccessTokenExpired(function () {
     console.log("token expired");
+    mgr.signinSilent().then(function (user) {
+        console.log("silent renew success", user);
+    }).catch(function (e) {
+        console.log("silent renew error", e.message);
+    })
 });
 
 mgr.events.addSilentRenewError(function (e) {
@@ -175,12 +187,29 @@ function endSignoutMainWindow() {
 };
 
 
+async function getAuthInfo () {
+    var user = await mgr.getUser();
+    authInfo = null;
+
+    if (user) {
+        if (!user.expired) {
+            authInfo = {
+                jwt: user.access_token,
+                uid: user.profile.sub
+            };
+
+        };
+    };
+    return authInfo;
+}
+
+
 mgr.getUser().then(function (user) {
+
     if (user != null) {
-        console.log("got user", user);
+        console.log("user ok")
     } else {
-        console.log("no suer");
-        startSigninMainWindow();
+         startSigninMainWindow();
     }
     
 }).catch(function (err) {
