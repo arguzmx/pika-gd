@@ -1,10 +1,11 @@
-﻿using System;
+﻿using RepositorioEntidades;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace PIKA.Infraestructura.Comun
 {
-    public class TipoAdministradorModulo
+    public class TipoAdministradorModulo : Entidad<string>
     {
 
         /// <summary>
@@ -13,11 +14,15 @@ namespace PIKA.Infraestructura.Comun
         public string AplicacionId { get; set; }
 
         /// <summary>
+        /// Unique appliction ID
+        /// </summary>
+        public string Id { get; set; }
+        /// <summary>
         /// Identificador único del modulo de la aplicación
         /// </summary>
         public string ModuloId { get; set; }
 
-
+        public ModuloAplicacion ModuloApp { get; set; }
         /// <summary>
         /// Tipos del objeto administrador por el módulo
         /// </summary>

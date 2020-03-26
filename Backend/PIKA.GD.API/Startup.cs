@@ -27,6 +27,7 @@ using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Organizacion;
 using RepositorioEntidades;
 using PIKA.Servicio.GestionDocumental.Data;
+using PIKA.Servicio.Seguridad;
 
 namespace PIKA.GD.API
 {
@@ -80,12 +81,20 @@ namespace PIKA.GD.API
                 }
 
             }
+
+
+            foreach (var t in ensambladosValidables)
+            {
+                
+                    Console.WriteLine($"{t} === V");
+                
+
+            }
 #endif
 
 
             foreach (string item in ensambladosValidables)
             {
-                
                 ensambladosValidacion.Add(Assembly.LoadFrom(item));
             }
 
@@ -120,6 +129,9 @@ namespace PIKA.GD.API
 
             services.AddDbContext<DBContextGestionDocumental>(options =>
                     options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
+            services.AddDbContext<DbContextSeguridad>(options =>
+                   options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
 
             services.AddControllers();

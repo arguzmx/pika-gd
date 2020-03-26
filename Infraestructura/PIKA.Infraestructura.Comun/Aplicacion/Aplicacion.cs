@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RepositorioEntidades;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,7 +8,7 @@ namespace PIKA.Infraestructura.Comun
     /// <summary>
     /// Permite definir los detalles para una aplicación 
     /// </summary>
-    public class Aplicacion
+    public class Aplicacion : Entidad<string>, IEntidadNombrada
     {
         public Aplicacion()
         {
@@ -15,7 +16,6 @@ namespace PIKA.Infraestructura.Comun
             Modulos = new HashSet<ModuloAplicacion>();
         }
 
-        public string Id { get; set; }
         public string Nombre { get; set; }
         public string Descripcion { get; set; }
 

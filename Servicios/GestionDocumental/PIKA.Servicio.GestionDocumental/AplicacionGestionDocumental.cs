@@ -66,7 +66,7 @@ namespace PIKA.Servicio.GestionDocumental
             m.TiposAdministrados.Add(new TipoAdministradorModulo()
             {
                 AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.ModuloId,
+                ModuloId = m.Id,
                 TiposAdministrados = new List<Type>() { typeof(CuadroClasificacion) }
             });
             l.Add(m);
@@ -88,7 +88,7 @@ namespace PIKA.Servicio.GestionDocumental
             m.TiposAdministrados.Add(new TipoAdministradorModulo()
             {
                 AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.ModuloId,
+                ModuloId = m.Id,
                 TiposAdministrados = new List<Type>() { typeof(ElementoClasificacion) }
             });
             l.Add(m);
@@ -109,7 +109,7 @@ namespace PIKA.Servicio.GestionDocumental
             m.TiposAdministrados.Add(new TipoAdministradorModulo()
             {
                 AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.ModuloId,
+                ModuloId = m.Id,
                 TiposAdministrados = new List<Type>() { typeof(EstadoCuadroClasificacion) }
             });
             l.Add(m);
@@ -129,7 +129,7 @@ namespace PIKA.Servicio.GestionDocumental
             m.TiposAdministrados.Add(new TipoAdministradorModulo()
             {
                 AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.ModuloId,
+                ModuloId = m.Id,
                 TiposAdministrados = new List<Type>() { typeof(Archivo) }
             });
             l.Add(m);
@@ -149,7 +149,7 @@ namespace PIKA.Servicio.GestionDocumental
             m.TiposAdministrados.Add(new TipoAdministradorModulo()
             {
                 AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.ModuloId,
+                ModuloId = m.Id,
                 TiposAdministrados = new List<Type>() { typeof(TipoArchivo) }
             });
             l.Add(m);
@@ -169,7 +169,7 @@ namespace PIKA.Servicio.GestionDocumental
             m.TiposAdministrados.Add(new TipoAdministradorModulo()
             {
                 AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.ModuloId,
+                ModuloId = m.Id,
                 TiposAdministrados = new List<Type>() { typeof(FaseCicloVital) }
             });
             l.Add(m);

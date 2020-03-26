@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RepositorioEntidades;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,9 +8,9 @@ namespace PIKA.Infraestructura.Comun
     /// <summary>
     /// Proporciona lode detalles de un módulo perteneciente a una aplciación
     /// </summary>
-    public class ModuloAplicacion
+    public class ModuloAplicacion : Entidad<string>, IEntidadNombrada
     {
-       
+
         public ModuloAplicacion()
         {
             Modulos = new HashSet<ModuloAplicacion>();
@@ -20,12 +21,6 @@ namespace PIKA.Infraestructura.Comun
         /// Unique appliction ID
         /// </summary>
         public string AplicacionId { get; set; }
-
-        /// <summary>
-        /// Identificador único del modulo de la aplicación
-        /// </summary>
-        public string ModuloId { get; set; }
-
 
 
         /// <summary>
@@ -43,7 +38,7 @@ namespace PIKA.Infraestructura.Comun
         /// </summary>
         public string Descripcion { get; set; }
 
-        public ModuloAplicacion(string AplicacionId, string ModuloId, bool Asegurable, 
+        public ModuloAplicacion(string AplicacionId, string ModuloId, bool Asegurable,
             string Nombre, string Descripcion, string Icon, string UICulture, ulong PermisosDisponibles,
             string ModuloPadreId, string AplicacionPadreId)
         {
@@ -55,7 +50,7 @@ namespace PIKA.Infraestructura.Comun
             this.Descripcion = Descripcion;
             this.Nombre = Nombre;
             this.Asegurable = Asegurable;
-            this.ModuloId = ModuloId;
+            this.Id = ModuloId;
             this.AplicacionId = AplicacionId;
             Modulos = new HashSet<ModuloAplicacion>();
             Traducciones = new HashSet<TraduccionAplicacionModulo>();
@@ -108,6 +103,8 @@ namespace PIKA.Infraestructura.Comun
 
 
         public ICollection<TipoAdministradorModulo> TiposAdministrados { get; set; }
+
+
 
     }
 }
