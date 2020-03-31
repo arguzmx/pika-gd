@@ -1,28 +1,33 @@
-﻿class ClientAPI {
+﻿
+
+
+class ClientAPI {
 
     constructor(url) {
         this.url = url;
         this.authInfo = null;
-        
-        var me = this;
-        getAuthInfo().then(
-            function (data) {
-                me.authInfo = data;
-                me.initControl();
-            }
-        );
     }
 
+
+    //Establece los valores de udentidad para las llamadas a la API a partit de
+    //los valores gestionados por la biblioteca de OIDC
+    async _setAuthInfo() {
+        this.authInfo = await getAuthInfo();
+        return (this.authInfo != null);
+    }
+
+
+    //Obtiene la confiración de encabezados para las llamdas de API
     _getAxiosConfig(method, querystring) {
 
         if (this.authInfo == null) return null;
         var url = this.url;
 
         if (querystring != undefined) {
-            url = url  + querystring;
+            url = url + querystring;
         }
 
-       // url = url + "?_=" + new Date().getMilliseconds();
+        // url = url + "?_=" + new Date().getMilliseconds();
 
         return {
             method: method,
@@ -37,22 +42,70 @@
 
     }
 
-    //Inicializa la instancia del editor tabular
-    initControl() {
-        this.getMetadata();
+    async checkAuthInfo() {
+        if (this.authInfo == null) {
+            let authAvailable = await this._setAuthInfo();
+            return authAvailable;
+        }
+        return true;
     }
 
+    existeAuthInfo() {
+        return (this.authInfo != null);
+    }
+
+
+    _obtieneDatosDesdeRespuesta(httpresponse) {
+
+        try {
+            let respuesta = new respuestaAPI(parseInt(httpresponse.status), null, false, false);
+
+            switch (respuesta.estado) {
+                case 200:
+                    //DAtos desde AXIOS
+                    respuesta.datos = httpresponse.data;
+                    break;
+
+                default:
+                    respuesta.es_error = true;
+                    break;
+            }
+
+            return respuesta;
+        } catch (e) {
+            return new respuestaAPI(0, e, true, false);
+        }
+    }
 
     async getMetadata() {
-        const config = this._getAxiosConfig("get","metadata");
 
-        console.log(config);
-        let res = await axios(config);
+        let authAvailable = await this.checkAuthInfo();
 
-        console.log(res);
+        if (authAvailable) {
+            const config = this._getAxiosConfig("get", "metadata");
+            let res = await axios(config);
+            return this._obtieneDatosDesdeRespuesta(res);
+        }
+        else {
+            return null;
+        }
 
     }
 
 
+
+}
+
+
+
+//Representa una respuesta estándar a la API de PIKA
+class respuestaAPI {
+
+    constructor(estado, datos, es_error, reintentar) {
+        this.datos = datos;
+        this.estado = estado;
+        this.es_error = es_error;
+        this.reintentar = reintentar;
+    }
 
 }
