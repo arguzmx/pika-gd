@@ -19,8 +19,8 @@ namespace PIKA.Modelo.Organizacion
         public override string Id { get => base.Id; set => base.Id = value; }
 
 
-        [Prop(OrderIndex: 1, Required: true, isHieText:true)]
-        [Tbl(OrderIndex: 1)]
+        [Prop(OrderIndex: 1, Required: true, isHieText:true, Visible: true)]
+        [Tbl(OrderIndex: 1, Visible: true)]
         [ValidString(minlen: 1, maxlen: 100)]
         /// <summary>
         /// NOmbre de la unodad organizacional
@@ -28,7 +28,8 @@ namespace PIKA.Modelo.Organizacion
         public string Nombre {get; set;}
 
 
-        [Prop(actions: PropAttribute.CRUDActions.delete, Visible: false, HTMLControl: PropAttribute.HTML_CHECKBOX, DefaultValue: false)]
+        [Prop(OrderIndex: 2 ,actions: PropAttribute.CRUDActions.delete, Visible: true, HTMLControl: PropAttribute.HTML_CHECKBOX, DefaultValue: false)]
+        [Tbl(OrderIndex: 2)]
         /// <summary>
         /// Destermina si la unidad ha sido eliminada
         /// </summary>

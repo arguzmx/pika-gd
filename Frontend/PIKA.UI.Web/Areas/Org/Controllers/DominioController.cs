@@ -24,10 +24,20 @@ namespace PIKA.UI.Web.Areas.Org.Controllers
         {
             _localizer = localizer;
             Console.WriteLine($"-->{options.Value.tamanocache}");
-
         }
 
         public IActionResult Index()
+        {
+            ViewModelX model = new ViewModelX()
+            {
+                Tipo = typeof(Dominio)
+            };
+            return View(model);
+        }
+
+        [HttpGet]
+        [Route("Org/CrearDominio")]
+        public IActionResult _CrearDominio()
         {
             ViewModelX model = new ViewModelX()
             {

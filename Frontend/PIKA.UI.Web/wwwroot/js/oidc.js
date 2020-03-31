@@ -47,7 +47,7 @@ mgr.events.addAccessTokenExpiring(function () {
         console.log("silent renew success", user);
     }).catch(function (e) {
         console.log("silent renew error", e.message);
-    })
+    });
 });
 
 mgr.events.addAccessTokenExpired(function () {
@@ -56,7 +56,7 @@ mgr.events.addAccessTokenExpired(function () {
         console.log("silent renew success", user);
     }).catch(function (e) {
         console.log("silent renew error", e.message);
-    })
+    });
 });
 
 mgr.events.addSilentRenewError(function (e) {
@@ -207,7 +207,7 @@ async function getAuthInfo () {
 mgr.getUser().then(function (user) {
 
     if (user != null) {
-        console.log("user ok")
+        console.log("user ok");
     } else {
          startSigninMainWindow();
     }

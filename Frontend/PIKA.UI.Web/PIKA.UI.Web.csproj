@@ -48,6 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Backend\PIKA.Identity.Server\PIKA.Identity.Server.csproj" />
     <ProjectReference Include="..\..\Infraestructura\PIKA.Infraestructura.Comun\PIKA.Infraestructura.Comun.csproj" />
     <ProjectReference Include="..\..\Modelos\PIKA.Modelo.Infraestructura.UI\PIKA.Modelo.Infraestructura.UI.csproj" />
     <ProjectReference Include="..\..\Modelos\PIKA.Modelo.Organizaciion\PIKA.Modelo.Organizacion.csproj" />
