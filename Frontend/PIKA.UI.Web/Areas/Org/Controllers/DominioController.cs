@@ -35,15 +35,14 @@ namespace PIKA.UI.Web.Areas.Org.Controllers
             return View(model);
         }
 
-        [HttpGet]
-        [Route("Org/CrearDominio")]
-        public IActionResult _CrearDominio()
-        {
-            ViewModelX model = new ViewModelX()
-            {
-                Tipo = typeof(Dominio)
-            };
-            return View(model);
-        }
+        
+        [Route("Vista001")]
+        public IActionResult Vista001() =>
+         new PartialViewResult
+         {
+             ViewName = "_Vista001",
+             ViewData = ViewData,
+         };
+
     }
 }
