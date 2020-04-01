@@ -46,11 +46,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<Archivo>> Post([FromBody]Archivo entidad)
         {
-            //Aca hice un console write line y no viene
-
-            //Ok espera estoy en una llamda ok
             entidad = await servicioArchivo.CrearAsync(entidad).ConfigureAwait(false);
-            
             return Ok(CreatedAtAction("GetArchivo", new { id = entidad.Id }, entidad).Value);
         }
 

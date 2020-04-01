@@ -10,6 +10,7 @@
 @section Styles{
 
     <link href="~/lib/datatables/css/dataTables.bootstrap4.css" rel="stylesheet" />
+    @*<link rel="stylesheet" href="../../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">*@
 }
 
 
@@ -17,6 +18,21 @@
     <script src="~/lib/datatables/js/jquery.dataTables.js"></script>
     <script src="~/lib/datatables/js/dataTables.bootstrap4.js"></script>
     <script src="~/js/componentes/EditorTabular/EditorTabular..js"></script>
+
+<script type="text/javascript">
+    $("#btnCrearDominio").on('click', function () {
+        $('#modalPostPutDominio').modal("show");
+        $.get("http://localhost:80/Org/Dominio/CrearDominio", function (data, status) {
+            if (status === "success") {
+                    $("#divCrearDominio").html(data);
+                    
+                }
+        });
+        
+    });
+    
+</script>
+    
 }
 
 <!-- Content Wrapper. Contains page content -->
@@ -49,6 +65,11 @@
                             <div class="card-tools">
                                 @await Component.InvokeAsync("MenuEditorTabular", new { Tipo = Model.Tipo })
                             </div>
+                            <div>
+                                <button type="button" class="btn btn-default" id="btnCrearDominio" data-toggle="Crear dominio" data-target="#modalCrearDominio">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="card-body table-responsive p-4">
                             @await Component.InvokeAsync("EditorTabular", new { Tipo = Model.Tipo })
@@ -68,6 +89,33 @@
         <!-- /.container-fluid -->
     </div>
     <!-- /.content -->
+</div>
+
+<div class="hide">
+    <div class="modal fade" id="modalPostPutDominio">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Crear Dominio</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="divCrearDominio">
+
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary">Crear</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
 </div>
 
 

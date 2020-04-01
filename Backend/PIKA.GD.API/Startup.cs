@@ -39,7 +39,7 @@ namespace PIKA.GD.API
 
         public ILogger<Startup> Logger { get; private set; }
 
-        
+
         private readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
         public void ConfigureContainer(ContainerBuilder builder)
@@ -57,16 +57,22 @@ namespace PIKA.GD.API
         {
             Configuration = configuration;
             Environment = environment;
-            
+
         }
 
-        
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
-
+            services.AddMvc(setupAction =>
+            {
+                setupAction.EnableEndpointRouting = false;
+            }).AddJsonOptions(jsonOptions =>
+            {
+                jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = null;
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             ConfiguracionServidor configuracionServidor = new ConfiguracionServidor();
             this.Configuration.GetSection("ConfiguracionServidor").Bind(configuracionServidor);
@@ -126,7 +132,7 @@ namespace PIKA.GD.API
             services.AddScoped<AsyncACLActionFilter>();
 
 
- 
+
 
             services.AddDbContext<DbContextOrganizacion>(options =>
                     options.UseMySql(Configuration.GetConnectionString("pika-gd")));
@@ -158,13 +164,14 @@ namespace PIKA.GD.API
 
 
 
-            services.AddApiVersioning(o => {
+            services.AddApiVersioning(o =>
+            {
                 o.ReportApiVersions = true;
                 o.AssumeDefaultVersionWhenUnspecified = true;
                 o.DefaultApiVersion = new ApiVersion(1, 0);
             });
 
-            services.AddOpenApiDocument(); 
+            services.AddOpenApiDocument();
 
             services.AddAuthentication();
 
@@ -201,6 +208,8 @@ namespace PIKA.GD.API
              options.RequireHttpsMetadata = false;
          });
 
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -219,8 +228,8 @@ namespace PIKA.GD.API
             //app.UseHttpsRedirection();
 
             app.UseRouting();
-            
-            app.UseCors(builder=> builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod() );
+
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
 
             app.UseAuthentication();
