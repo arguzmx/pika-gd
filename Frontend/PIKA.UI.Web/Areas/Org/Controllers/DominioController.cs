@@ -16,10 +16,10 @@ namespace PIKA.UI.Web.Areas.Org.Controllers
     public class DominioController : Controller
     {
 
-  
+
 
         private readonly IStringLocalizer<HomeController> _localizer;
-        public DominioController(IStringLocalizer<HomeController> localizer, 
+        public DominioController(IStringLocalizer<HomeController> localizer,
             IOptions<ConfiguracionServidor> options)
         {
             _localizer = localizer;
@@ -35,7 +35,7 @@ namespace PIKA.UI.Web.Areas.Org.Controllers
             return View(model);
         }
 
-        
+
         [Route("Vista001")]
         public IActionResult Vista001() =>
          new PartialViewResult
@@ -43,6 +43,30 @@ namespace PIKA.UI.Web.Areas.Org.Controllers
              ViewName = "_Vista001",
              ViewData = ViewData,
          };
+
+        [Route("Crear")]
+        public IActionResult CrearDominio() => new PartialViewResult
+            {
+                ViewName = "_CrearDominio",
+                ViewData = ViewData
+
+            };
+
+
+        [Route("Editar")]
+        public IActionResult EditarDominio(string Id) => new PartialViewResult
+        {
+            ViewName = "_EditarDominio",
+            ViewData = ViewData
+        };
+
+        [Route("Eliminar")]
+        public IActionResult Eliminar(string [] Ids) => new PartialViewResult
+        {
+            ViewName = "_EliminarDominio",
+            ViewData = ViewData
+        };
+
 
     }
 }

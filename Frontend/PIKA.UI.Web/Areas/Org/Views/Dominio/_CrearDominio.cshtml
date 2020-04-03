@@ -1,7 +1,13 @@
 ﻿@inject IViewLocalizer Localizer
 @inject IStringLocalizer<RecursosLayout> Rlocalizer
-@model PIKA.UI.Web.Areas.Org.Controllers.ViewModelX
 
 
-<h3>Hola crear dominio</h3>
+<div class="col-md-12">
+    <form id="formPostPutDominio" method="post">
+        @Html.Hidden("operacion", "post")
+        @Html.Hidden("Id")
+        <label>Nombre</label><br />
+        <input type="text" id="Nombre" name="Nombre" / class="form-control" placeholder="Nombre del dominio">
+    </form>
+</div>
 
