@@ -91,7 +91,7 @@ class editorTabular {
 
     post_put(data, operacion) {
         //encodeURIComponent(JSON.stringify(myArray));
-        let id = "";
+        let id = data.Id;
         console.log(data);
         if (operacion === "delete") {
 
@@ -99,7 +99,7 @@ class editorTabular {
                 id += "id=" + data.id[i]+"&";
             }
             id = id.slice(0, -1);
-            //id = jQuery.param(id);
+            id = jQuery.param(id);
             //id = encodeURIComponent(JSON.stringify(id));
         }
         console.log(id);
