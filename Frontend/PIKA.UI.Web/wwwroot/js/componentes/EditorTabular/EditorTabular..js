@@ -5,23 +5,50 @@ class editorTabular {
     constructor(url) {
         this.url = url;
         this.client = new ClientAPI(url);
+        this.tipoEntidad = "";
+        this.propiedades = {};
         this.table = "";
     }
 
     //Punto de entrada para el editor
-    inicializarEditorTabular() {
+    async inicializarEditorTabular() {
         this.client.getMetadata().then((respuesta) => {
             if (!respuesta.es_error) {
                 console.log(respuesta.datos);
-
-                this.table = this.generaTabla(respuesta.datos.Propiedades, 
-                    "http://localhost:5000/api/v1.0/org/Dominio/datatables");
+                this.propiedades = respuesta.datos.Propiedades;
+                this.tipoEntidad = respuesta.datos.Tipo;
+                this.table = this.generaTabla(this.propiedades,
+                                this.obtieneUrlEntidad(this.tipoEntidad) + "/datatables");
 
             } else {
                 ///
             }
         });
     }
+
+    obtieneUrlEntidad(tipoEntidad) {
+        let url = "";
+        let areaTipo = "";
+        switch (tipoEntidad) {
+            case "UnidadOrganizacional":
+                areaTipo = "org/";
+                break;
+            case "Dominio":
+                areaTipo = "org/";
+                break;
+            case "CuadroClasificacion":
+                areaTipo = "gd/";
+                break;
+            default: console.log("tipoEntidad inválido"); break;
+        }
+        areaTipo += tipoEntidad;
+        url = "http://localhost:5000/api/v1.0/" + areaTipo;
+        return url;
+    }
+
+    //getTipoEntidad() {
+    //    return this.tipoEntidad;
+    //}
 
     generaTabla(propiedades, url) {
         let tableHeaders = [];
@@ -45,6 +72,7 @@ class editorTabular {
 
                 //render para checkbox
                 if (propiedades[i].TipoDatoId === "bool") {
+                    columnDefs[columnDefs.length - 1].className = "dt-center";
                     columnDefs[columnDefs.length - 1].render = function (data, type, row) {
                         if (type === 'display') {
                             let checked = data === true ? "checked" : "";
@@ -58,11 +86,10 @@ class editorTabular {
                         }
                         return data;
                     };
-
-                    columnDefs[columnDefs.length - 1].className = "dt-center";
                 }
             }
         }
+
         let t = $('#tablaeditortabular').DataTable({
             select: {
                 style: 'multi'
@@ -83,14 +110,39 @@ class editorTabular {
         });
         return t;
     }
-    //***Pruebas para dominio ***///
-    obtieneDatosForm(propiedades, formulario) {
 
-
+    obtieneNombreProps() {
+        let props = [];
+        if (this.propiedades.length >= 1) {
+            for (let i = 0; i < this.propiedades.length; i++) {
+                props.push({ "Nombre": this.propiedades[i].Nombre, "TipoDato": this.propiedades[i].TipoDatoId });
+            }
+        }
+        return props;
     }
 
-    post_put(data, operacion) {
-        //encodeURIComponent(JSON.stringify(myArray));
+    obtienePropsAlternables() {
+        let props = [];
+        this.propiedades.sort(function (a, b) {
+            return a.IndiceOrdenamiento - b.IndiceOrdenamiento;
+        });
+        if (this.propiedades.length >= 1) {
+            for (let i = 0; i < this.propiedades.length; i++) {
+                if (this.propiedades[i].AtributoTabla !== null &&
+                    this.propiedades[i].AtributoTabla.Alternable === true) {
+                    props.push({
+                        "Nombre": this.propiedades[i].Nombre,
+                        "Visible": this.propiedades[i].AtributoTabla.Visible,
+                        "Indice": this.propiedades[i].IndiceOrdenamiento
+                        });
+                }
+            }
+        }
+        return props;
+    }
+
+    // url * tipoEntidad como parámetro
+    realizaCrudAPI(data, operacion) {
         let id = data.Id;
         console.log(data);
         if (operacion === "delete") {
@@ -99,13 +151,10 @@ class editorTabular {
                 id += "id=" + data.id[i]+"&";
             }
             id = id.slice(0, -1);
-            id = jQuery.param(id);
-            //id = encodeURIComponent(JSON.stringify(id));
         }
-        console.log(id);
 
         $.ajax({
-            url: "http://localhost:5000/api/v1.0/org/Dominio/" + id,
+            url: this.obtieneUrlEntidad(this.tipoEntidad)+ "/" + id,
             type: operacion,
             dataType: "json",
             contentType: 'application/json',
@@ -120,55 +169,47 @@ class editorTabular {
                 if (status === status) {
                     console.log("éxito");
                     $("#tablaeditortabular").DataTable().ajax.reload();
-                    $('#modalPostPutDominio').modal("hide");
+                    $('#modalCrud').modal("hide");
                     console.log(data);
                 }
             },
             fail: function (data, status) {
-                console.log(data, status);
+                //manejar excepciones
+                console.log("fallo");
             }
         });
     }
-
-    delete(data) {
-
-
-    }
-    //******************************
 }
 
 
 
-//señal de iniciaclizació desde JQUERY
+//señal de iniciaclización desde JQUERY
 $(function () {
-    var editor = new editorTabular("http://localhost:5000/api/v1.0/org/Dominio/");
+    var editor = new editorTabular("http://localhost:5000/api/v1.0/org/UnidadOrganizacional/");
     editor.inicializarEditorTabular();
-
     var operacion = "";
-    //***Pruebas para dominio ***///
-    $("#btnCrearDominio").on('click', function () {
-        $("#divPostPutDominio").load("http://localhost/Org/Dominio/Crear", function () {
-            $("#tituloPostPutDominio").html("Crear Dominio");
-            $("#btnPostPut").html("Crear");
+
+    //*** CRUD ***///
+    $("#btnCrearEntidad").on('click', function () {
+        $("#divCrud").load("http://localhost/Org/UnidadOrganizacional/Crear", function () {
+
             operacion = "post";
-            $('#modalPostPutDominio').modal("show");
+            mostrarModalCrud(editor.tipoEntidad, "", operacion);
+
         });
     });
 
-    $("#btnActualizarDominio").on('click', function () {
-        $("#divPostPutDominio").load("http://localhost/Org/Dominio/Editar", function () {
+    $("#btnActualizarEntidad").on('click', function () {
+        $("#divCrud").load("http://localhost/Org/UnidadOrganizacional/Editar", function () {
             let row = editor.table.rows(".selected").data()[0];
-            let Id = row.Id;
             let nombre = row["Nombre"];
+            //$("#formCrud #Id").val(Id);
+            //$("#formCrud #Nombre").val(nombre);
+            console.log("setBTN");
+            setValoresEditar(editor.obtieneNombreProps(), row);
 
-
-
-            $("#formPostPutDominio #Id").val(Id);
-            $("#formPostPutDominio #Nombre").val(nombre);
-            $("#tituloPostPutDominio").html("Actualizar " + nombre);
-            $("#btnPostPut").html("Actualizar");
             operacion = "put";
-            $('#modalPostPutDominio').modal("show");
+            mostrarModalCrud(editor.tipoEntidad, nombre, operacion);
         });
     });
 
@@ -177,49 +218,47 @@ $(function () {
         let ids = [];
 
         if (rows.length >= 1) {
-            $("#divPostPutDominio").load("http://localhost/Org/Dominio/Eliminar", function () {
+            $("#divCrud").load("http://localhost/Org/UnidadOrganizacional/Eliminar", function () {
 
                 for (let i = 0; i < rows.length; i++) {
                     let par = i % 2 === 0 ? "" : "2";
-                    $("#listaDominios" + par).append("<a class='list-group-item list-group-item-action'>" + rows[i].Nombre + "</a>");
-                    ids.push(rows[i].Id );
+                    $("#listaEntidades" + par).append("<a class='list-group-item list-group-item-action'>" + rows[i].Nombre + "</a>");
+                    ids.push(rows[i].Id);
                 }
 
-                $("#formPostPutDominio #idsDelete").val(ids);
+                $("#formCrud #idsDelete").val(ids);
                 let s = rows.length > 1 ? "s" : "";
-                $("#tituloPostPutDominio").html("Eliminar Dominio" + s);
-                //$("#btnPostPut").className("danger");
-                $("#btnPostPut").html("Eliminar");
+
                 operacion = "delete";
-                $('#modalPostPutDominio').modal("show");
+                mostrarModalCrud(editor.tipoEntidad + s, "", operacion);
             });
         }
     });
 
+    $("#btnCrud").on('click', function () {
+        let props = editor.obtieneNombreProps();
+        let formObject = {};
+        //let op = $(div + " #formCrud operacion").val();
 
+        if (props.length >= 1) {
+            for (let i = 0; i < props.length; i++) {
+                if (props[i].TipoDato === "bool") {
+                    formObject[props[i].Nombre] = $("#formCrud #" + props[i].Nombre + "").prop("checked");
+                } else {
+                    formObject[props[i].Nombre] = $("#formCrud #" + props[i].Nombre + "").val();
+                }
 
-    $("#btnPostPut").on('click', function () {
-        let div = "#divPostPutDominio";
-        let form = $("#formPostPutDominio");
-        //let op = $(div + " #formPostPutDominio operacion").val();
-        var auxForm = form.serializeArray();
-        var formObject = {};
-        //$.each(auxForm,
-        //    function (i, v) {
-        //        formObject[v.name] = v.value;
-        //    });
+                // *Prueba unidad org ******
+                formObject["DominioId"] = "65cb86a5-6dae-4163-875b-107a35669c49";
+                // *Prueba unidad org ******
+            }
+        } else {
+            console.log("No hay propiedades para buscar en el formulario");
+        }
 
-
-
-        formObject = {
-            "Id": $("#formPostPutDominio #Id").val(),
-            "Nombre": $("#formPostPutDominio #Nombre").val(),
-            "TipoOrigenId": "Demo",
-            "OrigenId": "abc"
-        };
 
         if (operacion === "delete") {
-            formObject = $("#formPostPutDominio #idsDelete").val();
+            formObject = $("#formCrud #idsDelete").val();
             formSplit = formObject.split(',');
             let ids = [];
             for (let i = 0; i < formSplit.length; i++) {
@@ -227,19 +266,75 @@ $(function () {
             }
             formObject = { "id": ids };
         }
-        console.log(formObject);
 
-        editor.post_put(formObject, operacion);
-
-        //if (operacion === "delete") {
-        //    //
-        //} else {
-        //    editor.post_put(formObject, operacion);
-        //}
-        
+        editor.realizaCrudAPI(formObject, operacion);
     });
     //******************************
 
+    var colsVisibles = null;
+    // *** Mostrar/ocultar columnas *** ColsVisibles
+    $("#btnColumnas").on('click', function () {
+        colsVisibles = colsVisibles !== null ? colsVisibles : editor.obtienePropsAlternables();
 
+        $("#listaCols").html("");
+        for (let i = 0; i < colsVisibles.length; i++) {
+            let active = colsVisibles[i].Visible === true ? "active" : "inactive";
+            $("#listaCols").append("<a class='alternable list-group-item list-group-item-action " + active + "' indice=" + colsVisibles[i].Indice + ">"
+                + colsVisibles[i].Nombre + "</a>");
+        }
+        $("#modalCols").modal("show");
+    });
 
+    $("#divCols").on('click', ".alternable", function (e) {
+        e.preventDefault();
+        let col = editor.table.column($(this).attr('indice'));
+
+        colsVisibles[$(this).attr('indice')].Visible = !col.visible();
+        col.visible(!col.visible());
+        $(this).toggleClass("active");
+    });
+
+    $("#btnMostrarCols").on('click', function () {
+        $("#modalCols").modal("hide");
+    });
+
+    //******************************
+
+    function setValoresEditar(props, valores) {
+        for (var i = 0; i < props.length; i++) {
+            if (props[i].TipoDato === "bool") {
+                if (valores[props[i].Nombre] === true) {
+                    $("#formCrud #" + props[i].Nombre).prop("checked", "checked");
+                }
+            } else {
+                $("#formCrud #" + props[i].Nombre).val(valores[props[i].Nombre]);
+            }
+        }
+    }
+
+    function mostrarModalCrud(tipoEntidad, nombreEntidad,operacion) {
+
+        switch (operacion) {
+            case "post":
+                $("#tituloModalCrud").html("Crear " + tipoEntidad);
+                $("#btnCrud").html("Crear");
+                $("#btnCrud").removeClass();
+                $("#btnCrud").addClass("btn btn-success");
+                break;
+            case "put":
+                $("#tituloModalCrud").html("Actualizar " + nombreEntidad);
+                $("#btnCrud").html("Actualizar");
+                $("#btnCrud").removeClass();
+                $("#btnCrud").addClass("btn btn-primary");
+                break;
+            case "delete":
+                $("#tituloModalCrud").html("Eliminar " + tipoEntidad);
+                $("#btnCrud").html("Eliminar");
+                $("#btnCrud").removeClass();
+                $("#btnCrud").addClass("btn btn-danger");
+                break;
+            default: console.log("op inválida"); break;
+        }
+        $('#modalCrud').modal("show");
+    }
 });
