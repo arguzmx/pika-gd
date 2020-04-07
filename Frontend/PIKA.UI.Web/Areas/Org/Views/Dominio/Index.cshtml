@@ -58,13 +58,13 @@
                                 @await Component.InvokeAsync("MenuEditorTabular", new { Tipo = Model.Tipo })
                             </div>
                             <div>
-                                <button type="button" class="btn btn-default" id="btnCrearDominio" data-toggle="Crear dominio" data-target="#modalPostPutDominio">
+                                <button type="button" class="btn btn-default" id="btnCrearEntidad" data-toggle="Crear dominio" data-target="#modalCrud">
                                     <i class="fa fa-plus"></i>
                                 </button>
-                                <button type="button" class="btn btn-default" id="btnActualizarDominio" data-toggle="Actualizar dominio" data-target="#modalPostPutDominio">
+                                <button type="button" class="btn btn-default" id="btnActualizarEntidad" data-toggle="Actualizar dominio" data-target="#modalCrud">
                                     <i class="fa fa-edit"></i>
                                 </button>
-                                <button type="button" class="btn btn-default" id="btnEliminar" data-toggle="Actualizar dominio" data-target="#modalPostPutDominio">
+                                <button type="button" class="btn btn-default" id="btnEliminar" data-toggle="Actualizar dominio" data-target="#modalCrud">
                                     <i class="fa fa-minus"></i>
                                 </button>
                             </div>
@@ -90,23 +90,23 @@
 </div>
 
 <div class="hide">
-    <div class="modal fade" id="modalPostPutDominio">
+    <div class="modal fade" id="modalCrud">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title"><label id="tituloPostPutDominio">Crear Dominio</label></h4>
+                    <h4 class="modal-title"><label id="tituloModalCrud">Crear Dominio</label></h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div id="divPostPutDominio">
+                    <div id="divCrud">
 
                     </div>
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary" id="btnPostPut">Crear</button>
+                    <button type="button" class="btn btn-primary" id="btnCrud">Crear</button>
                 </div>
             </div>
             <!-- /.modal-content -->
