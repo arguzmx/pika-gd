@@ -30,6 +30,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private DBContextGestionDocumental contexto;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
+        IServicioArchivo servicioArchivo;
+
         public ServicioElementoClasificacion(DBContextGestionDocumental contexto,
            ICompositorConsulta<ElementoClasificacion> compositorConsulta,
            ILogger<ServicioElementoClasificacion> Logger,

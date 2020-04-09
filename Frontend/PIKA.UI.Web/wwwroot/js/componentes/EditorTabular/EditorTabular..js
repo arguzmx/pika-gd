@@ -146,13 +146,13 @@ class editorTabular {
         let id = data.Id;
         console.log(data);
         if (operacion === "delete") {
-
+            id = "";
+            console.log(data);
             for (var i = 0; i < data.id.length; i++) {
                 id += "id=" + data.id[i]+"&";
             }
             id = id.slice(0, -1);
         }
-
         $.ajax({
             url: this.obtieneUrlEntidad(this.tipoEntidad)+ "/" + id,
             type: operacion,
@@ -191,7 +191,7 @@ $(function () {
 
     //*** CRUD ***///
     $("#btnCrearEntidad").on('click', function () {
-        $("#divCrud").load("http://localhost/Org/UnidadOrganizacional/Crear", function () {
+        $("#divCrud").load("http://localhost/Org/Dominio/Crear", function () {
 
             operacion = "post";
             mostrarModalCrud(editor.tipoEntidad, "", operacion);
@@ -238,6 +238,7 @@ $(function () {
     $("#btnCrud").on('click', function () {
         let props = editor.obtieneNombreProps();
         let formObject = {};
+        let formSplit = [];
         //let op = $(div + " #formCrud operacion").val();
 
         if (props.length >= 1) {
@@ -256,7 +257,6 @@ $(function () {
             console.log("No hay propiedades para buscar en el formulario");
         }
 
-
         if (operacion === "delete") {
             formObject = $("#formCrud #idsDelete").val();
             formSplit = formObject.split(',');
@@ -269,10 +269,13 @@ $(function () {
 
         editor.realizaCrudAPI(formObject, operacion);
     });
+
     //******************************
 
+    
+    // *** Mostrar/ocultar columnas *** 
     var colsVisibles = null;
-    // *** Mostrar/ocultar columnas *** ColsVisibles
+
     $("#btnColumnas").on('click', function () {
         colsVisibles = colsVisibles !== null ? colsVisibles : editor.obtienePropsAlternables();
 
