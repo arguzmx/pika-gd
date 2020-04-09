@@ -100,8 +100,6 @@
     }
 
 
-
-
 <environment names="Development,Staging,Production">
 
     <!-- =============== VENDOR SCRIPTS ===============-->
@@ -109,8 +107,12 @@
     <!-- =============== APP SCRIPTS ===============-->
     <!-- jQuery -->
     <script src="~/lib/jquery/jquery.min.js"></script>
+
     <!-- jQuery UI 1.11.4 -->
     <script src="~/lib/jquery-ui/jquery-ui.min.js"></script>
+
+
+
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
         $.widget.bridge('uibutton', $.ui.button)
@@ -149,6 +151,7 @@
     <script src="~/js/oidc.js?v=1.0.2"></script>
     <script src="~/js/ClienteAPI.js"></script>
 
+    <script src="~/dist/AppLayout-mod.js"></script>
 
 </environment>
 

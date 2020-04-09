@@ -21,7 +21,35 @@
     <script src="~/lib/datatables-select/js/select.bootstrap4.min.js"></script>
     <script src="~/lib/datatables/js/dataTables.bootstrap4.js"></script>
     <script src="~/js/componentes/EditorTabular/EditorTabular..js"></script>
-    
+    <script src="~/dist/ETabular-mod.js"></script>
+
+    <script type="text/javascript">
+        $("#btnCrearDominio").on('click', function () {
+            $('#modalPostPutDominio').modal("show");
+            $.get("_Vista001", function (data, status) {
+                if (status === "success") {
+                    $("#divCrearDominio").html(data);
+
+                }
+            });
+
+        });
+
+
+
+        $(function () {
+
+            $.get("_Vista001", function (data, status) {
+                if (status === "success") {
+                    $("#abc").html(data);
+
+                }
+            });
+        });
+
+
+    </script>
+
 }
 
 <!-- Content Wrapper. Contains page content -->
