@@ -23,32 +23,7 @@
     <script src="~/js/componentes/EditorTabular/EditorTabular..js"></script>
     <script src="~/dist/ETabular-mod.js"></script>
 
-    <script type="text/javascript">
-        $("#btnCrearDominio").on('click', function () {
-            $('#modalPostPutDominio').modal("show");
-            $.get("_Vista001", function (data, status) {
-                if (status === "success") {
-                    $("#divCrearDominio").html(data);
-
-                }
-            });
-
-        });
-
-
-
-        $(function () {
-
-            $.get("_Vista001", function (data, status) {
-                if (status === "success") {
-                    $("#abc").html(data);
-
-                }
-            });
-        });
-
-
-    </script>
+  
 
 }
 
@@ -94,6 +69,9 @@
                                 </button>
                                 <button type="button" class="btn btn-default" id="btnEliminar" data-toggle="Actualizar dominio" data-target="#modalCrud">
                                     <i class="fa fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-default" id="btnColumnas" data-toggle="Actualizar dominio" data-target="#modalCols">
+                                    <i class="fa fa-columns"></i>
                                 </button>
                             </div>
                         </div>
@@ -141,7 +119,39 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
-    <!-- /.modal -->
+    <!-- /.modal CRUD -->
+
+    <div class="modal fade" id="modalCols">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"><label id="tituloModalCols">Columnas de UO</label></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <h6>Seleccione las columnas a mostrar: </h6>
+                    </div>
+                    <div class="container" id="divCols">
+                        <div class="row">
+                            <div class="col-10" id="listaCols"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="btnMostrarCols">Mostrar</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal Columnas -->
 </div>
+
+
 
 
