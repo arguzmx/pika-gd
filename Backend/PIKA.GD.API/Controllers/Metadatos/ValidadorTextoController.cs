@@ -132,7 +132,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<ValidadorTexto>> Get(string id)
         {
-            var o = await servicioValidadorTexto.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            var o = await servicioValidadorTexto.UnicoAsync(x => x.PropiedadId == id).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }
