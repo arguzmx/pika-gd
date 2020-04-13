@@ -87,23 +87,23 @@ namespace PIKA.Servicio.Metadatos.Data
         // Metadatos existentes en la AtributoMetadato
         // </summary>
 
-        public DbSet<AtributoTabla> AtributoMetadato { get; set; }
-       
-        //// <summary>
-        ///// Metadatos existentes en la AtributoTabla
-        ///// </summary>
+        public DbSet<AtributoTabla> AtributoTabla { get; set; }
 
-        //public DbSet<AtributoTabla> AtributoTabla { get; set; }
+        // <summary>
+        /// Metadatos existentes en la AtributoTabla
+        /// </summary>
 
-        ///// <summary>
-        ///// Metadatos existentes en la ValidadorNumero
-        ///// </summary>
-        //public DbSet<ValidadorNumero> ValidadorNumero { get; set; }
+        public DbSet<AtributoMetadato> AtributoMetadato { get; set; }
 
-        ///// <summary>
-        ///// Metadatos existentes en la ValidadorTexto
-        ///// </summary>
-        //public DbSet<ValidadorTexto> ValidadorTexto { get; set; }
+        /// <summary>
+        /// Metadatos existentes en la ValidadorNumero
+        /// </summary>
+        public DbSet<ValidadorNumero> ValidadorNumero { get; set; }
+
+        /// <summary>
+        /// Metadatos existentes en la ValidadorTexto
+        /// </summary>
+        public DbSet<ValidadorTexto> ValidadorTexto { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -114,9 +114,9 @@ namespace PIKA.Servicio.Metadatos.Data
             builder.ApplyConfiguration<TipoDatoPropiedadPlantilla>(new DbConfTipoDatoPropiedadPlantilla());
             builder.ApplyConfiguration<AtributoTabla>(new DbConfAtributoTabla());
 
-            //builder.ApplyConfiguration<AtributoMetadato>(new DbConfAtributoMetadato());
-            //builder.ApplyConfiguration<ValidadorNumero>(new DbConfValidadorNumero());
-            //builder.ApplyConfiguration<ValidadorTexto>(new DbConfValidadorTexto());
+            builder.ApplyConfiguration<AtributoMetadato>(new DbConfAtributoMetadato());
+            builder.ApplyConfiguration<ValidadorNumero>(new DbConfValidadorNumero());
+            builder.ApplyConfiguration<ValidadorTexto>(new DbConfValidadorTexto());
         }
 
     }

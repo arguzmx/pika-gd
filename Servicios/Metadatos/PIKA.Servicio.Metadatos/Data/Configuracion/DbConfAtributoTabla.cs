@@ -22,7 +22,7 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
             builder.Property(x => x.IndiceOrdebnamiento).HasDefaultValue(true).IsRequired();
             builder.Property(x => x.IdTablaCliente).HasMaxLength(LongitudDatos.GUID).IsRequired();
 
-            builder.HasOne(x => x.propiedadplantilla).WithOne(y => y.AtributoTabla).HasForeignKey<AtributoTabla>(z => z.Id);
+            //builder.HasOne(x => x.propiedadplantilla).WithOne(y => y.AtributoTabla).HasForeignKey<AtributoTabla>(z => z.Id);
 
         }
     }

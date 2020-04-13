@@ -1,6 +1,7 @@
 ﻿using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace PIKA.Modelo.Metadatos
@@ -11,6 +12,9 @@ namespace PIKA.Modelo.Metadatos
         public float min { get; set; }
         public float max { get; set; }
         public float valordefault { get; set; }
+        [NotMapped]
         public Propiedad Propiedad { get; set; }
+
+        public PropiedadPlantilla PropiedadPlantilla { get; set; }
     }
 }

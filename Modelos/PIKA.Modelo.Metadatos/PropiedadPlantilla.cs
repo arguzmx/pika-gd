@@ -27,5 +27,11 @@ namespace PIKA.Modelo.Metadatos
         public string AtributoTablaid { get; set;}
 
         public virtual AtributoTabla Atributo { get; set; }
+        public virtual ValidadorTexto ValTexto { get; set; }
+
+        public virtual ValidadorNumero ValNumero { get; set; }
+        public virtual ICollection<AtributoMetadato> AtributosMetadatos { get; set; }
+
+        
     }
 }

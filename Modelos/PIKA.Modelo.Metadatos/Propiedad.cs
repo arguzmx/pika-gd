@@ -30,7 +30,7 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public string TipoDatoId { get; set; }
 
-    
+    [NotMapped]
         /// <summary>
         /// Valor por defecto de la propiedad
         /// </summary>

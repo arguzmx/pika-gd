@@ -20,7 +20,7 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
 
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.TipoDatoId).HasMaxLength(LongitudDatos.GUID).IsRequired();
-            //builder.Property(x => x.ValorDefault).HasColumnType("varbinary").HasMaxLength(2048).IsRequired(false);
+            //builder.Property(x => x.ValorDefault).HasColumnType("LONGBLOB").HasMaxLength(2048).IsRequired(false);
             builder.Property(x=>x.IndiceOrdenamiento).IsRequired();
             builder.Property(x=>x.Buscable).HasDefaultValue(true).IsRequired();
             builder.Property(x=>x.Ordenable).HasDefaultValue(false).IsRequired();

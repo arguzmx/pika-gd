@@ -21,7 +21,7 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
             builder.Property(x => x.valordefaulr).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.regexp).IsRequired();
 
-            builder.HasOne(x => x.Propiedad).WithOne(y => y.ValidadorTexto).HasForeignKey<ValidadorTexto>(z => z.Id);
+            builder.HasOne(x => x.PropiedadPlantilla).WithOne(y => y.ValTexto).HasForeignKey<ValidadorTexto>(z => z.Id);
 
         }
     }
