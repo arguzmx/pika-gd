@@ -20,7 +20,7 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
             builder.Property(x => x.max).IsRequired();
             builder.Property(x => x.valordefault).IsRequired();
 
-            builder.HasOne(x => x.PropiedadPlantilla).WithOne(y => y.ValNumero).HasForeignKey<ValidadorNumero>(z => z.Id);
+            builder.HasOne(x => x.PropiedadPlantilla).WithOne(y => y.ValNumero).HasForeignKey<ValidadorNumero>(z => z.PropiedadId);
 
         }
     }

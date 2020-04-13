@@ -32,6 +32,8 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PropiedadId");
+
                     b.HasIndex("PropiedadPlantillaId1");
 
                     b.ToTable("metadatos$atributometadato");
@@ -249,7 +251,7 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
             modelBuilder.Entity("PIKA.Modelo.Metadatos.ValidadorNumero", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<string>("PropiedadId")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
@@ -266,13 +268,16 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PropiedadId")
+                        .IsUnique();
+
                     b.ToTable("metadatos$validadornumero");
                 });
 
             modelBuilder.Entity("PIKA.Modelo.Metadatos.ValidadorTexto", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<string>("PropiedadId")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
@@ -295,6 +300,9 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PropiedadId")
+                        .IsUnique();
+
                     b.ToTable("metadatos$validadortexto");
                 });
 
@@ -302,13 +310,14 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
                 {
                     b.HasOne("PIKA.Modelo.Metadatos.PropiedadPlantilla", "PropiedadPlantilla")
                         .WithMany("Atributos")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("PropiedadId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PIKA.Modelo.Metadatos.PropiedadPlantilla", null)
                         .WithMany("AtributosMetadatos")
-                        .HasForeignKey("PropiedadPlantillaId1");
+                        .HasForeignKey("PropiedadPlantillaId1")
+                        .HasConstraintName("FK_metadatos$atributometadato_metadatos$propiedadplantilla_Pro~1");
                 });
 
             modelBuilder.Entity("PIKA.Modelo.Metadatos.PropiedadPlantilla", b =>
@@ -343,18 +352,14 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
                 {
                     b.HasOne("PIKA.Modelo.Metadatos.PropiedadPlantilla", "PropiedadPlantilla")
                         .WithOne("ValNumero")
-                        .HasForeignKey("PIKA.Modelo.Metadatos.ValidadorNumero", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PIKA.Modelo.Metadatos.ValidadorNumero", "PropiedadId");
                 });
 
             modelBuilder.Entity("PIKA.Modelo.Metadatos.ValidadorTexto", b =>
                 {
                     b.HasOne("PIKA.Modelo.Metadatos.PropiedadPlantilla", "PropiedadPlantilla")
                         .WithOne("ValTexto")
-                        .HasForeignKey("PIKA.Modelo.Metadatos.ValidadorTexto", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PIKA.Modelo.Metadatos.ValidadorTexto", "PropiedadId");
                 });
 #pragma warning restore 612, 618
         }

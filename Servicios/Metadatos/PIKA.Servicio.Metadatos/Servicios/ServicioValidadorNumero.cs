@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Metadatos.Servicios
 {
-   public class ServicioValidadorNumero: IServicioInyectable, IServicioValidadorNumero
+    public class ServicioValidadorNumero : IServicioInyectable, IServicioValidadorNumero
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
@@ -44,9 +44,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
             this.repo = UDT.ObtenerRepositoryAsync<ValidadorNumero>(compositor);
         }
 
-
-
-
+               
 
 
         public async Task<bool> Existe(Expression<Func<ValidadorNumero, bool>> predicado)
@@ -60,9 +58,9 @@ namespace PIKA.Servicio.Metadatos.Servicios
         public async Task<ValidadorNumero> CrearAsync(ValidadorNumero entity, CancellationToken cancellationToken = default)
         {
 
-            if (await Existe(x => x.Id.Equals(entity.Id, StringComparison.InvariantCultureIgnoreCase)))
+            if (await Existe(x => x.PropiedadId.Equals(entity.PropiedadId, StringComparison.InvariantCultureIgnoreCase)))
             {
-                throw new ExElementoExistente(entity.Id);
+                throw new ExElementoExistente(entity.PropiedadId);
             }
 
             entity.Id = System.Guid.NewGuid().ToString();
@@ -83,16 +81,15 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
             if (await Existe(x =>
             x.Id != entity.Id
-            && x.Id.Equals(entity.Id, StringComparison.InvariantCultureIgnoreCase)))
+            && x.PropiedadId.Equals(entity.PropiedadId, StringComparison.InvariantCultureIgnoreCase)))
             {
-                throw new ExElementoExistente(entity.Id);
+                throw new ExElementoExistente(entity.PropiedadId);
             }
 
-            o.PropiedadId = entity.PropiedadId;
             o.max = entity.max;
             o.min = entity.min;
+            o.PropiedadId = entity.PropiedadId;
             o.valordefault = entity.valordefault;
-            o.Propiedad = entity.Propiedad;
 
 
             UDT.Context.Entry(o).State = EntityState.Modified;
@@ -173,75 +170,6 @@ namespace PIKA.Servicio.Metadatos.Servicios
         {
             throw new NotImplementedException();
         }
-
-        Task<ValidadorNumero> IServicioRepositorioAsync<ValidadorNumero, string>.UnicoAsync(Expression<Func<ValidadorNumero, bool>> predicado, Func<IQueryable<ValidadorNumero>, IOrderedQueryable<ValidadorNumero>> ordenarPor, Func<IQueryable<ValidadorNumero>, IIncludableQueryable<ValidadorNumero, object>> incluir, bool inhabilitarSegumiento)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<List<ValidadorNumero>> IServicioRepositorioAsync<ValidadorNumero, string>.ObtenerAsync(Expression<Func<ValidadorNumero, bool>> predicado)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<IEnumerable<ValidadorNumero>> IServicioRepositorioAsync<ValidadorNumero, string>.ObtenerListaAsync(string SqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<IPaginado<ValidadorNumero>> IServicioRepositorioAsync<ValidadorNumero, string>.ObtenerPaginadoAsync(Expression<Func<ValidadorNumero, bool>> predicate, Func<IQueryable<ValidadorNumero>, IOrderedQueryable<ValidadorNumero>> orderBy, Func<IQueryable<ValidadorNumero>, IIncludableQueryable<ValidadorNumero, object>> include, int index, int size, bool disableTracking, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<IPaginado<ValidadorNumero>> IServicioRepositorioAsync<ValidadorNumero, string>.ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<ValidadorNumero>, IIncludableQueryable<ValidadorNumero, object>> include, bool disableTracking, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<ValidadorNumero> IServicioRepositorioAsync<ValidadorNumero, string>.CrearAsync(ValidadorNumero entity, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<IEnumerable<ValidadorNumero>> IServicioRepositorioAsync<ValidadorNumero, string>.CrearAsync(params ValidadorNumero[] entities)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<IEnumerable<ValidadorNumero>> IServicioRepositorioAsync<ValidadorNumero, string>.CrearAsync(IEnumerable<ValidadorNumero> entities, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task IServicioRepositorioAsync<ValidadorNumero, string>.ActualizarAsync(ValidadorNumero entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task IServicioRepositorioAsync<ValidadorNumero, string>.Eliminar(string[] ids)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task IServicioRepositorioAsync<ValidadorNumero, string>.Restaurar(string[] ids)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task IServicioRepositorioAsync<ValidadorNumero, string>.EjecutarSql(string sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task IServicioRepositorioAsync<ValidadorNumero, string>.EjecutarSqlBatch(List<string> sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<bool> IServicioRepositorioAsync<ValidadorNumero, string>.Existe(Expression<Func<ValidadorNumero, bool>> predicado)
-        {
-            throw new NotImplementedException();
-        }
     }
+
 }

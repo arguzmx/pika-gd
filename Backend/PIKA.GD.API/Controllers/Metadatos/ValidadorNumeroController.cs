@@ -19,14 +19,13 @@ namespace PIKA.GD.API.Controllers.Metadatos
     [ApiController]
     [Route("api/v{version:apiVersion}/metadatos/[controller]")]
     public class ValidadorNumeroController : ACLController
-
     {
         private ILogger<ValidadorNumeroController> logger;
         private IServicioValidadorNumero servicioValidadorNumero;
         private IProveedorMetadatos<ValidadorNumero> metadataProvider;
         public ValidadorNumeroController(ILogger<ValidadorNumeroController> logger,
-            IProveedorMetadatos<ValidadorNumero> metadataProvider,
-            IServicioValidadorNumero servicioValidadorNumero)
+             IProveedorMetadatos<ValidadorNumero> metadataProvider,
+             IServicioValidadorNumero servicioValidadorNumero)
         {
             this.logger = logger;
             this.servicioValidadorNumero = servicioValidadorNumero;
@@ -47,9 +46,9 @@ namespace PIKA.GD.API.Controllers.Metadatos
         public async Task<ActionResult<ValidadorNumero>> Post([FromBody]ValidadorNumero entidad)
         {
 
-            Console.WriteLine(ModelState.IsValid.ToString() + "????");
+            Console.WriteLine("post de validar numero--------------------------------------------");
             entidad = await servicioValidadorNumero.CrearAsync(entidad).ConfigureAwait(false);
-            return Ok(CreatedAtAction("GetValidadorNumero", new { id = entidad.PropiedadId }, entidad).Value);
+            return Ok(CreatedAtAction("GetValidadorNumero", new { id = entidad.Id }, entidad).Value);
         }
 
 
@@ -60,7 +59,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
             var x = ObtieneFiltrosIdentidad();
 
 
-            if (id != entidad.PropiedadId)
+            if (id != entidad.Id)
             {
                 return BadRequest();
             }
@@ -132,7 +131,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<ValidadorNumero>> Get(string id)
         {
-            var o = await servicioValidadorNumero.UnicoAsync(x => x.PropiedadId== id).ConfigureAwait(false);
+            var o = await servicioValidadorNumero.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }
@@ -148,4 +147,5 @@ namespace PIKA.GD.API.Controllers.Metadatos
             return NoContent();
         }
     }
+
 }

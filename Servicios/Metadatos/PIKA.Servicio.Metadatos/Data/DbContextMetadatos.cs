@@ -113,7 +113,6 @@ namespace PIKA.Servicio.Metadatos.Data
             builder.ApplyConfiguration<TipoDato>(new DbConfTipoDato());
             builder.ApplyConfiguration<TipoDatoPropiedadPlantilla>(new DbConfTipoDatoPropiedadPlantilla());
             builder.ApplyConfiguration<AtributoTabla>(new DbConfAtributoTabla());
-
             builder.ApplyConfiguration<AtributoMetadato>(new DbConfAtributoMetadato());
             builder.ApplyConfiguration<ValidadorNumero>(new DbConfValidadorNumero());
             builder.ApplyConfiguration<ValidadorTexto>(new DbConfValidadorTexto());
