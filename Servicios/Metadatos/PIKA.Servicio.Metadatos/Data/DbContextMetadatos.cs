@@ -81,19 +81,14 @@ namespace PIKA.Servicio.Metadatos.Data
         /// Contiene los tipos de datos asociados con las propeidades de las plantillas
         /// </summary>
          public DbSet<TipoDatoPropiedadPlantilla> TipoDatoPropiedadPlantilla { get; set; }
-        
-        
-        //// <summary>
-        //// Metadatos existentes en la AtributoMetadato
-        //// </summary>
-        
-        //public DbSet<AtributoTabla> AtributoMetadato { get; set; }
-        //// <summary>
-        //// Metadatos existentes en la AtributoMetadato
-        //// </summary>
 
-        //public DbSet<AtributoTablaPropiedadPlantilla> AtributoMetadatoPropiedadPlantilla { get; set; }
 
+        // <summary>
+        // Metadatos existentes en la AtributoMetadato
+        // </summary>
+
+        public DbSet<AtributoTabla> AtributoMetadato { get; set; }
+       
         //// <summary>
         ///// Metadatos existentes en la AtributoTabla
         ///// </summary>
@@ -117,8 +112,7 @@ namespace PIKA.Servicio.Metadatos.Data
             builder.ApplyConfiguration<PropiedadPlantilla>(new DbConfPropiedadPlantilla());
             builder.ApplyConfiguration<TipoDato>(new DbConfTipoDato());
             builder.ApplyConfiguration<TipoDatoPropiedadPlantilla>(new DbConfTipoDatoPropiedadPlantilla());
-            //builder.ApplyConfiguration<AtributoTablaPropiedadPlantilla>(new DbConfAtributoTablaPropiedadPlantilla());
-            //builder.ApplyConfiguration<AtributoTabla>(new DbConfAtributoTabla());
+            builder.ApplyConfiguration<AtributoTabla>(new DbConfAtributoTabla());
 
             //builder.ApplyConfiguration<AtributoMetadato>(new DbConfAtributoMetadato());
             //builder.ApplyConfiguration<ValidadorNumero>(new DbConfValidadorNumero());

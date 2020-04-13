@@ -24,6 +24,8 @@ namespace PIKA.Modelo.Metadatos
 
         public virtual TipoDatoPropiedadPlantilla TipoDatoPropiedad { get; set; }
 
-        //public string atributo
+        public string AtributoTablaid { get; set;}
+
+        public virtual AtributoTabla Atributo { get; set; }
     }
 }

@@ -16,6 +16,6 @@ namespace PIKA.Modelo.Metadatos
         public string IdTablaCliente { get; set; }
         [NotMapped]
         public Propiedad Propiedad { get; set; }
-        public AtributoTablaPropiedadPlantilla AtributosTablapropiedadplantilla { get; set; }
+        public PropiedadPlantilla propiedadplantilla { get; set; }
     }
 }
