@@ -12,6 +12,7 @@ namespace PIKA.Modelo.GestorDocumental
         public Activo()
         {
             TipoOrigenId = TipoOrigenDefault;
+            HistorialArchivosActivo = new HashSet<HistorialArchivoActivo>();
         }
 
         public override string Id { get => base.Id; set => base.Id = value; }
@@ -81,6 +82,25 @@ namespace PIKA.Modelo.GestorDocumental
         public string ElementoClasificacionId { get; set; }
 
 
+        /// <summary>
+        /// Identificador único del archivo actual del activo
+        /// </summary>
+        public string ArchivoId { get; set; }
+        //# la relacion del actuivo con archovo es de 1 a 1, un activo puede estar en un sólo archivo al mismo tiempo
+
+        /// <summary>
+        /// Indica si el activo se encuentra en préstamo
+        /// </summary>
+        public bool EnPrestamo { get; set; }
+
         public ElementoClasificacion ElementoClasificacion { get; set; }
+
+        public Archivo ArchivoActual { get; set; }
+
+        /// <summary>
+        /// Historial de archivos por los que ha pasado el activo
+        /// </summary>
+        public virtual ICollection<HistorialArchivoActivo> HistorialArchivosActivo { get; set; }
+
     }
 }
