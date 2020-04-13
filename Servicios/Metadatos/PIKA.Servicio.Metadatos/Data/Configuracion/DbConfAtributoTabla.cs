@@ -13,7 +13,7 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
         public void Configure(EntityTypeBuilder<AtributoTabla> builder)
         {
             builder.ToTable(DbContextMetadatos.TablaAtributoTabla);
-            builder.HasKey(x => x.Id);
+            //builder.HasKey(x => x.Id);
 
             builder.Property(x => x.PropiedadId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.Incluir).HasDefaultValue(true).IsRequired();

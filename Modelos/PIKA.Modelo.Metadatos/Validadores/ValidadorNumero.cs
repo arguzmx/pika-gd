@@ -1,10 +1,11 @@
-﻿using System;
+﻿using RepositorioEntidades;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace PIKA.Modelo.Metadatos
 {
-    public class ValidadorNumero
+    public class ValidadorNumero: Entidad<string>
     {
         public string PropiedadId { get; set; }
         public float min { get; set; }

@@ -25,7 +25,8 @@ namespace PIKA.Modelo.Metadatos
         /// Nombre para despliegue del tipo de propiedad
         /// </summary>
         public string Nombre { get; set; }
-
+        
+        public virtual ICollection<TipoDatoPropiedadPlantilla> PropiedadesPlantilla { get; set; }
 
     }
 }

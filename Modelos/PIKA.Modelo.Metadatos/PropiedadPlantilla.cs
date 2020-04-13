@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PIKA.Modelo.Metadatos
 {
-    public class PropiedadPlantilla: Propiedad
+    public class PropiedadPlantilla : Propiedad
     {
 
         public PropiedadPlantilla()
@@ -18,6 +18,12 @@ namespace PIKA.Modelo.Metadatos
         public string PlantillaId { get; set; }
 
 
-        public virtual  Plantilla Plantilla { get; set; }
+        public virtual Plantilla Plantilla { get; set; }
+
+        public string TipoDatoProiedadPlantillaid { get; set; }
+
+        public virtual TipoDatoPropiedadPlantilla TipoDatoPropiedad { get; set; }
+
+        //public string atributo
     }
 }
