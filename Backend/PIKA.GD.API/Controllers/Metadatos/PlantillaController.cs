@@ -48,7 +48,6 @@ namespace PIKA.GD.API.Controllers.Metadatos
         public async Task<ActionResult<Plantilla>> Post([FromBody]Plantilla entidad)
         {
 
-            Console.WriteLine(ModelState.IsValid.ToString() + "????");
             entidad = await servicioPlantilla.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetPlantilla", new { id = entidad.Id }, entidad).Value);
         }
@@ -76,7 +75,6 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<IEnumerable<Plantilla>>> GetPage([FromQuery]Consulta query = null)
         {
-            Console.WriteLine("------------------------------------------------------");
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
             var data = await servicioPlantilla.ObtenerPaginadoAsync(query).ConfigureAwait(false);

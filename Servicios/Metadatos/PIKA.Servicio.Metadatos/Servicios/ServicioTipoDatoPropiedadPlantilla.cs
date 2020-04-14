@@ -65,8 +65,6 @@ namespace PIKA.Servicio.Metadatos.Servicios
                 throw new ExElementoExistente(entity.PropiedadPlantillaId);
             }
 
-            Console.WriteLine("************************ CREAR tipo dato plantilla");
-
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
             return entity;
@@ -90,10 +88,10 @@ namespace PIKA.Servicio.Metadatos.Servicios
             {
                 throw new ExElementoExistente(entity.PropiedadPlantillaId);
             }
-            Console.WriteLine("************************ Actualizar ...."+ o.TipoDatoId);
+            
             o.PropiedadPlantillaId = entity.PropiedadPlantillaId;
             o.TipoDatoId = entity.TipoDatoId;
-            Console.WriteLine("************************ Actualizar ...."+ o.TipoDatoId);
+         
 
 
             UDT.Context.Entry(o).State = EntityState.Modified;

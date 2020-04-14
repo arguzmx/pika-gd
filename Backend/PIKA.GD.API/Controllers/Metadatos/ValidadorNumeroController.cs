@@ -46,7 +46,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         public async Task<ActionResult<ValidadorNumero>> Post([FromBody]ValidadorNumero entidad)
         {
 
-            Console.WriteLine("post de validar numero--------------------------------------------");
+            
             entidad = await servicioValidadorNumero.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetValidadorNumero", new { id = entidad.Id }, entidad).Value);
         }

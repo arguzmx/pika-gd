@@ -47,7 +47,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         public async Task<ActionResult<ValidadorTexto>> Post([FromBody]ValidadorTexto entidad)
         {
 
-            Console.WriteLine(ModelState.IsValid.ToString() + "????");
+            
             entidad = await servicioValidadorTexto.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetValidadorTexto", new { id = entidad.PropiedadId }, entidad).Value);
         }
@@ -75,7 +75,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<IEnumerable<ValidadorTexto>>> GetPage([FromQuery]Consulta query = null)
         {
-            Console.WriteLine("------------------------------------------------------");
+            
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
             var data = await servicioValidadorTexto.ObtenerPaginadoAsync(query).ConfigureAwait(false);
