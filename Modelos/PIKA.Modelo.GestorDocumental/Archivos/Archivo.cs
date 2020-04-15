@@ -22,6 +22,7 @@ namespace PIKA.Modelo.GestorDocumental
         public Archivo()
         {
             this._TipoOrigenId = this.TipoOrigenDefault;
+            this.Almacenes = new HashSet<AlmacenArchivo>();
         }
 
 
@@ -67,6 +68,9 @@ namespace PIKA.Modelo.GestorDocumental
         /// Tipo de archivo 
         /// </summary>
         public virtual TipoArchivo Tipo { get; set; }
+
+
+        public virtual ICollection<AlmacenArchivo> Almacenes { get; set; }
 
     }
 }

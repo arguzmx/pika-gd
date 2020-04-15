@@ -6,7 +6,7 @@ using System.Text;
 
 namespace PIKA.Modelo.GestorDocumental
 {
-    public class Activo: Entidad<string>, IEntidadRelacionada
+    public class Activo: Entidad<string>, IEntidadRelacionada, IEntidadIdElectronico
     {
 
         public Activo()
