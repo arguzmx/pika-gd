@@ -1,6 +1,7 @@
 ﻿using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace PIKA.Modelo.Metadatos
@@ -29,7 +30,7 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public string TipoDatoId { get; set; }
 
-    
+    [NotMapped]
         /// <summary>
         /// Valor por defecto de la propiedad
         /// </summary>
@@ -112,13 +113,15 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public string ControlHTML { get; set; }
 
-
+        [NotMapped]
         public virtual TipoDato TipoDato { get; set; }
-
+        [NotMapped]
         public virtual AtributoTabla AtributoTabla { get; set; }
+        [NotMapped]
         public virtual ValidadorTexto ValidadorTexto { get; set; }
+        [NotMapped]
         public virtual ValidadorNumero ValidadorNumero { get; set; }
-
+        [NotMapped]
         public virtual ICollection<AtributoMetadato> Atributos { get; set; }
 
     }

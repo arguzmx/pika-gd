@@ -14,6 +14,7 @@ namespace RepositorioEntidades
         public static int UICulture { get => 10; }
         public static int Version { get => 10; }
         public static int Icono { get => 100; }
+        public static int ControlHTML { get => 128; }
 
 
     }

@@ -13,7 +13,7 @@ namespace PIKA.Modelo.Metadatos
 
         public Plantilla()
         {
-            this.Propiedades = new HashSet<Propiedad>();
+            this.Propiedades = new HashSet<PropiedadPlantilla>();
             this.TipoOrigenId = TipoOrigenDefault;
         }
 
@@ -42,7 +42,7 @@ namespace PIKA.Modelo.Metadatos
         public bool Eliminada { get; set; }
 
 
-        public ICollection<Propiedad> Propiedades { get; set; }
+        public ICollection<PropiedadPlantilla> Propiedades { get; set; }
 
        
     }

@@ -73,7 +73,7 @@ namespace PIKA.GD.API.Controllers.Seguridad
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<IEnumerable<TipoAdministradorModulo>>> GetPage([FromQuery]Consulta query = null)
         {
-            Console.WriteLine("------------------------------------------------------");
+            
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
             var data = await servicioTipoAdministradorModulo.ObtenerPaginadoAsync(query).ConfigureAwait(false);
