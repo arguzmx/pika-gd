@@ -4,12 +4,33 @@ using System.Collections.Generic;
 using System.Text;
 using PIKA.Modelo.Organizacion;
 using PIKA.Servicio.Organizacion.Data;
+using RepositorioEntidades;
 
 namespace PIKA.Servicio.Organizacion
 {
-    public class DbContextOrganizacion : DbContext
+    public class DbContextOrganizacionFactory : IFabricaContexto<DbContextOrganizacion>
     {
-        public DbContextOrganizacion(DbContextOptions<DbContextOrganizacion> options)
+
+        private IProveedorOpcionesContexto<DbContextOrganizacion> proveedorOpciones;
+        public DbContextOrganizacionFactory(IProveedorOpcionesContexto<DbContextOrganizacion> proveedorOpciones)
+        {
+            this.proveedorOpciones = proveedorOpciones;
+        }
+
+        public DbContextOrganizacion Crear()
+        {
+            //var optionsBuilderType = typeof(DbContextOptionsBuilder<>).MakeGenericType(t);
+            //var optionsBuilder = (DbContextOptionsBuilder)Activator.CreateInstance(optionsBuilderType);
+            //optionsBuilder.UseMySql(Configuration.GetConnectionString("pika-gd"));
+            //var dbContext = (DbContext)Activator.CreateInstance(t, optionsBuilder.Options);
+
+            return new DbContextOrganizacion(proveedorOpciones.ObtieneOpciones());
+        }
+    }
+
+    public class DbContextOrganizacion : DbContext, IRepositorioInicializable
+    {
+        public DbContextOrganizacion(DbContextOptions options)
        : base(options)
         {
         }
@@ -60,9 +81,7 @@ namespace PIKA.Servicio.Organizacion
         public static string TablaUsuariosRol { get => "org$usuarios_rol"; }
 
         #endregion
-
-
- 
+        
 
         /// <summary>
         /// Dominios existentes en la aplicación
@@ -111,6 +130,16 @@ namespace PIKA.Servicio.Organizacion
         /// </summary>
         public DbSet<Estado> Estados { get; set; }
 
+        public void AplicarMigraciones()
+        {
+            this.Database.Migrate();
+        }
+
+        public void Inicializar(string ContentPath)
+        {
+            Console.WriteLine("Inicializando DB");
+            InicializarDatos.Inicializar(this, ContentPath);
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

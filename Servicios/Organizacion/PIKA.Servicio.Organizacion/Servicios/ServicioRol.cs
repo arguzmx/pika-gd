@@ -17,27 +17,23 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Organizacion.Servicios
 {
-    public class ServicioRol : IServicioInyectable, IServicioRol
+    public class ServicioRol : ContextoServicioOrganizacion,
+        IServicioInyectable, IServicioRol
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
         private IRepositorioAsync<Rol> repo;
         private ICompositorConsulta<Rol> compositor;
-        private ILogger<ServicioRol> logger;
-        private DbContextOrganizacion contexto;
         private UnidadDeTrabajo<DbContextOrganizacion> UDT;
-
-        public ServicioRol(DbContextOrganizacion contexto,
+        
+        public ServicioRol(
+            IProveedorOpcionesContexto<DbContextOrganizacion> proveedorOpciones,
         ICompositorConsulta<Rol> compositorConsulta,
         ILogger<ServicioRol> Logger,
-        IServicioCache servicioCache)
+        IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DbContextOrganizacion>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<Rol>(compositor);
         }

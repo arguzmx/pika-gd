@@ -1,6 +1,8 @@
-﻿using PIKA.Infraestructura.Comun;
+﻿using Microsoft.EntityFrameworkCore;
+using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.Metadatos;
+using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -43,6 +45,38 @@ namespace PIKA.GD.API
             }
           
             return null;
+        }
+
+        public static List<Type> ObtieneContextosInicializables()
+        {
+            List<Type> l = new List<Type>();
+            string Ruta = ObtieneRutaBin();
+
+            var assemblies = Directory.GetFiles(Ruta, "*.dll",
+                new EnumerationOptions() { RecurseSubdirectories = true });
+
+            foreach (var item in assemblies)
+            {
+                try
+                {
+                    var assembly = Assembly.LoadFile(item);
+                    var Tipos = assembly.GetTypes()
+                            .Where(t =>
+                            !t.IsAbstract &&
+                            typeof(IRepositorioInicializable).IsAssignableFrom(t))
+                            .ToArray();
+
+                    l.AddRange(Tipos);
+ 
+
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            return l;
         }
 
         public static List<TipoAdministradorModulo> ObtieneTiposAdministrados()

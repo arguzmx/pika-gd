@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data.Configuracion;
+using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace PIKA.Servicio.GestionDocumental.Data
 {
-    public class DBContextGestionDocumental : DbContext
+    public class DBContextGestionDocumental : DbContext, IRepositorioInicializable
     {
         public DBContextGestionDocumental(DbContextOptions<DBContextGestionDocumental> options)
      : base(options)
@@ -85,6 +86,16 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// Fases del ciclo vital existentes en la aplicación
         /// </summary>
         public DbSet<FaseCicloVital> FasesCicloVital { get; set; }
+
+        public void AplicarMigraciones()
+        {
+            this.Database.Migrate();
+        }
+
+        public void Inicializar(string ContentPath)
+        {
+            
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
