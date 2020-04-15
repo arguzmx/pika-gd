@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Metadatos.Servicios
 {
-    public class ServicioValidadorTexto : IServicioInyectable, IServicioValidadorTexto
+    public class ServicioValidadorTexto : ContextoServicioMetadatos,IServicioInyectable, IServicioValidadorTexto
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
@@ -29,25 +29,16 @@ namespace PIKA.Servicio.Metadatos.Servicios
         private ILogger<ServicioValidadorTexto> logger;
         private DbContextMetadatos contexto;
         private UnidadDeTrabajo<DbContextMetadatos> UDT;
-        public ServicioValidadorTexto(DbContextMetadatos contexto,
-            ICompositorConsulta<ValidadorTexto> compositorConsulta,
-            ILogger<ServicioValidadorTexto> Logger,
-            IServicioCache servicioCache)
+        public ServicioValidadorTexto(
+           IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
+           ICompositorConsulta<ValidadorTexto> compositorConsulta,
+           ILogger<ServicioValidadorTexto> Logger,
+           IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<ValidadorTexto>(compositor);
         }
-
-
-
-
-
 
         public async Task<bool> Existe(Expression<Func<ValidadorTexto, bool>> predicado)
         {

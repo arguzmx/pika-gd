@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Seguridad.Servicios
 {
-    public class ServicioTipoAdministradorModulo : IServicioInyectable, IServicioTipoAdministradorModulo
+    public class ServicioTipoAdministradorModulo : ContextoServicioSeguridad, IServicioInyectable, IServicioTipoAdministradorModulo
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
@@ -27,25 +27,16 @@ namespace PIKA.Servicio.Seguridad.Servicios
         private ILogger<ServicioTipoAdministradorModulo> logger;
         private DbContextSeguridad contexto;
         private UnidadDeTrabajo<DbContextSeguridad> UDT;
-        public ServicioTipoAdministradorModulo(DbContextSeguridad contexto,
-            ICompositorConsulta<TipoAdministradorModulo> compositorConsulta,
-            ILogger<ServicioTipoAdministradorModulo> Logger,
-            IServicioCache servicioCache)
+        public ServicioTipoAdministradorModulo(
+         IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
+         ICompositorConsulta<TipoAdministradorModulo> compositorConsulta,
+         ILogger<ServicioAplicacion> Logger,
+         IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<TipoAdministradorModulo>(compositor);
         }
-
-
-
-
-
 
         public async Task<bool> Existe(Expression<Func<TipoAdministradorModulo, bool>> predicado)
         {

@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Seguridad.Servicios
 {
-    public class ServicioTraduccionAplicacionModulo : IServicioInyectable, IServicioTraduccionAplicacionModulo
+    public class ServicioTraduccionAplicacionModulo : ContextoServicioSeguridad,IServicioInyectable, IServicioTraduccionAplicacionModulo
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
@@ -27,17 +27,13 @@ namespace PIKA.Servicio.Seguridad.Servicios
         private ILogger<ServicioTraduccionAplicacionModulo> logger;
         private DbContextSeguridad contexto;
         private UnidadDeTrabajo<DbContextSeguridad> UDT;
-        public ServicioTraduccionAplicacionModulo(DbContextSeguridad contexto,
-            ICompositorConsulta<TraduccionAplicacionModulo> compositorConsulta,
-            ILogger<ServicioTraduccionAplicacionModulo> Logger,
-            IServicioCache servicioCache)
+        public ServicioTraduccionAplicacionModulo(
+        IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
+        ICompositorConsulta<TraduccionAplicacionModulo> compositorConsulta,
+        ILogger<ServicioAplicacion> Logger,
+        IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<TraduccionAplicacionModulo>(compositor);
         }

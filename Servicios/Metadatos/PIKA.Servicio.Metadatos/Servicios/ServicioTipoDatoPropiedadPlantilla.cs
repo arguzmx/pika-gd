@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Metadatos.Servicios
 {
-    public class ServicioTipoDatoPropiedadPlantilla : IServicioInyectable, IServicioTipoDatoPropiedadPlantilla
+    public class ServicioTipoDatoPropiedadPlantilla : ContextoServicioMetadatos, IServicioInyectable, IServicioTipoDatoPropiedadPlantilla
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
@@ -29,25 +29,16 @@ namespace PIKA.Servicio.Metadatos.Servicios
         private ILogger<ServicioTipoDatoPropiedadPlantilla> logger;
         private DbContextMetadatos contexto;
         private UnidadDeTrabajo<DbContextMetadatos> UDT;
-        public ServicioTipoDatoPropiedadPlantilla(DbContextMetadatos contexto,
-            ICompositorConsulta<TipoDatoPropiedadPlantilla> compositorConsulta,
-            ILogger<ServicioTipoDatoPropiedadPlantilla> Logger,
-            IServicioCache servicioCache)
+        public ServicioTipoDatoPropiedadPlantilla(
+         IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
+         ICompositorConsulta<TipoDatoPropiedadPlantilla> compositorConsulta,
+         ILogger<ServicioTipoDatoPropiedadPlantilla> Logger,
+         IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<TipoDatoPropiedadPlantilla>(compositor);
         }
-
-
-
-
-
 
         public async Task<bool> Existe(Expression<Func<TipoDatoPropiedadPlantilla, bool>> predicado)
         {
