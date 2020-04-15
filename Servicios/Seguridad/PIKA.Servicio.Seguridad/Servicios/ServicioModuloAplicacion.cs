@@ -27,14 +27,16 @@ namespace PIKA.Servicio.Seguridad.Servicios
         private ILogger<ServicioModuloAplicacion> logger;
         private DbContextSeguridad contexto;
         private UnidadDeTrabajo<DbContextSeguridad> UDT;
-        public ServicioModuloAplicacion(DbContextSeguridad contexto,
+       
+        
+        public ServicioModuloAplicacion(
+            IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
             ICompositorConsulta<ModuloAplicacion> compositorConsulta,
             ILogger<ServicioModuloAplicacion> Logger,
             IServicioCache servicioCache)
         {
 
 
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
             this.cache = servicioCache;
             this.logger = Logger;

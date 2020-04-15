@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Metadatos.Servicios
 {
-   public class ServicioAtributoMetadato : IServicioInyectable, IServicioAtributoMetadato
+   public class ServicioAtributoMetadato : ContextoServicioMetadatos, IServicioInyectable, IServicioAtributoMetadato
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
@@ -29,24 +29,16 @@ namespace PIKA.Servicio.Metadatos.Servicios
         private ILogger<ServicioAtributoMetadato> logger;
         private DbContextMetadatos contexto;
         private UnidadDeTrabajo<DbContextMetadatos> UDT;
-        public ServicioAtributoMetadato(DbContextMetadatos contexto,
-            ICompositorConsulta<AtributoMetadato> compositorConsulta,
-            ILogger<ServicioAtributoMetadato> Logger,
-            IServicioCache servicioCache)
+        public ServicioAtributoMetadato(
+          IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
+          ICompositorConsulta<AtributoMetadato> compositorConsulta,
+          ILogger<ServicioAtributoMetadato> Logger,
+          IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<AtributoMetadato>(compositor);
         }
-
-
-
-
 
 
         public async Task<bool> Existe(Expression<Func<AtributoMetadato, bool>> predicado)

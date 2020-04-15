@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Seguridad.Servicios
 {
-    public class ServicioAplicacion : IServicioInyectable, IServicioAplicacion
+    public class ServicioAplicacion : ContextoServicioSeguridad,IServicioInyectable, IServicioAplicacion
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
@@ -28,25 +28,17 @@ namespace PIKA.Servicio.Seguridad.Servicios
         private ILogger<ServicioAplicacion> logger;
         private DbContextSeguridad contexto;
         private UnidadDeTrabajo<DbContextSeguridad> UDT;
-        public ServicioAplicacion(DbContextSeguridad contexto,
-            ICompositorConsulta<Aplicacion> compositorConsulta,
-            ILogger<ServicioAplicacion> Logger,
-            IServicioCache servicioCache)
+       
+        public ServicioAplicacion(
+         IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
+         ICompositorConsulta<Aplicacion> compositorConsulta,
+         ILogger<ServicioAplicacion> Logger,
+         IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<Aplicacion>(compositor);
         }
-
-
-
-
-
 
         public async Task<bool> Existe(Expression<Func<Aplicacion, bool>> predicado)
         {

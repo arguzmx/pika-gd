@@ -8,12 +8,33 @@ using System.Text;
 
 namespace PIKA.Servicio.Seguridad
 {
+    public class DbContextSeguridadFactory : IFabricaContexto<DbContextSeguridad>
+    {
+
+        private IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones;
+        public DbContextSeguridadFactory(IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones)
+        {
+            this.proveedorOpciones = proveedorOpciones;
+        }
+
+        public DbContextSeguridad Crear()
+        {
+            //var optionsBuilderType = typeof(DbContextOptionsBuilder<>).MakeGenericType(t);
+            //var optionsBuilder = (DbContextOptionsBuilder)Activator.CreateInstance(optionsBuilderType);
+            //optionsBuilder.UseMySql(Configuration.GetConnectionString("pika-gd"));
+            //var dbContext = (DbContext)Activator.CreateInstance(t, optionsBuilder.Options);
+
+            return new DbContextSeguridad(proveedorOpciones.ObtieneOpciones());
+        }
+    }
     public class DbContextSeguridad : DbContext, IRepositorioInicializable
     {
-        public DbContextSeguridad(DbContextOptions<DbContextSeguridad> options)
-       : base(options)
+        public DbContextSeguridad(DbContextOptions options)
+        : base(options)
         {
         }
+
+
 
         #region Constantes de configuracion
 
