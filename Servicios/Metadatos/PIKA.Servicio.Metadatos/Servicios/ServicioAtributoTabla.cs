@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Metadatos.Servicios
 {
-    public class ServicioAtributoTabla : IServicioInyectable, IServicioAtributoTabla
+    public class ServicioAtributoTabla : ContextoServicioMetadatos, IServicioInyectable, IServicioAtributoTabla
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
@@ -29,17 +29,13 @@ namespace PIKA.Servicio.Metadatos.Servicios
         private ILogger<ServicioAtributoTabla> logger;
         private DbContextMetadatos contexto;
         private UnidadDeTrabajo<DbContextMetadatos> UDT;
-        public ServicioAtributoTabla(DbContextMetadatos contexto,
-            ICompositorConsulta<AtributoTabla> compositorConsulta,
-            ILogger<ServicioAtributoTabla> Logger,
-            IServicioCache servicioCache)
+        public ServicioAtributoTabla(
+           IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
+           ICompositorConsulta<AtributoTabla> compositorConsulta,
+           ILogger<ServicioAtributoTabla> Logger,
+           IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<AtributoTabla>(compositor);
         }
