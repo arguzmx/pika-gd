@@ -50,5 +50,11 @@
     <Folder Include="Controllers\Seguridad\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Data\Inicializar\paises.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 
 </Project>

@@ -82,6 +82,7 @@ namespace PIKA.GD.API
             List<Assembly> ensambladosValidacion = new List<Assembly>();
             List<ServicioInyectable> inyectables = LocalizadorEnsamblados.ObtieneServiciosInyectables();
             List<TipoAdministradorModulo> ModulosAdministrados = LocalizadorEnsamblados.ObtieneTiposAdministrados();
+            
 
 #if DEBUG
             foreach (var t in ModulosAdministrados)
@@ -104,7 +105,8 @@ namespace PIKA.GD.API
 #endif
 
 
-            foreach (string item in ensambladosValidables)
+
+          foreach (string item in ensambladosValidables)
             {
                 ensambladosValidacion.Add(Assembly.LoadFrom(item));
             }
@@ -131,12 +133,7 @@ namespace PIKA.GD.API
 
             services.AddScoped<AsyncACLActionFilter>();
 
-
-
-
-            services.AddDbContext<DbContextOrganizacion>(options =>
-                    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-
+            services.AddTransient(typeof(IProveedorOpcionesContexto<>),typeof(ProveedorOpcionesContexto<>));
 
             services.AddDbContext<DBContextGestionDocumental>(options =>
                     options.UseMySql(Configuration.GetConnectionString("pika-gd")));

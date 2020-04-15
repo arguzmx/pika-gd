@@ -1,19 +1,22 @@
 using Autofac.Extensions.DependencyInjection;
 using FluentValidation;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RepositorioEntidades;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace PIKA.GD.API
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
@@ -26,7 +29,14 @@ namespace PIKA.GD.API
             try
             {
                 Log.Information("Starting up");
-                CreateHostBuilder(args).Build().Run();
+                var host = CreateHostBuilder(args).Build();
+                var CurrentHost = host.Services.GetService<IWebHostEnvironment>();
+                var config = host.Services.GetRequiredService<IConfiguration>();
+                
+                InicializarAplication(config, CurrentHost);
+
+                host.Run();
+
             }
             catch (Exception ex)
             {
@@ -54,6 +64,32 @@ namespace PIKA.GD.API
                      // Used for local settings like connection strings.
                      .AddJsonFile("appsettings.local.json", optional: true);
              }).UseSerilog();
+
+
+
+        private static void InicializarAplication(IConfiguration configuracion, IWebHostEnvironment env) {
+            List<Type> contextos = LocalizadorEnsamblados.ObtieneContextosInicializables();
+            string connectionString = configuracion.GetConnectionString("pika-gd");
+            foreach (Type dbContextType in contextos)
+            {
+
+                var optionsBuilderType = typeof(DbContextOptionsBuilder<>).MakeGenericType(dbContextType);
+                var optionsBuilder = (DbContextOptionsBuilder)Activator.CreateInstance(optionsBuilderType);
+                optionsBuilder.UseMySql(connectionString);
+                var dbContext = (DbContext)Activator.CreateInstance(dbContextType, optionsBuilder.Options);
+                try
+                {
+                    ((IRepositorioInicializable)dbContext).AplicarMigraciones();
+                    ((IRepositorioInicializable)dbContext).Inicializar(env.ContentRootPath);
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+
+            }
+        }
 
     }
 }

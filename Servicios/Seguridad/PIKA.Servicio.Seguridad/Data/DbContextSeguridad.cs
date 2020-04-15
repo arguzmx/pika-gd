@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PIKA.Infraestructura.Comun;
 using PIKA.Servicio.Seguridad.Data.Configuracion;
+using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace PIKA.Servicio.Seguridad
 {
-    public class DbContextSeguridad : DbContext
+    public class DbContextSeguridad : DbContext, IRepositorioInicializable
     {
         public DbContextSeguridad(DbContextOptions<DbContextSeguridad> options)
        : base(options)
@@ -55,6 +56,16 @@ namespace PIKA.Servicio.Seguridad
         /// Dominios existentes en la TraduccionAplicacionModulo
         /// </summary>
         public DbSet<TraduccionAplicacionModulo> TraduccionAplicacionModulo { get; set; }
+
+        public void AplicarMigraciones()
+        {
+            this.Database.Migrate();
+        }
+
+        public void Inicializar(string ContentPath)
+        {
+            
+        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
