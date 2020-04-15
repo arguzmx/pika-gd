@@ -8,30 +8,10 @@ using System.Text;
 
 namespace PIKA.Servicio.Metadatos.Data
 {
-    public class DbContextMetadatosFactory : IFabricaContexto<DbContextMetadatos>
+   public class DbContextMetadatos : DbContext
     {
-
-        private IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones;
-        public DbContextMetadatosFactory(IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones)
-        {
-            this.proveedorOpciones = proveedorOpciones;
-        }
-
-        public DbContextMetadatos Crear()
-        {
-            //var optionsBuilderType = typeof(DbContextOptionsBuilder<>).MakeGenericType(t);
-            //var optionsBuilder = (DbContextOptionsBuilder)Activator.CreateInstance(optionsBuilderType);
-            //optionsBuilder.UseMySql(Configuration.GetConnectionString("pika-gd"));
-            //var dbContext = (DbContext)Activator.CreateInstance(t, optionsBuilder.Options);
-
-            return new DbContextMetadatos(proveedorOpciones.ObtieneOpciones());
-        }
-    }
-
-    public class DbContextMetadatos : DbContext, IRepositorioInicializable
-    {
-        public DbContextMetadatos(DbContextOptions options)
-     : base(options)
+        public DbContextMetadatos(DbContextOptions<DbContextMetadatos> options)
+        : base(options)
         {
         }
 
