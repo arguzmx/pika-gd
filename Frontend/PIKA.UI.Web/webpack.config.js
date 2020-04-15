@@ -8,7 +8,8 @@ const MinifyPlugin = require('babel-minify-webpack-plugin');
 
 module.exports = {
     entry: {
-        'ETabular':  "./wwwroot/js/componentes/EditorTabular/ETabular.js",
+        'ETabular': "./wwwroot/js/componentes/EditorTabular/ETabular.js",
+        'EMetadatos': "./wwwroot/js/componentes/EditorMetadatos/EMetadatos.js",
         'AppLayout': "./wwwroot/js/componentes/comunes/app_layour.js",
         'AppLayoutCSS': "./wwwroot/js/componentes/comunes/app_css.js"
     },
