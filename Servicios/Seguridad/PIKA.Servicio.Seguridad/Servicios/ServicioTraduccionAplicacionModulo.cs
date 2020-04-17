@@ -1,4 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
@@ -6,26 +13,16 @@ using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Seguridad.Servicios
 {
-    public class ServicioTraduccionAplicacionModulo : ContextoServicioSeguridad,IServicioInyectable, IServicioTraduccionAplicacionModulo
+    public class ServicioTraduccionAplicacionModulo : ContextoServicioSeguridad, IServicioInyectable, IServicioTraduccionAplicacionModulo
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
         private IRepositorioAsync<TraduccionAplicacionModulo> repo;
         private ICompositorConsulta<TraduccionAplicacionModulo> compositor;
-        private ILogger<ServicioTraduccionAplicacionModulo> logger;
-        private DbContextSeguridad contexto;
         private UnidadDeTrabajo<DbContextSeguridad> UDT;
         public ServicioTraduccionAplicacionModulo(
         IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
@@ -85,7 +82,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             o.Nombre = entity.Nombre;
             o.Descripcion = entity.Descripcion;
             o.UICulture = entity.UICulture;
-          
+
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
@@ -164,5 +161,8 @@ namespace PIKA.Servicio.Seguridad.Servicios
         {
             throw new NotImplementedException();
         }
+
+        
+      
     }
 }

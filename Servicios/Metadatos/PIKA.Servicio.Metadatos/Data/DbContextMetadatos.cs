@@ -28,7 +28,7 @@ namespace PIKA.Servicio.Metadatos.Data
         }
     }
 
-    public class DbContextMetadatos : DbContext
+    public class DbContextMetadatos : DbContext, IRepositorioInicializable
     {
         public DbContextMetadatos(DbContextOptions options)
      : base(options)
@@ -68,11 +68,7 @@ namespace PIKA.Servicio.Metadatos.Data
         ///  Nombre de la tabla para las entidades del AtributoTabla
         /// </summary>
         public static string TablaAtributoTabla { get => "metadatos$atributotabla"; }
-        /// <summary>
-        ///  Nombre de la tabla para las entidades del AtributoTablaPropiedadPlantilla
-        /// </summary>
-        public static string TablaAtributoTablaPropiedadPlantilla { get => "metadatos$atributotablapropiedadplantilla"; }
-
+     
         /// <summary>
         ///  Nombre de la tabla para las entidades del ValidadorNumero
         /// </summary>
@@ -83,7 +79,16 @@ namespace PIKA.Servicio.Metadatos.Data
         /// </summary>
         public static string TablaValidadorTexto { get => "metadatos$validadortexto"; }
 
-        
+        /// <summary>
+        ///  Nombre de la tabla para las entidades del Asociacion de Plantilla
+        /// </summary>
+        public static string TablaAsociacionPlantilla { get => "metadatos$asociacionplantilla"; }
+        /// <summary>
+        ///  Nombre de la tabla para las entidades del TipoAlmacen Metadatos
+        /// </summary>
+        public static string TablaTipoAlmacenMetadatos { get => "metadatos$tipoalmacenmetadatos"; }
+
+
         #endregion
 
         /// <summary>
@@ -126,7 +131,22 @@ namespace PIKA.Servicio.Metadatos.Data
         /// Metadatos existentes en la ValidadorTexto
         /// </summary>
         public DbSet<ValidadorTexto> ValidadorTexto { get; set; }
+        /// <summary>
+        /// Metadatos existentes en la Asociacion plantilla
+        /// </summary>
 
+        public DbSet<AsociacionPlantilla> AsociacionPlantilla { get; set; }
+
+        public DbSet<TipoAlmacenMetadatos> TipoAlmacenMetadatos { get; set; }
+        public void AplicarMigraciones()
+        {
+            this.Database.Migrate();
+        }
+
+        public void Inicializar(string ContentPath)
+        {
+            InicializarDatos.Inicializar(this, ContentPath);
+        }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -138,6 +158,8 @@ namespace PIKA.Servicio.Metadatos.Data
             builder.ApplyConfiguration<AtributoMetadato>(new DbConfAtributoMetadato());
             builder.ApplyConfiguration<ValidadorNumero>(new DbConfValidadorNumero());
             builder.ApplyConfiguration<ValidadorTexto>(new DbConfValidadorTexto());
+            builder.ApplyConfiguration<AsociacionPlantilla>(new DbConfAsociacionPlantilla());
+            builder.ApplyConfiguration<TipoAlmacenMetadatos>(new DbConfTipoAlmacenMetadatos());
         }
 
     }

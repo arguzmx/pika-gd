@@ -1,4 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
@@ -8,50 +15,41 @@ using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Data;
 using PIKA.Servicio.Metadatos.Interfaces;
 using RepositorioEntidades;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Metadatos.Servicios
 {
-   public class ServicioAtributoMetadato : ContextoServicioMetadatos, IServicioInyectable, IServicioAtributoMetadato
+    public class ServicioAsociacionPlantilla : ContextoServicioMetadatos, IServicioInyectable, IServicioAsociacionPlantilla
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IRepositorioAsync<AtributoMetadato> repo;
-        private ICompositorConsulta<AtributoMetadato> compositor;
+        private IRepositorioAsync<AsociacionPlantilla> repo;
+        private ICompositorConsulta<AsociacionPlantilla> compositor;
         private UnidadDeTrabajo<DbContextMetadatos> UDT;
-        public ServicioAtributoMetadato(
+        public ServicioAsociacionPlantilla(
           IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
-          ICompositorConsulta<AtributoMetadato> compositorConsulta,
-          ILogger<ServicioAtributoMetadato> Logger,
+          ICompositorConsulta<AsociacionPlantilla> compositorConsulta,
+          ILogger<ServicioAsociacionPlantilla> Logger,
           IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
             this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<AtributoMetadato>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<AsociacionPlantilla>(compositor);
         }
-
-
-        public async Task<bool> Existe(Expression<Func<AtributoMetadato, bool>> predicado)
+        public async Task<bool> Existe(Expression<Func<AsociacionPlantilla, bool>> predicado)
         {
-            List<AtributoMetadato> l = await this.repo.ObtenerAsync(predicado);
+            List<AsociacionPlantilla> l = await this.repo.ObtenerAsync(predicado);
             if (l.Count() == 0) return false;
             return true;
         }
 
 
-        public async Task<AtributoMetadato> CrearAsync(AtributoMetadato entity, CancellationToken cancellationToken = default)
+        public async Task<AsociacionPlantilla> CrearAsync(AsociacionPlantilla entity, CancellationToken cancellationToken = default)
         {
 
-            if (await Existe(x => x.Id.Equals(entity.Id, StringComparison.InvariantCultureIgnoreCase)))
+            if (await Existe(x => x.PlantillaId.Equals(entity.PlantillaId, StringComparison.InvariantCultureIgnoreCase)))
             {
-                throw new ExElementoExistente(entity.Id);
+                throw new ExElementoExistente(entity.PlantillaId);
             }
 
             entity.Id = System.Guid.NewGuid().ToString();
@@ -60,10 +58,10 @@ namespace PIKA.Servicio.Metadatos.Servicios
             return entity;
         }
 
-        public async Task ActualizarAsync(AtributoMetadato entity)
+        public async Task ActualizarAsync(AsociacionPlantilla entity)
         {
 
-            AtributoMetadato o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+            AsociacionPlantilla o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
             if (o == null)
             {
@@ -72,13 +70,16 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
             if (await Existe(x =>
             x.Id != entity.Id
-            && x.Id.Equals(entity.Id, StringComparison.InvariantCultureIgnoreCase)))
+            && x.PlantillaId.Equals(entity.PlantillaId, StringComparison.InvariantCultureIgnoreCase)))
             {
-                throw new ExElementoExistente(entity.Id);
+                throw new ExElementoExistente(entity.PlantillaId);
             }
 
-            o.Id = entity.Id;
-          
+            o.PlantillaId = entity.PlantillaId;
+            o.TipoAlmacenMetadatosId = entity.TipoAlmacenMetadatosId;
+            o.OrigenId = entity.OrigenId;
+            o.TipoOrigenId = entity.TipoOrigenId;
+
 
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
@@ -99,7 +100,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
             }
             return query;
         }
-        public async Task<IPaginado<AtributoMetadato>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<AtributoMetadato>, IIncludableQueryable<AtributoMetadato, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
+        public async Task<IPaginado<AsociacionPlantilla>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<AsociacionPlantilla>, IIncludableQueryable<AsociacionPlantilla, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
@@ -107,12 +108,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
             return respuesta;
         }
 
-        public Task<IEnumerable<AtributoMetadato>> CrearAsync(params AtributoMetadato[] entities)
+        public Task<IEnumerable<AsociacionPlantilla>> CrearAsync(params AsociacionPlantilla[] entities)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<AtributoMetadato>> CrearAsync(IEnumerable<AtributoMetadato> entities, CancellationToken cancellationToken = default)
+        public Task<IEnumerable<AsociacionPlantilla>> CrearAsync(IEnumerable<AsociacionPlantilla> entities, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -132,17 +133,17 @@ namespace PIKA.Servicio.Metadatos.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<List<AtributoMetadato>> ObtenerAsync(Expression<Func<AtributoMetadato, bool>> predicado)
+        public Task<List<AsociacionPlantilla>> ObtenerAsync(Expression<Func<AsociacionPlantilla, bool>> predicado)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<AtributoMetadato>> ObtenerListaAsync(string SqlCommand)
+        public Task<IEnumerable<AsociacionPlantilla>> ObtenerListaAsync(string SqlCommand)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IPaginado<AtributoMetadato>> ObtenerPaginadoAsync(Expression<Func<AtributoMetadato, bool>> predicate = null, Func<IQueryable<AtributoMetadato>, IOrderedQueryable<AtributoMetadato>> orderBy = null, Func<IQueryable<AtributoMetadato>, IIncludableQueryable<AtributoMetadato, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
+        public Task<IPaginado<AsociacionPlantilla>> ObtenerPaginadoAsync(Expression<Func<AsociacionPlantilla, bool>> predicate = null, Func<IQueryable<AsociacionPlantilla>, IOrderedQueryable<AsociacionPlantilla>> orderBy = null, Func<IQueryable<AsociacionPlantilla>, IIncludableQueryable<AsociacionPlantilla, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -154,9 +155,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<AtributoMetadato> UnicoAsync(Expression<Func<AtributoMetadato, bool>> predicado = null, Func<IQueryable<AtributoMetadato>, IOrderedQueryable<AtributoMetadato>> ordenarPor = null, Func<IQueryable<AtributoMetadato>, IIncludableQueryable<AtributoMetadato, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public Task<AsociacionPlantilla> UnicoAsync(Expression<Func<AsociacionPlantilla, bool>> predicado = null, Func<IQueryable<AsociacionPlantilla>, IOrderedQueryable<AsociacionPlantilla>> ordenarPor = null, Func<IQueryable<AsociacionPlantilla>, IIncludableQueryable<AsociacionPlantilla, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             throw new NotImplementedException();
         }
+
+       
+       
     }
 }

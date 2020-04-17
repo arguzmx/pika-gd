@@ -1,14 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PIKA.Infraestructura.Comun;
 using RepositorioEntidades;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PIKA.Servicio.Seguridad.Data.Configuracion
 {
-  public  class DbConfTraduccionAplicacionModulo : IEntityTypeConfiguration<TraduccionAplicacionModulo>
+    public class DbConfTraduccionAplicacionModulo : IEntityTypeConfiguration<TraduccionAplicacionModulo>
     {
         public void Configure(EntityTypeBuilder<TraduccionAplicacionModulo> builder)
         {
@@ -22,10 +22,11 @@ namespace PIKA.Servicio.Seguridad.Data.Configuracion
             builder.Property(x => x.Descripcion).HasMaxLength(LongitudDatos.Descripcion).IsRequired();
             builder.Property(x => x.UICulture).HasMaxLength(LongitudDatos.UICulture).IsRequired();
 
-        
+
 
         }
 
-        
+
     }
+
 }

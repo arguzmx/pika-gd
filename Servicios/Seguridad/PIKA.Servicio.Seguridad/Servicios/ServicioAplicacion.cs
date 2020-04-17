@@ -1,4 +1,10 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
@@ -7,28 +13,18 @@ using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Seguridad.Servicios
 {
-    public class ServicioAplicacion : ContextoServicioSeguridad,IServicioInyectable, IServicioAplicacion
+    public class ServicioAplicacion : ContextoServicioSeguridad, IServicioInyectable, IServicioAplicacion
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
         private IRepositorioAsync<Aplicacion> repo;
         private ICompositorConsulta<Aplicacion> compositor;
-        private ILogger<ServicioAplicacion> logger;
-        private DbContextSeguridad contexto;
         private UnidadDeTrabajo<DbContextSeguridad> UDT;
-       
+
         public ServicioAplicacion(
          IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
          ICompositorConsulta<Aplicacion> compositorConsulta,
@@ -84,7 +80,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             o.UICulture = entity.UICulture;
             o.Version = entity.Version;
             o.ReleaseIndex = entity.ReleaseIndex;
-            
+
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
@@ -163,5 +159,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
         {
             throw new NotImplementedException();
         }
+
+       
     }
 }
