@@ -29,6 +29,7 @@ using RepositorioEntidades;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.Seguridad;
 using PIKA.Servicio.Metadatos.Data;
+using PIKA.Servicio.Seguridad.Data;
 
 namespace PIKA.GD.API
 {

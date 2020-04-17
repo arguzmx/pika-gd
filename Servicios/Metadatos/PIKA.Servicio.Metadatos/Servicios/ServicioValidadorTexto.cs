@@ -23,11 +23,8 @@ namespace PIKA.Servicio.Metadatos.Servicios
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
         private IRepositorioAsync<ValidadorTexto> repo;
         private ICompositorConsulta<ValidadorTexto> compositor;
-        private ILogger<ServicioValidadorTexto> logger;
-        private DbContextMetadatos contexto;
         private UnidadDeTrabajo<DbContextMetadatos> UDT;
         public ServicioValidadorTexto(
            IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,

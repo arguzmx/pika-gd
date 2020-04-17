@@ -1,12 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Infraestructura\PIKA.Infraestructura.Comun\PIKA.Infraestructura.Comun.csproj" />
     <ProjectReference Include="..\..\..\Infraestructura\RepositorioEntidades\RepositorioEntidades.csproj" />
+    <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.GestorDocumental\PIKA.Modelo.GestorDocumental.csproj" />
+    <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.Metadatos\PIKA.Modelo.Metadatos.csproj" />
   </ItemGroup>
+
 
 </Project>

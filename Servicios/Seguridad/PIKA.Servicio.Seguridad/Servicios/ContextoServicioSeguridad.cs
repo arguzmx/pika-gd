@@ -7,7 +7,7 @@ using RepositorioEntidades;
 
 namespace PIKA.Servicio.Seguridad.Servicios
 {
-   public class ContextoServicioSeguridad
+    public class ContextoServicioSeguridad
     {
         private IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones;
         protected IServicioCache cache;

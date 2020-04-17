@@ -11,40 +11,40 @@ using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
-using PIKA.Servicio.Seguridad.Interfaces;
+using PIKA.Modelo.Metadatos;
+using PIKA.Servicio.Metadatos.Data;
+using PIKA.Servicio.Metadatos.Interfaces;
 using RepositorioEntidades;
 
-namespace PIKA.Servicio.Seguridad.Servicios
+namespace PIKA.Servicio.Metadatos.Servicios
 {
-    public class ServicioAplicacion : ContextoServicioSeguridad, IServicioInyectable, IServicioAplicacion
+ public   class ServicioTipoAlmacenMetadatos : ContextoServicioMetadatos, IServicioInyectable, IServicioTipoAlmacenMetadatos
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IRepositorioAsync<Aplicacion> repo;
-        private ICompositorConsulta<Aplicacion> compositor;
-        private UnidadDeTrabajo<DbContextSeguridad> UDT;
-
-        public ServicioAplicacion(
-         IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
-         ICompositorConsulta<Aplicacion> compositorConsulta,
-         ILogger<ServicioAplicacion> Logger,
-         IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+        private IRepositorioAsync<TipoAlmacenMetadatos> repo;
+        private ICompositorConsulta<TipoAlmacenMetadatos> compositor;
+        private UnidadDeTrabajo<DbContextMetadatos> UDT;
+        public ServicioTipoAlmacenMetadatos(
+          IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
+          ICompositorConsulta<TipoAlmacenMetadatos> compositorConsulta,
+          ILogger<ServicioTipoAlmacenMetadatos> Logger,
+          IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
+            this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
             this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<Aplicacion>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<TipoAlmacenMetadatos>(compositor);
         }
-
-        public async Task<bool> Existe(Expression<Func<Aplicacion, bool>> predicado)
+        public async Task<bool> Existe(Expression<Func<TipoAlmacenMetadatos, bool>> predicado)
         {
-            List<Aplicacion> l = await this.repo.ObtenerAsync(predicado);
+            List<TipoAlmacenMetadatos> l = await this.repo.ObtenerAsync(predicado);
             if (l.Count() == 0) return false;
             return true;
         }
 
 
-        public async Task<Aplicacion> CrearAsync(Aplicacion entity, CancellationToken cancellationToken = default)
+        public async Task<TipoAlmacenMetadatos> CrearAsync(TipoAlmacenMetadatos entity, CancellationToken cancellationToken = default)
         {
 
             if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
@@ -58,10 +58,10 @@ namespace PIKA.Servicio.Seguridad.Servicios
             return entity;
         }
 
-        public async Task ActualizarAsync(Aplicacion entity)
+        public async Task ActualizarAsync(TipoAlmacenMetadatos entity)
         {
 
-            Aplicacion o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+            TipoAlmacenMetadatos o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
             if (o == null)
             {
@@ -76,10 +76,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             }
 
             o.Nombre = entity.Nombre;
-            o.Descripcion = entity.Descripcion;
-            o.UICulture = entity.UICulture;
-            o.Version = entity.Version;
-            o.ReleaseIndex = entity.ReleaseIndex;
+
 
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
@@ -100,7 +97,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             }
             return query;
         }
-        public async Task<IPaginado<Aplicacion>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Aplicacion>, IIncludableQueryable<Aplicacion, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
+        public async Task<IPaginado<TipoAlmacenMetadatos>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<TipoAlmacenMetadatos>, IIncludableQueryable<TipoAlmacenMetadatos, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
@@ -108,12 +105,12 @@ namespace PIKA.Servicio.Seguridad.Servicios
             return respuesta;
         }
 
-        public Task<IEnumerable<Aplicacion>> CrearAsync(params Aplicacion[] entities)
+        public Task<IEnumerable<TipoAlmacenMetadatos>> CrearAsync(params TipoAlmacenMetadatos[] entities)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Aplicacion>> CrearAsync(IEnumerable<Aplicacion> entities, CancellationToken cancellationToken = default)
+        public Task<IEnumerable<TipoAlmacenMetadatos>> CrearAsync(IEnumerable<TipoAlmacenMetadatos> entities, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -128,22 +125,22 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<ICollection<string>> Eliminar(string[] ids)
+        public Task Eliminar(string[] ids)
         {
             throw new NotImplementedException();
         }
 
-        public Task<List<Aplicacion>> ObtenerAsync(Expression<Func<Aplicacion, bool>> predicado)
+        public Task<List<TipoAlmacenMetadatos>> ObtenerAsync(Expression<Func<TipoAlmacenMetadatos, bool>> predicado)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Aplicacion>> ObtenerListaAsync(string SqlCommand)
+        public Task<IEnumerable<TipoAlmacenMetadatos>> ObtenerListaAsync(string SqlCommand)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IPaginado<Aplicacion>> ObtenerPaginadoAsync(Expression<Func<Aplicacion, bool>> predicate = null, Func<IQueryable<Aplicacion>, IOrderedQueryable<Aplicacion>> orderBy = null, Func<IQueryable<Aplicacion>, IIncludableQueryable<Aplicacion, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
+        public Task<IPaginado<TipoAlmacenMetadatos>> ObtenerPaginadoAsync(Expression<Func<TipoAlmacenMetadatos, bool>> predicate = null, Func<IQueryable<TipoAlmacenMetadatos>, IOrderedQueryable<TipoAlmacenMetadatos>> orderBy = null, Func<IQueryable<TipoAlmacenMetadatos>, IIncludableQueryable<TipoAlmacenMetadatos, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -155,11 +152,11 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<Aplicacion> UnicoAsync(Expression<Func<Aplicacion, bool>> predicado = null, Func<IQueryable<Aplicacion>, IOrderedQueryable<Aplicacion>> ordenarPor = null, Func<IQueryable<Aplicacion>, IIncludableQueryable<Aplicacion, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public Task<TipoAlmacenMetadatos> UnicoAsync(Expression<Func<TipoAlmacenMetadatos, bool>> predicado = null, Func<IQueryable<TipoAlmacenMetadatos>, IOrderedQueryable<TipoAlmacenMetadatos>> ordenarPor = null, Func<IQueryable<TipoAlmacenMetadatos>, IIncludableQueryable<TipoAlmacenMetadatos, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             throw new NotImplementedException();
         }
 
-       
+
     }
 }

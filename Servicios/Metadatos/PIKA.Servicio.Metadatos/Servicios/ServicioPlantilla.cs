@@ -23,11 +23,8 @@ namespace PIKA.Servicio.Metadatos.Servicios
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
         private IRepositorioAsync<Plantilla> repo;
         private ICompositorConsulta<Plantilla> compositor;
-        private ILogger<ServicioPlantilla> logger;
-        private DbContextMetadatos contexto;
         private UnidadDeTrabajo<DbContextMetadatos> UDT;
         public ServicioPlantilla(
           IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
@@ -176,5 +173,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
         {
             throw new NotImplementedException();
         }
+   
+    
     }
 }

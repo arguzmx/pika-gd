@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PIKA.Infraestructura.Comun;
-using PIKA.Servicio.Seguridad.Data.Configuracion;
-using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using RepositorioEntidades;
+using PIKA.Infraestructura.Comun;
+using PIKA.Servicio.Seguridad.Data;
+using PIKA.Servicio.Seguridad.Data.Configuracion;
 
 namespace PIKA.Servicio.Seguridad
 {
@@ -19,64 +20,74 @@ namespace PIKA.Servicio.Seguridad
 
         public DbContextSeguridad Crear()
         {
-            //var optionsBuilderType = typeof(DbContextOptionsBuilder<>).MakeGenericType(t);
-            //var optionsBuilder = (DbContextOptionsBuilder)Activator.CreateInstance(optionsBuilderType);
-            //optionsBuilder.UseMySql(Configuration.GetConnectionString("pika-gd"));
-            //var dbContext = (DbContext)Activator.CreateInstance(t, optionsBuilder.Options);
-
             return new DbContextSeguridad(proveedorOpciones.ObtieneOpciones());
         }
     }
+
     public class DbContextSeguridad : DbContext, IRepositorioInicializable
     {
         public DbContextSeguridad(DbContextOptions options)
-        : base(options)
+       : base(options)
         {
         }
 
 
+        #region Contantes de configutación
 
-        #region Constantes de configuracion
-
-        /// <summary>
-        /// Nombre de la tabla para las entidades del Aplicacion
-        /// </summary>
-        public static string TablaAplicacion{ get => "seguridad$aplicacion"; }
 
         /// <summary>
-        ///  Nombre de la tabla para las entidades del ModuloAplicacion
+        /// Nombre de la tabla para las entidades de Aplicaciones
         /// </summary>
-        public static string TablaModuloAplicacion { get => "seguridad$moduloaplicacion"; }
+        public static string TablaAplicacion { get => "org$aplicacion"; }
+
 
         /// <summary>
-        ///  Nombre de la tabla para las entidades del TipoAdministradorModulo
+        /// Nombre de la tabla para las entidades del Modulo de Aplicaciones
         /// </summary>
-        public static string TablaTipoAdministradorModulo { get => "seguridad$tipoadministradormodulo"; }
+        public static string TablaModuloAplicacion { get => "org$moduloaplicacion"; }
+
 
         /// <summary>
-        ///  Nombre de la tabla para las entidades del TraduccionAplicacionModulo
+        /// Nombre de la tabla para las entidades del Tipo de Administrador de Modulo
         /// </summary>
-        public static string TablaTraduccionAplicacionModulo { get => "seguridad$traduccionaplicacionmodulo"; }
+        public static string TablaTipoAdministradorModulo { get => "org$tipoadministradormodulo"; }
+
+
+        /// <summary>
+        /// Nombre de la tabla para las entidades del Traduccion Aplicacion Modulo
+        /// </summary>
+        public static string TablaTraduccionAplicacionModulo { get => "traduccionaplicacionmodulo"; }
+
+
 
 
         #endregion
 
+
         /// <summary>
-        /// Dominios existentes en la aplicación
+        /// Aplicacion existentes en la aplicación
         /// </summary>
-        public DbSet<Aplicacion> Aplicaciones { get; set; }
+        public DbSet<Aplicacion> Aplicacion { get; set; }
+
+
         /// <summary>
-        /// Dominios existentes en la ModuloAplicacion
+        /// Modulos Aplicaciones existentes en la aplicación
         /// </summary>
         public DbSet<ModuloAplicacion> ModuloAplicacion { get; set; }
+
+
+
         /// <summary>
-        /// Dominios existentes en la TipoAdministradorModulo
-        /// </summary>
-        public DbSet<TipoAdministradorModulo> TipoAdministradorModulo { get; set; }
-        /// <summary>
-        /// Dominios existentes en la TraduccionAplicacionModulo
+        /// Traduccion Aplicaion modulo existentes en la aplicación
         /// </summary>
         public DbSet<TraduccionAplicacionModulo> TraduccionAplicacionModulo { get; set; }
+
+
+        /// <summary>
+        /// Tipo Administracion Modulo existentes en la aplicación
+        /// </summary>
+        public DbSet<TipoAdministradorModulo> TipoAdministradorModulo { get; set; }
+
 
         public void AplicarMigraciones()
         {
@@ -85,7 +96,8 @@ namespace PIKA.Servicio.Seguridad
 
         public void Inicializar(string ContentPath)
         {
-            
+            Console.WriteLine("Inicializando DB");
+            InicializarDatos.Inicializar(this, ContentPath);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -97,6 +109,8 @@ namespace PIKA.Servicio.Seguridad
             builder.ApplyConfiguration<TraduccionAplicacionModulo>(new DbConfTraduccionAplicacionModulo());
 
         }
-       
+
     }
+
 }
+

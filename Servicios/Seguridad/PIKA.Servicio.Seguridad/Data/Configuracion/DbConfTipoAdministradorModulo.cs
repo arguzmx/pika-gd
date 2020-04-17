@@ -1,14 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PIKA.Infraestructura.Comun;
 using RepositorioEntidades;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PIKA.Servicio.Seguridad.Data.Configuracion
 {
-   public class DbConfTipoAdministradorModulo : IEntityTypeConfiguration<TipoAdministradorModulo>
+    public class DbConfTipoAdministradorModulo : IEntityTypeConfiguration<TipoAdministradorModulo>
     {
         public void Configure(EntityTypeBuilder<TipoAdministradorModulo> builder)
         {
@@ -23,4 +23,5 @@ namespace PIKA.Servicio.Seguridad.Data.Configuracion
 
         }
     }
+
 }

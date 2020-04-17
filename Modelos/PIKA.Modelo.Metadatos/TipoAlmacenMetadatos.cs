@@ -28,5 +28,7 @@ namespace PIKA.Modelo.Metadatos
 
             return l;
         }
+   public string AsociacionPlantillaid { get; set; }
+    public ICollection< AsociacionPlantilla> AsociacionesPlantilla { get; set; }
     }
 }

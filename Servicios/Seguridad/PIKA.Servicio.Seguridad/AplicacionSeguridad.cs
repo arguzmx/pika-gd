@@ -1,9 +1,9 @@
-﻿using PIKA.Infraestructura.Comun;
-using PIKA.Infraestructura.Comun.Constantes;
-using PIKA.Infraestructura.Comun.Seguridad;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using PIKA.Infraestructura.Comun;
+using PIKA.Infraestructura.Comun.Constantes;
+using PIKA.Infraestructura.Comun.Seguridad;
 
 namespace PIKA.Servicio.Seguridad
 {
@@ -157,4 +157,5 @@ namespace PIKA.Servicio.Seguridad
             return tipos;
         }
     }
+
 }
