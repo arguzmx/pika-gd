@@ -16,7 +16,11 @@ using RepositorioEntidades;
 
 namespace PIKA.Servicio.Seguridad.Servicios
 {
+<<<<<<< HEAD
     public class ServicioAplicacion : ContextoServicioSeguridad, IServicioInyectable, IServicioAplicacion
+=======
+    public class ServicioAplicacion : ContextoServicioSeguridad,IServicioInyectable, IServicioAplicacion
+>>>>>>> edc347bbfb9bd4bff1df24d41cdcb59278213610
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
@@ -24,7 +28,11 @@ namespace PIKA.Servicio.Seguridad.Servicios
         private IRepositorioAsync<Aplicacion> repo;
         private ICompositorConsulta<Aplicacion> compositor;
         private UnidadDeTrabajo<DbContextSeguridad> UDT;
+<<<<<<< HEAD
 
+=======
+       
+>>>>>>> edc347bbfb9bd4bff1df24d41cdcb59278213610
         public ServicioAplicacion(
          IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
          ICompositorConsulta<Aplicacion> compositorConsulta,

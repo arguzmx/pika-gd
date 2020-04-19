@@ -18,6 +18,7 @@ namespace PIKA.Servicio.Metadatos.Data
         }
 
         public DbContextMetadatos Crear()
+<<<<<<< HEAD
         {
             //var optionsBuilderType = typeof(DbContextOptionsBuilder<>).MakeGenericType(t);
             //var optionsBuilder = (DbContextOptionsBuilder)Activator.CreateInstance(optionsBuilderType);
@@ -32,8 +33,25 @@ namespace PIKA.Servicio.Metadatos.Data
     {
         public DbContextMetadatos(DbContextOptions options)
      : base(options)
+=======
+>>>>>>> edc347bbfb9bd4bff1df24d41cdcb59278213610
+        {
+            //var optionsBuilderType = typeof(DbContextOptionsBuilder<>).MakeGenericType(t);
+            //var optionsBuilder = (DbContextOptionsBuilder)Activator.CreateInstance(optionsBuilderType);
+            //optionsBuilder.UseMySql(Configuration.GetConnectionString("pika-gd"));
+            //var dbContext = (DbContext)Activator.CreateInstance(t, optionsBuilder.Options);
+
+            return new DbContextMetadatos(proveedorOpciones.ObtieneOpciones());
+        }
+    }
+
+    public class DbContextMetadatos : DbContext
+    {
+        public DbContextMetadatos(DbContextOptions options)
+     : base(options)
         {
         }
+
 
 
         #region Constantes de configuracion

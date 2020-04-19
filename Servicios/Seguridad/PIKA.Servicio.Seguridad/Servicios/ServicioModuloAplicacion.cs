@@ -24,6 +24,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
         private IRepositorioAsync<ModuloAplicacion> repo;
         private ICompositorConsulta<ModuloAplicacion> compositor;
         private UnidadDeTrabajo<DbContextSeguridad> UDT;
+<<<<<<< HEAD
 
 
         public ServicioModuloAplicacion(
@@ -32,6 +33,18 @@ namespace PIKA.Servicio.Seguridad.Servicios
          ILogger<ServicioModuloAplicacion> Logger,
          IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
+=======
+       
+        
+        public ServicioModuloAplicacion(
+            IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
+            ICompositorConsulta<ModuloAplicacion> compositorConsulta,
+            ILogger<ServicioModuloAplicacion> Logger,
+            IServicioCache servicioCache)
+        {
+
+
+>>>>>>> edc347bbfb9bd4bff1df24d41cdcb59278213610
             this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<ModuloAplicacion>(compositor);

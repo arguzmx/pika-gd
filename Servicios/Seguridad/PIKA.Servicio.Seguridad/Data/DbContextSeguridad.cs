@@ -20,6 +20,7 @@ namespace PIKA.Servicio.Seguridad
 
         public DbContextSeguridad Crear()
         {
+<<<<<<< HEAD
             return new DbContextSeguridad(proveedorOpciones.ObtieneOpciones());
         }
     }
@@ -28,12 +29,31 @@ namespace PIKA.Servicio.Seguridad
     {
         public DbContextSeguridad(DbContextOptions options)
        : base(options)
+=======
+            //var optionsBuilderType = typeof(DbContextOptionsBuilder<>).MakeGenericType(t);
+            //var optionsBuilder = (DbContextOptionsBuilder)Activator.CreateInstance(optionsBuilderType);
+            //optionsBuilder.UseMySql(Configuration.GetConnectionString("pika-gd"));
+            //var dbContext = (DbContext)Activator.CreateInstance(t, optionsBuilder.Options);
+
+            return new DbContextSeguridad(proveedorOpciones.ObtieneOpciones());
+        }
+    }
+    public class DbContextSeguridad : DbContext, IRepositorioInicializable
+    {
+        public DbContextSeguridad(DbContextOptions options)
+        : base(options)
+>>>>>>> edc347bbfb9bd4bff1df24d41cdcb59278213610
         {
         }
 
 
+<<<<<<< HEAD
         #region Contantes de configutación
 
+=======
+
+        #region Constantes de configuracion
+>>>>>>> edc347bbfb9bd4bff1df24d41cdcb59278213610
 
         /// <summary>
         /// Nombre de la tabla para las entidades de Aplicaciones

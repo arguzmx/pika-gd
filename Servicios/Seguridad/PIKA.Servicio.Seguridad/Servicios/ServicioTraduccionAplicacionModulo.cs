@@ -16,7 +16,11 @@ using RepositorioEntidades;
 
 namespace PIKA.Servicio.Seguridad.Servicios
 {
+<<<<<<< HEAD
     public class ServicioTraduccionAplicacionModulo : ContextoServicioSeguridad, IServicioInyectable, IServicioTraduccionAplicacionModulo
+=======
+    public class ServicioTraduccionAplicacionModulo : ContextoServicioSeguridad,IServicioInyectable, IServicioTraduccionAplicacionModulo
+>>>>>>> edc347bbfb9bd4bff1df24d41cdcb59278213610
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
