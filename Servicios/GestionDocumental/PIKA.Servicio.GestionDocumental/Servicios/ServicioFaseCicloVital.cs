@@ -18,7 +18,8 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.GestionDocumental.Servicios
 {
-    public class ServicioFaseCicloVital : IServicioInyectable, IServicioFaseCicloVital
+    public class ServicioFaseCicloVital : ContextoServicioGestionDocumental,
+        IServicioInyectable, IServicioFaseCicloVital
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
@@ -30,17 +31,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private DBContextGestionDocumental contexto;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
-        public ServicioFaseCicloVital(DBContextGestionDocumental contexto,
+        public ServicioFaseCicloVital(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
            ICompositorConsulta<FaseCicloVital> compositorConsulta,
            ILogger<ServicioFaseCicloVital> Logger,
-           IServicioCache servicioCache)
+           IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<FaseCicloVital>(compositor);
         }
@@ -133,9 +129,21 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public Task Eliminar(string[] ids)
+        public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            throw new NotImplementedException();
+            FaseCicloVital f;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                f = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (f != null)
+                {
+                    UDT.Context.Entry(f).State = EntityState.Deleted;
+                    listaEliminados.Add(f.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
         }
 
         public Task<List<FaseCicloVital>> ObtenerAsync(Expression<Func<FaseCicloVital, bool>> predicado)

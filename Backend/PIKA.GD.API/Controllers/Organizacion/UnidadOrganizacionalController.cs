@@ -136,12 +136,11 @@ namespace PIKA.GD.API.Controllers.Organizacion
         }
 
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
         [TypeFilter(typeof(AsyncACLActionFilter) )]
         public async Task<ActionResult> Delete([FromBody ]string[] id)
         {
-            await servicioUO.Eliminar(id).ConfigureAwait(false);
-            return NoContent();
+            return Ok(await servicioUO.Eliminar(id).ConfigureAwait(false));
         }
 
     }

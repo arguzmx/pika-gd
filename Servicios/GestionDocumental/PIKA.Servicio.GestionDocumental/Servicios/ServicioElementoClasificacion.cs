@@ -18,31 +18,24 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.GestionDocumental.Servicios
 {
-    public class ServicioElementoClasificacion : IServicioInyectable, IServicioElementoClasificacion
+    public class ServicioElementoClasificacion : ContextoServicioGestionDocumental,
+        IServicioInyectable, IServicioElementoClasificacion
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
         private IRepositorioAsync<ElementoClasificacion> repo;
         private ICompositorConsulta<ElementoClasificacion> compositor;
-        private ILogger<ServicioElementoClasificacion> logger;
-        private DBContextGestionDocumental contexto;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
         IServicioArchivo servicioArchivo;
 
-        public ServicioElementoClasificacion(DBContextGestionDocumental contexto,
+        public ServicioElementoClasificacion(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
            ICompositorConsulta<ElementoClasificacion> compositorConsulta,
            ILogger<ServicioElementoClasificacion> Logger,
-           IServicioCache servicioCache)
+           IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<ElementoClasificacion>(compositor);
         }
@@ -138,9 +131,22 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public Task Eliminar(string[] ids)
+        public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            throw new NotImplementedException();
+            ElementoClasificacion e;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                e = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (e != null)
+                {
+                    e.Eliminada = true;
+                    UDT.Context.Entry(e).State = EntityState.Modified;
+                    listaEliminados.Add(e.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
         }
 
         public Task<List<ElementoClasificacion>> ObtenerAsync(Expression<Func<ElementoClasificacion, bool>> predicado)

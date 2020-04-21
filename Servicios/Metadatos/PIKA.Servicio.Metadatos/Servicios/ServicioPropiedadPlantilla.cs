@@ -225,10 +225,21 @@ namespace PIKA.Servicio.Metadatos.Servicios
         {
             throw new NotImplementedException();
         }
-
-        public Task Eliminar(string[] ids)
+        public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            throw new NotImplementedException();
+            PropiedadPlantilla pp;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                pp = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (pp != null)
+                {
+                    UDT.Context.Entry(pp).State = EntityState.Deleted;
+                    listaEliminados.Add(pp.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
         }
 
         public Task<List<PropiedadPlantilla>> ObtenerAsync(Expression<Func<PropiedadPlantilla, bool>> predicado)

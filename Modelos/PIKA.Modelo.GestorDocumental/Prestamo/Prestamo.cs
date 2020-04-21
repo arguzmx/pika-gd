@@ -36,7 +36,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// FEcha de devolcuión final del préstamo
         /// </summary>
-        public DateTime FechaDevolucion { get; set; }
+        public DateTime? FechaDevolucion { get; set; }
 
 
         /// <summary>

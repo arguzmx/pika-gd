@@ -1,4 +1,5 @@
-﻿using RepositorioEntidades;
+﻿using PIKA.Modelo.GestorDocumental.Topologia;
+using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,6 +12,11 @@ namespace PIKA.Modelo.GestorDocumental
     /// </summary>
     public class AlmacenArchivo : Entidad<string>, IEntidadNombrada
     {
+        public AlmacenArchivo()
+        {
+            Estantes = new HashSet<Estante>();
+        }
+
         /// <summary>
         /// Nomnbre del almacém
         /// </summary>
@@ -28,5 +34,6 @@ namespace PIKA.Modelo.GestorDocumental
 
 
         public Archivo Archivo { get; set; }
+        public virtual ICollection<Estante> Estantes { get; set; }
     }
 }

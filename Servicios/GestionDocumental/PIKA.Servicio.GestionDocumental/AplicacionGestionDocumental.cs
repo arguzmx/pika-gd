@@ -17,6 +17,11 @@ namespace PIKA.Servicio.GestionDocumental
         public const string MODULO_GD_ARCHIVO = "PIKA-GD-GD-ARCHIVOS";
         public const string MODULO_GD_TIPO_ARCHIVO = "PIKA-GD-GD-TIPOS_ARCHIVO";
         public const string MODULO_GD_FASE_CICLO_VITAL = "PIKA-GD-GD-FASE-CICLO-VITAL";
+        public const string MODULO_GD_ACTIVO= "PIKA-GD-GD-ACTIVOS";
+        public const string MODULO_GD_ASUNTO= "PIKA-GD-GD-ASUNTOS";
+        public const string MODULO_GD_PRESTAMO= "PIKA-GD-GD-PRESTAMOS";
+        public const string MODULO_GD_ACTIVO_PRESTAMO= "PIKA-GD-GD-ACTIVOS-PRESTAMO";
+        public const string MODULO_GD_COMENTARIO_PRESTAMO= "PIKA-GD-GD-COMENTARIOS-PRESTAMO";
         public static string ID_APLICAICON { get { return ConstantesAplicacion.Id; } }
         public Aplicacion Info()
         {
@@ -156,7 +161,7 @@ namespace PIKA.Servicio.GestionDocumental
             //------------------------------------------------------------
             //------------------------------------------------------------
 
-            /// Modulo administarcion de Archivos 
+            /// Modulo administarcion de FAse Ciclo vital
             //------------------------------------------------------------
 
             m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_FASE_CICLO_VITAL, true,
@@ -176,6 +181,105 @@ namespace PIKA.Servicio.GestionDocumental
             //------------------------------------------------------------
             //------------------------------------------------------------
 
+            /// Modulo administarcion de ACtivos 
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_ACTIVO, true,
+                "Activos",
+                "Administrador de activos del archivo",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(Activo) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+            /// Modulo administarcion de Asuntos de activo 
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_ASUNTO, true,
+                "Asuntos",
+                "Administrador de asuntos de un activo",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(Asunto) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+            /// Modulo administarcion de Prestamos
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_PRESTAMO, true,
+                "Préstamos",
+                "Administrador de Préstamos",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(Prestamo) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+            /// Modulo administarcion de Activos préstamo
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_ACTIVO_PRESTAMO, true,
+                "Activos préstamo",
+                "Administrador de activos de un préstamo",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(ActivoPrestamo) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+            /// Modulo administarcion de Comentarios préstamo
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_COMENTARIO_PRESTAMO, true,
+                "Comentarios",
+                "Administrador de comentarios de un préstamo",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(ComentarioPrestamo) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
 
             return l;
         }

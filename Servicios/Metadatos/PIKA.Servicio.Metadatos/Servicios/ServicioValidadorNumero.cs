@@ -139,9 +139,21 @@ namespace PIKA.Servicio.Metadatos.Servicios
             throw new NotImplementedException();
         }
 
-        public Task Eliminar(string[] ids)
+        public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            throw new NotImplementedException();
+            ServicioValidadorNumero svn;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            //foreach (var Id in ids)
+            //{
+            //    svn = await this.repo.UnicoAsync(x => x.Id == Id);
+            //    if (svn != null)
+            //    {
+            //        UDT.Context.Entry(svn).State = EntityState.Deleted;
+            //        listaEliminados.Add(svn.Id);
+            //    }
+            //}
+            //UDT.SaveChanges();
+            return listaEliminados;
         }
 
         public Task<List<ValidadorNumero>> ObtenerAsync(Expression<Func<ValidadorNumero, bool>> predicado)

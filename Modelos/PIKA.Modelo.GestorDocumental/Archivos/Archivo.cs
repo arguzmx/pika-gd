@@ -11,7 +11,7 @@ namespace PIKA.Modelo.GestorDocumental
     public class Archivo : Entidad<string>, IEntidadNombrada, IEntidadEliminada, IEntidadRelacionada
     {
 
-       
+
         public string TipoOrigenDefault => ConstantesModelo.IDORIGEN_UNIDAD_ORGANIZACIONAL;
 
         /// <summary>
@@ -23,6 +23,9 @@ namespace PIKA.Modelo.GestorDocumental
         {
             this._TipoOrigenId = this.TipoOrigenDefault;
             this.Almacenes = new HashSet<AlmacenArchivo>();
+            HistorialArchivosActivo = new HashSet<HistorialArchivoActivo>();
+            Prestamos = new HashSet<Prestamo>();
+
         }
 
 
@@ -43,12 +46,13 @@ namespace PIKA.Modelo.GestorDocumental
         /// El tipo de orígen en para este modelo es el elemento de la unidad organizacional 
         /// Este elemento puede ser unn departamento u oficina que tiene acervo as su cargo
         /// </summary>
-        public string TipoOrigenId { 
+        public string TipoOrigenId
+        {
             get { return _TipoOrigenId; }
             set
             {
                 // el valor no debe cambiarse
-             
+
             }
         }
 
@@ -68,9 +72,10 @@ namespace PIKA.Modelo.GestorDocumental
         /// Tipo de archivo 
         /// </summary>
         public virtual TipoArchivo Tipo { get; set; }
-
-
         public virtual ICollection<AlmacenArchivo> Almacenes { get; set; }
+        public virtual Activo ActivoActual { get; set; }
+        public virtual ICollection<HistorialArchivoActivo> HistorialArchivosActivo { get; set; }
+        public virtual ICollection<Prestamo> Prestamos { get; set; }
 
     }
 }

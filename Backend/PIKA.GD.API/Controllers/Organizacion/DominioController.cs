@@ -80,7 +80,6 @@ namespace PIKA.GD.API.Controllers.Organizacion
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<IEnumerable<Dominio>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
-            Console.WriteLine($"--------------------------------{query.Filtros.Count}");
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
             var data = await servicioEntidad.ObtenerPaginadoAsync(query).ConfigureAwait(false);
@@ -145,12 +144,12 @@ namespace PIKA.GD.API.Controllers.Organizacion
 
 
 
-        [HttpDelete("{id}")]
+        //[HttpDelete("{id}")]
+        [HttpDelete]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> Delete([FromBody]string[] id)
         {
-            await servicioEntidad.Eliminar(id).ConfigureAwait(false);
-            return NoContent();
+            return Ok(await servicioEntidad.Eliminar(id).ConfigureAwait(false));
         }
 
     }

@@ -18,33 +18,31 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.GestionDocumental.Servicios
 {
-    public class ServicioEstadoCuadroClasificacion : IServicioInyectable, IServicioEstadoCuadroClasificacion
+    public class ServicioEstadoCuadroClasificacion : ContextoServicioGestionDocumental,
+        IServicioInyectable, IServicioEstadoCuadroClasificacion
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
         private IRepositorioAsync<EstadoCuadroClasificacion> repo;
         private ICompositorConsulta<EstadoCuadroClasificacion> compositor;
-        private ILogger<ServicioEstadoCuadroClasificacion> logger;
-        private DBContextGestionDocumental contexto;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
 
-        public ServicioEstadoCuadroClasificacion(DBContextGestionDocumental contexto,
+        public ServicioEstadoCuadroClasificacion(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
            ICompositorConsulta<EstadoCuadroClasificacion> compositorConsulta,
            ILogger<ServicioEstadoCuadroClasificacion> Logger,
-           IServicioCache servicioCache)
+           IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<EstadoCuadroClasificacion>(compositor);
         }
+
+
+
+
+
 
         public async Task<bool> Existe(Expression<Func<EstadoCuadroClasificacion, bool>> predicado)
         {
@@ -134,9 +132,21 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public Task Eliminar(string[] ids)
+        public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            throw new NotImplementedException();
+            EstadoCuadroClasificacion ec;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                ec = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (ec != null)
+                {
+                    UDT.Context.Entry(ec).State = EntityState.Deleted;
+                    listaEliminados.Add(ec.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
         }
 
         public Task<List<EstadoCuadroClasificacion>> ObtenerAsync(Expression<Func<EstadoCuadroClasificacion, bool>> predicado)

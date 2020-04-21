@@ -9,6 +9,8 @@
     <Compile Remove="Data\Migrations\20200214205211_InicialOrgaizacion.Designer.cs" />
     <Compile Remove="Data\Migrations\20200421130300_Demo.cs" />
     <Compile Remove="Data\Migrations\20200421130300_Demo.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200421181826_AlmacenArchivoGestionDocumental.cs" />
+    <Compile Remove="Data\Migrations\20200421181826_AlmacenArchivoGestionDocumental.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

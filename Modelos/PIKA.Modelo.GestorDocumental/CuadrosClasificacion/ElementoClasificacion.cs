@@ -11,6 +11,7 @@ namespace PIKA.Modelo.GestorDocumental
         public ElementoClasificacion() {
             Padre = null;
             Hijos = new HashSet<ElementoClasificacion>();
+            Activos = new HashSet<Activo>();
         }
 
         /// <summary>
@@ -58,5 +59,9 @@ namespace PIKA.Modelo.GestorDocumental
         /// Instancia del cuadro de clasificación
         /// </summary>
         public virtual CuadroClasificacion CuadroClasificacion { get; set; }
+        /// <summary>
+        /// Activos del elemento clasificacion
+        /// </summary>
+        public virtual ICollection<Activo> Activos { get; set; }
     }
 }

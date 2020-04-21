@@ -142,8 +142,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> Delete([FromBody]string[] id)
         {
-            await servicioFase.Eliminar(id).ConfigureAwait(false);
-            return NoContent();
+            return Ok(await servicioFase.Eliminar(id).ConfigureAwait(false));
         }
     }
 }
