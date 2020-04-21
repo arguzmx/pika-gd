@@ -145,6 +145,11 @@ namespace PIKA.GD.API
             services.AddDbContext<DbContextMetadatos>(options =>
                    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
+
+            services.AddDbContext<DbContextOrganizacion>(options =>
+       options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
+
             services.AddControllers();
 
             services.AddMvc(options =>

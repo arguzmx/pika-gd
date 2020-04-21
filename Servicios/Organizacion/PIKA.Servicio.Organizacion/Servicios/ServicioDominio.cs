@@ -169,9 +169,24 @@ namespace PIKA.Servicio.Organizacion.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<Dominio> UnicoAsync(Expression<Func<Dominio, bool>> predicado = null, Func<IQueryable<Dominio>, IOrderedQueryable<Dominio>> ordenarPor = null, Func<IQueryable<Dominio>, IIncludableQueryable<Dominio, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<Dominio> UnicoAsync(Expression<Func<Dominio, bool>> predicado = null, Func<IQueryable<Dominio>, IOrderedQueryable<Dominio>> ordenarPor = null, Func<IQueryable<Dominio>, IIncludableQueryable<Dominio, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+
+            Dominio d = await this.repo.UnicoAsync(predicado);
+
+            //Cuando llamas a serializar objetos con propiedades de navegación pueden crearse referencias circulares
+            //por eso devolvemos una instancia filtrada
+
+            //Hayq que implmenbatrlo como un método de extensión en ExtensionesDominio
+            //estudiar https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
+
+            return d.CopiaDominio();
         }
+
+
+
     }
+
+  
+
 }
