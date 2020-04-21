@@ -5,6 +5,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Migrations\20200413201500_ActivosGestionDocumental.cs" />
+    <Compile Remove="Data\Migrations\20200413201500_ActivosGestionDocumental.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200414015141_PrestamosGestionDocumental.cs" />
+    <Compile Remove="Data\Migrations\20200414015141_PrestamosGestionDocumental.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200414020144_PrestamosGestionDocumental.cs" />
+    <Compile Remove="Data\Migrations\20200414020144_PrestamosGestionDocumental.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200414020247_PrestamosGestionDocumental.cs" />
+    <Compile Remove="Data\Migrations\20200414020247_PrestamosGestionDocumental.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200414020353_PrestamosGestionDocumental.cs" />
+    <Compile Remove="Data\Migrations\20200414020353_PrestamosGestionDocumental.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200414021033_PrestamosGestionDocumental.cs" />
+    <Compile Remove="Data\Migrations\20200414021033_PrestamosGestionDocumental.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200414021237_PrestamosGestionDocumental.cs" />
+    <Compile Remove="Data\Migrations\20200414021237_PrestamosGestionDocumental.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
   </ItemGroup>
 
@@ -12,6 +29,10 @@
     <ProjectReference Include="..\..\..\Infraestructura\PIKA.Infraestructura.Comun\PIKA.Infraestructura.Comun.csproj" />
     <ProjectReference Include="..\..\..\Infraestructura\RepositorioEntidades\RepositorioEntidades.csproj" />
     <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.GestorDocumental\PIKA.Modelo.GestorDocumental.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Servicios\Topologia\" />
   </ItemGroup>
 
 

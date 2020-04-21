@@ -129,22 +129,21 @@ namespace PIKA.Servicio.Organizacion.Servicios
             throw new NotImplementedException();
         }
 
-        public async Task Eliminar(string[] ids)
+        public async Task<ICollection<string>> Eliminar(string[] ids)
         {
             Dominio d;
-            IEnumerable<Dominio> domError = new HashSet<Dominio>();
+            ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
             {
                 d = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (d == null)
+                if (d != null)
                 {
-                    domError.Append(d);
-                    throw new EXNoEncontrado();
+                    UDT.Context.Entry(d).State = EntityState.Deleted;
+                    listaEliminados.Add(d.Id);
                 }
-
-                UDT.Context.Entry(d).State = EntityState.Deleted;
             }
             UDT.SaveChanges();
+            return listaEliminados;
         }   
 
         public Task<List<Dominio>> ObtenerAsync(Expression<Func<Dominio, bool>> predicado)

@@ -18,29 +18,22 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.GestionDocumental.Servicios
 {
-    public class ServicioArchivo : IServicioInyectable, IServicioArchivo
+    public class ServicioArchivo : ContextoServicioGestionDocumental,
+        IServicioInyectable, IServicioArchivo
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
         private IRepositorioAsync<Archivo> repo;
         private ICompositorConsulta<Archivo> compositor;
-        private ILogger<ServicioArchivo> logger;
-        private DBContextGestionDocumental contexto;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
-        public ServicioArchivo(DBContextGestionDocumental contexto,
+        public ServicioArchivo(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
            ICompositorConsulta<Archivo> compositorConsulta,
            ILogger<ServicioArchivo> Logger,
-           IServicioCache servicioCache)
+           IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<Archivo>(compositor);
         }
@@ -135,9 +128,22 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public Task Eliminar(string[] ids)
+        public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            throw new NotImplementedException();
+            Archivo a;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                a = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (a != null)
+                {
+                    a.Eliminada = true;
+                    UDT.Context.Entry(a).State = EntityState.Modified;
+                    listaEliminados.Add(a.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
         }
 
         public Task<List<Archivo>> ObtenerAsync(Expression<Func<Archivo, bool>> predicado)

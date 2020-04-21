@@ -125,9 +125,21 @@ namespace PIKA.Servicio.Organizacion.Servicios
             throw new NotImplementedException();
         }
 
-        public Task Eliminar(string[] ids)
+        public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            throw new NotImplementedException();
+            Rol r;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                r = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (r != null)
+                {
+                    UDT.Context.Entry(r).State = EntityState.Deleted;
+                    listaEliminados.Add(r.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
         }
 
         public Task<List<Rol>> ObtenerAsync(Expression<Func<Rol, bool>> predicado)

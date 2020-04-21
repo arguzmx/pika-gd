@@ -44,7 +44,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         public string Asunto { get; set; }
         //# Longitus 2048, opcional
-
+        public virtual Asunto oAsunto { get; set; }
         /// <summary>
         /// Fecha de apertura UTC del activo
         /// </summary>
@@ -101,6 +101,6 @@ namespace PIKA.Modelo.GestorDocumental
         /// Historial de archivos por los que ha pasado el activo
         /// </summary>
         public virtual ICollection<HistorialArchivoActivo> HistorialArchivosActivo { get; set; }
-
+        public virtual ActivoPrestamo Prestamo { get; set; }
     }
 }

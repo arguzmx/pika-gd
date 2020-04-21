@@ -22,14 +22,14 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
     public class EstadoCuadroClasificacionController : ACLController
     {
         private readonly ILogger<EstadoCuadroClasificacionController> logger;
-        private IServicioEstadoCuadroClasificacion servicioElemento;
+        private IServicioEstadoCuadroClasificacion servicioEstado;
         private IProveedorMetadatos<EstadoCuadroClasificacion> metadataProvider;
         public EstadoCuadroClasificacionController(ILogger<EstadoCuadroClasificacionController> logger,
             IProveedorMetadatos<EstadoCuadroClasificacion> metadataProvider,
-            IServicioEstadoCuadroClasificacion servicioElemento)
+            IServicioEstadoCuadroClasificacion servicioEstado)
         {
             this.logger = logger;
-            this.servicioElemento = servicioElemento;
+            this.servicioEstado = servicioEstado;
             this.metadataProvider = metadataProvider;
         }
 
@@ -46,7 +46,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<EstadoCuadroClasificacion>> Post([FromBody]EstadoCuadroClasificacion entidad)
         {
-            entidad = await servicioElemento.CrearAsync(entidad).ConfigureAwait(false);
+            entidad = await servicioEstado.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetEstadoCuadroClasificacion", new { id = entidad.Id }, entidad).Value);
         }
 
@@ -63,7 +63,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 return BadRequest();
             }
 
-            await servicioElemento.ActualizarAsync(entidad).ConfigureAwait(false);
+            await servicioEstado.ActualizarAsync(entidad).ConfigureAwait(false);
             return NoContent();
 
         }
@@ -73,10 +73,9 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<IEnumerable<EstadoCuadroClasificacion>>> GetPage([FromQuery]Consulta query = null)
         {
-            Console.WriteLine("------------------------------------------------------");
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioElemento.ObtenerPaginadoAsync(query).ConfigureAwait(false);
+            var data = await servicioEstado.ObtenerPaginadoAsync(query).ConfigureAwait(false);
             return Ok(data.Elementos.ToList<EstadoCuadroClasificacion>());
         }
 
@@ -110,7 +109,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 ord_direccion = query.order[0].dir
             };
 
-            var data = await servicioElemento.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
+            var data = await servicioEstado.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
 
             RespuestaDatatables<EstadoCuadroClasificacion> r = new RespuestaDatatables<EstadoCuadroClasificacion>()
             {
@@ -130,7 +129,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<EstadoCuadroClasificacion>> Get(string id)
         {
-            var o = await servicioElemento.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            var o = await servicioEstado.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }
@@ -138,12 +137,11 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> Delete([FromBody]string[] id)
         {
-            await servicioElemento.Eliminar(id).ConfigureAwait(false);
-            return NoContent();
+            return Ok(await servicioEstado.Eliminar(id).ConfigureAwait(false));
         }
     }
 }

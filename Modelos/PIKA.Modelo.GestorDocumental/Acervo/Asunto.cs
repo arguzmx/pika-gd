@@ -1,8 +1,9 @@
-﻿using System;
+﻿using RepositorioEntidades;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PIKA.Modelo.GestorDocumental.Acervo
+namespace PIKA.Modelo.GestorDocumental
 {
 
 
@@ -10,7 +11,7 @@ namespace PIKA.Modelo.GestorDocumental.Acervo
     /// Asunto del activo, se encuentra separado para hacer mas eficiente 
     /// las querys en la base de datos
     /// </summary>
-    public class Asunto
+    public class Asunto: Entidad<string>
     {
         /// <summary>
         /// Tiene una relación 1 a 1 con el activo

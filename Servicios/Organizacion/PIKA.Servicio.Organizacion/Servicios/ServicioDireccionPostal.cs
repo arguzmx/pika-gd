@@ -134,9 +134,21 @@ namespace PIKA.Servicio.Organizacion.Servicios
             throw new NotImplementedException();
         }
 
-        public Task Eliminar(string[] ids)
+        public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            throw new NotImplementedException();
+            DireccionPostal dp;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                dp = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (dp != null)
+                {
+                    UDT.Context.Entry(dp).State = EntityState.Deleted;
+                    listaEliminados.Add(dp.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
         }
 
         public Task<List<DireccionPostal>> ObtenerAsync(Expression<Func<DireccionPostal, bool>> predicado)

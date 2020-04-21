@@ -45,7 +45,7 @@ namespace RepositorioEntidades
 
         Task ActualizarAsync(T entity);
 
-        Task Eliminar(U[] ids);
+        Task<ICollection<U>> Eliminar(U[] ids);
 
         Task Restaurar(U[] ids);
 

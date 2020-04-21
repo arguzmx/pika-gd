@@ -136,7 +136,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public Task Eliminar(string[] ids)
+        public Task<ICollection<string>> Eliminar(string[] ids)
         {
             throw new NotImplementedException();
         }
