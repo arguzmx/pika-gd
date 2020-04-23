@@ -1,4 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
@@ -6,46 +13,29 @@ using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Seguridad.Servicios
 {
-    public class ServicioModuloAplicacion : IServicioInyectable, IServicioModuloAplicacion
+    public class ServicioModuloAplicacion : ContextoServicioSeguridad, IServicioInyectable, IServicioModuloAplicacion
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
         private IRepositorioAsync<ModuloAplicacion> repo;
         private ICompositorConsulta<ModuloAplicacion> compositor;
-        private ILogger<ServicioModuloAplicacion> logger;
-        private DbContextSeguridad contexto;
         private UnidadDeTrabajo<DbContextSeguridad> UDT;
-        public ServicioModuloAplicacion(DbContextSeguridad contexto,
-            ICompositorConsulta<ModuloAplicacion> compositorConsulta,
-            ILogger<ServicioModuloAplicacion> Logger,
-            IServicioCache servicioCache)
+
+
+        public ServicioModuloAplicacion(
+             IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
+         ICompositorConsulta<ModuloAplicacion> compositorConsulta,
+         ILogger<ServicioModuloAplicacion> Logger,
+         IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<ModuloAplicacion>(compositor);
         }
-
-
-
-
-
 
         public async Task<bool> Existe(Expression<Func<ModuloAplicacion, bool>> predicado)
         {
@@ -137,9 +127,29 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<ICollection<string>> Eliminar(string[] ids)
+        public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            throw new NotImplementedException();
+            ModuloAplicacion m;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                m = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (m != null)
+                {
+                    //Si alguno de tus objetos tiene el campo "Eliminado" sería así: 
+
+                    //m.Eliminada = true;
+                    //UDT.Context.Entry(m).State = EntityState.Modified;
+                    //si no, como es el caso, queda así nada más
+                    //bueno y esta linea ya no va UDT.Context.Entry(m).State = EntityState.Deleted;
+                    
+
+                    UDT.Context.Entry(m).State = EntityState.Deleted;
+                    listaEliminados.Add(m.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
         }
 
         public Task<List<ModuloAplicacion>> ObtenerAsync(Expression<Func<ModuloAplicacion, bool>> predicado)
@@ -164,9 +174,14 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<ModuloAplicacion> UnicoAsync(Expression<Func<ModuloAplicacion, bool>> predicado = null, Func<IQueryable<ModuloAplicacion>, IOrderedQueryable<ModuloAplicacion>> ordenarPor = null, Func<IQueryable<ModuloAplicacion>, IIncludableQueryable<ModuloAplicacion, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<ModuloAplicacion> UnicoAsync(Expression<Func<ModuloAplicacion, bool>> predicado = null, Func<IQueryable<ModuloAplicacion>, IOrderedQueryable<ModuloAplicacion>> ordenarPor = null, Func<IQueryable<ModuloAplicacion>, IIncludableQueryable<ModuloAplicacion, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+
+            ModuloAplicacion d = await this.repo.UnicoAsync(predicado);
+
+            return d.CopiaModuloAplicacion();
         }
+
+
     }
 }

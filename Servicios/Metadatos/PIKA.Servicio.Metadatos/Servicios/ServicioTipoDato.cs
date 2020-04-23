@@ -18,36 +18,24 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Metadatos.Servicios
 {
-   public class ServicioTipoDato : IServicioInyectable, IServicioTipoDato
+   public class ServicioTipoDato : ContextoServicioMetadatos, IServicioInyectable, IServicioTipoDato
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
         private IRepositorioAsync<TipoDato> repo;
         private ICompositorConsulta<TipoDato> compositor;
-        private ILogger<ServicioTipoDato> logger;
-        private DbContextMetadatos contexto;
         private UnidadDeTrabajo<DbContextMetadatos> UDT;
-        public ServicioTipoDato(DbContextMetadatos contexto,
-            ICompositorConsulta<TipoDato> compositorConsulta,
-            ILogger<ServicioTipoDato> Logger,
-            IServicioCache servicioCache)
+        public ServicioTipoDato(
+          IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
+          ICompositorConsulta<TipoDato> compositorConsulta,
+          ILogger<ServicioTipoDato> Logger,
+          IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<TipoDato>(compositor);
         }
-
-
-
-
-
 
         public async Task<bool> Existe(Expression<Func<TipoDato, bool>> predicado)
         {
@@ -179,9 +167,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<TipoDato> UnicoAsync(Expression<Func<TipoDato, bool>> predicado = null, Func<IQueryable<TipoDato>, IOrderedQueryable<TipoDato>> ordenarPor = null, Func<IQueryable<TipoDato>, IIncludableQueryable<TipoDato, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<TipoDato> UnicoAsync(Expression<Func<TipoDato, bool>> predicado = null, Func<IQueryable<TipoDato>, IOrderedQueryable<TipoDato>> ordenarPor = null, Func<IQueryable<TipoDato>, IIncludableQueryable<TipoDato, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+
+            TipoDato d = await this.repo.UnicoAsync(predicado);
+
+            return d.CopiaTipoDato();
         }
     }
 }

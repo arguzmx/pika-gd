@@ -1,4 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
@@ -6,46 +13,30 @@ using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Seguridad.Servicios
 {
-    public class ServicioTipoAdministradorModulo : IServicioInyectable, IServicioTipoAdministradorModulo
+       public class ServicioTipoAdministradorModulo : ContextoServicioSeguridad
+      , IServicioInyectable, IServicioTipoAdministradorModulo
+
     {
-        private const string DEFAULT_SORT_COL = "Nombre";
+        private const string DEFAULT_SORT_COL = "ModuloId";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
         private IRepositorioAsync<TipoAdministradorModulo> repo;
         private ICompositorConsulta<TipoAdministradorModulo> compositor;
-        private ILogger<ServicioTipoAdministradorModulo> logger;
-        private DbContextSeguridad contexto;
         private UnidadDeTrabajo<DbContextSeguridad> UDT;
-        public ServicioTipoAdministradorModulo(DbContextSeguridad contexto,
-            ICompositorConsulta<TipoAdministradorModulo> compositorConsulta,
-            ILogger<ServicioTipoAdministradorModulo> Logger,
-            IServicioCache servicioCache)
+
+        public ServicioTipoAdministradorModulo(
+         IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
+         ICompositorConsulta<TipoAdministradorModulo> compositorConsulta,
+         ILogger<ServicioTipoAdministradorModulo> Logger,
+         IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<TipoAdministradorModulo>(compositor);
         }
-
-
-
-
-
 
         public async Task<bool> Existe(Expression<Func<TipoAdministradorModulo, bool>> predicado)
         {
@@ -58,37 +49,40 @@ namespace PIKA.Servicio.Seguridad.Servicios
         public async Task<TipoAdministradorModulo> CrearAsync(TipoAdministradorModulo entity, CancellationToken cancellationToken = default)
         {
 
-            if (await Existe(x => x.AplicacionId.Equals(entity.AplicacionId, StringComparison.InvariantCultureIgnoreCase)))
+            if (await Existe(x => x.AplicacionId.Equals(entity.AplicacionId, StringComparison.InvariantCultureIgnoreCase)
+            && x.ModuloId.Equals(entity.ModuloId,StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.AplicacionId);
             }
-
-            entity.ModuloId = System.Guid.NewGuid().ToString();
+            entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
+          
+
             return entity;
         }
 
         public async Task ActualizarAsync(TipoAdministradorModulo entity)
         {
 
-            TipoAdministradorModulo o = await this.repo.UnicoAsync(x => x.ModuloId == entity.ModuloId);
+            TipoAdministradorModulo o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
             if (o == null)
             {
-                throw new EXNoEncontrado(entity.ModuloId);
+                throw new EXNoEncontrado(entity.Id);
             }
 
             if (await Existe(x =>
-            x.ModuloId != entity.ModuloId
-            && x.AplicacionId.Equals(entity.AplicacionId, StringComparison.InvariantCultureIgnoreCase)))
+            x.Id != entity.Id
+            && x.AplicacionId.Equals(entity.AplicacionId, StringComparison.InvariantCultureIgnoreCase) 
+            && x.ModuloId.Equals(entity.ModuloId,StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.AplicacionId);
             }
 
             o.AplicacionId = entity.AplicacionId;
             o.ModuloId = entity.ModuloId;
-            o.TiposAdministrados = entity.TiposAdministrados;
+
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
@@ -163,9 +157,14 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<TipoAdministradorModulo> UnicoAsync(Expression<Func<TipoAdministradorModulo, bool>> predicado = null, Func<IQueryable<TipoAdministradorModulo>, IOrderedQueryable<TipoAdministradorModulo>> ordenarPor = null, Func<IQueryable<TipoAdministradorModulo>, IIncludableQueryable<TipoAdministradorModulo, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<TipoAdministradorModulo> UnicoAsync(Expression<Func<TipoAdministradorModulo, bool>> predicado = null, Func<IQueryable<TipoAdministradorModulo>, IOrderedQueryable<TipoAdministradorModulo>> ordenarPor = null, Func<IQueryable<TipoAdministradorModulo>, IIncludableQueryable<TipoAdministradorModulo, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+
+            TipoAdministradorModulo d = await this.repo.UnicoAsync(predicado);
+
+            return d.CopiaTipoAdministradorModulo();
         }
+
+
     }
 }

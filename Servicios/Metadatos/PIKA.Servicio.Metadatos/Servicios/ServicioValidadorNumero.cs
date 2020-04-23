@@ -18,34 +18,24 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Metadatos.Servicios
 {
-    public class ServicioValidadorNumero : IServicioInyectable, IServicioValidadorNumero
+    public class ServicioValidadorNumero : ContextoServicioMetadatos, IServicioInyectable, IServicioValidadorNumero
     {
-        private const string DEFAULT_SORT_COL = "Nombre";
+        private const string DEFAULT_SORT_COL = "propiedadId";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
         private IRepositorioAsync<ValidadorNumero> repo;
         private ICompositorConsulta<ValidadorNumero> compositor;
-        private ILogger<ServicioValidadorNumero> logger;
-        private DbContextMetadatos contexto;
         private UnidadDeTrabajo<DbContextMetadatos> UDT;
-        public ServicioValidadorNumero(DbContextMetadatos contexto,
-            ICompositorConsulta<ValidadorNumero> compositorConsulta,
-            ILogger<ServicioValidadorNumero> Logger,
-            IServicioCache servicioCache)
+        public ServicioValidadorNumero(
+         IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
+         ICompositorConsulta<ValidadorNumero> compositorConsulta,
+         ILogger<ServicioValidadorNumero> Logger,
+         IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<ValidadorNumero>(compositor);
         }
-
-               
-
 
         public async Task<bool> Existe(Expression<Func<ValidadorNumero, bool>> predicado)
         {
@@ -178,9 +168,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<ValidadorNumero> UnicoAsync(Expression<Func<ValidadorNumero, bool>> predicado = null, Func<IQueryable<ValidadorNumero>, IOrderedQueryable<ValidadorNumero>> ordenarPor = null, Func<IQueryable<ValidadorNumero>, IIncludableQueryable<ValidadorNumero, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<ValidadorNumero> UnicoAsync(Expression<Func<ValidadorNumero, bool>> predicado = null, Func<IQueryable<ValidadorNumero>, IOrderedQueryable<ValidadorNumero>> ordenarPor = null, Func<IQueryable<ValidadorNumero>, IIncludableQueryable<ValidadorNumero, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+
+            ValidadorNumero d = await this.repo.UnicoAsync(predicado);
+
+            return d.CopiaValidadorNumero();
         }
     }
 

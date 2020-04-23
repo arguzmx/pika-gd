@@ -18,28 +18,21 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Metadatos.Servicios
 {
-    public class ServicioAtributoTabla : IServicioInyectable, IServicioAtributoTabla
+    public class ServicioAtributoTabla : ContextoServicioMetadatos, IServicioInyectable, IServicioAtributoTabla
     {
-        private const string DEFAULT_SORT_COL = "Nombre";
+        private const string DEFAULT_SORT_COL = "propiedadId";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
         private IRepositorioAsync<AtributoTabla> repo;
         private ICompositorConsulta<AtributoTabla> compositor;
-        private ILogger<ServicioAtributoTabla> logger;
-        private DbContextMetadatos contexto;
         private UnidadDeTrabajo<DbContextMetadatos> UDT;
-        public ServicioAtributoTabla(DbContextMetadatos contexto,
-            ICompositorConsulta<AtributoTabla> compositorConsulta,
-            ILogger<ServicioAtributoTabla> Logger,
-            IServicioCache servicioCache)
+        public ServicioAtributoTabla(
+           IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
+           ICompositorConsulta<AtributoTabla> compositorConsulta,
+           ILogger<ServicioAtributoTabla> Logger,
+           IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<AtributoTabla>(compositor);
         }
@@ -181,9 +174,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<AtributoTabla> UnicoAsync(Expression<Func<AtributoTabla, bool>> predicado = null, Func<IQueryable<AtributoTabla>, IOrderedQueryable<AtributoTabla>> ordenarPor = null, Func<IQueryable<AtributoTabla>, IIncludableQueryable<AtributoTabla, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<AtributoTabla> UnicoAsync(Expression<Func<AtributoTabla, bool>> predicado = null, Func<IQueryable<AtributoTabla>, IOrderedQueryable<AtributoTabla>> ordenarPor = null, Func<IQueryable<AtributoTabla>, IIncludableQueryable<AtributoTabla, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+
+            AtributoTabla d = await this.repo.UnicoAsync(predicado);
+
+            return d.CopiaAtributoTabla();
         }
     }
 }

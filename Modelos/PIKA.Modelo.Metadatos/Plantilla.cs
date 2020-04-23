@@ -8,7 +8,7 @@ namespace PIKA.Modelo.Metadatos
 {
     public class Plantilla : Entidad<string>, IEntidadNombrada, IEntidadRelacionada, IEntidadEliminada
     {
-    
+
         public string TipoOrigenDefault => ConstantesModelo.IDORIGEN_DOMINIO;
 
         public Plantilla()
@@ -17,12 +17,12 @@ namespace PIKA.Modelo.Metadatos
             this.TipoOrigenId = TipoOrigenDefault;
         }
 
-       
+
 
         /// <summary>
         /// Nombre de la plantilla
         /// </summary>
-        public string Nombre { get ; set; }
+        public string Nombre { get; set; }
 
         /// <summary>
         /// Identificador de relación de origem, en este caso se utiliza
@@ -41,9 +41,9 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public bool Eliminada { get; set; }
 
-
+    
         public ICollection<PropiedadPlantilla> Propiedades { get; set; }
-
+        public ICollection<AsociacionPlantilla> Asociaciones { get; set; }
        
     }
 }

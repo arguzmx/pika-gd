@@ -1,4 +1,10 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
@@ -7,46 +13,31 @@ using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Seguridad.Servicios
 {
-    public class ServicioAplicacion : IServicioInyectable, IServicioAplicacion
+
+    public class ServicioAplicacion : ContextoServicioSeguridad
+        , IServicioInyectable, IServicioAplicacion
+
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
         private IRepositorioAsync<Aplicacion> repo;
         private ICompositorConsulta<Aplicacion> compositor;
-        private ILogger<ServicioAplicacion> logger;
-        private DbContextSeguridad contexto;
         private UnidadDeTrabajo<DbContextSeguridad> UDT;
-        public ServicioAplicacion(DbContextSeguridad contexto,
-            ICompositorConsulta<Aplicacion> compositorConsulta,
-            ILogger<ServicioAplicacion> Logger,
-            IServicioCache servicioCache)
+
+        public ServicioAplicacion(
+         IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
+         ICompositorConsulta<Aplicacion> compositorConsulta,
+         ILogger<ServicioAplicacion> Logger,
+         IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<Aplicacion>(compositor);
         }
-
-
-
-
-
 
         public async Task<bool> Existe(Expression<Func<Aplicacion, bool>> predicado)
         {
@@ -92,7 +83,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             o.UICulture = entity.UICulture;
             o.Version = entity.Version;
             o.ReleaseIndex = entity.ReleaseIndex;
-            
+
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
@@ -167,9 +158,14 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<Aplicacion> UnicoAsync(Expression<Func<Aplicacion, bool>> predicado = null, Func<IQueryable<Aplicacion>, IOrderedQueryable<Aplicacion>> ordenarPor = null, Func<IQueryable<Aplicacion>, IIncludableQueryable<Aplicacion, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<Aplicacion> UnicoAsync(Expression<Func<Aplicacion, bool>> predicado = null, Func<IQueryable<Aplicacion>, IOrderedQueryable<Aplicacion>> ordenarPor = null, Func<IQueryable<Aplicacion>, IIncludableQueryable<Aplicacion, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+
+            Aplicacion d = await this.repo.UnicoAsync(predicado);
+
+            return d.CopiaAplicacion();
         }
+
+
     }
 }

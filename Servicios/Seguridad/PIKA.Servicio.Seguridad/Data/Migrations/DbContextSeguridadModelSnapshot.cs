@@ -33,7 +33,9 @@ namespace PIKA.Servicio.Seguridad.Data.Migrations
                         .HasMaxLength(200);
 
                     b.Property<int>("ReleaseIndex")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(10);
 
                     b.Property<string>("UICulture")
                         .IsRequired()
@@ -80,7 +82,8 @@ namespace PIKA.Servicio.Seguridad.Data.Migrations
                         .HasMaxLength(100);
 
                     b.Property<string>("ModuloPadreId")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -88,7 +91,8 @@ namespace PIKA.Servicio.Seguridad.Data.Migrations
                         .HasMaxLength(200);
 
                     b.Property<ulong>("PermisosDisponibles")
-                        .HasColumnType("bigint unsigned");
+                        .HasColumnType("bigint unsigned")
+                        .HasMaxLength(128);
 
                     b.Property<string>("UICulture")
                         .IsRequired()

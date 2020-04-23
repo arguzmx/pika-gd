@@ -18,41 +18,26 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Metadatos.Servicios
 {
-   public class ServicioPropiedadPlantilla : IServicioInyectable, IServicioPropiedadPlantilla
+   public class ServicioPropiedadPlantilla : ContextoServicioMetadatos, IServicioInyectable, IServicioPropiedadPlantilla
     {
         //perame voy a buscar a mi exploradoroki
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
         private IRepositorioAsync<PropiedadPlantilla> repo;
         private ICompositorConsulta<PropiedadPlantilla> compositor;
-        private ILogger<ServicioPropiedadPlantilla> logger;
-        private DbContextMetadatos contexto;
         private UnidadDeTrabajo<DbContextMetadatos> UDT;
         private IServicioTipoDatoPropiedadPlantilla servicioTipoDatoPropiedadPlantilla;
-        public ServicioPropiedadPlantilla(DbContextMetadatos contexto,
-            ICompositorConsulta<PropiedadPlantilla> compositorConsulta,
-            ILogger<ServicioPropiedadPlantilla> Logger,
-            IServicioCache servicioCache,
-            IServicioTipoDatoPropiedadPlantilla servicioTipoDatoPropiedadPlantilla
-            )
+        public ServicioPropiedadPlantilla(
+           IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
+           ICompositorConsulta<PropiedadPlantilla> compositorConsulta,
+           ILogger<ServicioPropiedadPlantilla> Logger,
+           IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<PropiedadPlantilla>(compositor);
-            this.servicioTipoDatoPropiedadPlantilla = servicioTipoDatoPropiedadPlantilla;
         }
-
-
-
-
-
 
         public async Task<bool> Existe(Expression<Func<PropiedadPlantilla, bool>> predicado)
         {
@@ -265,9 +250,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<PropiedadPlantilla> UnicoAsync(Expression<Func<PropiedadPlantilla, bool>> predicado = null, Func<IQueryable<PropiedadPlantilla>, IOrderedQueryable<PropiedadPlantilla>> ordenarPor = null, Func<IQueryable<PropiedadPlantilla>, IIncludableQueryable<PropiedadPlantilla, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<PropiedadPlantilla> UnicoAsync(Expression<Func<PropiedadPlantilla, bool>> predicado = null, Func<IQueryable<PropiedadPlantilla>, IOrderedQueryable<PropiedadPlantilla>> ordenarPor = null, Func<IQueryable<PropiedadPlantilla>, IIncludableQueryable<PropiedadPlantilla, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+
+            PropiedadPlantilla d = await this.repo.UnicoAsync(predicado);
+
+            return d.CopiaPropiedadPlantilla();
         }
     }
 }

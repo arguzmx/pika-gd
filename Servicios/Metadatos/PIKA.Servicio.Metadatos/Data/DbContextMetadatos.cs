@@ -1,18 +1,42 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PIKA.Modelo.Metadatos;
+using PIKA.Servicio.Metadatos.Data;
 using PIKA.Servicio.Metadatos.Data.Configuracion;
+using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace PIKA.Servicio.Metadatos.Data
 {
-   public class DbContextMetadatos : DbContext
+    public class DbContextMetadatosFactory : IFabricaContexto<DbContextMetadatos>
     {
-        public DbContextMetadatos(DbContextOptions<DbContextMetadatos> options)
-        : base(options)
+
+        private IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones;
+        public DbContextMetadatosFactory(IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones)
+        {
+            this.proveedorOpciones = proveedorOpciones;
+        }
+
+        public DbContextMetadatos Crear()
+        {
+
+
+            return new DbContextMetadatos(proveedorOpciones.ObtieneOpciones());
+        }
+    }
+
+    public class DbContextMetadatos : DbContext, IRepositorioInicializable
+    {
+        public DbContextMetadatos(DbContextOptions options)
+
+
+       : base(options)
+
+
         {
         }
+
 
         #region Constantes de configuracion
 
@@ -46,10 +70,6 @@ namespace PIKA.Servicio.Metadatos.Data
         ///  Nombre de la tabla para las entidades del AtributoTabla
         /// </summary>
         public static string TablaAtributoTabla { get => "metadatos$atributotabla"; }
-        /// <summary>
-        ///  Nombre de la tabla para las entidades del AtributoTablaPropiedadPlantilla
-        /// </summary>
-        public static string TablaAtributoTablaPropiedadPlantilla { get => "metadatos$atributotablapropiedadplantilla"; }
 
         /// <summary>
         ///  Nombre de la tabla para las entidades del ValidadorNumero
@@ -61,7 +81,16 @@ namespace PIKA.Servicio.Metadatos.Data
         /// </summary>
         public static string TablaValidadorTexto { get => "metadatos$validadortexto"; }
 
-        
+        /// <summary>
+        ///  Nombre de la tabla para las entidades del Asociacion de Plantilla
+        /// </summary>
+        public static string TablaAsociacionPlantilla { get => "metadatos$asociacionplantilla"; }
+        /// <summary>
+        ///  Nombre de la tabla para las entidades del TipoAlmacen Metadatos
+        /// </summary>
+        public static string TablaTipoAlmacenMetadatos { get => "metadatos$tipoalmacenmetadatos"; }
+
+
         #endregion
 
         /// <summary>
@@ -80,7 +109,7 @@ namespace PIKA.Servicio.Metadatos.Data
         // <summary>
         /// Contiene los tipos de datos asociados con las propeidades de las plantillas
         /// </summary>
-         public DbSet<TipoDatoPropiedadPlantilla> TipoDatoPropiedadPlantilla { get; set; }
+        public DbSet<TipoDatoPropiedadPlantilla> TipoDatoPropiedadPlantilla { get; set; }
 
 
         // <summary>
@@ -104,7 +133,22 @@ namespace PIKA.Servicio.Metadatos.Data
         /// Metadatos existentes en la ValidadorTexto
         /// </summary>
         public DbSet<ValidadorTexto> ValidadorTexto { get; set; }
+        /// <summary>
+        /// Metadatos existentes en la Asociacion plantilla
+        /// </summary>
 
+        public DbSet<AsociacionPlantilla> AsociacionPlantilla { get; set; }
+
+        public DbSet<TipoAlmacenMetadatos> TipoAlmacenMetadatos { get; set; }
+        public void AplicarMigraciones()
+        {
+            this.Database.Migrate();
+        }
+
+        public void Inicializar(string ContentPath)
+        {
+            InicializarDatos.Inicializar(this, ContentPath);
+        }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -116,6 +160,8 @@ namespace PIKA.Servicio.Metadatos.Data
             builder.ApplyConfiguration<AtributoMetadato>(new DbConfAtributoMetadato());
             builder.ApplyConfiguration<ValidadorNumero>(new DbConfValidadorNumero());
             builder.ApplyConfiguration<ValidadorTexto>(new DbConfValidadorTexto());
+            builder.ApplyConfiguration<AsociacionPlantilla>(new DbConfAsociacionPlantilla());
+            builder.ApplyConfiguration<TipoAlmacenMetadatos>(new DbConfTipoAlmacenMetadatos());
         }
 
     }

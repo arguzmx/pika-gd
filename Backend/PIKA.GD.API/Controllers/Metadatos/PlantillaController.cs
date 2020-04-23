@@ -73,7 +73,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
 
         [HttpGet("page", Name = "GetPagePlantilla")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<Plantilla>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<Plantilla>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
@@ -135,9 +135,6 @@ namespace PIKA.GD.API.Controllers.Metadatos
             if (o != null) return Ok(o);
             return NotFound(id);
         }
-
-
-
 
         [HttpDelete("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]

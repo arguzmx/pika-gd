@@ -1,4 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
@@ -6,46 +13,31 @@ using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Seguridad.Servicios
 {
-    public class ServicioTraduccionAplicacionModulo : IServicioInyectable, IServicioTraduccionAplicacionModulo
+ 
+    public class ServicioTraduccionAplicacionModulo : ContextoServicioSeguridad
+      , IServicioInyectable, IServicioTraduccionAplicacionModulo
+
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
         private IRepositorioAsync<TraduccionAplicacionModulo> repo;
         private ICompositorConsulta<TraduccionAplicacionModulo> compositor;
-        private ILogger<ServicioTraduccionAplicacionModulo> logger;
-        private DbContextSeguridad contexto;
         private UnidadDeTrabajo<DbContextSeguridad> UDT;
-        public ServicioTraduccionAplicacionModulo(DbContextSeguridad contexto,
-            ICompositorConsulta<TraduccionAplicacionModulo> compositorConsulta,
-            ILogger<ServicioTraduccionAplicacionModulo> Logger,
-            IServicioCache servicioCache)
+
+        public ServicioTraduccionAplicacionModulo(
+         IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
+         ICompositorConsulta<TraduccionAplicacionModulo> compositorConsulta,
+         ILogger<ServicioTraduccionAplicacionModulo> Logger,
+         IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
-
-
-            this.contexto = contexto;
             this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
-            this.cache = servicioCache;
-            this.logger = Logger;
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<TraduccionAplicacionModulo>(compositor);
         }
-
-
-
-
-
 
         public async Task<bool> Existe(Expression<Func<TraduccionAplicacionModulo, bool>> predicado)
         {
@@ -63,7 +55,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
                 throw new ExElementoExistente(entity.Nombre);
             }
 
-            entity.ModuloId = System.Guid.NewGuid().ToString();
+            entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
             return entity;
@@ -72,15 +64,15 @@ namespace PIKA.Servicio.Seguridad.Servicios
         public async Task ActualizarAsync(TraduccionAplicacionModulo entity)
         {
 
-            TraduccionAplicacionModulo o = await this.repo.UnicoAsync(x => x.ModuloId == entity.ModuloId);
+            TraduccionAplicacionModulo o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
             if (o == null)
             {
-                throw new EXNoEncontrado(entity.ModuloId);
+                throw new EXNoEncontrado(entity.Id);
             }
 
             if (await Existe(x =>
-            x.ModuloId != entity.ModuloId
+            x.Id != entity.Id
             && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
@@ -89,7 +81,9 @@ namespace PIKA.Servicio.Seguridad.Servicios
             o.Nombre = entity.Nombre;
             o.Descripcion = entity.Descripcion;
             o.UICulture = entity.UICulture;
-          
+            o.ModuloId = entity.ModuloId;
+            o.AplicacionId = entity.AplicacionId;
+
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
@@ -164,9 +158,14 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<TraduccionAplicacionModulo> UnicoAsync(Expression<Func<TraduccionAplicacionModulo, bool>> predicado = null, Func<IQueryable<TraduccionAplicacionModulo>, IOrderedQueryable<TraduccionAplicacionModulo>> ordenarPor = null, Func<IQueryable<TraduccionAplicacionModulo>, IIncludableQueryable<TraduccionAplicacionModulo, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<TraduccionAplicacionModulo> UnicoAsync(Expression<Func<TraduccionAplicacionModulo, bool>> predicado = null, Func<IQueryable<TraduccionAplicacionModulo>, IOrderedQueryable<TraduccionAplicacionModulo>> ordenarPor = null, Func<IQueryable<TraduccionAplicacionModulo>, IIncludableQueryable<TraduccionAplicacionModulo, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+
+            TraduccionAplicacionModulo d = await this.repo.UnicoAsync(predicado);
+
+            return d.CopiaTraduccionAplicacionModulo();
         }
+
+
     }
 }
