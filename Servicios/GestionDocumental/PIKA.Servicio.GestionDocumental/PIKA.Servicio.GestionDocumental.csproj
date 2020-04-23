@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
   </ItemGroup>
 
@@ -29,10 +30,6 @@
     <ProjectReference Include="..\..\..\Infraestructura\PIKA.Infraestructura.Comun\PIKA.Infraestructura.Comun.csproj" />
     <ProjectReference Include="..\..\..\Infraestructura\RepositorioEntidades\RepositorioEntidades.csproj" />
     <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.GestorDocumental\PIKA.Modelo.GestorDocumental.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Servicios\Topologia\" />
   </ItemGroup>
 
 

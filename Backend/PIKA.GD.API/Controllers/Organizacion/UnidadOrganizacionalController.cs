@@ -74,9 +74,8 @@ namespace PIKA.GD.API.Controllers.Organizacion
 
         [HttpGet("page", Name = "GetPageUO")]
         [TypeFilter(typeof(AsyncACLActionFilter) )]
-        public async Task<ActionResult<IEnumerable<UnidadOrganizacional>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<UnidadOrganizacional>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
-            Console.WriteLine("GETPAGING UO");
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
             var data = await servicioUO.ObtenerPaginadoAsync(query).ConfigureAwait(false);

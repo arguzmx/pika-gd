@@ -108,7 +108,6 @@ namespace PIKA.Servicio.Organizacion.Servicios
         public async Task<IPaginado<DireccionPostal>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<DireccionPostal>, IIncludableQueryable<DireccionPostal, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             Query = GetDefaultQuery(Query);
-            //Query.Filtros.Add(new FiltroConsulta() { Operador =  operado, Property = COL_OWNERID, Value = OwnerId });
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
 
             return respuesta;
@@ -173,9 +172,10 @@ namespace PIKA.Servicio.Organizacion.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<DireccionPostal> UnicoAsync(Expression<Func<DireccionPostal, bool>> predicado = null, Func<IQueryable<DireccionPostal>, IOrderedQueryable<DireccionPostal>> ordenarPor = null, Func<IQueryable<DireccionPostal>, IIncludableQueryable<DireccionPostal, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<DireccionPostal> UnicoAsync(Expression<Func<DireccionPostal, bool>> predicado = null, Func<IQueryable<DireccionPostal>, IOrderedQueryable<DireccionPostal>> ordenarPor = null, Func<IQueryable<DireccionPostal>, IIncludableQueryable<DireccionPostal, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+            DireccionPostal d = await this.repo.UnicoAsync(predicado);
+            return d.CopiaDireccionPostal();
         }
     }
 }

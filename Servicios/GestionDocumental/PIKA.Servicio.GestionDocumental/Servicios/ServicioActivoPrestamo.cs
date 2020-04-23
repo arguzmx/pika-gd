@@ -157,9 +157,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<ActivoPrestamo> UnicoAsync(Expression<Func<ActivoPrestamo, bool>> predicado = null, Func<IQueryable<ActivoPrestamo>, IOrderedQueryable<ActivoPrestamo>> ordenarPor = null, Func<IQueryable<ActivoPrestamo>, IIncludableQueryable<ActivoPrestamo, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<ActivoPrestamo> UnicoAsync(Expression<Func<ActivoPrestamo, bool>> predicado = null, Func<IQueryable<ActivoPrestamo>, IOrderedQueryable<ActivoPrestamo>> ordenarPor = null, Func<IQueryable<ActivoPrestamo>, IIncludableQueryable<ActivoPrestamo, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+            ActivoPrestamo a = await this.repo.UnicoAsync(predicado);
+            return a.CopiaActivoPrestamo();
         }
     }
 }

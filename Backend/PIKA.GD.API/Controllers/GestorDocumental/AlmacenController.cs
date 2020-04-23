@@ -19,21 +19,21 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
     [ApiVersion("1.0")]
     [ApiController]
     [Route("api/v{version:apiVersion}/gd/[controller]")]
-    public class ComentarioPrestamoController : ACLController
+    public class AlmacenController : ACLController
     {
-        private readonly ILogger<ComentarioPrestamoController> logger;
-        private IServicioComentarioPrestamo servicioComentarioPrestamo;
-        private IProveedorMetadatos<ComentarioPrestamo> metadataProvider;
-        public ComentarioPrestamoController(ILogger<ComentarioPrestamoController> logger,
-            IProveedorMetadatos<ComentarioPrestamo> metadataProvider,
-            IServicioComentarioPrestamo servicioComentarioPrestamo)
+        private readonly ILogger<AlmacenController> logger;
+        private IServicioAlmacenArchivo servicioAlmacen;
+        private IProveedorMetadatos<AlmacenArchivo> metadataProvider;
+        public AlmacenController(ILogger<AlmacenController> logger,
+            IProveedorMetadatos<AlmacenArchivo> metadataProvider,
+            IServicioAlmacenArchivo servicioAlmacen)
         {
             this.logger = logger;
-            this.servicioComentarioPrestamo = servicioComentarioPrestamo;
+            this.servicioAlmacen = servicioAlmacen;
             this.metadataProvider = metadataProvider;
         }
 
-        [HttpGet("metadata", Name = "MetadataComentarioPrestamo")]
+        [HttpGet("metadata", Name = "MetadataAlmacen")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
         {
@@ -44,16 +44,16 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<ComentarioPrestamo>> Post([FromBody]ComentarioPrestamo entidad)
+        public async Task<ActionResult<AlmacenArchivo>> Post([FromBody]AlmacenArchivo entidad)
         {
-            entidad = await servicioComentarioPrestamo.CrearAsync(entidad).ConfigureAwait(false);
-            return Ok(CreatedAtAction("GetComentarioPrestamo", new { id = entidad.Id }, entidad).Value);
+            entidad = await servicioAlmacen.CrearAsync(entidad).ConfigureAwait(false);
+            return Ok(CreatedAtAction("GetAlmacen", new { id = entidad.Id }, entidad).Value);
         }
 
 
         [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<IActionResult> Put(string id, [FromBody]ComentarioPrestamo entidad)
+        public async Task<IActionResult> Put(string id, [FromBody]AlmacenArchivo entidad)
         {
             var x = ObtieneFiltrosIdentidad();
 
@@ -63,20 +63,20 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 return BadRequest();
             }
 
-            await servicioComentarioPrestamo.ActualizarAsync(entidad).ConfigureAwait(false);
+            await servicioAlmacen.ActualizarAsync(entidad).ConfigureAwait(false);
             return NoContent();
 
         }
 
 
-        [HttpGet("page", Name = "GetPageComentarioPrestamo")]
+        [HttpGet("page", Name = "GetPageAlmacen")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<ComentarioPrestamo>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<AlmacenArchivo>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioComentarioPrestamo.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<ComentarioPrestamo>());
+            var data = await servicioAlmacen.ObtenerPaginadoAsync(query).ConfigureAwait(false);
+            return Ok(data.Elementos.ToList<AlmacenArchivo>());
         }
 
 
@@ -88,9 +88,9 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
 
-        [HttpGet("datatables", Name = "GetDatatablesPluginComentarioPrestamo")]
+        [HttpGet("datatables", Name = "GetDatatablesPluginAlmacen")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<RespuestaDatatables<ComentarioPrestamo>>> GetDatatablesPlugin([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
+        public async Task<ActionResult<RespuestaDatatables<AlmacenArchivo>>> GetDatatablesPlugin([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
         {
 
             if (query.order.Count == 0)
@@ -109,9 +109,9 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 ord_direccion = query.order[0].dir
             };
 
-            var data = await servicioComentarioPrestamo.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
+            var data = await servicioAlmacen.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
 
-            RespuestaDatatables<ComentarioPrestamo> r = new RespuestaDatatables<ComentarioPrestamo>()
+            RespuestaDatatables<AlmacenArchivo> r = new RespuestaDatatables<AlmacenArchivo>()
             {
                 data = data.Elementos.ToArray(),
                 draw = query.draw,
@@ -127,19 +127,21 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<ComentarioPrestamo>> Get(string id)
+        public async Task<ActionResult<AlmacenArchivo>> Get(string id)
         {
-            var o = await servicioComentarioPrestamo.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            var o = await servicioAlmacen.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }
+
+
 
 
         [HttpDelete]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> Delete([FromBody]string[] id)
         {
-            return Ok(await servicioComentarioPrestamo.Eliminar(id).ConfigureAwait(false));
+            return Ok(await servicioAlmacen.Eliminar(id).ConfigureAwait(false));
         }
     }
 }

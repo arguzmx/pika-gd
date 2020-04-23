@@ -20,7 +20,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.CodigoOptico).HasMaxLength(2048).IsRequired(false);
             builder.Property(x => x.CodigoElectronico).HasMaxLength(2048).IsRequired(false);
-            builder.Property(x => x.Posicion).HasMaxLength(LongitudDatos.Version).IsRequired(false);
+            builder.Property(x => x.Posicion).HasMaxLength(LongitudDatos.Version).IsRequired();
 
         }
     }

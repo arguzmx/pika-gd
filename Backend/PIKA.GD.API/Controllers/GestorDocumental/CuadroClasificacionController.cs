@@ -71,7 +71,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpGet("page", Name = "GetPageCuadro")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<CuadroClasificacion>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<CuadroClasificacion>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());

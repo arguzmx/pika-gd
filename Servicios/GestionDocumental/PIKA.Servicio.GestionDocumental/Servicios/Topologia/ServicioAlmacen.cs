@@ -18,57 +18,52 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.GestionDocumental.Servicios
 {
-    public class ServicioPrestamo : ContextoServicioGestionDocumental,
-        IServicioInyectable, IServicioPrestamo
+    public class ServicioAlmacen : ContextoServicioGestionDocumental,
+        IServicioInyectable, IServicioAlmacenArchivo
     {
-        private const string DEFAULT_SORT_COL = "FechaCreacion";
+        private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
-        private IRepositorioAsync<Prestamo> repo;
-        private ICompositorConsulta<Prestamo> compositor;
-        private ILogger<ServicioPrestamo> logger;
-        private DBContextGestionDocumental contexto;
+        private IRepositorioAsync<AlmacenArchivo> repo;
+        private ICompositorConsulta<AlmacenArchivo> compositor;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
-        public ServicioPrestamo(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ICompositorConsulta<Prestamo> compositorConsulta,
-           ILogger<ServicioPrestamo> Logger,
+        public ServicioAlmacen(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
+           ICompositorConsulta<AlmacenArchivo> compositorConsulta,
+           ILogger<ServicioAlmacen> Logger,
            IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<Prestamo>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<AlmacenArchivo>(compositor);
         }
 
-        public async Task<bool> Existe(Expression<Func<Prestamo, bool>> predicado)
+        public async Task<bool> Existe(Expression<Func<AlmacenArchivo, bool>> predicado)
         {
-            List<Prestamo> l = await this.repo.ObtenerAsync(predicado);
+            List<AlmacenArchivo> l = await this.repo.ObtenerAsync(predicado);
             if (l.Count() == 0) return false;
             return true;
         }
 
 
-        public async Task<Prestamo> CrearAsync(Prestamo entity, CancellationToken cancellationToken = default)
+        public async Task<AlmacenArchivo> CrearAsync(AlmacenArchivo entity, CancellationToken cancellationToken = default)
         {
 
-            if (await Existe(x => x.Folio.Equals(entity.Folio, StringComparison.InvariantCultureIgnoreCase)))
+            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
-                throw new ExElementoExistente(entity.Folio);
+                throw new ExElementoExistente(entity.Nombre);
             }
 
-            entity.Id = Guid.NewGuid().ToString();
-            entity.FechaCreacion = DateTime.UtcNow;
-
+            entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
             return entity;
         }
 
-        public async Task ActualizarAsync(Prestamo entity)
+        public async Task ActualizarAsync(AlmacenArchivo entity)
         {
 
-            Prestamo o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+            AlmacenArchivo o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
             if (o == null)
             {
@@ -76,16 +71,14 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
 
             if (await Existe(x =>
-            x.Id != entity.Id & x.Folio == entity.Folio))
+            x.Id != entity.Id & x.ArchivoId == entity.ArchivoId
+            && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
-                throw new ExElementoExistente(entity.Folio);
+                throw new ExElementoExistente(entity.Nombre);
             }
 
-            o.Folio = entity.Folio;
-            o.Eliminada = entity.Eliminada;
-            o.FechaProgramadaDevolucion = entity.FechaProgramadaDevolucion;
-            o.FechaDevolucion = entity.FechaDevolucion;
-            o.TieneDevolucionesParciales = entity.TieneDevolucionesParciales;
+            o.Nombre = entity.Nombre;
+            o.Clave= entity.Clave;
 
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
@@ -106,7 +99,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
             return query;
         }
-        public async Task<IPaginado<Prestamo>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Prestamo>, IIncludableQueryable<Prestamo, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
+        public async Task<IPaginado<AlmacenArchivo>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<AlmacenArchivo>, IIncludableQueryable<AlmacenArchivo, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
@@ -114,12 +107,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return respuesta;
         }
 
-        public Task<IEnumerable<Prestamo>> CrearAsync(params Prestamo[] entities)
+        public Task<IEnumerable<AlmacenArchivo>> CrearAsync(params AlmacenArchivo[] entities)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Prestamo>> CrearAsync(IEnumerable<Prestamo> entities, CancellationToken cancellationToken = default)
+        public Task<IEnumerable<AlmacenArchivo>> CrearAsync(IEnumerable<AlmacenArchivo> entities, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -136,36 +129,36 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            Prestamo p;
+            AlmacenArchivo a;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
             {
-                p = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (p != null)
+                a = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (a != null)
                 {
-                    p.Eliminada = true;
-                    UDT.Context.Entry(p).State = EntityState.Modified;
-                    listaEliminados.Add(p.Id);
+                    UDT.Context.Entry(a).State = EntityState.Deleted;
+                    listaEliminados.Add(a.Id);
                 }
             }
             UDT.SaveChanges();
             return listaEliminados;
         }
 
-        public Task<List<Prestamo>> ObtenerAsync(Expression<Func<Prestamo, bool>> predicado)
+        public Task<List<AlmacenArchivo>> ObtenerAsync(Expression<Func<AlmacenArchivo, bool>> predicado)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Prestamo>> ObtenerListaAsync(string SqlCommand)
+        public Task<IEnumerable<AlmacenArchivo>> ObtenerListaAsync(string SqlCommand)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IPaginado<Prestamo>> ObtenerPaginadoAsync(Expression<Func<Prestamo, bool>> predicate = null, Func<IQueryable<Prestamo>, IOrderedQueryable<Prestamo>> orderBy = null, Func<IQueryable<Prestamo>, IIncludableQueryable<Prestamo, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
+        public Task<IPaginado<AlmacenArchivo>> ObtenerPaginadoAsync(Expression<Func<AlmacenArchivo, bool>> predicate = null, Func<IQueryable<AlmacenArchivo>, IOrderedQueryable<AlmacenArchivo>> orderBy = null, Func<IQueryable<AlmacenArchivo>, IIncludableQueryable<AlmacenArchivo, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
+
 
 
         public Task Restaurar(string[] ids)
@@ -173,10 +166,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public async Task<Prestamo> UnicoAsync(Expression<Func<Prestamo, bool>> predicado = null, Func<IQueryable<Prestamo>, IOrderedQueryable<Prestamo>> ordenarPor = null, Func<IQueryable<Prestamo>, IIncludableQueryable<Prestamo, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<AlmacenArchivo> UnicoAsync(Expression<Func<AlmacenArchivo, bool>> predicado = null, Func<IQueryable<AlmacenArchivo>, IOrderedQueryable<AlmacenArchivo>> ordenarPor = null, Func<IQueryable<AlmacenArchivo>, IIncludableQueryable<AlmacenArchivo, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            Prestamo p = await this.repo.UnicoAsync(predicado);
-            return p.CopiaPrestamo();
+            AlmacenArchivo a = await this.repo.UnicoAsync(predicado);
+            return a.CopiaAlamacen();
         }
     }
 }
+
