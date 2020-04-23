@@ -60,7 +60,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
             var x = ObtieneFiltrosIdentidad();
 
 
-            if (id != entidad.PropiedadId)
+            if (id != entidad.Id)
             {
                 return BadRequest();
             }

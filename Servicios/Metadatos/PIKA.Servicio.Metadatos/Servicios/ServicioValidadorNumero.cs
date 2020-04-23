@@ -20,7 +20,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 {
     public class ServicioValidadorNumero : ContextoServicioMetadatos, IServicioInyectable, IServicioValidadorNumero
     {
-        private const string DEFAULT_SORT_COL = "Nombre";
+        private const string DEFAULT_SORT_COL = "propiedadId";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<ValidadorNumero> repo;

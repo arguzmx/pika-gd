@@ -127,9 +127,29 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<ICollection<string>> Eliminar(string[] ids)
+        public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            throw new NotImplementedException();
+            ModuloAplicacion m;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                m = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (m != null)
+                {
+                    //Si alguno de tus objetos tiene el campo "Eliminado" sería así: 
+
+                    //m.Eliminada = true;
+                    //UDT.Context.Entry(m).State = EntityState.Modified;
+                    //si no, como es el caso, queda así nada más
+                    //bueno y esta linea ya no va UDT.Context.Entry(m).State = EntityState.Deleted;
+                    
+
+                    UDT.Context.Entry(m).State = EntityState.Deleted;
+                    listaEliminados.Add(m.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
         }
 
         public Task<List<ModuloAplicacion>> ObtenerAsync(Expression<Func<ModuloAplicacion, bool>> predicado)

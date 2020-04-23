@@ -9,6 +9,8 @@
     <Compile Remove="Data\Migrations\20200417194443_InicialMetadatosDato01.Designer.cs" />
     <Compile Remove="Data\Migrations\20200419041009_InicialMetadatosprueba.cs" />
     <Compile Remove="Data\Migrations\20200419041009_InicialMetadatosprueba.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200423201439_InicialMetadatosprueba.cs" />
+    <Compile Remove="Data\Migrations\20200423201439_InicialMetadatosprueba.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

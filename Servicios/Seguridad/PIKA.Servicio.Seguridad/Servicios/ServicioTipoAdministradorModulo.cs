@@ -20,7 +20,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
       , IServicioInyectable, IServicioTipoAdministradorModulo
 
     {
-        private const string DEFAULT_SORT_COL = "Nombre";
+        private const string DEFAULT_SORT_COL = "ModuloId";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<TipoAdministradorModulo> repo;

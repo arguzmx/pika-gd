@@ -20,7 +20,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 {
    public class ServicioAtributoMetadato : ContextoServicioMetadatos, IServicioInyectable, IServicioAtributoMetadato
     {
-        private const string DEFAULT_SORT_COL = "Nombre";
+        private const string DEFAULT_SORT_COL = "propiedadId";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<AtributoMetadato> repo;

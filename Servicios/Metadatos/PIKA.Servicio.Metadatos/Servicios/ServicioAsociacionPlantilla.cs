@@ -20,7 +20,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 {
     public class ServicioAsociacionPlantilla : ContextoServicioMetadatos, IServicioInyectable, IServicioAsociacionPlantilla
     {
-        private const string DEFAULT_SORT_COL = "Nombre";
+        private const string DEFAULT_SORT_COL = "plantillaId";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<AsociacionPlantilla> repo;

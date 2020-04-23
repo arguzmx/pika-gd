@@ -80,7 +80,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpGet("page", Name = "GetPagePrestamo")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<Prestamo>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<Prestamo>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
@@ -156,8 +156,8 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         #region Activos de prestamo
 
-        [HttpGet("metadata", Name = "MetadataActivoPrestamo")]
-        [Route("{id}/Activo/metadata")]
+        [HttpGet("metadataActivo", Name = "MetadataActivoPrestamo")]
+        [Route("{id}/Activo/metadataActivo")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<MetadataInfo>> GetMetadataActivo([FromQuery]Consulta query = null)
         {
@@ -195,10 +195,10 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         }
 
 
-        [HttpGet("page", Name = "GetPageActivoPrestamo")]
-        [Route("{id}/Activo/page")]
+        [HttpGet("pageActivo", Name = "GetPageActivoPrestamo")]
+        [Route("{id}/Activo/pageActivo")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<ActivoPrestamo>>> GetPageActivo([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<ActivoPrestamo>>> GetPageActivo([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
@@ -215,8 +215,8 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
 
-        [HttpGet("datatables", Name = "GetDatatablesPluginActivoPrestamo")]
-        [Route("{id}/Activo/datatables")]
+        [HttpGet("datatablesActivo", Name = "GetDatatablesPluginActivoPrestamo")]
+        [Route("{id}/Activo/datatablesActivo")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<RespuestaDatatables<ActivoPrestamo>>> GetDatatablesPluginActivo([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
         {

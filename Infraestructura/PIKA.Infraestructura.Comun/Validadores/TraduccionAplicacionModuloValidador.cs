@@ -7,7 +7,7 @@ using System.Text;
 
 namespace PIKA.Infraestructura.Comun.Validadores
 {
-    class TraduccionAplicacionModuloValidador : AbstractValidator<TraduccionAplicacionModulo>
+    public class TraduccionAplicacionModuloValidador : AbstractValidator<TraduccionAplicacionModulo>
     {
         public TraduccionAplicacionModuloValidador(IStringLocalizer<TraduccionAplicacionModulo> localizer)
         {

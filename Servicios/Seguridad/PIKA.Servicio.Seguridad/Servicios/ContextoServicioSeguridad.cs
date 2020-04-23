@@ -9,7 +9,6 @@ namespace PIKA.Servicio.Seguridad.Servicios
 {
     public class ContextoServicioSeguridad
     {
-        private IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones;
         protected IServicioCache cache;
         protected ILogger logger;
 

@@ -136,9 +136,6 @@ namespace PIKA.GD.API.Controllers.Metadatos
             return NotFound(id);
         }
 
-
-
-
         [HttpDelete("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> Delete([FromBody]string[] id)

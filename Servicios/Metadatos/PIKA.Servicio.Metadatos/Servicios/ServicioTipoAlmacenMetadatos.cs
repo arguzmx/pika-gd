@@ -154,19 +154,15 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<TipoAlmacenMetadatos> UnicoAsync(Expression<Func<TipoAlmacenMetadatos, bool>> predicado = null, Func<IQueryable<TipoAlmacenMetadatos>, IOrderedQueryable<TipoAlmacenMetadatos>> ordenarPor = null, Func<IQueryable<TipoAlmacenMetadatos>, IIncludableQueryable<TipoAlmacenMetadatos, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-<<<<<<< Updated upstream
+
 
             TipoAlmacenMetadatos d = await this.repo.UnicoAsync(predicado);
 
             return d.CopiaTipoAlmacenMetadatos();
         }
-=======
->>>>>>> Stashed changes
 
-            TipoAlmacenMetadatos d = await this.repo.UnicoAsync(predicado);
 
-            return d.CopiaTipoAlmacenMetadatos();
-        }
+     
 
         Task<ICollection<string>> IServicioRepositorioAsync<TipoAlmacenMetadatos, string>.Eliminar(string[] ids)
         {

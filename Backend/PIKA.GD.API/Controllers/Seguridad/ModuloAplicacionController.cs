@@ -60,7 +60,6 @@ namespace PIKA.GD.API.Controllers.Seguridad
         {
             var x = ObtieneFiltrosIdentidad();
 
-            Console.WriteLine("\n id Entity ::: " + entidad.Id);
             if (id != entidad.Id)
             {
                 return BadRequest();
@@ -133,12 +132,12 @@ namespace PIKA.GD.API.Controllers.Seguridad
             return NotFound(id);
         }
                      
-        [HttpDelete("{id}")]
+        [HttpDelete]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> Delete([FromBody]string[] id)
         {
-            await servicioModuloAplicacion.Eliminar(id).ConfigureAwait(false);
-            return NoContent();
+            
+            return Ok(await servicioModuloAplicacion.Eliminar(id).ConfigureAwait(false));
         }
     }
 
