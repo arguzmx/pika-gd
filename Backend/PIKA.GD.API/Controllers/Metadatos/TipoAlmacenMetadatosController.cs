@@ -71,7 +71,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
 
         [HttpGet("page", Name = "GetPageTipoAlmacenMetadatos")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<TipoAlmacenMetadatos>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<TipoAlmacenMetadatos>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());

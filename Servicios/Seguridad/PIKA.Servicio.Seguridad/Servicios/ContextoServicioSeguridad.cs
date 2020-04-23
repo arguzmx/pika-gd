@@ -24,5 +24,6 @@ namespace PIKA.Servicio.Seguridad.Servicios
             this.cache = servicioCache;
             this.logger = Logger;
         }
+
     }
 }

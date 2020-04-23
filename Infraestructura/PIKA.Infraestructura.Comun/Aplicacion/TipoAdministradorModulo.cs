@@ -14,10 +14,6 @@ namespace PIKA.Infraestructura.Comun
         public string AplicacionId { get; set; }
 
         /// <summary>
-        /// Unique appliction ID
-        /// </summary>
-        public string Id { get; set; }
-        /// <summary>
         /// Identificador único del modulo de la aplicación
         /// </summary>
         public string ModuloId { get; set; }

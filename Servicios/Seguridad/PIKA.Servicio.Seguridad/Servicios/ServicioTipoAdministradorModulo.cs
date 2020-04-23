@@ -16,7 +16,9 @@ using RepositorioEntidades;
 
 namespace PIKA.Servicio.Seguridad.Servicios
 {
-    public class ServicioTipoAdministradorModulo : ContextoServicioSeguridad, IServicioInyectable, IServicioTipoAdministradorModulo
+       public class ServicioTipoAdministradorModulo : ContextoServicioSeguridad
+      , IServicioInyectable, IServicioTipoAdministradorModulo
+
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
@@ -24,10 +26,11 @@ namespace PIKA.Servicio.Seguridad.Servicios
         private IRepositorioAsync<TipoAdministradorModulo> repo;
         private ICompositorConsulta<TipoAdministradorModulo> compositor;
         private UnidadDeTrabajo<DbContextSeguridad> UDT;
+
         public ServicioTipoAdministradorModulo(
          IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
          ICompositorConsulta<TipoAdministradorModulo> compositorConsulta,
-         ILogger<ServicioAplicacion> Logger,
+         ILogger<ServicioTipoAdministradorModulo> Logger,
          IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
             this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
@@ -46,37 +49,40 @@ namespace PIKA.Servicio.Seguridad.Servicios
         public async Task<TipoAdministradorModulo> CrearAsync(TipoAdministradorModulo entity, CancellationToken cancellationToken = default)
         {
 
-            if (await Existe(x => x.AplicacionId.Equals(entity.AplicacionId, StringComparison.InvariantCultureIgnoreCase)))
+            if (await Existe(x => x.AplicacionId.Equals(entity.AplicacionId, StringComparison.InvariantCultureIgnoreCase)
+            && x.ModuloId.Equals(entity.ModuloId,StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.AplicacionId);
             }
-
-            entity.ModuloId = System.Guid.NewGuid().ToString();
+            entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
+          
+
             return entity;
         }
 
         public async Task ActualizarAsync(TipoAdministradorModulo entity)
         {
 
-            TipoAdministradorModulo o = await this.repo.UnicoAsync(x => x.ModuloId == entity.ModuloId);
+            TipoAdministradorModulo o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
             if (o == null)
             {
-                throw new EXNoEncontrado(entity.ModuloId);
+                throw new EXNoEncontrado(entity.Id);
             }
 
             if (await Existe(x =>
-            x.ModuloId != entity.ModuloId
-            && x.AplicacionId.Equals(entity.AplicacionId, StringComparison.InvariantCultureIgnoreCase)))
+            x.Id != entity.Id
+            && x.AplicacionId.Equals(entity.AplicacionId, StringComparison.InvariantCultureIgnoreCase) 
+            && x.ModuloId.Equals(entity.ModuloId,StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.AplicacionId);
             }
 
             o.AplicacionId = entity.AplicacionId;
             o.ModuloId = entity.ModuloId;
-            o.TiposAdministrados = entity.TiposAdministrados;
+
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
@@ -151,12 +157,14 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<TipoAdministradorModulo> UnicoAsync(Expression<Func<TipoAdministradorModulo, bool>> predicado = null, Func<IQueryable<TipoAdministradorModulo>, IOrderedQueryable<TipoAdministradorModulo>> ordenarPor = null, Func<IQueryable<TipoAdministradorModulo>, IIncludableQueryable<TipoAdministradorModulo, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<TipoAdministradorModulo> UnicoAsync(Expression<Func<TipoAdministradorModulo, bool>> predicado = null, Func<IQueryable<TipoAdministradorModulo>, IOrderedQueryable<TipoAdministradorModulo>> ordenarPor = null, Func<IQueryable<TipoAdministradorModulo>, IIncludableQueryable<TipoAdministradorModulo, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+
+            TipoAdministradorModulo d = await this.repo.UnicoAsync(predicado);
+
+            return d.CopiaTipoAdministradorModulo();
         }
 
-       
-    }
 
+    }
 }

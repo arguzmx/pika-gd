@@ -47,23 +47,25 @@ namespace PIKA.GD.API.Controllers.Seguridad
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<ModuloAplicacion>> Post([FromBody]ModuloAplicacion entidad)
         {
+          
             entidad = await servicioModuloAplicacion.CrearAsync(entidad).ConfigureAwait(false);
+        
             return Ok(CreatedAtAction("GetModuloAplicacion", new { id = entidad.Id }, entidad).Value);
         }
 
 
-        [HttpPut("{Moduloid}")]
+        [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<IActionResult> Put(string id, [FromBody]ModuloAplicacion entidad)
         {
             var x = ObtieneFiltrosIdentidad();
 
-
+            Console.WriteLine("\n id Entity ::: " + entidad.Id);
             if (id != entidad.Id)
             {
                 return BadRequest();
             }
-
+        
             await servicioModuloAplicacion.ActualizarAsync(entidad).ConfigureAwait(false);
             return NoContent();
 
@@ -72,7 +74,7 @@ namespace PIKA.GD.API.Controllers.Seguridad
 
         [HttpGet("page", Name = "GetPageModuloAplicacion")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<ModuloAplicacion>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<ModuloAplicacion>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
@@ -82,12 +84,7 @@ namespace PIKA.GD.API.Controllers.Seguridad
         }
 
 
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-
-
+        
 
 
         [HttpGet("datatables", Name = "GetDatatablesPluginModuloAplicacion")]
@@ -135,10 +132,7 @@ namespace PIKA.GD.API.Controllers.Seguridad
             if (o != null) return Ok(o);
             return NotFound(id);
         }
-
-
-
-
+                     
         [HttpDelete("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> Delete([FromBody]string[] id)

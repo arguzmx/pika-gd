@@ -23,6 +23,7 @@ namespace PIKA.Servicio.Seguridad.Data.Configuracion
             builder.Property(x => x.UICulture).HasMaxLength(LongitudDatos.UICulture).IsRequired();
             builder.Property(x => x.Asegurable).HasDefaultValue(false).IsRequired();
             builder.Property(x => x.Icono).HasMaxLength(LongitudDatos.Icono).IsRequired();
+            builder.Property(x=>x.PermisosDisponibles).HasMaxLength(LongitudDatos.GUID).IsRequired();
 
             builder.HasMany(x => x.Modulos).WithOne(y => y.ModuloPadre).HasForeignKey(z => z.ModuloPadreId);
             builder.HasMany(x => x.Traducciones).WithOne(y => y.ModuloApp).HasForeignKey(z => z.ModuloId);

@@ -15,6 +15,7 @@ using RepositorioEntidades.DatatablesPlugin;
 
 namespace PIKA.GD.API.Controllers.Seguridad
 {
+  
     [Authorize]
     [ApiVersion("1.0")]
     [ApiController]
@@ -33,7 +34,7 @@ namespace PIKA.GD.API.Controllers.Seguridad
             this.metadataProvider = metadataProvider;
         }
 
-        [HttpGet("metadata", Name = "MetadataTipoAdministracionmodulo")]
+        [HttpGet("metadata", Name = "MetadataTipoAdministradorModulo")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
         {
@@ -46,19 +47,19 @@ namespace PIKA.GD.API.Controllers.Seguridad
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<TipoAdministradorModulo>> Post([FromBody]TipoAdministradorModulo entidad)
         {
+
             entidad = await servicioTipoAdministradorModulo.CrearAsync(entidad).ConfigureAwait(false);
-            return Ok(CreatedAtAction("GetTipoAdministradorModulo", new { id = entidad.ModuloId }, entidad).Value);
+            return Ok(CreatedAtAction("GetTipoAdministradorModulo", new { id = entidad.Id }, entidad).Value);
         }
 
 
-        [HttpPut("{TipoAdministradorModuloId}")]
+        [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<IActionResult> Put(string id, [FromBody]TipoAdministradorModulo entidad)
         {
             var x = ObtieneFiltrosIdentidad();
 
-
-            if (id != entidad.ModuloId)
+            if (id != entidad.Id)
             {
                 return BadRequest();
             }
@@ -69,11 +70,11 @@ namespace PIKA.GD.API.Controllers.Seguridad
         }
 
 
-        [HttpGet("page", Name = "GetPageTipoAdministracionmodulo")]
+        [HttpGet("page", Name = "GetPageTipoAdministradorModulo")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<TipoAdministradorModulo>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<TipoAdministradorModulo>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
-            
+
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
             var data = await servicioTipoAdministradorModulo.ObtenerPaginadoAsync(query).ConfigureAwait(false);
@@ -130,7 +131,7 @@ namespace PIKA.GD.API.Controllers.Seguridad
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<TipoAdministradorModulo>> Get(string id)
         {
-            var o = await servicioTipoAdministradorModulo.UnicoAsync(x => x.ModuloId == id).ConfigureAwait(false);
+            var o = await servicioTipoAdministradorModulo.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }

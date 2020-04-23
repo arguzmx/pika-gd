@@ -154,9 +154,12 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<ModuloAplicacion> UnicoAsync(Expression<Func<ModuloAplicacion, bool>> predicado = null, Func<IQueryable<ModuloAplicacion>, IOrderedQueryable<ModuloAplicacion>> ordenarPor = null, Func<IQueryable<ModuloAplicacion>, IIncludableQueryable<ModuloAplicacion, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<ModuloAplicacion> UnicoAsync(Expression<Func<ModuloAplicacion, bool>> predicado = null, Func<IQueryable<ModuloAplicacion>, IOrderedQueryable<ModuloAplicacion>> ordenarPor = null, Func<IQueryable<ModuloAplicacion>, IIncludableQueryable<ModuloAplicacion, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+
+            ModuloAplicacion d = await this.repo.UnicoAsync(predicado);
+
+            return d.CopiaModuloAplicacion();
         }
 
 

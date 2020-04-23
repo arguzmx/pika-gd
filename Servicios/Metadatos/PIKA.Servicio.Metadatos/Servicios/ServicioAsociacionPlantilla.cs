@@ -155,12 +155,18 @@ namespace PIKA.Servicio.Metadatos.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<AsociacionPlantilla> UnicoAsync(Expression<Func<AsociacionPlantilla, bool>> predicado = null, Func<IQueryable<AsociacionPlantilla>, IOrderedQueryable<AsociacionPlantilla>> ordenarPor = null, Func<IQueryable<AsociacionPlantilla>, IIncludableQueryable<AsociacionPlantilla, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<AsociacionPlantilla> UnicoAsync(Expression<Func<AsociacionPlantilla, bool>> predicado = null, Func<IQueryable<AsociacionPlantilla>, IOrderedQueryable<AsociacionPlantilla>> ordenarPor = null, Func<IQueryable<AsociacionPlantilla>, IIncludableQueryable<AsociacionPlantilla, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+
+            AsociacionPlantilla d = await this.repo.UnicoAsync(predicado);
+
+            return d.CopiaAsociacionPlantilla();
+        }
+
+
+        Task<ICollection<string>> IServicioRepositorioAsync<AsociacionPlantilla, string>.Eliminar(string[] ids)
         {
             throw new NotImplementedException();
         }
-
-       
-       
     }
 }

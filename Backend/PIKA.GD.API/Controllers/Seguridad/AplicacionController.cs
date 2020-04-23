@@ -73,11 +73,13 @@ namespace PIKA.GD.API.Controllers.Seguridad
 
         [HttpGet("page", Name = "GetPageAplicacion")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<Aplicacion>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<Aplicacion>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
-            
+            Console.WriteLine($"Prueba {query.Filtros.Count}");
+            Console.WriteLine($"--------------------------------{query.Filtros.Count}");
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
+
             var data = await servicioAplicacion.ObtenerPaginadoAsync(query).ConfigureAwait(false);
             return Ok(data.Elementos.ToList<Aplicacion>());
         }

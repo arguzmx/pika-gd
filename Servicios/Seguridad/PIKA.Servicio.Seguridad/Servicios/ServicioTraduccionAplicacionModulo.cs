@@ -16,7 +16,10 @@ using RepositorioEntidades;
 
 namespace PIKA.Servicio.Seguridad.Servicios
 {
-    public class ServicioTraduccionAplicacionModulo : ContextoServicioSeguridad, IServicioInyectable, IServicioTraduccionAplicacionModulo
+ 
+    public class ServicioTraduccionAplicacionModulo : ContextoServicioSeguridad
+      , IServicioInyectable, IServicioTraduccionAplicacionModulo
+
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
@@ -24,21 +27,17 @@ namespace PIKA.Servicio.Seguridad.Servicios
         private IRepositorioAsync<TraduccionAplicacionModulo> repo;
         private ICompositorConsulta<TraduccionAplicacionModulo> compositor;
         private UnidadDeTrabajo<DbContextSeguridad> UDT;
+
         public ServicioTraduccionAplicacionModulo(
-        IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
-        ICompositorConsulta<TraduccionAplicacionModulo> compositorConsulta,
-        ILogger<ServicioAplicacion> Logger,
-        IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+         IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
+         ICompositorConsulta<TraduccionAplicacionModulo> compositorConsulta,
+         ILogger<ServicioTraduccionAplicacionModulo> Logger,
+         IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
             this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<TraduccionAplicacionModulo>(compositor);
         }
-
-
-
-
-
 
         public async Task<bool> Existe(Expression<Func<TraduccionAplicacionModulo, bool>> predicado)
         {
@@ -56,7 +55,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
                 throw new ExElementoExistente(entity.Nombre);
             }
 
-            entity.ModuloId = System.Guid.NewGuid().ToString();
+            entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
             return entity;
@@ -65,15 +64,15 @@ namespace PIKA.Servicio.Seguridad.Servicios
         public async Task ActualizarAsync(TraduccionAplicacionModulo entity)
         {
 
-            TraduccionAplicacionModulo o = await this.repo.UnicoAsync(x => x.ModuloId == entity.ModuloId);
+            TraduccionAplicacionModulo o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
             if (o == null)
             {
-                throw new EXNoEncontrado(entity.ModuloId);
+                throw new EXNoEncontrado(entity.Id);
             }
 
             if (await Existe(x =>
-            x.ModuloId != entity.ModuloId
+            x.Id != entity.Id
             && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
@@ -82,6 +81,8 @@ namespace PIKA.Servicio.Seguridad.Servicios
             o.Nombre = entity.Nombre;
             o.Descripcion = entity.Descripcion;
             o.UICulture = entity.UICulture;
+            o.ModuloId = entity.ModuloId;
+            o.AplicacionId = entity.AplicacionId;
 
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
@@ -157,12 +158,14 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<TraduccionAplicacionModulo> UnicoAsync(Expression<Func<TraduccionAplicacionModulo, bool>> predicado = null, Func<IQueryable<TraduccionAplicacionModulo>, IOrderedQueryable<TraduccionAplicacionModulo>> ordenarPor = null, Func<IQueryable<TraduccionAplicacionModulo>, IIncludableQueryable<TraduccionAplicacionModulo, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<TraduccionAplicacionModulo> UnicoAsync(Expression<Func<TraduccionAplicacionModulo, bool>> predicado = null, Func<IQueryable<TraduccionAplicacionModulo>, IOrderedQueryable<TraduccionAplicacionModulo>> ordenarPor = null, Func<IQueryable<TraduccionAplicacionModulo>, IIncludableQueryable<TraduccionAplicacionModulo, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+
+            TraduccionAplicacionModulo d = await this.repo.UnicoAsync(predicado);
+
+            return d.CopiaTraduccionAplicacionModulo();
         }
 
-        
-      
+
     }
 }

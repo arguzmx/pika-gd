@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PIKA.Modelo.Metadatos;
+using PIKA.Servicio.Metadatos.Data;
 using PIKA.Servicio.Metadatos.Data.Configuracion;
 using RepositorioEntidades;
 using System;
@@ -18,12 +19,8 @@ namespace PIKA.Servicio.Metadatos.Data
         }
 
         public DbContextMetadatos Crear()
-<<<<<<< HEAD
         {
-            //var optionsBuilderType = typeof(DbContextOptionsBuilder<>).MakeGenericType(t);
-            //var optionsBuilder = (DbContextOptionsBuilder)Activator.CreateInstance(optionsBuilderType);
-            //optionsBuilder.UseMySql(Configuration.GetConnectionString("pika-gd"));
-            //var dbContext = (DbContext)Activator.CreateInstance(t, optionsBuilder.Options);
+
 
             return new DbContextMetadatos(proveedorOpciones.ObtieneOpciones());
         }
@@ -32,26 +29,11 @@ namespace PIKA.Servicio.Metadatos.Data
     public class DbContextMetadatos : DbContext, IRepositorioInicializable
     {
         public DbContextMetadatos(DbContextOptions options)
-     : base(options)
-=======
->>>>>>> edc347bbfb9bd4bff1df24d41cdcb59278213610
-        {
-            //var optionsBuilderType = typeof(DbContextOptionsBuilder<>).MakeGenericType(t);
-            //var optionsBuilder = (DbContextOptionsBuilder)Activator.CreateInstance(optionsBuilderType);
-            //optionsBuilder.UseMySql(Configuration.GetConnectionString("pika-gd"));
-            //var dbContext = (DbContext)Activator.CreateInstance(t, optionsBuilder.Options);
 
-            return new DbContextMetadatos(proveedorOpciones.ObtieneOpciones());
-        }
-    }
+       : base(options)
 
-    public class DbContextMetadatos : DbContext
-    {
-        public DbContextMetadatos(DbContextOptions options)
-     : base(options)
         {
         }
-
 
 
         #region Constantes de configuracion
@@ -86,7 +68,7 @@ namespace PIKA.Servicio.Metadatos.Data
         ///  Nombre de la tabla para las entidades del AtributoTabla
         /// </summary>
         public static string TablaAtributoTabla { get => "metadatos$atributotabla"; }
-     
+
         /// <summary>
         ///  Nombre de la tabla para las entidades del ValidadorNumero
         /// </summary>
@@ -125,7 +107,7 @@ namespace PIKA.Servicio.Metadatos.Data
         // <summary>
         /// Contiene los tipos de datos asociados con las propeidades de las plantillas
         /// </summary>
-         public DbSet<TipoDatoPropiedadPlantilla> TipoDatoPropiedadPlantilla { get; set; }
+        public DbSet<TipoDatoPropiedadPlantilla> TipoDatoPropiedadPlantilla { get; set; }
 
 
         // <summary>

@@ -16,7 +16,10 @@ using RepositorioEntidades;
 
 namespace PIKA.Servicio.Seguridad.Servicios
 {
-    public class ServicioAplicacion : ContextoServicioSeguridad, IServicioInyectable, IServicioAplicacion
+
+    public class ServicioAplicacion : ContextoServicioSeguridad
+        , IServicioInyectable, IServicioAplicacion
+
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
@@ -155,11 +158,14 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<Aplicacion> UnicoAsync(Expression<Func<Aplicacion, bool>> predicado = null, Func<IQueryable<Aplicacion>, IOrderedQueryable<Aplicacion>> ordenarPor = null, Func<IQueryable<Aplicacion>, IIncludableQueryable<Aplicacion, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<Aplicacion> UnicoAsync(Expression<Func<Aplicacion, bool>> predicado = null, Func<IQueryable<Aplicacion>, IOrderedQueryable<Aplicacion>> ordenarPor = null, Func<IQueryable<Aplicacion>, IIncludableQueryable<Aplicacion, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+
+            Aplicacion d = await this.repo.UnicoAsync(predicado);
+
+            return d.CopiaAplicacion();
         }
 
-       
+
     }
 }

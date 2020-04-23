@@ -50,14 +50,17 @@ namespace PIKA.GD.API.Controllers.Seguridad
         }
 
 
-        [HttpPut("{Moduloid}")]
+        [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<IActionResult> Put(string id, [FromBody]TraduccionAplicacionModulo entidad)
         {
             var x = ObtieneFiltrosIdentidad();
 
 
-            if (id != entidad.ModuloId)
+            Console.WriteLine("Id ::" + id);
+
+            Console.WriteLine("\n id Entity ::: " + entidad.Id);
+            if (id != entidad.Id)
             {
                 return BadRequest();
             }
@@ -70,7 +73,7 @@ namespace PIKA.GD.API.Controllers.Seguridad
 
         [HttpGet("page", Name = "GetPageTraduccionAplicacionModulo")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<TraduccionAplicacionModulo>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<TraduccionAplicacionModulo>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller

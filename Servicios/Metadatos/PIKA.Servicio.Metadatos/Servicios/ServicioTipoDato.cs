@@ -167,9 +167,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<TipoDato> UnicoAsync(Expression<Func<TipoDato, bool>> predicado = null, Func<IQueryable<TipoDato>, IOrderedQueryable<TipoDato>> ordenarPor = null, Func<IQueryable<TipoDato>, IIncludableQueryable<TipoDato, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<TipoDato> UnicoAsync(Expression<Func<TipoDato, bool>> predicado = null, Func<IQueryable<TipoDato>, IOrderedQueryable<TipoDato>> ordenarPor = null, Func<IQueryable<TipoDato>, IIncludableQueryable<TipoDato, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+
+            TipoDato d = await this.repo.UnicoAsync(predicado);
+
+            return d.CopiaTipoDato();
         }
     }
 }

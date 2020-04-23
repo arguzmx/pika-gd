@@ -168,9 +168,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<ValidadorNumero> UnicoAsync(Expression<Func<ValidadorNumero, bool>> predicado = null, Func<IQueryable<ValidadorNumero>, IOrderedQueryable<ValidadorNumero>> ordenarPor = null, Func<IQueryable<ValidadorNumero>, IIncludableQueryable<ValidadorNumero, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<ValidadorNumero> UnicoAsync(Expression<Func<ValidadorNumero, bool>> predicado = null, Func<IQueryable<ValidadorNumero>, IOrderedQueryable<ValidadorNumero>> ordenarPor = null, Func<IQueryable<ValidadorNumero>, IIncludableQueryable<ValidadorNumero, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+
+            ValidadorNumero d = await this.repo.UnicoAsync(predicado);
+
+            return d.CopiaValidadorNumero();
         }
     }
 

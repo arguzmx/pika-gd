@@ -41,7 +41,7 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public bool Eliminada { get; set; }
 
-        public bool Dato001 { get; set; }
+    
         public ICollection<PropiedadPlantilla> Propiedades { get; set; }
         public ICollection<AsociacionPlantilla> Asociaciones { get; set; }
        
