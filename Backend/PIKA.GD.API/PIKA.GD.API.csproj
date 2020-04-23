@@ -46,8 +46,11 @@
     <ProjectReference Include="..\..\Servicios\Organizacion\PIKA.Servicio.Organizacion\PIKA.Servicio.Organizacion.csproj" />
     <ProjectReference Include="..\..\Servicios\Seguridad\PIKA.Servicio.Seguridad\PIKA.Servicio.Seguridad.csproj" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       </ItemGroup>
 =======
+=======
+>>>>>>> Stashed changes
     
   </ItemGroup>
 >>>>>>> Stashed changes

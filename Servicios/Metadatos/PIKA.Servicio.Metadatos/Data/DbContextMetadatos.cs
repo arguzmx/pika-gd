@@ -30,7 +30,9 @@ namespace PIKA.Servicio.Metadatos.Data
     {
         public DbContextMetadatos(DbContextOptions options)
 
+
        : base(options)
+
 
         {
         }

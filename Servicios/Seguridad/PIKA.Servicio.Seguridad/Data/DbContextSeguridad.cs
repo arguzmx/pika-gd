@@ -1,3 +1,4 @@
+
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -20,11 +21,6 @@ namespace PIKA.Servicio.Seguridad
 
         public DbContextSeguridad Crear()
         {
-            //var optionsBuilderType = typeof(DbContextOptionsBuilder<>).MakeGenericType(t);
-            //var optionsBuilder = (DbContextOptionsBuilder)Activator.CreateInstance(optionsBuilderType);
-            //optionsBuilder.UseMySql(Configuration.GetConnectionString("pika-gd"));
-            //var dbContext = (DbContext)Activator.CreateInstance(t, optionsBuilder.Options);
-
             return new DbContextSeguridad(proveedorOpciones.ObtieneOpciones());
         }
     }
