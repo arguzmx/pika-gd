@@ -78,9 +78,8 @@ namespace PIKA.GD.API.Controllers.Organizacion
 
         [HttpGet("page", Name = "GetPageDireccionPostal")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<DireccionPostal>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<DireccionPostal>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
-            Console.WriteLine("GETPAGING DirPost");
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
             var data = await servicioDirPost.ObtenerPaginadoAsync(query).ConfigureAwait(false);

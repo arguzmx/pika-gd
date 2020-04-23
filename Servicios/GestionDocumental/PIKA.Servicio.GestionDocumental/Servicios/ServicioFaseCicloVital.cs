@@ -168,9 +168,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<FaseCicloVital> UnicoAsync(Expression<Func<FaseCicloVital, bool>> predicado = null, Func<IQueryable<FaseCicloVital>, IOrderedQueryable<FaseCicloVital>> ordenarPor = null, Func<IQueryable<FaseCicloVital>, IIncludableQueryable<FaseCicloVital, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<FaseCicloVital> UnicoAsync(Expression<Func<FaseCicloVital, bool>> predicado = null, Func<IQueryable<FaseCicloVital>, IOrderedQueryable<FaseCicloVital>> ordenarPor = null, Func<IQueryable<FaseCicloVital>, IIncludableQueryable<FaseCicloVital, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+            FaseCicloVital a = await this.repo.UnicoAsync(predicado);
+            return a.CopiaFase();
         }
     }
 }

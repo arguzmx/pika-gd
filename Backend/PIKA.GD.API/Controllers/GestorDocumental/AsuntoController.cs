@@ -71,9 +71,8 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpGet("page", Name = "GetPageAsunto")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<Asunto>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<Asunto>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
-            Console.WriteLine("------------------------------------------------------");
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
             var data = await servicioAsunto.ObtenerPaginadoAsync(query).ConfigureAwait(false);

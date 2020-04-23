@@ -2,6 +2,7 @@
 using PIKA.Infraestructura.Comun.Constantes;
 using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.GestorDocumental;
+using PIKA.Modelo.GestorDocumental.Topologia;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,6 +23,9 @@ namespace PIKA.Servicio.GestionDocumental
         public const string MODULO_GD_PRESTAMO= "PIKA-GD-GD-PRESTAMOS";
         public const string MODULO_GD_ACTIVO_PRESTAMO= "PIKA-GD-GD-ACTIVOS-PRESTAMO";
         public const string MODULO_GD_COMENTARIO_PRESTAMO= "PIKA-GD-GD-COMENTARIOS-PRESTAMO";
+        public const string MODULO_GD_ALMACEN= "PIKA-GD-GD-ALMACEN-ARCHIVO";
+        public const string MODULO_GD_ESTANTE= "PIKA-GD-GD-ESTANTE";
+        public const string MODULO_GD_ESPACIO_ESTANTE= "PIKA-GD-GD-ESPACIO-ESTANTE";
         public static string ID_APLICAICON { get { return ConstantesAplicacion.Id; } }
         public Aplicacion Info()
         {
@@ -280,6 +284,67 @@ namespace PIKA.Servicio.GestionDocumental
             l.Add(m);
             //------------------------------------------------------------
             //------------------------------------------------------------
+
+            /// Modulo administarcion de Almacen archivo
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_ALMACEN, true,
+                "Almacen",
+                "Administrador de almaen de un archivo",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(AlmacenArchivo) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+            /// Modulo administarcion de Estatnes
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_ESTANTE, true,
+                "Estantes",
+                "Administrador de estantes de almacen",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(Estante) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+            /// Modulo administarcion de Comentarios préstamo
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_ESPACIO_ESTANTE, true,
+                "Espacios estante",
+                "Administrador de espacios de un estante",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(EspacioEstante) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
 
             return l;
         }

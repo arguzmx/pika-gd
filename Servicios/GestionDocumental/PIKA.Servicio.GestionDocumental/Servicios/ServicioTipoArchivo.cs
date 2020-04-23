@@ -166,9 +166,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<TipoArchivo> UnicoAsync(Expression<Func<TipoArchivo, bool>> predicado = null, Func<IQueryable<TipoArchivo>, IOrderedQueryable<TipoArchivo>> ordenarPor = null, Func<IQueryable<TipoArchivo>, IIncludableQueryable<TipoArchivo, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<TipoArchivo> UnicoAsync(Expression<Func<TipoArchivo, bool>> predicado = null, Func<IQueryable<TipoArchivo>, IOrderedQueryable<TipoArchivo>> ordenarPor = null, Func<IQueryable<TipoArchivo>, IIncludableQueryable<TipoArchivo, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+            TipoArchivo t = await this.repo.UnicoAsync(predicado);
+            return t.CopiaTipoArchivo();
         }
     }
 }

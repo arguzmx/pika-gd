@@ -5,6 +5,7 @@ using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.Organizacion;
+using PIKA.Servicio.Organizacion.Servicios;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
@@ -98,9 +99,7 @@ namespace PIKA.Servicio.Organizacion
         public async Task<IPaginado<UnidadOrganizacional>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<UnidadOrganizacional>, IIncludableQueryable<UnidadOrganizacional, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             Query = GetDefaultQuery(Query);
-            //Query.Filtros.Add(new FiltroConsulta() { Operador =  operado, Property = COL_OWNERID, Value = OwnerId });
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
-
             return respuesta;
         }
 
@@ -157,9 +156,10 @@ namespace PIKA.Servicio.Organizacion
             throw new NotImplementedException();
         }
 
-        public Task<UnidadOrganizacional> UnicoAsync(Expression<Func<UnidadOrganizacional, bool>> predicado = null, Func<IQueryable<UnidadOrganizacional>, IOrderedQueryable<UnidadOrganizacional>> ordenarPor = null, Func<IQueryable<UnidadOrganizacional>, IIncludableQueryable<UnidadOrganizacional, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<UnidadOrganizacional> UnicoAsync(Expression<Func<UnidadOrganizacional, bool>> predicado = null, Func<IQueryable<UnidadOrganizacional>, IOrderedQueryable<UnidadOrganizacional>> ordenarPor = null, Func<IQueryable<UnidadOrganizacional>, IIncludableQueryable<UnidadOrganizacional, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+            UnidadOrganizacional uo = await this.repo.UnicoAsync(predicado);
+            return uo.CopiaUO();
         }
 
         public Task Restaurar(string[] ids)

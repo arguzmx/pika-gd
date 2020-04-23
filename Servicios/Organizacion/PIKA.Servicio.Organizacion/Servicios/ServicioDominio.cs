@@ -175,14 +175,11 @@ namespace PIKA.Servicio.Organizacion.Servicios
 
             //Cuando llamas a serializar objetos con propiedades de navegación pueden crearse referencias circulares
             //por eso devolvemos una instancia filtrada
-
             //Hayq que implmenbatrlo como un método de extensión en ExtensionesDominio
             //estudiar https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
 
             return d.CopiaDominio();
         }
-
-
 
     }
 

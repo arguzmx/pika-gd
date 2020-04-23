@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
 using PIKA.Modelo.GestorDocumental;
+using PIKA.Modelo.GestorDocumental.Topologia;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.GestionDocumental.Interfaces;
 using RepositorioEntidades;
@@ -18,22 +19,22 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
     [Authorize]
     [ApiVersion("1.0")]
     [ApiController]
-    [Route("api/v{version:apiVersion}/gd/[controller]")]
-    public class ComentarioPrestamoController : ACLController
+    [Route("api/v{version:apiVersion}/gd/almacen/{AlmacenId}/estante/{EstanteId}/[controller]")]
+    public class EspacioEspacioEstanteController : ACLController
     {
-        private readonly ILogger<ComentarioPrestamoController> logger;
-        private IServicioComentarioPrestamo servicioComentarioPrestamo;
-        private IProveedorMetadatos<ComentarioPrestamo> metadataProvider;
-        public ComentarioPrestamoController(ILogger<ComentarioPrestamoController> logger,
-            IProveedorMetadatos<ComentarioPrestamo> metadataProvider,
-            IServicioComentarioPrestamo servicioComentarioPrestamo)
+        private readonly ILogger<EspacioEspacioEstanteController> logger;
+        private IServicioEspacioEstante servicioEspacioEstante;
+        private IProveedorMetadatos<EspacioEstante> metadataProvider;
+        public EspacioEspacioEstanteController(ILogger<EspacioEspacioEstanteController> logger,
+            IProveedorMetadatos<EspacioEstante> metadataProvider,
+            IServicioEspacioEstante servicioEspacioEstante)
         {
             this.logger = logger;
-            this.servicioComentarioPrestamo = servicioComentarioPrestamo;
+            this.servicioEspacioEstante = servicioEspacioEstante;
             this.metadataProvider = metadataProvider;
         }
 
-        [HttpGet("metadata", Name = "MetadataComentarioPrestamo")]
+        [HttpGet("metadata", Name = "MetadataEspacioEstante")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
         {
@@ -44,16 +45,16 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<ComentarioPrestamo>> Post([FromBody]ComentarioPrestamo entidad)
+        public async Task<ActionResult<EspacioEstante>> Post([FromBody]EspacioEstante entidad)
         {
-            entidad = await servicioComentarioPrestamo.CrearAsync(entidad).ConfigureAwait(false);
-            return Ok(CreatedAtAction("GetComentarioPrestamo", new { id = entidad.Id }, entidad).Value);
+            entidad = await servicioEspacioEstante.CrearAsync(entidad).ConfigureAwait(false);
+            return Ok(CreatedAtAction("GetEspacioEstante", new { id = entidad.Id }, entidad).Value);
         }
 
 
         [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<IActionResult> Put(string id, [FromBody]ComentarioPrestamo entidad)
+        public async Task<IActionResult> Put(string id, [FromBody]EspacioEstante entidad)
         {
             var x = ObtieneFiltrosIdentidad();
 
@@ -63,20 +64,20 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 return BadRequest();
             }
 
-            await servicioComentarioPrestamo.ActualizarAsync(entidad).ConfigureAwait(false);
+            await servicioEspacioEstante.ActualizarAsync(entidad).ConfigureAwait(false);
             return NoContent();
 
         }
 
 
-        [HttpGet("page", Name = "GetPageComentarioPrestamo")]
+        [HttpGet("page", Name = "GetPageEspacioEstante")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<ComentarioPrestamo>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<EspacioEstante>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioComentarioPrestamo.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<ComentarioPrestamo>());
+            var data = await servicioEspacioEstante.ObtenerPaginadoAsync(query).ConfigureAwait(false);
+            return Ok(data.Elementos.ToList<EspacioEstante>());
         }
 
 
@@ -88,9 +89,9 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
 
-        [HttpGet("datatables", Name = "GetDatatablesPluginComentarioPrestamo")]
+        [HttpGet("datatables", Name = "GetDatatablesPluginEspacioEstante")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<RespuestaDatatables<ComentarioPrestamo>>> GetDatatablesPlugin([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
+        public async Task<ActionResult<RespuestaDatatables<EspacioEstante>>> GetDatatablesPlugin([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
         {
 
             if (query.order.Count == 0)
@@ -109,9 +110,9 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 ord_direccion = query.order[0].dir
             };
 
-            var data = await servicioComentarioPrestamo.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
+            var data = await servicioEspacioEstante.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
 
-            RespuestaDatatables<ComentarioPrestamo> r = new RespuestaDatatables<ComentarioPrestamo>()
+            RespuestaDatatables<EspacioEstante> r = new RespuestaDatatables<EspacioEstante>()
             {
                 data = data.Elementos.ToArray(),
                 draw = query.draw,
@@ -127,19 +128,21 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<ComentarioPrestamo>> Get(string id)
+        public async Task<ActionResult<EspacioEstante>> Get(string id)
         {
-            var o = await servicioComentarioPrestamo.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            var o = await servicioEspacioEstante.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }
+
+
 
 
         [HttpDelete]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> Delete([FromBody]string[] id)
         {
-            return Ok(await servicioComentarioPrestamo.Eliminar(id).ConfigureAwait(false));
+            return Ok(await servicioEspacioEstante.Eliminar(id).ConfigureAwait(false));
         }
     }
 }

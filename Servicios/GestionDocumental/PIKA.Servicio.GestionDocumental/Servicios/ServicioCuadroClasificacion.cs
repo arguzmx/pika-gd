@@ -168,9 +168,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<CuadroClasificacion> UnicoAsync(Expression<Func<CuadroClasificacion, bool>> predicado = null, Func<IQueryable<CuadroClasificacion>, IOrderedQueryable<CuadroClasificacion>> ordenarPor = null, Func<IQueryable<CuadroClasificacion>, IIncludableQueryable<CuadroClasificacion, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<CuadroClasificacion> UnicoAsync(Expression<Func<CuadroClasificacion, bool>> predicado = null, Func<IQueryable<CuadroClasificacion>, IOrderedQueryable<CuadroClasificacion>> ordenarPor = null, Func<IQueryable<CuadroClasificacion>, IIncludableQueryable<CuadroClasificacion, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+            CuadroClasificacion c = await this.repo.UnicoAsync(predicado);
+            return c.CopiaCuadro();
         }
     }
 }

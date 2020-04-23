@@ -99,7 +99,6 @@ namespace PIKA.Servicio.Organizacion.Servicios
         public async Task<IPaginado<Rol>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Rol>, IIncludableQueryable<Rol, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             Query = GetDefaultQuery(Query);
-            //Query.Filtros.Add(new FiltroConsulta() { Operador =  operado, Property = COL_OWNERID, Value = OwnerId });
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
 
             return respuesta;
@@ -157,9 +156,10 @@ namespace PIKA.Servicio.Organizacion.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<Rol> UnicoAsync(Expression<Func<Rol, bool>> predicado = null, Func<IQueryable<Rol>, IOrderedQueryable<Rol>> ordenarPor = null, Func<IQueryable<Rol>, IIncludableQueryable<Rol, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<Rol> UnicoAsync(Expression<Func<Rol, bool>> predicado = null, Func<IQueryable<Rol>, IOrderedQueryable<Rol>> ordenarPor = null, Func<IQueryable<Rol>, IIncludableQueryable<Rol, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            throw new NotImplementedException();
+            Rol r = await this.repo.UnicoAsync(predicado);
+            return r.CopiaRol();
         }
 
         public Task Restaurar(string[] ids)
