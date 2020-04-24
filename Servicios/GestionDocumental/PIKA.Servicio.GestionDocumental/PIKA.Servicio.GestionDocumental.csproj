@@ -19,6 +19,8 @@
     <Compile Remove="Data\Migrations\20200414021033_PrestamosGestionDocumental.Designer.cs" />
     <Compile Remove="Data\Migrations\20200414021237_PrestamosGestionDocumental.cs" />
     <Compile Remove="Data\Migrations\20200414021237_PrestamosGestionDocumental.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200422032620_Archivo.cs" />
+    <Compile Remove="Data\Migrations\20200422032620_Archivo.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
