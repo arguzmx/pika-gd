@@ -128,6 +128,32 @@ namespace PIKA.Identity.Server
                     AllowedCorsOrigins = { "http://localhost" },
 
                     AllowedScopes = { "openid", "profile", PIKAGDNAME }
+                },
+                 // SPA client using code flow + pkce
+                new Client
+                {
+                    ClientId = "api-pika-gd-angular",
+                    ClientName = "Cliente PIKA Gestión Documental WEb",
+                    ClientUri = "http://localhost",
+                    RequireConsent = false,
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = true,
+                    RequireClientSecret = false,
+                    AllowOfflineAccess = true,
+                    RedirectUris =
+                    {
+                        "http://localhost/index.html",
+                        "http://localhost/callback.html",
+                        "http://localhost/silent.html",
+                        "http://localhost/popup.html",
+                        "http://localhost/signout-callback.html",
+                        "http://localhost/renew-callback.html"
+                    },
+
+                    PostLogoutRedirectUris = { "http://localhost/" },
+                    AllowedCorsOrigins = { "http://localhost" },
+
+                    AllowedScopes = { "openid",  "profile", PIKAGDNAME }
                 }
             };
     }
