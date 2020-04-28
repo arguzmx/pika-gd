@@ -7,14 +7,12 @@
   <ItemGroup>
 
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
-
-    <Compile Remove="Data\Migrations\20200422033331_Demo.cs" />
-    <Compile Remove="Data\Migrations\20200422033331_Demo.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Infraestructura\PIKA.Infraestructura.Comun\PIKA.Infraestructura.Comun.csproj" />
     <ProjectReference Include="..\..\..\Infraestructura\RepositorioEntidades\RepositorioEntidades.csproj" />
+    <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.Aplicacion\PIKA.Modelo.Aplicacion.csproj" />
     <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.GestorDocumental\PIKA.Modelo.GestorDocumental.csproj" />
     <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.Metadatos\PIKA.Modelo.Metadatos.csproj" />
   </ItemGroup>
