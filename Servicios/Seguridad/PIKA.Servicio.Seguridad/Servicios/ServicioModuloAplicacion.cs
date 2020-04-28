@@ -136,14 +136,6 @@ namespace PIKA.Servicio.Seguridad.Servicios
                 m = await this.repo.UnicoAsync(x => x.Id == Id);
                 if (m != null)
                 {
-                    //Si alguno de tus objetos tiene el campo "Eliminado" sería así: 
-
-                    //m.Eliminada = true;
-                    //UDT.Context.Entry(m).State = EntityState.Modified;
-                    //si no, como es el caso, queda así nada más
-                    //bueno y esta linea ya no va UDT.Context.Entry(m).State = EntityState.Deleted;
-                    
-
                     UDT.Context.Entry(m).State = EntityState.Deleted;
                     listaEliminados.Add(m.Id);
                 }

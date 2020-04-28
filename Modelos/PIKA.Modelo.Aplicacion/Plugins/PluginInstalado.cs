@@ -18,6 +18,7 @@ namespace PIKA.Modelo.Aplicacion.Plugins
         public DateTime FechaInstalacion { get; set; }
         //Not null
 
-
+        public virtual VersionPlugin VersionPlugin { get; set; }
+        public virtual Plugin Plugin { get; set; }
     }
 }

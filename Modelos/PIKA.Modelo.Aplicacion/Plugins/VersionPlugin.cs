@@ -7,6 +7,10 @@ namespace PIKA.Modelo.Aplicacion.Plugins
 {
     public class VersionPlugin: Entidad<string>
     {
+        public VersionPlugin()
+        {
+            this.PluginInstalados = new HashSet<PluginInstalado>();
+        }
         public string PluginId { get; set; }
 
         public string Version { get; set; }
@@ -15,7 +19,8 @@ namespace PIKA.Modelo.Aplicacion.Plugins
 
         public bool RequiereConfiguracion { get; set; }
 
-        public Plugin Plugin { get; set; }
+        public virtual Plugin Plugins { get; set; }
+        public ICollection<PluginInstalado> PluginInstalados { get; set; }
 
     }
 }

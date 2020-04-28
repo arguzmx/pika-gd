@@ -30,6 +30,7 @@ using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.Seguridad;
 using PIKA.Servicio.Metadatos.Data;
 using PIKA.Servicio.Seguridad.Data;
+using PIKA.Servicio.AplicacionPlugin;
 
 namespace PIKA.GD.API
 {
@@ -151,6 +152,8 @@ namespace PIKA.GD.API
             services.AddDbContext<DbContextMetadatos>(options =>
                    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
+            services.AddDbContext<DbContextAplicacionPlugin>(options =>
+                  options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
             services.AddControllers();
 

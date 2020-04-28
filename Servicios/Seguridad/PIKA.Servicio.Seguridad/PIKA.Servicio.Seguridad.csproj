@@ -5,12 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-<<<<<<< Updated upstream
+
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
-=======
+
     <Compile Remove="Data\Migrations\20200422033331_Demo.cs" />
     <Compile Remove="Data\Migrations\20200422033331_Demo.Designer.cs" />
->>>>>>> Stashed changes
   </ItemGroup>
 
   <ItemGroup>

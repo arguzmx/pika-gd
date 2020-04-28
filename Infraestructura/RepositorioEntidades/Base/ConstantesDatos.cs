@@ -17,5 +17,6 @@ namespace RepositorioEntidades
         public static int ControlHTML { get => 128; }
 
 
+
     }
 }
