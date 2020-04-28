@@ -58,7 +58,6 @@ namespace PIKA.Modelo.Contenido
         public string VolumenId { get; set; }
 
         public virtual Volumen Volumen { get; set; }
-
         public virtual ICollection<Version> Versiones { get; set; }
 
     }
