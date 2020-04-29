@@ -11,6 +11,8 @@ namespace PIKA.Identity.Server
     public static class Config
     {
 
+        public const string spaClientUrl = "http://localhost";
+
         public const string PIKAGDNAME = "pika-gd";
         //public const string PIKAGDCLIENTNAME = "api-pika-gd";
 
@@ -32,7 +34,7 @@ namespace PIKA.Identity.Server
         public static IEnumerable<Client> Clients =>
             new Client[]
             {
-                new Client { 
+                new Client {
                 ClientId = "api-pika-gd-pass",
                 ClientName = "Cliente REST API para PIKA Gestión Documental",
                 AllowOfflineAccess=true,
@@ -132,7 +134,7 @@ namespace PIKA.Identity.Server
                  // SPA client using code flow + pkce
                 new Client
                 {
-                    ClientId = "api-pika-gd-angular",
+                    ClientId = "api-pika-gd-angular-old",
                     ClientName = "Cliente PIKA Gestión Documental WEb",
                     ClientUri = "http://localhost",
                     RequireConsent = false,
@@ -154,7 +156,47 @@ namespace PIKA.Identity.Server
                     AllowedCorsOrigins = { "http://localhost" },
 
                     AllowedScopes = { "openid",  "profile", PIKAGDNAME }
-                }
+                },
+                new Client
+{
+                    ClientId = "api-pika-gd-angular",
+                    ClientName = "Cliente PIKA Gestión Documental WEb",
+
+    AccessTokenType = AccessTokenType.Jwt,
+    AccessTokenLifetime = 330,// 330 seconds, default 60 minutes
+    IdentityTokenLifetime = 30,
+
+    RequireClientSecret = false,
+    AllowedGrantTypes = GrantTypes.Code,
+    RequirePkce = true,
+
+    AllowAccessTokensViaBrowser = true,
+    RedirectUris = new List<string>
+    {
+        $"{spaClientUrl}/callback",
+        $"{spaClientUrl}/silent-renew.html",
+        "https://localhost:4200",
+        "https://localhost:4200/silent-renew.html"
+    },
+    PostLogoutRedirectUris = new List<string>
+    {
+        $"{spaClientUrl}/unauthorized",
+        $"{spaClientUrl}",
+        "https://localhost:4200/unauthorized",
+        "https://localhost:4200"
+    },
+    AllowedCorsOrigins = new List<string>
+    {
+        $"{spaClientUrl}",
+        "https://localhost:4200"
+    },
+    AllowedScopes = new List<string>
+    {
+        IdentityServerConstants.StandardScopes.OpenId,
+        IdentityServerConstants.StandardScopes.Profile,
+        PIKAGDNAME
+    }
+},
             };
     }
 }
