@@ -23,6 +23,7 @@ namespace PIKA.Modelo.GestorDocumental
         {
             this._TipoOrigenId = this.TipoOrigenDefault;
             this.Almacenes = new HashSet<AlmacenArchivo>();
+            this.Activos = new HashSet<Activo>();
             HistorialArchivosActivo = new HashSet<HistorialArchivoActivo>();
             Prestamos = new HashSet<Prestamo>();
 
@@ -73,7 +74,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         public virtual TipoArchivo Tipo { get; set; }
         public virtual ICollection<AlmacenArchivo> Almacenes { get; set; }
-        public virtual Activo ActivoActual { get; set; }
+        public virtual ICollection<Activo> Activos { get; set; }
         public virtual ICollection<HistorialArchivoActivo> HistorialArchivosActivo { get; set; }
         public virtual ICollection<Prestamo> Prestamos { get; set; }
 

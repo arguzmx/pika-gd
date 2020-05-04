@@ -29,7 +29,11 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.EnPrestamo).HasDefaultValue(false).IsRequired();
 
             builder.HasOne(x => x.ElementoClasificacion).WithMany(y => y.Activos).HasForeignKey(z => z.ElementoClasificacionId).IsRequired();
-            builder.HasOne(x => x.ArchivoActual).WithOne(y => y.ActivoActual).HasForeignKey<Activo>(z=>z.ArchivoId).IsRequired();
+
+
+            //Un archivo (es una unidad física) tiene muchos activos asociados asi que hay que rreemplazr por Archivo 1 ---> * Activos
+
+            //builder.HasOne(x => x.ArchivoActual).WithOne(y => y.ActivoActual).HasForeignKey<Activo>(z=>z.ArchivoId).IsRequired();
 
         }
     }
