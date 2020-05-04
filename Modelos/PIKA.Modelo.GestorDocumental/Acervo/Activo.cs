@@ -93,6 +93,23 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         public bool EnPrestamo { get; set; }
 
+
+        /// <summary>
+        /// Especifica si el activo se encuentra marcado como en reserva
+        /// </summary>
+        public bool Reservado { get; set; }
+
+        /// <summary>
+        /// Especifica si el activo se encuentra marcado como confidenxial
+        /// </summary>
+        public bool Confidencial { get; set; }
+
+        /// <summary>
+        /// Especifica si el activo tiene ampliaciones vigentes
+        /// </summary>
+        public bool Ampliado { get; set; }
+
+
         public ElementoClasificacion ElementoClasificacion { get; set; }
 
         public Archivo ArchivoActual { get; set; }
@@ -101,6 +118,9 @@ namespace PIKA.Modelo.GestorDocumental
         /// Historial de archivos por los que ha pasado el activo
         /// </summary>
         public virtual ICollection<HistorialArchivoActivo> HistorialArchivosActivo { get; set; }
+
+        public virtual ICollection<Ampliacion> Ampliaciones { get; set; }
+
         public virtual ActivoPrestamo Prestamo { get; set; }
     }
 }
