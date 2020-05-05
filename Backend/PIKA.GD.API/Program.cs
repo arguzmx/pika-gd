@@ -1,4 +1,3 @@
-using Autofac.Extensions.DependencyInjection;
 using FluentValidation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -53,7 +52,6 @@ namespace PIKA.GD.API
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-            .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
@@ -72,13 +70,15 @@ namespace PIKA.GD.API
             string connectionString = configuracion.GetConnectionString("pika-gd");
             foreach (Type dbContextType in contextos)
             {
-
+                Console.WriteLine($">>>>>{dbContextType.Name}@{connectionString}");
                 var optionsBuilderType = typeof(DbContextOptionsBuilder<>).MakeGenericType(dbContextType);
                 var optionsBuilder = (DbContextOptionsBuilder)Activator.CreateInstance(optionsBuilderType);
                 optionsBuilder.UseMySql(connectionString);
                 var dbContext = (DbContext)Activator.CreateInstance(dbContextType, optionsBuilder.Options);
                 try
                 {
+
+                    
                     ((IRepositorioInicializable)dbContext).AplicarMigraciones();
                     ((IRepositorioInicializable)dbContext).Inicializar(env.ContentRootPath);
 
