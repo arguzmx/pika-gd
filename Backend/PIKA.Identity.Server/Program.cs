@@ -42,25 +42,25 @@ namespace PIKA.Identity.Server
 
                
 
-                var seed = args.Contains("/seed");
-                if (seed)
-                {
-                    args = args.Except(new[] { "/seed" }).ToArray();
-                }
+                //var seed = args.Contains("/seed");
+                //if (seed)
+                //{
+                //    args = args.Except(new[] { "/seed" }).ToArray();
+                //}
 
                 var host = CreateHostBuilder(args).Build();
 
 
 
-                if (seed)
-                {
+                //if (seed)
+                //{
                     Log.Information("Seeding database...");
                     var config = host.Services.GetRequiredService<IConfiguration>();
                     var connectionString = config.GetConnectionString("pika-gd");
                     SeedData.EnsureSeedData(connectionString);
                     Log.Information("Done seeding database.");
-                    return 0;
-                }
+                   // return 0;
+                //}
 
                 Log.Information("Starting host...");
                 host.Run();

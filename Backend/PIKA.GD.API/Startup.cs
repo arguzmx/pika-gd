@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Autofac;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -36,7 +35,7 @@ namespace PIKA.GD.API
 {
     public class Startup
     {
-        public ILifetimeScope AutofacContainer { get; private set; }
+        
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
 
@@ -45,17 +44,7 @@ namespace PIKA.GD.API
 
         private readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-        public void ConfigureContainer(ContainerBuilder builder)
-        {
-            //// Add any Autofac modules or registrations.
-            //// This is called AFTER ConfigureServices so things you
-            //// register here OVERRIDE things registered in ConfigureServices.
-            ////
-            //// You must have the call to AddAutofac in the Program.Main
-            //// method or this won't be called.
-            //builder.RegisterModule(new AutofacModule());
-        }
-
+        
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
@@ -139,12 +128,8 @@ namespace PIKA.GD.API
 
             services.AddTransient(typeof(IProveedorOpcionesContexto<>),typeof(ProveedorOpcionesContexto<>));
 
-            services.AddDbContext<DbContextOrganizacion>(options =>
-       options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-
-            services.AddDbContext<DBContextGestionDocumental>(options =>
-                    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-
+            
+            
             services.AddDbContext<DbContextSeguridad>(options =>
                  options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
@@ -154,6 +139,13 @@ namespace PIKA.GD.API
 
             services.AddDbContext<DbContextAplicacionPlugin>(options =>
                   options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
+            services.AddDbContext<DBContextGestionDocumental>(options =>
+                    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
+            services.AddDbContext<DbContextOrganizacion>(options =>
+                    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
 
             services.AddControllers();
 
