@@ -79,24 +79,24 @@ namespace PIKA.GD.API.Model
                 found = true;
                 while (found)
                 {
-                    if (keys.IndexOf($"filter[{columnindex}][Property]") >= 0)
+                    if (keys.IndexOf($"f[{columnindex}][p]") >= 0)
                     {
                         bool filterok = true;
                         FiltroConsulta  f = new FiltroConsulta();
-                        f.Propiedad = bindingContext.ActionContext.HttpContext.Request.Query[$"filter[{columnindex}][Property]"];
-                        if (keys.IndexOf($"filter[{columnindex}][Operand]") < 0)
+                        f.Propiedad = bindingContext.ActionContext.HttpContext.Request.Query[$"f[{columnindex}][p]"];
+                        if (keys.IndexOf($"f[{columnindex}][o]") < 0)
                         {
                             filterok = false;
                         }
-                        if (keys.IndexOf($"filter[{columnindex}][Value]") < 0)
+                        if (keys.IndexOf($"f[{columnindex}][v]") < 0)
                         {
                             filterok = false;
                         }
 
                         if (filterok)
                         {
-                            f.Operador = bindingContext.ActionContext.HttpContext.Request.Query[$"filter[{columnindex}][Operand]"];
-                            f.Valor = bindingContext.ActionContext.HttpContext.Request.Query[$"filter[{columnindex}][Value]"];
+                            f.Operador = bindingContext.ActionContext.HttpContext.Request.Query[$"f[{columnindex}][o]"];
+                            f.Valor = bindingContext.ActionContext.HttpContext.Request.Query[$"f[{columnindex}][v]"];
 
                             result.Filters.Add(f);
                         }
