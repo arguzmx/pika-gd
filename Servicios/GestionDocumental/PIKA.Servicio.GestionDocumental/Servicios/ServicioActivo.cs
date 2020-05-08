@@ -86,6 +86,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             o.CodigoElectronico = entity.CodigoElectronico;
             o.EnPrestamo = entity.EnPrestamo;
 
+            o.Reservado = entity.Reservado;
+            o.Confidencial = entity.Confidencial;
+            o.Ampliado = entity.Ampliado;
+
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
@@ -142,7 +146,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 activo = await this.repo.UnicoAsync(x => x.Id == Id);
                 if (activo != null)
                 {
-                    UDT.Context.Entry(activo).State = EntityState.Deleted;
+                    activo.Eliminada = true;
+                    UDT.Context.Entry(activo).State = EntityState.Modified;
                     listaEliminados.Add(activo.Id);
                 }
             }

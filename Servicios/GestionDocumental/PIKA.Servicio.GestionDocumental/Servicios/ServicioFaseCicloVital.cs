@@ -24,11 +24,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IServicioCache cache;
         private IRepositorioAsync<FaseCicloVital> repo;
         private ICompositorConsulta<FaseCicloVital> compositor;
-        private ILogger<ServicioFaseCicloVital> logger;
-        private DBContextGestionDocumental contexto;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
         public ServicioFaseCicloVital(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,

@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.GestionDocumental.Servicios
 {
-    public class ServicioAlmacen : ContextoServicioGestionDocumental,
+    public class ServicioAlmacenArchivo : ContextoServicioGestionDocumental,
         IServicioInyectable, IServicioAlmacenArchivo
     {
         private const string DEFAULT_SORT_COL = "Nombre";
@@ -28,9 +28,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private ICompositorConsulta<AlmacenArchivo> compositor;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
-        public ServicioAlmacen(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
+        public ServicioAlmacenArchivo(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
            ICompositorConsulta<AlmacenArchivo> compositorConsulta,
-           ILogger<ServicioAlmacen> Logger,
+           ILogger<ServicioAlmacenArchivo> Logger,
            IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);

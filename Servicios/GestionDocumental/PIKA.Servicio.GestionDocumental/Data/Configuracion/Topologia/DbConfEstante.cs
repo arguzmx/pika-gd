@@ -16,14 +16,11 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.AlmacenArchivoId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
-
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.CodigoOptico).HasMaxLength(2048).IsRequired(false);
             builder.Property(x => x.CodigoElectronico).HasMaxLength(2048).IsRequired(false);
 
-            builder.HasOne(x => x.Almacen).WithMany(y => y.Estantes).HasForeignKey(z => z.AlmacenArchivoId);
-            builder.HasMany(x => x.Espacios).WithOne(y => y.Estante).HasForeignKey(x => x.EstanteId);
-
+            builder.HasMany(x => x.Espacios).WithOne(y => y.Estante).HasForeignKey(z => z.EstanteId);
         }
     }
 }

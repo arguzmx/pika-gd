@@ -14,27 +14,28 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
         {
             builder.ToTable(DBContextGestionDocumental.TablaActivos);
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
+            builder.Property(x => x.TipoOrigenId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
+            builder.Property(x => x.OrigenId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
 
-            builder.Property(x => x.TipoOrigenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
-            builder.Property(x => x.OrigenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
+            //¿Requerida?
+            builder.Property(x => x.ElementoClasificacionId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
 
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.Asunto).HasMaxLength(2048).IsRequired(false);
             builder.Property(x => x.FechaApertura).IsRequired();
             builder.Property(x => x.FechaCierre).IsRequired(false);
+            builder.Property(x => x.Eliminada).HasDefaultValue(false).IsRequired();
             builder.Property(x => x.EsElectronio).HasDefaultValue(true).IsRequired();
             builder.Property(x => x.CodigoOptico).HasMaxLength(1024).IsRequired(false);
             builder.Property(x => x.CodigoElectronico).HasMaxLength(1024).IsRequired(false);
             builder.Property(x => x.EnPrestamo).HasDefaultValue(false).IsRequired();
+            builder.Property(x => x.Reservado).HasDefaultValue(false).IsRequired();
+            builder.Property(x => x.Confidencial).HasDefaultValue(false).IsRequired();
+            builder.Property(x => x.Ampliado).HasDefaultValue(false).IsRequired();
 
-            builder.HasOne(x => x.ElementoClasificacion).WithMany(y => y.Activos).HasForeignKey(z => z.ElementoClasificacionId).IsRequired();
-
-
-            //Un archivo (es una unidad física) tiene muchos activos asociados asi que hay que rreemplazr por Archivo 1 ---> * Activos
-
-            //builder.HasOne(x => x.ArchivoActual).WithOne(y => y.ActivoActual).HasForeignKey<Activo>(z=>z.ArchivoId).IsRequired();
-
+            builder.HasMany(x => x.Ampliaciones).WithOne(y => y.activo).HasForeignKey(z => z.ActivoId);
+            builder.HasMany(x => x.HistorialArchivosActivo).WithOne(y => y.Activo).HasForeignKey(z => z.ActivoId);
         }
     }
 }

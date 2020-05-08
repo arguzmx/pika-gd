@@ -18,54 +18,52 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.GestionDocumental.Servicios
 {
-    public class ServicioPrestamo : ContextoServicioGestionDocumental,
-        IServicioInyectable, IServicioPrestamo
+    public class ServicioTipoAmpliacion : ContextoServicioGestionDocumental,
+        IServicioInyectable, IServicioTipoAmpliacion
     {
-        private const string DEFAULT_SORT_COL = "FechaCreacion";
+        private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-        private IRepositorioAsync<Prestamo> repo;
-        private ICompositorConsulta<Prestamo> compositor;
+        private IRepositorioAsync<TipoAmpliacion> repo;
+        private ICompositorConsulta<TipoAmpliacion> compositor;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
-        public ServicioPrestamo(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ICompositorConsulta<Prestamo> compositorConsulta,
-           ILogger<ServicioPrestamo> Logger,
+        public ServicioTipoAmpliacion(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
+           ICompositorConsulta<TipoAmpliacion> compositorConsulta,
+           ILogger<ServicioTipoAmpliacion> Logger,
            IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<Prestamo>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<TipoAmpliacion>(compositor);
         }
 
-        public async Task<bool> Existe(Expression<Func<Prestamo, bool>> predicado)
+        public async Task<bool> Existe(Expression<Func<TipoAmpliacion, bool>> predicado)
         {
-            List<Prestamo> l = await this.repo.ObtenerAsync(predicado);
+            List<TipoAmpliacion> l = await this.repo.ObtenerAsync(predicado);
             if (l.Count() == 0) return false;
             return true;
         }
 
 
-        public async Task<Prestamo> CrearAsync(Prestamo entity, CancellationToken cancellationToken = default)
+        public async Task<TipoAmpliacion> CrearAsync(TipoAmpliacion entity, CancellationToken cancellationToken = default)
         {
 
-            if (await Existe(x => x.Folio.Equals(entity.Folio, StringComparison.InvariantCultureIgnoreCase)))
+            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
-                throw new ExElementoExistente(entity.Folio);
+                throw new ExElementoExistente(entity.Nombre);
             }
 
-            entity.Id = Guid.NewGuid().ToString();
-            entity.FechaCreacion = DateTime.UtcNow;
-
+            entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
             return entity;
         }
 
-        public async Task ActualizarAsync(Prestamo entity)
+        public async Task ActualizarAsync(TipoAmpliacion entity)
         {
 
-            Prestamo o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+            TipoAmpliacion o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
             if (o == null)
             {
@@ -73,16 +71,13 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
 
             if (await Existe(x =>
-            x.Id != entity.Id & x.Folio == entity.Folio))
+            x.Id != entity.Id
+            && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
-                throw new ExElementoExistente(entity.Folio);
+                throw new ExElementoExistente(entity.Nombre);
             }
 
-            o.Folio = entity.Folio;
-            o.Eliminada = entity.Eliminada;
-            o.FechaProgramadaDevolucion = entity.FechaProgramadaDevolucion;
-            o.FechaDevolucion = entity.FechaDevolucion;
-            o.TieneDevolucionesParciales = entity.TieneDevolucionesParciales;
+            o.Nombre = entity.Nombre;
 
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
@@ -103,7 +98,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
             return query;
         }
-        public async Task<IPaginado<Prestamo>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Prestamo>, IIncludableQueryable<Prestamo, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
+        public async Task<IPaginado<TipoAmpliacion>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<TipoAmpliacion>, IIncludableQueryable<TipoAmpliacion, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
@@ -111,12 +106,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return respuesta;
         }
 
-        public Task<IEnumerable<Prestamo>> CrearAsync(params Prestamo[] entities)
+        public Task<IEnumerable<TipoAmpliacion>> CrearAsync(params TipoAmpliacion[] entities)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Prestamo>> CrearAsync(IEnumerable<Prestamo> entities, CancellationToken cancellationToken = default)
+        public Task<IEnumerable<TipoAmpliacion>> CrearAsync(IEnumerable<TipoAmpliacion> entities, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -133,36 +128,36 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            Prestamo p;
+            TipoAmpliacion ta;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
             {
-                p = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (p != null)
+                ta = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (ta != null)
                 {
-                    p.Eliminada = true;
-                    UDT.Context.Entry(p).State = EntityState.Modified;
-                    listaEliminados.Add(p.Id);
+                    UDT.Context.Entry(ta).State = EntityState.Deleted;
+                    listaEliminados.Add(ta.Id);
                 }
             }
             UDT.SaveChanges();
             return listaEliminados;
         }
 
-        public Task<List<Prestamo>> ObtenerAsync(Expression<Func<Prestamo, bool>> predicado)
+        public Task<List<TipoAmpliacion>> ObtenerAsync(Expression<Func<TipoAmpliacion, bool>> predicado)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Prestamo>> ObtenerListaAsync(string SqlCommand)
+        public Task<IEnumerable<TipoAmpliacion>> ObtenerListaAsync(string SqlCommand)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IPaginado<Prestamo>> ObtenerPaginadoAsync(Expression<Func<Prestamo, bool>> predicate = null, Func<IQueryable<Prestamo>, IOrderedQueryable<Prestamo>> orderBy = null, Func<IQueryable<Prestamo>, IIncludableQueryable<Prestamo, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
+        public Task<IPaginado<TipoAmpliacion>> ObtenerPaginadoAsync(Expression<Func<TipoAmpliacion, bool>> predicate = null, Func<IQueryable<TipoAmpliacion>, IOrderedQueryable<TipoAmpliacion>> orderBy = null, Func<IQueryable<TipoAmpliacion>, IIncludableQueryable<TipoAmpliacion, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
+
 
 
         public Task Restaurar(string[] ids)
@@ -170,10 +165,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public async Task<Prestamo> UnicoAsync(Expression<Func<Prestamo, bool>> predicado = null, Func<IQueryable<Prestamo>, IOrderedQueryable<Prestamo>> ordenarPor = null, Func<IQueryable<Prestamo>, IIncludableQueryable<Prestamo, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<TipoAmpliacion> UnicoAsync(Expression<Func<TipoAmpliacion, bool>> predicado = null, Func<IQueryable<TipoAmpliacion>, IOrderedQueryable<TipoAmpliacion>> ordenarPor = null, Func<IQueryable<TipoAmpliacion>, IIncludableQueryable<TipoAmpliacion, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            Prestamo p = await this.repo.UnicoAsync(predicado);
-            return p.CopiaPrestamo();
+            TipoAmpliacion t = await this.repo.UnicoAsync(predicado);
+            return t.CopiaTipoAmpliacion();
         }
     }
 }

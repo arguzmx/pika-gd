@@ -2,7 +2,7 @@
 
 namespace PIKA.Servicio.GestionDocumental.Data.Migrations
 {
-    public partial class AlmacenArchivoGestionDocumental : Migration
+    public partial class AlmacenFisico : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -56,7 +56,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     CodigoOptico = table.Column<string>(maxLength: 2048, nullable: true),
                     CodigoElectronico = table.Column<string>(maxLength: 2048, nullable: true),
                     EstanteId = table.Column<string>(maxLength: 128, nullable: false),
-                    Posicion = table.Column<int>(maxLength: 10, nullable: false)
+                    Posicion = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

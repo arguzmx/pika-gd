@@ -14,11 +14,12 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.HasKey(x => new { x.PrestamoId, x.ActivoId });
             builder.Property(x => x.PrestamoId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.ActivoId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
-
-            builder.HasOne(x => x.Activo).WithOne(x => x.Prestamo).HasForeignKey<ActivoPrestamo>(z => z.ActivoId);
-
             builder.Property(x => x.Devuelto).HasDefaultValue(false).IsRequired();
             builder.Property(x => x.FechaDevolucion);
+
+            builder.HasOne(x => x.Activo).WithMany(y => y.PrestamosRelacionados).HasForeignKey(z => z.ActivoId);
+            builder.HasOne(x => x.Prestamo).WithMany(y => y.ActivosRelacionados).HasForeignKey(z => z.PrestamoId);
+
         }
     }
 }

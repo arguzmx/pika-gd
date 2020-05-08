@@ -9,7 +9,7 @@ namespace PIKA.Modelo.GestorDocumental
     {
 
         public Prestamo() {
-            Activos = new HashSet<ActivoPrestamo>();
+            ActivosRelacionados = new HashSet<ActivoPrestamo>();
             Comentarios = new HashSet<ComentarioPrestamo>();
         }
 
@@ -53,7 +53,7 @@ namespace PIKA.Modelo.GestorDocumental
 
         public Archivo Archivo { get; set; }
 
-        public virtual ICollection<ActivoPrestamo> Activos { get; set; }
+        public virtual ICollection<ActivoPrestamo> ActivosRelacionados { get; set; }
 
         public virtual ICollection<ComentarioPrestamo> Comentarios { get; set; }
 
