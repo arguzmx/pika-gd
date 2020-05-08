@@ -20,12 +20,12 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
     [ApiVersion("1.0")]
     [ApiController]
     [Route("api/v{version:apiVersion}/gd/almacen/{AlmacenId}/estante/{EstanteId}/[controller]")]
-    public class EspacioEspacioEstanteController : ACLController
+    public class EspacioEstanteController : ACLController
     {
-        private readonly ILogger<EspacioEspacioEstanteController> logger;
+        private readonly ILogger<EspacioEstanteController> logger;
         private IServicioEspacioEstante servicioEspacioEstante;
         private IProveedorMetadatos<EspacioEstante> metadataProvider;
-        public EspacioEspacioEstanteController(ILogger<EspacioEspacioEstanteController> logger,
+        public EspacioEstanteController(ILogger<EspacioEstanteController> logger,
             IProveedorMetadatos<EspacioEstante> metadataProvider,
             IServicioEspacioEstante servicioEspacioEstante)
         {

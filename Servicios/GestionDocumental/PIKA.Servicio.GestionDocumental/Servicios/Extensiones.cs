@@ -50,7 +50,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 Id = a.Id,
                 Nombre = a.Nombre,
                 OrigenId = a.OrigenId,
-                TipoOrigenId = a.TipoOrigenId
+                TipoOrigenId = a.TipoOrigenId,
+                TipoArchivoId = a.TipoArchivoId,
+                Eliminada = a.Eliminada
             };
         }
 
@@ -82,7 +84,20 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 Id = a.Id,
                 Nombre = a.Nombre,
                 OrigenId = a.OrigenId,
-                TipoOrigenId = a.TipoOrigenId
+                TipoOrigenId = a.TipoOrigenId,
+                Asunto = a.Asunto,
+                FechaApertura= a.FechaApertura,
+                FechaCierre = a.FechaCierre,
+                EsElectronio = a.EsElectronio,
+                CodigoElectronico = a.CodigoElectronico,
+                CodigoOptico = a.CodigoOptico,
+                Reservado = a.Reservado,
+                EnPrestamo = a.EnPrestamo,
+                Confidencial = a.Confidencial,
+                Ampliado = a.Ampliado,
+                ElementoClasificacionId = a.ElementoClasificacionId,
+                ArchivoId = a.ArchivoId,
+                Eliminada = a.Eliminada,
             };
         }
 
@@ -94,6 +109,40 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 Contenido = a.Contenido
             };
         }
+        #endregion
+
+        #region Ampliacion
+
+        public static Ampliacion CopiaAmpliacion(this Ampliacion a)
+        {
+            return new Ampliacion()
+            {
+                ActivoId = a.ActivoId,
+                Vigente = a.Vigente,
+                TipoAmpliacionId = a.TipoAmpliacionId,
+                FechaFija = a.FechaFija,
+                FundamentoLegal = a.FundamentoLegal,
+                Inicio = a.Inicio,
+                Fin = a.Fin,
+                Anos = a.Anos,
+                Meses = a.Meses,
+                Dias = a.Dias
+
+            };
+        }
+
+
+        public static TipoAmpliacion CopiaTipoAmpliacion(this TipoAmpliacion a)
+        {
+            return new TipoAmpliacion()
+            {
+                Id = a.Id,
+                Nombre = a.Nombre
+            };
+        }
+
+
+
         #endregion
 
         #region Prestamos

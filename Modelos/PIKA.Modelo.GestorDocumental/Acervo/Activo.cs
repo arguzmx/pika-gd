@@ -6,13 +6,13 @@ using System.Text;
 
 namespace PIKA.Modelo.GestorDocumental
 {
-    public class Activo: Entidad<string>, IEntidadRelacionada, IEntidadIdElectronico
+    public class Activo: Entidad<string>, IEntidadRelacionada, IEntidadIdElectronico, IEntidadEliminada
     {
 
         public Activo()
         {
             TipoOrigenId = TipoOrigenDefault;
-            HistorialArchivosActivo = new HashSet<HistorialArchivoActivo>();
+            //HistorialArchivosActivo = new HashSet<HistorialArchivoActivo>();
         }
 
         public override string Id { get => base.Id; set => base.Id = value; }
@@ -69,6 +69,7 @@ namespace PIKA.Modelo.GestorDocumental
         public string CodigoOptico { get; set; }
         //# Longitus 1024, opcional
 
+        public bool Eliminada { get; set; }
 
         /// <summary>
         /// Código electrónico de acceso al elemento por ejemplo RFID
@@ -120,7 +121,8 @@ namespace PIKA.Modelo.GestorDocumental
         public virtual ICollection<HistorialArchivoActivo> HistorialArchivosActivo { get; set; }
 
         public virtual ICollection<Ampliacion> Ampliaciones { get; set; }
+       
+        public virtual ICollection<ActivoPrestamo> PrestamosRelacionados { get; set; }
 
-        public virtual ActivoPrestamo Prestamo { get; set; }
     }
 }

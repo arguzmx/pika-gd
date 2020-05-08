@@ -75,6 +75,16 @@ namespace PIKA.Servicio.GestionDocumental.Data
         public static string TablaActivos { get => "gd$activo"; }
 
         /// <summary>
+        /// Nombre de la tabla para las entidades del tipo Ampliación
+        /// </summary>
+        public static string TablaAmpliacion { get => "gd$ampliacion"; }
+
+        /// <summary>
+        /// Nombre de la tabla para las entidades del tipo Tipo Ampliación
+        /// </summary>
+        public static string TablaTipoAmpliacion { get => "gd$tipoampliacion"; }
+
+        /// <summary>
         /// Nombre de la tabla para las entidades del tipo Asunto 
         /// </summary>
         public static string TablaAsuntos{ get => "gd$asunto"; }
@@ -158,9 +168,33 @@ namespace PIKA.Servicio.GestionDocumental.Data
         public DbSet<Asunto> Asuntos { get; set; }
 
         /// <summary>
+        /// Activos existentes en la amplacion
+        /// </summary>
+        public DbSet<Ampliacion> Ampliaciones { get; set; }
+
+        /// <summary>
+        /// Activos existentes en la amplacion
+        /// </summary>
+        public DbSet<TipoAmpliacion> TiposAmpliaciones { get; set; }
+
+
+        /// <summary>
         /// HistorialArchivosActivo existentes en la aplicación
         /// </summary>
         public DbSet<HistorialArchivoActivo> HistorialArchivosActivo { get; set; }
+
+        /// <summary>
+        /// Almacenes de archivo existentes en la aplicación
+        /// </summary>
+        public DbSet<AlmacenArchivo> AlmacenesArchivo { get; set; }
+        /// <summary>
+        /// Estantes existentes en la aplicación
+        /// </summary>
+        public DbSet<Estante> Estantes { get; set; }
+        /// <summary>
+        /// Espacios de estante de prestamo existentes en la aplicación
+        /// </summary>
+        public DbSet<EspacioEstante> EspaciosEstante { get; set; }
 
         /// <summary>
         /// Prestamos existentes en la aplicación
@@ -176,18 +210,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// Comentarios de prestamo existentes en la aplicación
         /// </summary>
         public DbSet<ComentarioPrestamo> ComentariosPrestamo { get; set; }
-        /// <summary>
-        /// Almacenes de archivo existentes en la aplicación
-        /// </summary>
-        public DbSet<AlmacenArchivo>  AlmacenesArchivo { get; set; }
-        /// <summary>
-        /// Estantes existentes en la aplicación
-        /// </summary>
-        public DbSet<Estante> Estantes { get; set; }
-        /// <summary>
-        /// Espacios de estante de prestamo existentes en la aplicación
-        /// </summary>
-        public DbSet<EspacioEstante> EspaciosEstante{ get; set; }
+
 
         public void AplicarMigraciones()
         {
@@ -201,7 +224,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(builder);
+            //base.OnModelCreating(builder);
 
             builder.ApplyConfiguration<CuadroClasificacion>(new DbConfCuadroClasificacion());
             builder.ApplyConfiguration<ElementoClasificacion>(new DbConfElementoClasificacion());
@@ -213,16 +236,18 @@ namespace PIKA.Servicio.GestionDocumental.Data
 
             builder.ApplyConfiguration<Activo>(new DbConfActivo());
             builder.ApplyConfiguration<Asunto>(new DbConfAsunto());
-            builder.ApplyConfiguration<HistorialArchivoActivo>(new DbConfHistorialArchivoActivo());
 
-            builder.ApplyConfiguration<Prestamo>(new DbConfPrestamo());
-            builder.ApplyConfiguration<ActivoPrestamo>(new DbConfActivoPrestamo());
-            builder.ApplyConfiguration<ComentarioPrestamo>(new DbConfComentarioPrestamo());
+            builder.ApplyConfiguration<Ampliacion>(new DbConfAmpliacion());
+            builder.ApplyConfiguration<TipoAmpliacion>(new DbConfTipoAmpliacion());
+            builder.ApplyConfiguration<HistorialArchivoActivo>(new DbConfHistorialArchivoActivo());
 
             builder.ApplyConfiguration<AlmacenArchivo>(new DbConfAlmacenArchivo());
             builder.ApplyConfiguration<Estante>(new DbConfEstante());
             builder.ApplyConfiguration<EspacioEstante>(new DbConfEspacioEstante());
 
+            builder.ApplyConfiguration<Prestamo>(new DbConfPrestamo());
+            builder.ApplyConfiguration<ActivoPrestamo>(new DbConfActivoPrestamo());
+            builder.ApplyConfiguration<ComentarioPrestamo>(new DbConfComentarioPrestamo());
         }
 
     }

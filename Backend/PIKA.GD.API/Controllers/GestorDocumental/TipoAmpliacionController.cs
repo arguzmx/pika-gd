@@ -19,21 +19,21 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
     [ApiVersion("1.0")]
     [ApiController]
     [Route("api/v{version:apiVersion}/gd/[controller]")]
-    public class ArchivoController : ACLController
+    public class TipoAmpliacionController : ACLController
     {
-        private readonly ILogger<ArchivoController> logger;
-        private IServicioArchivo servicioArchivo;
-        private IProveedorMetadatos<Archivo> metadataProvider;
-        public ArchivoController(ILogger<ArchivoController> logger,
-            IProveedorMetadatos<Archivo> metadataProvider,
-            IServicioArchivo servicioArchivo)
+        private readonly ILogger<TipoAmpliacionController> logger;
+        private IServicioTipoAmpliacion servicioTipoAmpliacion;
+        private IProveedorMetadatos<TipoAmpliacion> metadataProvider;
+        public TipoAmpliacionController(ILogger<TipoAmpliacionController> logger,
+            IProveedorMetadatos<TipoAmpliacion> metadataProvider,
+            IServicioTipoAmpliacion servicioTipoAmpliacion)
         {
             this.logger = logger;
-            this.servicioArchivo = servicioArchivo;
+            this.servicioTipoAmpliacion = servicioTipoAmpliacion;
             this.metadataProvider = metadataProvider;
         }
 
-        [HttpGet("metadata", Name = "MetadataArchivo")]
+        [HttpGet("metadata", Name = "MetadataTipoAmpliacion")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
         {
@@ -44,16 +44,16 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<Archivo>> Post([FromBody]Archivo entidad)
+        public async Task<ActionResult<TipoAmpliacion>> Post([FromBody]TipoAmpliacion entidad)
         {
-            entidad = await servicioArchivo.CrearAsync(entidad).ConfigureAwait(false);
-            return Ok(CreatedAtAction("GetArchivo", new { id = entidad.Id }, entidad).Value);
+            entidad = await servicioTipoAmpliacion.CrearAsync(entidad).ConfigureAwait(false);
+            return Ok(CreatedAtAction("GetTipoAmpliacion", new { id = entidad.Id }, entidad).Value);
         }
 
 
         [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<IActionResult> Put(string id, [FromBody]Archivo entidad)
+        public async Task<IActionResult> Put(string id, [FromBody]TipoAmpliacion entidad)
         {
             var x = ObtieneFiltrosIdentidad();
 
@@ -63,20 +63,20 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 return BadRequest();
             }
 
-            await servicioArchivo.ActualizarAsync(entidad).ConfigureAwait(false);
+            await servicioTipoAmpliacion.ActualizarAsync(entidad).ConfigureAwait(false);
             return NoContent();
 
         }
 
 
-        [HttpGet("page", Name = "GetPageArchivo")]
+        [HttpGet("page", Name = "GetPageTipoAmpliacion")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<Archivo>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<TipoAmpliacion>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioArchivo.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<Archivo>());
+            var data = await servicioTipoAmpliacion.ObtenerPaginadoAsync(query).ConfigureAwait(false);
+            return Ok(data.Elementos.ToList<TipoAmpliacion>());
         }
 
 
@@ -88,9 +88,9 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
 
-        [HttpGet("datatables", Name = "GetDatatablesPluginArchivo")]
+        [HttpGet("datatables", Name = "GetDatatablesPluginTipoAmpliacion")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<RespuestaDatatables<Archivo>>> GetDatatablesPlugin([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
+        public async Task<ActionResult<RespuestaDatatables<TipoAmpliacion>>> GetDatatablesPlugin([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
         {
 
             if (query.order.Count == 0)
@@ -109,9 +109,9 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 ord_direccion = query.order[0].dir
             };
 
-            var data = await servicioArchivo.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
+            var data = await servicioTipoAmpliacion.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
 
-            RespuestaDatatables<Archivo> r = new RespuestaDatatables<Archivo>()
+            RespuestaDatatables<TipoAmpliacion> r = new RespuestaDatatables<TipoAmpliacion>()
             {
                 data = data.Elementos.ToArray(),
                 draw = query.draw,
@@ -127,9 +127,9 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<Archivo>> Get(string id)
+        public async Task<ActionResult<TipoAmpliacion>> Get(string id)
         {
-            var o = await servicioArchivo.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            var o = await servicioTipoAmpliacion.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }
@@ -141,7 +141,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> Delete([FromBody]string[] id)
         {
-            return Ok(await servicioArchivo.Eliminar(id).ConfigureAwait(false));
+            return Ok(await servicioTipoAmpliacion.Eliminar(id).ConfigureAwait(false));
         }
     }
 }

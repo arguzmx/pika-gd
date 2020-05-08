@@ -26,6 +26,10 @@ namespace PIKA.Servicio.GestionDocumental
         public const string MODULO_GD_ALMACEN= "PIKA-GD-GD-ALMACEN-ARCHIVO";
         public const string MODULO_GD_ESTANTE= "PIKA-GD-GD-ESTANTE";
         public const string MODULO_GD_ESPACIO_ESTANTE= "PIKA-GD-GD-ESPACIO-ESTANTE";
+        public const string MODULO_GD_HISTORIAL_ARCHIVO_ACTIVO = "PIKA-GD-GD-HISTORIAL-ARCHIVO-ACTIVO";
+        public const string MODULO_GD_AMPLIACION = "PIKA-GD-GD-AMPLIACION";
+        public const string MODULO_GD_TIPO_AMPLIACION= "PIKA-GD-GD-TIPO-AMPLIACION";
+
         public static string ID_APLICAICON { get { return ConstantesAplicacion.Id; } }
         public Aplicacion Info()
         {
@@ -122,6 +126,7 @@ namespace PIKA.Servicio.GestionDocumental
                 TiposAdministrados = new List<Type>() { typeof(EstadoCuadroClasificacion) }
             });
             l.Add(m);
+
             //------------------------------------------------------------
             //------------------------------------------------------------
 
@@ -220,6 +225,46 @@ namespace PIKA.Servicio.GestionDocumental
                 AplicacionId = ConstantesAplicacion.Id,
                 ModuloId = m.Id,
                 TiposAdministrados = new List<Type>() { typeof(Asunto) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+            /// Modulo administarcion de Ampliacion
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_AMPLIACION, true,
+                "Ampliación",
+                "Administrador de ampliaciones",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(Ampliacion) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+            /// Modulo administarcion de Comentarios préstamo
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_TIPO_AMPLIACION, true,
+                "Tipos de Ampliacion",
+                "Administrador de tipos de ampliacion",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(TipoAmpliacion) }
             });
             l.Add(m);
             //------------------------------------------------------------

@@ -74,111 +74,111 @@ namespace PIKA.Servicio.GestionDocumental.Data
 
         private static void InicializarTiposArchivo(DBContextGestionDocumental dbContext, string contentPath)
         {
-            try
-            {
-                List<TipoArchivo> tiposArchivo = new List<TipoArchivo>();
-                string path = Path.Combine(contentPath, "Data", "Inicializar", "tiposArchivo.txt");
+            //try
+            //{
+            //    List<TipoArchivo> tiposArchivo = new List<TipoArchivo>();
+            //    string path = Path.Combine(contentPath, "Data", "Inicializar", "tiposArchivo.txt");
 
-                if (File.Exists(path))
-                {
-                    int index = 0;
-                    List<string> lineas = File.ReadAllText(path).Split('\n').ToList();
-                    foreach (string linea in lineas)
-                    {
-                        if (index > 0)
-                        {
-                            List<string> partes = linea.TrimStart().TrimEnd().Split('\t').ToList();
-                            tiposArchivo.Add(new TipoArchivo()
-                            {
-                                Id = partes[4],
-                                Nombre = partes[0]
-                            });
+            //    if (File.Exists(path))
+            //    {
+            //        int index = 0;
+            //        List<string> lineas = File.ReadAllText(path).Split('\n').ToList();
+            //        foreach (string linea in lineas)
+            //        {
+            //            if (index > 0)
+            //            {
+            //                List<string> partes = linea.TrimStart().TrimEnd().Split('\t').ToList();
+            //                tiposArchivo.Add(new TipoArchivo()
+            //                {
+            //                    Id = partes[4],
+            //                    Nombre = partes[0]
+            //                });
 
-                        }
-                        index++;
-                    }
-                }
+            //            }
+            //            index++;
+            //        }
+            //    }
 
-                foreach (TipoArchivo tipo in tiposArchivo)
-                {
-                    TipoArchivo instancia = dbContext.TiposArchivo.Find(tipo.Id);
-                    if (instancia == null)
-                    {
-                        TipoArchivo p = new TipoArchivo()
-                        {
-                            Id = tipo.Id,
-                            Nombre = tipo.Nombre
-                        };
+            //    foreach (TipoArchivo tipo in tiposArchivo)
+            //    {
+            //        TipoArchivo instancia = dbContext.TiposArchivo.Find(tipo.Id);
+            //        if (instancia == null)
+            //        {
+            //            TipoArchivo p = new TipoArchivo()
+            //            {
+            //                Id = tipo.Id,
+            //                Nombre = tipo.Nombre
+            //            };
 
-                        dbContext.TiposArchivo.Add(p);
-                    }
-                    else
-                    {
-                        instancia.Nombre = tipo.Nombre;
-                    }
-                }
-                dbContext.SaveChanges();
-            }
-            catch (Exception ex)
-            {
+            //            dbContext.TiposArchivo.Add(p);
+            //        }
+            //        else
+            //        {
+            //            instancia.Nombre = tipo.Nombre;
+            //        }
+            //    }
+            //    dbContext.SaveChanges();
+            //}
+            //catch (Exception ex)
+            //{
 
-                throw;
-            }
+            //    throw;
+            //}
 
         }
 
         private static void InicializarFasesCicloVital(DBContextGestionDocumental dbContext, string contentPath)
         {
-            try
-            {
-                List<FaseCicloVital> fases = new List<FaseCicloVital>();
-                string path = Path.Combine(contentPath, "Data", "Inicializar", "fasesCicloVital.txt");
+            //try
+            //{
+            //    List<FaseCicloVital> fases = new List<FaseCicloVital>();
+            //    string path = Path.Combine(contentPath, "Data", "Inicializar", "fasesCicloVital.txt");
 
-                if (File.Exists(path))
-                {
-                    int index = 0;
-                    List<string> lineas = File.ReadAllText(path).Split('\n').ToList();
-                    foreach (string linea in lineas)
-                    {
-                        if (index > 0)
-                        {
-                            List<string> partes = linea.TrimStart().TrimEnd().Split('\t').ToList();
-                            fases.Add(new FaseCicloVital()
-                            {
-                                Id = partes[4],
-                                Nombre = partes[0]
-                            });
+            //    if (File.Exists(path))
+            //    {
+            //        int index = 0;
+            //        List<string> lineas = File.ReadAllText(path).Split('\n').ToList();
+            //        foreach (string linea in lineas)
+            //        {
+            //            if (index > 0)
+            //            {
+            //                List<string> partes = linea.TrimStart().TrimEnd().Split('\t').ToList();
+            //                fases.Add(new FaseCicloVital()
+            //                {
+            //                    Id = partes[4],
+            //                    Nombre = partes[0]
+            //                });
 
-                        }
-                        index++;
-                    }
-                }
+            //            }
+            //            index++;
+            //        }
+            //    }
 
-                foreach (FaseCicloVital fase in fases)
-                {
-                    FaseCicloVital instancia = dbContext.FasesCicloVital.Find(fase.Id);
-                    if (instancia == null)
-                    {
-                        FaseCicloVital p = new FaseCicloVital()
-                        {
-                            Id = fase.Id,
-                            Nombre = fase.Nombre
-                        };
+            //    foreach (FaseCicloVital fase in fases)
+            //    {
+            //        FaseCicloVital instancia = dbContext.FasesCicloVital.Find(fase.Id);
+            //        if (instancia == null)
+            //        {
+            //            FaseCicloVital p = new FaseCicloVital()
+            //            {
+            //                Id = fase.Id,
+            //                Nombre = fase.Nombre
+            //            };
 
-                        dbContext.FasesCicloVital.Add(p);
-                    }
-                    else
-                    {
-                        instancia.Nombre = fase.Nombre;
-                    }
-                }
-                dbContext.SaveChanges();
-            }
-            catch (Exception ex)
-            {
+            //            dbContext.FasesCicloVital.Add(p);
+            //        }
+            //        else
+            //        {
+            //            instancia.Nombre = fase.Nombre;
+            //        }
+            //    }
+            //    dbContext.SaveChanges();
+            //}
+            //catch (Exception ex)
+            //{
 
-                throw;
-            }
+            //    throw;
+            //}
 
         }
     }

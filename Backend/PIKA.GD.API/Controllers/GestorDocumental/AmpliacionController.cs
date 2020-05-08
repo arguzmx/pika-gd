@@ -19,21 +19,21 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
     [ApiVersion("1.0")]
     [ApiController]
     [Route("api/v{version:apiVersion}/gd/[controller]")]
-    public class ArchivoController : ACLController
+    public class AmpliacionController : ACLController
     {
-        private readonly ILogger<ArchivoController> logger;
-        private IServicioArchivo servicioArchivo;
-        private IProveedorMetadatos<Archivo> metadataProvider;
-        public ArchivoController(ILogger<ArchivoController> logger,
-            IProveedorMetadatos<Archivo> metadataProvider,
-            IServicioArchivo servicioArchivo)
+        private readonly ILogger<AmpliacionController> logger;
+        private IServicioAmpliacion servicioAmpliacion;
+        private IProveedorMetadatos<Ampliacion> metadataProvider;
+        public AmpliacionController(ILogger<AmpliacionController> logger,
+            IProveedorMetadatos<Ampliacion> metadataProvider,
+            IServicioAmpliacion servicioAmpliacion)
         {
             this.logger = logger;
-            this.servicioArchivo = servicioArchivo;
+            this.servicioAmpliacion = servicioAmpliacion;
             this.metadataProvider = metadataProvider;
         }
 
-        [HttpGet("metadata", Name = "MetadataArchivo")]
+        [HttpGet("metadata", Name = "MetadataAmpliacion")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
         {
@@ -44,39 +44,39 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<Archivo>> Post([FromBody]Archivo entidad)
+        public async Task<ActionResult<Ampliacion>> Post([FromBody]Ampliacion entidad)
         {
-            entidad = await servicioArchivo.CrearAsync(entidad).ConfigureAwait(false);
-            return Ok(CreatedAtAction("GetArchivo", new { id = entidad.Id }, entidad).Value);
+            entidad = await servicioAmpliacion.CrearAsync(entidad).ConfigureAwait(false);
+            return Ok(CreatedAtAction("GetAmpliacion", new { id = entidad.ActivoId, vigente = entidad.Vigente }, entidad).Value);
         }
 
 
         [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<IActionResult> Put(string id, [FromBody]Archivo entidad)
+        public async Task<IActionResult> Put(string id, [FromBody]Ampliacion entidad)
         {
             var x = ObtieneFiltrosIdentidad();
 
 
-            if (id != entidad.Id)
+            if (id != entidad.ActivoId)
             {
                 return BadRequest();
             }
 
-            await servicioArchivo.ActualizarAsync(entidad).ConfigureAwait(false);
+            await servicioAmpliacion.ActualizarAsync(entidad).ConfigureAwait(false);
             return NoContent();
 
         }
 
 
-        [HttpGet("page", Name = "GetPageArchivo")]
+        [HttpGet("page", Name = "GetPageAmpliacion")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<Archivo>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<Ampliacion>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioArchivo.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<Archivo>());
+            var data = await servicioAmpliacion.ObtenerPaginadoAsync(query).ConfigureAwait(false);
+            return Ok(data.Elementos.ToList<Ampliacion>());
         }
 
 
@@ -88,9 +88,9 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
 
-        [HttpGet("datatables", Name = "GetDatatablesPluginArchivo")]
+        [HttpGet("datatables", Name = "GetDatatablesPluginAmpliacion")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<RespuestaDatatables<Archivo>>> GetDatatablesPlugin([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
+        public async Task<ActionResult<RespuestaDatatables<Ampliacion>>> GetDatatablesPlugin([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
         {
 
             if (query.order.Count == 0)
@@ -109,9 +109,9 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 ord_direccion = query.order[0].dir
             };
 
-            var data = await servicioArchivo.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
+            var data = await servicioAmpliacion.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
 
-            RespuestaDatatables<Archivo> r = new RespuestaDatatables<Archivo>()
+            RespuestaDatatables<Ampliacion> r = new RespuestaDatatables<Ampliacion>()
             {
                 data = data.Elementos.ToArray(),
                 draw = query.draw,
@@ -127,9 +127,9 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<Archivo>> Get(string id)
+        public async Task<ActionResult<Ampliacion>> Get(string id)
         {
-            var o = await servicioArchivo.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            var o = await servicioAmpliacion.UnicoAsync(x => x.ActivoId == id).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }
@@ -141,7 +141,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> Delete([FromBody]string[] id)
         {
-            return Ok(await servicioArchivo.Eliminar(id).ConfigureAwait(false));
+            return Ok(await servicioAmpliacion.Eliminar(id).ConfigureAwait(false));
         }
     }
 }

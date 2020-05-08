@@ -19,7 +19,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
     [Authorize]
     [ApiVersion("1.0")]
     [ApiController]
-    [Route("api/v{version:apiVersion}/gd/almacen/{IdAlmacen}/[controller]")]
+    [Route("api/v{version:apiVersion}/gd/Almacen/{IdAlmacen}/[controller]")]
     public class EstanteController : ACLController
     {
         private readonly ILogger<EstanteController> logger;

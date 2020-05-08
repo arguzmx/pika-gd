@@ -6,7 +6,7 @@ using System.Text;
 namespace PIKA.Modelo.GestorDocumental
 {
 
-    public class Ampliacion : Entidad<string>
+    public class Ampliacion
     {
 
         /// <summary>

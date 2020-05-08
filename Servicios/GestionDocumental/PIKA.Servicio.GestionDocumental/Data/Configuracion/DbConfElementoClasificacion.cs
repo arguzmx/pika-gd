@@ -14,16 +14,16 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
         {
             builder.ToTable(DBContextGestionDocumental.TablaElementosClasificacion);
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
+            builder.Property(x => x.CuadroClasifiacionId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
 
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.Eliminada).HasDefaultValue(false).IsRequired();
             builder.Property(x => x.Clave).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.Posicion).HasMaxLength(LongitudDatos.CodigoPostal).IsRequired();
-
-            builder.Property(x => x.CuadroClasifiacionId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
-
+            
             builder.HasMany(x => x.Hijos).WithOne(y => y.Padre).HasForeignKey(z => z.ElementoClasificacionId);
+            builder.HasMany(x => x.Activos).WithOne(y => y.ElementoClasificacion).HasForeignKey(z => z.ElementoClasificacionId);
 
         }
     }

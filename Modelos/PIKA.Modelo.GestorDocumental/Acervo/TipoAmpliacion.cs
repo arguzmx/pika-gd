@@ -7,11 +7,14 @@ namespace PIKA.Modelo.GestorDocumental
 {
     public class TipoAmpliacion: EntidadCatalogo<string, TipoAmpliacion>
     {
-
+        public TipoAmpliacion() {
+            this.Ampliaciones = new HashSet<Ampliacion>();
+        }
         public const string RESERVA = "reserva";
         public const string CONFIDENCIALIDAD = "confidencialidad";
         public const string SOLICITUD_INFORMACION = "solicitud-informacion";
 
+        
         public override List<TipoAmpliacion> Seed()
         {
             List<TipoAmpliacion> lista = new List<TipoAmpliacion>();
@@ -20,5 +23,7 @@ namespace PIKA.Modelo.GestorDocumental
             lista.Add(new TipoAmpliacion() { Id = SOLICITUD_INFORMACION, Nombre = "Solicitud de información" });
             return lista;
         }
+
+        public ICollection<Ampliacion> Ampliaciones { get; set; }
     }
 }

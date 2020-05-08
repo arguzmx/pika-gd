@@ -14,14 +14,14 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
         {
             builder.ToTable(DBContextGestionDocumental.TablaEspaciosEstante);
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.EstanteId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
-
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.CodigoOptico).HasMaxLength(2048).IsRequired(false);
             builder.Property(x => x.CodigoElectronico).HasMaxLength(2048).IsRequired(false);
             builder.Property(x => x.Posicion).IsRequired();
 
+            builder.HasOne(x => x.Estante).WithMany(y => y.Espacios).HasForeignKey(x => x.EstanteId);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.Clave).HasMaxLength(LongitudDatos.Nombre).IsRequired();
 
-            builder.HasOne(x => x.Archivo).WithMany(y => y.Almacenes).HasForeignKey(z => z.ArchivoId).IsRequired();
+            builder.HasMany(x => x.Estantes).WithOne(y => y.Almacen).HasForeignKey(z => z.AlmacenArchivoId);
         }
     }
 }

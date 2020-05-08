@@ -22,10 +22,10 @@ namespace PIKA.Modelo.GestorDocumental
         public Archivo()
         {
             this._TipoOrigenId = this.TipoOrigenDefault;
-            this.Almacenes = new HashSet<AlmacenArchivo>();
-            this.Activos = new HashSet<Activo>();
-            HistorialArchivosActivo = new HashSet<HistorialArchivoActivo>();
-            Prestamos = new HashSet<Prestamo>();
+            //this.Almacenes = new HashSet<AlmacenArchivo>();
+            //this.Activos = new HashSet<Activo>();
+            //HistorialArchivosActivo = new HashSet<HistorialArchivoActivo>();
+            //Prestamos = new HashSet<Prestamo>();
 
         }
 
@@ -73,10 +73,31 @@ namespace PIKA.Modelo.GestorDocumental
         /// Tipo de archivo 
         /// </summary>
         public virtual TipoArchivo Tipo { get; set; }
-        public virtual ICollection<AlmacenArchivo> Almacenes { get; set; }
-        public virtual ICollection<Activo> Activos { get; set; }
+
+        /// <summary>
+        /// Alamcenes físicos que tiene al archivo bajo su control
+        /// </summary>
+        //public virtual ICollection<AlmacenArchivo> Almacenes { get; set; }
+
+
+        /// <summary>
+        /// Historial movimientos de activos en el archivo
+        /// </summary>
         public virtual ICollection<HistorialArchivoActivo> HistorialArchivosActivo { get; set; }
-        public virtual ICollection<Prestamo> Prestamos { get; set; }
+
+
+        /// <summary>
+        /// Todos los activos que se encuentran en un archivo
+        /// </summary>
+        public virtual ICollection<Activo> Activos { get; set; }
+
+
+        /// <summary>
+        /// Prestamos realizados en el archivo
+        /// </summary>
+        //public virtual ICollection<Prestamo> Prestamos { get; set; }
+
+        public virtual ICollection<AlmacenArchivo> Almacenes { get; set; }
 
     }
 }

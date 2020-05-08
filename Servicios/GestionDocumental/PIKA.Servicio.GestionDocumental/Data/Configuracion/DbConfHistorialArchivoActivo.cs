@@ -21,8 +21,6 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.FechaIngreso).IsRequired();
             builder.Property(x => x.FechaEgreso).IsRequired(false);
 
-            builder.HasOne(x => x.Archivo).WithMany(y => y.HistorialArchivosActivo).HasForeignKey(z => z.ArchivoId);
-            builder.HasOne(x => x.Activo).WithMany(y => y.HistorialArchivosActivo).HasForeignKey(z => z.ActivoId);
         }
     }
 }
