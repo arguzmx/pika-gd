@@ -13,8 +13,16 @@ namespace PIKA.Modelo.Metadatos
         public int longmax { get; set; }
         public string valordefaulr { get; set; }
         public string regexp { get; set; }
+        
+        /// <summary>
+        /// Propieudad de navegación
+        /// </summary>
         [NotMapped]
         public Propiedad Propiedad { get; set; }
+
+        /// <summary>
+        /// Propieudad de navegación
+        /// </summary>
         public PropiedadPlantilla PropiedadPlantilla { get; set; }
     }
 }

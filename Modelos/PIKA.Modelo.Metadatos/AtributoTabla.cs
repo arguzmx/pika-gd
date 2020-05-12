@@ -14,8 +14,18 @@ namespace PIKA.Modelo.Metadatos
         public bool Alternable { get; set; }
         public int IndiceOrdebnamiento { get; set; }
         public string IdTablaCliente { get; set; }
+        
+
+        /// <summary>
+        /// Propedad de navegación
+        /// </summary>
         [NotMapped]
         public Propiedad Propiedad { get; set; }
+
+        /// <summary>
+        /// Propedad de navegación
+        /// </summary>
+        [NotMapped]
         public PropiedadPlantilla propiedadplantilla { get; set; }
     }
 }

@@ -42,7 +42,7 @@ namespace PIKA.GD.API.Controllers.Organizacion
 
         [HttpGet("metadata", Name = "MetadataDominio")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
+        public async Task<ActionResult<MetadataInfo>> GetMetadata()
         {
             return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
         }

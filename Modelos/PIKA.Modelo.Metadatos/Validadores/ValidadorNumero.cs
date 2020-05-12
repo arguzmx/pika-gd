@@ -12,9 +12,18 @@ namespace PIKA.Modelo.Metadatos
         public float min { get; set; }
         public float max { get; set; }
         public float valordefault { get; set; }
+
+
+        /// <summary>
+        /// Propeidad de navegación
+        /// </summary>
         [NotMapped]
         public Propiedad Propiedad { get; set; }
 
+        /// <summary>
+        /// Propeidad de navegación
+        /// </summary>
+        [NotMapped]
         public PropiedadPlantilla PropiedadPlantilla { get; set; }
     }
 }

@@ -46,7 +46,10 @@ namespace PIKA.Modelo.Organizacion
         /// </summary>
         public string OrigenId { get; set; }
 
-
+        /// <summary>
+        /// Propiedad de navegación para unidades organizacionales
+        /// </summary>
         public ICollection<UnidadOrganizacional> UnidadesOrganizacionales { get; set; }
+
     }
 }
