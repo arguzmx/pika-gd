@@ -124,5 +124,8 @@ namespace PIKA.Modelo.GestorDocumental
        
         public virtual ICollection<ActivoPrestamo> PrestamosRelacionados { get; set; }
 
+        public virtual ICollection<ActivoTransferencia> TransferenciasRelacionados { get; set; }
+        public virtual ICollection<ActivoDeclinado> DeclinadosTransferenciaRelacionados { get; set; }
+
     }
 }
