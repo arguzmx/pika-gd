@@ -80,51 +80,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         }
 
 
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-
-
-
-
-        [HttpGet("datatables", Name = "GetDatatablesPluginCuadro")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<RespuestaDatatables<CuadroClasificacion>>> GetDatatablesPlugin([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
-        {
-
-            if (query.order.Count == 0)
-            {
-                query.order.Add(new DatatatablesOrder() { dir = "asc", column = 0 });
-            }
-
-            string sortname = query.columns[query.order[0].column].data;
-
-            Consulta newq = new Consulta()
-            {
-                Filtros = query.Filters,
-                indice = query.start,
-                tamano = query.length,
-                ord_columna = sortname,
-                ord_direccion = query.order[0].dir
-            };
-
-            var data = await servicioCuadro.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
-
-            RespuestaDatatables<CuadroClasificacion> r = new RespuestaDatatables<CuadroClasificacion>()
-            {
-                data = data.Elementos.ToArray(),
-                draw = query.draw,
-                error = "",
-                recordsFiltered = data.Conteo,
-                recordsTotal = data.Conteo
-            };
-
-            return Ok(r);
-        }
-
-
-
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<CuadroClasificacion>> Get(string id)

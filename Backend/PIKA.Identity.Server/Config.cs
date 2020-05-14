@@ -111,7 +111,7 @@ namespace PIKA.Identity.Server
                 new Client
                 {
                     ClientId = "api-pika-gd",
-                    ClientName = "Cliente PIKA Gestión Documental WEb",
+                    ClientName = "Cliente PIKA Gestión Documental Web",
                     ClientUri = "http://localhost",
                     RequireConsent = false,
                     AllowedGrantTypes = GrantTypes.Code,
@@ -135,7 +135,7 @@ namespace PIKA.Identity.Server
                 new Client
                 {
                     ClientId = "api-pika-gd-angular-old",
-                    ClientName = "Cliente PIKA Gestión Documental WEb",
+                    ClientName = "Cliente PIKA Gestión Documental Web",
                     ClientUri = "http://localhost",
                     RequireConsent = false,
                     AllowedGrantTypes = GrantTypes.Code,
@@ -160,7 +160,7 @@ namespace PIKA.Identity.Server
                 new Client
 {
                     ClientId = "api-pika-gd-angular",
-                    ClientName = "Cliente PIKA Gestión Documental WEb",
+                    ClientName = "Cliente PIKA Gestión Documental Web",
 
     AccessTokenType = AccessTokenType.Jwt,
     AccessTokenLifetime = 330,// 330 seconds, default 60 minutes

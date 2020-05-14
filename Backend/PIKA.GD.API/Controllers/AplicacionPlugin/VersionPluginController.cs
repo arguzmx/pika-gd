@@ -80,50 +80,6 @@ namespace PIKA.GD.API.Controllers.AplicacionPlugin
         }
 
 
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-
-
-
-
-        [HttpGet("datatables", Name = "GetDatatablesPluginVersionPlugin")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<RespuestaDatatables<VersionPlugin>>> GetDatatablesPlugin([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
-        {
-
-            if (query.order.Count == 0)
-            {
-                query.order.Add(new DatatatablesOrder() { dir = "asc", column = 0 });
-            }
-
-            string sortname = query.columns[query.order[0].column].data;
-
-            Consulta newq = new Consulta()
-            {
-                Filtros = query.Filters,
-                indice = query.start,
-                tamano = query.length,
-                ord_columna = sortname,
-                ord_direccion = query.order[0].dir
-            };
-
-            var data = await servicioEntidad.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
-
-            RespuestaDatatables<VersionPlugin> r = new RespuestaDatatables<VersionPlugin>()
-            {
-                data = data.Elementos.ToArray(),
-                draw = query.draw,
-                error = "",
-                recordsFiltered = data.Conteo,
-                recordsTotal = data.Conteo
-            };
-
-            return Ok(r);
-        }
-
-
 
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
