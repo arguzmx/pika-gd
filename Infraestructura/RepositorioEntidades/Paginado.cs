@@ -19,8 +19,8 @@ namespace RepositorioEntidades
                 this.Indice = Indice;
                 this.Tamano = Tamano;
                 this.Desde = Desde;
-                this.Conteo = querable.Count();
-                Paginas= (int)Math.Ceiling(Conteo / (double)Tamano);
+                this.ConteoFiltrado = querable.Count();
+                Paginas= (int)Math.Ceiling(ConteoFiltrado / (double)Tamano);
 
                 Elementos = querable.Skip((Indice- Desde) * Tamano).Take(Tamano).ToList();
             }
@@ -30,8 +30,8 @@ namespace RepositorioEntidades
                 this.Tamano = Tamano;
                 this.Desde = Desde;
 
-                Conteo = enumerable.Count();
-                Paginas = (int)Math.Ceiling(Conteo / (double)Tamano);
+                ConteoFiltrado = enumerable.Count();
+                Paginas = (int)Math.Ceiling(ConteoFiltrado / (double)Tamano);
 
                 Elementos = enumerable.Skip((Indice- Desde) * Tamano).Take(Tamano).ToList();
             }
@@ -45,11 +45,14 @@ namespace RepositorioEntidades
         public int Desde { get; set; }
         public int Indice { get; set; }
         public int Tamano { get; set; }
-        public int Conteo { get; set; }
         public int Paginas { get; set; }
         public IList<T> Elementos { get; set; }
         public bool TienePrevio => Indice - Desde > 0;
         public bool TieneSiguiente => Indice - Desde + 1 < Paginas;
+
+        public int ConteoTotal { get; set; }
+
+    public int ConteoFiltrado { get; set; }
     }
 
 
@@ -67,8 +70,8 @@ namespace RepositorioEntidades
                 this.Indice = Indice;
                 this.Tamano = Tamano;
                 this.Desde = Desde;
-                Conteo = queryable.Count();
-                Paginas = (int)Math.Ceiling(Conteo / (double)Tamano);
+                this.ConteoFiltrado = enumerable.Count();
+                this.Paginas = (int)Math.Ceiling(this.ConteoFiltrado / (double)Tamano);
 
                 var items = queryable.Skip((Indice - Desde) * Tamano).Take(Tamano).ToArray();
 
@@ -79,8 +82,8 @@ namespace RepositorioEntidades
                 this.Indice = Indice;
                 this.Tamano = Tamano;
                 this.Desde = Desde;
-                this.Conteo = enumerable.Count();
-                this.Paginas = (int)Math.Ceiling(Conteo / (double)Tamano);
+                this.ConteoFiltrado = enumerable.Count();
+                this.Paginas = (int)Math.Ceiling(this.ConteoFiltrado / (double)Tamano);
 
                 var items = enumerable.Skip((Indice - Desde) * Tamano).Take(Tamano).ToArray();
 
@@ -94,7 +97,8 @@ namespace RepositorioEntidades
             Indice = source.Indice;
             Tamano = source.Tamano;
             Desde = source.Desde;
-            Conteo = source.Conteo;
+            ConteoFiltrado = source.ConteoFiltrado;
+            ConteoTotal = source.ConteoTotal;
             Paginas = source.Paginas;
 
             Elementos = new List<TResult>(converter(source.Elementos));
@@ -103,8 +107,6 @@ namespace RepositorioEntidades
         public int Indice { get; }
 
         public int Tamano { get; }
-
-        public int Conteo { get; }
 
         public int Paginas { get; }
 
@@ -116,6 +118,9 @@ namespace RepositorioEntidades
 
         public bool TieneSiguiente => Indice - Desde + 1 < Paginas;
 
+        public int ConteoTotal { get; set; }
+
+        public int ConteoFiltrado { get; set; }
     }
 
     public static class Paginado

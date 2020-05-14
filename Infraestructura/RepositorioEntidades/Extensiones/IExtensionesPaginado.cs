@@ -25,7 +25,7 @@ namespace RepositorioEntidades
                 Indice = indice,
                 Tamano = tamano,
                 Desde = desde,
-                Conteo = count,
+                ConteoFiltrado = count,
                 Elementos = items,
                 Paginas = (int)Math.Ceiling(count / (double)tamano)
             };

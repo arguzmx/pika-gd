@@ -87,51 +87,6 @@ namespace PIKA.GD.API.Controllers.Organizacion
         }
 
 
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-
-
-
-
-        [HttpGet("datatables", Name = "GetDatatablesPluginDirPostal")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<RespuestaDatatables<DireccionPostal>>> GetDatatablesPlugin([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
-        {
-
-            if (query.order.Count == 0)
-            {
-                query.order.Add(new DatatatablesOrder() { dir = "asc", column = 0 });
-            }
-
-            string sortname = query.columns[query.order[0].column].data;
-
-            Consulta newq = new Consulta()
-            {
-                Filtros = query.Filters,
-                indice = query.start,
-                tamano = query.length,
-                ord_columna = sortname,
-                ord_direccion = query.order[0].dir
-            };
-
-            var data = await servicioDirPost.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
-
-            RespuestaDatatables<DireccionPostal> r = new RespuestaDatatables<DireccionPostal>()
-            {
-                data = data.Elementos.ToArray(),
-                draw = query.draw,
-                error = "",
-                recordsFiltered = data.Conteo,
-                recordsTotal = data.Conteo
-            };
-
-            return Ok(r);
-        }
-
-
-
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<DireccionPostal>> Get(string id)

@@ -12,7 +12,9 @@ namespace RepositorioEntidades
 
         int Tamano { get; }
 
-        int Conteo { get; }
+        int ConteoTotal { get; }
+
+        int ConteoFiltrado { get; }
 
         int Paginas { get; }
 

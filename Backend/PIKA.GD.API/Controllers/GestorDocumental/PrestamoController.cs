@@ -89,50 +89,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         }
 
 
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-
-
-
-
-        [HttpGet("datatables", Name = "GetDatatablesPluginPrestamo")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<RespuestaDatatables<Prestamo>>> GetDatatablesPlugin([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
-        {
-
-            if (query.order.Count == 0)
-            {
-                query.order.Add(new DatatatablesOrder() { dir = "asc", column = 0 });
-            }
-
-            string sortname = query.columns[query.order[0].column].data;
-
-            Consulta newq = new Consulta()
-            {
-                Filtros = query.Filters,
-                indice = query.start,
-                tamano = query.length,
-                ord_columna = sortname,
-                ord_direccion = query.order[0].dir
-            };
-
-            var data = await servicioPrestamo.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
-
-            RespuestaDatatables<Prestamo> r = new RespuestaDatatables<Prestamo>()
-            {
-                data = data.Elementos.ToArray(),
-                draw = query.draw,
-                error = "",
-                recordsFiltered = data.Conteo,
-                recordsTotal = data.Conteo
-            };
-
-            return Ok(r);
-        }
-
-
 
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
@@ -211,52 +167,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             var data = await servicioActivoPrestamo.ObtenerPaginadoAsync(query).ConfigureAwait(false);
             return Ok(data.Elementos.ToList<ActivoPrestamo>());
         }
-
-
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-
-
-
-
-        [HttpGet("datatablesActivo", Name = "GetDatatablesPluginActivoPrestamo")]
-        [Route("{id}/Activo/datatablesActivo")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<RespuestaDatatables<ActivoPrestamo>>> GetDatatablesPluginActivo([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
-        {
-
-            if (query.order.Count == 0)
-            {
-                query.order.Add(new DatatatablesOrder() { dir = "asc", column = 0 });
-            }
-
-            string sortname = query.columns[query.order[0].column].data;
-
-            Consulta newq = new Consulta()
-            {
-                Filtros = query.Filters,
-                indice = query.start,
-                tamano = query.length,
-                ord_columna = sortname,
-                ord_direccion = query.order[0].dir
-            };
-
-            var data = await servicioActivoPrestamo.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
-
-            RespuestaDatatables<ActivoPrestamo> r = new RespuestaDatatables<ActivoPrestamo>()
-            {
-                data = data.Elementos.ToArray(),
-                draw = query.draw,
-                error = "",
-                recordsFiltered = data.Conteo,
-                recordsTotal = data.Conteo
-            };
-
-            return Ok(r);
-        }
-
 
 
         [HttpGet("Activo/{ActivoId}")]

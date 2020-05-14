@@ -78,56 +78,13 @@ namespace PIKA.GD.API.Controllers.Organizacion
 
         [HttpGet("page", Name = "GetPageDominio")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<Dominio>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
+        public async Task<ActionResult<Paginado<Dominio>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
             var data = await servicioEntidad.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<Dominio>());
-        }
 
-
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-
-
-
-
-        [HttpGet("datatables", Name = "GetDatatablesPluginDominio")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<RespuestaDatatables<Dominio>>> GetDatatablesPlugin([ModelBinder(typeof(DatatablesModelBinder))]SolicitudDatatables query = null)
-        {
-
-            if (query.order.Count == 0)
-            {
-                query.order.Add(new DatatatablesOrder() { dir = "asc", column = 0 });
-            }
-
-            string sortname = query.columns[query.order[0].column].data;
-
-            Consulta newq = new Consulta()
-            {
-                Filtros = query.Filters,
-                indice = query.start,
-                tamano = query.length,
-                ord_columna = sortname,
-                ord_direccion = query.order[0].dir
-            };
-
-            var data = await servicioEntidad.ObtenerPaginadoAsync(newq).ConfigureAwait(false);
-
-            RespuestaDatatables<Dominio> r = new RespuestaDatatables<Dominio>()
-            {
-                data = data.Elementos.ToArray(),
-                draw = query.draw,
-                error = "",
-                recordsFiltered = data.Conteo,
-                recordsTotal = data.Conteo
-            };
-
-            return Ok(r);
+            return Ok(data);
         }
 
 

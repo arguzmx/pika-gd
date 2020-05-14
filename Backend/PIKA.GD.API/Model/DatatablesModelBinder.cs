@@ -22,7 +22,6 @@ namespace PIKA.GD.API.Model
                 result.length = int.Parse(bindingContext.ActionContext.HttpContext.Request.Query[$"length"], CultureInfo.InvariantCulture);
                 result.search.value = bindingContext.ActionContext.HttpContext.Request.Query[$"search[value]"];
                 result.search.regex = bindingContext.ActionContext.HttpContext.Request.Query[$"search[regex]"] == "true" ? true : false;
-
                 result.start = (result.start / result.length);
                 if (result.start < 0) result.start = 0;
 
@@ -111,8 +110,9 @@ namespace PIKA.GD.API.Model
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 bindingContext.Result = ModelBindingResult.Failed();
                 return Task.CompletedTask;
             }
