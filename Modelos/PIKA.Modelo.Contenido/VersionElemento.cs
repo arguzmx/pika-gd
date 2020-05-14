@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PIKA.Modelo.Contenido
 {
-    public class Version: Entidad<string>
+    public class Version: Entidad<string>, IEntidadEliminada
     {
         /// <summary>
         /// Identificador único del elemento al que pertenece la versión
@@ -29,8 +29,8 @@ namespace PIKA.Modelo.Contenido
         public DateTime FechaActualizacion { get; set; }
        
 
-        public Elemento Elemento { get; set; }
+        public virtual Elemento Elemento { get; set; }
         public virtual ICollection<Parte> Partes { get; set; }
-
+        public bool Eliminada { get; set; }
     }
 }

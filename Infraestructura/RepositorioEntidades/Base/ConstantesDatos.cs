@@ -15,8 +15,9 @@ namespace RepositorioEntidades
         public static int Version { get => 10; }
         public static int Icono { get => 100; }
         public static int ControlHTML { get => 128; }
+        public static int MIME { get => 50; }
 
-
+        public static int CadenaConexion { get => 2000; }
 
     }
 }
