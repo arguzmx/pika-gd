@@ -11,11 +11,11 @@ namespace PIKA.Modelo.Contenido
     /// <summary>
     /// Define el espacio físico al que serán anexados las partes de un contenido
     /// </summary>
-    public class Volumen: Entidad<string>, IEntidadNombrada, IEntidadEliminada, IEntidadRelacionada
+    public class Volumen : Entidad<string>, IEntidadNombrada, IEntidadEliminada, IEntidadRelacionada
     {
 
         public string TipoOrigenDefault => ConstantesModelo.IDORIGEN_UNIDAD_ORGANIZACIONAL;
-        
+
         public Volumen() {
             this.TipoOrigenId = TipoOrigenDefault;
         }
@@ -43,15 +43,15 @@ namespace PIKA.Modelo.Contenido
         public bool EscrituraHabilitada { get; set; }
         //Requediro defautl =false
 
-            /// <summary>
-            /// Idemntificadorúnido del tipo de gestor
-            /// </summary>
+        /// <summary>
+        /// Idemntificadorúnido del tipo de gestor
+        /// </summary>
         public string TipoGestorESId { get; set; }
 
         /// <summary>
         /// Datos serializados para el acceso de lectura y excritea del Volumen
         /// </summary>
-        public string  CadenaConexion { get; set; }
+        public string CadenaConexion { get; set; }
         //# longitud 2000, es requerida
 
         /// <summary>
@@ -67,10 +67,10 @@ namespace PIKA.Modelo.Contenido
         //Requediro defautl =false
 
 
-            /// <summary>
-            /// Consecutivo del elemento para el alamcenamiento, esta propieda tambié existe en la Parte del contenido 
-            /// para poder asociar un Id de tipo String, con uno númerio si es necesario
-            /// </summary>
+        /// <summary>
+        /// Consecutivo del elemento para el alamcenamiento, esta propieda tambié existe en la Parte del contenido 
+        /// para poder asociar un Id de tipo String, con uno númerio si es necesario
+        /// </summary>
         public long ConsecutivoVolumen { get; set; }
 
         /// <summary>
@@ -89,9 +89,13 @@ namespace PIKA.Modelo.Contenido
         [JsonIgnore]
         [XmlIgnore]
         public TipoGestorES GestorES { get; set; }
+        /// <summary>
+        /// Identificador único del volúmen para el contenido
+        /// </summary>
+        public string Elementoid { get; set; }
+        public virtual Elemento Elemento { get; set; }
 
-        
-
+        public virtual TipoGestorES TipoGestorES {get;set;}
         
     }
 

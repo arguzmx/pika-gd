@@ -5,7 +5,7 @@ using System.Text;
 
 namespace PIKA.Modelo.Contenido
 {
-    public class TipoGestorES: EntidadCatalogo<string, TipoGestorES>
+    public class TipoGestorES: EntidadCatalogo<string, TipoGestorES>, IEntidadEliminada
     {
         public const string SMB= "smb";
         public const string AzureBlob = "azure-blob";
@@ -25,7 +25,8 @@ namespace PIKA.Modelo.Contenido
             return lista;
         }
 
+        public string Volumenid { get; set; }
         public virtual ICollection<Volumen> Volumenes { get; set; }
-
+        public bool Eliminada { get; set ; }
     }
 }
