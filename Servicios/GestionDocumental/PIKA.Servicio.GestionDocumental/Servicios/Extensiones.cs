@@ -224,5 +224,78 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
         #endregion
 
+        #region TRansferencias
+        public static Transferencia CopiaTransferencia(this Transferencia t)
+        {
+            return new Transferencia()
+            {
+                Id = t.Id,
+                Nombre = t.Nombre,
+                FechaCreacion = t.FechaCreacion,
+                ArchivoOrigen = t.ArchivoOrigen,
+                ArchivoDestino = t.ArchivoDestino,
+                EstadoTransferenciaId = t.EstadoTransferenciaId,
+                UsuarioId = t.UsuarioId
+            };
+        }
+
+        public static EstadoTransferencia CopiaEstadoTransferencia(this EstadoTransferencia e)
+        {
+            return new EstadoTransferencia()
+            {
+                Id = e.Id,
+                Nombre = e.Nombre,
+            };
+        }
+
+        public static EventoTransferencia CopiaEventoTransferencia(this EventoTransferencia e)
+        {
+            return new EventoTransferencia()
+            {
+                Id = e.Id,
+                TransferenciaId = e.TransferenciaId,
+                Fecha = e.Fecha,
+                EstadoTransferenciaId = e.EstadoTransferenciaId,
+                Comentario = e.Comentario
+            };
+        }
+
+        public static ComentarioTransferencia CopiaComentarioTransferencia(this ComentarioTransferencia c)
+        {
+            return new ComentarioTransferencia()
+            {
+                Id = c.Id,
+                TransferenciaId = c.TransferenciaId,
+                UsuarioId = c.UsuarioId,
+                Fecha = c.Fecha,
+                Comentario = c.Comentario,
+                Publico = c.Publico,
+            };
+        }
+
+        public static ActivoTransferencia CopiaActivoTransferencia(this ActivoTransferencia c)
+        {
+            return new ActivoTransferencia()
+            {
+                ActivoId = c.ActivoId,
+                TransferenciaId = c.TransferenciaId,
+            };
+        }
+
+        public static ActivoDeclinado CopiaActivoDeclinado(this ActivoDeclinado c)
+        {
+            return new ActivoDeclinado()
+            {
+                ActivoId = c.ActivoId,
+                TransferenciaId = c.TransferenciaId,
+                Motivo = c.Motivo,
+            };
+        }
+
+
+
+
+        #endregion
+
     }
 }

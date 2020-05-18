@@ -1,0 +1,3 @@
+id	nombre
+on	Activo
+off	Inactivo

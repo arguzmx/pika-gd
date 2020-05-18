@@ -1,0 +1,9 @@
+id	nombre
+nueva	Nueva
+espera	Espera de aprobación
+aprobada	Aprobada
+transito	En tránsito
+recibida	Recibida
+recibida_parcial	Recibida parcialmente
+cancelada	Cancelada
+declinada	Declinada

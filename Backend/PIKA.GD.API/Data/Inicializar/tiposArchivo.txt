@@ -1,0 +1,5 @@
+id	nombre	faseciclovitalid
+a-cor	Correspondencia	activa
+a-tra	Trámite	activa
+a-his	Histórico	historica
+a-con	Conservación	semi

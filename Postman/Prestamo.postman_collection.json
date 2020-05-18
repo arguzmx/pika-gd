@@ -1,0 +1,930 @@
+{
+	"info": {
+		"_postman_id": "646a6783-19b8-424c-acb2-412b94f35dae",
+		"name": "Prestamo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Prestamos Copy",
+			"item": [
+				{
+					"name": "Prestamo",
+					"item": [
+						{
+							"name": "POST Prestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5Njc1ODMsImV4cCI6MTU4ODk3MTE4MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5Njc1ODMsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.o65kKm53D1J0Kk8-pvZPrdcg7vgMOtd8Yx3__GCO0x3ujunkS8SAm_QopTCm08Y60UzDIqZW7FKmlwDQ-npndKH27wE7k_PxeNhU4MHkp0BRf9y37WkRIplRCNzudyVp0-pRmg8zyns2eBq3t_DoUO5u40x_yrmKyHA1kywNa8o9mof75XrXrpp1lk49HMkK64zrOAueuFQMEuYeJHpbiJSkDAIgPtFC695LZjsiPrEfGKoFBE6NPC2VXW9YGkhZRRKD-Pv_v_8zgRX1FpXuuWEy2jzSiwEff0oVDVDAacSaT8u7ALEWOGVIOEY0ajhkZYiUz0Hi-cesRqFGRxK2yw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"id\": \"\",\n  \"archivoId\": \"a97a64fa-5c12-4b31-925b-d212baef66bc\",\n  \"fechaProgramadaDevolucion\": \"2020-04-14T15:42:01.250Z\",\n  \"fechaDevolucion\": \"2020-04-14T15:42:01.250Z\",\n  \"tieneDevolucionesParciales\": false,\n  \"folio\": \"sjdj438w\"\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Prestamo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Prestamo"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Prestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5Njc1ODMsImV4cCI6MTU4ODk3MTE4MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5Njc1ODMsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.o65kKm53D1J0Kk8-pvZPrdcg7vgMOtd8Yx3__GCO0x3ujunkS8SAm_QopTCm08Y60UzDIqZW7FKmlwDQ-npndKH27wE7k_PxeNhU4MHkp0BRf9y37WkRIplRCNzudyVp0-pRmg8zyns2eBq3t_DoUO5u40x_yrmKyHA1kywNa8o9mof75XrXrpp1lk49HMkK64zrOAueuFQMEuYeJHpbiJSkDAIgPtFC695LZjsiPrEfGKoFBE6NPC2VXW9YGkhZRRKD-Pv_v_8zgRX1FpXuuWEy2jzSiwEff0oVDVDAacSaT8u7ALEWOGVIOEY0ajhkZYiUz0Hi-cesRqFGRxK2yw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"id\": \"d5bd9270-7858-43a4-801f-637730edbd8b\",\n  \"archivoId\": \"a97a64fa-5c12-4b31-925b-d212baef66bc\",\n  \"fechaProgramadaDevolucion\": \"2020-04-14T15:42:01.250Z\",\n  \"fechaDevolucion\": \"2020-04-14T15:42:01.250Z\",\n  \"tieneDevolucionesParciales\": true,\n  \"folio\": \"Edited\"\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Prestamo/d5bd9270-7858-43a4-801f-637730edbd8b",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Prestamo",
+										"d5bd9270-7858-43a4-801f-637730edbd8b"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET metadata Prestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5Njc1ODMsImV4cCI6MTU4ODk3MTE4MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5Njc1ODMsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.o65kKm53D1J0Kk8-pvZPrdcg7vgMOtd8Yx3__GCO0x3ujunkS8SAm_QopTCm08Y60UzDIqZW7FKmlwDQ-npndKH27wE7k_PxeNhU4MHkp0BRf9y37WkRIplRCNzudyVp0-pRmg8zyns2eBq3t_DoUO5u40x_yrmKyHA1kywNa8o9mof75XrXrpp1lk49HMkK64zrOAueuFQMEuYeJHpbiJSkDAIgPtFC695LZjsiPrEfGKoFBE6NPC2VXW9YGkhZRRKD-Pv_v_8zgRX1FpXuuWEy2jzSiwEff0oVDVDAacSaT8u7ALEWOGVIOEY0ajhkZYiUz0Hi-cesRqFGRxK2yw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Prestamo/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Prestamo",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Prestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODUwMDQ1NDEsImV4cCI6MTU4NTAwODE0MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODUwMDQ1NDEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.LlJPPnE1o5jkK5qwvr7mz5LmqORQ7GByDH99xymFpjO23V3yU60v6tA4kzOzqHfLrYiE1CUVryAqIQgqpxo1Ygw1-iVIDzFq0WEkNoL8ozAclKPlCS3cZenzzRRxZLeLU3dZRHBLjdBMwW0zwFE870fkxlYbqy5ydA2VMrAN7gcWN8KDYwDMuP75umddLCiLgaI0CXBX1GCapjaIod37xO4xtqAHXhv9ZTLmgOdAGPjhscOpdso017PW7g4FVdXM8G6NWPagdG0f6B0mxd_XgjrruM7h6r1JGpTS4zKm1JJzYxj8XZgz1XoLIzVoKOgUWzpzKTlMul20ZVnySl-WOQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Archivo/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Archivo",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET page PRestamo",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5Njc1ODMsImV4cCI6MTU4ODk3MTE4MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5Njc1ODMsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.o65kKm53D1J0Kk8-pvZPrdcg7vgMOtd8Yx3__GCO0x3ujunkS8SAm_QopTCm08Y60UzDIqZW7FKmlwDQ-npndKH27wE7k_PxeNhU4MHkp0BRf9y37WkRIplRCNzudyVp0-pRmg8zyns2eBq3t_DoUO5u40x_yrmKyHA1kywNa8o9mof75XrXrpp1lk49HMkK64zrOAueuFQMEuYeJHpbiJSkDAIgPtFC695LZjsiPrEfGKoFBE6NPC2VXW9YGkhZRRKD-Pv_v_8zgRX1FpXuuWEy2jzSiwEff0oVDVDAacSaT8u7ALEWOGVIOEY0ajhkZYiUz0Hi-cesRqFGRxK2yw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\"indice\": 0,\n\"tamano\": 10,\n\"columna_ordenamiento\": \"Nombre\",\n\"direccion_ordenamiento\": \"asc\",\n\"Filtros\": [\n\t{\"Propiedad\":\"nombre\",\"Operador\": \"contains\", \"Valor\": \" \"}\n\t]\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Prestamo/page?i=0&t=100&ordc=folio&ordd=asc",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Prestamo",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "folio"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Prestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5Njc1ODMsImV4cCI6MTU4ODk3MTE4MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5Njc1ODMsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.o65kKm53D1J0Kk8-pvZPrdcg7vgMOtd8Yx3__GCO0x3ujunkS8SAm_QopTCm08Y60UzDIqZW7FKmlwDQ-npndKH27wE7k_PxeNhU4MHkp0BRf9y37WkRIplRCNzudyVp0-pRmg8zyns2eBq3t_DoUO5u40x_yrmKyHA1kywNa8o9mof75XrXrpp1lk49HMkK64zrOAueuFQMEuYeJHpbiJSkDAIgPtFC695LZjsiPrEfGKoFBE6NPC2VXW9YGkhZRRKD-Pv_v_8zgRX1FpXuuWEy2jzSiwEff0oVDVDAacSaT8u7ALEWOGVIOEY0ajhkZYiUz0Hi-cesRqFGRxK2yw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\n\t\"9008a630-bf1d-40d7-990c-62bba669b07c\",\n\t\"2ca3c532-b137-4b4b-b7ba-f5c73353ec4d\"\n\t\n\t]",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Prestamo/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Prestamo",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Activo_Prestamo",
+					"item": [
+						{
+							"name": "POST Activo Prestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5Njc1ODMsImV4cCI6MTU4ODk3MTE4MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5Njc1ODMsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.o65kKm53D1J0Kk8-pvZPrdcg7vgMOtd8Yx3__GCO0x3ujunkS8SAm_QopTCm08Y60UzDIqZW7FKmlwDQ-npndKH27wE7k_PxeNhU4MHkp0BRf9y37WkRIplRCNzudyVp0-pRmg8zyns2eBq3t_DoUO5u40x_yrmKyHA1kywNa8o9mof75XrXrpp1lk49HMkK64zrOAueuFQMEuYeJHpbiJSkDAIgPtFC695LZjsiPrEfGKoFBE6NPC2VXW9YGkhZRRKD-Pv_v_8zgRX1FpXuuWEy2jzSiwEff0oVDVDAacSaT8u7ALEWOGVIOEY0ajhkZYiUz0Hi-cesRqFGRxK2yw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"prestamoId\": \"d5bd9270-7858-43a4-801f-637730edbd8b\",\r\n  \"activoId\": \"8b97a39b-6929-4f94-9c81-e786cdc6657e\",\r\n  \"devuelto\": false,\r\n  \"fechaDevolucion\": \"2020-07-14T16:02:36.279Z\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Prestamo/d5bd9270-7858-43a4-801f-637730edbd8b/Activo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Prestamo",
+										"d5bd9270-7858-43a4-801f-637730edbd8b",
+										"Activo"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Activo Prestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5Njc1ODMsImV4cCI6MTU4ODk3MTE4MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5Njc1ODMsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.o65kKm53D1J0Kk8-pvZPrdcg7vgMOtd8Yx3__GCO0x3ujunkS8SAm_QopTCm08Y60UzDIqZW7FKmlwDQ-npndKH27wE7k_PxeNhU4MHkp0BRf9y37WkRIplRCNzudyVp0-pRmg8zyns2eBq3t_DoUO5u40x_yrmKyHA1kywNa8o9mof75XrXrpp1lk49HMkK64zrOAueuFQMEuYeJHpbiJSkDAIgPtFC695LZjsiPrEfGKoFBE6NPC2VXW9YGkhZRRKD-Pv_v_8zgRX1FpXuuWEy2jzSiwEff0oVDVDAacSaT8u7ALEWOGVIOEY0ajhkZYiUz0Hi-cesRqFGRxK2yw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"PrestamoId\": \"d5bd9270-7858-43a4-801f-637730edbd8b\",\r\n    \"ActivoId\": \"d3fd4e58-9f48-44d1-baf2-f006b322a91e\",\r\n    \"Devuelto\": true,\r\n    \"FechaDevolucion\": \"2020-09-14\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Prestamo/d5bd9270-7858-43a4-801f-637730edbd8b/Activo/d3fd4e58-9f48-44d1-baf2-f006b322a91e",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Prestamo",
+										"d5bd9270-7858-43a4-801f-637730edbd8b",
+										"Activo",
+										"d3fd4e58-9f48-44d1-baf2-f006b322a91e"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET metadata ActivoPrestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NzE1MDAsImV4cCI6MTU4ODk3NTEwMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NzE1MDAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jbv068z2DMAOMsRfqnN6PUkjLT_B2el6Qw6KOyuMlDnmYQlR_y-P0Pt3hZm9yy0FhERwsAb9YV-mPQxJNCFIKZTvUC_xZlH4-bhtr5j86ctXE6s5NwgZNEV7SLz3hMyz1gOL_wvCj-DE6eHezahaB9PE9xW4hcfqMbcI7FFNoCMpraj_1xlwZC4b-SDJawPOdD0TMXctAKegKLzz747LnJOTxnI8k_jk-S5E_Q7yV_dTirMpYUsDWQ9ZQT0BDFM662VLLge1NCyUUvR1B5_mTAwbtA2TTTSJlYDf6CZQNTxpP3FZbx72B0xCcwK_hOwkWuDe3012kAb2qt3sg-KZiw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Prestamo/d5bd9270-7858-43a4-801f-637730edbd8b/Activo/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Prestamo",
+										"d5bd9270-7858-43a4-801f-637730edbd8b",
+										"Activo",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET ActivoPrestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NzE1MDAsImV4cCI6MTU4ODk3NTEwMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NzE1MDAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jbv068z2DMAOMsRfqnN6PUkjLT_B2el6Qw6KOyuMlDnmYQlR_y-P0Pt3hZm9yy0FhERwsAb9YV-mPQxJNCFIKZTvUC_xZlH4-bhtr5j86ctXE6s5NwgZNEV7SLz3hMyz1gOL_wvCj-DE6eHezahaB9PE9xW4hcfqMbcI7FFNoCMpraj_1xlwZC4b-SDJawPOdD0TMXctAKegKLzz747LnJOTxnI8k_jk-S5E_Q7yV_dTirMpYUsDWQ9ZQT0BDFM662VLLge1NCyUUvR1B5_mTAwbtA2TTTSJlYDf6CZQNTxpP3FZbx72B0xCcwK_hOwkWuDe3012kAb2qt3sg-KZiw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Prestamo/d5bd9270-7858-43a4-801f-637730edbd8b/Activo/8b97a39b-6929-4f94-9c81-e786cdc6657e/get",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Prestamo",
+										"d5bd9270-7858-43a4-801f-637730edbd8b",
+										"Activo",
+										"8b97a39b-6929-4f94-9c81-e786cdc6657e",
+										"get"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET page Activo PRestamo",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NzE1MDAsImV4cCI6MTU4ODk3NTEwMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NzE1MDAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jbv068z2DMAOMsRfqnN6PUkjLT_B2el6Qw6KOyuMlDnmYQlR_y-P0Pt3hZm9yy0FhERwsAb9YV-mPQxJNCFIKZTvUC_xZlH4-bhtr5j86ctXE6s5NwgZNEV7SLz3hMyz1gOL_wvCj-DE6eHezahaB9PE9xW4hcfqMbcI7FFNoCMpraj_1xlwZC4b-SDJawPOdD0TMXctAKegKLzz747LnJOTxnI8k_jk-S5E_Q7yV_dTirMpYUsDWQ9ZQT0BDFM662VLLge1NCyUUvR1B5_mTAwbtA2TTTSJlYDf6CZQNTxpP3FZbx72B0xCcwK_hOwkWuDe3012kAb2qt3sg-KZiw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\"indice\": 0,\n\"tamano\": 10,\n\"columna_ordenamiento\": \"Nombre\",\n\"direccion_ordenamiento\": \"asc\",\n\"Filtros\": [\n\t{\"Propiedad\":\"nombre\",\"Operador\": \"contains\", \"Valor\": \" \"}\n\t]\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Prestamo/d5bd9270-7858-43a4-801f-637730edbd8b/Activo/page?i=0&t=100&ordc=Devuelto&ordd=desc",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Prestamo",
+										"d5bd9270-7858-43a4-801f-637730edbd8b",
+										"Activo",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Devuelto"
+										},
+										{
+											"key": "ordd",
+											"value": "desc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Activo Prestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NzE1MDAsImV4cCI6MTU4ODk3NTEwMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NzE1MDAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jbv068z2DMAOMsRfqnN6PUkjLT_B2el6Qw6KOyuMlDnmYQlR_y-P0Pt3hZm9yy0FhERwsAb9YV-mPQxJNCFIKZTvUC_xZlH4-bhtr5j86ctXE6s5NwgZNEV7SLz3hMyz1gOL_wvCj-DE6eHezahaB9PE9xW4hcfqMbcI7FFNoCMpraj_1xlwZC4b-SDJawPOdD0TMXctAKegKLzz747LnJOTxnI8k_jk-S5E_Q7yV_dTirMpYUsDWQ9ZQT0BDFM662VLLge1NCyUUvR1B5_mTAwbtA2TTTSJlYDf6CZQNTxpP3FZbx72B0xCcwK_hOwkWuDe3012kAb2qt3sg-KZiw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\n\t\"8aea4395-5fbc-4457-950a-120bc892e9db\"\n\t]",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Prestamo/ce790948-dec4-4b3c-8696-fca5298d650d/Activo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Prestamo",
+										"ce790948-dec4-4b3c-8696-fca5298d650d",
+										"Activo"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "ComentarioPrestamo",
+					"item": [
+						{
+							"name": "POST Comentario Prestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NjA2MTEsImV4cCI6MTU4ODk2NDIxMSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NjA2MTEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.JbwjF_WqIPJQmsv67cgdSDleSiMaIqpB35RCo45Kc9jqR6q5l7DsgpfJHirHfuguwtoXle7vpY16i2nKYXN8a3Gnd6LB9ytrqmSB749YJEpnDutI2pmlvGD1awwL1Jx56lcoE-OUKYP_el4LTHiN4L2wZS_SawbQylyMHWzd_t55o8L6OwkQZtR-hdsHdEVeGV49YFj45Vv0m-z-H3QfXc666PTWYcGAoA5TYh7hBVXlt_iHGY4cSK_UmiyhsMSC8zpyV9h07bHzJ5ETdbO-I6LsyMK5GX2NHchwHQ7WjNWlC52TpUcLajKpAb5OZ2g60IKMX7qYs89k3_4aM33v1g",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"string\",\r\n  \"fecha\": \"2020-05-08T18:52:46.641Z\",\r\n  \"comentario\": \"string\",\r\n  \"prestamoId\": \"string\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/ComentarioPrestamo/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ComentarioPrestamo",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Comentario Prestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODUwMDQ1NDEsImV4cCI6MTU4NTAwODE0MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODUwMDQ1NDEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.LlJPPnE1o5jkK5qwvr7mz5LmqORQ7GByDH99xymFpjO23V3yU60v6tA4kzOzqHfLrYiE1CUVryAqIQgqpxo1Ygw1-iVIDzFq0WEkNoL8ozAclKPlCS3cZenzzRRxZLeLU3dZRHBLjdBMwW0zwFE870fkxlYbqy5ydA2VMrAN7gcWN8KDYwDMuP75umddLCiLgaI0CXBX1GCapjaIod37xO4xtqAHXhv9ZTLmgOdAGPjhscOpdso017PW7g4FVdXM8G6NWPagdG0f6B0mxd_XgjrruM7h6r1JGpTS4zKm1JJzYxj8XZgz1XoLIzVoKOgUWzpzKTlMul20ZVnySl-WOQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"8f58c097-dd1a-4dec-8067-1e92b0a1f23f\",\r\n  \"tipoOrigenDefault\": \"demo\",\r\n  \"tipoOrigenId\": \"demoID\",\r\n  \"origenId\": \"demoAbc\",\r\n  \"nombre\": \"Primer activo :3\",\r\n  \"asunto\": \"Alta de post en postman y base de datos\",\r\n  \"fechaApertura\": \"2020-04-13\",\r\n  \"codigoOptico\": \"optico\",\r\n  \"codigoElectronio\": \"287e382e\",\r\n  \"elementoClasificacionId\": \"1b68ee93-b96f-4669-bfe2-2c52b29ee5c6\",\r\n  \"archivoId\": \"1b0f88b3-88e9-48f6-a7d0-ee9a44a46dfa\",\r\n  \"enPrestamo\": true\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Prestamo/ce790948-dec4-4b3c-8696-fca5298d650d",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Prestamo",
+										"ce790948-dec4-4b3c-8696-fca5298d650d"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET metadata Comentario Prestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODUwMDQ1NDEsImV4cCI6MTU4NTAwODE0MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODUwMDQ1NDEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.LlJPPnE1o5jkK5qwvr7mz5LmqORQ7GByDH99xymFpjO23V3yU60v6tA4kzOzqHfLrYiE1CUVryAqIQgqpxo1Ygw1-iVIDzFq0WEkNoL8ozAclKPlCS3cZenzzRRxZLeLU3dZRHBLjdBMwW0zwFE870fkxlYbqy5ydA2VMrAN7gcWN8KDYwDMuP75umddLCiLgaI0CXBX1GCapjaIod37xO4xtqAHXhv9ZTLmgOdAGPjhscOpdso017PW7g4FVdXM8G6NWPagdG0f6B0mxd_XgjrruM7h6r1JGpTS4zKm1JJzYxj8XZgz1XoLIzVoKOgUWzpzKTlMul20ZVnySl-WOQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Archivo/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Archivo",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET page Comentario PRestamo",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODY4MjA1MjAsImV4cCI6MTU4NjgyNDEyMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODY4MjA1MjAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.caY_KATQCQDeSpQoJzF47MYgGU6OPpheGiTgG9k0Ux044Es9p1a2i4whnaLQ0Fbv14w3zD4pjy780nqs-XmcjIox3ILM2L3WN0MnW3uCmW0XfjC1QOQdMQTZDHkSw2i70iCPiJFj4Vflv3Aj5iGunx_hGNTh1kjtdxoIzpZ90HumurZIc8pjA9KHZh-RQNnAnwAXmrwhyO-CdZfvySxh_dqaREBKrQP1RVjw9eB3DK48AM96x3bjzIm29xxHqGz41JeieitGJDfkzMW9j--MOyHqofkmGhkDIZdYuqHh6gsaa79riuw0PefU-I8noLDQKu_VPXrQusRjNgqfQRoWIA",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\"indice\": 0,\n\"tamano\": 10,\n\"columna_ordenamiento\": \"Nombre\",\n\"direccion_ordenamiento\": \"asc\",\n\"Filtros\": [\n\t{\"Propiedad\":\"nombre\",\"Operador\": \"contains\", \"Valor\": \" \"}\n\t]\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Activo/page",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Activo",
+										"page"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Comentaio Prestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NjA2MTEsImV4cCI6MTU4ODk2NDIxMSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NjA2MTEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.JbwjF_WqIPJQmsv67cgdSDleSiMaIqpB35RCo45Kc9jqR6q5l7DsgpfJHirHfuguwtoXle7vpY16i2nKYXN8a3Gnd6LB9ytrqmSB749YJEpnDutI2pmlvGD1awwL1Jx56lcoE-OUKYP_el4LTHiN4L2wZS_SawbQylyMHWzd_t55o8L6OwkQZtR-hdsHdEVeGV49YFj45Vv0m-z-H3QfXc666PTWYcGAoA5TYh7hBVXlt_iHGY4cSK_UmiyhsMSC8zpyV9h07bHzJ5ETdbO-I6LsyMK5GX2NHchwHQ7WjNWlC52TpUcLajKpAb5OZ2g60IKMX7qYs89k3_4aM33v1g",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[  \"e32fdce5-b333-4960-96ad-de11b758dd8c\"\n\t\n\t]",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/ComentarioPrestamo/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ComentarioPrestamo",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

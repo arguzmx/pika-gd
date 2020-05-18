@@ -1,0 +1,4 @@
+id	nombre
+reserva	Reserva
+confidencialidad	Confidencialidad
+solicitud-informacion	Solicitud de información

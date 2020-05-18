@@ -1,0 +1,1046 @@
+{
+	"info": {
+		"_postman_id": "42a7c75f-ff02-44cf-994c-fb35d8ddcadf",
+		"name": "Almacen",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Almacen",
+			"item": [
+				{
+					"name": "Almacen",
+					"item": [
+						{
+							"name": "POST Almacen",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5Njc1ODMsImV4cCI6MTU4ODk3MTE4MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5Njc1ODMsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.o65kKm53D1J0Kk8-pvZPrdcg7vgMOtd8Yx3__GCO0x3ujunkS8SAm_QopTCm08Y60UzDIqZW7FKmlwDQ-npndKH27wE7k_PxeNhU4MHkp0BRf9y37WkRIplRCNzudyVp0-pRmg8zyns2eBq3t_DoUO5u40x_yrmKyHA1kywNa8o9mof75XrXrpp1lk49HMkK64zrOAueuFQMEuYeJHpbiJSkDAIgPtFC695LZjsiPrEfGKoFBE6NPC2VXW9YGkhZRRKD-Pv_v_8zgRX1FpXuuWEy2jzSiwEff0oVDVDAacSaT8u7ALEWOGVIOEY0ajhkZYiUz0Hi-cesRqFGRxK2yw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"id\": \"\",\n\t\"nombre\": \"\",\n\t\"clave\": \"asdaf\",\n\t\"archivoId\": \"c64c457a-ce57-4ba9-92f0-3e6512fd0fcd\"\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Almacen",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Almacen"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Almacen",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5Njc1ODMsImV4cCI6MTU4ODk3MTE4MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5Njc1ODMsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.o65kKm53D1J0Kk8-pvZPrdcg7vgMOtd8Yx3__GCO0x3ujunkS8SAm_QopTCm08Y60UzDIqZW7FKmlwDQ-npndKH27wE7k_PxeNhU4MHkp0BRf9y37WkRIplRCNzudyVp0-pRmg8zyns2eBq3t_DoUO5u40x_yrmKyHA1kywNa8o9mof75XrXrpp1lk49HMkK64zrOAueuFQMEuYeJHpbiJSkDAIgPtFC695LZjsiPrEfGKoFBE6NPC2VXW9YGkhZRRKD-Pv_v_8zgRX1FpXuuWEy2jzSiwEff0oVDVDAacSaT8u7ALEWOGVIOEY0ajhkZYiUz0Hi-cesRqFGRxK2yw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"id\": \"928b9506-d8f3-42f2-8c57-4c7b39c1f58b\",\n\t\"nombre\": \"Primer almacen edited\",\n\t\"clave\": \"asdaf\",\n\t\"archivoId\": \"c64c457a-ce57-4ba9-92f0-3e6512fd0fcd\"\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Almacen/928b9506-d8f3-42f2-8c57-4c7b39c1f58b",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Almacen",
+										"928b9506-d8f3-42f2-8c57-4c7b39c1f58b"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Almacen metadata",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5Njc1ODMsImV4cCI6MTU4ODk3MTE4MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5Njc1ODMsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.o65kKm53D1J0Kk8-pvZPrdcg7vgMOtd8Yx3__GCO0x3ujunkS8SAm_QopTCm08Y60UzDIqZW7FKmlwDQ-npndKH27wE7k_PxeNhU4MHkp0BRf9y37WkRIplRCNzudyVp0-pRmg8zyns2eBq3t_DoUO5u40x_yrmKyHA1kywNa8o9mof75XrXrpp1lk49HMkK64zrOAueuFQMEuYeJHpbiJSkDAIgPtFC695LZjsiPrEfGKoFBE6NPC2VXW9YGkhZRRKD-Pv_v_8zgRX1FpXuuWEy2jzSiwEff0oVDVDAacSaT8u7ALEWOGVIOEY0ajhkZYiUz0Hi-cesRqFGRxK2yw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Almacen/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Almacen",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Almacen",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NTg4MzAsImV4cCI6MTU4ODk2MjQzMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NTg4MjksImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jlZH0ucgUCGRTK-87nwDTUQ_2zCs3Z5TcrNWtgAYDyWSN-r20vXDhsMEr-HsCK5eJ33UyHwDxCFPSh0SiTzW1M2sZ4rh0AnUz5BXUzDPcqb9PvsszPCAnNBzMu2TvVVhrovUbqOKhJS1Y33twY0DlPQmBjaXOES0YT1S-1fgAHUfbNYw5VKMnui2-rd0hH13g6Acnx-QNoJhgKqcUNTNX8VwA-KXe5MfsMzC0IfwHmg2ymccCABbNXZ_zWWESevJAfUSqY-kTrSANaFWpgTsD-TdERxPkd5WFj4jyi4dhGpc7sN6wu4rjS0W5gFsD1qgQQ79HeF04UheiVNmOFlCXw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Almacen/af87368a-147d-46fc-b99f-a2dc22743d19",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Almacen",
+										"af87368a-147d-46fc-b99f-a2dc22743d19"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET  page Almacen",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5Njc1ODMsImV4cCI6MTU4ODk3MTE4MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5Njc1ODMsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.o65kKm53D1J0Kk8-pvZPrdcg7vgMOtd8Yx3__GCO0x3ujunkS8SAm_QopTCm08Y60UzDIqZW7FKmlwDQ-npndKH27wE7k_PxeNhU4MHkp0BRf9y37WkRIplRCNzudyVp0-pRmg8zyns2eBq3t_DoUO5u40x_yrmKyHA1kywNa8o9mof75XrXrpp1lk49HMkK64zrOAueuFQMEuYeJHpbiJSkDAIgPtFC695LZjsiPrEfGKoFBE6NPC2VXW9YGkhZRRKD-Pv_v_8zgRX1FpXuuWEy2jzSiwEff0oVDVDAacSaT8u7ALEWOGVIOEY0ajhkZYiUz0Hi-cesRqFGRxK2yw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Almacen/page?i=0&t=100&ordc=Nombre&ordd=asc",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Almacen",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Almacen",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5Njc1ODMsImV4cCI6MTU4ODk3MTE4MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5Njc1ODMsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.o65kKm53D1J0Kk8-pvZPrdcg7vgMOtd8Yx3__GCO0x3ujunkS8SAm_QopTCm08Y60UzDIqZW7FKmlwDQ-npndKH27wE7k_PxeNhU4MHkp0BRf9y37WkRIplRCNzudyVp0-pRmg8zyns2eBq3t_DoUO5u40x_yrmKyHA1kywNa8o9mof75XrXrpp1lk49HMkK64zrOAueuFQMEuYeJHpbiJSkDAIgPtFC695LZjsiPrEfGKoFBE6NPC2VXW9YGkhZRRKD-Pv_v_8zgRX1FpXuuWEy2jzSiwEff0oVDVDAacSaT8u7ALEWOGVIOEY0ajhkZYiUz0Hi-cesRqFGRxK2yw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "\n\t[\"1b68ee93-b96f-4669-bfe2-2c52b29ee5c6\",\n\t\"bd105bb6-6bfb-4860-84ac-08a6b55a7aca\",\n\t\"f8a815d6-001a-4fb8-9a77-8b82849f77b4\"\n\t]\n",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Almacen/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Almacen",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODM4NzQ5MjQsImV4cCI6MTU4Mzg3ODUyNCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkIiwic3ViIjoiMTE1MzE4NGItOGE1MC00YzhhLWJlMjctMjJiYWY2N2YzZDI3IiwiYXV0aF90aW1lIjoxNTgzODc0OTI0LCJpZHAiOiJsb2NhbCIsInNjb3BlIjpbIm9wZW5pZCIsInBpa2EtZ2QiXSwiYW1yIjpbInB3ZCJdfQ.ihr6gyf83mhSvneZtOVAidU7HJbu_r0_WENvOgMtUbCAhMq-pQb-8gLfP8vHjW48lM_JugDBRNKCNxnR-B7ESZ45geHx7R8s_X7tguCIOEXeB9SnVzGY3cwoOP3epJ9K-4pOz9QnH8J5EVGPu9aeiKfKyJA3A3HLhd-7i0lluF5k7nlJdlLOUBhfTjGLCMVxi_v4-kNHVknOaQUfDsqrUOSnGSA7hfZ_25ZsuHxrRXTZnn4csuAjj5ndOXa7ll8Q4Xw2MARIxJtfeQODFUFTSBKrurmvjWiGPtLBuZqxBVwDyQn2LgvOlgml-2XhOOt3jEUNhAmk0lUde41FNagJ2Q",
+								"type": "string"
+							}
+						]
+					},
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Estante",
+					"item": [
+						{
+							"name": "POST Estante",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NzE1MDAsImV4cCI6MTU4ODk3NTEwMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NzE1MDAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jbv068z2DMAOMsRfqnN6PUkjLT_B2el6Qw6KOyuMlDnmYQlR_y-P0Pt3hZm9yy0FhERwsAb9YV-mPQxJNCFIKZTvUC_xZlH4-bhtr5j86ctXE6s5NwgZNEV7SLz3hMyz1gOL_wvCj-DE6eHezahaB9PE9xW4hcfqMbcI7FFNoCMpraj_1xlwZC4b-SDJawPOdD0TMXctAKegKLzz747LnJOTxnI8k_jk-S5E_Q7yV_dTirMpYUsDWQ9ZQT0BDFM662VLLge1NCyUUvR1B5_mTAwbtA2TTTSJlYDf6CZQNTxpP3FZbx72B0xCcwK_hOwkWuDe3012kAb2qt3sg-KZiw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\t\"id\": \"string\",\r\n  \"almacenArchivoId\": \"928b9506-d8f3-42f2-8c57-4c7b39c1f58b\",\r\n  \"nombre\": \"\",\r\n  \"codigoOptico\": \"shjdjh3\",\r\n  \"codigoElectronico\": \"asjkdjn477s\"\r\n  \r\n  }",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Almacen/928b9506-d8f3-42f2-8c57-4c7b39c1f58b/Estante",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Almacen",
+										"928b9506-d8f3-42f2-8c57-4c7b39c1f58b",
+										"Estante"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Estante",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NzE1MDAsImV4cCI6MTU4ODk3NTEwMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NzE1MDAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jbv068z2DMAOMsRfqnN6PUkjLT_B2el6Qw6KOyuMlDnmYQlR_y-P0Pt3hZm9yy0FhERwsAb9YV-mPQxJNCFIKZTvUC_xZlH4-bhtr5j86ctXE6s5NwgZNEV7SLz3hMyz1gOL_wvCj-DE6eHezahaB9PE9xW4hcfqMbcI7FFNoCMpraj_1xlwZC4b-SDJawPOdD0TMXctAKegKLzz747LnJOTxnI8k_jk-S5E_Q7yV_dTirMpYUsDWQ9ZQT0BDFM662VLLge1NCyUUvR1B5_mTAwbtA2TTTSJlYDf6CZQNTxpP3FZbx72B0xCcwK_hOwkWuDe3012kAb2qt3sg-KZiw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\t\"id\": \"380a595f-f787-40e0-a502-6efca094d1a6\",\r\n  \"almacenArchivoId\": \"928b9506-d8f3-42f2-8c57-4c7b39c1f58b\",\r\n  \"nombre\": \"\",\r\n  \"codigoOptico\": \"43848293\",\r\n  \"codigoElectronico\": \"3489e9od\"\r\n  \r\n  }\r\n\r\n",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Almacen/928b9506-d8f3-42f2-8c57-4c7b39c1f58b/Estante/380a595f-f787-40e0-a502-6efca094d1a6",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Almacen",
+										"928b9506-d8f3-42f2-8c57-4c7b39c1f58b",
+										"Estante",
+										"380a595f-f787-40e0-a502-6efca094d1a6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Metadata Estante",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NzE1MDAsImV4cCI6MTU4ODk3NTEwMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NzE1MDAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jbv068z2DMAOMsRfqnN6PUkjLT_B2el6Qw6KOyuMlDnmYQlR_y-P0Pt3hZm9yy0FhERwsAb9YV-mPQxJNCFIKZTvUC_xZlH4-bhtr5j86ctXE6s5NwgZNEV7SLz3hMyz1gOL_wvCj-DE6eHezahaB9PE9xW4hcfqMbcI7FFNoCMpraj_1xlwZC4b-SDJawPOdD0TMXctAKegKLzz747LnJOTxnI8k_jk-S5E_Q7yV_dTirMpYUsDWQ9ZQT0BDFM662VLLge1NCyUUvR1B5_mTAwbtA2TTTSJlYDf6CZQNTxpP3FZbx72B0xCcwK_hOwkWuDe3012kAb2qt3sg-KZiw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Almacen/380a595f-f787-40e0-a502-6efca094d1a6/Estante/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Almacen",
+										"380a595f-f787-40e0-a502-6efca094d1a6",
+										"Estante",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Estante",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODc1ODE1NzQsImV4cCI6MTU4NzU4NTE3NCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODc1ODE1NzQsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.VfO1Baxn9mCU4_9LDyUTmw1FGRDATNszmcSlIhb2YaXxg6oHLD19OVxIdBp_kjZ9SJUBSc38bClDed0-1lmmD3oSjWsCGSqFGS9XEyNpudXBvaUPxwnzakrysUU2RYop9_LZTSTZKtbyO3H1F-1LJZWq_0mz17cmfOvvmUSPjVRSsaOZgTnW3gdOsHeyuyYy-sNvdOqIGqL8Fr7bWOJ9Z2e__LIlYjztbCKLjIaA1edP3OkcSSjh12vahCJXk8dCbDfLgFwGrwubVcqRjeSwLFgEmH4kA3W56DD3wdKCQu9ZvGaAg4JkI4X85x87PfiY45ibZJCmUBkdGzvnVz4Smw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/CuadroClasificacion/af87368a-147d-46fc-b99f-a2dc22743d19",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion",
+										"af87368a-147d-46fc-b99f-a2dc22743d19"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page Estante",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NzE1MDAsImV4cCI6MTU4ODk3NTEwMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NzE1MDAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jbv068z2DMAOMsRfqnN6PUkjLT_B2el6Qw6KOyuMlDnmYQlR_y-P0Pt3hZm9yy0FhERwsAb9YV-mPQxJNCFIKZTvUC_xZlH4-bhtr5j86ctXE6s5NwgZNEV7SLz3hMyz1gOL_wvCj-DE6eHezahaB9PE9xW4hcfqMbcI7FFNoCMpraj_1xlwZC4b-SDJawPOdD0TMXctAKegKLzz747LnJOTxnI8k_jk-S5E_Q7yV_dTirMpYUsDWQ9ZQT0BDFM662VLLge1NCyUUvR1B5_mTAwbtA2TTTSJlYDf6CZQNTxpP3FZbx72B0xCcwK_hOwkWuDe3012kAb2qt3sg-KZiw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Almacen/prueba/Estante/page?i=0&t=100&ordc=Nombre&ordd=asc",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Almacen",
+										"prueba",
+										"Estante",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Estante",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NzE1MDAsImV4cCI6MTU4ODk3NTEwMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NzE1MDAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jbv068z2DMAOMsRfqnN6PUkjLT_B2el6Qw6KOyuMlDnmYQlR_y-P0Pt3hZm9yy0FhERwsAb9YV-mPQxJNCFIKZTvUC_xZlH4-bhtr5j86ctXE6s5NwgZNEV7SLz3hMyz1gOL_wvCj-DE6eHezahaB9PE9xW4hcfqMbcI7FFNoCMpraj_1xlwZC4b-SDJawPOdD0TMXctAKegKLzz747LnJOTxnI8k_jk-S5E_Q7yV_dTirMpYUsDWQ9ZQT0BDFM662VLLge1NCyUUvR1B5_mTAwbtA2TTTSJlYDf6CZQNTxpP3FZbx72B0xCcwK_hOwkWuDe3012kAb2qt3sg-KZiw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "\n\t[\"8d9c7d01-79f8-4dd4-8d0d-e37e06dd8762\",\n\t\"bd105bb6-6bfb-4860-84ac-08a6b55a7aca\",\n\t\"39b3c094-9012-485e-a724-d7d212a7c4c2\"\n\t]\n",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Almacen/prueba/Estante",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Almacen",
+										"prueba",
+										"Estante"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODM4NzQ5MjQsImV4cCI6MTU4Mzg3ODUyNCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkIiwic3ViIjoiMTE1MzE4NGItOGE1MC00YzhhLWJlMjctMjJiYWY2N2YzZDI3IiwiYXV0aF90aW1lIjoxNTgzODc0OTI0LCJpZHAiOiJsb2NhbCIsInNjb3BlIjpbIm9wZW5pZCIsInBpa2EtZ2QiXSwiYW1yIjpbInB3ZCJdfQ.ihr6gyf83mhSvneZtOVAidU7HJbu_r0_WENvOgMtUbCAhMq-pQb-8gLfP8vHjW48lM_JugDBRNKCNxnR-B7ESZ45geHx7R8s_X7tguCIOEXeB9SnVzGY3cwoOP3epJ9K-4pOz9QnH8J5EVGPu9aeiKfKyJA3A3HLhd-7i0lluF5k7nlJdlLOUBhfTjGLCMVxi_v4-kNHVknOaQUfDsqrUOSnGSA7hfZ_25ZsuHxrRXTZnn4csuAjj5ndOXa7ll8Q4Xw2MARIxJtfeQODFUFTSBKrurmvjWiGPtLBuZqxBVwDyQn2LgvOlgml-2XhOOt3jEUNhAmk0lUde41FNagJ2Q",
+								"type": "string"
+							}
+						]
+					},
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Espacio estante",
+					"item": [
+						{
+							"name": "POST EspacioE",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NzE1MDAsImV4cCI6MTU4ODk3NTEwMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NzE1MDAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jbv068z2DMAOMsRfqnN6PUkjLT_B2el6Qw6KOyuMlDnmYQlR_y-P0Pt3hZm9yy0FhERwsAb9YV-mPQxJNCFIKZTvUC_xZlH4-bhtr5j86ctXE6s5NwgZNEV7SLz3hMyz1gOL_wvCj-DE6eHezahaB9PE9xW4hcfqMbcI7FFNoCMpraj_1xlwZC4b-SDJawPOdD0TMXctAKegKLzz747LnJOTxnI8k_jk-S5E_Q7yV_dTirMpYUsDWQ9ZQT0BDFM662VLLge1NCyUUvR1B5_mTAwbtA2TTTSJlYDf6CZQNTxpP3FZbx72B0xCcwK_hOwkWuDe3012kAb2qt3sg-KZiw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"string\",\r\n  \"nombre\": \"\",\r\n  \"codigoOptico\": \"ffff838\",\r\n  \"codigoElectronico\": \"fff839320\",\r\n  \"estanteId\": \"380a595f-f787-40e0-a502-6efca094d1a6\",\r\n  \"posicion\": 0\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/almacen/prueba/Estante/prueba/EspacioEstante",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"almacen",
+										"prueba",
+										"Estante",
+										"prueba",
+										"EspacioEstante"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT EspacioE",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NzE1MDAsImV4cCI6MTU4ODk3NTEwMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NzE1MDAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jbv068z2DMAOMsRfqnN6PUkjLT_B2el6Qw6KOyuMlDnmYQlR_y-P0Pt3hZm9yy0FhERwsAb9YV-mPQxJNCFIKZTvUC_xZlH4-bhtr5j86ctXE6s5NwgZNEV7SLz3hMyz1gOL_wvCj-DE6eHezahaB9PE9xW4hcfqMbcI7FFNoCMpraj_1xlwZC4b-SDJawPOdD0TMXctAKegKLzz747LnJOTxnI8k_jk-S5E_Q7yV_dTirMpYUsDWQ9ZQT0BDFM662VLLge1NCyUUvR1B5_mTAwbtA2TTTSJlYDf6CZQNTxpP3FZbx72B0xCcwK_hOwkWuDe3012kAb2qt3sg-KZiw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Id\": \"d2824676-bb3c-47e8-9397-0e992deb7595\",\r\n    \"Nombre\": \"espacio rojo\",\r\n    \"CodigoOptico\": \"ss\",\r\n    \"CodigoElectronico\": \"ss\",\r\n    \"EstanteId\": \"380a595f-f787-40e0-a502-6efca094d1a6\",\r\n    \"Posicion\": 1,\r\n    \"Estante\": null\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/almacen/prueba/Estante/prueba/EspacioEstante/d2824676-bb3c-47e8-9397-0e992deb7595",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"almacen",
+										"prueba",
+										"Estante",
+										"prueba",
+										"EspacioEstante",
+										"d2824676-bb3c-47e8-9397-0e992deb7595"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Espacio estante metadata",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NzE1MDAsImV4cCI6MTU4ODk3NTEwMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NzE1MDAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jbv068z2DMAOMsRfqnN6PUkjLT_B2el6Qw6KOyuMlDnmYQlR_y-P0Pt3hZm9yy0FhERwsAb9YV-mPQxJNCFIKZTvUC_xZlH4-bhtr5j86ctXE6s5NwgZNEV7SLz3hMyz1gOL_wvCj-DE6eHezahaB9PE9xW4hcfqMbcI7FFNoCMpraj_1xlwZC4b-SDJawPOdD0TMXctAKegKLzz747LnJOTxnI8k_jk-S5E_Q7yV_dTirMpYUsDWQ9ZQT0BDFM662VLLge1NCyUUvR1B5_mTAwbtA2TTTSJlYDf6CZQNTxpP3FZbx72B0xCcwK_hOwkWuDe3012kAb2qt3sg-KZiw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/almacen/prueba/Estante/prueba/EspacioEstante/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"almacen",
+										"prueba",
+										"Estante",
+										"prueba",
+										"EspacioEstante",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET espacio estante",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NzE1MDAsImV4cCI6MTU4ODk3NTEwMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NzE1MDAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jbv068z2DMAOMsRfqnN6PUkjLT_B2el6Qw6KOyuMlDnmYQlR_y-P0Pt3hZm9yy0FhERwsAb9YV-mPQxJNCFIKZTvUC_xZlH4-bhtr5j86ctXE6s5NwgZNEV7SLz3hMyz1gOL_wvCj-DE6eHezahaB9PE9xW4hcfqMbcI7FFNoCMpraj_1xlwZC4b-SDJawPOdD0TMXctAKegKLzz747LnJOTxnI8k_jk-S5E_Q7yV_dTirMpYUsDWQ9ZQT0BDFM662VLLge1NCyUUvR1B5_mTAwbtA2TTTSJlYDf6CZQNTxpP3FZbx72B0xCcwK_hOwkWuDe3012kAb2qt3sg-KZiw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/almacen/prueba/Estante/prueba/EspacioEstante/d2824676-bb3c-47e8-9397-0e992deb7595",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"almacen",
+										"prueba",
+										"Estante",
+										"prueba",
+										"EspacioEstante",
+										"d2824676-bb3c-47e8-9397-0e992deb7595"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page EspacioE",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NzE1MDAsImV4cCI6MTU4ODk3NTEwMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NzE1MDAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jbv068z2DMAOMsRfqnN6PUkjLT_B2el6Qw6KOyuMlDnmYQlR_y-P0Pt3hZm9yy0FhERwsAb9YV-mPQxJNCFIKZTvUC_xZlH4-bhtr5j86ctXE6s5NwgZNEV7SLz3hMyz1gOL_wvCj-DE6eHezahaB9PE9xW4hcfqMbcI7FFNoCMpraj_1xlwZC4b-SDJawPOdD0TMXctAKegKLzz747LnJOTxnI8k_jk-S5E_Q7yV_dTirMpYUsDWQ9ZQT0BDFM662VLLge1NCyUUvR1B5_mTAwbtA2TTTSJlYDf6CZQNTxpP3FZbx72B0xCcwK_hOwkWuDe3012kAb2qt3sg-KZiw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/almacen/prueba/Estante/prueba/EspacioEstante/page?i=0&t=100&ordc=Nombre&ordd=asc&",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"almacen",
+										"prueba",
+										"Estante",
+										"prueba",
+										"EspacioEstante",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										},
+										{
+											"key": "",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE EspacioE",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NzE1MDAsImV4cCI6MTU4ODk3NTEwMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NzE1MDAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jbv068z2DMAOMsRfqnN6PUkjLT_B2el6Qw6KOyuMlDnmYQlR_y-P0Pt3hZm9yy0FhERwsAb9YV-mPQxJNCFIKZTvUC_xZlH4-bhtr5j86ctXE6s5NwgZNEV7SLz3hMyz1gOL_wvCj-DE6eHezahaB9PE9xW4hcfqMbcI7FFNoCMpraj_1xlwZC4b-SDJawPOdD0TMXctAKegKLzz747LnJOTxnI8k_jk-S5E_Q7yV_dTirMpYUsDWQ9ZQT0BDFM662VLLge1NCyUUvR1B5_mTAwbtA2TTTSJlYDf6CZQNTxpP3FZbx72B0xCcwK_hOwkWuDe3012kAb2qt3sg-KZiw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "\n\t[\"1b68ee93-b96f-4669-bfe2-2c52b29ee5c6\",\n\t\"32215594-ee7a-420c-8dc0-f17b5fcb8e15\",\n\t\"39b3c094-9012-485e-a724-d7d212a7c4c2\"\n\t]\n",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/almacen/prueba/Estante/prueba/EspacioEstante/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"almacen",
+										"prueba",
+										"Estante",
+										"prueba",
+										"EspacioEstante",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODM4NzQ5MjQsImV4cCI6MTU4Mzg3ODUyNCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkIiwic3ViIjoiMTE1MzE4NGItOGE1MC00YzhhLWJlMjctMjJiYWY2N2YzZDI3IiwiYXV0aF90aW1lIjoxNTgzODc0OTI0LCJpZHAiOiJsb2NhbCIsInNjb3BlIjpbIm9wZW5pZCIsInBpa2EtZ2QiXSwiYW1yIjpbInB3ZCJdfQ.ihr6gyf83mhSvneZtOVAidU7HJbu_r0_WENvOgMtUbCAhMq-pQb-8gLfP8vHjW48lM_JugDBRNKCNxnR-B7ESZ45geHx7R8s_X7tguCIOEXeB9SnVzGY3cwoOP3epJ9K-4pOz9QnH8J5EVGPu9aeiKfKyJA3A3HLhd-7i0lluF5k7nlJdlLOUBhfTjGLCMVxi_v4-kNHVknOaQUfDsqrUOSnGSA7hfZ_25ZsuHxrRXTZnn4csuAjj5ndOXa7ll8Q4Xw2MARIxJtfeQODFUFTSBKrurmvjWiGPtLBuZqxBVwDyQn2LgvOlgml-2XhOOt3jEUNhAmk0lUde41FNagJ2Q",
+								"type": "string"
+							}
+						]
+					},
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

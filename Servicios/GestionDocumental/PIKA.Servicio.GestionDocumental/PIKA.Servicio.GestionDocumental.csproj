@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Folder Include="Data\Configuracion\Acervo\" />
+    <Folder Include="Data\Configuracion\Archivo\" />
   </ItemGroup>
 
 

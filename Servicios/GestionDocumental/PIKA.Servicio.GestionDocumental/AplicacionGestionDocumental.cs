@@ -29,6 +29,13 @@ namespace PIKA.Servicio.GestionDocumental
         public const string MODULO_GD_HISTORIAL_ARCHIVO_ACTIVO = "PIKA-GD-GD-HISTORIAL-ARCHIVO-ACTIVO";
         public const string MODULO_GD_AMPLIACION = "PIKA-GD-GD-AMPLIACION";
         public const string MODULO_GD_TIPO_AMPLIACION= "PIKA-GD-GD-TIPO-AMPLIACION";
+        public const string MODULO_GD_TRANSFERENCIA = "PIKA-GD-GD-TRANSFERENCIA";
+        public const string MODULO_GD_ESTADO_TRANSFERENCIA = "PIKA-GD-GD-ESTADO-TRANSFERENCIA";
+        public const string MODULO_GD_EVENTO_TRANSFERENCIA = "PIKA-GD-GD-EVENTO-TRANSFERENCIA";
+        public const string MODULO_GD_COMENTARIO_TRANSFERENCIA = "PIKA-GD-GD-COMENTARIO-TRANSFERENCIA";
+        public const string MODULO_GD_ACTIVO_TRANSFERENCIA = "PIKA-GD-GD-ACTIVO-TRANSFERENCIA";
+        public const string MODULO_GD_ACTIVO_DECLINADO= "PIKA-GD-GD-ACTIVO-DECLINADO";
+
 
         public static string ID_APLICAICON { get { return ConstantesAplicacion.Id; } }
         public Aplicacion Info()
@@ -370,7 +377,7 @@ namespace PIKA.Servicio.GestionDocumental
             //------------------------------------------------------------
             //------------------------------------------------------------
 
-            /// Modulo administarcion de Comentarios préstamo
+            /// Modulo administarcion de Espacio estante
             //------------------------------------------------------------
 
             m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_ESPACIO_ESTANTE, true,
@@ -391,8 +398,132 @@ namespace PIKA.Servicio.GestionDocumental
             //------------------------------------------------------------
 
 
+            /// Modulo administarcion de Transferencia
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_TRANSFERENCIA, true,
+                "Transferencias",
+                "Administrador de Transferencias",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(Transferencia) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+            /// Modulo administarcion de Estados de Transferencia
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_ESTADO_TRANSFERENCIA, true,
+                "Estados de transferencia",
+                "Administrador de estados de transferencia",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(EstadoTransferencia) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+            /// Modulo administarcion de Eventos de Transferencia
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_EVENTO_TRANSFERENCIA, true,
+                "Eventos de transferencia",
+                "Administrador de eventos de transferencia",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(EventoTransferencia) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+
+            /// Modulo administarcion de Comentario de Transferencia
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_COMENTARIO_TRANSFERENCIA, true,
+                "Comentarios de transferencia",
+                "Administrador de comentarios de transferencia",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(ComentarioTransferencia) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+            /// Modulo administarcion de Comentario de Transferencia
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_ACTIVO_TRANSFERENCIA, true,
+                "Activos de transferencia",
+                "Administrador de activos de transferencia",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(ActivoTransferencia) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+            /// Modulo administarcion de Comentario de Transferencia
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_ACTIVO_DECLINADO, true,
+                "Activos declinados de transferencia",
+                "Administrador de activos declinados de transferencia",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(ActivoDeclinado) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+
             return l;
         }
+
+
 
         public List<TipoAdministradorModulo> TiposAdministrados()
         {

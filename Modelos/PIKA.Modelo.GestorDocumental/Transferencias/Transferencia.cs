@@ -16,7 +16,7 @@ namespace PIKA.Modelo.GestorDocumental
         public Transferencia()
         {
             Eventos = new HashSet<EventoTransferencia>();
-            Comentarios = new HashSet<ComentarioTrasnferencia>();
+            Comentarios = new HashSet<ComentarioTransferencia>();
             ActivosDeclinados = new HashSet<ActivoDeclinado>();
             ActivosIncluidos = new HashSet<ActivoTransferencia>();
         }
@@ -60,20 +60,20 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         public string UsuarioId { get; set; }
 
-        public ICollection<EventoTransferencia> Eventos { get; set; }
+        public virtual ICollection<EventoTransferencia> Eventos { get; set; }
 
-        public ICollection<ActivoTransferencia> ActivosIncluidos { get; set; }
+        public virtual ICollection<ActivoTransferencia> ActivosIncluidos { get; set; }
 
-        public ICollection<ActivoDeclinado> ActivosDeclinados { get; set; }
+        public virtual ICollection<ActivoDeclinado> ActivosDeclinados { get; set; }
 
-        public ICollection<ComentarioTrasnferencia> Comentarios { get; set; }
+        public virtual  ICollection<ComentarioTransferencia> Comentarios { get; set; }
 
 
-        public EstadoTransferencia Estado { get; set; }
+        public virtual EstadoTransferencia Estado { get; set; }
 
-        public Archivo ArchivoOrigen { get; set; }
+        public virtual Archivo ArchivoOrigen { get; set; }
 
-        public Archivo ArchivoDestino { get; set; }
+        public virtual Archivo ArchivoDestino { get; set; }
         
     }
 }

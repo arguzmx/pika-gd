@@ -9,7 +9,7 @@ namespace PIKA.Modelo.GestorDocumental
     /// <summary>
     /// PErmite la adición de comenatrios a la trasnferencia
     /// </summary>
-    public class ComentarioTrasnferencia: Entidad<string>, IEntidadUsuario
+    public class ComentarioTransferencia: Entidad<string>, IEntidadUsuario
     {
         public override string Id { get; set; }
 
