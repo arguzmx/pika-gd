@@ -3,7 +3,7 @@ using RepositorioEntidades;
 
 namespace PIKA.Servicio.GestionDocumental.Interfaces
 {
-    public interface IServicioActivo : IServicioRepositorioAsync<Activo, string>
+    public interface IServicioComentarioTransferencia : IServicioRepositorioAsync<ComentarioTransferencia, string>
     {
     }
 }

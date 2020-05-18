@@ -29,12 +29,12 @@ namespace PIKA.Modelo.GestorDocumental
         public const string ESTADO_EN_TRANSITO = "transito";
 
         /// <summary>
-        /// Indica que la transferencia ha sido recibida satisfactoeiamente por el archiv destino
+        /// Indica que la transferencia ha sido recibida satisfactoriamente por el archiv destino
         /// </summary>
         public const string ESTADO_RECIBIDA = "recibida";
 
         /// <summary>
-        /// Indica que la transferencia ha sido recibida satisfactoeiamente pero algunos activos fueron declinados
+        /// Indica que la transferencia ha sido recibida satisfactoriamente pero algunos activos fueron declinados
         /// </summary>
         public const string ESTADO_RECIBIDA_PARCIAL = "recibida_parcial";
 
@@ -51,19 +51,32 @@ namespace PIKA.Modelo.GestorDocumental
         public EstadoTransferencia()
         {
             Transferencias = new HashSet<Transferencia>();
-
+            Eventos = new HashSet<EventoTransferencia>();
         }
 
         /// <summary>
         /// Propiedad de navegacion
         /// </summary>
-        public ICollection<Transferencia> Transferencias { get; set; }
+        public virtual ICollection<Transferencia> Transferencias { get; set; }
+
+        /// <summary>
+        /// Prop de nav
+        /// </summary>
+        public virtual ICollection<EventoTransferencia> Eventos { get; set; }
 
         public override List<EstadoTransferencia> Seed()
         {
-            ///Implementtar este método
+            List<EstadoTransferencia> l = new List<EstadoTransferencia>();
+            l.Add(new EstadoTransferencia() { Id = ESTADO_NUEVA, Nombre = "Nueva"});
+            l.Add(new EstadoTransferencia() { Id = ESTADO_ESPERA_APROBACION, Nombre = "Espera de aprobación"});
+            l.Add(new EstadoTransferencia() { Id = ESTADO_APROBADA, Nombre = "Aprobada"});
+            l.Add(new EstadoTransferencia() { Id = ESTADO_EN_TRANSITO, Nombre = "En tránsito"});
+            l.Add(new EstadoTransferencia() { Id = ESTADO_RECIBIDA, Nombre = "Recibida"});
+            l.Add(new EstadoTransferencia() { Id = ESTADO_RECIBIDA_PARCIAL, Nombre = "Recibida parcial"});
+            l.Add(new EstadoTransferencia() { Id = ESTADO_CANCELADA, Nombre = "Cancelada"});
+            l.Add(new EstadoTransferencia() { Id = ESTADO_DECLINADA, Nombre = "Declinada"});
 
-            throw new NotImplementedException();
+            return l;
 
         }
 

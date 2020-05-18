@@ -36,7 +36,7 @@ namespace PIKA.GD.API
 {
     public class Startup
     {
-
+        
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
 
@@ -45,7 +45,7 @@ namespace PIKA.GD.API
 
         private readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-
+        
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
@@ -75,7 +75,7 @@ namespace PIKA.GD.API
             List<Assembly> ensambladosValidacion = new List<Assembly>();
             List<ServicioInyectable> inyectables = LocalizadorEnsamblados.ObtieneServiciosInyectables();
             List<TipoAdministradorModulo> ModulosAdministrados = LocalizadorEnsamblados.ObtieneTiposAdministrados();
-
+            
 
 #if DEBUG
             foreach (var t in ModulosAdministrados)
@@ -90,16 +90,16 @@ namespace PIKA.GD.API
 
             foreach (var t in ensambladosValidables)
             {
-
-                Console.WriteLine($"{t} === V");
-
+                
+                    Console.WriteLine($"{t} === V");
+                
 
             }
 #endif
 
 
 
-            foreach (string item in ensambladosValidables)
+          foreach (string item in ensambladosValidables)
             {
                 ensambladosValidacion.Add(Assembly.LoadFrom(item));
             }
@@ -127,13 +127,12 @@ namespace PIKA.GD.API
 
             services.AddScoped<AsyncACLActionFilter>();
 
-            services.AddTransient(typeof(IProveedorOpcionesContexto<>), typeof(ProveedorOpcionesContexto<>));
+            services.AddTransient(typeof(IProveedorOpcionesContexto<>),typeof(ProveedorOpcionesContexto<>));
 
-
-
+            
+            
             services.AddDbContext<DbContextSeguridad>(options =>
                  options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-
 
             services.AddDbContext<DbContextMetadatos>(options =>
                    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
@@ -141,14 +140,16 @@ namespace PIKA.GD.API
             services.AddDbContext<DbContextAplicacionPlugin>(options =>
                   options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
-            services.AddDbContext<DBContextGestionDocumental>(options =>
-                    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-
             services.AddDbContext<DbContextOrganizacion>(options =>
                     options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
             services.AddDbContext<DbContextContenido>(options =>
-                options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+               options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
+            services.AddDbContext<DBContextGestionDocumental>(options =>
+               options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
+
 
             services.AddControllers();
 

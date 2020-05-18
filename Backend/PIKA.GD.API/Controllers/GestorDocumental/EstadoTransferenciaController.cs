@@ -11,6 +11,7 @@ using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.GestionDocumental.Interfaces;
 using RepositorioEntidades;
+using RepositorioEntidades.DatatablesPlugin;
 
 namespace PIKA.GD.API.Controllers.GestorDocumental
 {
@@ -18,21 +19,21 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
     [ApiVersion("1.0")]
     [ApiController]
     [Route("api/v{version:apiVersion}/gd/[controller]")]
-    public class ArchivoController : ACLController
+    public class EstadoTransferenciaController : ACLController
     {
-        private readonly ILogger<ArchivoController> logger;
-        private IServicioArchivo servicioArchivo;
-        private IProveedorMetadatos<Archivo> metadataProvider;
-        public ArchivoController(ILogger<ArchivoController> logger,
-            IProveedorMetadatos<Archivo> metadataProvider,
-            IServicioArchivo servicioArchivo)
+        private readonly ILogger<EstadoTransferenciaController> logger;
+        private IServicioEstadoTransferencia servicioEstadoTransferencia;
+        private IProveedorMetadatos<EstadoTransferencia> metadataProvider;
+        public EstadoTransferenciaController(ILogger<EstadoTransferenciaController> logger,
+            IProveedorMetadatos<EstadoTransferencia> metadataProvider,
+            IServicioEstadoTransferencia servicioEstadoTransferencia)
         {
             this.logger = logger;
-            this.servicioArchivo = servicioArchivo;
+            this.servicioEstadoTransferencia = servicioEstadoTransferencia;
             this.metadataProvider = metadataProvider;
         }
 
-        [HttpGet("metadata", Name = "MetadataArchivo")]
+        [HttpGet("metadata", Name = "MetadataEstadoTransferencia")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
         {
@@ -43,16 +44,16 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<Archivo>> Post([FromBody]Archivo entidad)
+        public async Task<ActionResult<EstadoTransferencia>> Post([FromBody]EstadoTransferencia entidad)
         {
-            entidad = await servicioArchivo.CrearAsync(entidad).ConfigureAwait(false);
-            return Ok(CreatedAtAction("GetArchivo", new { id = entidad.Id }, entidad).Value);
+            entidad = await servicioEstadoTransferencia.CrearAsync(entidad).ConfigureAwait(false);
+            return Ok(CreatedAtAction("GetEstadoTransferencia", new { id = entidad.Id }, entidad).Value);
         }
 
 
         [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<IActionResult> Put(string id, [FromBody]Archivo entidad)
+        public async Task<IActionResult> Put(string id, [FromBody]EstadoTransferencia entidad)
         {
             var x = ObtieneFiltrosIdentidad();
 
@@ -62,28 +63,27 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 return BadRequest();
             }
 
-            await servicioArchivo.ActualizarAsync(entidad).ConfigureAwait(false);
+            await servicioEstadoTransferencia.ActualizarAsync(entidad).ConfigureAwait(false);
             return NoContent();
 
         }
 
 
-        [HttpGet("page", Name = "GetPageArchivo")]
+        [HttpGet("page", Name = "GetPageEstadoTransferencia")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<Archivo>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<EstadoTransferencia>>> GetPage([FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioArchivo.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<Archivo>());
+            var data = await servicioEstadoTransferencia.ObtenerPaginadoAsync(query).ConfigureAwait(false);
+            return Ok(data.Elementos.ToList<EstadoTransferencia>());
         }
-
 
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<Archivo>> Get(string id)
+        public async Task<ActionResult<EstadoTransferencia>> Get(string id)
         {
-            var o = await servicioArchivo.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            var o = await servicioEstadoTransferencia.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }
@@ -95,7 +95,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> Delete([FromBody]string[] id)
         {
-            return Ok(await servicioArchivo.Eliminar(id).ConfigureAwait(false));
+            return Ok(await servicioEstadoTransferencia.Eliminar(id).ConfigureAwait(false));
         }
     }
 }

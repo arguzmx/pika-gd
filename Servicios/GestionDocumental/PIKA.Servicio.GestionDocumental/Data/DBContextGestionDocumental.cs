@@ -125,6 +125,43 @@ namespace PIKA.Servicio.GestionDocumental.Data
         public static string TablaEspaciosEstante { get => "gd$espacio_estante"; }
 
 
+        /// <summary>
+        /// Nombre de la tabla para las entidades del tipo Transferencia 
+        /// </summary>
+        public static string TablaTransferencias { get => "gd$transferencia"; }
+
+
+        /// <summary>
+        /// Nombre de la tabla para las entidades del tipo EstadoTransferencia 
+        /// </summary>
+        public static string TablaEstadosTransferencia { get => "gd$estado_transferencia"; }
+
+
+        /// <summary>
+        /// Nombre de la tabla para las entidades del tipo EventoTransferencia 
+        /// </summary>
+        public static string TablaEventosTransferencia{ get => "gd$evento_transferencia"; }
+
+
+        /// <summary>
+        /// Nombre de la tabla para las entidades del tipo ComentarioTransferencia 
+        /// </summary>
+        public static string TablaComentariosTransferencia{ get => "gd$comentario_transferencia"; }
+
+
+        /// <summary>
+        /// Nombre de la tabla para las entidades del tipo ActivoTransferencia 
+        /// </summary>
+        public static string TablaActivosTransferencia { get => "gd$activo_transferencia"; }
+
+        /// <summary>
+        /// Nombre de la tabla para las entidades del tipo ActivoDeclinado
+        /// </summary>
+        public static string TablaActivosDeclinados { get => "gd$activo_declinado"; }
+
+
+
+
         #endregion
 
         /// <summary>
@@ -211,6 +248,36 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// </summary>
         public DbSet<ComentarioPrestamo> ComentariosPrestamo { get; set; }
 
+        /// <summary>
+        /// Comentarios de prestamo existentes en la aplicación
+        /// </summary>
+        public DbSet<Transferencia> Transferencias { get; set; }
+
+        /// <summary>
+        /// Comentarios de prestamo existentes en la aplicación
+        /// </summary>
+        public DbSet<EstadoTransferencia> EstadosTransferencia { get; set; }
+
+        /// <summary>
+        /// Comentarios de prestamo existentes en la aplicación
+        /// </summary>
+        public DbSet<EventoTransferencia> EventosTransferencia { get; set; }
+
+        /// <summary>
+        /// Comentarios de prestamo existentes en la aplicación
+        /// </summary>
+        public DbSet<ComentarioTransferencia> ComentariosTransferencia { get; set; }
+
+        /// <summary>
+        /// Comentarios de prestamo existentes en la aplicación
+        /// </summary>
+        public DbSet<ActivoTransferencia> ActivosTransferencia { get; set; }
+
+        /// <summary>
+        /// Comentarios de prestamo existentes en la aplicación
+        /// </summary>
+        public DbSet<ActivoDeclinado> ActivosDeclinados { get; set; }
+
 
         public void AplicarMigraciones()
         {
@@ -248,6 +315,15 @@ namespace PIKA.Servicio.GestionDocumental.Data
             builder.ApplyConfiguration<Prestamo>(new DbConfPrestamo());
             builder.ApplyConfiguration<ActivoPrestamo>(new DbConfActivoPrestamo());
             builder.ApplyConfiguration<ComentarioPrestamo>(new DbConfComentarioPrestamo());
+
+            builder.ApplyConfiguration<Transferencia>(new DbConfTransferencia());
+            builder.ApplyConfiguration<EstadoTransferencia>(new DbConfEstadoTransferencia());
+            builder.ApplyConfiguration<EventoTransferencia>(new DbConfEventoTransferencia());
+            builder.ApplyConfiguration<ComentarioTransferencia>(new DbConfComentarioTransferencia());
+            builder.ApplyConfiguration<ActivoTransferencia>(new DbConfActivoTransferencia());
+            builder.ApplyConfiguration<ActivoDeclinado>(new DbConfActivoDeclinado());
+
+
         }
 
     }

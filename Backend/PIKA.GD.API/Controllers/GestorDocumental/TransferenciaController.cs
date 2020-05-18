@@ -18,21 +18,21 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
     [ApiVersion("1.0")]
     [ApiController]
     [Route("api/v{version:apiVersion}/gd/[controller]")]
-    public class ArchivoController : ACLController
+    public class TransferenciaController : ACLController
     {
-        private readonly ILogger<ArchivoController> logger;
-        private IServicioArchivo servicioArchivo;
-        private IProveedorMetadatos<Archivo> metadataProvider;
-        public ArchivoController(ILogger<ArchivoController> logger,
-            IProveedorMetadatos<Archivo> metadataProvider,
-            IServicioArchivo servicioArchivo)
+        private readonly ILogger<TransferenciaController> logger;
+        private IServicioTransferencia servicioTransferencia;
+        private IProveedorMetadatos<Transferencia> metadataProvider;
+        public TransferenciaController(ILogger<TransferenciaController> logger,
+            IProveedorMetadatos<Transferencia> metadataProvider,
+            IServicioTransferencia servicioTransferencia)
         {
             this.logger = logger;
-            this.servicioArchivo = servicioArchivo;
+            this.servicioTransferencia = servicioTransferencia;
             this.metadataProvider = metadataProvider;
         }
 
-        [HttpGet("metadata", Name = "MetadataArchivo")]
+        [HttpGet("metadata", Name = "MetadataTransferencia")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
         {
@@ -43,16 +43,16 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<Archivo>> Post([FromBody]Archivo entidad)
+        public async Task<ActionResult<Transferencia>> Post([FromBody]Transferencia entidad)
         {
-            entidad = await servicioArchivo.CrearAsync(entidad).ConfigureAwait(false);
-            return Ok(CreatedAtAction("GetArchivo", new { id = entidad.Id }, entidad).Value);
+            entidad = await servicioTransferencia.CrearAsync(entidad).ConfigureAwait(false);
+            return Ok(CreatedAtAction("GetTransferencia", new { id = entidad.Id }, entidad).Value);
         }
 
 
         [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<IActionResult> Put(string id, [FromBody]Archivo entidad)
+        public async Task<IActionResult> Put(string id, [FromBody]Transferencia entidad)
         {
             var x = ObtieneFiltrosIdentidad();
 
@@ -62,28 +62,28 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 return BadRequest();
             }
 
-            await servicioArchivo.ActualizarAsync(entidad).ConfigureAwait(false);
+            await servicioTransferencia.ActualizarAsync(entidad).ConfigureAwait(false);
             return NoContent();
 
         }
 
 
-        [HttpGet("page", Name = "GetPageArchivo")]
+        [HttpGet("page", Name = "GetPageTransferencia")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<Archivo>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<Transferencia>>> GetPage([FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioArchivo.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<Archivo>());
+            var data = await servicioTransferencia.ObtenerPaginadoAsync(query).ConfigureAwait(false);
+            return Ok(data.Elementos.ToList<Transferencia>());
         }
 
 
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<Archivo>> Get(string id)
+        public async Task<ActionResult<Transferencia>> Get(string id)
         {
-            var o = await servicioArchivo.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            var o = await servicioTransferencia.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }
@@ -95,7 +95,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> Delete([FromBody]string[] id)
         {
-            return Ok(await servicioArchivo.Eliminar(id).ConfigureAwait(false));
+            return Ok(await servicioTransferencia.Eliminar(id).ConfigureAwait(false));
         }
     }
 }

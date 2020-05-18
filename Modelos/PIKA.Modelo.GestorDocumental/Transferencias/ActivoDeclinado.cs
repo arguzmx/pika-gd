@@ -10,8 +10,6 @@ namespace PIKA.Modelo.GestorDocumental
     /// </summary>
     public class ActivoDeclinado
     {
-        //LA CLAVE PRIMARIA PARA ESTA ENTIDAD SON LOS DOS IDS, ELIMINAR ESTE COMETARIO
-
         /// <summary>
         /// Identificador único del activo
         /// </summary>

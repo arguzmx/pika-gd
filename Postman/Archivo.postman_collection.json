@@ -1,0 +1,1063 @@
+{
+	"info": {
+		"_postman_id": "512a1670-616a-4587-a9c7-ef008ce00bf8",
+		"name": "Archivo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ARchivos Copy",
+			"item": [
+				{
+					"name": "Archivo",
+					"item": [
+						{
+							"name": "POST Archivo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODk1NjI4NTAsImV4cCI6MTU4OTU2NjQ1MCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiIxYzI4MDdmMC1mYTE2LTQ3MmItODY2Ni04MmQ2OTUxNjFiZjIiLCJhdXRoX3RpbWUiOjE1ODk1NjI4NTAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.dbFu3oyMFSBvqYEVMfHzi4GdavpkKthLd81lSn20ff-v-FNRv-u9qXDVZvaKZt_z-lzBl0nBw7knrVPyFeZR5ltZB0B2Nb1u6yVSss5sLid5EEYTbKEPkKQ2inERTXaL27TTPtGE7DjsaC-rixs32V506hsNBalVkSvz2Ht3e7bK1CeiGZOHiFzSlKe4-N9WjZ0it30mmnPbTPOg7bPRgDE6W1_MNbs1ai0uTAJjx3VQQmYDqrHkc268CfJk6dvEhDUbJbhqBs5thA-TnXsMvPAvl4ThWsOrNDkswSJX9cABZjWMU8YAqHqLXVoN9r8dv6IIrL2QssHxMK0AF-wFDg",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"\",\r\n  \"nombre\": \"Acta de nacimiento\",\r\n  \"eliminada\": false,\r\n  \"TipoOrigenId\": \"demo\",\r\n  \"origenId\": \"abc\",\r\n  \"tipoArchivoId\": \"a-cor\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Archivo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Archivo"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Archivo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4NzExODksImV4cCI6MTU4ODg3NDc4OSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4NzExODksImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.gJ_VcZ92G-AKu_E-FnA0FOvxlOW4zdQenHT0bEeuY_J3a2vQD5b1NByIB-pHETOBekP_C-IW4ZxyXkiWIz3BQzh2208uW6FDbDWlo91cS7-y6W7oA5DvVtQ94amNVg4JE0cHu5NMNLoAI8EjwVBiKy8itZ7g8UO0nIQlv7mnyies1xro78m4ICj0ZViqufV_NmwhIbml4t5g3ootTn3AJ2GknN2y0_nSSj_f3VtVr344LMc78cxXeIw6CfXuTHgopCvDCnSR7U4bWfexadE8NCT2BDZx7G46XUft1b-8qbWM30vFtr6gxWwoTuN9vdpwwX6EYp2qdEY1ZUwZeFUuyQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"c64c457a-ce57-4ba9-92f0-3e6512fd0fcd\",\r\n \r\n  \"nombre\": \"CURP\",\r\n  \"eliminada\": true,\r\n  \"tipoOrigenId\": \"string\",\r\n  \"origenId\": \"string\",\r\n  \"tipoArchivoId\": \"string\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Archivo/c64c457a-ce57-4ba9-92f0-3e6512fd0fcd",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Archivo",
+										"c64c457a-ce57-4ba9-92f0-3e6512fd0fcd"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET metadata Archivo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4ODE3NzEsImV4cCI6MTU4ODg4NTM3MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4ODE3NzEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.IPVy_4qVyhCimMo9bxplpXcoUoULQvz93ShEF34KKSpLXDRfXMwVzPqUiFZLKAToBdZD0YM11zNKuHEytz0dSSfX9bbamh3E5jmohiFT7t8u80g-g8FyOadRbIsRC7y16k0z90arfTdhRIWG-NkUkPL3c149G_AV1vSJCWbdtgWAIv7V1y1WxuZoPswcef2oQypPhm5VgVNpD3ts7ehDPCAwihkLitX2ipjAiURJ0xLE1FPq6vnQDliKVMCbRhEjKnlHFjpqx_9Y0qxIjW_QIGmvheU4WtPS62WrNBN7CF9PZTkC2F263do26uD4xm8DQd6KfSJWICi2QPQ011Xe_Q",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Archivo/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Archivo",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Archivo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4NzExODksImV4cCI6MTU4ODg3NDc4OSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4NzExODksImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.gJ_VcZ92G-AKu_E-FnA0FOvxlOW4zdQenHT0bEeuY_J3a2vQD5b1NByIB-pHETOBekP_C-IW4ZxyXkiWIz3BQzh2208uW6FDbDWlo91cS7-y6W7oA5DvVtQ94amNVg4JE0cHu5NMNLoAI8EjwVBiKy8itZ7g8UO0nIQlv7mnyies1xro78m4ICj0ZViqufV_NmwhIbml4t5g3ootTn3AJ2GknN2y0_nSSj_f3VtVr344LMc78cxXeIw6CfXuTHgopCvDCnSR7U4bWfexadE8NCT2BDZx7G46XUft1b-8qbWM30vFtr6gxWwoTuN9vdpwwX6EYp2qdEY1ZUwZeFUuyQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Archivo/8c68a7a1-fb62-4838-b7cc-7ac89ea2e40e",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Archivo",
+										"8c68a7a1-fb62-4838-b7cc-7ac89ea2e40e"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET page Archivo",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODk1NjI4NTAsImV4cCI6MTU4OTU2NjQ1MCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiIxYzI4MDdmMC1mYTE2LTQ3MmItODY2Ni04MmQ2OTUxNjFiZjIiLCJhdXRoX3RpbWUiOjE1ODk1NjI4NTAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.dbFu3oyMFSBvqYEVMfHzi4GdavpkKthLd81lSn20ff-v-FNRv-u9qXDVZvaKZt_z-lzBl0nBw7knrVPyFeZR5ltZB0B2Nb1u6yVSss5sLid5EEYTbKEPkKQ2inERTXaL27TTPtGE7DjsaC-rixs32V506hsNBalVkSvz2Ht3e7bK1CeiGZOHiFzSlKe4-N9WjZ0it30mmnPbTPOg7bPRgDE6W1_MNbs1ai0uTAJjx3VQQmYDqrHkc268CfJk6dvEhDUbJbhqBs5thA-TnXsMvPAvl4ThWsOrNDkswSJX9cABZjWMU8YAqHqLXVoN9r8dv6IIrL2QssHxMK0AF-wFDg",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\"indice\": 0,\n\"tamano\": 10,\n\"columna_ordenamiento\": \"Nombre\",\n\"direccion_ordenamiento\": \"asc\",\n\"Filtros\": [\n\t{\"Propiedad\":\"nombre\",\"Operador\": \"contains\", \"Valor\": \" \"}\n\t]\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Archivo/page?i=0&t=100&ordc=Nombre&ordd=asc&",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Archivo",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										},
+										{
+											"key": "",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Archivo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4NzY0NTcsImV4cCI6MTU4ODg4MDA1NywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4NzY0NTcsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.EUIPSC1ZBPqK2Ajjf_7DW9TIRr39irXWTWdPM8Wa4v6nDyogfZhGFE2VqXrO8-gxUByl4fgHo0yVakoprQ6dGrdnMlFkT5G-bdlVUX4Z8O-G4RsYG0ISJX9-lwAhxus1dZrzmpn_JG8OV5Dzxg3Tl6PWmtnm7xxYNroJkRcnhWqo6OZ9QZ33pz9OSDrCnm0MTcJMI4r1W7DkPR4dDAVVbaOlTL26ry8f5sUamqkxXtkVcEETNcMGeboEjz0x84ryM1wi13hhcUsI8TfAlrN8AiTPUVDc5201QUeP2RHSsagvoGnvXF3CJn_0j37leVW4ukwcdHca0QqeCAozAHHBuw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\t\"prueba\",\n\t\"c64c457a-ce57-4ba9-92f0-3e6512fd0fcd\",\n\t\"a97a64fa-5c12-4b31-925b-d212baef66bc\",\n\t\"asdad\"\n]",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Archivo/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Archivo",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Tipo archivo",
+					"item": [
+						{
+							"name": "POST Tipo Archivo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODQwMzE3NDMsImV4cCI6MTU4NDAzNTM0MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkIiwic3ViIjoiMTE1MzE4NGItOGE1MC00YzhhLWJlMjctMjJiYWY2N2YzZDI3IiwiYXV0aF90aW1lIjoxNTg0MDMxNzQzLCJpZHAiOiJsb2NhbCIsInNjb3BlIjpbIm9wZW5pZCIsInBpa2EtZ2QiXSwiYW1yIjpbInB3ZCJdfQ.Mf6SLhZ62Ay0HbY39jZRe1RkGPsOP-DO89-oekkKblDSCHZbsEs-6S5hl5231bSBN07SUfSgdjOB6VY3j-ZpSuS5hDqQCzB4GsYw_vCN-5OOQ6N31pBKdVOq8CuWdrEFGoD1Uk5di4bVCmx4lV_tYEik_jrgLoaytTQlNOO5EBfpRMC0DRd-niCyLvxCwie9HPu_BQjYnklAUpIRDVfZwCctixtU_rxfxN61kHuze-1eQiTeNAS1bKn2PqXEPz4SnwrLO6zFpjoHDxwxftNcapmCedysT3vsnvvVIv6ovFWYrI7vdDXoCeed4TjDND4AVfnBq3JxBbQ2OJHO2Dx-ZQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"\",\r\n  \"nombre\": \"segundo  cuadro c:\",\r\n  \"eliminada\": false,\r\n  \"tipoOrigenId\": \"demo\",\r\n  \"origenId\": \"abc\",\r\n  \"estadoCuadroClasificacionId\":\"off\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Tipo Archivo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODQwMzE3NDMsImV4cCI6MTU4NDAzNTM0MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkIiwic3ViIjoiMTE1MzE4NGItOGE1MC00YzhhLWJlMjctMjJiYWY2N2YzZDI3IiwiYXV0aF90aW1lIjoxNTg0MDMxNzQzLCJpZHAiOiJsb2NhbCIsInNjb3BlIjpbIm9wZW5pZCIsInBpa2EtZ2QiXSwiYW1yIjpbInB3ZCJdfQ.Mf6SLhZ62Ay0HbY39jZRe1RkGPsOP-DO89-oekkKblDSCHZbsEs-6S5hl5231bSBN07SUfSgdjOB6VY3j-ZpSuS5hDqQCzB4GsYw_vCN-5OOQ6N31pBKdVOq8CuWdrEFGoD1Uk5di4bVCmx4lV_tYEik_jrgLoaytTQlNOO5EBfpRMC0DRd-niCyLvxCwie9HPu_BQjYnklAUpIRDVfZwCctixtU_rxfxN61kHuze-1eQiTeNAS1bKn2PqXEPz4SnwrLO6zFpjoHDxwxftNcapmCedysT3vsnvvVIv6ovFWYrI7vdDXoCeed4TjDND4AVfnBq3JxBbQ2OJHO2Dx-ZQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"fc692854-bd3e-4ff4-824a-858c992163f6\",\r\n  \"nombre\": \"segundo  cuadro editado\",\r\n  \"eliminada\": true,\r\n  \"tipoOrigenId\": \"demo\",\r\n  \"origenId\": \"abc\",\r\n  \"estadoCuadroClasificacionId\":\"off\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion/fc692854-bd3e-4ff4-824a-858c992163f6",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion",
+										"fc692854-bd3e-4ff4-824a-858c992163f6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET  metadata TIpo Archivo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODc1ODE1NzQsImV4cCI6MTU4NzU4NTE3NCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODc1ODE1NzQsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.VfO1Baxn9mCU4_9LDyUTmw1FGRDATNszmcSlIhb2YaXxg6oHLD19OVxIdBp_kjZ9SJUBSc38bClDed0-1lmmD3oSjWsCGSqFGS9XEyNpudXBvaUPxwnzakrysUU2RYop9_LZTSTZKtbyO3H1F-1LJZWq_0mz17cmfOvvmUSPjVRSsaOZgTnW3gdOsHeyuyYy-sNvdOqIGqL8Fr7bWOJ9Z2e__LIlYjztbCKLjIaA1edP3OkcSSjh12vahCJXk8dCbDfLgFwGrwubVcqRjeSwLFgEmH4kA3W56DD3wdKCQu9ZvGaAg4JkI4X85x87PfiY45ibZJCmUBkdGzvnVz4Smw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/TipoArchivo/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoArchivo",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET  TIpo Archivo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODc1ODE1NzQsImV4cCI6MTU4NzU4NTE3NCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODc1ODE1NzQsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.VfO1Baxn9mCU4_9LDyUTmw1FGRDATNszmcSlIhb2YaXxg6oHLD19OVxIdBp_kjZ9SJUBSc38bClDed0-1lmmD3oSjWsCGSqFGS9XEyNpudXBvaUPxwnzakrysUU2RYop9_LZTSTZKtbyO3H1F-1LJZWq_0mz17cmfOvvmUSPjVRSsaOZgTnW3gdOsHeyuyYy-sNvdOqIGqL8Fr7bWOJ9Z2e__LIlYjztbCKLjIaA1edP3OkcSSjh12vahCJXk8dCbDfLgFwGrwubVcqRjeSwLFgEmH4kA3W56DD3wdKCQu9ZvGaAg4JkI4X85x87PfiY45ibZJCmUBkdGzvnVz4Smw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/TipoArchivo/a-cor",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoArchivo",
+										"a-cor"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET page Tipo Archivo",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4ODA0MTAsImV4cCI6MTU4ODg4NDAxMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4ODA0MTAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.k0zDaJVlbQqDATTffevSl2B3vuI5yI0AbtySmEmwOcERdwJeeXFx6QNhIWjr5tj8Dt7_gGZegNzMiKu8nJx58gudSxjGR8cxBoIlglQp1boBSchE60p6peZBqdvvsdwCJUi_UYFM6nDxZBu6SmIgoSmlg6Mz_sEFbp4As58CS9nQeXYRij2AQysAwbUrmpVxdMB4XsZIAechsxoy3VKfLNftSKMVFTPGbJjF7hsHGGOoJsXn0kGHzS_OowYxL3kbaa7uWXX3Kll-__VUgVnrKTJlFVSvQcFek-tzu9ZkvuuzIx0x6EOC0X5PSKo9gZ3QiO50wludUN4YCSyyFye12Q",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\"indice\": 0,\n\"tamano\": 10,\n\"columna_ordenamiento\": \"Nombre\",\n\"direccion_ordenamiento\": \"asc\",\n\"Filtros\": [\n\t{\"Propiedad\":\"nombre\",\"Operador\": \"contains\", \"Valor\": \" \"}\n\t]\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoArchivo/page?i=0&t=100&ordc=Nombre&ordd=asc&",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoArchivo",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										},
+										{
+											"key": "",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Tipo Archivo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODUwMDQ1NDEsImV4cCI6MTU4NTAwODE0MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODUwMDQ1NDEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.LlJPPnE1o5jkK5qwvr7mz5LmqORQ7GByDH99xymFpjO23V3yU60v6tA4kzOzqHfLrYiE1CUVryAqIQgqpxo1Ygw1-iVIDzFq0WEkNoL8ozAclKPlCS3cZenzzRRxZLeLU3dZRHBLjdBMwW0zwFE870fkxlYbqy5ydA2VMrAN7gcWN8KDYwDMuP75umddLCiLgaI0CXBX1GCapjaIod37xO4xtqAHXhv9ZTLmgOdAGPjhscOpdso017PW7g4FVdXM8G6NWPagdG0f6B0mxd_XgjrruM7h6r1JGpTS4zKm1JJzYxj8XZgz1XoLIzVoKOgUWzpzKTlMul20ZVnySl-WOQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\"indice\": 0,\n\"tamano\": 10,\n\"columna_ordenamiento\": \"Nombre\",\n\"direccion_ordenamiento\": \"asc\",\n\"Filtros\": [\n\t{\"Propiedad\":\"nombre\",\"Operador\": \"contains\", \"Valor\": \" \"}\n\t]\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Archivo/page",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Archivo",
+										"page"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET page Archivo Copy",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4NzY0NTcsImV4cCI6MTU4ODg4MDA1NywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4NzY0NTcsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.EUIPSC1ZBPqK2Ajjf_7DW9TIRr39irXWTWdPM8Wa4v6nDyogfZhGFE2VqXrO8-gxUByl4fgHo0yVakoprQ6dGrdnMlFkT5G-bdlVUX4Z8O-G4RsYG0ISJX9-lwAhxus1dZrzmpn_JG8OV5Dzxg3Tl6PWmtnm7xxYNroJkRcnhWqo6OZ9QZ33pz9OSDrCnm0MTcJMI4r1W7DkPR4dDAVVbaOlTL26ry8f5sUamqkxXtkVcEETNcMGeboEjz0x84ryM1wi13hhcUsI8TfAlrN8AiTPUVDc5201QUeP2RHSsagvoGnvXF3CJn_0j37leVW4ukwcdHca0QqeCAozAHHBuw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\"indice\": 0,\n\"tamano\": 10,\n\"columna_ordenamiento\": \"Nombre\",\n\"direccion_ordenamiento\": \"asc\",\n\"Filtros\": [\n\t{\"Propiedad\":\"nombre\",\"Operador\": \"contains\", \"Valor\": \" \"}\n\t]\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Archivo/page?i=0&t=100&ordc=Nombre&ordd=asc&",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Archivo",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										},
+										{
+											"key": "",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Fase Ciclo vital",
+					"item": [
+						{
+							"name": "POST Fase",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODc1ODE1NzQsImV4cCI6MTU4NzU4NTE3NCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODc1ODE1NzQsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.VfO1Baxn9mCU4_9LDyUTmw1FGRDATNszmcSlIhb2YaXxg6oHLD19OVxIdBp_kjZ9SJUBSc38bClDed0-1lmmD3oSjWsCGSqFGS9XEyNpudXBvaUPxwnzakrysUU2RYop9_LZTSTZKtbyO3H1F-1LJZWq_0mz17cmfOvvmUSPjVRSsaOZgTnW3gdOsHeyuyYy-sNvdOqIGqL8Fr7bWOJ9Z2e__LIlYjztbCKLjIaA1edP3OkcSSjh12vahCJXk8dCbDfLgFwGrwubVcqRjeSwLFgEmH4kA3W56DD3wdKCQu9ZvGaAg4JkI4X85x87PfiY45ibZJCmUBkdGzvnVz4Smw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"\",\r\n  \"nombre\": \"segundo  cuadro c:\",\r\n  \"eliminada\": false,\r\n  \"tipoOrigenId\": \"demo\",\r\n  \"origenId\": \"abc\",\r\n  \"estadoCuadroClasificacionId\":\"off\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/FaseCicloVital",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"FaseCicloVital"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Fase",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODQwMzE3NDMsImV4cCI6MTU4NDAzNTM0MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkIiwic3ViIjoiMTE1MzE4NGItOGE1MC00YzhhLWJlMjctMjJiYWY2N2YzZDI3IiwiYXV0aF90aW1lIjoxNTg0MDMxNzQzLCJpZHAiOiJsb2NhbCIsInNjb3BlIjpbIm9wZW5pZCIsInBpa2EtZ2QiXSwiYW1yIjpbInB3ZCJdfQ.Mf6SLhZ62Ay0HbY39jZRe1RkGPsOP-DO89-oekkKblDSCHZbsEs-6S5hl5231bSBN07SUfSgdjOB6VY3j-ZpSuS5hDqQCzB4GsYw_vCN-5OOQ6N31pBKdVOq8CuWdrEFGoD1Uk5di4bVCmx4lV_tYEik_jrgLoaytTQlNOO5EBfpRMC0DRd-niCyLvxCwie9HPu_BQjYnklAUpIRDVfZwCctixtU_rxfxN61kHuze-1eQiTeNAS1bKn2PqXEPz4SnwrLO6zFpjoHDxwxftNcapmCedysT3vsnvvVIv6ovFWYrI7vdDXoCeed4TjDND4AVfnBq3JxBbQ2OJHO2Dx-ZQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"fc692854-bd3e-4ff4-824a-858c992163f6\",\r\n  \"nombre\": \"segundo  cuadro editado\",\r\n  \"eliminada\": true,\r\n  \"tipoOrigenId\": \"demo\",\r\n  \"origenId\": \"abc\",\r\n  \"estadoCuadroClasificacionId\":\"off\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion/fc692854-bd3e-4ff4-824a-858c992163f6",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion",
+										"fc692854-bd3e-4ff4-824a-858c992163f6"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET  metadata Fase",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4ODA0MTAsImV4cCI6MTU4ODg4NDAxMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4ODA0MTAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.k0zDaJVlbQqDATTffevSl2B3vuI5yI0AbtySmEmwOcERdwJeeXFx6QNhIWjr5tj8Dt7_gGZegNzMiKu8nJx58gudSxjGR8cxBoIlglQp1boBSchE60p6peZBqdvvsdwCJUi_UYFM6nDxZBu6SmIgoSmlg6Mz_sEFbp4As58CS9nQeXYRij2AQysAwbUrmpVxdMB4XsZIAechsxoy3VKfLNftSKMVFTPGbJjF7hsHGGOoJsXn0kGHzS_OowYxL3kbaa7uWXX3Kll-__VUgVnrKTJlFVSvQcFek-tzu9ZkvuuzIx0x6EOC0X5PSKo9gZ3QiO50wludUN4YCSyyFye12Q",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/FaseCicloVital/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"FaseCicloVital",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET  Fase",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODQwMzE3NDMsImV4cCI6MTU4NDAzNTM0MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkIiwic3ViIjoiMTE1MzE4NGItOGE1MC00YzhhLWJlMjctMjJiYWY2N2YzZDI3IiwiYXV0aF90aW1lIjoxNTg0MDMxNzQzLCJpZHAiOiJsb2NhbCIsInNjb3BlIjpbIm9wZW5pZCIsInBpa2EtZ2QiXSwiYW1yIjpbInB3ZCJdfQ.Mf6SLhZ62Ay0HbY39jZRe1RkGPsOP-DO89-oekkKblDSCHZbsEs-6S5hl5231bSBN07SUfSgdjOB6VY3j-ZpSuS5hDqQCzB4GsYw_vCN-5OOQ6N31pBKdVOq8CuWdrEFGoD1Uk5di4bVCmx4lV_tYEik_jrgLoaytTQlNOO5EBfpRMC0DRd-niCyLvxCwie9HPu_BQjYnklAUpIRDVfZwCctixtU_rxfxN61kHuze-1eQiTeNAS1bKn2PqXEPz4SnwrLO6zFpjoHDxwxftNcapmCedysT3vsnvvVIv6ovFWYrI7vdDXoCeed4TjDND4AVfnBq3JxBbQ2OJHO2Dx-ZQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/CuadroClasificacion/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET page Fase",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4ODA0MTAsImV4cCI6MTU4ODg4NDAxMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4ODA0MTAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.k0zDaJVlbQqDATTffevSl2B3vuI5yI0AbtySmEmwOcERdwJeeXFx6QNhIWjr5tj8Dt7_gGZegNzMiKu8nJx58gudSxjGR8cxBoIlglQp1boBSchE60p6peZBqdvvsdwCJUi_UYFM6nDxZBu6SmIgoSmlg6Mz_sEFbp4As58CS9nQeXYRij2AQysAwbUrmpVxdMB4XsZIAechsxoy3VKfLNftSKMVFTPGbJjF7hsHGGOoJsXn0kGHzS_OowYxL3kbaa7uWXX3Kll-__VUgVnrKTJlFVSvQcFek-tzu9ZkvuuzIx0x6EOC0X5PSKo9gZ3QiO50wludUN4YCSyyFye12Q",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\"indice\": 0,\n\"tamano\": 10,\n\"columna_ordenamiento\": \"Nombre\",\n\"direccion_ordenamiento\": \"asc\",\n\"Filtros\": [\n\t{\"Propiedad\":\"nombre\",\"Operador\": \"contains\", \"Valor\": \" \"}\n\t]\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/FaseCicloVital/page?i=0&t=100&ordc=Nombre&ordd=asc",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"FaseCicloVital",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Fase",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODUwMDQ1NDEsImV4cCI6MTU4NTAwODE0MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODUwMDQ1NDEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.LlJPPnE1o5jkK5qwvr7mz5LmqORQ7GByDH99xymFpjO23V3yU60v6tA4kzOzqHfLrYiE1CUVryAqIQgqpxo1Ygw1-iVIDzFq0WEkNoL8ozAclKPlCS3cZenzzRRxZLeLU3dZRHBLjdBMwW0zwFE870fkxlYbqy5ydA2VMrAN7gcWN8KDYwDMuP75umddLCiLgaI0CXBX1GCapjaIod37xO4xtqAHXhv9ZTLmgOdAGPjhscOpdso017PW7g4FVdXM8G6NWPagdG0f6B0mxd_XgjrruM7h6r1JGpTS4zKm1JJzYxj8XZgz1XoLIzVoKOgUWzpzKTlMul20ZVnySl-WOQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\t\"a-tra\",\n\t\"87e8ec36-0502-48c3-aef0-8ed6d5c7a37c\",\n\t\"69dfa212-561e-4407-ae3d-a936d8311b46\",\n\t\"asdad\"\n]",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/FaseCicloVital/page",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"FaseCicloVital",
+										"page"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

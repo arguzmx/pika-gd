@@ -1,0 +1,1007 @@
+{
+	"info": {
+		"_postman_id": "e35789a3-fadb-47e2-89a2-e4e5b01e1f72",
+		"name": "CuadroClasificacion",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Cuadro clasificacion",
+			"item": [
+				{
+					"name": "Elementos clasifiacion",
+					"item": [
+						{
+							"name": "POST Elemento clasificacion",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4ODE3NzEsImV4cCI6MTU4ODg4NTM3MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4ODE3NzEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.IPVy_4qVyhCimMo9bxplpXcoUoULQvz93ShEF34KKSpLXDRfXMwVzPqUiFZLKAToBdZD0YM11zNKuHEytz0dSSfX9bbamh3E5jmohiFT7t8u80g-g8FyOadRbIsRC7y16k0z90arfTdhRIWG-NkUkPL3c149G_AV1vSJCWbdtgWAIv7V1y1WxuZoPswcef2oQypPhm5VgVNpD3ts7ehDPCAwihkLitX2ipjAiURJ0xLE1FPq6vnQDliKVMCbRhEjKnlHFjpqx_9Y0qxIjW_QIGmvheU4WtPS62WrNBN7CF9PZTkC2F263do26uD4xm8DQd6KfSJWICi2QPQ011Xe_Q",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"\",\r\n  \"clave\": \"123abc\",\r\n  \r\n  \"nombre\": \"Segundo elemento hijo\",\r\n  \"eliminada\": false,\r\n  \"posicion\": 0,\r\n  \"cuadroClasifiacionId\": \"56d996d5-d466-4be1-b5c8-42c9cbcf4afa\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ElementoClasificacion"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Elemento clasificacion",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODUwMDQ1NDEsImV4cCI6MTU4NTAwODE0MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODUwMDQ1NDEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.LlJPPnE1o5jkK5qwvr7mz5LmqORQ7GByDH99xymFpjO23V3yU60v6tA4kzOzqHfLrYiE1CUVryAqIQgqpxo1Ygw1-iVIDzFq0WEkNoL8ozAclKPlCS3cZenzzRRxZLeLU3dZRHBLjdBMwW0zwFE870fkxlYbqy5ydA2VMrAN7gcWN8KDYwDMuP75umddLCiLgaI0CXBX1GCapjaIod37xO4xtqAHXhv9ZTLmgOdAGPjhscOpdso017PW7g4FVdXM8G6NWPagdG0f6B0mxd_XgjrruM7h6r1JGpTS4zKm1JJzYxj8XZgz1XoLIzVoKOgUWzpzKTlMul20ZVnySl-WOQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"430b2450-8b33-4e94-b9a8-41942848a9ec\",\r\n  \"clave\": \"123abc\",\r\n  \"nombre\": \"Segundo elemento hijo edited\",\r\n  \"eliminada\": true,\r\n  \"posicion\": 3,\r\n  \"cuadroClasifiacionId\": \"513240df-1c72-4b64-af7d-1b71e7e32875\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion/430b2450-8b33-4e94-b9a8-41942848a9ec",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ElementoClasificacion",
+										"430b2450-8b33-4e94-b9a8-41942848a9ec"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Metadata Elemento clasificacion",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODUwMDQ1NDEsImV4cCI6MTU4NTAwODE0MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODUwMDQ1NDEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.LlJPPnE1o5jkK5qwvr7mz5LmqORQ7GByDH99xymFpjO23V3yU60v6tA4kzOzqHfLrYiE1CUVryAqIQgqpxo1Ygw1-iVIDzFq0WEkNoL8ozAclKPlCS3cZenzzRRxZLeLU3dZRHBLjdBMwW0zwFE870fkxlYbqy5ydA2VMrAN7gcWN8KDYwDMuP75umddLCiLgaI0CXBX1GCapjaIod37xO4xtqAHXhv9ZTLmgOdAGPjhscOpdso017PW7g4FVdXM8G6NWPagdG0f6B0mxd_XgjrruM7h6r1JGpTS4zKm1JJzYxj8XZgz1XoLIzVoKOgUWzpzKTlMul20ZVnySl-WOQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/ElementoClasificacion/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ElementoClasificacion",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Metadata Elemento clasificacion Copy",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODc1ODE1NzQsImV4cCI6MTU4NzU4NTE3NCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODc1ODE1NzQsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.VfO1Baxn9mCU4_9LDyUTmw1FGRDATNszmcSlIhb2YaXxg6oHLD19OVxIdBp_kjZ9SJUBSc38bClDed0-1lmmD3oSjWsCGSqFGS9XEyNpudXBvaUPxwnzakrysUU2RYop9_LZTSTZKtbyO3H1F-1LJZWq_0mz17cmfOvvmUSPjVRSsaOZgTnW3gdOsHeyuyYy-sNvdOqIGqL8Fr7bWOJ9Z2e__LIlYjztbCKLjIaA1edP3OkcSSjh12vahCJXk8dCbDfLgFwGrwubVcqRjeSwLFgEmH4kA3W56DD3wdKCQu9ZvGaAg4JkI4X85x87PfiY45ibZJCmUBkdGzvnVz4Smw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/ElementoClasificacion/430b2450-8b33-4e94-b9a8-41942848a9ec",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ElementoClasificacion",
+										"430b2450-8b33-4e94-b9a8-41942848a9ec"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page Elemento clasificacion",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4ODE3NzEsImV4cCI6MTU4ODg4NTM3MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4ODE3NzEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.IPVy_4qVyhCimMo9bxplpXcoUoULQvz93ShEF34KKSpLXDRfXMwVzPqUiFZLKAToBdZD0YM11zNKuHEytz0dSSfX9bbamh3E5jmohiFT7t8u80g-g8FyOadRbIsRC7y16k0z90arfTdhRIWG-NkUkPL3c149G_AV1vSJCWbdtgWAIv7V1y1WxuZoPswcef2oQypPhm5VgVNpD3ts7ehDPCAwihkLitX2ipjAiURJ0xLE1FPq6vnQDliKVMCbRhEjKnlHFjpqx_9Y0qxIjW_QIGmvheU4WtPS62WrNBN7CF9PZTkC2F263do26uD4xm8DQd6KfSJWICi2QPQ011Xe_Q",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\"indice\": 0,\n\"tamano\": 10,\n\"columna_ordenamiento\": \"Nombre\",\n\"direccion_ordenamiento\": \"asc\",\n\"Filtros\": [\n\t{\"Propiedad\":\"nombre\",\"Operador\": \"contains\", \"Valor\": \" \"}\n\t]\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion/page?i=0&t=100&ordc=Nombre&ordd=asc&",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ElementoClasificacion",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										},
+										{
+											"key": "",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE ElementoClasificacion",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODY4OTM2MjAsImV4cCI6MTU4Njg5NzIyMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODY4OTM2MjAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.H-HwoogEESKjrDOJVOJQP4vqvIr4XmD7JmeBExfS8jkosOC-W9wKnI_EldgKDucXze5Q30vl6FM0hxOUQvMo_8FWEXwH41yAqZ2fXATJ3i158giPay23H82gyoV6CVjrieh-Ccyd_RJqm5MV9Jwfn1vqQ5qBlWmkVLVnms-rzxq-nURrcMJK0tjpp9GV6zn4SvPIm97kUaerJZ87fDoRTfIwcJi_go1z8ayLXv2cuARD0XwChtYRJX3mrOsm3FhDxCozZxdkMnwsQ1VNIRe_XZQHNAI0XZCim-a0gZkWWkLqgiRFPlLghei53g7JiXRTx7SRxLSCDzapbvMhf4JhZQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "\n\t[\"1b68ee93-b96f-4669-bfe2-2c52b29ee5c6\",\n\t\"bd105bb6-6bfb-4860-84ac-08a6b55a7aca\",\n\t\"39b3c094-9012-485e-a724-d7d212a7c4c2\"\n\t]\n",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ElementoClasificacion",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODQwMzE3NDMsImV4cCI6MTU4NDAzNTM0MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkIiwic3ViIjoiMTE1MzE4NGItOGE1MC00YzhhLWJlMjctMjJiYWY2N2YzZDI3IiwiYXV0aF90aW1lIjoxNTg0MDMxNzQzLCJpZHAiOiJsb2NhbCIsInNjb3BlIjpbIm9wZW5pZCIsInBpa2EtZ2QiXSwiYW1yIjpbInB3ZCJdfQ.Mf6SLhZ62Ay0HbY39jZRe1RkGPsOP-DO89-oekkKblDSCHZbsEs-6S5hl5231bSBN07SUfSgdjOB6VY3j-ZpSuS5hDqQCzB4GsYw_vCN-5OOQ6N31pBKdVOq8CuWdrEFGoD1Uk5di4bVCmx4lV_tYEik_jrgLoaytTQlNOO5EBfpRMC0DRd-niCyLvxCwie9HPu_BQjYnklAUpIRDVfZwCctixtU_rxfxN61kHuze-1eQiTeNAS1bKn2PqXEPz4SnwrLO6zFpjoHDxwxftNcapmCedysT3vsnvvVIv6ovFWYrI7vdDXoCeed4TjDND4AVfnBq3JxBbQ2OJHO2Dx-ZQ",
+								"type": "string"
+							}
+						]
+					},
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Estados Cuadro clasificacion",
+					"item": [
+						{
+							"name": "POST Estado Cuadro",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4ODE3NzEsImV4cCI6MTU4ODg4NTM3MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4ODE3NzEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.IPVy_4qVyhCimMo9bxplpXcoUoULQvz93ShEF34KKSpLXDRfXMwVzPqUiFZLKAToBdZD0YM11zNKuHEytz0dSSfX9bbamh3E5jmohiFT7t8u80g-g8FyOadRbIsRC7y16k0z90arfTdhRIWG-NkUkPL3c149G_AV1vSJCWbdtgWAIv7V1y1WxuZoPswcef2oQypPhm5VgVNpD3ts7ehDPCAwihkLitX2ipjAiURJ0xLE1FPq6vnQDliKVMCbRhEjKnlHFjpqx_9Y0qxIjW_QIGmvheU4WtPS62WrNBN7CF9PZTkC2F263do26uD4xm8DQd6KfSJWICi2QPQ011Xe_Q",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"on\",\r\n  \"nombre\": \"\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/EstadoCuadroClasificacion",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EstadoCuadroClasificacion"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Estado Cuadro",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODUwMDQ1NDEsImV4cCI6MTU4NTAwODE0MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODUwMDQ1NDEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.LlJPPnE1o5jkK5qwvr7mz5LmqORQ7GByDH99xymFpjO23V3yU60v6tA4kzOzqHfLrYiE1CUVryAqIQgqpxo1Ygw1-iVIDzFq0WEkNoL8ozAclKPlCS3cZenzzRRxZLeLU3dZRHBLjdBMwW0zwFE870fkxlYbqy5ydA2VMrAN7gcWN8KDYwDMuP75umddLCiLgaI0CXBX1GCapjaIod37xO4xtqAHXhv9ZTLmgOdAGPjhscOpdso017PW7g4FVdXM8G6NWPagdG0f6B0mxd_XgjrruM7h6r1JGpTS4zKm1JJzYxj8XZgz1XoLIzVoKOgUWzpzKTlMul20ZVnySl-WOQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"off3\",\r\n    \"nombre\": \"Inactivo edited\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/EstadoCuadroClasificacion/off3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EstadoCuadroClasificacion",
+										"off3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Metadata Estado Cuadro",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODQwMzE3NDMsImV4cCI6MTU4NDAzNTM0MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkIiwic3ViIjoiMTE1MzE4NGItOGE1MC00YzhhLWJlMjctMjJiYWY2N2YzZDI3IiwiYXV0aF90aW1lIjoxNTg0MDMxNzQzLCJpZHAiOiJsb2NhbCIsInNjb3BlIjpbIm9wZW5pZCIsInBpa2EtZ2QiXSwiYW1yIjpbInB3ZCJdfQ.Mf6SLhZ62Ay0HbY39jZRe1RkGPsOP-DO89-oekkKblDSCHZbsEs-6S5hl5231bSBN07SUfSgdjOB6VY3j-ZpSuS5hDqQCzB4GsYw_vCN-5OOQ6N31pBKdVOq8CuWdrEFGoD1Uk5di4bVCmx4lV_tYEik_jrgLoaytTQlNOO5EBfpRMC0DRd-niCyLvxCwie9HPu_BQjYnklAUpIRDVfZwCctixtU_rxfxN61kHuze-1eQiTeNAS1bKn2PqXEPz4SnwrLO6zFpjoHDxwxftNcapmCedysT3vsnvvVIv6ovFWYrI7vdDXoCeed4TjDND4AVfnBq3JxBbQ2OJHO2Dx-ZQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/EstadoCuadroClasificacion/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EstadoCuadroClasificacion",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Estado Cuadro",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODc1ODE1NzQsImV4cCI6MTU4NzU4NTE3NCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODc1ODE1NzQsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.VfO1Baxn9mCU4_9LDyUTmw1FGRDATNszmcSlIhb2YaXxg6oHLD19OVxIdBp_kjZ9SJUBSc38bClDed0-1lmmD3oSjWsCGSqFGS9XEyNpudXBvaUPxwnzakrysUU2RYop9_LZTSTZKtbyO3H1F-1LJZWq_0mz17cmfOvvmUSPjVRSsaOZgTnW3gdOsHeyuyYy-sNvdOqIGqL8Fr7bWOJ9Z2e__LIlYjztbCKLjIaA1edP3OkcSSjh12vahCJXk8dCbDfLgFwGrwubVcqRjeSwLFgEmH4kA3W56DD3wdKCQu9ZvGaAg4JkI4X85x87PfiY45ibZJCmUBkdGzvnVz4Smw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/EstadoCuadroClasificacion/off",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EstadoCuadroClasificacion",
+										"off"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page Estados Cuadros",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4ODE3NzEsImV4cCI6MTU4ODg4NTM3MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4ODE3NzEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.IPVy_4qVyhCimMo9bxplpXcoUoULQvz93ShEF34KKSpLXDRfXMwVzPqUiFZLKAToBdZD0YM11zNKuHEytz0dSSfX9bbamh3E5jmohiFT7t8u80g-g8FyOadRbIsRC7y16k0z90arfTdhRIWG-NkUkPL3c149G_AV1vSJCWbdtgWAIv7V1y1WxuZoPswcef2oQypPhm5VgVNpD3ts7ehDPCAwihkLitX2ipjAiURJ0xLE1FPq6vnQDliKVMCbRhEjKnlHFjpqx_9Y0qxIjW_QIGmvheU4WtPS62WrNBN7CF9PZTkC2F263do26uD4xm8DQd6KfSJWICi2QPQ011Xe_Q",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\"indice\": 0,\n\"tamano\": 10,\n\"columna_ordenamiento\": \"Nombre\",\n\"direccion_ordenamiento\": \"asc\",\n\"Filtros\": [\n\t{\"Propiedad\":\"nombre\",\"Operador\": \"contains\", \"Valor\": \" \"}\n\t]\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/EstadoCuadroClasificacion/page?i=0&t=100&ordc=Nombre&ordd=asc&",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EstadoCuadroClasificacion",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										},
+										{
+											"key": "",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Estado Cuadro Clasificacion",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4ODE3NzEsImV4cCI6MTU4ODg4NTM3MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4ODE3NzEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.IPVy_4qVyhCimMo9bxplpXcoUoULQvz93ShEF34KKSpLXDRfXMwVzPqUiFZLKAToBdZD0YM11zNKuHEytz0dSSfX9bbamh3E5jmohiFT7t8u80g-g8FyOadRbIsRC7y16k0z90arfTdhRIWG-NkUkPL3c149G_AV1vSJCWbdtgWAIv7V1y1WxuZoPswcef2oQypPhm5VgVNpD3ts7ehDPCAwihkLitX2ipjAiURJ0xLE1FPq6vnQDliKVMCbRhEjKnlHFjpqx_9Y0qxIjW_QIGmvheU4WtPS62WrNBN7CF9PZTkC2F263do26uD4xm8DQd6KfSJWICi2QPQ011Xe_Q",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "\n\t[\"873ea598-4b60-4e01-baf4-484fa0adc72d\",\n\t\"c8b729b5-7310-4b93-a5df-cc53e7fadac9\"\n\t]\n",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/EstadoCuadroClasificacion/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EstadoCuadroClasificacion",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Cuadros Clasificacion",
+					"item": [
+						{
+							"name": "POST Cuadro clasificacion",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4ODE3NzEsImV4cCI6MTU4ODg4NTM3MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4ODE3NzEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.IPVy_4qVyhCimMo9bxplpXcoUoULQvz93ShEF34KKSpLXDRfXMwVzPqUiFZLKAToBdZD0YM11zNKuHEytz0dSSfX9bbamh3E5jmohiFT7t8u80g-g8FyOadRbIsRC7y16k0z90arfTdhRIWG-NkUkPL3c149G_AV1vSJCWbdtgWAIv7V1y1WxuZoPswcef2oQypPhm5VgVNpD3ts7ehDPCAwihkLitX2ipjAiURJ0xLE1FPq6vnQDliKVMCbRhEjKnlHFjpqx_9Y0qxIjW_QIGmvheU4WtPS62WrNBN7CF9PZTkC2F263do26uD4xm8DQd6KfSJWICi2QPQ011Xe_Q",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"\",\r\n  \"nombre\": \"segundo  cuadro c:\",\r\n  \"eliminada\": false,\r\n  \"tipoOrigenId\": \"demo\",\r\n  \"origenId\": \"abc\",\r\n  \"estadoCuadroClasificacionId\":\"off\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Cuadro clasificacion",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4ODE3NzEsImV4cCI6MTU4ODg4NTM3MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4ODE3NzEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.IPVy_4qVyhCimMo9bxplpXcoUoULQvz93ShEF34KKSpLXDRfXMwVzPqUiFZLKAToBdZD0YM11zNKuHEytz0dSSfX9bbamh3E5jmohiFT7t8u80g-g8FyOadRbIsRC7y16k0z90arfTdhRIWG-NkUkPL3c149G_AV1vSJCWbdtgWAIv7V1y1WxuZoPswcef2oQypPhm5VgVNpD3ts7ehDPCAwihkLitX2ipjAiURJ0xLE1FPq6vnQDliKVMCbRhEjKnlHFjpqx_9Y0qxIjW_QIGmvheU4WtPS62WrNBN7CF9PZTkC2F263do26uD4xm8DQd6KfSJWICi2QPQ011Xe_Q",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"56d996d5-d466-4be1-b5c8-42c9cbcf4afa\",\r\n  \"nombre\": \"segundo cuadro editado\",\r\n  \"eliminada\": true,\r\n  \"tipoOrigenId\": \"demo\",\r\n  \"origenId\": \"abc\",\r\n  \"estadoCuadroClasificacionId\":\"off\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion/56d996d5-d466-4be1-b5c8-42c9cbcf4afa",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion",
+										"56d996d5-d466-4be1-b5c8-42c9cbcf4afa"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Metadata Cuadro clasificacion",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4ODE3NzEsImV4cCI6MTU4ODg4NTM3MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4ODE3NzEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.IPVy_4qVyhCimMo9bxplpXcoUoULQvz93ShEF34KKSpLXDRfXMwVzPqUiFZLKAToBdZD0YM11zNKuHEytz0dSSfX9bbamh3E5jmohiFT7t8u80g-g8FyOadRbIsRC7y16k0z90arfTdhRIWG-NkUkPL3c149G_AV1vSJCWbdtgWAIv7V1y1WxuZoPswcef2oQypPhm5VgVNpD3ts7ehDPCAwihkLitX2ipjAiURJ0xLE1FPq6vnQDliKVMCbRhEjKnlHFjpqx_9Y0qxIjW_QIGmvheU4WtPS62WrNBN7CF9PZTkC2F263do26uD4xm8DQd6KfSJWICi2QPQ011Xe_Q",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/CuadroClasificacion/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Cuadro clasificacion",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4ODE3NzEsImV4cCI6MTU4ODg4NTM3MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4ODE3NzEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.IPVy_4qVyhCimMo9bxplpXcoUoULQvz93ShEF34KKSpLXDRfXMwVzPqUiFZLKAToBdZD0YM11zNKuHEytz0dSSfX9bbamh3E5jmohiFT7t8u80g-g8FyOadRbIsRC7y16k0z90arfTdhRIWG-NkUkPL3c149G_AV1vSJCWbdtgWAIv7V1y1WxuZoPswcef2oQypPhm5VgVNpD3ts7ehDPCAwihkLitX2ipjAiURJ0xLE1FPq6vnQDliKVMCbRhEjKnlHFjpqx_9Y0qxIjW_QIGmvheU4WtPS62WrNBN7CF9PZTkC2F263do26uD4xm8DQd6KfSJWICi2QPQ011Xe_Q",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/CuadroClasificacion/56d996d5-d466-4be1-b5c8-42c9cbcf4afa",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion",
+										"56d996d5-d466-4be1-b5c8-42c9cbcf4afa"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page Cuadros clasificacion",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4ODE3NzEsImV4cCI6MTU4ODg4NTM3MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4ODE3NzEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.IPVy_4qVyhCimMo9bxplpXcoUoULQvz93ShEF34KKSpLXDRfXMwVzPqUiFZLKAToBdZD0YM11zNKuHEytz0dSSfX9bbamh3E5jmohiFT7t8u80g-g8FyOadRbIsRC7y16k0z90arfTdhRIWG-NkUkPL3c149G_AV1vSJCWbdtgWAIv7V1y1WxuZoPswcef2oQypPhm5VgVNpD3ts7ehDPCAwihkLitX2ipjAiURJ0xLE1FPq6vnQDliKVMCbRhEjKnlHFjpqx_9Y0qxIjW_QIGmvheU4WtPS62WrNBN7CF9PZTkC2F263do26uD4xm8DQd6KfSJWICi2QPQ011Xe_Q",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion/page?i=0&t=100&ordc=Nombre&ordd=asc",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Cuadro Clasificacion",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODY4OTM2MjAsImV4cCI6MTU4Njg5NzIyMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODY4OTM2MjAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.H-HwoogEESKjrDOJVOJQP4vqvIr4XmD7JmeBExfS8jkosOC-W9wKnI_EldgKDucXze5Q30vl6FM0hxOUQvMo_8FWEXwH41yAqZ2fXATJ3i158giPay23H82gyoV6CVjrieh-Ccyd_RJqm5MV9Jwfn1vqQ5qBlWmkVLVnms-rzxq-nURrcMJK0tjpp9GV6zn4SvPIm97kUaerJZ87fDoRTfIwcJi_go1z8ayLXv2cuARD0XwChtYRJX3mrOsm3FhDxCozZxdkMnwsQ1VNIRe_XZQHNAI0XZCim-a0gZkWWkLqgiRFPlLghei53g7JiXRTx7SRxLSCDzapbvMhf4JhZQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "\n\t[\"1b68ee93-b96f-4669-bfe2-2c52b29ee5c6\",\n\t\"bd105bb6-6bfb-4860-84ac-08a6b55a7aca\",\n\t\"39b3c094-9012-485e-a724-d7d212a7c4c2\"\n\t]\n",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODM4NzQ5MjQsImV4cCI6MTU4Mzg3ODUyNCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkIiwic3ViIjoiMTE1MzE4NGItOGE1MC00YzhhLWJlMjctMjJiYWY2N2YzZDI3IiwiYXV0aF90aW1lIjoxNTgzODc0OTI0LCJpZHAiOiJsb2NhbCIsInNjb3BlIjpbIm9wZW5pZCIsInBpa2EtZ2QiXSwiYW1yIjpbInB3ZCJdfQ.ihr6gyf83mhSvneZtOVAidU7HJbu_r0_WENvOgMtUbCAhMq-pQb-8gLfP8vHjW48lM_JugDBRNKCNxnR-B7ESZ45geHx7R8s_X7tguCIOEXeB9SnVzGY3cwoOP3epJ9K-4pOz9QnH8J5EVGPu9aeiKfKyJA3A3HLhd-7i0lluF5k7nlJdlLOUBhfTjGLCMVxi_v4-kNHVknOaQUfDsqrUOSnGSA7hfZ_25ZsuHxrRXTZnn4csuAjj5ndOXa7ll8Q4Xw2MARIxJtfeQODFUFTSBKrurmvjWiGPtLBuZqxBVwDyQn2LgvOlgml-2XhOOt3jEUNhAmk0lUde41FNagJ2Q",
+								"type": "string"
+							}
+						]
+					},
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

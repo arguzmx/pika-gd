@@ -12,7 +12,7 @@ namespace PIKA.Modelo.GestorDocumental
         public Activo()
         {
             TipoOrigenId = TipoOrigenDefault;
-            //HistorialArchivosActivo = new HashSet<HistorialArchivoActivo>();
+            HistorialArchivosActivo = new HashSet<HistorialArchivoActivo>();
         }
 
         public override string Id { get => base.Id; set => base.Id = value; }
