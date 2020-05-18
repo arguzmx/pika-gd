@@ -12,6 +12,7 @@ namespace PIKA.Modelo.Contenido
         public Elemento() {
             this.TipoOrigenId = TipoOrigenDefault;
             this.Versiones = new HashSet<Version>();
+            this.Vinculos = new HashSet<VinculoElemento>();
         }
 
         /// <summary>
@@ -57,6 +58,21 @@ namespace PIKA.Modelo.Contenido
         /// </summary>
         public string VolumenId { get; set; }
 
+        /// <summary>
+        /// Identificador único de la carpeta donde se creó el contenido
+        /// </summary>
+        public string CarpetaId { get; set; }
+        // Es opcional
+
+        /// <summary>
+        /// Identificador únido del permiso asociado al elemeento
+        /// </summary>
+        public string PermisoId { get; set; }
+        // Es opcional
+
+
+        public ICollection<VinculoElemento> Vinculos { get; set; }
+        public Permiso Permiso { get; set; }
         public virtual Volumen Volumen { get; set; }
         public virtual ICollection<Version> Versiones { get; set; }
 
