@@ -72,6 +72,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIKA.Servicio.AplicacionPlu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIKA.Modelo.Contenido", "Modelos\PIKA.Modelo.Contenido\PIKA.Modelo.Contenido.csproj", "{4B30C99E-1A59-4811-BCD9-2F3F9A7B13E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIKA.Servicio.Metadatos.ElasticSearch", "Servicios\Metadatos\PIKA.Servicio.Metadatos.ElasticSearch\PIKA.Servicio.Metadatos.ElasticSearch.csproj", "{17637AF3-B906-4F14-BD95-9CA4336DC657}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -154,6 +156,10 @@ Global
 		{4B30C99E-1A59-4811-BCD9-2F3F9A7B13E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B30C99E-1A59-4811-BCD9-2F3F9A7B13E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B30C99E-1A59-4811-BCD9-2F3F9A7B13E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17637AF3-B906-4F14-BD95-9CA4336DC657}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17637AF3-B906-4F14-BD95-9CA4336DC657}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17637AF3-B906-4F14-BD95-9CA4336DC657}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17637AF3-B906-4F14-BD95-9CA4336DC657}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -185,6 +191,7 @@ Global
 		{88CE2EAF-82C9-48A5-B571-96BEC8553B01} = {9DAE2F36-5E04-47D1-B3CF-5B26511A5A9A}
 		{C6A74478-228C-4F35-8256-9388530D88B7} = {6BEDD58A-2372-467F-9930-52A1C8F1BDC5}
 		{4B30C99E-1A59-4811-BCD9-2F3F9A7B13E3} = {9DAE2F36-5E04-47D1-B3CF-5B26511A5A9A}
+		{17637AF3-B906-4F14-BD95-9CA4336DC657} = {89ACC223-CF89-4BDC-AEFA-488E0DCDE44B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {023A9CA1-A6E7-47B1-A283-AF2339B09C1C}
