@@ -10,7 +10,7 @@ using PIKA.GD.API.Model;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Interfaces;
 using RepositorioEntidades;
-using RepositorioEntidades.DatatablesPlugin;
+
 
 namespace PIKA.GD.API.Controllers.Metadatos
 {

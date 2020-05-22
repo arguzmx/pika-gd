@@ -101,25 +101,6 @@ namespace PIKA.Servicio.Metadatos
             //------------------------------------------------------------
 
 
-            /// Atributos metadatos
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_ATRIBUTO_METADATO, true,
-                "Atributos de metadatos",
-                "Administrador Atributos de metadatos",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(AtributoMetadato) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-            //------------------------------------------------------------
 
             /// atributos de tabla
             //------------------------------------------------------------

@@ -9,18 +9,38 @@ namespace PIKA.Servicio.Metadatos.Servicios
     {
         public static Plantilla CopiaPlantilla(this Plantilla d)
         {
-            return new Plantilla()
+            Plantilla p = new Plantilla()
             {
                 Id = d.Id,
                 Nombre = d.Nombre,
                 OrigenId = d.OrigenId,
                 TipoOrigenId = d.TipoOrigenId
             };
+
+            foreach(PropiedadPlantilla pp in d.Propiedades)
+            {
+                p.Propiedades.Add(pp.CopiaPropiedadPlantilla());
+
+            }
+
+            return p;
         }
         public static PropiedadPlantilla CopiaPropiedadPlantilla(this PropiedadPlantilla d)
         {
-            return new PropiedadPlantilla()
+            PropiedadPlantilla pp= new PropiedadPlantilla()
             {
+                PlantillaId = d.PlantillaId,
+                EsIndice = d.EsIndice,
+                EsFiltroJerarquia = d.EsFiltroJerarquia,
+                EsIdClaveExterna = d.EsIdClaveExterna,
+                EsIdJerarquia = d.EsIdJerarquia,
+                EsIdPadreJerarquia = d.EsIdPadreJerarquia,
+                EsIdRegistro = d.EsIdRegistro,
+                EsTextoJerarquia = d.EsTextoJerarquia,
+                Ordenable = d.Ordenable,
+                Requerido = d.Requerido,
+                TipoDatoId = d.TipoDatoId,
+                Visible = d.Visible,
                 Id = d.Id,
                 Nombre = d.Nombre,
                 Autogenerado = d.Autogenerado,
@@ -30,6 +50,28 @@ namespace PIKA.Servicio.Metadatos.Servicios
                 IndiceOrdenamiento = d.IndiceOrdenamiento
 
             };
+
+            if (d.TipoDato != null) {
+                pp.TipoDato = d.TipoDato.CopiaTipoDato();
+            }
+
+            if (d.ValidadorNumero != null)
+            {
+                pp.ValidadorNumero = d.ValidadorNumero.CopiaValidadorNumero();
+            }
+
+            if (d.ValidadorTexto != null)
+            {
+                pp.ValidadorTexto = d.ValidadorTexto.CopiaValidadorTexto();
+            }
+
+
+            if (d.AtributoTabla != null)
+            {
+                pp.AtributoTabla = d.AtributoTabla.CopiaAtributoTabla();
+            }
+
+            return pp;
         }
         public static TipoDato CopiaTipoDato(this TipoDato d)
         {
@@ -39,24 +81,8 @@ namespace PIKA.Servicio.Metadatos.Servicios
                 Nombre = d.Nombre
             };
         }
-        public static TipoDatoPropiedadPlantilla CopiaTipoDatoPropiedadPlantilla(this TipoDatoPropiedadPlantilla d)
-        {
-            return new TipoDatoPropiedadPlantilla()
-            {
-                PropiedadPlantillaId = d.PropiedadPlantillaId,
-                TipoDatoId = d.TipoDatoId
 
-            };
-        }
-        public static AtributoMetadato CopiaAtributoMetadato(this AtributoMetadato d)
-        {
-            return new AtributoMetadato()
-            {
-                Id = d.Id,
-                PropiedadId=d.PropiedadId,
-                Valor=d.Valor
-            };
-        }
+    
         public static ValidadorNumero CopiaValidadorNumero(this ValidadorNumero d)
         {
             return new ValidadorNumero()
@@ -77,7 +103,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
                 longmax=d.longmax,
                 longmin=d.longmin,
                 regexp=d.regexp,
-                valordefaulr=d.valordefaulr
+                valordefault=d.valordefault
             };
         }
         public static AsociacionPlantilla CopiaAsociacionPlantilla(this AsociacionPlantilla d)
@@ -88,7 +114,6 @@ namespace PIKA.Servicio.Metadatos.Servicios
                 IdentificadorAlmacenamiento=d.IdentificadorAlmacenamiento,
                 OrigenId=d.OrigenId,
                 PlantillaId=d.PlantillaId,
-                TipoAlmacenMetadatosId=d.TipoAlmacenMetadatosId,
                 TipoOrigenId=d.TipoOrigenId
             };
         }
@@ -97,7 +122,6 @@ namespace PIKA.Servicio.Metadatos.Servicios
             return new TipoAlmacenMetadatos()
             {
                 Id = d.Id,
-                AsociacionPlantillaid=d.AsociacionPlantillaid,
                 Nombre=d.Nombre
             };
         }
@@ -114,7 +138,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
                 Incluir=d.Incluir,
                 IndiceOrdebnamiento=d.IndiceOrdebnamiento,
                 Visible=d.Visible
-               
+
             };
         }
     }

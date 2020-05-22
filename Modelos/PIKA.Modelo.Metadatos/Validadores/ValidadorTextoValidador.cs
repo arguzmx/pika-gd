@@ -24,7 +24,7 @@ namespace PIKA.Modelo.Metadatos.Validadores
                     .NotNull().WithMessage(x => localizer["La longuitud màxima es obligatoria"])
                     .NotEmpty().WithMessage(x => localizer["La longuitud màxima es obligatorio"]);
        
-            RuleFor(x => x.valordefaulr)
+            RuleFor(x => x.valordefault)
                           .NotNull().WithMessage(x => localizer["El valor default es obligatorio"])
                           .NotEmpty().WithMessage(x => localizer["El valor default es obligatorio"])
                           .MinimumLength(1).WithMessage(x => localizer["El valor default debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre])

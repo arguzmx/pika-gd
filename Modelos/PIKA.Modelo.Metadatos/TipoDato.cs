@@ -3,11 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Metadatos
 {
     public class TipoDato : EntidadCatalogo<string, TipoDato>
     {
+        public TipoDato()
+        {
+            this.PropiedadesPlantilla = new HashSet<PropiedadPlantilla>();
+        }
+
         public const string tString = "string";
         public const string tDouble = "double";
         public const string tBoolean = "bool";
@@ -39,10 +46,8 @@ namespace PIKA.Modelo.Metadatos
 
         }
 
-        /// <summary>
-        /// Propedad de navegación
-        /// </summary>
-        public virtual ICollection<TipoDatoPropiedadPlantilla> PropiedadesPlantilla { get; set; }
-
+        [JsonIgnore]
+        [XmlIgnore]
+        public virtual ICollection<PropiedadPlantilla> PropiedadesPlantilla { get; set; }
     }
 }

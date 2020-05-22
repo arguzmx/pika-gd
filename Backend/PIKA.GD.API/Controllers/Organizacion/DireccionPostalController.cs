@@ -14,7 +14,7 @@ using PIKA.Modelo.Organizacion;
 using PIKA.Servicio.Organizacion;
 using PIKA.Servicio.Organizacion.Interfaces;
 using RepositorioEntidades;
-using RepositorioEntidades.DatatablesPlugin;
+
 
 namespace PIKA.GD.API.Controllers.Organizacion
 {

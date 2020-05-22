@@ -196,7 +196,7 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
-                    b.Property<string>("TipoDatoProiedadPlantillaid")
+                    b.Property<string>("TipoDatoProiedadPlantillaId")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<bool>("Visible")

@@ -81,7 +81,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
             o.longmin = entity.longmin;
             o.Propiedad = entity.Propiedad;
             o.regexp = entity.regexp;
-            o.valordefaulr = entity.valordefaulr;
+            o.valordefault = entity.valordefault;
 
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();

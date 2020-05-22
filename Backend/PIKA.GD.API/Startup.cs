@@ -31,6 +31,8 @@ using PIKA.Servicio.Metadatos.Data;
 using PIKA.Servicio.Seguridad.Data;
 using PIKA.Servicio.AplicacionPlugin;
 using PIKA.Servicio.Contenido;
+using PIKA.Servicio.Metadatos.ElasticSearch;
+using PIKA.GD.API.Servicios;
 
 namespace PIKA.GD.API
 {
@@ -113,30 +115,42 @@ namespace PIKA.GD.API
                     ensamblado.GetType(item.NombreImplementacion));
             }
 
+            services.AddLazyCache();
+
             ServicioAplicacion.ModulosAdministrados = ModulosAdministrados;
             services.Configure<ConfiguracionServidor>(o => this.Configuration.GetSection("ConfiguracionServidor").Bind(o));
             services.AddSingleton(typeof(IServicioCache), typeof(CacheMemoria));
+            services.AddSingleton(typeof(IAPICache<>), typeof(APICache<>));
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddTransient(typeof(ICompositorConsulta<>), typeof(QueryComposer<>));
             services.AddTransient<IServicioTokenSeguridad, ServicioTokenSeguridad>();
             services.AddTransient<ICacheSeguridad, CacheSeguridadMemoria>();
             services.AddTransient(typeof(IProveedorMetadatos<>), typeof(ReflectionMetadataExtractor<>));
-
+            
             services.AddTransient<ILocalizadorFiltroACL, LocalizadorFiltroACLReflectivo>();
 
 
             services.AddScoped<AsyncACLActionFilter>();
 
             services.AddTransient(typeof(IProveedorOpcionesContexto<>),typeof(ProveedorOpcionesContexto<>));
+            
 
+            MetadatosOptions options = new MetadatosOptions();
+            Configuration.GetSection("Metadatos").Bind(options);
+    
+            if (options.Tipo == MetadatosOptions.ELASTICSEARCH)
+            {
+                Console.WriteLine($"++++ {options.Tipo}");
+                services.AddTransient<IRepositorioMetadatos, RepoMetadatosElasticSearch>();
+
+            }
             
-            
+
+
             services.AddDbContext<DbContextSeguridad>(options =>
                  options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
-            services.AddDbContext<DbContextMetadatos>(options =>
-                   options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-
+    
             services.AddDbContext<DbContextAplicacionPlugin>(options =>
                   options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
@@ -149,6 +163,8 @@ namespace PIKA.GD.API
             services.AddDbContext<DBContextGestionDocumental>(options =>
                options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
+            services.AddDbContext<DbContextMetadatos>(options =>
+           options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
 
             services.AddControllers();
@@ -158,8 +174,7 @@ namespace PIKA.GD.API
                 //options.Conventions.Add(new RouteTokenTransformerConvention(
                 //                             new SlugifyParameterTransformer()));
 
-                options.ModelBinderProviders.Insert(0, new DatatablesModelBinderProvider());
-                options.ModelBinderProviders.Insert(0, new GenericDataPageModelBinderProvider());
+               options.ModelBinderProviders.Insert(0, new GenericDataPageModelBinderProvider());
 
             }).AddFluentValidation(opt =>
             {

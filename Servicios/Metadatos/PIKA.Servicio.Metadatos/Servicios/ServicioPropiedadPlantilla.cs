@@ -27,7 +27,6 @@ namespace PIKA.Servicio.Metadatos.Servicios
         private IRepositorioAsync<PropiedadPlantilla> repo;
         private ICompositorConsulta<PropiedadPlantilla> compositor;
         private UnidadDeTrabajo<DbContextMetadatos> UDT;
-        private IServicioTipoDatoPropiedadPlantilla servicioTipoDatoPropiedadPlantilla;
         public ServicioPropiedadPlantilla(
            IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
            ICompositorConsulta<PropiedadPlantilla> compositorConsulta,
@@ -62,9 +61,6 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
             try
             {
-                var linkDatoPropiedad = await createtipodato(entity.TipoDatoId, entity.Id);
-
-
                 return ClonaPropiedadPlantilla(entity);
             }
             catch (Exception ex)
@@ -75,15 +71,6 @@ namespace PIKA.Servicio.Metadatos.Servicios
             }
             
         }
-        public async Task<TipoDatoPropiedadPlantilla> createtipodato(string tipodatoid, string propiedadid)
-        {
-            TipoDatoPropiedadPlantilla t = new TipoDatoPropiedadPlantilla();
-            t.TipoDatoId = tipodatoid;
-            t.PropiedadPlantillaId = propiedadid;
-            return await this.servicioTipoDatoPropiedadPlantilla.CrearAsync(t).ConfigureAwait(false);
-            
-        }
-
 
         private PropiedadPlantilla ClonaPropiedadPlantilla(PropiedadPlantilla entidad)
         {
@@ -143,7 +130,6 @@ namespace PIKA.Servicio.Metadatos.Servicios
             }
 
             o.Nombre = entity.Nombre;
-            o.Atributos = entity.Atributos;
             o.AtributoTabla = entity.AtributoTabla;
             o.Autogenerado = entity.Autogenerado;
             o.Buscable = entity.Buscable;
@@ -152,17 +138,6 @@ namespace PIKA.Servicio.Metadatos.Servicios
             o.EsIdClaveExterna = entity.EsIdClaveExterna;
             o.TipoDatoId = entity.TipoDatoId;
             o.EsIdRegistro = entity.EsIdRegistro;
-            TipoDatoPropiedadPlantilla tipoDato = new TipoDatoPropiedadPlantilla();
-            tipoDato.PropiedadPlantillaId = o.Id;
-            tipoDato.TipoDatoId = o.TipoDatoId;
-            if (! await servicioTipoDatoPropiedadPlantilla.Existe(x => x.PropiedadPlantillaId == o.Id))
-            {
-                await this.servicioTipoDatoPropiedadPlantilla.CrearAsync(tipoDato);
-            }
-            else
-            {
-                await servicioTipoDatoPropiedadPlantilla.ActualizarAsync(tipoDato);
-            }
 
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();

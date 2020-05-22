@@ -7,12 +7,16 @@ using System.Text;
 namespace PIKA.Modelo.Metadatos
 {
   
+    /// <summary>
+    /// Define una propiedad de meatdatos, se basa en el atributo web PIKA.modelo.Metadatos.PropAttribue
+    /// Culauqier cambio en alguno de los 2 debe sincornizarse manualemnte
+    /// </summary>
     public class Propiedad: Entidad<string>, IEntidadNombrada
     {
 
         public Propiedad()
         {
-            Atributos = new HashSet<AtributoMetadato>();
+            
         }
 
         /// <summary>
@@ -30,11 +34,12 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public string TipoDatoId { get; set; }
 
-    [NotMapped]
+    
         /// <summary>
-        /// Valor por defecto de la propiedad
+        /// Valor por defecto de la propiedad serializado como string
+        /// en el caso de los binarios debe serializarrse como base 64
         /// </summary>
-        public object ValorDefault { get; set; }
+        public string ValorDefault { get; set; }
 
         /// <summary>
         /// Índice de despliegue para la propiedad
@@ -114,20 +119,14 @@ namespace PIKA.Modelo.Metadatos
         public string ControlHTML { get; set; }
 
 
-        [NotMapped]
         public virtual TipoDato TipoDato { get; set; }
 
-        [NotMapped]
         public virtual AtributoTabla AtributoTabla { get; set; }
 
-        [NotMapped]
         public virtual ValidadorTexto ValidadorTexto { get; set; }
 
-        [NotMapped]
         public virtual ValidadorNumero ValidadorNumero { get; set; }
 
-        [NotMapped]
-        public virtual ICollection<AtributoMetadato> Atributos { get; set; }
 
     }
 }

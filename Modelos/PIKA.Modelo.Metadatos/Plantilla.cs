@@ -41,7 +41,13 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public bool Eliminada { get; set; }
 
-    
+        /// <summary>
+        /// Identificador único del almacen de datos
+        /// </summary>
+        public string AlmacenDatosId { get; set; }
+
+
+        public AlmacenDatos Almacen { get; set; }
         public ICollection<PropiedadPlantilla> Propiedades { get; set; }
         public ICollection<AsociacionPlantilla> Asociaciones { get; set; }
        
