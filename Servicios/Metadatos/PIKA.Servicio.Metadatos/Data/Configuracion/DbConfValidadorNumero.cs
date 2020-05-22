@@ -14,13 +14,13 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
         {
             builder.ToTable(DbContextMetadatos.TablaValidadorNumero);
             builder.HasKey(x => x.Id);
+            builder.HasIndex(x => x.PropiedadId);
 
-            builder.Property(x => x.PropiedadId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.PropiedadId).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.min).IsRequired();
             builder.Property(x => x.max).IsRequired();
             builder.Property(x => x.valordefault).IsRequired();
-
-            builder.HasOne(x => x.PropiedadPlantilla).WithOne(y => y.ValNumero).HasForeignKey<ValidadorNumero>(z => z.PropiedadId);
 
         }
     }

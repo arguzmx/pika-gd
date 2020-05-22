@@ -11,7 +11,7 @@ using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.GestionDocumental.Interfaces;
 using RepositorioEntidades;
-using RepositorioEntidades.DatatablesPlugin;
+
 
 namespace PIKA.GD.API.Controllers.GestorDocumental
 {

@@ -11,7 +11,7 @@ using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
-using RepositorioEntidades.DatatablesPlugin;
+
 namespace PIKA.GD.API.Controllers.Seguridad
 {
     [Authorize]

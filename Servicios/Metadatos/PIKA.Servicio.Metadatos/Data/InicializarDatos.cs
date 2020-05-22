@@ -11,16 +11,439 @@ namespace PIKA.Servicio.Metadatos.Data
     {
         public static void Inicializar(DbContextMetadatos dbContext, string contentPath)
         {
-            InicializarPlantilla(dbContext, contentPath);
-            InicializarPropiedadPlantilla(dbContext, contentPath);
+
             InicializarTipoDato(dbContext, contentPath);
-            InicializarTipoDatoPropiedadPlantilla(dbContext, contentPath);
-            InicializarAtributoMetadato(dbContext, contentPath);
-            InicializarAtributoTabla(dbContext, contentPath);
-            InicializarValidadorNumero(dbContext, contentPath);
-            InicializarAsociacionPlantilla(dbContext, contentPath);
-            InicializarTipoAlmacenMetadatos(dbContext, contentPath);
+            GeneraTiposAlmacenDefault(dbContext);
+
+            GeneraDatosDemo(dbContext);
+            
+           // InicializarTipoDatoPropiedadPlantilla(dbContext, contentPath);
+            //InicializarPlantilla(dbContext, contentPath);
+            //InicializarPropiedadPlantilla(dbContext, contentPath);
+            //InicializarTipoDatoPropiedadPlantilla(dbContext, contentPath);
+            //InicializarAtributoMetadato(dbContext, contentPath);
+            //InicializarAtributoTabla(dbContext, contentPath);
+            //InicializarValidadorNumero(dbContext, contentPath);
+            //InicializarAsociacionPlantilla(dbContext, contentPath);
+            //InicializarTipoAlmacenMetadatos(dbContext, contentPath);
         }
+
+        private static void GeneraTiposAlmacenDefault(DbContextMetadatos dbContext) {
+            
+            TipoAlmacenMetadatos t = new TipoAlmacenMetadatos();
+            List<TipoAlmacenMetadatos> tipos = t.Seed();
+            
+            Console.WriteLine($"Actualizando Tipo almacen de datos con {tipos.Count} elementos");
+
+            foreach (TipoAlmacenMetadatos tipo in tipos)
+            {
+
+                TipoAlmacenMetadatos instancia = dbContext.TipoAlmacenMetadatos.Find(tipo.Id);
+                if (instancia == null)
+                {
+                    TipoAlmacenMetadatos p = new TipoAlmacenMetadatos()
+                    {
+                        Id = tipo.Id,
+                        Nombre = tipo.Nombre
+                    };
+
+                    dbContext.TipoAlmacenMetadatos.Add(p);
+                }
+                else
+                {
+                    instancia.Nombre = tipo.Nombre;
+                }
+            }
+            dbContext.SaveChanges();
+
+        }
+
+        private static void GeneraDatosDemo(DbContextMetadatos dbContext)
+        {
+
+            Console.WriteLine($"Instalando datos demo -----");
+
+            AlmacenDatos al = new AlmacenDatos()
+            {
+                Contrasena = null,
+                Direccion = "localhost",
+                Id = "almdemo",
+                Nombre = "Default Elasticsearch",
+                Protocolo = "http://",
+                Puerto = "9200",
+                TipoAlmacenMetadatosId = TipoAlmacenMetadatos.tElasticSearch,
+                Usuario = null
+            };
+
+            dbContext.AlmacenesDatos.Add(al);
+
+            Plantilla plantilla = new Plantilla()
+            {
+                Id = "demo",
+                Eliminada = false,
+                Nombre = "Plantilla demo",
+                OrigenId = "dominio",
+                TipoOrigenId = "dominio",
+                AlmacenDatosId = al.Id
+            };
+
+            Plantilla temp = dbContext.Plantilla.Where(x => x.Id == plantilla.Id).Take(1).SingleOrDefault();
+            if (temp!=null)
+            {
+                temp.Eliminada = plantilla.Eliminada;
+                temp.Nombre = plantilla.Nombre;
+                temp.OrigenId = plantilla.OrigenId;
+                temp.TipoOrigenId = plantilla.TipoOrigenId;
+                temp.AlmacenDatosId = plantilla.AlmacenDatosId;
+                dbContext.Plantilla.Update(temp);
+
+            } else
+            {
+                dbContext.Plantilla.Add(plantilla);
+            }
+
+            PropiedadPlantilla prop;
+            ValidadorNumero vnum;
+            ValidadorTexto vtext;
+
+            //Binario
+            prop = new PropiedadPlantilla()
+            {
+                Id = "pbinario",
+                Nombre = "Campo Binario",
+                TipoDatoId = TipoDato.tBinaryData,
+                ValorDefault = null,
+                IndiceOrdenamiento = 0,
+                Buscable = false,
+                Visible = true,
+                EsIdClaveExterna = false,
+                EsIdRegistro = false,
+                EsIdJerarquia = false,
+                EsTextoJerarquia = false,
+                EsIdPadreJerarquia = false,
+                Requerido = false,
+                Autogenerado = false,
+                EsIndice = false,
+                ControlHTML = PropAttribute.HTML_FILE,
+                PlantillaId = plantilla.Id
+            };
+
+            if (!dbContext.PropiedadPlantilla.Where(x => x.Id == prop.Id).Any())
+            dbContext.PropiedadPlantilla.Add(prop);
+
+            //Boleano
+            prop = new PropiedadPlantilla()
+            {
+                Id = "pbooleano",
+                Nombre = "Campo booleano",
+                TipoDatoId = TipoDato.tBoolean,
+                ValorDefault = null,
+                IndiceOrdenamiento = 1,
+                Buscable = false,
+                Visible = true,
+                EsIdClaveExterna = false,
+                EsIdRegistro = false,
+                EsIdJerarquia = false,
+                EsTextoJerarquia = false,
+                EsIdPadreJerarquia = false,
+                Requerido = false,
+                Autogenerado = false,
+                EsIndice = false,
+                ControlHTML = PropAttribute.HTML_CHECKBOX,
+                PlantillaId = plantilla.Id
+            };
+            if (!dbContext.PropiedadPlantilla.Where(x => x.Id == prop.Id).Any())
+                dbContext.PropiedadPlantilla.Add(prop);
+
+            //fecha
+            prop = new PropiedadPlantilla()
+            {
+                Id = "pfecha",
+                Nombre = "Campo fecha",
+                TipoDatoId = TipoDato.tDate,
+                ValorDefault = null,
+                IndiceOrdenamiento = 2,
+                Buscable = false,
+                Visible = true,
+                EsIdClaveExterna = false,
+                EsIdRegistro = false,
+                EsIdJerarquia = false,
+                EsTextoJerarquia = false,
+                EsIdPadreJerarquia = false,
+                Requerido = false,
+                Autogenerado = false,
+                EsIndice = false,
+                ControlHTML = PropAttribute.HTML_DATE,
+                PlantillaId = plantilla.Id
+            };
+            if (!dbContext.PropiedadPlantilla.Where(x => x.Id == prop.Id).Any())
+                dbContext.PropiedadPlantilla.Add(prop);
+
+            // fecha hora            
+            prop = new PropiedadPlantilla()
+            {
+                Id = "pfechahora",
+                Nombre = "Campo fecha/hora",
+                TipoDatoId = TipoDato.tDateTime ,
+                ValorDefault = null,
+                IndiceOrdenamiento = 3,
+                Buscable = false,
+                Visible = true,
+                EsIdClaveExterna = false,
+                EsIdRegistro = false,
+                EsIdJerarquia = false,
+                EsTextoJerarquia = false,
+                EsIdPadreJerarquia = false,
+                Requerido = false,
+                Autogenerado = false,
+                EsIndice = false,
+                ControlHTML = PropAttribute.HTML_DATETIME,
+                PlantillaId = plantilla.Id
+            };
+            if (!dbContext.PropiedadPlantilla.Where(x => x.Id == prop.Id).Any())
+                dbContext.PropiedadPlantilla.Add(prop);
+
+            // decimal            
+            prop = new PropiedadPlantilla()
+            {
+                Id = "pdouble",
+                Nombre = "Campo decimal",
+                TipoDatoId = TipoDato.tDouble,
+                ValorDefault = null,
+                IndiceOrdenamiento = 4,
+                Buscable = false,
+                Visible = true,
+                EsIdClaveExterna = false,
+                EsIdRegistro = false,
+                EsIdJerarquia = false,
+                EsTextoJerarquia = false,
+                EsIdPadreJerarquia = false,
+                Requerido = false,
+                Autogenerado = false,
+                EsIndice = false,
+                ControlHTML = PropAttribute.HTML_NUMBER,
+                PlantillaId = plantilla.Id
+            };
+
+            if (!dbContext.PropiedadPlantilla.Where(x => x.Id == prop.Id).Any())
+                dbContext.PropiedadPlantilla.Add(prop);
+
+            vnum = new ValidadorNumero()
+            {
+                Id = "vnumdec",
+                max = 10,
+                min = 0,
+                PropiedadId = prop.Id,
+                valordefault = 0
+            };
+            if (!dbContext.ValidadorNumero.Where(x => x.Id == vnum.Id).Any())
+                dbContext.ValidadorNumero.Add(vnum);
+
+
+            // entero 32
+            prop = new PropiedadPlantilla()
+            {
+                Id = "pin32",
+                Nombre = "Campo entero 32",
+                TipoDatoId = TipoDato.tInt32,
+                ValorDefault = null,
+                IndiceOrdenamiento = 5,
+                Buscable = false,
+                Visible = true,
+                EsIdClaveExterna = false,
+                EsIdRegistro = false,
+                EsIdJerarquia = false,
+                EsTextoJerarquia = false,
+                EsIdPadreJerarquia = false,
+                Requerido = false,
+                Autogenerado = false,
+                EsIndice = false,
+                ControlHTML = PropAttribute.HTML_NUMBER,
+                PlantillaId = plantilla.Id
+            };
+            if (!dbContext.PropiedadPlantilla.Where(x => x.Id == prop.Id).Any())
+                dbContext.PropiedadPlantilla.Add(prop);
+
+
+            vnum = new ValidadorNumero()
+            {
+                Id = "vnum32",
+                max = 10,
+                min = -10,
+                PropiedadId = prop.Id,
+                valordefault = 0
+            };
+            if (!dbContext.ValidadorNumero.Where(x => x.Id == vnum.Id).Any())
+                dbContext.ValidadorNumero.Add(vnum);
+
+
+            // entero 64
+            prop = new PropiedadPlantilla()
+            {
+                Id = "pin64",
+                Nombre = "Campo entero 64",
+                TipoDatoId = TipoDato.tInt64,
+                ValorDefault = null,
+                IndiceOrdenamiento = 5,
+                Buscable = false,
+                Visible = true,
+                EsIdClaveExterna = false,
+                EsIdRegistro = false,
+                EsIdJerarquia = false,
+                EsTextoJerarquia = false,
+                EsIdPadreJerarquia = false,
+                Requerido = false,
+                Autogenerado = false,
+                EsIndice = false,
+                ControlHTML = PropAttribute.HTML_NUMBER,
+                PlantillaId = plantilla.Id
+            };
+            if (!dbContext.PropiedadPlantilla.Where(x => x.Id == prop.Id).Any())
+                dbContext.PropiedadPlantilla.Add(prop);
+
+            vnum = new ValidadorNumero()
+            {
+                Id = "vnum64",
+                max = 5000,
+                min = 0,
+                PropiedadId = prop.Id,
+                valordefault = 0
+            };
+            if (!dbContext.ValidadorNumero.Where(x => x.Id == vnum.Id).Any())
+                dbContext.ValidadorNumero.Add(vnum);
+
+            // lista
+            prop = new PropiedadPlantilla()
+            {
+                Id = "plista",
+                Nombre = "Campo lista",
+                TipoDatoId = TipoDato.tList,
+                ValorDefault = null,
+                IndiceOrdenamiento = 6,
+                Buscable = false,
+                Visible = true,
+                EsIdClaveExterna = false,
+                EsIdRegistro = false,
+                EsIdJerarquia = false,
+                EsTextoJerarquia = false,
+                EsIdPadreJerarquia = false,
+                Requerido = false,
+                Autogenerado = false,
+                EsIndice = false,
+                ControlHTML = PropAttribute.HTML_SELECT,
+                PlantillaId = plantilla.Id
+            };
+            if (!dbContext.PropiedadPlantilla.Where(x => x.Id == prop.Id).Any())
+                dbContext.PropiedadPlantilla.Add(prop);
+
+            // string
+            prop = new PropiedadPlantilla()
+            {
+                Id = "pstring",
+                Nombre = "Campo texto",
+                TipoDatoId = TipoDato.tString,
+                ValorDefault = null,
+                IndiceOrdenamiento = 7,
+                Buscable = false,
+                Visible = true,
+                EsIdClaveExterna = false,
+                EsIdRegistro = false,
+                EsIdJerarquia = false,
+                EsTextoJerarquia = false,
+                EsIdPadreJerarquia = false,
+                Requerido = false,
+                Autogenerado = false,
+                EsIndice = false,
+                ControlHTML = PropAttribute.HTML_TEXT,
+                PlantillaId = plantilla.Id
+            };
+            if (!dbContext.PropiedadPlantilla.Where(x => x.Id == prop.Id).Any())
+                dbContext.PropiedadPlantilla.Add(prop);
+
+            vtext = new ValidadorTexto()
+            {
+                Id = "vnum64",
+                PropiedadId = prop.Id,
+                longmax = 50,
+                longmin = 2,
+                regexp = "",
+                valordefault =""
+            };
+            if (!dbContext.ValidadorNumero.Where(x => x.Id == vnum.Id).Any())
+                dbContext.ValidadorNumero.Add(vnum);
+
+
+            // time
+            prop = new PropiedadPlantilla()
+            {
+                Id = "ptime",
+                Nombre = "Campo time",
+                TipoDatoId = TipoDato.tTime,
+                ValorDefault = null,
+                IndiceOrdenamiento = 8,
+                Buscable = false,
+                Visible = true,
+                EsIdClaveExterna = false,
+                EsIdRegistro = false,
+                EsIdJerarquia = false,
+                EsTextoJerarquia = false,
+                EsIdPadreJerarquia = false,
+                Requerido = false,
+                Autogenerado = false,
+                EsIndice = false,
+                ControlHTML = PropAttribute.HTML_TIME,
+                PlantillaId = plantilla.Id
+            };
+            if (!dbContext.PropiedadPlantilla.Where(x => x.Id == prop.Id).Any())
+                dbContext.PropiedadPlantilla.Add(prop);
+
+
+            
+
+        dbContext.SaveChanges();
+
+
+        }
+
+        private static void InicializarTipoDato(DbContextMetadatos dbContext, string contentPath)
+        {
+            try
+            {
+                TipoDato t = new TipoDato();
+                List<TipoDato> tipodato = t.Seed();
+
+                Console.WriteLine($"Actualizando TipoDato con {tipodato.Count} elementos");
+
+                foreach (TipoDato TipoDatos in tipodato)
+                {
+
+                    TipoDato instancia = dbContext.TipoDato.Find(TipoDatos.Id);
+                    if (instancia == null)
+                    {
+                        TipoDato p = new TipoDato()
+                        {
+                            Id = TipoDatos.Id,
+                            Nombre = TipoDatos.Nombre
+                        };
+
+                        dbContext.TipoDato.Add(p);
+                    }
+                    else
+                    {
+                        instancia.Nombre = TipoDatos.Nombre;
+                    }
+                }
+                dbContext.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+
         private static void InicializarPlantilla
             (DbContextMetadatos dbContext, string contentPath)
         {
@@ -151,200 +574,8 @@ namespace PIKA.Servicio.Metadatos.Data
             }
         }
 
-        private static void InicializarTipoDato(DbContextMetadatos dbContext, string contentPath)
-        {
-
-            try
-            {
-                List<TipoDato> tipodato = new List<TipoDato>();
-
-                string path = Path.Combine(contentPath, "Data", "Inicializar", "TipoDato.txt");
-
-                Console.WriteLine($"Buscando archivo en {path}");
-
-                if (File.Exists(path))
-                {
-
-
-                    int index = 0;
-                    List<string> lineas = File.ReadAllText(path).Split('\n').ToList();
-                    foreach (string linea in lineas)
-                    {
-                        if (index > 0)
-                        {
-
-                            List<string> partes = linea.TrimStart().TrimEnd().Split('\t').ToList();
-                            tipodato.Add(new TipoDato()
-                            {
-                                Id = partes[4],
-                                Nombre = partes[0]
-                            });
-
-                        }
-                        index++;
-                    }
-                }
-
-                Console.WriteLine($"Actualizando {tipodato.Count} elementos");
-
-                foreach (TipoDato TipoDatos in tipodato)
-                {
-
-                    TipoDato instancia = dbContext.TipoDato.Find(TipoDatos.Id);
-                    if (instancia == null)
-                    {
-                        TipoDato p = new TipoDato()
-                        {
-                            Id = TipoDatos.Id,
-                            Nombre = TipoDatos.Nombre
-                        };
-
-                        dbContext.TipoDato.Add(p);
-                    }
-                    else
-                    {
-                        instancia.Nombre = TipoDatos.Nombre;
-                    }
-                }
-                dbContext.SaveChanges();
-
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-        }
-
-        private static void InicializarTipoDatoPropiedadPlantilla(DbContextMetadatos dbContext, string contentPath)
-        {
-            try
-            {
-                List<TipoDatoPropiedadPlantilla> tipodatopropiedadplantilla = new List<TipoDatoPropiedadPlantilla>();
-
-                string path = Path.Combine(contentPath, "Data", "Inicializar", "TipoDatoPropiedadPlantilla.txt");
-
-                Console.WriteLine($"Buscando archivo en {path}");
-
-                if (File.Exists(path))
-                {
-
-
-                    int index = 0;
-                    List<string> lineas = File.ReadAllText(path).Split('\n').ToList();
-                    foreach (string linea in lineas)
-                    {
-                        if (index > 0)
-                        {
-
-                            List<string> partes = linea.TrimStart().TrimEnd().Split('\t').ToList();
-                            tipodatopropiedadplantilla.Add(new TipoDatoPropiedadPlantilla()
-                            {
-                                PropiedadPlantillaId = partes[4],
-                                TipoDatoId = partes[0]
-                            });
-
-                        }
-                        index++;
-                    }
-                }
-
-                Console.WriteLine($"Actualizando {tipodatopropiedadplantilla.Count} elementos");
-
-                foreach (TipoDatoPropiedadPlantilla tipodatospropiedadplantilla in tipodatopropiedadplantilla)
-                {
-
-                    TipoDatoPropiedadPlantilla instancia = dbContext.TipoDatoPropiedadPlantilla.Find(tipodatospropiedadplantilla.PropiedadPlantillaId);
-                    if (instancia == null)
-                    {
-                        TipoDatoPropiedadPlantilla p = new TipoDatoPropiedadPlantilla()
-                        {
-                            PropiedadPlantillaId = tipodatospropiedadplantilla.PropiedadPlantillaId,
-                            TipoDatoId = tipodatospropiedadplantilla.TipoDatoId
-                        };
-
-                        dbContext.TipoDatoPropiedadPlantilla.Add(p);
-                    }
-                    else
-                    {
-                        instancia.PropiedadPlantillaId = tipodatospropiedadplantilla.PropiedadPlantillaId;
-                    }
-                }
-                dbContext.SaveChanges();
-
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-        }
-
-        private static void InicializarAtributoMetadato(DbContextMetadatos dbContext, string contentPath)
-        {
-            try
-            {
-                List<AtributoMetadato> atributometadato = new List<AtributoMetadato>();
-
-                string path = Path.Combine(contentPath, "Data", "Inicializar", "AtributoMetadato.txt");
-
-                Console.WriteLine($"Buscando archivo en {path}");
-
-                if (File.Exists(path))
-                {
-
-
-                    int index = 0;
-                    List<string> lineas = File.ReadAllText(path).Split('\n').ToList();
-                    foreach (string linea in lineas)
-                    {
-                        if (index > 0)
-                        {
-
-                            List<string> partes = linea.TrimStart().TrimEnd().Split('\t').ToList();
-                            atributometadato.Add(new AtributoMetadato()
-                            {
-                                Id = partes[4],
-                                Valor = partes[0]
-                            });
-
-                        }
-                        index++;
-                    }
-                }
-
-                Console.WriteLine($"Actualizando {atributometadato.Count} elementos");
-
-                foreach (AtributoMetadato atributosmetadato in atributometadato)
-                {
-
-                    AtributoMetadato instancia = dbContext.AtributoMetadato.Find(atributosmetadato.Id);
-                    if (instancia == null)
-                    {
-                        AtributoMetadato p = new AtributoMetadato()
-                        {
-                            Id = atributosmetadato.Id,
-                            Valor = atributosmetadato.Valor
-                        };
-
-                        dbContext.AtributoMetadato.Add(p);
-                    }
-                    else
-                    {
-                        instancia.Id = atributosmetadato.Id;
-                    }
-                }
-                dbContext.SaveChanges();
-
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-
-        }
-
+ 
+   
         private static void InicializarAtributoTabla(DbContextMetadatos dbContext, string contentPath)
         {
             try

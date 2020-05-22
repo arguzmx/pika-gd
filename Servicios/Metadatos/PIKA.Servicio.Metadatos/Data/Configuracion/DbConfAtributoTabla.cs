@@ -14,6 +14,7 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
         {
             builder.ToTable(DbContextMetadatos.TablaAtributoTabla);
             builder.HasKey(x => x.Id);
+            builder.HasIndex(x => x.PropiedadId);
 
             builder.Property(x => x.PropiedadId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.Incluir).HasDefaultValue(true).IsRequired();
@@ -21,8 +22,6 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
             builder.Property(x => x.Alternable).HasDefaultValue(true).IsRequired();
             builder.Property(x => x.IndiceOrdebnamiento).HasDefaultValue(true).IsRequired();
             builder.Property(x => x.IdTablaCliente).HasMaxLength(LongitudDatos.GUID).IsRequired();
-
-            //builder.HasOne(x => x.propiedadplantilla).WithOne(y => y.AtributoTabla).HasForeignKey<AtributoTabla>(z => z.Id);
 
         }
     }

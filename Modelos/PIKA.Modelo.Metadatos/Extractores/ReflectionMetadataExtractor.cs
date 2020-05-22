@@ -71,16 +71,8 @@ namespace PIKA.Modelo.Metadatos
 
                 if (foundProp != null)
                 {
-
                     foreach (object attr in attrs)
                     {
-
-
-                        if (attr is AttrAttribute)
-                        {
-                            AttrAttribute aa = (AttrAttribute)attr;
-                            foundProp.Atributos.Add(aa.GetAttribute(prop.Name));
-                        }
 
                         if (attr is TblAttribute)
                         {
@@ -157,24 +149,13 @@ namespace PIKA.Modelo.Metadatos
             };
         }
 
-        public static AtributoMetadato GetAttribute(this AttrAttribute source, string Id)
-        {
-
-            return new AtributoMetadato()
-            {
-                PropiedadId = Id,
-                Id = source.Id,
-                Valor = source.Value
-            };
-        }
-
         public static ValidadorTexto GetAttribute(this ValidStringAttribute source, string Id)
         {
 
             return new ValidadorTexto()
             {
                 PropiedadId = Id,
-                valordefaulr = source.defaulvalue,
+                valordefault = source.defaulvalue,
                 longmax = source.maxlen,
                 longmin = source.minlen,
                 regexp = source.regexp

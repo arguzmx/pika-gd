@@ -11,7 +11,7 @@ using PIKA.Modelo.Contenido;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Contenido.Interfaces;
 using RepositorioEntidades;
-using RepositorioEntidades.DatatablesPlugin;
+
 namespace PIKA.GD.API.Controllers.Contenido
 {
     [Authorize]

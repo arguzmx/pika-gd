@@ -12,7 +12,7 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "TipoDatoProiedadPlantillaid",
+                name: "TipoDatoProiedadPlantillaId",
                 table: "metadatos$propiedadplantilla",
                 nullable: true);
 
@@ -66,7 +66,7 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
                 table: "metadatos$propiedadplantilla");
 
             migrationBuilder.DropColumn(
-                name: "TipoDatoProiedadPlantillaid",
+                name: "TipoDatoProiedadPlantillaId",
                 table: "metadatos$propiedadplantilla");
         }
     }

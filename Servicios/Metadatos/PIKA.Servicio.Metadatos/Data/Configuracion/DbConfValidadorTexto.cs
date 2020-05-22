@@ -14,14 +14,15 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
         {
             builder.ToTable(DbContextMetadatos.TablaValidadorTexto);
             builder.HasKey(x => x.Id);
+            builder.HasIndex(x => x.PropiedadId);
 
-            builder.Property(x => x.PropiedadId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
+            
+            builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.PropiedadId).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.longmin).IsRequired();
             builder.Property(x => x.longmax).IsRequired();
-            builder.Property(x => x.valordefaulr).HasMaxLength(LongitudDatos.GUID).IsRequired();
-            builder.Property(x => x.regexp).IsRequired();
-
-            builder.HasOne(x => x.PropiedadPlantilla).WithOne(y => y.ValTexto).HasForeignKey<ValidadorTexto>(z => z.PropiedadId);
+            builder.Property(x => x.valordefault).HasMaxLength(512).IsRequired(false);
+            builder.Property(x => x.regexp).HasMaxLength(LongitudDatos.RegExp).IsRequired(false);
 
         }
     }

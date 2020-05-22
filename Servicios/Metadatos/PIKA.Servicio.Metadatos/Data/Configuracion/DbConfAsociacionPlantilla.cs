@@ -15,15 +15,15 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
             builder.ToTable(DbContextMetadatos.TablaAsociacionPlantilla);
             builder.HasKey(x => x.Id);
 
+            builder.HasIndex(x => new {x.TipoOrigenId, x.OrigenId });
+            builder.HasIndex(x => x.PlantillaId);
+
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.PlantillaId).HasMaxLength(LongitudDatos.GUID).IsRequired();
-            builder.Property(x => x.TipoAlmacenMetadatosId).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.TipoOrigenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.OrigenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x=>x.IdentificadorAlmacenamiento).HasMaxLength(LongitudDatos.GUID).IsRequired();
-         
-            
-            builder.HasOne(x => x.TipoAlmacen).WithMany(y => y.AsociacionesPlantilla).HasForeignKey(z => z.TipoAlmacenMetadatosId);
+
         }
     }
 }

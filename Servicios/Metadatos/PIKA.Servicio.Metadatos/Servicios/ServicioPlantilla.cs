@@ -147,6 +147,21 @@ namespace PIKA.Servicio.Metadatos.Servicios
             return listaEliminados;
         }
 
+        public async Task<Plantilla> UnicoAsync(Expression<Func<Plantilla, bool>> predicado = null, 
+            Func<IQueryable<Plantilla>, IOrderedQueryable<Plantilla>> ordenarPor = null, 
+            Func<IQueryable<Plantilla>, IIncludableQueryable<Plantilla, object>> incluir = null, 
+            bool inhabilitarSegumiento = true)
+        {
+
+            Plantilla d = await this.repo.UnicoAsync(predicado,ordenarPor, incluir);
+            
+            return d.CopiaPlantilla();
+        }
+
+
+
+        #region Sin Implementar
+
         public Task<List<Plantilla>> ObtenerAsync(Expression<Func<Plantilla, bool>> predicado)
         {
             throw new NotImplementedException();
@@ -168,14 +183,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
         {
             throw new NotImplementedException();
         }
-
-        public async Task<Plantilla> UnicoAsync(Expression<Func<Plantilla, bool>> predicado = null, Func<IQueryable<Plantilla>, IOrderedQueryable<Plantilla>> ordenarPor = null, Func<IQueryable<Plantilla>, IIncludableQueryable<Plantilla, object>> incluir = null, bool inhabilitarSegumiento = true)
-        {
-
-            Plantilla d = await this.repo.UnicoAsync(predicado);
-
-            return d.CopiaPlantilla();
-        }
+        #endregion
 
 
     }

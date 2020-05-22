@@ -16,6 +16,49 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
                 .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("PIKA.Modelo.Metadatos.AlmacenDatos", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("Contrasena")
+                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Nombre")
+                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("Protocolo")
+                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Puerto")
+                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4")
+                        .HasMaxLength(50);
+
+                    b.Property<string>("TipoAlmacenMetadatosId")
+                        .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("Usuario")
+                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4")
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TipoAlmacenMetadatosId");
+
+                    b.ToTable("metadatos$almacendatos");
+                });
+
             modelBuilder.Entity("PIKA.Modelo.Metadatos.AsociacionPlantilla", b =>
                 {
                     b.Property<string>("Id")
@@ -37,11 +80,6 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
-                    b.Property<string>("TipoAlmacenMetadatosId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
                     b.Property<string>("TipoOrigenId")
                         .IsRequired()
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
@@ -49,32 +87,11 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TipoAlmacenMetadatosId");
+                    b.HasIndex("PlantillaId");
+
+                    b.HasIndex("TipoOrigenId", "OrigenId");
 
                     b.ToTable("metadatos$asociacionplantilla");
-                });
-
-            modelBuilder.Entity("PIKA.Modelo.Metadatos.AtributoMetadato", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("PropiedadId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("PropiedadPlantillaId1")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PropiedadId");
-
-                    b.HasIndex("PropiedadPlantillaId1");
-
-                    b.ToTable("metadatos$atributometadato");
                 });
 
             modelBuilder.Entity("PIKA.Modelo.Metadatos.AtributoTabla", b =>
@@ -113,6 +130,9 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PropiedadId")
+                        .IsUnique();
+
                     b.ToTable("metadatos$atributotabla");
                 });
 
@@ -121,6 +141,9 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
+
+                    b.Property<string>("AlmacenDatosId")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
 
                     b.Property<bool>("Eliminada")
                         .ValueGeneratedOnAdd()
@@ -144,6 +167,8 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AlmacenDatosId");
+
                     b.ToTable("metadatos$plantilla");
                 });
 
@@ -152,9 +177,6 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
-
-                    b.Property<string>("AtributoTablaid")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<bool>("Autogenerado")
                         .ValueGeneratedOnAdd()
@@ -234,8 +256,8 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
-                    b.Property<string>("TipoDatoProiedadPlantillaid")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                    b.Property<string>("ValorDefault")
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("Visible")
                         .ValueGeneratedOnAdd()
@@ -244,10 +266,9 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AtributoTablaid")
-                        .IsUnique();
-
                     b.HasIndex("PlantillaId");
+
+                    b.HasIndex("TipoDatoId");
 
                     b.ToTable("metadatos$propiedadplantilla");
                 });
@@ -255,11 +276,6 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
             modelBuilder.Entity("PIKA.Modelo.Metadatos.TipoAlmacenMetadatos", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("AsociacionPlantillaid")
-                        .IsRequired()
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
@@ -289,30 +305,14 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
                     b.ToTable("metadatos$tipodato");
                 });
 
-            modelBuilder.Entity("PIKA.Modelo.Metadatos.TipoDatoPropiedadPlantilla", b =>
-                {
-                    b.Property<string>("TipoDatoId")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("PropiedadPlantillaId")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.HasKey("TipoDatoId", "PropiedadPlantillaId");
-
-                    b.HasIndex("PropiedadPlantillaId")
-                        .IsUnique();
-
-                    b.ToTable("metadatos$tipodatopropiedadplantilla");
-                });
-
             modelBuilder.Entity("PIKA.Modelo.Metadatos.ValidadorNumero", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
 
                     b.Property<string>("PropiedadId")
+                        .IsRequired()
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
@@ -336,9 +336,11 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
             modelBuilder.Entity("PIKA.Modelo.Metadatos.ValidadorTexto", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
 
                     b.Property<string>("PropiedadId")
+                        .IsRequired()
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
@@ -349,13 +351,12 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("regexp")
-                        .IsRequired()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(1024) CHARACTER SET utf8mb4")
+                        .HasMaxLength(1024);
 
-                    b.Property<string>("valordefaulr")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
+                    b.Property<string>("valordefault")
+                        .HasColumnType("varchar(512) CHARACTER SET utf8mb4")
+                        .HasMaxLength(512);
 
                     b.HasKey("Id");
 
@@ -365,57 +366,47 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
                     b.ToTable("metadatos$validadortexto");
                 });
 
-            modelBuilder.Entity("PIKA.Modelo.Metadatos.AsociacionPlantilla", b =>
+            modelBuilder.Entity("PIKA.Modelo.Metadatos.AlmacenDatos", b =>
                 {
-                    b.HasOne("PIKA.Modelo.Metadatos.Plantilla", "Plantilla")
-                        .WithMany("Asociaciones")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("PIKA.Modelo.Metadatos.TipoAlmacenMetadatos", "TipoAlmacen")
-                        .WithMany("AsociacionesPlantilla")
+                        .WithMany("AlmacensDatos")
                         .HasForeignKey("TipoAlmacenMetadatosId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PIKA.Modelo.Metadatos.AtributoMetadato", b =>
+            modelBuilder.Entity("PIKA.Modelo.Metadatos.AsociacionPlantilla", b =>
                 {
-                    b.HasOne("PIKA.Modelo.Metadatos.PropiedadPlantilla", "PropiedadPlantilla")
-                        .WithMany("Atributos")
-                        .HasForeignKey("PropiedadId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PIKA.Modelo.Metadatos.PropiedadPlantilla", null)
-                        .WithMany("AtributosMetadatos")
-                        .HasForeignKey("PropiedadPlantillaId1")
-                        .HasConstraintName("FK_metadatos$atributometadato_metadatos$propiedadplantilla_Pro~1");
-                });
-
-            modelBuilder.Entity("PIKA.Modelo.Metadatos.PropiedadPlantilla", b =>
-                {
-                    b.HasOne("PIKA.Modelo.Metadatos.AtributoTabla", "Atributo")
-                        .WithOne("propiedadplantilla")
-                        .HasForeignKey("PIKA.Modelo.Metadatos.PropiedadPlantilla", "AtributoTablaid");
-
                     b.HasOne("PIKA.Modelo.Metadatos.Plantilla", "Plantilla")
-                        .WithMany("Propiedades")
+                        .WithMany("Asociaciones")
                         .HasForeignKey("PlantillaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PIKA.Modelo.Metadatos.TipoDatoPropiedadPlantilla", b =>
+            modelBuilder.Entity("PIKA.Modelo.Metadatos.AtributoTabla", b =>
                 {
-                    b.HasOne("PIKA.Modelo.Metadatos.PropiedadPlantilla", "Propiedad")
-                        .WithOne("TipoDatoPropiedad")
-                        .HasForeignKey("PIKA.Modelo.Metadatos.TipoDatoPropiedadPlantilla", "PropiedadPlantillaId")
+                    b.HasOne("PIKA.Modelo.Metadatos.PropiedadPlantilla", "PropiedadPlantilla")
+                        .WithOne("AtributoTabla")
+                        .HasForeignKey("PIKA.Modelo.Metadatos.AtributoTabla", "PropiedadId");
+                });
+
+            modelBuilder.Entity("PIKA.Modelo.Metadatos.Plantilla", b =>
+                {
+                    b.HasOne("PIKA.Modelo.Metadatos.AlmacenDatos", "Almacen")
+                        .WithMany("Plantillas")
+                        .HasForeignKey("AlmacenDatosId");
+                });
+
+            modelBuilder.Entity("PIKA.Modelo.Metadatos.PropiedadPlantilla", b =>
+                {
+                    b.HasOne("PIKA.Modelo.Metadatos.Plantilla", "Plantilla")
+                        .WithMany("Propiedades")
+                        .HasForeignKey("PlantillaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PIKA.Modelo.Metadatos.TipoDato", "Tipo")
+                    b.HasOne("PIKA.Modelo.Metadatos.TipoDato", "TipoDato")
                         .WithMany("PropiedadesPlantilla")
                         .HasForeignKey("TipoDatoId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -425,15 +416,19 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
             modelBuilder.Entity("PIKA.Modelo.Metadatos.ValidadorNumero", b =>
                 {
                     b.HasOne("PIKA.Modelo.Metadatos.PropiedadPlantilla", "PropiedadPlantilla")
-                        .WithOne("ValNumero")
-                        .HasForeignKey("PIKA.Modelo.Metadatos.ValidadorNumero", "PropiedadId");
+                        .WithOne("ValidadorNumero")
+                        .HasForeignKey("PIKA.Modelo.Metadatos.ValidadorNumero", "PropiedadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PIKA.Modelo.Metadatos.ValidadorTexto", b =>
                 {
                     b.HasOne("PIKA.Modelo.Metadatos.PropiedadPlantilla", "PropiedadPlantilla")
-                        .WithOne("ValTexto")
-                        .HasForeignKey("PIKA.Modelo.Metadatos.ValidadorTexto", "PropiedadId");
+                        .WithOne("ValidadorTexto")
+                        .HasForeignKey("PIKA.Modelo.Metadatos.ValidadorTexto", "PropiedadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

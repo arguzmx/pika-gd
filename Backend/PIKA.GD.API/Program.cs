@@ -24,6 +24,11 @@ namespace PIKA.GD.API
           .WriteTo.Console()
           .CreateLogger();
 
+            var nodb = args.Contains("/nodb");
+            //if (seed)
+            //{
+            //    args = args.Except(new[] { "/seed" }).ToArray();
+            //}
 
             try
             {
@@ -31,8 +36,15 @@ namespace PIKA.GD.API
                 var host = CreateHostBuilder(args).Build();
                 var CurrentHost = host.Services.GetService<IWebHostEnvironment>();
                 var config = host.Services.GetRequiredService<IConfiguration>();
-                
-                InicializarAplication(config, CurrentHost);
+
+                if (!nodb)
+                {
+                    InicializarAplication(config, CurrentHost);
+                }
+                else {
+                    Console.WriteLine("Saltabdo configuracion de datos");
+                }
+
 
                 host.Run();
 

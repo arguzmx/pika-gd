@@ -39,6 +39,8 @@ namespace PIKA.GD.API.Filters
             ICacheSeguridad SecurityCache, IOptions<ConfiguracionServidor> Config, 
             string AppId="", string ModuleId="", string[] ids = null )
         {
+
+            Console.WriteLine("***********************************************");
             this.SecurityCache = SecurityCache;
             this.Config = Config.Value;
             this.Logger = Logger;

@@ -3,6 +3,8 @@ using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Metadatos
 {
@@ -38,23 +40,15 @@ namespace PIKA.Modelo.Metadatos
         /// Identificador único de la plantilla 
         /// </summary>
         public string PlantillaId { get; set; }
-        //#Tamano GUID es un campo obligatorio
-
+        
         /// <summary>
-        /// En caso de que el almacenmiento no pueda incluir los 
-        /// Ids de TipoOrigenId y OrigenId
-        /// en esste campo debe almacenarse el 
-        /// Id generado por el almacén para el elemento asociado
+        /// Identificador único proporcionado por el almacenamiento para el registro
         /// </summary>
         public string IdentificadorAlmacenamiento { get; set; }
-        //#Tamano GUID es un campo opciona
-
-        /// <summary>
-        /// Identificador del tipo de almacén de metadatos asociado al objeto
-        /// </summary>
-        public string TipoAlmacenMetadatosId { get; set; }
         
-        public virtual TipoAlmacenMetadatos TipoAlmacen { get; set; }
+
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual Plantilla Plantilla { get; set; }
     }
 }

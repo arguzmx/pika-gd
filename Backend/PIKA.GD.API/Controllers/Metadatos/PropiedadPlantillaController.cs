@@ -10,7 +10,7 @@ using PIKA.GD.API.Model;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Interfaces;
 using RepositorioEntidades;
-using RepositorioEntidades.DatatablesPlugin;
+
 
 namespace PIKA.GD.API.Controllers.Metadatos
 {
@@ -23,17 +23,15 @@ namespace PIKA.GD.API.Controllers.Metadatos
 
         private ILogger<PropiedadPlantillaController> logger;
         private IServicioPropiedadPlantilla servicioPropiedadPlantilla;
-        private IServicioTipoDatoPropiedadPlantilla serviciotipopropiedad;
         private IProveedorMetadatos<PropiedadPlantilla> metadataProvider;
         public PropiedadPlantillaController(ILogger<PropiedadPlantillaController> logger,
             IProveedorMetadatos<PropiedadPlantilla> metadataProvider,
-            IServicioPropiedadPlantilla servicioPropiedadPlantilla,
-            IServicioTipoDatoPropiedadPlantilla servicioTipoDatoPropiedadPlantilla)
+            IServicioPropiedadPlantilla servicioPropiedadPlantilla
+            )
         {
             this.logger = logger;
             this.servicioPropiedadPlantilla = servicioPropiedadPlantilla;
             this.metadataProvider = metadataProvider;
-            this.serviciotipopropiedad = servicioTipoDatoPropiedadPlantilla;
         }
 
         [HttpGet("metadata", Name = "MetadataPropiedadPlantilla")]

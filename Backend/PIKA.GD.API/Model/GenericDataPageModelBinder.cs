@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using RepositorioEntidades;
-using RepositorioEntidades.DatatablesPlugin;
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;

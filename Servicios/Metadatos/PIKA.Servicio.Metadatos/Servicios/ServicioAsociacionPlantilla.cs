@@ -76,7 +76,6 @@ namespace PIKA.Servicio.Metadatos.Servicios
             }
 
             o.PlantillaId = entity.PlantillaId;
-            o.TipoAlmacenMetadatosId = entity.TipoAlmacenMetadatosId;
             o.OrigenId = entity.OrigenId;
             o.TipoOrigenId = entity.TipoOrigenId;
 

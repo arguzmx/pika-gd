@@ -12,7 +12,7 @@ using PIKA.Modelo.Aplicacion.Plugins;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.AplicacionPlugin.Interfaces;
 using RepositorioEntidades;
-using RepositorioEntidades.DatatablesPlugin;
+
 
 namespace PIKA.GD.API.Controllers.AplicacionPlugin
 {
