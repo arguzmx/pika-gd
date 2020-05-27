@@ -32,7 +32,16 @@ using PIKA.Servicio.Seguridad.Data;
 using PIKA.Servicio.AplicacionPlugin;
 using PIKA.Servicio.Contenido;
 using PIKA.Servicio.Metadatos.ElasticSearch;
-using PIKA.GD.API.Servicios;
+using PIKA.Infrastructure.EventBusRabbitMQ;
+using RabbitMQ.Client;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using PIKA.Infrastructure.EventBus;
+using PIKA.Infrastructure.EventBus.Abstractions;
+using Autofac;
+using PIKA.Servicio.Metadatos.EventosBus;
+using Autofac.Extensions.DependencyInjection;
+using Serilog;
+using Autofac.Core;
 
 namespace PIKA.GD.API
 {
@@ -42,24 +51,23 @@ namespace PIKA.GD.API
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
 
-        public ILogger<Startup> Logger { get; private set; }
-
-
-        private readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
-        
+       
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
             Environment = environment;
-
+            Log.Logger = new LoggerConfiguration()
+         .Enrich.FromLogContext()
+         .WriteTo.Console()
+         .CreateLogger();
         }
 
 
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public virtual IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            
             services.AddCors();
             services.AddMvc(setupAction =>
             {
@@ -69,55 +77,29 @@ namespace PIKA.GD.API
                 jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = null;
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            ConfiguracionServidor configuracionServidor = new ConfiguracionServidor();
-            this.Configuration.GetSection("ConfiguracionServidor").Bind(configuracionServidor);
 
+            //registra los ensamblados validables
+            services.RegistraValidables();
 
-            List<string> ensambladosValidables = LocalizadorEnsamblados.LocalizaConTipo(LocalizadorEnsamblados.ObtieneRutaBin(), typeof(IValidator));
-            List<Assembly> ensambladosValidacion = new List<Assembly>();
-            List<ServicioInyectable> inyectables = LocalizadorEnsamblados.ObtieneServiciosInyectables();
-            List<TipoAdministradorModulo> ModulosAdministrados = LocalizadorEnsamblados.ObtieneTiposAdministrados();
-            
+            //registra los ensamblados con módulos administrables para  ACL 
+            services.RegistraMódulosAdministrados();
 
-#if DEBUG
-            foreach (var t in ModulosAdministrados)
-            {
-                foreach (var x in t.TiposAdministrados)
-                {
-                    Console.WriteLine($"{t.ModuloId} === {x.Name}");
-                }
+            //Registra servicios inyetables
+            services.RegistraServiciosIntectables();
 
-            }
-
-
-            foreach (var t in ensambladosValidables)
-            {
-                
-                    Console.WriteLine($"{t} === V");
-                
-
-            }
-#endif
-
-
-
-          foreach (string item in ensambladosValidables)
-            {
-                ensambladosValidacion.Add(Assembly.LoadFrom(item));
-            }
-
-
-            foreach (var item in inyectables)
-            {
-                var ensamblado = Assembly.LoadFrom(item.RutaEnsamblado);
-                services.AddTransient(
-                    ensamblado.GetType(item.NombreServicio),
-                    ensamblado.GetType(item.NombreImplementacion));
-            }
-
+            //Servicios de cache de la aplicación basaodo en LazyCache
             services.AddLazyCache();
 
-            ServicioAplicacion.ModulosAdministrados = ModulosAdministrados;
+            // REgistra los serviicos para eventos basados en IEventBusService
+            services.RegistraServiciosParaEventos();
+
+            // ergistra la instancia del servicio de metadatos en base al tipo 
+            services.RegistraServicioDeMetadatos(this.Configuration);
+
+            // Configura el bus de eventos
+            services.ConfiguraBusEventos(this.Configuration);
+
+
             services.Configure<ConfiguracionServidor>(o => this.Configuration.GetSection("ConfiguracionServidor").Bind(o));
             services.AddSingleton(typeof(IServicioCache), typeof(CacheMemoria));
             services.AddSingleton(typeof(IAPICache<>), typeof(APICache<>));
@@ -126,27 +108,13 @@ namespace PIKA.GD.API
             services.AddTransient<IServicioTokenSeguridad, ServicioTokenSeguridad>();
             services.AddTransient<ICacheSeguridad, CacheSeguridadMemoria>();
             services.AddTransient(typeof(IProveedorMetadatos<>), typeof(ReflectionMetadataExtractor<>));
-            
+
             services.AddTransient<ILocalizadorFiltroACL, LocalizadorFiltroACLReflectivo>();
-
-
             services.AddScoped<AsyncACLActionFilter>();
 
             services.AddTransient(typeof(IProveedorOpcionesContexto<>),typeof(ProveedorOpcionesContexto<>));
-            
 
-            MetadatosOptions options = new MetadatosOptions();
-            Configuration.GetSection("Metadatos").Bind(options);
-    
-            if (options.Tipo == MetadatosOptions.ELASTICSEARCH)
-            {
-                Console.WriteLine($"++++ {options.Tipo}");
-                services.AddTransient<IRepositorioMetadatos, RepoMetadatosElasticSearch>();
-
-            }
-            
-
-
+     
             services.AddDbContext<DbContextSeguridad>(options =>
                  options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
@@ -169,21 +137,6 @@ namespace PIKA.GD.API
 
             services.AddControllers();
 
-            services.AddMvc(options =>
-            {
-                //options.Conventions.Add(new RouteTokenTransformerConvention(
-                //                             new SlugifyParameterTransformer()));
-
-               options.ModelBinderProviders.Insert(0, new GenericDataPageModelBinderProvider());
-
-            }).AddFluentValidation(opt =>
-            {
-                opt.LocalizationEnabled = false;
-                opt.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
-                opt.RegisterValidatorsFromAssemblies(ensambladosValidacion);
-            });
-
-
 
             services.AddApiVersioning(o =>
             {
@@ -192,47 +145,24 @@ namespace PIKA.GD.API
                 o.DefaultApiVersion = new ApiVersion(1, 0);
             });
 
+
+            // Servicios de Swaggr OPEN API
             services.AddOpenApiDocument();
 
+
+            // Configura la autenticación con el servidor de identidad
             services.AddAuthentication();
+            services.ConfiguraAutenticaciónJWT(this.Configuration);
+                        
 
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-         .AddJwtBearer(options =>
-         {
-             // base-address of your identityserver
-             options.Authority = configuracionServidor.jwtauth;
-             // name of the API resource
-             options.Audience = configuracionServidor.jwtaud;
-             options.Events = new JwtBearerEvents
-             {
-                 OnTokenValidated = context =>
-                 {
-                     // Add the access_token as a claim, as we may actually need it
-                     var accessToken = context.SecurityToken as JwtSecurityToken;
-                     if (accessToken != null)
-                     {
-                         ClaimsIdentity identity = context.Principal.Identity as ClaimsIdentity;
-                         if (identity != null)
-                         {
-                             identity.AddClaim(new Claim("access_token", accessToken.RawData));
-                         }
-                     }
-
-                     return Task.CompletedTask;
-                 }
-             };
-             options.RequireHttpsMetadata = false;
-         });
-
-
+            // Registro de servicios vía Autofac, es necesario para Rabbit MQ
+            var container = new ContainerBuilder();
+            container.Populate(services);
+            return new AutofacServiceProvider(container.Build());
 
         }
 
+     
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -264,6 +194,7 @@ namespace PIKA.GD.API
             app.UseOpenApi();
             app.UseSwaggerUi3();
 
+            app.ConfigureEventBus();
         }
     }
 }

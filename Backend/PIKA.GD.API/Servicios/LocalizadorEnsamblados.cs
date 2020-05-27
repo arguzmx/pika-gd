@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infrastructure.EventBus.Abstractions;
 using PIKA.Modelo.Metadatos;
 using RepositorioEntidades;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -22,6 +24,13 @@ namespace PIKA.GD.API
     }
 
 
+    public class EnsambladosEvento
+    {
+        public string RutaEnsambladoHandler { get; set; }
+        public string RutaEnsambladoEvento { get; set; }
+        public string NombreHandler { get; set; }
+        public string NombreEvento { get; set; }
+    }
 
 
     public static class LocalizadorEnsamblados
@@ -30,20 +39,20 @@ namespace PIKA.GD.API
         public static Type ObtieneTipoMetadata(Type tipo)
         {
 
-            foreach(var c in tipo.GetConstructors())
+            foreach (var c in tipo.GetConstructors())
             {
-               foreach(var p in c.GetParameters())
+                foreach (var p in c.GetParameters())
                 {
                     if (p.ParameterType.FullName.Contains("IProveedorMetadatos", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        foreach(var a in p.ParameterType.GenericTypeArguments)
+                        foreach (var a in p.ParameterType.GenericTypeArguments)
                         {
                             return a;
                         }
                     }
                 }
             }
-          
+
             return null;
         }
 
@@ -67,7 +76,7 @@ namespace PIKA.GD.API
                             .ToArray();
 
                     l.AddRange(Tipos);
- 
+
 
                 }
                 catch (Exception)
@@ -117,7 +126,8 @@ namespace PIKA.GD.API
             return l;
         }
 
-        public static List<ServicioInyectable> ObtieneServiciosInyectables()
+
+        public static List<ServicioInyectable> ObtieneServiciosBusEventos()
         {
             List<ServicioInyectable> l = new List<ServicioInyectable>();
             string Ruta = ObtieneRutaBin();
@@ -132,11 +142,11 @@ namespace PIKA.GD.API
                     var Tipos = assembly.GetTypes()
                             .Where(t =>
                             !t.IsAbstract &&
-                            typeof(IServicioInyectable).IsAssignableFrom(t))
+                            typeof(IEventBusService).IsAssignableFrom(t))
                             .ToArray();
                     foreach (var t in Tipos)
                     {
-                      
+
                         foreach (var i in t.GetInterfaces())
                         {
                             if ((("I" + t.Name).ToUpperInvariant()) == i.Name.ToUpperInvariant())
@@ -165,6 +175,114 @@ namespace PIKA.GD.API
 
             return l;
         }
+
+
+
+        public static List<ServicioInyectable> ObtieneServiciosInyectables()
+        {
+            List<ServicioInyectable> l = new List<ServicioInyectable>();
+            string Ruta = ObtieneRutaBin();
+
+            var assemblies = Directory.GetFiles(Ruta, "*.dll", new EnumerationOptions() { RecurseSubdirectories = true });
+
+            foreach (var item in assemblies)
+            {
+                try
+                {
+                    var assembly = Assembly.LoadFile(item);
+                    var Tipos = assembly.GetTypes()
+                            .Where(t =>
+                            !t.IsAbstract &&
+                            typeof(IServicioInyectable).IsAssignableFrom(t))
+                            .ToArray();
+                    foreach (var t in Tipos)
+                    {
+
+                        foreach (var i in t.GetInterfaces())
+                        {
+                            if ((("I" + t.Name).ToUpperInvariant()) == i.Name.ToUpperInvariant())
+                            {
+                                ServicioInyectable s = new ServicioInyectable()
+                                {
+                                    NombreImplementacion = t.FullName,
+                                    NombreServicio = i.FullName,
+                                    RutaEnsamblado = item
+                                };
+
+                                l.Add(s);
+                            }
+
+                        }
+
+                    }
+
+
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            return l;
+        }
+
+
+        public static List<EnsambladosEvento> ObtieneManejadoresEventosBus()
+        {
+            List<EnsambladosEvento> l = new List<EnsambladosEvento>();
+            string Ruta = ObtieneRutaBin();
+
+            var assemblies = Directory.GetFiles(Ruta, "*.dll", new EnumerationOptions() { RecurseSubdirectories = true });
+
+            foreach (var item in assemblies)
+            {
+                try
+                {
+                    var assembly = Assembly.LoadFile(item);
+                    var Tipos = assembly.GetTypes()
+                            .Where(t =>
+                            !t.IsAbstract &&
+                            typeof(IIntegrationEventHandler).IsAssignableFrom(t))
+                            .ToArray();
+
+                    foreach (var t in Tipos)
+                    {
+                        foreach (var i in t.GetInterfaces())
+                        {
+                            if (i.Name.IndexOf("IIntegrationEventHandler") >= 0)
+                            {
+                                if (i.IsGenericType)
+                                {
+
+                                    foreach (var a in i.GenericTypeArguments)
+                                    {
+
+                                        EnsambladosEvento s = new EnsambladosEvento()
+                                        {
+                                            NombreEvento = a.FullName,
+                                            NombreHandler = t.FullName,
+                                            RutaEnsambladoEvento = item,
+                                            RutaEnsambladoHandler = item
+                                        };
+
+                                        l.Add(s);
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            return l;
+        }
+
 
         public static string ObtieneRutaBin()
         {

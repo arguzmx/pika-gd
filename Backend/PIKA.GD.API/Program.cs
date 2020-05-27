@@ -1,4 +1,5 @@
 using FluentValidation;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -33,7 +34,7 @@ namespace PIKA.GD.API
             try
             {
                 Log.Information("Starting up");
-                var host = CreateHostBuilder(args).Build();
+                var host = BuildWebHost(args);
                 var CurrentHost = host.Services.GetService<IWebHostEnvironment>();
                 var config = host.Services.GetRequiredService<IConfiguration>();
 
@@ -41,8 +42,9 @@ namespace PIKA.GD.API
                 {
                     InicializarAplication(config, CurrentHost);
                 }
-                else {
-                    Console.WriteLine("Saltabdo configuracion de datos");
+                else
+                {
+                    Log.Information("Saltando la configutracion de datos");
                 }
 
 
@@ -62,22 +64,22 @@ namespace PIKA.GD.API
 
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                })
-             .ConfigureAppConfiguration(config =>
-             {
-                 config
-                     // Used for local settings like connection strings.
-                     .AddJsonFile("appsettings.local.json", optional: true);
-             }).UseSerilog();
+        private static IWebHost BuildWebHost(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+            .CaptureStartupErrors(false)
+            .ConfigureAppConfiguration(config =>
+            {
+                config.AddJsonFile("appsettings.local.json", optional: true);
+            })
+            .UseStartup<Startup>()
+            .UseContentRoot(Directory.GetCurrentDirectory())
+            .UseSerilog()
+            .Build();
 
 
 
-        private static void InicializarAplication(IConfiguration configuracion, IWebHostEnvironment env) {
+        private static void InicializarAplication(IConfiguration configuracion, IWebHostEnvironment env)
+        {
             List<Type> contextos = LocalizadorEnsamblados.ObtieneContextosInicializables();
             string connectionString = configuracion.GetConnectionString("pika-gd");
             foreach (Type dbContextType in contextos)
@@ -90,7 +92,7 @@ namespace PIKA.GD.API
                 try
                 {
 
-                    
+
                     ((IRepositorioInicializable)dbContext).AplicarMigraciones();
                     ((IRepositorioInicializable)dbContext).Inicializar(env.ContentRootPath);
 
