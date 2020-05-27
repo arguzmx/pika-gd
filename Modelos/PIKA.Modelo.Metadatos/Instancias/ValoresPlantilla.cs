@@ -11,7 +11,7 @@ namespace PIKA.Modelo.Metadatos
     /// Mantiene una copia de los datos corespondientes a una plantilla
     /// Esta clase es solo para manejo en memodia no debe incluirse en la base de datos
     /// </summary>
-    public class ValoresPlantilla
+    public class ValoresPlantilla: IEntidadRelacionada
     {
         public ValoresPlantilla() { 
         }
@@ -49,13 +49,30 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public string PlantillaId { get; set; }
 
+
+        
         
         /// <summary>
         /// Lista de valores en las propiedades
         /// </summary>
         public List<ValorPropiedad> Valores { get; set; }
 
+        /// <summary>
+        /// Propiedad no utilizada
+        /// </summary>
+        public string TipoOrigenDefault => throw new NotImplementedException();
 
+
+        /// <summary>
+        /// Identificador del tipo de origen asoaciado a los valores, por ejemplo Dominio, Persona, Documentp
+        /// </summary>
+        public string TipoOrigenId { get; set; }
+
+        /// <summary>
+        /// Identificador único de la instancia origen a la que se asocian los valores
+        /// por ejemplo Usuario: Oswaldo Diaz, Documento: Carta factura 1o Febrero
+        /// </summary>
+        public string OrigenId { get; set; }
 
     }
 

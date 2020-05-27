@@ -154,8 +154,8 @@ namespace PIKA.Servicio.Metadatos.Servicios
         {
 
             Plantilla d = await this.repo.UnicoAsync(predicado,ordenarPor, incluir);
-            
-            return d.CopiaPlantilla();
+
+            return d?.CopiaPlantilla();
         }
 
 
