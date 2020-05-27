@@ -143,7 +143,7 @@ namespace PIKA.GD.API.Filters
                     ((ACLController)context.Controller).TenatId = OwnerId;
                     ((ACLController)context.Controller).DominioId = DomainId;
 
-                    var result = await next().ConfigureAwait(true);
+                    var result = await next().ConfigureAwait(false);
                 }
                 else
                 {
@@ -153,7 +153,7 @@ namespace PIKA.GD.API.Filters
             }
             else
             {
-                var result = await next().ConfigureAwait(true);
+                var result = await next().ConfigureAwait(false);
             }
 
 

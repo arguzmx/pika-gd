@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using PIKA.GD.API.Servicios;
 using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Data.Migrations;
+using PIKA.Servicio.Metadatos.EventosBus;
 using PIKA.Servicio.Metadatos.Interfaces;
 using RepositorioEntidades;
 
@@ -28,14 +28,14 @@ namespace PIKA.GD.API.Controllers.Metadatos
         private readonly IRepositorioMetadatos repositorio;
         private readonly IServicioPlantilla servicioPlantilla;
         private readonly IAPICache<Plantilla> cachePlantilla;
+        private readonly IBusEventosMetadatos busMetdatos;
         private Plantilla plantilla;
         
 
         private async Task<Plantilla> ObtenerPlantilla(string PlantillaId)
         {
-            plantilla = await cachePlantilla.Obtiene(PlantillaId).ConfigureAwait(true);
 
-
+            plantilla = await cachePlantilla.Obtiene(PlantillaId, ContantesCache.CONTROLADORMETADATOS).ConfigureAwait(false);
             if (plantilla == null) {
                 plantilla = await servicioPlantilla.UnicoAsync(
                     predicado: x => x.Id == PlantillaId,
@@ -44,11 +44,12 @@ namespace PIKA.GD.API.Controllers.Metadatos
                     .Include(z=>z.Propiedades).ThenInclude(z=>z.ValidadorNumero)
                     .Include(z => z.Propiedades).ThenInclude(z => z.ValidadorTexto)
                     .Include(z => z.Propiedades).ThenInclude(z => z.AtributoTabla)
-                     ).ConfigureAwait(true);
+                     ).ConfigureAwait(false);
+
                 if (plantilla != null) {
-                    Console.WriteLine(" + Cache");
-                    await cachePlantilla.Inserta(PlantillaId, plantilla, new TimeSpan(1, 0, 0)).ConfigureAwait(false);
+                    await cachePlantilla.Inserta(PlantillaId, ContantesCache.CONTROLADORMETADATOS, plantilla, new TimeSpan(1, 0, 0)).ConfigureAwait(false);
                 }
+
             }
             return plantilla;
         }
@@ -57,13 +58,15 @@ namespace PIKA.GD.API.Controllers.Metadatos
             IRepositorioMetadatos repositorio,
             ILogger<MetadatosController> logger,
             IServicioPlantilla servicioPlantilla,
-            IAPICache<Plantilla> cachePlantilla
+            IAPICache<Plantilla> cachePlantilla,
+            IBusEventosMetadatos busMetdatos
             )
         {
             this.repositorio = repositorio;
             this.logger = logger;
             this.servicioPlantilla = servicioPlantilla;
             this.cachePlantilla = cachePlantilla;
+            this.busMetdatos = busMetdatos;
         }
 
 
@@ -76,7 +79,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [HttpPut]
         public async Task<ActionResult> Actualizar(string id, ValoresPlantilla valores)
         {
-            await Task.Delay(1).ConfigureAwait(true);
+            await Task.Delay(1).ConfigureAwait(false);
             return NoContent();
         }
 
@@ -89,7 +92,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ValoresPlantilla>>> Consulta(string plantillaId, Consulta query)
         {
-            await Task.Delay(1).ConfigureAwait(true);
+            await Task.Delay(1).ConfigureAwait(false);
             var lista = new List<ValoresPlantilla>();
             return Ok(lista);
         }
@@ -104,7 +107,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [HttpDelete]
         public async Task<ActionResult<bool>>Elimina(string plantillaId, string[] ids )
         {
-            await Task.Delay(1).ConfigureAwait(true);
+            await Task.Delay(1).ConfigureAwait(false);
             return NoContent();
         }
 
@@ -119,7 +122,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [HttpPost]
         public async Task<ActionResult<string>> Inserta(string TipoOrigenId, string OrigenId, ValoresPlantilla valores)
         {
-            await Task.Delay(1).ConfigureAwait(true);
+            await Task.Delay(1).ConfigureAwait(false);
             return Ok("");
         }
 
@@ -132,20 +135,25 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [HttpGet("unico/{plantillaid}/{id}", Name = "GetMetadatosUnico")]
         public async Task<ActionResult<ValoresPlantilla>> Unico(string plantillaid, string id)
         {
-            Console.WriteLine($"{plantillaid}/{id}");
-            await Task.Delay(1).ConfigureAwait(true);
-            if (await ObtenerPlantilla(plantillaid) != null)
+
+            await busMetdatos.CambioPlantilla(plantillaid).ConfigureAwait(false);
+
+            if (await ObtenerPlantilla(plantillaid).ConfigureAwait(false) != null)
             {
-                return Ok(this.plantilla);
+                string pid = "";
+                bool existe =await repositorio.ExisteIndice(this.plantilla.Id).ConfigureAwait(false);
+                if (!existe)
+                {
+                    pid = await repositorio.CrearIndice(this.plantilla).ConfigureAwait(false);
+                    existe = await repositorio.ExisteIndice(this.plantilla.Id).ConfigureAwait(false);
+                }
+                return Ok($"{existe}:{pid}");
             }
             else
             {
-
-                return NotFound();
+                return NotFound($"{plantillaid}");
             }
 
-            return Ok();
-            
         }
 
 

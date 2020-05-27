@@ -8,13 +8,36 @@ namespace PIKA.Modelo.Metadatos
 {
     public interface IRepositorioMetadatos
     {
+
+
+        /// <summary>
+        /// Crea el esapcio  de almacenamiento asociado a la plantilla
+        /// </summary>
+        /// <param name="plantilla"></param>
+        Task<string> CrearIndice(Plantilla plantilla);
+
+
+        /// <summary>
+        /// Actualiza el esapcio  de almacenamiento asociado a la plantilla
+        /// </summary>
+        /// <param name="plantilla"></param>
+        Task<bool> ActualizarIndice(Plantilla plantilla);
+
+
+        /// <summary>
+        /// Elimina el índice asocaidoa la plnatilla
+        /// </summary>
+        /// <param name="plantilla"></param>
+        Task<bool> EliminarIndice(Plantilla plantilla);
+
+
         /// <summary>
         /// Obtiene un elemento único del repositorio basado en el Id
         /// </summary>
         /// <param name="plantilla">Modelo de la plantilla</param>
         /// <param name="id">Identificador del registro a recuperar</param>
         /// <returns></returns>
-        ValoresPlantilla Unico(Plantilla plantilla, string id);
+        Task<ValoresPlantilla> Unico(Plantilla plantilla, string id);
 
         /// <summary>
         /// Elmina un elmento único del repositorio
@@ -22,7 +45,7 @@ namespace PIKA.Modelo.Metadatos
         /// <param name="plantilla">Modelo de la plantilla</param>
         /// <param name="id">Identificador del registro a eliminar</param>
         /// <returns></returns>
-        bool Elimina(Plantilla plantilla, string id);
+        Task<bool> Elimina(Plantilla plantilla, string id);
 
 
         /// <summary>
@@ -31,7 +54,7 @@ namespace PIKA.Modelo.Metadatos
         /// <param name="plantilla">Modelo de la plantilla</param>
         /// <param name="valores">Datos de los valores en las propedades de la plantilla</param>
         /// <returns></returns>
-        string Inserta(Plantilla plantilla, ValoresPlantilla valores);
+        Task<string> Inserta(Plantilla plantilla, ValoresPlantilla valores);
 
         /// <summary>
         /// Actualiza un elmento al repositorio
@@ -39,7 +62,7 @@ namespace PIKA.Modelo.Metadatos
         /// <param name="plantilla">Modelo de la plantilla</param>
         /// <param name="valores">Datos de los valores en las propedades de la plantilla</param>
         /// <returns></returns>
-        bool Actualiza(Plantilla plantilla, ValoresPlantilla valores);
+        Task<bool> Actualiza(Plantilla plantilla, ValoresPlantilla valores);
 
         /// <summary>
         /// Obtiene una lista de elementos de la plantilla
@@ -47,7 +70,15 @@ namespace PIKA.Modelo.Metadatos
         /// <param name="plantilla"></param>
         /// <param name="query"></param>
         /// <returns></returns>
-        List<ValoresPlantilla> Consulta(Plantilla plantilla, Consulta query);
-        
+        Task<Paginado<ValoresPlantilla>> Consulta(Plantilla plantilla, Consulta query);
+
+
+        /// <summary>
+        /// Determina si la plantilla existe registrada en el almacén
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<bool> ExisteIndice(string id);
+
     }
 }
