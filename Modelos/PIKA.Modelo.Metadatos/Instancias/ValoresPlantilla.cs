@@ -13,12 +13,14 @@ namespace PIKA.Modelo.Metadatos
     /// </summary>
     public class ValoresPlantilla: IEntidadRelacionada
     {
-        public ValoresPlantilla() { 
+        public ValoresPlantilla() {
+            this.Valores = new List<ValorPropiedad>();
         }
 
         public ValoresPlantilla(string plantillaId)
         {
             this.PlantillaId = plantillaId;
+            this.Valores = new List<ValorPropiedad>();
         }
 
         /// <summary>
@@ -49,8 +51,6 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public string PlantillaId { get; set; }
 
-
-        
         
         /// <summary>
         /// Lista de valores en las propiedades

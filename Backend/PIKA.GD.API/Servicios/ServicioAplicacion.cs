@@ -7,30 +7,74 @@ using System.Threading.Tasks;
 
 namespace PIKA.GD.API
 {
+
+    /// <summary>
+    /// Objeto estático para mantener el estado de la aplicaicón en ejeucuión
+    /// </summary>
     public static class ServicioAplicacion
     {
 
-        private static List<MetadataInfo> _InformacionMetadatos;
+        private static List<TipoAdministradorModulo> _ModulosAdministrados;
 
-        public static List<TipoAdministradorModulo> ModulosAdministrados { get; set; }
+        /// <summary>
+        /// Lista de módulos administrados del sistema
+        /// </summary>
+        public static List<TipoAdministradorModulo> ModulosAdministrados { get { return _ModulosAdministrados; } }
 
-        private static object LockInfoMetadatos = new object();
-
-        public static MetadataInfo InformacionMetadatos(Type Tipo)
+        /// <summary>
+        /// Estableces los módulos administrados del sistema
+        /// </summary>
+        /// <param name="modulos"></param>
+        public static void SetModulosAdministrador(List<TipoAdministradorModulo> modulos)
         {
-            if (_InformacionMetadatos == null) return null;
-            return _InformacionMetadatos.Where(x => x.Tipo == Tipo.Name).Take(1).SingleOrDefault(); ;
+            _ModulosAdministrados = modulos;
         }
 
 
-        public static void AdiconaInformacionMetadatos(MetadataInfo info)
+        #region Plantillas y metadatos
+        private static List<string> _PlantillasGeneradas;
+        private static object LockPlantilla = new object();
+
+        /// <summary>
+        /// Identifica si  la plantilla ha sido generada, evita consultas adicionales al backend
+        /// </summary>
+        /// <param name="PlantilaId"></param>
+        /// <returns></returns>
+        public static bool EsPlantillaGenerada(string PlantilaId)
         {
-            lock (LockInfoMetadatos)
+            if (_PlantillasGeneradas == null) return false;
+
+            return (_PlantillasGeneradas.IndexOf(PlantilaId) >= 0 ? true : false);
+        }
+
+        public static void AdicionaPlantillaGenerada(string PlantilaId) {
+            lock (LockPlantilla)
             {
-                if (_InformacionMetadatos == null) _InformacionMetadatos = new List<MetadataInfo>();
-                _InformacionMetadatos.Add(info);
+                if (_PlantillasGeneradas == null) _PlantillasGeneradas =new List<string>();
+                if (_PlantillasGeneradas.IndexOf(PlantilaId) < 0) _PlantillasGeneradas.Add(PlantilaId);
             }
         }
+
+
+        public static void EliminaPlantillaGenerada(string PlantilaId)
+        {
+            lock (LockPlantilla)
+            {
+                if (_PlantillasGeneradas == null) return;
+                if (_PlantillasGeneradas.IndexOf(PlantilaId) >= 0) _PlantillasGeneradas.Remove(PlantilaId);
+            }
+        }
+
+
+        #endregion
+
+
+
+
+
+
+
+
 
 
     }

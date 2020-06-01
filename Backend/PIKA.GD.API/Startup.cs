@@ -1,13 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Reflection;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -19,7 +10,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Middlewares;
-using PIKA.GD.API.Model;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Metadatos;
@@ -28,20 +18,12 @@ using RepositorioEntidades;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.Seguridad;
 using PIKA.Servicio.Metadatos.Data;
-using PIKA.Servicio.Seguridad.Data;
 using PIKA.Servicio.AplicacionPlugin;
 using PIKA.Servicio.Contenido;
-using PIKA.Servicio.Metadatos.ElasticSearch;
-using PIKA.Infrastructure.EventBusRabbitMQ;
-using RabbitMQ.Client;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using PIKA.Infrastructure.EventBus;
-using PIKA.Infrastructure.EventBus.Abstractions;
 using Autofac;
-using PIKA.Servicio.Metadatos.EventosBus;
 using Autofac.Extensions.DependencyInjection;
 using Serilog;
-using Autofac.Core;
+using PIKA.GD.API.Servicios;
 
 namespace PIKA.GD.API
 {
@@ -74,8 +56,11 @@ namespace PIKA.GD.API
                 setupAction.EnableEndpointRouting = false;
             }).AddJsonOptions(jsonOptions =>
             {
+                jsonOptions.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = null;
+
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
 
 
             //registra los ensamblados validables
@@ -114,7 +99,11 @@ namespace PIKA.GD.API
 
             services.AddTransient(typeof(IProveedorOpcionesContexto<>),typeof(ProveedorOpcionesContexto<>));
 
-     
+
+            services.AddSingleton<ICacheMetadatosAplicacion, CacheMetadatosAplicacion>();
+            services.AddSingleton<ICacheAplicacion, CacheAplicacion>();
+
+
             services.AddDbContext<DbContextSeguridad>(options =>
                  options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 

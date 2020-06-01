@@ -12,14 +12,17 @@ namespace PIKA.Servicio.Metadatos.EventosBus
     public class EventoPlantillaCambioHandler : IIntegrationEventHandler<EventoPlantillaCambio>
     {
         private readonly ILogger<EventoPlantillaCambioHandler> _logger;
-        private readonly IAPICache<Plantilla> _cache;
+        private readonly IAPICache<Plantilla> _cachePlantilla;
+        private readonly IAPICache<bool> _cacheClaves;
 
         public EventoPlantillaCambioHandler(
             ILogger<EventoPlantillaCambioHandler> logger,
-            IAPICache<Plantilla> cache)
+            IAPICache<Plantilla> cachePlantilla,
+            IAPICache<bool> cacheClaves)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _cache = cache;
+            _cachePlantilla = cachePlantilla;
+            _cacheClaves = cacheClaves;
         }
 
         public async Task Handle(EventoPlantillaCambio  @event)
@@ -28,8 +31,9 @@ namespace PIKA.Servicio.Metadatos.EventosBus
             using (LogContext.PushProperty("IntegrationEventContext", $"{@event.Id} para la plantilla {@event.PlantillaId} "))
             {
                 _logger.LogInformation("Eliminando cache para la plantilla {IdPlantilla}", @event.PlantillaId);
-                await _cache.EliminaSiContiene(@event.PlantillaId);
-                
+                await _cachePlantilla.EliminaSiContiene(@event.PlantillaId);
+                await _cacheClaves.EliminaSiContiene(@event.PlantillaId);
+
             }
         }
         
