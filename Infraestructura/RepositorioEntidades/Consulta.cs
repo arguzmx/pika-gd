@@ -15,4 +15,17 @@ namespace RepositorioEntidades
         public List<FiltroConsulta> Filtros { get; set; }
 
     }
+
+    public class ConsultaArray : ParametrosConsulta
+    {
+        public ConsultaArray()
+        {
+
+            
+        }
+
+        public FiltroConsulta[] Filtros { get; set; }
+
+    }
+
 }

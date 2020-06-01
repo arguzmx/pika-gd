@@ -7,7 +7,7 @@ namespace RepositorioEntidades
     public class ParametrosConsulta
     {
         /// <summary>
-        /// Indíce o página solicitada
+        /// Indíce en base cero de la página solicitada 
         /// </summary>
         public int indice { get; set; }
 

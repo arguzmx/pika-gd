@@ -88,7 +88,7 @@ namespace PIKA.GD.API
 
             }
 
-            ServicioAplicacion.ModulosAdministrados = ModulosAdministrados;
+            ServicioAplicacion.SetModulosAdministrador(ModulosAdministrados);
         }
 
 
@@ -123,6 +123,8 @@ namespace PIKA.GD.API
             Configuration.GetSection("Metadatos").Bind(repometadtosconf);
             if (repometadtosconf.Tipo == ConfiguracionRepoMetadatos.ELASTICSEARCH)
             {
+
+                Log.Logger.Information("Estableciendo el repositorio de metadatos a {x}", "Elasticsearch");
                 services.AddTransient<IRepositorioMetadatos, RepoMetadatosElasticSearch>();
 
             }

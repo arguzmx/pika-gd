@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using LazyCache;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using PIKA.Infraestructura.Comun;
+using PIKA.GD.API.Servicios;
 using PIKA.Modelo.Metadatos;
-using PIKA.Servicio.Metadatos.Data.Migrations;
-using PIKA.Servicio.Metadatos.EventosBus;
-using PIKA.Servicio.Metadatos.Interfaces;
 using RepositorioEntidades;
+using PIKA.Servicio.Metadatos.ElasticSearch;
+using System;
+using System.Text.Json;
+using System.Linq;
 
 namespace PIKA.GD.API.Controllers.Metadatos
 {
@@ -26,47 +20,17 @@ namespace PIKA.GD.API.Controllers.Metadatos
     {
         private ILogger<MetadatosController> logger;
         private readonly IRepositorioMetadatos repositorio;
-        private readonly IServicioPlantilla servicioPlantilla;
-        private readonly IAPICache<Plantilla> cachePlantilla;
-        private readonly IBusEventosMetadatos busMetdatos;
-        private Plantilla plantilla;
+        private readonly ICacheAplicacion appCache;
         
-
-        private async Task<Plantilla> ObtenerPlantilla(string PlantillaId)
-        {
-
-            plantilla = await cachePlantilla.Obtiene(PlantillaId, ContantesCache.CONTROLADORMETADATOS).ConfigureAwait(false);
-            if (plantilla == null) {
-                plantilla = await servicioPlantilla.UnicoAsync(
-                    predicado: x => x.Id == PlantillaId,
-                    incluir: 
-                    y=>y.Include(z=>z.Propiedades).ThenInclude(z=>  z.TipoDato )
-                    .Include(z=>z.Propiedades).ThenInclude(z=>z.ValidadorNumero)
-                    .Include(z => z.Propiedades).ThenInclude(z => z.ValidadorTexto)
-                    .Include(z => z.Propiedades).ThenInclude(z => z.AtributoTabla)
-                     ).ConfigureAwait(false);
-
-                if (plantilla != null) {
-                    await cachePlantilla.Inserta(PlantillaId, ContantesCache.CONTROLADORMETADATOS, plantilla, new TimeSpan(1, 0, 0)).ConfigureAwait(false);
-                }
-
-            }
-            return plantilla;
-        }
-
         public MetadatosController(
             IRepositorioMetadatos repositorio,
             ILogger<MetadatosController> logger,
-            IServicioPlantilla servicioPlantilla,
-            IAPICache<Plantilla> cachePlantilla,
-            IBusEventosMetadatos busMetdatos
+            ICacheAplicacion appCache
             )
         {
             this.repositorio = repositorio;
             this.logger = logger;
-            this.servicioPlantilla = servicioPlantilla;
-            this.cachePlantilla = cachePlantilla;
-            this.busMetdatos = busMetdatos;
+            this.appCache= appCache;
         }
 
 
@@ -126,6 +90,8 @@ namespace PIKA.GD.API.Controllers.Metadatos
             return Ok("");
         }
 
+
+
         /// <summary>
         /// Obtiene un elemento de metatdaos para el Id recibido
         /// </summary>
@@ -135,19 +101,43 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [HttpGet("unico/{plantillaid}/{id}", Name = "GetMetadatosUnico")]
         public async Task<ActionResult<ValoresPlantilla>> Unico(string plantillaid, string id)
         {
-
-            await busMetdatos.CambioPlantilla(plantillaid).ConfigureAwait(false);
-
-            if (await ObtenerPlantilla(plantillaid).ConfigureAwait(false) != null)
+            Plantilla plantilla = await appCache.Metadatos.ObtenerPlantilla(plantillaid, ContantesCache.CONTROLADORMETADATOS).ConfigureAwait(false);
+            if (plantilla != null)
             {
-                string pid = "";
-                bool existe =await repositorio.ExisteIndice(this.plantilla.Id).ConfigureAwait(false);
-                if (!existe)
+                
+                bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
+                if (existe)
                 {
-                    pid = await repositorio.CrearIndice(this.plantilla).ConfigureAwait(false);
-                    existe = await repositorio.ExisteIndice(this.plantilla.Id).ConfigureAwait(false);
+                    Consulta q = new Consulta()
+                    {
+                        consecutivo = 0,
+                        indice = 0,
+                        tamano = 5,
+                        ord_columna = "pin64",
+                        ord_direccion = "asc",
+                        recalcular_totales = false
+                    };
+
+                    List<FiltroConsulta> tmp = new List<FiltroConsulta>();
+
+                    q.Filtros .Add(new FiltroConsulta() { Propiedad = "TipOrigenId", Operador = "eq", Valor="demo" });
+                    q.Filtros.Add(new FiltroConsulta() { Propiedad = "pbooleano", Operador = "eq", Valor = "true" });
+
+                    string j= JsonSerializer.Serialize(q);
+
+                    //var data = plantilla.ObtieneValoresDemo();
+                    //string resp = await repositorio.Inserta(plantilla, data).ConfigureAwait(false);
+                    //if (resp != null)
+                    //{
+                    //    return Ok($"{data}");
+                    //}
+                    //return UnprocessableEntity($"{plantillaid}");
+                    return Ok(j);
                 }
-                return Ok($"{existe}:{pid}");
+                else {
+                    return UnprocessableEntity($"{plantillaid}");
+                }
+                
             }
             else
             {
@@ -157,6 +147,55 @@ namespace PIKA.GD.API.Controllers.Metadatos
         }
 
 
+
+        [HttpPost("buscar/{id}", Name = "Buscar")]
+        public async Task<ActionResult<string>> Buscar([FromBody] ConsultaArray query, string id)
+        {
+            try
+            {
+                logger.LogInformation("Fuiltros {0}", id);
+                logger.LogInformation("Fuiltros {0}", query.ord_direccion);
+                logger.LogInformation("Fuiltros {0}", query.Filtros.Length);
+            }
+            catch (Exception ex)
+            {
+
+                logger.LogError("Fuiltros {0}", ex.ToString());
+            }
+            
+
+            await Task.Delay(1).ConfigureAwait(false);
+            return Ok("");
+        }
+
+
+
+        private async Task<bool> PLantillaGenerada(Plantilla plantilla)
+        {
+            bool existe = await appCache.Metadatos.EsPlantillaGenerada(plantilla.Id).ConfigureAwait(false);
+            if (!existe)
+            {
+                // si no esta en cache
+                //Verifcica en el repositorio
+                existe = await repositorio.ExisteIndice(plantilla.Id).ConfigureAwait(false);
+
+               if(!existe)
+                {
+                    // Crea la plantilla si no existe
+                    await repositorio.CrearIndice(plantilla).ConfigureAwait(false);
+                    // y vuelve a consultar
+                    existe = await repositorio.ExisteIndice(plantilla.Id).ConfigureAwait(false);
+                }
+                
+              // Si exite o fue creada lo marca en el cache
+                if (existe) appCache.Metadatos.AdicionaPlantillaGenerada(plantilla.Id); 
+            }
+            
+            return existe;
+        }
      
     }
+
+
+
 }
