@@ -238,7 +238,6 @@ namespace RepositorioEntidades
 
         private  Expression GetStringExpression(ParameterExpression x, PropertyInfo p, string Operador, string Value)
         {
-
             Expression pe = Expression.Property(x, p.Name);
             BinaryExpression isNotNull = Expression.NotEqual(pe, Expression.Constant(null, typeof(object)));
             BinaryExpression IsNUll = Expression.Equal(pe, Expression.Constant(null, typeof(object)));
@@ -249,7 +248,7 @@ namespace RepositorioEntidades
    
             if (!string.IsNullOrEmpty(Value))
             {
-
+                Console.Write($" opgse: {Operador}      {Value}");
                 switch (Operador)
                 {
                     case FiltroConsulta.OP_ISNULL:
@@ -337,25 +336,25 @@ namespace RepositorioEntidades
         {
             Expression final = null;
 
-     
+            
             if (q.Filtros.Count > 0)
             {
                 Type type = typeof(T);
                 var Props = type.GetProperties().ToList();
                 List<Expression> expressions = new List<Expression>();
-                
+                int i = 0;
                 foreach (var f in q.Filtros)
                 {
-                    
+                    f.Operador = f.Operador.TrimEnd('}');
+                    f.Valor = f.Valor.TrimEnd('}');
                     Expression e = null;
- 
-                    var p = Props.Where(x => x.Name.ToLower() == f.Propiedad.ToLower()).FirstOrDefault();
+
+                    var p = Props.Where(x => x.Name == f.Propiedad).FirstOrDefault();
                     if (p == null) continue;
 
 
                     if (p != null)
                     {
-
                         switch (p.PropertyType)
                         {
                             case Type intType when intType == typeof(int):
@@ -387,12 +386,10 @@ namespace RepositorioEntidades
                         {
                             expressions.Add(e);
                         }
-
                         foreach (Expression expression in expressions)
                         {
                             final = (final == null) ? expression : Expression.AndAlso(final, expression);
                         }
-
                     }
                 }
 
