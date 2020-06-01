@@ -59,7 +59,7 @@ namespace RepositorioEntidades
                 if (inhabilitarSeguimiento) query = query.AsNoTracking();
 
                 if (incluir != null) query = incluir(query);
-
+       
                 if (consulta.Filtros.Count > 0)
                 {
                     var type = typeof(T);
@@ -68,7 +68,7 @@ namespace RepositorioEntidades
 
                     Expression predicateBody = _compositor.Componer(pe, consulta);
 
-     
+                    
                     if (predicateBody != null)
                     {
                         MethodCallExpression whereCallExpression = Expression.Call(
@@ -80,14 +80,12 @@ namespace RepositorioEntidades
 
                         query = query.Provider.CreateQuery<T>(whereCallExpression);
                     }
-
                 }
-
-
 
                 query = query.OrdenarPor(consulta.ord_columna, consulta.ord_direccion.ToLower() == "desc" ? false : true);
 
                 return query.PaginadoAsync(consulta.indice, consulta.tamano, 0, tokenCancelacion);
+
             }
             catch (Exception ex)
             {

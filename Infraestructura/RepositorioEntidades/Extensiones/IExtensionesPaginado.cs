@@ -16,8 +16,9 @@ namespace RepositorioEntidades
             if (desde > indice) throw new ArgumentException($"From: {desde} > Index: {indice}, must From <= Index");
 
             var count = await origen.CountAsync(cancellationToken).ConfigureAwait(false);
-            
-            var items = await origen.Skip((indice - desde) * tamano)
+ 
+            desde = (indice * tamano) - tamano;
+            var items = await origen.Skip(desde)
                 .Take(tamano).ToListAsync(cancellationToken).ConfigureAwait(false);
             
             var list = new Paginado<T>
@@ -25,7 +26,8 @@ namespace RepositorioEntidades
                 Indice = indice,
                 Tamano = tamano,
                 Desde = desde,
-                ConteoFiltrado = count,
+                ConteoTotal = count,
+                //ConteoFiltrado
                 Elementos = items,
                 Paginas = (int)Math.Ceiling(count / (double)tamano)
             };
