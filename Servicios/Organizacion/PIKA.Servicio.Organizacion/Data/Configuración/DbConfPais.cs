@@ -15,9 +15,10 @@ namespace PIKA.Servicio.Organizacion.Data
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
-            builder.Property(x => x.Valor).HasMaxLength(LongitudDatos.Nombre).IsRequired();
+            builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
 
             builder.HasMany(x => x.Estados).WithOne(y => y.Pais).HasForeignKey(z=>z.PaisId) ;
+            builder.HasMany(x => x.Direcciones).WithOne(y => y.Pais).HasForeignKey(z => z.PaisId);
 
         }
     }

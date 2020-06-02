@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
@@ -23,23 +25,19 @@ namespace PIKA.Servicio.Organizacion.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<Dominio> repo;
-        private ICompositorConsulta<Dominio> compositor;
+        private IRepositorioAsync<UnidadOrganizacional> repoOU;
         private UnidadDeTrabajo<DbContextOrganizacion> UDT;
-
         public ServicioDominio(
             IProveedorOpcionesContexto<DbContextOrganizacion> proveedorOpciones,
         ICompositorConsulta<Dominio> compositorConsulta,
+        ICompositorConsulta<UnidadOrganizacional> compositorConsultaUO,
         ILogger<ServicioDominio> Logger,
         IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
             this.UDT = new UnidadDeTrabajo<DbContextOrganizacion>(contexto);
-            this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<Dominio>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<Dominio>(compositorConsulta);
+            this.repoOU = UDT.ObtenerRepositoryAsync<UnidadOrganizacional>(compositorConsultaUO);
         }
-
-
-
-
 
 
         public async Task<bool> Existe(Expression<Func<Dominio, bool>> predicado)
@@ -53,7 +51,7 @@ namespace PIKA.Servicio.Organizacion.Servicios
         public async Task<Dominio> CrearAsync(Dominio entity, CancellationToken cancellationToken = default)
         {
 
-            if( await  Existe(x=>x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
+            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
@@ -66,16 +64,16 @@ namespace PIKA.Servicio.Organizacion.Servicios
 
         public async Task ActualizarAsync(Dominio entity)
         {
-            
+
             Dominio o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
             if (o == null)
             {
                 throw new EXNoEncontrado(entity.Id);
             }
-            
-            if (await Existe(x => 
-            x.Id!=entity.Id & x.TipoOrigenId ==entity.TipoOrigenId && x.OrigenId==entity.OrigenId
+
+            if (await Existe(x =>
+            x.Id != entity.Id & x.TipoOrigenId == entity.TipoOrigenId && x.OrigenId == entity.OrigenId
             && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
@@ -86,6 +84,8 @@ namespace PIKA.Servicio.Organizacion.Servicios
             UDT.SaveChanges();
 
         }
+
+
         private Consulta GetDefaultQuery(Consulta query)
         {
             if (query != null)
@@ -109,24 +109,18 @@ namespace PIKA.Servicio.Organizacion.Servicios
             return respuesta;
         }
 
-        public Task<IEnumerable<Dominio>> CrearAsync(params Dominio[] entities)
+
+        public async Task EjecutarSql(string sqlCommand)
         {
-            throw new NotImplementedException();
+            await this.contexto.Database.ExecuteSqlRawAsync(sqlCommand);
         }
 
-        public Task<IEnumerable<Dominio>> CrearAsync(IEnumerable<Dominio> entities, CancellationToken cancellationToken = default)
+        public async Task EjecutarSqlBatch(List<string> sqlCommand)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task EjecutarSql(string sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task EjecutarSqlBatch(List<string> sqlCommand)
-        {
-            throw new NotImplementedException();
+            foreach (string s in sqlCommand)
+            {
+                await this.contexto.Database.ExecuteSqlRawAsync(s);
+            }
         }
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
@@ -138,35 +132,93 @@ namespace PIKA.Servicio.Organizacion.Servicios
                 d = await this.repo.UnicoAsync(x => x.Id == Id);
                 if (d != null)
                 {
-                    UDT.Context.Entry(d).State = EntityState.Deleted;
+
+
+                    d.Eliminada = true;
+                    // actualiza las unidads organizacionales para ser marcadas como eliminadas 
+                    var ous = await repoOU.ObtenerAsync(x => x.DominioId == Id);
+
+#if DEBUG
+                    logger.LogDebug("Marcando Dominio {id} como eliminada ", Id);
+                    logger.LogDebug("Unidades Organizacionales dependientes {0}", ous.Count);
+#endif
+
+
+                    foreach (var ou in ous)
+                    {
+#if DEBUG
+                        logger.LogDebug("Marcando OU {id} como eliminada ", ou.Id);
+#endif
+                        ou.Eliminada = true;
+                        UDT.Context.Entry(ou).State = EntityState.Modified;
+                    }
+
+                    UDT.Context.Entry(d).State = EntityState.Modified;
                     listaEliminados.Add(d.Id);
                 }
             }
             UDT.SaveChanges();
+
+
             return listaEliminados;
-        }   
+        }
+
+
 
         public Task<List<Dominio>> ObtenerAsync(Expression<Func<Dominio, bool>> predicado)
         {
-            throw new NotImplementedException();
+            return this.repo.ObtenerAsync(predicado);
         }
 
-        public Task<IEnumerable<Dominio>> ObtenerListaAsync(string SqlCommand)
+        public Task<List<Dominio>> ObtenerAsync(string SqlCommand)
         {
-            throw new NotImplementedException();
+            return this.repo.ObtenerAsync(SqlCommand);
         }
 
-        public Task<IPaginado<Dominio>> ObtenerPaginadoAsync(Expression<Func<Dominio, bool>> predicate = null, Func<IQueryable<Dominio>, IOrderedQueryable<Dominio>> orderBy = null, Func<IQueryable<Dominio>, IIncludableQueryable<Dominio, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
+
+
+
+
+        public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
-            throw new NotImplementedException();
+            Dominio d;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                d = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (d != null)
+                {
+                    d.Eliminada = false;
+
+                    // actualiza las unidads organizacionales para ser marcadas como eliminadas 
+                    var ous = await repoOU.ObtenerAsync(x => x.DominioId == Id);
+
+#if DEBUG
+                    logger.LogDebug("Marcando Dominio {id} como restaurado", Id);
+                    logger.LogDebug("Unidades Organizacionales dependientes {0}", ous.Count);
+#endif
+
+                    foreach (var ou in ous)
+                    {
+#if DEBUG
+                        logger.LogDebug("Marcando Unidad Organizacional {id} como restaurado", Id);
+#endif
+                        ou.Eliminada = false;
+                        UDT.Context.Entry(ou).State = EntityState.Modified;
+                    }
+
+                    UDT.Context.Entry(d).State = EntityState.Modified;
+                    listaEliminados.Add(d.Id);
+                }
+            }
+            UDT.SaveChanges();
+
+
+            return listaEliminados;
         }
 
-  
 
-        public Task Restaurar(string[] ids)
-        {
-            throw new NotImplementedException();
-        }
+
 
         public async Task<Dominio> UnicoAsync(Expression<Func<Dominio, bool>> predicado = null, Func<IQueryable<Dominio>, IOrderedQueryable<Dominio>> ordenarPor = null, Func<IQueryable<Dominio>, IIncludableQueryable<Dominio, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
@@ -181,8 +233,28 @@ namespace PIKA.Servicio.Organizacion.Servicios
             return d.CopiaDominio();
         }
 
+
+        #region Sin implementar
+
+        public Task<IEnumerable<Dominio>> CrearAsync(params Dominio[] entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Dominio>> CrearAsync(IEnumerable<Dominio> entities, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IPaginado<Dominio>> ObtenerPaginadoAsync(Expression<Func<Dominio, bool>> predicate = null, Func<IQueryable<Dominio>, IOrderedQueryable<Dominio>> orderBy = null, Func<IQueryable<Dominio>, IIncludableQueryable<Dominio, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+
     }
 
-  
+
 
 }

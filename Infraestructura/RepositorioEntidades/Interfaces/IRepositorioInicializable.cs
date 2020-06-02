@@ -8,7 +8,7 @@ namespace RepositorioEntidades
 {
     public interface IRepositorioInicializable
     {
-        void Inicializar(string contentPath);
+        void Inicializar(string contentPath, bool generarDatosdemo);
         void AplicarMigraciones();
 
     }

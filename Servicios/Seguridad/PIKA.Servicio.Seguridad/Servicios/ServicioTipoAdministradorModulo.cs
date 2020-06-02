@@ -120,7 +120,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public Task EjecutarSql(string sqlCommand)
+        public async Task EjecutarSql(string sqlCommand)
         {
             throw new NotImplementedException();
         }
@@ -137,12 +137,12 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
         public Task<List<TipoAdministradorModulo>> ObtenerAsync(Expression<Func<TipoAdministradorModulo, bool>> predicado)
         {
-            throw new NotImplementedException();
+            return this.repo.ObtenerAsync(predicado);
         }
 
-        public Task<IEnumerable<TipoAdministradorModulo>> ObtenerListaAsync(string SqlCommand)
+        public Task<List<TipoAdministradorModulo>> ObtenerAsync(string SqlCommand)
         {
-            throw new NotImplementedException();
+            return this.repo.ObtenerAsync(SqlCommand);
         }
 
         public Task<IPaginado<TipoAdministradorModulo>> ObtenerPaginadoAsync(Expression<Func<TipoAdministradorModulo, bool>> predicate = null, Func<IQueryable<TipoAdministradorModulo>, IOrderedQueryable<TipoAdministradorModulo>> orderBy = null, Func<IQueryable<TipoAdministradorModulo>, IIncludableQueryable<TipoAdministradorModulo, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
@@ -152,7 +152,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
 
 
-        public Task Restaurar(string[] ids)
+        public Task<IEnumerable<string>> Restaurar(string[] ids)
         {
             throw new NotImplementedException();
         }

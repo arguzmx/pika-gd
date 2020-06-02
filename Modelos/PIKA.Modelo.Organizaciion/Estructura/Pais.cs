@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Organizacion
 {
-    public class Pais : DuplaCatalogo<string, string>
+    public class Pais : EntidadCatalogo<string, Pais>
     {
         public Pais()
         {
@@ -14,8 +16,17 @@ namespace PIKA.Modelo.Organizacion
 
         }
 
+
+        /// <summary>
+        /// Esatdos asociados al pais
+        /// </summary>
         public virtual ICollection<Estado> Estados { get; set; }
 
+        /// <summary>
+        /// Navegacion
+        /// </summary>
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<DireccionPostal> Direcciones { get; set; }
 
     }

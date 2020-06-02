@@ -23,41 +23,46 @@ namespace PIKA.Modelo.Organizacion.Validadores
                .MinimumLength(1).WithMessage(x => localizer["La calle debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre])
                .MaximumLength(LongitudDatos.Nombre).WithMessage(x => localizer["La calle debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre]);
 
-            RuleFor(x => x.NoInterno)
-               .NotNull().WithMessage(x => localizer["El número interior es obligatorio"])
-               .NotEmpty().WithMessage(x => localizer["El número interior es obligatorio"])
-               .MinimumLength(1).WithMessage(x => localizer["El número interior debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre])
-               .MaximumLength(LongitudDatos.Nombre).WithMessage(x => localizer["El número interior debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre]);
+            RuleFor(x => x.TipoOrigenId)
+               .NotNull().WithMessage(x => localizer["El tipo de orígen es obligatorio"])
+               .NotEmpty().WithMessage(x => localizer["El tipo de orígen es obligatorio"]);
 
-            RuleFor(x => x.Colonia)
-               .NotNull().WithMessage(x => localizer["La colonia es obligatoria"])
-               .NotEmpty().WithMessage(x => localizer["La colonia es obligatoria"])
-               .MinimumLength(1).WithMessage(x => localizer["La colonia debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre])
-               .MaximumLength(LongitudDatos.Nombre).WithMessage(x => localizer["La colonia debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre]);
+            RuleFor(x => x.OrigenId)
+               .NotNull().WithMessage(x => localizer["El identificador de orígen es obligatorio"])
+               .NotEmpty().WithMessage(x => localizer["El identificador de orígen es obligatorio"]);
 
-            RuleFor(x => x.CP)
-               .NotNull().WithMessage(x => localizer["El código postal es obligatorio"])
-               .NotEmpty().WithMessage(x => localizer["El código postal es obligatorio"])
-               .MinimumLength(1).WithMessage(x => localizer["El código postal debe tener entre {0} y {1} caracteres", 1, LongitudDatos.CodigoPostal])
-               .MaximumLength(LongitudDatos.CodigoPostal).WithMessage(x => localizer["El código postal debe tener entre {0} y {1} caracteres", 1, LongitudDatos.CodigoPostal]);
 
-            RuleFor(x => x.Municipio)
-               .NotNull().WithMessage(x => localizer["El municipio es obligatorio"])
-               .NotEmpty().WithMessage(x => localizer["El municipio es obligatorio"])
-               .MinimumLength(1).WithMessage(x => localizer["El municipio debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre])
-               .MaximumLength(LongitudDatos.Nombre).WithMessage(x => localizer["El municipio debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre]);
+            //RuleFor(x => x.NoInterno)
+            //   .NotNull().WithMessage(x => localizer["El número interior es obligatorio"])
+            //   .NotEmpty().WithMessage(x => localizer["El número interior es obligatorio"])
+            //   .MinimumLength(1).WithMessage(x => localizer["El número interior debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre])
+            //   .MaximumLength(LongitudDatos.Nombre).WithMessage(x => localizer["El número interior debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre]);
 
-            RuleFor(x => x.EstadoId)
-               .NotNull().WithMessage(x => localizer["El estado es obligatorio"])
-               .NotEmpty().WithMessage(x => localizer["El estado es obligatorio"])
-               .MinimumLength(1).WithMessage(x => localizer["El estado debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre])
-               .MaximumLength(LongitudDatos.GUID).WithMessage(x => localizer["El estado debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre]);
+            //RuleFor(x => x.Colonia)
+            //   .NotNull().WithMessage(x => localizer["La colonia es obligatoria"])
+            //   .NotEmpty().WithMessage(x => localizer["La colonia es obligatoria"])
+            //   .MinimumLength(1).WithMessage(x => localizer["La colonia debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre])
+            //   .MaximumLength(LongitudDatos.Nombre).WithMessage(x => localizer["La colonia debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre]);
 
-            RuleFor(x => x.PaisId)
-               .NotNull().WithMessage(x => localizer["El país es obligatorio"])
-               .NotEmpty().WithMessage(x => localizer["El país es obligatorio"])
-               .MinimumLength(1).WithMessage(x => localizer["El país debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre])
-               .MaximumLength(LongitudDatos.GUID).WithMessage(x => localizer["El país debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre]);
+            //RuleFor(x => x.CP)
+            //   .NotNull().WithMessage(x => localizer["El código postal es obligatorio"])
+            //   .NotEmpty().WithMessage(x => localizer["El código postal es obligatorio"])
+            //   .MinimumLength(1).WithMessage(x => localizer["El código postal debe tener entre {0} y {1} caracteres", 1, LongitudDatos.CodigoPostal])
+            //   .MaximumLength(LongitudDatos.CodigoPostal).WithMessage(x => localizer["El código postal debe tener entre {0} y {1} caracteres", 1, LongitudDatos.CodigoPostal]);
+
+            //RuleFor(x => x.Municipio)
+            //   .NotNull().WithMessage(x => localizer["El municipio es obligatorio"])
+            //   .NotEmpty().WithMessage(x => localizer["El municipio es obligatorio"])
+            //   .MinimumLength(1).WithMessage(x => localizer["El municipio debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre])
+            //   .MaximumLength(LongitudDatos.Nombre).WithMessage(x => localizer["El municipio debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre]);
+
+            //RuleFor(x => x.EstadoId)
+            //   .NotNull().WithMessage(x => localizer["El estado es obligatorio"])
+            //   .NotEmpty().WithMessage(x => localizer["El estado es obligatorio"]);
+
+            //RuleFor(x => x.PaisId)
+            //   .NotNull().WithMessage(x => localizer["El país es obligatorio"])
+            //   .NotEmpty().WithMessage(x => localizer["El país es obligatorio"]);
 
         }
     }

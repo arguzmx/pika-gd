@@ -21,8 +21,8 @@ namespace PIKA.Modelo.Organizacion.Validadores
                 .MaximumLength(LongitudDatos.Nombre).WithMessage(x => localizer["El nombre debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre]);
 
             RuleFor(x => x.DominioId)
-                .NotNull().WithMessage(x => localizer["El dominio es obligatorio"])
-                .NotEmpty().WithMessage(x => localizer["El dominio es obligatorio"]);
+                .NotNull().WithMessage(x => localizer["El identificador de dominio es obligatorio"])
+                .NotEmpty().WithMessage(x => localizer["El identificador de dominio es obligatorio"]);
         }
     }
 }

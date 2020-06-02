@@ -13,7 +13,7 @@ namespace PIKA.Servicio.Organizacion.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.1")
+                .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("PIKA.Modelo.Organizacion.DireccionPostal", b =>
@@ -27,12 +27,18 @@ namespace PIKA.Servicio.Organizacion.Data.Migrations
                         .HasMaxLength(10);
 
                     b.Property<string>("Calle")
+                        .IsRequired()
                         .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
                         .HasMaxLength(200);
 
                     b.Property<string>("Colonia")
                         .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
                         .HasMaxLength(200);
+
+                    b.Property<bool>("EsDefault")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("EstadoId")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
@@ -51,6 +57,7 @@ namespace PIKA.Servicio.Organizacion.Data.Migrations
                         .HasMaxLength(200);
 
                     b.Property<string>("Nombre")
+                        .IsRequired()
                         .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
                         .HasMaxLength(200);
 
@@ -85,6 +92,11 @@ namespace PIKA.Servicio.Organizacion.Data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
+                    b.Property<bool>("Eliminada")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
@@ -113,13 +125,15 @@ namespace PIKA.Servicio.Organizacion.Data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
-                    b.Property<string>("PaisId")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
-
-                    b.Property<string>("Valor")
+                    b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
                         .HasMaxLength(200);
+
+                    b.Property<string>("PaisId")
+                        .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
 
                     b.HasKey("Id");
 
@@ -134,7 +148,7 @@ namespace PIKA.Servicio.Organizacion.Data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
-                    b.Property<string>("Valor")
+                    b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
                         .HasMaxLength(200);
@@ -151,6 +165,7 @@ namespace PIKA.Servicio.Organizacion.Data.Migrations
                         .HasMaxLength(128);
 
                     b.Property<string>("Descripcion")
+                        .IsRequired()
                         .HasColumnType("varchar(500) CHARACTER SET utf8mb4")
                         .HasMaxLength(500);
 
@@ -164,18 +179,12 @@ namespace PIKA.Servicio.Organizacion.Data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
-                    b.Property<string>("RolPadreId")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
                     b.Property<string>("TipoOrigenId")
                         .IsRequired()
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RolPadreId");
 
                     b.HasIndex("TipoOrigenId", "OrigenId");
 
@@ -189,7 +198,9 @@ namespace PIKA.Servicio.Organizacion.Data.Migrations
                         .HasMaxLength(128);
 
                     b.Property<string>("DominioId")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
+                        .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
 
                     b.Property<bool>("Eliminada")
                         .ValueGeneratedOnAdd()
@@ -238,21 +249,18 @@ namespace PIKA.Servicio.Organizacion.Data.Migrations
                 {
                     b.HasOne("PIKA.Modelo.Organizacion.Pais", "Pais")
                         .WithMany("Estados")
-                        .HasForeignKey("PaisId");
-                });
-
-            modelBuilder.Entity("PIKA.Modelo.Organizacion.Rol", b =>
-                {
-                    b.HasOne("PIKA.Modelo.Organizacion.Rol", "RolPadre")
-                        .WithMany("SubRoles")
-                        .HasForeignKey("RolPadreId");
+                        .HasForeignKey("PaisId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PIKA.Modelo.Organizacion.UnidadOrganizacional", b =>
                 {
                     b.HasOne("PIKA.Modelo.Organizacion.Dominio", "Dominio")
                         .WithMany("UnidadesOrganizacionales")
-                        .HasForeignKey("DominioId");
+                        .HasForeignKey("DominioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PIKA.Modelo.Organizacion.UsuariosRol", b =>

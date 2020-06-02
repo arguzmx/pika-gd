@@ -114,7 +114,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public Task EjecutarSql(string sqlCommand)
+        public async Task EjecutarSql(string sqlCommand)
         {
             throw new NotImplementedException();
         }
@@ -163,7 +163,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<ActivoDeclinado>> ObtenerListaAsync(string SqlCommand)
+        public Task<List<ActivoDeclinado>> ObtenerAsync(string SqlCommand)
         {
             throw new NotImplementedException();
         }
@@ -175,7 +175,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
 
 
-        public Task Restaurar(string[] ids)
+        public Task<IEnumerable<string>> Restaurar(string[] ids)
         {
             throw new NotImplementedException();
         }

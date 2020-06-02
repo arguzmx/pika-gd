@@ -143,7 +143,7 @@ namespace PIKA.Servicio.Metadatos.Data
             this.Database.Migrate();
         }
 
-        public void Inicializar(string ContentPath)
+        public void Inicializar(string ContentPath, bool generarDatosdemo)
         {
             InicializarDatos.Inicializar(this, ContentPath);
         }

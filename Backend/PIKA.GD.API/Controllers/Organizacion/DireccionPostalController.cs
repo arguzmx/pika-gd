@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
@@ -40,6 +42,11 @@ namespace PIKA.GD.API.Controllers.Organizacion
             this.metadataProvider = metadataProvider;
         }
 
+        /// <summary>
+        /// Obtiene los metadatos relacionados con la entidad dirección postal
+        /// </summary>
+        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("metadata", Name = "MetadataDirPostal")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
@@ -49,8 +56,14 @@ namespace PIKA.GD.API.Controllers.Organizacion
 
 
 
+        /// <summary>
+        /// Añade una nueva entidad del tipo dirección postal
+        /// </summary>
+        /// <param name="entidad"></param>
+        /// <returns></returns>
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<DireccionPostal>> Post([FromBody]DireccionPostal entidad)
         {
             entidad = await servicioDirPost.CrearAsync(entidad).ConfigureAwait(false);
@@ -58,8 +71,18 @@ namespace PIKA.GD.API.Controllers.Organizacion
         }
 
 
+        /// <summary>
+        /// Actualoza uan entidad dirección postal, el Id debe incluirse en el querystring así como en 
+        /// el serializado para la petición PUT
+        /// </summary>
+        /// <param name="id">Identificador único del dominio</param>
+        /// <param name="entidad">Datos serialziados de la OU</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Put(string id, [FromBody]DireccionPostal entidad)
         {
             var x = ObtieneFiltrosIdentidad();
@@ -76,22 +99,52 @@ namespace PIKA.GD.API.Controllers.Organizacion
         }
 
 
-        [HttpGet("page", Name = "GetPageDireccionPostal")]
+/// <summary>
+/// DEvulve un alista de direcciones postales asociadas al objeto del tipo especificado
+/// </summary>
+/// <param name="tipo">Tipo de dasto para asociar la dirección</param>
+/// <param name="id">Identificador único del objeto asociado a la dirección</param>
+/// <param name="query">Consulta para la paginación y búsqueda</param>
+/// <returns></returns>
+        [HttpGet("page/{tipo}/{id}", Name = "GetPageDirPostal")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<DireccionPostal>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<Paginado<DireccionPostal>>> GetPage(
+            string tipo, string id, 
+            [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
+
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioDirPost.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<DireccionPostal>());
+            query.Filtros.Add(new FiltroConsulta() { Propiedad = IEntidadRelacionada.CampoTipo, Operador = FiltroConsulta.OP_EQ, Valor = tipo });
+            query.Filtros.Add(new FiltroConsulta() { Propiedad = IEntidadRelacionada.CampoId, Operador = FiltroConsulta.OP_EQ, Valor = id });
+
+            var data = await servicioDirPost.ObtenerPaginadoAsync(
+                Query: query,
+                include: null)
+                .ConfigureAwait(false);
+
+            return Ok(data);
         }
 
 
+
+        /// <summary>
+        /// Obtiene una dirección postal en base al Id único
+        /// </summary>
+        /// <param name="id">Id único del dominio</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<DireccionPostal>> Get(string id)
         {
-            var o = await servicioDirPost.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            var o = await servicioDirPost.UnicoAsync(
+                predicado: x => x.Id == id, 
+                incluir: y => y.Include(z => z.Pais).Include(z => z.Estado))
+                .ConfigureAwait(false);
+
             if (o != null) return Ok(o);
             return NotFound(id);
         }
@@ -99,8 +152,14 @@ namespace PIKA.GD.API.Controllers.Organizacion
 
 
 
+        /// <summary>
+        /// Elimina de manera permanente una dirección postal en base al arreglo de identificadores recibidos
+        /// </summary>
+        /// <param name="ids">Arreglo de identificadores string</param>
+        /// <returns></returns>
         [HttpDelete]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete([FromBody]string[] id)
         {
             return Ok(await servicioDirPost.Eliminar(id).ConfigureAwait(false));

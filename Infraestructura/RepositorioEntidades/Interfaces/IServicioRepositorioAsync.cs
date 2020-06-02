@@ -20,7 +20,7 @@ namespace RepositorioEntidades
 
         Task<List<T>> ObtenerAsync(Expression<Func<T, bool>> predicado);
 
-        Task<IEnumerable<T>> ObtenerListaAsync(string SqlCommand);
+        Task<List<T>> ObtenerAsync(string SqlCommand);
 
 
         Task<IPaginado<T>> ObtenerPaginadoAsync(Expression<Func<T, bool>> predicate = null,
@@ -47,7 +47,7 @@ namespace RepositorioEntidades
 
         Task<ICollection<U>> Eliminar(U[] ids);
 
-        Task Restaurar(U[] ids);
+        Task<IEnumerable<string>> Restaurar(U[] ids);
 
         Task EjecutarSql(string sqlCommand);
 

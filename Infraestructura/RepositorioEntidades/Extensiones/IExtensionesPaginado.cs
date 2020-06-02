@@ -8,16 +8,27 @@ using System.Threading.Tasks;
 
 namespace RepositorioEntidades
 {
+
+
     public static class IExtensionesPaginado
     {
-        public static async Task<IPaginado<T>> PaginadoAsync<T>(this IQueryable<T> origen, int indice, int tamano,
-            int desde = 0, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (desde > indice) throw new ArgumentException($"From: {desde} > Index: {indice}, must From <= Index");
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="origen">consulta origen</param>
+        /// <param name="indice">número de página en base cero</param>
+        /// <param name="tamano">tamaño de la página</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public static async Task<IPaginado<T>> PaginadoAsync<T>(this IQueryable<T> origen, int indice, int tamano,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            
             var count = await origen.CountAsync(cancellationToken).ConfigureAwait(false);
- 
-            desde = (indice * tamano) - tamano;
+            int desde = (indice * tamano);
+
             var items = await origen.Skip(desde)
                 .Take(tamano).ToListAsync(cancellationToken).ConfigureAwait(false);
             

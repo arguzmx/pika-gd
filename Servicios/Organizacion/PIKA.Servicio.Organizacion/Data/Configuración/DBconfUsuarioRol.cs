@@ -13,9 +13,7 @@ namespace PIKA.Servicio.Organizacion.Data
 
             builder.ToTable(DbContextOrganizacion.TablaUsuariosRol);
             builder.HasKey(x => new { x.ApplicationUserId, x.RolId });
-
             builder.HasOne(x => x.Rol).WithMany(y => y.UsuariosRol).HasForeignKey(z => z.RolId);
-   
 
         }
     }

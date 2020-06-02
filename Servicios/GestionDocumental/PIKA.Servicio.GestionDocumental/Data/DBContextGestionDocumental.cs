@@ -284,7 +284,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
             this.Database.Migrate();
         }
 
-        public void Inicializar(string ContentPath)
+        public void Inicializar(string ContentPath, bool generarDatosdemo)
         {
             Console.WriteLine("Inicializando DB-gd");
             InicializarDatos.Inicializar(this, ContentPath);

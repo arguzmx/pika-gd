@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Organizacion;
 using PIKA.Servicio.Organizacion.Interfaces;
 using RepositorioEntidades;
@@ -48,15 +49,35 @@ namespace PIKA.Servicio.Organizacion.Servicios
         public async Task<DireccionPostal> CrearAsync(DireccionPostal entity, CancellationToken cancellationToken = default)
         {
 
-            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
-            {
-                throw new ExElementoExistente(entity.Nombre);
-            }
-
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
+
+            // Los datos en las direcciones postales puede repetirse  
+            // pero sólo puece existir una por defualt
+            if (entity.EsDefault) await ActualizaDefault(entity);
+
             return entity;
+        }
+
+        /// <summary>
+        /// Establece las direcciones distintas a EsDeafult=false
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        private async Task ActualizaDefault(DireccionPostal entity)
+        {
+            List<DireccionPostal> l = await this.repo.ObtenerAsync(
+                x => x.EsDefault == true
+                && x.TipoOrigenId == entity.TipoOrigenId &&
+                x.OrigenId == entity.OrigenId && x.Id != entity.Id);
+
+            foreach (var item in l)
+            {
+                item.EsDefault = false;
+                UDT.Context.Entry(item).State = EntityState.Modified;
+            }
+            UDT.SaveChanges();
         }
 
         public async Task ActualizarAsync(DireccionPostal entity)
@@ -69,13 +90,6 @@ namespace PIKA.Servicio.Organizacion.Servicios
                 throw new EXNoEncontrado(entity.Id);
             }
 
-            if (await Existe(x =>
-            x.Id != entity.Id & x.TipoOrigenId == entity.TipoOrigenId && x.OrigenId == entity.OrigenId
-            && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
-            {
-                throw new ExElementoExistente(entity.Nombre);
-            }
-
             o.Nombre = entity.Nombre;
             o.Calle = entity.Calle;
             o.NoInterno = entity.NoInterno;
@@ -85,10 +99,12 @@ namespace PIKA.Servicio.Organizacion.Servicios
             o.Municipio = entity.Municipio;
             o.EstadoId = entity.EstadoId;
             o.PaisId = entity.PaisId;
+            o.EsDefault = entity.EsDefault;
 
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
+            if (o.EsDefault) await ActualizaDefault(o);
         }
         private Consulta GetDefaultQuery(Consulta query)
         {
@@ -105,32 +121,28 @@ namespace PIKA.Servicio.Organizacion.Servicios
             }
             return query;
         }
-        public async Task<IPaginado<DireccionPostal>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<DireccionPostal>, IIncludableQueryable<DireccionPostal, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
+        public async Task<IPaginado<DireccionPostal>> ObtenerPaginadoAsync(Consulta Query, 
+            Func<IQueryable<DireccionPostal>, IIncludableQueryable<DireccionPostal, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             Query = GetDefaultQuery(Query);
-            var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
+            var respuesta = await this.repo.ObtenerPaginadoAsync (Query, include);
 
             return respuesta;
         }
 
-        public Task<IEnumerable<DireccionPostal>> CrearAsync(params DireccionPostal[] entities)
+
+
+        public async Task EjecutarSql(string sqlCommand)
         {
-            throw new NotImplementedException();
+            await  this.contexto.Database.ExecuteSqlRawAsync(sqlCommand);
         }
 
-        public Task<IEnumerable<DireccionPostal>> CrearAsync(IEnumerable<DireccionPostal> entities, CancellationToken cancellationToken = default)
+        public async Task EjecutarSqlBatch(List<string> sqlCommand)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task EjecutarSql(string sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task EjecutarSqlBatch(List<string> sqlCommand)
-        {
-            throw new NotImplementedException();
+            foreach(string s in sqlCommand)
+            {
+                await this.contexto.Database.ExecuteSqlRawAsync(s);
+            }
         }
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
@@ -150,12 +162,30 @@ namespace PIKA.Servicio.Organizacion.Servicios
             return listaEliminados;
         }
 
+
+
+
+        public Task<IEnumerable<string>> Restaurar(string[] ids)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<DireccionPostal> UnicoAsync(Expression<Func<DireccionPostal, bool>> predicado = null, Func<IQueryable<DireccionPostal>, IOrderedQueryable<DireccionPostal>> ordenarPor = null, Func<IQueryable<DireccionPostal>, IIncludableQueryable<DireccionPostal, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+            
+            DireccionPostal d = await this.repo.UnicoAsync(predicado, null, incluir);
+            return d.CopiaDireccionPostal();
+        }
+
+
+        #region sin implementar
+
         public Task<List<DireccionPostal>> ObtenerAsync(Expression<Func<DireccionPostal, bool>> predicado)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<DireccionPostal>> ObtenerListaAsync(string SqlCommand)
+        public Task<List<DireccionPostal>> ObtenerAsync(string SqlCommand)
         {
             throw new NotImplementedException();
         }
@@ -166,16 +196,16 @@ namespace PIKA.Servicio.Organizacion.Servicios
         }
 
 
-
-        public Task Restaurar(string[] ids)
+        public Task<IEnumerable<DireccionPostal>> CrearAsync(params DireccionPostal[] entities)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<DireccionPostal> UnicoAsync(Expression<Func<DireccionPostal, bool>> predicado = null, Func<IQueryable<DireccionPostal>, IOrderedQueryable<DireccionPostal>> ordenarPor = null, Func<IQueryable<DireccionPostal>, IIncludableQueryable<DireccionPostal, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public Task<IEnumerable<DireccionPostal>> CrearAsync(IEnumerable<DireccionPostal> entities, CancellationToken cancellationToken = default)
         {
-            DireccionPostal d = await this.repo.UnicoAsync(predicado);
-            return d.CopiaDireccionPostal();
+            throw new NotImplementedException();
         }
+
+        #endregion
     }
 }
