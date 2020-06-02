@@ -8,8 +8,6 @@ using System.Text;
 namespace PIKA.Servicio.Organizacion
 {
 
-    
-
     public class ContextoServicioOrganizacion
     {
         private IProveedorOpcionesContexto<DbContextOrganizacion> proveedorOpciones;

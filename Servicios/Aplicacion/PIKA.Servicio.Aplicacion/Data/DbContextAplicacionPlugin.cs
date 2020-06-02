@@ -85,7 +85,7 @@ namespace PIKA.Servicio.AplicacionPlugin
             this.Database.Migrate();
         }
 
-        public void Inicializar(string ContentPath)
+        public void Inicializar(string ContentPath, bool generarDatosdemo)
         {
             InicializarDatos.Inicializar(this, ContentPath);
         }

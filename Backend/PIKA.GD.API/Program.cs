@@ -21,11 +21,16 @@ namespace PIKA.GD.API
         public static void Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Debug()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .MinimumLevel.Override("System", LogEventLevel.Warning)
+            .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
           .Enrich.FromLogContext()
           .WriteTo.Console()
           .CreateLogger();
 
             var nodb = args.Contains("/nodb");
+            var demodb = args.Contains("/demodb");
             //if (seed)
             //{
             //    args = args.Except(new[] { "/seed" }).ToArray();
@@ -40,7 +45,7 @@ namespace PIKA.GD.API
 
                 if (!nodb)
                 {
-                    InicializarAplication(config, CurrentHost);
+                    InicializarAplication(config, CurrentHost, demodb);
                 }
                 else
                 {
@@ -78,13 +83,12 @@ namespace PIKA.GD.API
 
 
 
-        private static void InicializarAplication(IConfiguration configuracion, IWebHostEnvironment env)
+        private static void InicializarAplication(IConfiguration configuracion, IWebHostEnvironment env, bool demodb)
         {
             List<Type> contextos = LocalizadorEnsamblados.ObtieneContextosInicializables();
             string connectionString = configuracion.GetConnectionString("pika-gd");
             foreach (Type dbContextType in contextos)
             {
-                Console.WriteLine($">>>>>{dbContextType.Name}@{connectionString}");
                 var optionsBuilderType = typeof(DbContextOptionsBuilder<>).MakeGenericType(dbContextType);
                 var optionsBuilder = (DbContextOptionsBuilder)Activator.CreateInstance(optionsBuilderType);
                 optionsBuilder.UseMySql(connectionString);
@@ -94,7 +98,7 @@ namespace PIKA.GD.API
 
 
                     ((IRepositorioInicializable)dbContext).AplicarMigraciones();
-                    ((IRepositorioInicializable)dbContext).Inicializar(env.ContentRootPath);
+                    ((IRepositorioInicializable)dbContext).Inicializar(env.ContentRootPath, demodb);
 
                 }
                 catch (Exception ex)

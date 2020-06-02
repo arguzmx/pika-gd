@@ -36,24 +36,46 @@ namespace PIKA.GD.API.Controllers.Organizacion
             this.metadataProvider = metadataProvider;
         }
 
+        /// <summary>
+        /// Obtiene los metadatos relacionados con la entidad Rol
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("metadata", Name = "MetadataRol")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
         {
             return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
         }
 
 
+        /// <summary>
+        /// Añade una nueva entidad del tipo rol
+        /// </summary>
+        /// <param name="entidad"></param>
+        /// <returns></returns>
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Rol>> Post([FromBody]Rol entidad)
         {
             entidad = await servicioRol.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetRol", new { id = entidad.Id }, entidad).Value);
         }
 
+
+        /// <summary>
+        /// Actualoza uan entidad Rol, el Id debe incluirse en el querystring así como en 
+        /// el serializado para la petición PUT
+        /// </summary>
+        /// <param name="id">Identificador único del dominio</param>
+        /// <param name="entidad">Datos serialziados del dominio</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Put(string id, [FromBody]Rol entidad)
         {
             var x = ObtieneFiltrosIdentidad();
@@ -67,19 +89,32 @@ namespace PIKA.GD.API.Controllers.Organizacion
             return NoContent();
         }
 
-        [HttpGet("page", Name = "GetPageRol")]
+        /// <summary>
+        /// Obtiene una página de datos del dominio 
+        /// </summary>
+        /// <param name="query">Consulta para el paginado</param>
+        /// <returns></returns>
+        [HttpGet("page", Name = "GetPageRoles")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<Rol>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<Paginado<Rol>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
             var data = await servicioRol.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<Rol>());
+            return Ok(data);
         }
 
-        
+
+        // <summary>
+        /// Obtiene un Rol en base al Id único
+        /// </summary>
+        /// <param name="id">Id único del dominio</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Rol>> Get(string id)
         {
             var o = await servicioRol.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
@@ -88,11 +123,47 @@ namespace PIKA.GD.API.Controllers.Organizacion
         }
 
 
+        /// <summary>
+        /// Marca como eliminados una lista de dominiios en base al arreglo de identificadores recibidos
+        /// </summary>
+        /// <param name="ids">Arreglo de identificadores string</param>
+        /// <returns></returns>
         [HttpDelete]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete([FromBody]string[] id)
         {
             return Ok(await servicioRol.Eliminar(id).ConfigureAwait(false));
         }
+
+
+        /// <summary>
+        /// Añade una nueva entidad del tipo rol
+        /// </summary>
+        /// <param name="entidad"></param>
+        /// <returns></returns>
+        [HttpPost("vincular/{rolid}", Name = "vincularUsuerios")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> PostVincular(string rolid, [FromBody] string[] ids)
+        {
+            var resultado = await servicioRol.Vincular(rolid, ids).ConfigureAwait(false);
+            return Ok(resultado.ToList());
+        }
+
+        /// <summary>
+        /// Añade una nueva entidad del tipo rol
+        /// </summary>
+        /// <param name="entidad"></param>
+        /// <returns></returns>
+        [HttpPost("desvincular/{rolid}", Name = "desvincularUsuerios")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> PostDesvincular(string rolid, [FromBody] string[] ids)
+        {
+            var resultado = await servicioRol.Desvincular(rolid, ids).ConfigureAwait(false);
+            return Ok(resultado.ToList());
+        }
+
     }
 }

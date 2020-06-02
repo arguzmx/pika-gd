@@ -16,9 +16,9 @@ namespace PIKA.Servicio.Organizacion.Data
 
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
+            builder.Property(x => x.Eliminada).IsRequired().HasDefaultValue(false);
 
             builder.Property(x => x.OrigenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
-
             builder.Property(x => x.TipoOrigenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
 
             builder.HasIndex(x => new { x.TipoOrigenId, x.OrigenId });

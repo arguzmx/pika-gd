@@ -16,15 +16,10 @@ namespace PIKA.Servicio.Organizacion.Data
 
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
-
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
-
-         
-
-            builder.Property(x => x.Eliminada).HasDefaultValue(false).IsRequired();
-
-
-
+            builder.Property(x => x.DominioId).HasMaxLength(LongitudDatos.GUID).IsRequired();
+            builder.Property(x => x.Eliminada).IsRequired().HasDefaultValue(false);
+            builder.HasIndex(x => x.DominioId);
 
         }
     }

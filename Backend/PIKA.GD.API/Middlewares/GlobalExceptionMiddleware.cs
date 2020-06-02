@@ -53,6 +53,10 @@ namespace PIKA.GD.API.Middlewares
                     context.Response.StatusCode = (int)HttpStatusCode.Conflict;
                     break;
 
+                case Type InvDataType when InvDataType == typeof(ExErrorRelacional):
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    break;
+
                 //case Type ApiRefitException when ApiRefitException == typeof(ApiException):
                 //    var ex = exception as ApiException;
                 //    context.Response.StatusCode = (int)ex.StatusCode;

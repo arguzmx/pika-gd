@@ -40,7 +40,6 @@ namespace PIKA.GD.API.Filters
             string AppId="", string ModuleId="", string[] ids = null )
         {
 
-            Console.WriteLine("***********************************************");
             this.SecurityCache = SecurityCache;
             this.Config = Config.Value;
             this.Logger = Logger;

@@ -1,0 +1,1494 @@
+{
+	"info": {
+		"_postman_id": "aa34f601-fed0-4f3a-a9c0-35734073c8ec",
+		"name": "Oragnizacion",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Dominio",
+			"item": [
+				{
+					"name": "POST Dominio",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\": \"\",\n\t\"nombre\": \"Dominio Para borrar\",\n\t\"TipoOrigenId\": \"global\",\n\t\"OrigenId\": \"global\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/dominio",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"dominio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Dominio",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\": \"ca7a1c1a-46f4-4f6d-a13e-9907f34397c9\",\n\t\"nombre\": \"Nombre cambiado\",\n\t\"TipoOrigenId\": \"global\",\n\t\"OrigenId\": \"global\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/dominio/ca7a1c1a-46f4-4f6d-a13e-9907f34397c9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"dominio",
+								"ca7a1c1a-46f4-4f6d-a13e-9907f34397c9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Metadata Dominio",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/org/dominio/metadata",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"dominio",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Dominio",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/org/dominio/dominio9",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"dominio",
+								"dominio9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Dominio",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/dominio/page?i=0&t=10&ordc=Nombre&ordd=asc&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"dominio",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Nombre"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Nombre"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Dominio",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n\t[\n\t\"ca7a1c1a-46f4-4f6d-a13e-9907f34397c9\",\n\t\"a\",\n\t\"b\"\n\t]\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/dominio/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"dominio",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH  Restaurar Dominio",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n\t[\n\t\"ca7a1c1a-46f4-4f6d-a13e-9907f34397c9\",\n\t\"a\",\n\t\"b\"\n\t]\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/dominio/restaurar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"dominio",
+								"restaurar"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b29f0c12-12a5-46e2-a699-2519fbc131c0",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "73ec3e00-a1b0-4ce8-8439-484fd45e3497",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Direccion Postal",
+			"item": [
+				{
+					"name": "POST Dirección Postal",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Id\": \"\",\r\n    \"Nombre\": \"mensajes\",\r\n    \"Calle\": \"Friesen Unions\",\r\n    \"NoInterno\": \"50301\",\r\n    \"NoExterno\": \"92545\",\r\n    \"Colonia\": \"Jeffryport\",\r\n    \"CP\": \"59951-1610\",\r\n    \"Municipio\": \"Oklahoma\",\r\n    \"EstadoId\": \"JAL\",\r\n    \"PaisId\": \"MEX\",\r\n    \"EsDefault\": true,\r\n    \"TipoOrigenId\": \"unidad-org\",\r\n    \"OrigenId\": \"d0001\"\r\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/direccionpostal",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"direccionpostal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Dirección Postal",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Id\": \"9e232434-9570-44f3-b93e-04a59d84bae8\",\r\n    \"Nombre\": \"mensajes 001\",\r\n    \"Calle\": \"Friesen Unions\",\r\n    \"NoInterno\": \"50301\",\r\n    \"NoExterno\": \"92545\",\r\n    \"Colonia\": \"Jeffryport\",\r\n    \"CP\": \"59951-1610\",\r\n    \"Municipio\": \"Oklahoma\",\r\n    \"EstadoId\": \"JAL\",\r\n    \"PaisId\": \"MEX\",\r\n    \"TipoOrigenId\": \"unidad-org\",\r\n    \"OrigenId\": \"d0001\",\r\n    \"EsDefault\": true\r\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/direccionpostal/9e232434-9570-44f3-b93e-04a59d84bae8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"direccionpostal",
+								"9e232434-9570-44f3-b93e-04a59d84bae8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Metadata Dominio",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/org/dominio/metadata",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"dominio",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Dirección Postal",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/direccionpostal/dpuo0dominio0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"direccionpostal",
+								"dpuo0dominio0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Direccion Postal",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/direccionpostal/page/unidad-org/uo0dominio0?i=0&t=10&ordc=Nombre&ordd=asc&f[0]",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"direccionpostal",
+								"page",
+								"unidad-org",
+								"uo0dominio0"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Nombre"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0]",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Dirección Postal",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n\t[\n\t\"PIKA.Modelo.Organizacion.UnidadOrganizacional\",\n\t\"f5857944-0ab1-4045-aadf-520cff0406fb\",\n\t\"fb0136fd-62a1-4b41-b868-3da5f25df805\"\n\t]\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/direccionpostal",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"direccionpostal"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e6456e6c-ef17-4f32-b9f1-300a19d3e1ea",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "757aaf67-d182-479d-bd14-821c2c733d45",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Roles",
+			"item": [
+				{
+					"name": "POST Rol",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Nombre\": \"Rol 6668\",\r\n    \"Descripcion\": \"Ejmeplo de mi descripción\",\r\n    \"OrigenId\": \"dominio\",\r\n    \"TipoOrigenId\": \"dominio\"\r\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/rol",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"rol"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Rol",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Id\": \"rol0\",\r\n    \"Nombre\": \"Rol de ejemplo\",\r\n    \"Descripcion\": \"Mi descripción\",\r\n    \"TipoOrigenId\": \"dominio\",\r\n    \"OrigenId\": \"dominio\"\r\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/rol/rol0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"rol",
+								"rol0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Metadata Rol",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/org/rol/metadata",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"rol",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Rol",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/rol/rol0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"rol",
+								"rol0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Roles",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/rol/page?i=0&t=10&ordc=Nombre&ordd=asc&f[0]",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"rol",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Nombre"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0]",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Rol",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n\t[\n\t\"rol2\",\n\t\"f5857944-0ab1-4045-aadf-520cff0406fb\",\n\t\"fb0136fd-62a1-4b41-b868-3da5f25df805\"\n\t]\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/rol",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"rol"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Vincular usuario a Rol",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n\t[\n\t\"u1\",\n\t\"u2\",\n\t\"u3\"\n\t]\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/rol/vincular/rol10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"rol",
+								"vincular",
+								"rol10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Desvincular usuario de Rol",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n\t[\n\t\"u1\"\n\t]\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/rol/desvincular/rol10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"rol",
+								"desvincular",
+								"rol10"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f09fd324-9b10-43f6-ba38-8a855befcaaf",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "75bf26ca-3321-4dc1-869c-4e615b0ece8a",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Unidad Organizacional",
+			"item": [
+				{
+					"name": "POST Unidad Organizacional",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Id\": \"\",\r\n    \"Nombre\": \"Unidad Demo\",\r\n    \"DominioId\": \"dominio1\"\r\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/org/unidadorganizacional",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"unidadorganizacional"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Unidad Organizacional",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "       {\r\n            \"Id\": \"a6eedfa8-293c-4214-b0be-ee323eafe54e\",\r\n            \"Nombre\": \"Unidad Demo 44\",\r\n            \"Eliminada\": false,\r\n            \"DominioId\": \"dominio0\"\r\n        }",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/org/unidadorganizacional/a6eedfa8-293c-4214-b0be-ee323eafe54e",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"unidadorganizacional",
+								"a6eedfa8-293c-4214-b0be-ee323eafe54e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Metadata Unidad Organizacional",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/org/unidadorganizacional/metadata",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"unidadorganizacional",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Unidad organizacional",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/org/unidadorganizacional/uo12dominio0",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"unidadorganizacional",
+								"uo12dominio0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Unidades organizacionales",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/UnidadOrganizacional/page?i=0&t=10&ordc=Nombre&ordd=asc&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=demo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"UnidadOrganizacional",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Nombre"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Nombre"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "demo"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Unidad Organizacional",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n\t[\n\t\"b9352cf2-dee0-4258-b9c8-93e1bc837182\",\n\t\"a\",\n\t\"b\"\n\t]\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/org/unidadorganizacional/",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"unidadorganizacional",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH  Restaurar Unidad Organizacional",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n\t[\n\t\"b9352cf2-dee0-4258-b9c8-93e1bc837182\",\n\t\"a\",\n\t\"b\"\n\t]\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/org/unidadorganizacional/restaurar",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"unidadorganizacional",
+								"restaurar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Unidades organizacionales de Dominio",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/UnidadOrganizacional/page/dominio/dominio0?i=0&t=10&ordc=Nombre&ordd=asc&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=d",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"UnidadOrganizacional",
+								"page",
+								"dominio",
+								"dominio0"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Nombre"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Nombre"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "d"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "049895a3-db50-4559-9573-1463e5e71e05",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "792f4c49-ac3b-4c9f-9560-754b8cc2b440",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "b2452b44-1fe7-4c20-bc7d-c15bb13aa920",
+				"type": "text/javascript",
+				"exec": [
+					"const echoPostRequest = {",
+					"  url: 'http://localhost:4000/connect/token',",
+					"  method: 'POST',",
+					"  header: 'Content-Type:application/x-www-form-urlencoded',",
+					"  body: {",
+					"    mode: 'raw',",
+					"    raw: 'grant_type=password&username=bob&password=Pass123%24&scope=openid%20pika-gd&client_id=api-pika-gd-pass&client_secret=secret'",
+					"  }",
+					"};",
+					"",
+					"var getToken = true;",
+					"",
+					"if (!pm.environment.get('accessTokenExpiry') || ",
+					"    !pm.environment.get('accessToken')) {",
+					"    console.log('Token or expiry date are missing')",
+					"} else if (pm.environment.get('accessTokenExpiry') <= (new Date()).getTime()) {",
+					"    console.log('Token is expired')",
+					"} else {",
+					"    getToken = false;",
+					"    console.log('Token and expiry date are all good');",
+					"}",
+					"",
+					"if (getToken === true) {",
+					"    pm.sendRequest(echoPostRequest, function (err, res) {",
+					"    console.log(err ? err : res.json());",
+					"        if (err === null) {",
+					"            console.log('Saving the token and expiry date')",
+					"            var responseJson = res.json();",
+					"            pm.environment.set('accessToken', responseJson.access_token)",
+					"    ",
+					"            var expiryDate = new Date();",
+					"            expiryDate.setSeconds(expiryDate.getSeconds() + responseJson.expires_in);",
+					"            pm.environment.set('accessTokenExpiry', expiryDate.getTime());",
+					"        }",
+					"    });",
+					"}",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "204ab867-5937-47f6-8b5e-3537469369bd",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "1b11a67e-7879-4f8e-843a-583204270ef1",
+			"key": "accessTokenExpiry",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "32a118d3-bc73-47ff-8e31-51b2a3d76830",
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

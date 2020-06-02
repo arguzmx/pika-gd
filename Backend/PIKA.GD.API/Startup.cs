@@ -24,6 +24,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Serilog;
 using PIKA.GD.API.Servicios;
+using Serilog.Events;
 
 namespace PIKA.GD.API
 {
@@ -39,6 +40,10 @@ namespace PIKA.GD.API
             Configuration = configuration;
             Environment = environment;
             Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Debug()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+            .MinimumLevel.Override("System", LogEventLevel.Information)
+            .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
          .Enrich.FromLogContext()
          .WriteTo.Console()
          .CreateLogger();
@@ -111,9 +116,7 @@ namespace PIKA.GD.API
             services.AddDbContext<DbContextAplicacionPlugin>(options =>
                   options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
-            services.AddDbContext<DbContextOrganizacion>(options =>
-                    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-
+            
             services.AddDbContext<DbContextContenido>(options =>
                options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
@@ -122,6 +125,9 @@ namespace PIKA.GD.API
 
             services.AddDbContext<DbContextMetadatos>(options =>
            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
+            services.AddDbContext<DbContextOrganizacion>(options =>
+                    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
 
             services.AddControllers();

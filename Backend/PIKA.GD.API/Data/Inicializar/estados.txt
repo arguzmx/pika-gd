@@ -1,0 +1,33 @@
+﻿Estado	D2	D3	PAIS
+Aguascalientes	AG	AGU	MEX
+Baja California	BC	BCN	MEX
+Baja California Sur	BS	BCS	MEX
+Campeche	CM	CAM	MEX
+Chiapas	CS	CHP	MEX
+Chihuahua	CH	CHH	MEX
+Ciudad de México	CX	CMX​	MEX
+Coahuila	CO	COA	MEX
+Colima	CL	COL	MEX
+Durango	DG	DUR	MEX
+Guanajuato	GT	GUA	MEX
+Guerrero	GR	GRO	MEX
+Hidalgo	HG	HID	MEX
+Jalisco	JC	JAL	MEX
+México	EM​	MEX	MEX
+Michoacán	MI	MIC	MEX
+Morelos	MO	MOR	MEX
+Nayarit	NA	NAY	MEX
+Nuevo León	NL	NLE	MEX
+Oaxaca	OA	OAX	MEX
+Puebla	PU	PUE	MEX
+Querétaro	QT	QUE	MEX
+Quintana Roo	QR	ROO	MEX
+San Luis Potosí	SL	SLP	MEX
+Sinaloa	SI	SIN	MEX
+Sonora	SO	SON	MEX
+Tabasco	TB	TAB	MEX
+Tamaulipas	TM	TAM	MEX
+Tlaxcala	TL	TLA	MEX
+Veracruz	VE	VER	MEX
+Yucatán	YU	YUC	MEX
+Zacatecas	ZA	ZAC	MEX

@@ -10,6 +10,8 @@ namespace RepositorioEntidades
     /// </summary>
     public interface IEntidadRelacionada
     {
+        public const string CampoTipo = "TipoOrigenId";
+        public const string CampoId = "OrigenId";
 
         /// <summary>
         /// Identificador de tipo de origen por default

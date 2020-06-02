@@ -10,4 +10,8 @@
     <Folder Include="Validadores\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Bogus" Version="29.0.2" />
+  </ItemGroup>
+
 </Project>

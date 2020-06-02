@@ -19,11 +19,6 @@ namespace PIKA.Servicio.Organizacion
 
         public DbContextOrganizacion Crear()
         {
-            //var optionsBuilderType = typeof(DbContextOptionsBuilder<>).MakeGenericType(t);
-            //var optionsBuilder = (DbContextOptionsBuilder)Activator.CreateInstance(optionsBuilderType);
-            //optionsBuilder.UseMySql(Configuration.GetConnectionString("pika-gd"));
-            //var dbContext = (DbContext)Activator.CreateInstance(t, optionsBuilder.Options);
-
             return new DbContextOrganizacion(proveedorOpciones.ObtieneOpciones());
         }
     }
@@ -135,10 +130,10 @@ namespace PIKA.Servicio.Organizacion
             this.Database.Migrate();
         }
 
-        public void Inicializar(string ContentPath)
+        public void Inicializar(string ContentPath, bool generarDatosdemo)
         {
             Console.WriteLine("Inicializando DB");
-            InicializarDatos.Inicializar(this, ContentPath);
+            InicializarDatos.Inicializar(this, ContentPath, generarDatosdemo);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

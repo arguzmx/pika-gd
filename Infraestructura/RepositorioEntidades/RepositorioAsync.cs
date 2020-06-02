@@ -54,7 +54,6 @@ namespace RepositorioEntidades
 
                 IQueryable<T> query = _dbSet;
 
-                Console.WriteLine($"{consulta.tamano} {consulta.ord_columna } {consulta.ord_direccion}");
 
                 if (inhabilitarSeguimiento) query = query.AsNoTracking();
 
@@ -84,12 +83,13 @@ namespace RepositorioEntidades
 
                 query = query.OrdenarPor(consulta.ord_columna, consulta.ord_direccion.ToLower() == "desc" ? false : true);
 
-                return query.PaginadoAsync(consulta.indice, consulta.tamano, 0, tokenCancelacion);
+                return query.PaginadoAsync(consulta.indice, consulta.tamano,  tokenCancelacion);
 
             }
             catch (Exception ex)
             {
-                throw;
+                Console.WriteLine(ex.ToString());
+                throw ex;
             }
 
         }
@@ -112,9 +112,9 @@ namespace RepositorioEntidades
             if (predicado != null) query = query.Where(predicado);
 
             if (ordenarPor != null)
-                return ordenarPor(query).PaginadoAsync(indice, tamano, 0, tokenCancelacion);
+                return ordenarPor(query).PaginadoAsync(indice, tamano,  tokenCancelacion);
 
-            return query.PaginadoAsync(indice, tamano, 0, tokenCancelacion);
+            return query.PaginadoAsync(indice, tamano,  tokenCancelacion);
         }
 
         public Task CrearAsync(T entity, CancellationToken cancellationToken = default(CancellationToken))
@@ -175,15 +175,15 @@ namespace RepositorioEntidades
 
         }
 
-        public async Task<IEnumerable<T>> ObtenerListaAsync(string comandoSql)
+        public async Task<List<T>> ObtenerAsync(string comandoSql)
         {
 
 
             await Task.Delay(1);
-            return _dbSet.FromSqlInterpolated<T>($"{comandoSql}");
+            return _dbSet.FromSqlInterpolated<T>($"{comandoSql}").ToList();
 
         }
 
- 
+
     }
 }

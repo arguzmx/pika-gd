@@ -24,18 +24,19 @@ namespace PIKA.Servicio.Organizacion.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<Rol> repo;
-        private ICompositorConsulta<Rol> compositor;
+        private IRepositorioAsync<UsuariosRol> repoU;
         private UnidadDeTrabajo<DbContextOrganizacion> UDT;
         
         public ServicioRol(
-            IProveedorOpcionesContexto<DbContextOrganizacion> proveedorOpciones,
+        IProveedorOpcionesContexto<DbContextOrganizacion> proveedorOpciones,
         ICompositorConsulta<Rol> compositorConsulta,
+        ICompositorConsulta<UsuariosRol> compositorConsultaU,
         ILogger<ServicioRol> Logger,
         IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
         {
             this.UDT = new UnidadDeTrabajo<DbContextOrganizacion>(contexto);
-            this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<Rol>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<Rol>(compositorConsulta);
+            this.repoU = UDT.ObtenerRepositoryAsync<UsuariosRol>(compositorConsultaU);
         }
 
 
@@ -104,6 +105,114 @@ namespace PIKA.Servicio.Organizacion.Servicios
             return respuesta;
         }
 
+        
+
+        public async Task<ICollection<string>> Eliminar(string[] ids)
+        {
+            try
+            {
+                Rol r;
+                ICollection<string> listaEliminados = new HashSet<string>();
+                foreach (var Id in ids)
+                {
+
+
+                    r = await this.repo.UnicoAsync(x => x.Id == Id);
+
+                    if (r != null)
+                    {
+                        UDT.Context.Entry(r).State = EntityState.Deleted;
+                        listaEliminados.Add(r.Id);
+                    }
+                }
+                UDT.SaveChanges();
+                return listaEliminados;
+            }
+            catch (Exception ex)
+            {
+                logger.LogInformation(ex.ToString());
+                throw ex;
+            }
+            
+        }
+
+
+        /// <summary>
+        /// Vincula los identificadores de usuairo al rol
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public async Task<ICollection<string>> Vincular(string rolId, string[] ids)
+        {
+
+            UsuariosRol r;
+            ICollection<string> lista = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                r = await this.repoU.UnicoAsync(x => x.RolId == rolId && x.ApplicationUserId == Id);
+                if (r == null)
+                {
+                    await this.repoU.CrearAsync(new UsuariosRol() { ApplicationUserId = Id, RolId = rolId });
+                }
+                lista.Add(Id);
+            }
+            UDT.SaveChanges();
+            return lista;
+        }
+
+        /// <summary>
+        /// Vincula los identificadores de usuairo al rol
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        public async Task<ICollection<string>> Desvincular(string rolId, string[] ids)
+        {
+
+            UsuariosRol r;
+            ICollection<string> lista = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                r = await this.repoU.UnicoAsync(x => x.RolId == rolId && x.ApplicationUserId == Id);
+                if (r != null)
+                {
+                    await this.repoU.Eliminar(new UsuariosRol() { ApplicationUserId = Id, RolId = rolId });
+                    lista.Add(Id);
+                }
+            }
+            UDT.SaveChanges();
+            return lista;
+        }
+
+        public Task<List<Rol>> ObtenerAsync(Expression<Func<Rol, bool>> predicado)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Rol>> ObtenerAsync(string SqlCommand)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IPaginado<Rol>> ObtenerPaginadoAsync(Expression<Func<Rol, bool>> predicate = null, Func<IQueryable<Rol>, IOrderedQueryable<Rol>> orderBy = null, Func<IQueryable<Rol>, IIncludableQueryable<Rol, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Rol> UnicoAsync(Expression<Func<Rol, bool>> predicado = null, Func<IQueryable<Rol>, IOrderedQueryable<Rol>> ordenarPor = null, Func<IQueryable<Rol>, IIncludableQueryable<Rol, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+            Rol r = await this.repo.UnicoAsync(predicado);
+            return r.CopiaRol();
+        }
+
+
+
+        #region sin implemetar
+
+        public Task<IEnumerable<string>> Restaurar(string[] ids)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<IEnumerable<Rol>> CrearAsync(params Rol[] entities)
         {
             throw new NotImplementedException();
@@ -123,50 +232,7 @@ namespace PIKA.Servicio.Organizacion.Servicios
         {
             throw new NotImplementedException();
         }
-
-        public async Task<ICollection<string>> Eliminar(string[] ids)
-        {
-            Rol r;
-            ICollection<string> listaEliminados = new HashSet<string>();
-            foreach (var Id in ids)
-            {
-                r = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (r != null)
-                {
-                    UDT.Context.Entry(r).State = EntityState.Deleted;
-                    listaEliminados.Add(r.Id);
-                }
-            }
-            UDT.SaveChanges();
-            return listaEliminados;
-        }
-
-        public Task<List<Rol>> ObtenerAsync(Expression<Func<Rol, bool>> predicado)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Rol>> ObtenerListaAsync(string SqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IPaginado<Rol>> ObtenerPaginadoAsync(Expression<Func<Rol, bool>> predicate = null, Func<IQueryable<Rol>, IOrderedQueryable<Rol>> orderBy = null, Func<IQueryable<Rol>, IIncludableQueryable<Rol, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Rol> UnicoAsync(Expression<Func<Rol, bool>> predicado = null, Func<IQueryable<Rol>, IOrderedQueryable<Rol>> ordenarPor = null, Func<IQueryable<Rol>, IIncludableQueryable<Rol, object>> incluir = null, bool inhabilitarSegumiento = true)
-        {
-            Rol r = await this.repo.UnicoAsync(predicado);
-            return r.CopiaRol();
-        }
-
-        public Task Restaurar(string[] ids)
-        {
-            throw new NotImplementedException();
-        }
-
+        #endregion
 
     }
 }

@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Organizacion
 {
@@ -19,6 +21,8 @@ namespace PIKA.Modelo.Organizacion
         /// </summary>
         public string ApplicationUserId { get; set; }
 
+        [XmlIgnore]
+        [JsonIgnore]
         public Rol Rol { get; set; }
 
     }

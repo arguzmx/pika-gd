@@ -48,15 +48,32 @@ namespace PIKA.Servicio.Organizacion
         }
         public async Task<UnidadOrganizacional> CrearAsync(UnidadOrganizacional entity, CancellationToken cancellationToken = default)
         {
-            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
+
+            try
             {
-                throw new ExElementoExistente(entity.Nombre);
+                // los nombres de unidad organizacional pueden repetirse en los diferetes dominios
+                if (await Existe(x => 
+                x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase) &&
+                x.DominioId.Equals(entity.DominioId, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    throw new ExElementoExistente(entity.Nombre);
+                }
+
+                entity.Id = System.Guid.NewGuid().ToString();
+                await this.repo.CrearAsync(entity);
+                UDT.SaveChanges();
+                return entity;
+            }
+            catch (DbUpdateException)
+            {
+                throw new ExErrorRelacional("Identificador de dominio no válido");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError("Error al crear Unidad Organizacional {0}", ex.Message);
+                throw ex;
             }
 
-            entity.Id = System.Guid.NewGuid().ToString();
-            await this.repo.CrearAsync(entity);
-            UDT.SaveChanges();
-            return entity;
         }
 
 
@@ -77,9 +94,9 @@ namespace PIKA.Servicio.Organizacion
             }
 
             uo.Nombre = entity.Nombre;
-            uo.Eliminada = entity.Eliminada;
             UDT.Context.Entry(uo).State = EntityState.Modified;
             UDT.SaveChanges();
+
         }
         private Consulta GetDefaultQuery(Consulta query)
         {
@@ -103,24 +120,19 @@ namespace PIKA.Servicio.Organizacion
             return respuesta;
         }
 
-        public Task<IEnumerable<UnidadOrganizacional>> CrearAsync(params UnidadOrganizacional[] entities)
+        
+
+        public async Task EjecutarSql(string sqlCommand)
         {
-            throw new NotImplementedException();
+            await this.contexto.Database.ExecuteSqlRawAsync(sqlCommand);
         }
 
-        public Task<IEnumerable<UnidadOrganizacional>> CrearAsync(IEnumerable<UnidadOrganizacional> entities, CancellationToken cancellationToken = default)
+        public async Task EjecutarSqlBatch(List<string> sqlCommand)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task EjecutarSql(string sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task EjecutarSqlBatch(List<string> sqlCommand)
-        {
-            throw new NotImplementedException();
+            foreach (string s in sqlCommand)
+            {
+                await this.contexto.Database.ExecuteSqlRawAsync(s);
+            }
         }
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
@@ -143,10 +155,48 @@ namespace PIKA.Servicio.Organizacion
 
         public Task<List<UnidadOrganizacional>> ObtenerAsync(Expression<Func<UnidadOrganizacional, bool>> predicado)
         {
+            return this.repo.ObtenerAsync(predicado);
+        }
+
+        public Task<List<UnidadOrganizacional>> ObtenerAsync(string SqlCommand)
+        {
+            return this.repo.ObtenerAsync(SqlCommand);
+        }
+
+
+
+        public async Task<UnidadOrganizacional> UnicoAsync(Expression<Func<UnidadOrganizacional, bool>> predicado = null, Func<IQueryable<UnidadOrganizacional>, IOrderedQueryable<UnidadOrganizacional>> ordenarPor = null, Func<IQueryable<UnidadOrganizacional>, IIncludableQueryable<UnidadOrganizacional, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+            UnidadOrganizacional uo = await this.repo.UnicoAsync(predicado);
+            return uo.CopiaUO();
+        }
+
+        public async Task<IEnumerable<string>> Restaurar(string[] ids)
+        {
+            UnidadOrganizacional uo;
+            ICollection<string> lista = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                uo = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (uo != null)
+                {
+                    uo.Eliminada = false;
+                    UDT.Context.Entry(uo).State = EntityState.Modified;
+                    lista.Add(uo.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return lista;
+        }
+
+
+        #region Sin implemntar
+        public Task<IEnumerable<UnidadOrganizacional>> CrearAsync(params UnidadOrganizacional[] entities)
+        {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<UnidadOrganizacional>> ObtenerListaAsync(string SqlCommand)
+        public Task<IEnumerable<UnidadOrganizacional>> CrearAsync(IEnumerable<UnidadOrganizacional> entities, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -156,17 +206,7 @@ namespace PIKA.Servicio.Organizacion
             throw new NotImplementedException();
         }
 
-        public async Task<UnidadOrganizacional> UnicoAsync(Expression<Func<UnidadOrganizacional, bool>> predicado = null, Func<IQueryable<UnidadOrganizacional>, IOrderedQueryable<UnidadOrganizacional>> ordenarPor = null, Func<IQueryable<UnidadOrganizacional>, IIncludableQueryable<UnidadOrganizacional, object>> incluir = null, bool inhabilitarSegumiento = true)
-        {
-            UnidadOrganizacional uo = await this.repo.UnicoAsync(predicado);
-            return uo.CopiaUO();
-        }
-
-        public Task Restaurar(string[] ids)
-        {
-            throw new NotImplementedException();
-        }
-
+        #endregion
 
     }
 }
