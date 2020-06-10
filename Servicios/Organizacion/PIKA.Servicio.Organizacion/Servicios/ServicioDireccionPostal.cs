@@ -30,13 +30,12 @@ namespace PIKA.Servicio.Organizacion.Servicios
         
         public ServicioDireccionPostal(
             IProveedorOpcionesContexto<DbContextOrganizacion> proveedorOpciones,
-            ICompositorConsulta<DireccionPostal> compositorConsulta,
-            ILogger<ServicioDireccionPostal> Logger,
-            IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+            ILogger<ServicioDireccionPostal> Logger) : 
+            base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextOrganizacion>(contexto);
-            this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<DireccionPostal>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<DireccionPostal>(
+                new QueryComposer<DireccionPostal>());
         }
 
         public async Task<bool> Existe(Expression<Func<DireccionPostal, bool>> predicado)

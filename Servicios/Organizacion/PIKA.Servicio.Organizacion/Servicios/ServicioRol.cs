@@ -29,14 +29,13 @@ namespace PIKA.Servicio.Organizacion.Servicios
         
         public ServicioRol(
         IProveedorOpcionesContexto<DbContextOrganizacion> proveedorOpciones,
-        ICompositorConsulta<Rol> compositorConsulta,
-        ICompositorConsulta<UsuariosRol> compositorConsultaU,
-        ILogger<ServicioRol> Logger,
-        IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+        ILogger<ServicioRol> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextOrganizacion>(contexto);
-            this.repo = UDT.ObtenerRepositoryAsync<Rol>(compositorConsulta);
-            this.repoU = UDT.ObtenerRepositoryAsync<UsuariosRol>(compositorConsultaU);
+            this.repo = UDT.ObtenerRepositoryAsync<Rol>(
+                new QueryComposer<Rol>());
+            this.repoU = UDT.ObtenerRepositoryAsync<UsuariosRol>(
+                new QueryComposer<UsuariosRol>());
         }
 
 
