@@ -11,6 +11,8 @@
     <Compile Remove="Data\Migrations\20200421130300_Demo.Designer.cs" />
     <Compile Remove="Data\Migrations\20200421181826_AlmacenArchivoGestionDocumental.cs" />
     <Compile Remove="Data\Migrations\20200421181826_AlmacenArchivoGestionDocumental.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200602210423_RelacionRolUsuario.cs" />
+    <Compile Remove="Data\Migrations\20200602210423_RelacionRolUsuario.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

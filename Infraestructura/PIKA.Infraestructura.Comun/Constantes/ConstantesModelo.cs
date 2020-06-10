@@ -27,6 +27,10 @@ namespace PIKA.Infraestructura.Comun
         /// </summary>
         public const string IDORIGEN_UNIDAD_ORGANIZACIONAL = "unidad-org";
 
-  
+        /// <summary>
+        /// Identificador de origen para los usuarios del sistema
+        /// </summary>
+        public const string IDORIGEN_USUARIO = "usuario";
+
     }
 }

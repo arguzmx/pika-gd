@@ -26,18 +26,16 @@ namespace PIKA.Servicio.Organizacion
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<UnidadOrganizacional> repo;
-        private ICompositorConsulta<UnidadOrganizacional> compositor;
         private UnidadDeTrabajo<DbContextOrganizacion> UDT;
         
         public ServicioUnidadOrganizacional(
             IProveedorOpcionesContexto<DbContextOrganizacion> proveedorOpciones,
-            ICompositorConsulta<UnidadOrganizacional> compositorConsulta,
-            ILogger<ServicioUnidadOrganizacional> Logger,
-            IServicioCache servicioCache): base(proveedorOpciones, Logger, servicioCache)
+            ILogger<ServicioUnidadOrganizacional> Logger): 
+            base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextOrganizacion>(contexto);
-            this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<UnidadOrganizacional>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<UnidadOrganizacional>(
+                new QueryComposer<UnidadOrganizacional>());
         }
 
         public async Task<bool> Existe(Expression<Func<UnidadOrganizacional, bool>> predicado)

@@ -80,6 +80,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventBus", "Infraestructura
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventBusRabbitMQ", "Infraestructura\EventBusRabbitMQ\EventBusRabbitMQ.csproj", "{180AB39B-3A68-4DBB-AA65-B87ABEDD4873}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIKA.Modelo.Contacto", "Modelos\PIKA.Modelo.Contacto\PIKA.Modelo.Contacto.csproj", "{6052B817-E04B-4CB9-BC74-0F70B255B714}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -178,6 +180,10 @@ Global
 		{180AB39B-3A68-4DBB-AA65-B87ABEDD4873}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{180AB39B-3A68-4DBB-AA65-B87ABEDD4873}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{180AB39B-3A68-4DBB-AA65-B87ABEDD4873}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6052B817-E04B-4CB9-BC74-0F70B255B714}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6052B817-E04B-4CB9-BC74-0F70B255B714}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6052B817-E04B-4CB9-BC74-0F70B255B714}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6052B817-E04B-4CB9-BC74-0F70B255B714}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -215,6 +221,7 @@ Global
 		{7FF7D596-20E0-49DF-992F-6C21DF51182F} = {1ACC1CB7-82BD-4A02-A8AF-8C74B3C1F814}
 		{5C16870C-F768-49C8-AB75-3AD3603489AA} = {A0487E79-3F40-4A93-8596-3D78B33D7389}
 		{180AB39B-3A68-4DBB-AA65-B87ABEDD4873} = {A0487E79-3F40-4A93-8596-3D78B33D7389}
+		{6052B817-E04B-4CB9-BC74-0F70B255B714} = {9DAE2F36-5E04-47D1-B3CF-5B26511A5A9A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {023A9CA1-A6E7-47B1-A283-AF2339B09C1C}
