@@ -16,7 +16,6 @@ namespace PIKA.Modelo.Metadatos
 
         public Propiedad()
         {
-            
         }
 
         /// <summary>
@@ -127,6 +126,7 @@ namespace PIKA.Modelo.Metadatos
 
         public virtual ValidadorNumero ValidadorNumero { get; set; }
 
+        
 
     }
 }

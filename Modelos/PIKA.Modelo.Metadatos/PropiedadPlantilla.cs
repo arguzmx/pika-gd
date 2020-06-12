@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Xml.Serialization;
 
@@ -15,7 +16,7 @@ namespace PIKA.Modelo.Metadatos
 
         public PropiedadPlantilla()
         {
-
+            this.ValoresLista = new HashSet<ValorListaPlantilla>();
         }
 
         /// <summary>
@@ -32,8 +33,9 @@ namespace PIKA.Modelo.Metadatos
         [JsonIgnore]
         public Plantilla Plantilla { get; set; }
 
-       
-        
+
+        public virtual ICollection<ValorListaPlantilla> ValoresLista { get; set; }
+
 
     }
 }
