@@ -6,11 +6,6 @@ using System.Text;
 namespace PIKA.Modelo.Contacto
 {
 
-    [Flags]
- 
-
-
-
     public class HorarioMedioContacto: HorarioBase
     {
         /// <summary>

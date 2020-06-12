@@ -95,6 +95,7 @@ namespace PIKA.Servicio.Metadatos.Data
         /// </summary>
         public static string TablaAlmacenDatos { get => "metadatos$almacendatos"; }
 
+        public static string TablaValoresListaPropiedad { get => "metadatos$valorespropiedad"; }
 
         #endregion
 
@@ -106,6 +107,9 @@ namespace PIKA.Servicio.Metadatos.Data
         /// Metadatos existentes en la PropiedadPlantilla
         /// </summary>
         public DbSet<PropiedadPlantilla> PropiedadPlantilla { get; set; }
+
+        public DbSet<ValorListaPlantilla> ValoresListaPropiedad { get; set; }
+
 
         /// <summary>
         /// Metadatos existentes en la TipoDato
@@ -153,6 +157,7 @@ namespace PIKA.Servicio.Metadatos.Data
             builder.ApplyConfiguration<Plantilla>(new DbConfPlantilla());
             builder.ApplyConfiguration<AlmacenDatos>(new DbConfAlmacenDatos());
             builder.ApplyConfiguration<PropiedadPlantilla>(new DbConfPropiedadPlantilla());
+            builder.ApplyConfiguration<ValorListaPlantilla>(new DbConfValorListaPropiedad());
             builder.ApplyConfiguration<TipoDato>(new DbConfTipoDato());
             builder.ApplyConfiguration<AtributoTabla>(new DbConfAtributoTabla());
             
