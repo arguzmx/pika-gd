@@ -3,6 +3,7 @@ using PIKA.Modelo.Metadatos;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace PIKA.Modelo.Organizacion
@@ -11,6 +12,8 @@ namespace PIKA.Modelo.Organizacion
     /// <summary>
     /// El dominio es el contenedor todos los recursos asociados a una organización
     /// </summary>
+    [Entidad(EliminarLogico: true)]
+    [EntidadVinculada(Entidad: "UnidadOrganizacional", Cardinalidad: TipoCardinalidad.UnoVarios, Padre: "Id", Hijo: "DominioId")]
     public class Dominio : Entidad<string>, IEntidadNombrada, IEntidadRelacionada, IEntidadEliminada
     {
         
@@ -36,7 +39,8 @@ namespace PIKA.Modelo.Organizacion
         public string Nombre { get; set; }
 
 
-        [Prop(OrderIndex: 2, Required: true, DefaultValue: "false", HTMLControl: PropAttribute.HTML_CHECKBOX)]
+        [Prop(OrderIndex: 2, Required: true, DefaultValue: "false", 
+            HTMLControl: PropAttribute.HTML_TOGGLE)]
         [Tbl(OrderIndex: 2, Visible: true)]
         /// <summary>
         /// Especifica si el dominio ha sido eliminado de manera lógica
@@ -47,14 +51,14 @@ namespace PIKA.Modelo.Organizacion
         /// Identificador de relación de origem, en este caso se utiliza
         /// para vincular la unidad con su dueño en el modo MultiTenant 
         /// </summary>
-        [Prop(OrderIndex: 3, Required: true, HTMLControl: PropAttribute.HTML_HIDDEN)]
+        [Prop(OrderIndex: 3, Required: true, HTMLControl: PropAttribute.HTML_HIDDEN, DefaultValue: ConstantesModelo.IDORIGEN_GLOBAL)]
         public string TipoOrigenId { get; set; }
 
         /// <summary>
         /// Identficador único del dueño, TENANT
         /// El Id de ralción es el identificador de un dominio
         /// </summary>
-        [Prop(OrderIndex: 4, Required: true, HTMLControl: PropAttribute.HTML_HIDDEN)]
+        [Prop(OrderIndex: 4, Required: true, HTMLControl: PropAttribute.HTML_HIDDEN, DefaultValue: ConstantesModelo.IDORIGEN_GLOBAL)]
         public string OrigenId { get; set; }
 
                

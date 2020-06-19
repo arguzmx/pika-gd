@@ -234,6 +234,8 @@ namespace PIKA.Servicio.Organizacion.Servicios
         }
 
 
+
+
         #region Sin implementar
 
         public Task<IEnumerable<Dominio>> CrearAsync(params Dominio[] entities)
