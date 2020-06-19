@@ -16,6 +16,9 @@ namespace PIKA.Modelo.Metadatos
 
         public Propiedad()
         {
+            this.OrdenarValoresListaPorNombre = true;
+            this.ValoresLista = new HashSet<ValorLista>();
+            this.ValorDefault = null;
         }
 
         /// <summary>
@@ -112,6 +115,8 @@ namespace PIKA.Modelo.Metadatos
         public bool EsIndice { get; set; }
 
 
+        public bool OrdenarValoresListaPorNombre { get; set; }
+
         /// <summary>
         /// Especifica el control de HTML preferido
         /// </summary>
@@ -125,6 +130,8 @@ namespace PIKA.Modelo.Metadatos
         public virtual ValidadorTexto ValidadorTexto { get; set; }
 
         public virtual ValidadorNumero ValidadorNumero { get; set; }
+
+        public ICollection<ValorLista> ValoresLista { get; set; }
 
         
 

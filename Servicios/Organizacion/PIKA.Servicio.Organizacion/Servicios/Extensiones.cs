@@ -1,13 +1,23 @@
 ﻿using Bogus.DataSets;
 using PIKA.Modelo.Organizacion;
+using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace PIKA.Servicio.Organizacion.Servicios
 {
     public static class ExtensionesOrganizacion
     {
+
+
+        public static List<ValorListaOrdenada> ValoresLista(this List<Dominio>  lista) {
+
+            return lista.Select(x => new ValorListaOrdenada() { Id = x.Id, Indice = 0, Texto = x.Nombre }).ToList();
+        
+        }
+
 
         //Un metodo de extension extioene un objeto en este caso Domnio con esta funcion y se le pasa el objeto
         //utilizando thin como se ve

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PIKA.Modelo.Metadatos.Atributos;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -48,7 +49,31 @@ namespace PIKA.Modelo.Metadatos
         {
 
             var t = typeof(T);
-            MetadataInfo info = new MetadataInfo() { Tipo = t.Name , FullName = t.FullName};
+            MetadataInfo info = new MetadataInfo() { Tipo = t.Name , FullName = t.FullName, 
+                EntidadesVinculada = new List<EntidadVinculada>()};
+
+
+            object[] TypeAttrs = t.GetCustomAttributes(true);
+            foreach (object attr in TypeAttrs) {
+                if (attr is EntidadAttribute)
+                {
+                    Console.WriteLine(((EntidadAttribute)attr).EliminarLogico);
+                    info.ElminarLogico = ((EntidadAttribute)attr).EliminarLogico;
+                }
+
+                if (attr is EntidadVinculadaAttribute)
+                {
+                    info.EntidadesVinculada.Add(new EntidadVinculada()
+                    {
+                        Cardinalidad = ((EntidadVinculadaAttribute)attr).Cardinalidad,
+                        Entidad = ((EntidadVinculadaAttribute)attr).Entidad,
+                        Padre = ((EntidadVinculadaAttribute)attr).Padre,
+                        Hijo = ((EntidadVinculadaAttribute)attr).Hijo
+                    });
+
+                }
+            }
+
             List<Propiedad> properties = new List<Propiedad>();
 
             PropertyInfo[] props = t.GetProperties();
@@ -145,7 +170,9 @@ namespace PIKA.Modelo.Metadatos
                 EsIdJerarquia = source.IsHieId,
                 EsIdPadreJerarquia = source.IsHieParentId,
                 EsTextoJerarquia = source.IsHieText,
-                EsFiltroJerarquia = source.IsHieFilter
+                EsFiltroJerarquia = source.IsHieFilter,
+                OrdenarValoresListaPorNombre = source.OrdenarValoresListaPorNombre
+                
             };
         }
 

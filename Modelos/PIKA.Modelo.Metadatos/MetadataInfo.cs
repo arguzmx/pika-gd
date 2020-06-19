@@ -17,7 +17,14 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public string FullName { get; set; }
 
+        /// <summary>
+        /// Especifica si el elimnado de la entidad ocurre a nivel lógico
+        /// </summary>
+        public bool ElminarLogico { get; set; }
+
         public virtual List<Propiedad> Propiedades { get; set; }
+
+        public virtual List<EntidadVinculada> EntidadesVinculada { get; set; }
 
 
         public virtual bool PoseeJerarquia()

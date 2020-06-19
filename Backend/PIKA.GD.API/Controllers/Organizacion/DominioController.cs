@@ -15,7 +15,7 @@ using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Organizacion;
 using PIKA.Servicio.Organizacion;
 using RepositorioEntidades;
-
+using PIKA.Servicio.Organizacion.Servicios;
 
 namespace PIKA.GD.API.Controllers.Organizacion
 {
