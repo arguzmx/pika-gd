@@ -264,7 +264,7 @@ namespace PIKA.Identity.Server
         IdentityServerConstants.StandardScopes.OpenId,
         IdentityServerConstants.StandardScopes.Profile,
         PIKAGDNAME
-    }
+    }, AlwaysIncludeUserClaimsInIdToken = true, AlwaysSendClientClaims = true
 },
 
 

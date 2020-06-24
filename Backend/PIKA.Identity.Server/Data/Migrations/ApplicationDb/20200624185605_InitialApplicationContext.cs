@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace PIKA.Identity.Server.Migrations
+namespace PIKA.Identity.Server.Data.Migrations.ApplicationDb
 {
-    public partial class Identity : Migration
+    public partial class InitialApplicationContext : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

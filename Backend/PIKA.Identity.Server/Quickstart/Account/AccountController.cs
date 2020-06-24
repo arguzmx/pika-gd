@@ -89,8 +89,6 @@ namespace IdentityServer4.Quickstart.UI
             // the user clicked the "cancel" button
             if (button != "login")
             {
-
-                Console.WriteLine("-------------------1");
                 if (context != null)
                 {
                     // if the user cancels, send a result back into IdentityServer as if they 
@@ -114,10 +112,8 @@ namespace IdentityServer4.Quickstart.UI
                     return Redirect("~/");
                 }
             }
-            Console.WriteLine("-------------------2");
             if (ModelState.IsValid)
             {
-                Console.WriteLine("-------------------3");
                 //Response.Cookies.Delete("jwt");
                 //Response.Cookies.Delete("jwt_to");
 
@@ -132,7 +128,6 @@ namespace IdentityServer4.Quickstart.UI
                     {
                         if (await _clientStore.IsPkceClientAsync(context.ClientId))
                         {
-                            Console.WriteLine("-------------------C " + model.ReturnUrl);
                             // if the client is PKCE then we assume it's native, so this change in how to
                             // return the response is for better UX for the end user.
                             return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
@@ -145,22 +140,18 @@ namespace IdentityServer4.Quickstart.UI
                     // request for a local page
                     if (Url.IsLocalUrl(model.ReturnUrl))
                     {
-                        Console.WriteLine("-------------------888");
                         return Redirect(model.ReturnUrl);
                     }
                     else if (string.IsNullOrEmpty(model.ReturnUrl))
                     {
-                        Console.WriteLine("-------------------99");
                         return Redirect("~/");
                     }
                     else
                     {
-                        Console.WriteLine("-------------------cuak");
                         // user might have clicked on a malicious link - should be logged
                         throw new Exception("invalid return URL");
                     }
                 }
-                Console.WriteLine("-------------------xxx");
                 await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId:context?.ClientId));
                 ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
             }
