@@ -50,20 +50,19 @@ namespace PIKA.Modelo.Metadatos
 
             var t = typeof(T);
             MetadataInfo info = new MetadataInfo() { Tipo = t.Name , FullName = t.FullName, 
-                EntidadesVinculada = new List<EntidadVinculada>()};
+                EntidadesVinculadas = new List<EntidadVinculada>()};
 
 
             object[] TypeAttrs = t.GetCustomAttributes(true);
             foreach (object attr in TypeAttrs) {
                 if (attr is EntidadAttribute)
                 {
-                    Console.WriteLine(((EntidadAttribute)attr).EliminarLogico);
                     info.ElminarLogico = ((EntidadAttribute)attr).EliminarLogico;
                 }
 
                 if (attr is EntidadVinculadaAttribute)
                 {
-                    info.EntidadesVinculada.Add(new EntidadVinculada()
+                    info.EntidadesVinculadas.Add(new EntidadVinculada()
                     {
                         Cardinalidad = ((EntidadVinculadaAttribute)attr).Cardinalidad,
                         Entidad = ((EntidadVinculadaAttribute)attr).Entidad,
@@ -171,8 +170,8 @@ namespace PIKA.Modelo.Metadatos
                 EsIdPadreJerarquia = source.IsHieParentId,
                 EsTextoJerarquia = source.IsHieText,
                 EsFiltroJerarquia = source.IsHieFilter,
-                OrdenarValoresListaPorNombre = source.OrdenarValoresListaPorNombre
-                
+                OrdenarValoresListaPorNombre = source.OrdenarValoresListaPorNombre,
+                AccionesCrud = source.CrudActions
             };
         }
 

@@ -1,8 +1,10 @@
-﻿using RepositorioEntidades;
+﻿using Microsoft.AspNetCore.Routing.Internal;
+using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using static PIKA.Modelo.Metadatos.PropAttribute;
 
 namespace PIKA.Modelo.Metadatos
 {
@@ -122,6 +124,12 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public string ControlHTML { get; set; }
 
+        /// <summary>
+        ///  Especifica en que acciones de curd participa
+        /// </summary>
+        /// 
+        [NotMapped]
+        public int AccionesCrud { get; set; }
 
         public virtual TipoDato TipoDato { get; set; }
 
