@@ -24,7 +24,7 @@ namespace PIKA.Modelo.Metadatos
 
         public virtual List<Propiedad> Propiedades { get; set; }
 
-        public virtual List<EntidadVinculada> EntidadesVinculada { get; set; }
+        public virtual List<EntidadVinculada> EntidadesVinculadas { get; set; }
 
 
         public virtual bool PoseeJerarquia()

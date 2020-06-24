@@ -137,12 +137,15 @@ namespace PIKA.GD.API.Controllers.Organizacion
        /// </summary>
        /// <param name="ids">Arreglo de identificadores string</param>
        /// <returns></returns>
-        [HttpDelete]
+        [HttpDelete("{ids}") ]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult> Delete([FromBody]string[] ids)
+        public async Task<ActionResult> Delete(string ids)
         {
-            return Ok(await servicioEntidad.Eliminar(ids).ConfigureAwait(false));
+            string[] lids = ids.Split(',').ToList()
+                .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+
+            return Ok(await servicioEntidad.Eliminar(lids).ConfigureAwait(false));
         }
 
 

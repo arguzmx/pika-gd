@@ -205,6 +205,27 @@ namespace PIKA.Identity.Server
             new Client[]
             {
 
+
+                //Cliente para autenticación de POSTMAN
+                        new Client {
+                        ClientId = "api-pika-gd-pass",
+                        ClientName = "Cliente REST API para PIKA Gestión Documental",
+                        AllowOfflineAccess=true,
+                        AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                         ClientSecrets =
+                            {
+                                new Secret("secret".Sha256())
+                            },
+                            AllowedScopes = {
+                                IdentityServerConstants.StandardScopes.OpenId,
+                                IdentityServerConstants.StandardScopes.Profile,
+                                IdentityServerConstants.StandardScopes.Email,
+                                IdentityServerConstants.StandardScopes.Address,
+                                PIKAGDNAME
+                            }
+                        },
+
+                // Cliente aplicacion angular
                 new Client
 {
                     ClientId = "api-pika-gd-angular",
@@ -217,7 +238,7 @@ namespace PIKA.Identity.Server
     RequireClientSecret = false,
     AllowedGrantTypes = GrantTypes.Code,
     RequirePkce = false,
-     
+
     AllowAccessTokensViaBrowser = true,
     RedirectUris = new List<string>
     {
@@ -245,8 +266,11 @@ namespace PIKA.Identity.Server
         PIKAGDNAME
     }
 },
+
+
+
             };
 
-
+        
     }
 }
