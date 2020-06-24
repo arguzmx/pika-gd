@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using IdentityServer4.EntityFramework.DbContexts;
+using IdentityServer4.EntityFramework.Mappers;
+using System.Reflection;
 
 namespace PIKA.Identity.Server
 {
@@ -20,9 +23,28 @@ namespace PIKA.Identity.Server
         public static void EnsureSeedData(string connectionString)
         {
             var services = new ServiceCollection();
+
+            var migrationsAssembly = typeof(SeedData).GetTypeInfo().Assembly.GetName().Name;
+
+            services.AddIdentityServer(options =>
+            {
+            })
+                 .AddConfigurationStore(options =>
+                 {
+                     options.ConfigureDbContext = b => b.UseMySql(connectionString,
+                         sql => sql.MigrationsAssembly(migrationsAssembly));
+                 })
+                    .AddOperationalStore(options =>
+                    {
+                        options.ConfigureDbContext = b => b.UseMySql(connectionString,
+                            sql => sql.MigrationsAssembly(migrationsAssembly));
+                    });
+
             services.AddLogging();
             services.AddDbContext<ApplicationDbContext>(options =>
                options.UseMySql(connectionString));
+
+
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -32,6 +54,41 @@ namespace PIKA.Identity.Server
             {
                 using (var scope = serviceProvider.GetRequiredService<IServiceScopeFactory>().CreateScope())
                 {
+                    var contextGrants = scope.ServiceProvider.GetService<PersistedGrantDbContext>();
+                    contextGrants.Database.Migrate();
+
+                    var contextConfiguration = scope.ServiceProvider.GetService<ConfigurationDbContext>();
+                    contextConfiguration.Database.Migrate();
+
+
+                    if (!contextConfiguration.Clients.Any())
+                    {
+                        foreach (var client in Config.Clients)
+                        {
+                            contextConfiguration.Clients.Add(client.ToEntity());
+                        }
+                        contextConfiguration.SaveChanges();
+                    }
+
+                    if (!contextConfiguration.IdentityResources.Any())
+                    {
+                        foreach (var resource in Config.Ids)
+                        {
+                            contextConfiguration.IdentityResources.Add(resource.ToEntity());
+                        }
+                        contextConfiguration.SaveChanges();
+                    }
+
+                    if (!contextConfiguration.ApiResources.Any())
+                    {
+                        foreach (var resource in Config.Apis)
+                        {
+                            contextConfiguration.ApiResources.Add(resource.ToEntity());
+                        }
+                        contextConfiguration.SaveChanges();
+                    }
+
+
                     var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
                     context.Database.Migrate();
 

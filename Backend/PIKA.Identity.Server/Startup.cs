@@ -16,18 +16,8 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using System.Reflection;
-using System;
-using FluentValidation.AspNetCore;
-using FluentValidation;
-using System.Linq;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using System.Collections.Generic;
-using System.IO;
-using ExtCore.WebApplication.Extensions;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using IdentityServer4.Configuration;
 
 namespace PIKA.Identity.Server
@@ -93,11 +83,13 @@ namespace PIKA.Identity.Server
                 options.SupportedUICultures = cultures;
             });
 
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            string dbconnstr = Configuration.GetConnectionString("pika-gd");
 
             services.AddControllersWithViews();
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                 options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+                 options.UseMySql(dbconnstr));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -117,9 +109,16 @@ namespace PIKA.Identity.Server
                         LoginReturnUrlParameter = "returnUrl"
                     };
                 })
-                .AddInMemoryIdentityResources(Config.Ids)
-                .AddInMemoryApiResources(Config.Apis)
-                .AddInMemoryClients(Config.Clients)
+                 .AddConfigurationStore(options =>
+                 {
+                     options.ConfigureDbContext = b => b.UseMySql(dbconnstr,
+                         sql => sql.MigrationsAssembly(migrationsAssembly));
+                 })
+                    .AddOperationalStore(options =>
+                    {
+                        options.ConfigureDbContext = b => b.UseMySql(dbconnstr,
+                            sql => sql.MigrationsAssembly(migrationsAssembly));
+                    })
                 .AddAspNetIdentity<ApplicationUser>();
 
             // not recommended for production - you need to store your key material somewhere secure
