@@ -17,11 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
-using System.Net.Http;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text.Json;
+using PIKA.Modelo.Seguridad;
 
 namespace IdentityServer4.Quickstart.UI
 {

@@ -4,12 +4,14 @@ using System.Text;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Constantes;
 using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Modelo.Seguridad;
 
 namespace PIKA.Servicio.Seguridad
 {
     public class AplicacionSeguridad : IInformacionAplicacion
     {
         public const string MODULO_BASE_SEGURIDAD = "PIKA-GD-SEG";
+        public const string MODULO_SEGURIDAD_USUARIOS = "PIKA-GD-SEG_USUSARIOS";
         public const string MODULO_SEGURIDAD_APLICACION = "PIKA-GD-SEG-APLICIACION";
         public const string MODULO_SEGURIDAD_MODULO_APLICACION = "PIKA-GD-SEG_MODAPLI";
         public const string MODULO_SEGURIDAD_TIPO_ADMINISTRADOR_MODULO = "PIKA-GD-SEG-TIPO-ADMONAPP";
@@ -30,14 +32,14 @@ namespace PIKA.Servicio.Seguridad
             List<ModuloAplicacion> l = new List<ModuloAplicacion>();
             ModuloAplicacion m;
 
-            string IdModuloAdminOrg = $"{MODULO_BASE_SEGURIDAD}-ADMIN";
+            string IdModuloBase = $"{MODULO_BASE_SEGURIDAD}-ADMIN";
 
 
             /// Modulo administarción 
             //------------------------------------------------------------
             ModuloAplicacion mAdministracion = new ModuloAplicacion(
                 ConstantesAplicacion.Id,
-                IdModuloAdminOrg, true,
+                IdModuloBase, true,
                 "Administrador Seguridad",
                 "Permite arministrar la seguridad de la aplicacion",
                 "",
@@ -61,7 +63,7 @@ namespace PIKA.Servicio.Seguridad
                 "Administrador de aplicaciones",
                 "",
                 "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                PermisoAplicacion.PermisosAdministrables(), IdModuloBase,
                 ConstantesAplicacion.Id);
             m.TiposAdministrados.Add(new TipoAdministradorModulo()
             {
@@ -83,7 +85,7 @@ namespace PIKA.Servicio.Seguridad
                 "Administrador de Modulos Aplicaicones",
                 "",
                 "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                PermisoAplicacion.PermisosAdministrables(), IdModuloBase,
                 ConstantesAplicacion.Id);
             m.TiposAdministrados.Add(new TipoAdministradorModulo()
             {
@@ -104,7 +106,7 @@ namespace PIKA.Servicio.Seguridad
                 "Administrador de tipos administradores modulos",
                 "",
                 "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                PermisoAplicacion.PermisosAdministrables(), IdModuloBase,
                 ConstantesAplicacion.Id);
             m.TiposAdministrados.Add(new TipoAdministradorModulo()
             {
@@ -124,13 +126,33 @@ namespace PIKA.Servicio.Seguridad
                 "Administrador de traduccciones de aplicaciones de modulos",
                 "",
                 "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                PermisoAplicacion.PermisosAdministrables(), IdModuloBase,
                 ConstantesAplicacion.Id);
             m.TiposAdministrados.Add(new TipoAdministradorModulo()
             {
                 AplicacionId = ConstantesAplicacion.Id,
                 ModuloId = m.Id,
                 TiposAdministrados = new List<Type>() { typeof(TraduccionAplicacionModulo) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+            /// Modulo usuarios de la aplicación
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_SEGURIDAD_USUARIOS, true,
+                "Usuarios de la aplicación",
+                "Administrador de usuarios de la aplicación",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloBase,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(PropiedadesUsuario) }
             });
             l.Add(m);
             //------------------------------------------------------------

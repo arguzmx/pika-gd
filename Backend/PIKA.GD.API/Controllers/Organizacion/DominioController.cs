@@ -154,12 +154,14 @@ namespace PIKA.GD.API.Controllers.Organizacion
         /// </summary>
         /// <param name="ids">Arreglo de identificadores string</param>
         /// <returns></returns>
-        [HttpPatch("restaurar", Name = "restaurarDominio")]
+        [HttpPatch("restaurar/{ids}", Name = "restaurarDominio")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult> Undelete([FromBody] string[] ids)
+        public async Task<ActionResult> Undelete(string ids)
         {
-            return Ok(await servicioEntidad.Restaurar(ids).ConfigureAwait(false));
+            string[] lids = ids.Split(',').ToList()
+            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            return Ok(await servicioEntidad.Restaurar(lids).ConfigureAwait(false));
         }
 
     }

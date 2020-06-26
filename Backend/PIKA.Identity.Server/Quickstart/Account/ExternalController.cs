@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using IdentityModel;
 using System.Security.Principal;
 using System.Security.Claims;
+using PIKA.Modelo.Seguridad;
 
 namespace IdentityServer4.Quickstart.UI
 {

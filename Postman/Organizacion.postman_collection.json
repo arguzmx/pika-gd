@@ -27,7 +27,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"id\": \"\",\n\t\"nombre\": \"Dominio Para borrar\",\n\t\"TipoOrigenId\": \"global\",\n\t\"OrigenId\": \"global\"\n}",
+							"raw": "{\n \t\"nombre\": \"Dominio Para borrar 2\",\n\t\"TipoOrigenId\": \"global\",\n\t\"OrigenId\": \"global\"\n}",
 							"options": {
 								"raw": {}
 							}
@@ -108,12 +108,12 @@
 							}
 						],
 						"url": {
-							"raw": "https://localhost:5001/api/v1.0/org/dominio/metadata",
-							"protocol": "https",
+							"raw": "http://localhost:5000/api/v1.0/org/dominio/metadata",
+							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "5001",
+							"port": "5000",
 							"path": [
 								"api",
 								"v1.0",
@@ -142,12 +142,12 @@
 							}
 						],
 						"url": {
-							"raw": "https://localhost:5001/api/v1.0/org/dominio/dominio9",
-							"protocol": "https",
+							"raw": "http://localhost:5000/api/v1.0/org/dominio/dominio9",
+							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "5001",
+							"port": "5000",
 							"path": [
 								"api",
 								"v1.0",
@@ -251,13 +251,13 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "\n\t[\n\t\"ca7a1c1a-46f4-4f6d-a13e-9907f34397c9\",\n\t\"a\",\n\t\"b\"\n\t]\n",
+							"raw": "\n",
 							"options": {
 								"raw": {}
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1.0/org/dominio/",
+							"raw": "http://localhost:5000/api/v1.0/org/dominio/1,2,3,25e80da5-96d4-4fb5-8328-4596a4f41042,,,",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -268,7 +268,7 @@
 								"v1.0",
 								"org",
 								"dominio",
-								""
+								"1,2,3,25e80da5-96d4-4fb5-8328-4596a4f41042,,,"
 							]
 						}
 					},
@@ -1478,13 +1478,13 @@
 	],
 	"variable": [
 		{
-			"id": "1b11a67e-7879-4f8e-843a-583204270ef1",
+			"id": "6768cb65-fa22-474b-a76b-987d000c4361",
 			"key": "accessTokenExpiry",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"id": "32a118d3-bc73-47ff-8e31-51b2a3d76830",
+			"id": "e0c08fe9-2605-49d7-9dba-5f04565f96b1",
 			"key": "accessToken",
 			"value": "",
 			"type": "string"

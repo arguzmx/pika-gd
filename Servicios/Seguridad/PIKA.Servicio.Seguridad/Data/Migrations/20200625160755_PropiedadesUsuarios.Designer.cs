@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PIKA.Servicio.Seguridad;
 
 namespace PIKA.Servicio.Seguridad.Data.Migrations
 {
     [DbContext(typeof(DbContextSeguridad))]
-    partial class DbContextSeguridadModelSnapshot : ModelSnapshot
+    [Migration("20200625160755_PropiedadesUsuarios")]
+    partial class PropiedadesUsuarios
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -184,22 +186,12 @@ namespace PIKA.Servicio.Seguridad.Data.Migrations
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<bool>("Eliminada")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(false);
-
                     b.Property<string>("Email")
                         .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("Inactiva")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(false);
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
@@ -281,12 +273,6 @@ namespace PIKA.Servicio.Seguridad.Data.Migrations
                     b.Property<string>("UsuarioId")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4")
                         .HasMaxLength(255);
-
-                    b.Property<bool>("Eliminada")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("Inactiva")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime?>("Ultimoacceso")
                         .HasColumnType("datetime(6)");

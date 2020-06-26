@@ -7,6 +7,8 @@ using RepositorioEntidades;
 using PIKA.Infraestructura.Comun;
 using PIKA.Servicio.Seguridad.Data;
 using PIKA.Servicio.Seguridad.Data.Configuracion;
+using PIKA.Modelo.Seguridad;
+using PIKA.Modelo.Seguridad.Base;
 
 namespace PIKA.Servicio.Seguridad
 {
@@ -35,6 +37,15 @@ namespace PIKA.Servicio.Seguridad
 
         #region Contantes de configutación
 
+        public static string TablaApplicationUser { get => "aspnetusers"; }
+
+        public static string TablaApplicationUserClaims { get => "aspnetuserclaims"; }
+
+        public static string TablaUsuariosOominio { get => "seguridad$usuariosdominio"; }
+
+        public static string TablaPropiedadesUsuario { get => "seguridad$usuarioprops"; }
+
+        public static string TablaGeneros{ get => "seguridad$generousuario"; }
 
         /// <summary>
         /// Nombre de la tabla para las entidades de Aplicaciones
@@ -72,6 +83,33 @@ namespace PIKA.Servicio.Seguridad
 
 
         /// <summary>
+        /// usaurios de la aplciación
+        /// </summary>
+        public DbSet<ApplicationUser> Usuarios { get; set; }
+
+        /// <summary>
+        ///  erlacionas los claims para OIDC con el usuario
+        /// </summary>
+        public DbSet<UserClaim> ClaimsUsuario { get; set; }
+
+        /// <summary>
+        ///  Generos para los usaurios del sistema
+        /// </summary>
+        public DbSet<Genero> Generos { get; set; }
+
+        /// <summary>
+        /// Propieades de los usuarios del dominio
+        /// </summary>
+        public DbSet<PropiedadesUsuario> PropiedadesUsuario { get; set; }
+
+
+
+        /// <summary>
+        /// Registro de los usuarios exietntes en un dominio
+        /// </summary>
+        public DbSet<UsuarioDominio> UsuariosDominio { get; set; }
+
+        /// <summary>
         /// Modulos Aplicaciones existentes en la aplicación
         /// </summary>
         public DbSet<ModuloAplicacion> ModuloAplicacion { get; set; }
@@ -96,13 +134,18 @@ namespace PIKA.Servicio.Seguridad
 
         public void Inicializar(string ContentPath, bool generarDatosdemo)
         {
-            InicializarDatos.Inicializar(this, ContentPath);
+            InicializarDatos.Inicializar(this, ContentPath, generarDatosdemo);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
             builder.ApplyConfiguration<Aplicacion>(new DbConfAplicacion());
+            builder.ApplyConfiguration<ApplicationUser>(new DBConfigApplicationUser());
+            builder.ApplyConfiguration<UsuarioDominio>(new DbConfigUsuariosDominio());
+            builder.ApplyConfiguration<UserClaim>(new DbConfigUserClaims());
+            builder.ApplyConfiguration<Genero>(new DbConfiggeneros());
+            builder.ApplyConfiguration<PropiedadesUsuario>(new DbConfPropiedadesUsuario());
             builder.ApplyConfiguration<ModuloAplicacion>(new DbConfModuloAplicacion());
             builder.ApplyConfiguration<TipoAdministradorModulo>(new DbConfTipoAdministradorModulo());
             builder.ApplyConfiguration<TraduccionAplicacionModulo>(new DbConfTraduccionAplicacionModulo());

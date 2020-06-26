@@ -56,9 +56,6 @@
     <ProjectReference Include="..\..\Servicios\Organizacion\PIKA.Servicio.Organizacion\PIKA.Servicio.Organizacion.csproj" />
     <ProjectReference Include="..\..\Servicios\Seguridad\PIKA.Servicio.Seguridad\PIKA.Servicio.Seguridad.csproj" />
       </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controllers\Seguridad\" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Update="Data\Inicializar\estados.txt">
