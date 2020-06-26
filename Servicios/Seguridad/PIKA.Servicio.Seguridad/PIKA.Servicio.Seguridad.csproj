@@ -10,13 +10,19 @@
 
     <Compile Remove="Data\Migrations\20200422033331_Demo.cs" />
     <Compile Remove="Data\Migrations\20200422033331_Demo.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200625155107_PropiedadesUsuarios.cs" />
+    <Compile Remove="Data\Migrations\20200625155107_PropiedadesUsuarios.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200625155600_PropiedadesUsuarios.cs" />
+    <Compile Remove="Data\Migrations\20200625155600_PropiedadesUsuarios.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Infraestructura\PIKA.Infraestructura.Comun\PIKA.Infraestructura.Comun.csproj" />
     <ProjectReference Include="..\..\..\Infraestructura\RepositorioEntidades\RepositorioEntidades.csproj" />
+    <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.Contacto\PIKA.Modelo.Contacto.csproj" />
     <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.GestorDocumental\PIKA.Modelo.GestorDocumental.csproj" />
     <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.Metadatos\PIKA.Modelo.Metadatos.csproj" />
+    <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.Seguridad\PIKA.Modelo.Seguridad.csproj" />
   </ItemGroup>
 
 

@@ -108,11 +108,7 @@ namespace PIKA.GD.API
             services.AddSingleton<ICacheMetadatosAplicacion, CacheMetadatosAplicacion>();
             services.AddSingleton<ICacheAplicacion, CacheAplicacion>();
 
-
-            services.AddDbContext<DbContextSeguridad>(options =>
-                 options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-
-    
+   
             services.AddDbContext<DbContextAplicacionPlugin>(options =>
                   options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
@@ -129,6 +125,9 @@ namespace PIKA.GD.API
 
             services.AddDbContext<DbContextMetadatos>(options =>
            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
+            services.AddDbContext<DbContextSeguridad>(options =>
+                 options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
 
             services.AddControllers();

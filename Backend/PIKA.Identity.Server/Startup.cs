@@ -19,6 +19,7 @@ using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using IdentityServer4.Configuration;
+using PIKA.Modelo.Seguridad;
 
 namespace PIKA.Identity.Server
 {

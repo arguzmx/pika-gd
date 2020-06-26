@@ -22,19 +22,16 @@ namespace PIKA.Servicio.Seguridad.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<ModuloAplicacion> repo;
-        private ICompositorConsulta<ModuloAplicacion> compositor;
         private UnidadDeTrabajo<DbContextSeguridad> UDT;
 
 
         public ServicioModuloAplicacion(
-             IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
-         ICompositorConsulta<ModuloAplicacion> compositorConsulta,
-         ILogger<ServicioModuloAplicacion> Logger,
-         IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+          IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
+         ILogger<ServicioModuloAplicacion> Logger
+         ) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
-            this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<ModuloAplicacion>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<ModuloAplicacion>(new QueryComposer<ModuloAplicacion>());
         }
 
         public async Task<bool> Existe(Expression<Func<ModuloAplicacion, bool>> predicado)

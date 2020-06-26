@@ -9,6 +9,7 @@ namespace PIKA.Modelo.Metadatos
     public class PropAttribute : Attribute
     {
 
+        
         public const string HTML_TOGGLE = "toggle";
         public const string HTML_CHECKBOX = "checkbox";
         public const string HTML_DATE = "datetime";
@@ -21,7 +22,9 @@ namespace PIKA.Modelo.Metadatos
         public const string HTML_TEXT = "textbox";
         public const string HTML_TEXTAREA = "textarea";
         public const string HTML_SELECT = "select";
-
+        public const string HTML_PASSWORD = "password";
+        public const string HTML_AVATAR = "avatar";
+        public const string HTML_NONE = "none";
 
 
         [Flags]
@@ -40,7 +43,10 @@ namespace PIKA.Modelo.Metadatos
             // Participa en acciones de lectura, actualziacin y eliminacion
             rwd = 7,
             // Participa todas la acciones CRUD
-            arwd = 15
+            arwd = 15,
+            // Crear y actualziar
+            aw =10
+
         }
 
         private string _Id;

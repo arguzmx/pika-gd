@@ -57,6 +57,11 @@ namespace PIKA.GD.API.Middlewares
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;
 
+                case Type InvDataType when InvDataType == typeof(ExLoginInfoInvalida):
+                    detail.Message = exception.Message;
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    break;
+
                 //case Type ApiRefitException when ApiRefitException == typeof(ApiException):
                 //    var ex = exception as ApiException;
                 //    context.Response.StatusCode = (int)ex.StatusCode;

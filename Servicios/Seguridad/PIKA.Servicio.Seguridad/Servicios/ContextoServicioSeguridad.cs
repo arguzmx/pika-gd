@@ -9,18 +9,15 @@ namespace PIKA.Servicio.Seguridad.Servicios
 {
     public class ContextoServicioSeguridad
     {
-        protected IServicioCache cache;
         protected ILogger logger;
-
         protected DbContextSeguridad contexto;
         public ContextoServicioSeguridad(
             IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
-            ILogger Logger,
-            IServicioCache servicioCache)
+            ILogger Logger
+            )
         {
             DbContextSeguridadFactory cf = new DbContextSeguridadFactory(proveedorOpciones);
             this.contexto = cf.Crear();
-            this.cache = servicioCache;
             this.logger = Logger;
         }
 

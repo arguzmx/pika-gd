@@ -15,6 +15,7 @@ using Serilog;
 using IdentityServer4.EntityFramework.DbContexts;
 using IdentityServer4.EntityFramework.Mappers;
 using System.Reflection;
+using PIKA.Modelo.Seguridad;
 
 namespace PIKA.Identity.Server
 {
