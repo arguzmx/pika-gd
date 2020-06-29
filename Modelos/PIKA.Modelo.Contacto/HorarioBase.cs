@@ -16,21 +16,21 @@ namespace PIKA.Modelo.Contacto
         /// Especifica que el contacto puede realizar sin horario 
         /// A cualquier hora, cualquier día
         /// </summary>
-        public bool SinHorario { get; set; }
+        public virtual  bool SinHorario { get; set; }
 
         /// <summary>
         /// Utiliza la enumeración de días de la semana para determinar los días activos
         /// </summary>
-        public byte DiaSemana { get; set; }
+        public virtual byte DiaSemana { get; set; }
 
         /// <summary>
         /// Hora de inicio de dsiponibilidad para el contacto
         /// </summary>
-        public DateTime? Inicio { get; set; }
+        public virtual DateTime? Inicio { get; set; }
 
         /// <summary>
         /// Hora de finalización de dsiponibilidad para el contacto
         /// </summary>
-        public DateTime? Fin { get; set; }
+        public virtual DateTime? Fin { get; set; }
     }
 }

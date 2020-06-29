@@ -1,0 +1,510 @@
+{
+	"info": {
+		"_postman_id": "aa34f601-fed0-4f3a-a9c0-35734073c8ec",
+		"name": "Contacto",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Usuarios",
+			"item": [
+				{
+					"name": "POST Usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"username\": \"demo0011\",\n\"email\": \"demo002@algo.com\",\n\"password\": \"Pa$$00123\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Usuario",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n            \"UsuarioId\": \"00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1\",\n            \"name\": \"oswaldo\",\n            \"family_name\": \"Diaz\",\n            \"given_name\": \"Guzman\",\n            \"middle_name\": \"R.\",\n            \"nickname\": \"Oswi\",\n            \"generoid\": \"m\",\n            \"paisid\": \"mx\",\n            \"estadoid\": \"cdmx\",\n            \"gmt\": \"Pacific Standard Time (Mexico)\",\n            \"picture\": \"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4QBoRXhpZgAATU0AKgAAAAgABAEaAAUAAAABAAAAPgEbAAUAAAABAAAARgEoAAMAAAABAAIAAAExAAIAAAARAAAATgAAAAAAAABgAAAAAQAAAGAAAAABcGFpbnQubmV0IDQuMi4xMAAA/9sAQwACAQEBAQECAQEBAgICAgIEAwICAgIFBAQDBAYFBgYGBQYGBgcJCAYHCQcGBggLCAkKCgoKCgYICwwLCgwJCgoK/9sAQwECAgICAgIFAwMFCgcGBwoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoK/8AAEQgAMgBDAwEhAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/aAAwDAQACEQMRAD8A/Lvw94eh1Gd7e9ZlixnnO3P4VX1XwRoV8txq3h7xPJFNbbhFLbSDMf8AssrZV1z2IOa/qzOMqwueZbUwOJV4TVn5dU15p6n0FOrKnJSpyaa2Zz6jxbfo0GpeHtOuHhjydSs7oWfy+rwsDF/3wUz616H8Lv2H/wBtz4wfDXxB8YPAv7LviaXwz4V0ttS1jxI8ISzNquCzW8hI+0vty2yLc2AT0FfneXY7OuBabwWaVVWpXtSm2udLtJO7cUvtbrZ3NcdmVOUo1HTUZPfl+Fvulur9Vtfay0On/Z6/4Jiftw/tUeKdV8LfBz9n/Wby/wBD0FtZ1Gw1SL+zpZbTeI18hrkokkjMfljyCwVsHivI/jX8NPjB+zf47uPhb44+HXiLQ/ElvAr32l67pkli0KNnax80AsDg4Kgg4OCa+jp8ZYPEY6pg8L+8qaciV0pXim7t7cru2+zMJV3Co6bT5u2xyfhe21LX9RbQ9ZlS21TIa3t2yRcw/wB6Nj98juo+b0B5Add2kqXDWQfzPLkKLgnrn0q+H+If7WxFfA4mKhiaLtKPePSUe6e3k12aO1U5/V4Vejun5Nbr9fRo6CL4ZRmJGufEUMMjIGaNk5XIz60V9PoQdxZ3U9hH5clv5kbMQ2WOCp6jj609NS0nTLJbDTNLVVZfmMfHP5c5966Tyz1j/gm5+zpD+1R+3P8ADn4Aa1DH/Y+v+JEfxBHMvyPYQI9zPGf9+OIxj3kFf0p/G39obwb4T/aF8C/sEan8Nb6az+J3gzWmj1a1iYWlhb2cUaNAQIyozHKfvMgXCgbiwA/C/E7FOrnVOj0hBffJv9EjjxUnKdn0R8m/sfeLv2l/Cnh7w/8AEn9n74UR+Mr/AFb4g+GfCHjqZrqNX03QV0sXNxf5YgbFuLxS2ATtU7Rk8fNf/B3V8Dba38TfCH9oLTbJvO1SG/8AD+pSLjnydtxbj16SXNeFwjiJUuLMPLvJr701+p3Yys6ucTqJ7y/Sx+MNx4bTxdD/AMI5qdnHcIpzCsi4eFv7ykYIb8akb4W6/puoC4m1O8umWFdk95cl9qjoPXj3zX7tW4dyuvnFPNHFqtBWum1fS2q6/qdsZbq7V7XXR22uhp8Qazbs0EnluysQzNEpzz9KK9y0DU9OhuYfLVHuGWOOIqIBCp3Mf4tx5rLS1himWWSPhWzQePGfc+1P+CCvjK38Of8ABUfwJIbeTULrUrHWLXT7VVSLEhsJXVdxwOFjbkk+3YV/Q58a/ilb/CD4U6l8RdWsQ66fp8s80ZcALsheRufYIemcn86/n7xFj/xkzv1jE4MROXtmku3zb0PmH/glRq0Hw38OeNfh94n1C1t/sM2iX7My7Wbz9Ot7Lcx9PNsnA543V8s/8HXPirRrH4Q/B7R5NebztQ8XXt9b2Mf3njgsmjZ8k8DN1GCMc8c8V4/DVP8A4yjDL++vw1O3MKboZzUpXs4yv8nt+B+H+ly6bZ6hJfSwbf3m6PIJI56fWr1tY2mntcapeeIppPtUjBY2yqqMcADn1+9X9MnZGp3OVv7G2F7J9lbdHu+U8HNFI05vM9G+xhnxlW/SpGi0yfUJtOtbO53W6/NI0fyMeuM+vTpVHmnu/wDwTl/Z5+PfxF+PejfFf4Naq/h//hB9ctr6bxUVRvscynesaRtxM7KCGT7uxzuIDDP378Zv+C0J+N+nw/A74veHdL0vQ/D99G+uSeEtUl1m48S3MDcAt5UUFlB5g3PF50zt/qyVXdu/nfxQzrKsLnCxFeajGmlBvV3abdklq97fI+qyPhHF5tWoVoq6cm+XS7jFp36ddDndG/4K1fDb4V/ErTvjf8M/A2v319p8DWuq+H9UWK3t9as929YzLE8zRyxSDzI38txkupADll81/wCCvfj3x3/wUA/Z30n9s2H4dSWdra6vC9ro9jfJdroelRwXMc00kmFLvJM0fmYRdgjQEYQu3y3BvE2SZzxDSrYSrf2couV001qlezWx73E3BuYYXMqmPrU2lKHMtU7ySS6NrZ3Pzh0/RbOW1RGsvOZ5P3knnhPKXHXB61k32nBLxoVK7fMwpB6DNf1fc/PzWj03Q441T+whNhRukEy8nv1NFFwN7y4Ul8mK6DTJGHeNY2+UHpzjFOt5r2cG1W5ZVZfmJPYD/CmefGpJH1L/AMEzf20vhr+zho3iD4cfFvXZ9M0XWr43mm6/pkEt55E2xY2SVFEhXiMFWWMjkhuFUnj/ANsP/glL4Y+J3x/t/wBpz9l7WLbSPBvjST7TqTeJvD8wt1vpR5ivaQybJJFnyWG5FjDHhyGAX+euNcjxFHG1IVbpVG5Ra7PV2fdXsfe4GtSzTJqVOn/FoO9mm42vrfpZrp3VjmvgN/wTk/ag+J/hvSo/2mvGeteFVbxbDa2/gPQtHSzbVdIjP+ktFOFjQMVwyYkbcuRtBII+6P2rPjx8H/2af2YbjwL4R8L6jGNS0aXwv4e0dPDF1aW8StbyLEk0k0fy+VGJGODuc545yPleGeH8JgaqwuFhyyqSSb3bbe7b1Z78syzGWDqYzM5uU+VJRtaMVb4UkrJaq7t+R+U8envZp9maVm2fLl15/lVuXw9EUiAvoFkm5VGkAJH0r+rYLlio3Py2MrGfLYLHI0YGdrY6Yop/Mr2kTomuLpEa3aRtvdaVIrqKPzxbko2fmZfl96Z54hlaSKO0gtkRV4VI1xX66/st/Dq/8UfAT4Oaz4iuP9F8P+E7O5gtW/5aztCgidv9xANvuxPUCvzbxFXNRw685f8Atp9xwTTdTFVV0svwkmemfFHwHL42stNurCZY77RdWh1CxZuhkjOdp9m6H2Jr5D/4La+JRB4M+H/hGKfbJcazeX7BW5CxQLF+puP0r4vhunzZ7QX95P7tf0PsuJP3OTYifdR/NI/POSylWP8AtDy5Nm77wUsM1HHqOiT3i3rW0M1yi7I2Zjkc+/8A+uv3p1IxlZs/IE1IfNp93JIZPsv3ufuiinzx7j+ZZvQPtkvH/LQ/zqG6mlj8UWlvHIyxmylJjVvlP4VotzjHAlQzrwwUkEduK/cH4EIkXwP8GxRIqqvhXTgqqMAD7NHxX5h4ifHhv+3/AP20/QeAf41f0j+bOrr84f8AgtZLIfjN4KhMjbF8MzlVzwCbjk4/AflXy/Cf/JQ0PV/+ks+l4v8A+RDU9Y/mj4tmZhr2nRg/L5Eh29s5HNc7qM851LBmb/WD+I+tftGOb5bH4ycnrOqammq3CJqE6qJDgCZuP1orxuaQ+aR//9k=\"\n        }",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"usuarios",
+								"00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Metadata Usuario",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"usuarios",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Usuario",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"usuarios",
+								"00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Usuario",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/page?i=0&t=10&ordc=username&ordd=asc&f[0][p]=email&f[0][o]=contains&f[0][v]=@",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"usuarios",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "username"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "email"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "@"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Usuario",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1,1,2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"usuarios",
+								"00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1,1,2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH  Restaurar Usuario",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/restaurar/00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1,1,2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"usuarios",
+								"restaurar",
+								"00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1,1,2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH  Inactivar Usuario",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/inactivar/00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1,1,2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"usuarios",
+								"inactivar",
+								"00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1,1,2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH  Ractivar Usuario",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/reactivar/00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1,1,2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"usuarios",
+								"reactivar",
+								"00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1,1,2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b29f0c12-12a5-46e2-a699-2519fbc131c0",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "73ec3e00-a1b0-4ce8-8439-484fd45e3497",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "b2452b44-1fe7-4c20-bc7d-c15bb13aa920",
+				"type": "text/javascript",
+				"exec": [
+					"const echoPostRequest = {",
+					"  url: 'http://localhost:4000/connect/token',",
+					"  method: 'POST',",
+					"  header: 'Content-Type:application/x-www-form-urlencoded',",
+					"  body: {",
+					"    mode: 'raw',",
+					"    raw: 'grant_type=password&username=bob&password=Pass123%24&scope=openid%20pika-gd&client_id=api-pika-gd-pass&client_secret=secret'",
+					"  }",
+					"};",
+					"",
+					"var getToken = true;",
+					"",
+					"if (!pm.environment.get('accessTokenExpiry') || ",
+					"    !pm.environment.get('accessToken')) {",
+					"    console.log('Token or expiry date are missing')",
+					"} else if (pm.environment.get('accessTokenExpiry') <= (new Date()).getTime()) {",
+					"    console.log('Token is expired')",
+					"} else {",
+					"    getToken = false;",
+					"    console.log('Token and expiry date are all good');",
+					"}",
+					"",
+					"if (getToken === true) {",
+					"    pm.sendRequest(echoPostRequest, function (err, res) {",
+					"    console.log(err ? err : res.json());",
+					"        if (err === null) {",
+					"            console.log('Saving the token and expiry date')",
+					"            var responseJson = res.json();",
+					"            pm.environment.set('accessToken', responseJson.access_token)",
+					"    ",
+					"            var expiryDate = new Date();",
+					"            expiryDate.setSeconds(expiryDate.getSeconds() + responseJson.expires_in);",
+					"            pm.environment.set('accessTokenExpiry', expiryDate.getTime());",
+					"        }",
+					"    });",
+					"}",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "204ab867-5937-47f6-8b5e-3537469369bd",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "335b1360-6678-4cbb-9aeb-0a41ca5eb7e2",
+			"key": "accessTokenExpiry",
+			"value": ""
+		},
+		{
+			"id": "5510636b-544f-42ca-a449-7ac9959ee00f",
+			"key": "accessToken",
+			"value": ""
+		}
+	],
+	"protocolProfileBehavior": {}
+}

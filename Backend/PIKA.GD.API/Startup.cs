@@ -25,6 +25,7 @@ using Autofac.Extensions.DependencyInjection;
 using Serilog;
 using PIKA.GD.API.Servicios;
 using Serilog.Events;
+using PIKA.Servicio.Contacto;
 
 namespace PIKA.GD.API
 {
@@ -119,15 +120,24 @@ namespace PIKA.GD.API
             services.AddDbContext<DBContextGestionDocumental>(options =>
                options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
-            services.AddDbContext<DbContextOrganizacion>(options =>
-                    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-
-
             services.AddDbContext<DbContextMetadatos>(options =>
            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
+            
+
+
+            services.AddDbContext<DbContextContacto>(options =>
+                    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
+
             services.AddDbContext<DbContextSeguridad>(options =>
                  options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
+
+
+            services.AddDbContext<DbContextOrganizacion>(options =>
+                    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
 
 
             services.AddControllers();

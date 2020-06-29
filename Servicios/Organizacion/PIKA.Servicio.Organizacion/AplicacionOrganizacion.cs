@@ -113,26 +113,6 @@ namespace PIKA.Servicio.Organizacion
             //------------------------------------------------------------
             //------------------------------------------------------------
 
-            /// Modulo administarcion de DireccionPostal 
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_ORGANIZACION_DIRECCIONES_POSTALES, true,
-                "Direcciones Postales ",
-                "Administrador de direcciones postales del dominio",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(DireccionPostal) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-            //------------------------------------------------------------
-
             return l;
         }
 

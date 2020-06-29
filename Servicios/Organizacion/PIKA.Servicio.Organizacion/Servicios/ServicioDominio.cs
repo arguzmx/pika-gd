@@ -78,7 +78,7 @@ namespace PIKA.Servicio.Organizacion.Servicios
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
-
+            o.Eliminada = entity.Eliminada;
             o.Nombre = entity.Nombre;
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();

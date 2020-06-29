@@ -145,10 +145,11 @@ namespace PIKA.Identity.Server.Data.Migrations.ApplicationDb
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("PIKA.Identity.Server.Models.ApplicationUser", b =>
+            modelBuilder.Entity("PIKA.Modelo.Seguridad.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4")
+                        .HasMaxLength(255);
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -157,12 +158,22 @@ namespace PIKA.Identity.Server.Data.Migrations.ApplicationDb
                         .IsConcurrencyToken()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<bool>("Eliminada")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("Email")
                         .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("Inactiva")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("tinyint(1)");
@@ -179,16 +190,16 @@ namespace PIKA.Identity.Server.Data.Migrations.ApplicationDb
                         .HasMaxLength(256);
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("tinyint(1)");
@@ -206,7 +217,145 @@ namespace PIKA.Identity.Server.Data.Migrations.ApplicationDb
                         .IsUnique()
                         .HasName("UserNameIndex");
 
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("aspnetusers");
+                });
+
+            modelBuilder.Entity("PIKA.Modelo.Seguridad.Base.UsuarioDominio", b =>
+                {
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4")
+                        .HasMaxLength(255);
+
+                    b.Property<string>("TipoOrigenId")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("OrigenId")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<bool>("EsAdmin")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("ApplicationUserId", "TipoOrigenId", "OrigenId");
+
+                    b.ToTable("seguridad$usuariosdominio");
+                });
+
+            modelBuilder.Entity("PIKA.Modelo.Seguridad.Genero", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Nombre")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Genero");
+                });
+
+            modelBuilder.Entity("PIKA.Modelo.Seguridad.PropiedadesUsuario", b =>
+                {
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4")
+                        .HasMaxLength(255);
+
+                    b.Property<bool>("Eliminada")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("Inactiva")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("Ultimoacceso")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("email")
+                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
+                        .HasMaxLength(200);
+
+                    b.Property<bool?>("email_verified")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("estadoid")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("family_name")
+                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("generoid")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("given_name")
+                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("gmt")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4")
+                        .HasMaxLength(255);
+
+                    b.Property<float?>("gmt_offset")
+                        .HasColumnType("float");
+
+                    b.Property<string>("middle_name")
+                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("name")
+                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("nickname")
+                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("paisid")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<DateTime?>("updated_at")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("username")
+                        .IsRequired()
+                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
+                        .HasMaxLength(200);
+
+                    b.HasKey("UsuarioId");
+
+                    b.HasIndex("generoid");
+
+                    b.ToTable("seguridad$usuarioprops");
+                });
+
+            modelBuilder.Entity("PIKA.Modelo.Seguridad.UserClaim", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4")
+                        .HasMaxLength(255);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("aspnetuserclaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -220,7 +369,7 @@ namespace PIKA.Identity.Server.Data.Migrations.ApplicationDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("PIKA.Identity.Server.Models.ApplicationUser", null)
+                    b.HasOne("PIKA.Modelo.Seguridad.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -229,7 +378,7 @@ namespace PIKA.Identity.Server.Data.Migrations.ApplicationDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("PIKA.Identity.Server.Models.ApplicationUser", null)
+                    b.HasOne("PIKA.Modelo.Seguridad.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -244,7 +393,7 @@ namespace PIKA.Identity.Server.Data.Migrations.ApplicationDb
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("PIKA.Identity.Server.Models.ApplicationUser", null)
+                    b.HasOne("PIKA.Modelo.Seguridad.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -253,8 +402,39 @@ namespace PIKA.Identity.Server.Data.Migrations.ApplicationDb
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("PIKA.Identity.Server.Models.ApplicationUser", null)
+                    b.HasOne("PIKA.Modelo.Seguridad.ApplicationUser", null)
                         .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PIKA.Modelo.Seguridad.Base.UsuarioDominio", b =>
+                {
+                    b.HasOne("PIKA.Modelo.Seguridad.ApplicationUser", "ApplicationUser")
+                        .WithMany("UsuariosDominio")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PIKA.Modelo.Seguridad.PropiedadesUsuario", b =>
+                {
+                    b.HasOne("PIKA.Modelo.Seguridad.ApplicationUser", "Usuario")
+                        .WithOne("Propiedades")
+                        .HasForeignKey("PIKA.Modelo.Seguridad.PropiedadesUsuario", "UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PIKA.Modelo.Seguridad.Genero", "genero")
+                        .WithMany("PropiedadesUsuario")
+                        .HasForeignKey("generoid");
+                });
+
+            modelBuilder.Entity("PIKA.Modelo.Seguridad.UserClaim", b =>
+                {
+                    b.HasOne("PIKA.Modelo.Seguridad.ApplicationUser", "User")
+                        .WithMany("Claims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

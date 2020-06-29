@@ -95,6 +95,9 @@ namespace PIKA.Servicio.Seguridad.Data.Migrations
                         .HasColumnType("bigint unsigned")
                         .HasMaxLength(128);
 
+                    b.Property<int>("Tipo")
+                        .HasColumnType("int");
+
                     b.Property<string>("UICulture")
                         .IsRequired()
                         .HasColumnType("varchar(10) CHARACTER SET utf8mb4")

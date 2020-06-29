@@ -32,5 +32,6 @@ namespace PIKA.Infraestructura.Comun
         /// </summary>
         public const string IDORIGEN_USUARIO = "usuario";
 
+
     }
 }

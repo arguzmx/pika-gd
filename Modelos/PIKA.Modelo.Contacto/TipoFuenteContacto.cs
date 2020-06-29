@@ -1,10 +1,13 @@
-﻿using RepositorioEntidades;
+﻿using PIKA.Modelo.Metadatos;
+using PIKA.Modelo.Metadatos.Atributos;
+using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace PIKA.Modelo.Contacto
 {
+    [Entidad(EliminarLogico: false )]
     public class TipoFuenteContacto: EntidadCatalogo<string, TipoFuenteContacto>
     {
         public const string OTRO = "otro";
@@ -14,6 +17,12 @@ namespace PIKA.Modelo.Contacto
         public const string FISCAL = "fiscal";
         public const string ENTREGAS = "Entregas";
         public const string ENTIDAD = "entidad";
+
+
+        public override string Id { get; set; }
+
+
+        public override string Nombre { get; set; }
 
         public override List<TipoFuenteContacto> Seed()
         {
@@ -28,5 +37,6 @@ namespace PIKA.Modelo.Contacto
             return lista;
         }
 
+        public virtual ICollection<MedioContacto> MediosContacto { get; set; }
     }
 }

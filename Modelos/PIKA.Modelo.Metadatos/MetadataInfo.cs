@@ -22,6 +22,11 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public bool ElminarLogico { get; set; }
 
+        /// <summary>
+        /// Identifica la columna utilizada para determinar la eliminación lógica
+        /// </summary>
+        public string ColumaEliminarLogico { get; set; }
+
         public virtual List<Propiedad> Propiedades { get; set; }
 
         public virtual List<EntidadVinculada> EntidadesVinculadas { get; set; }

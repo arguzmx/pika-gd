@@ -80,7 +80,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventBus", "Infraestructura
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventBusRabbitMQ", "Infraestructura\EventBusRabbitMQ\EventBusRabbitMQ.csproj", "{180AB39B-3A68-4DBB-AA65-B87ABEDD4873}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIKA.Modelo.Contacto", "Modelos\PIKA.Modelo.Contacto\PIKA.Modelo.Contacto.csproj", "{6052B817-E04B-4CB9-BC74-0F70B255B714}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIKA.Modelo.Contacto", "Modelos\PIKA.Modelo.Contacto\PIKA.Modelo.Contacto.csproj", "{6052B817-E04B-4CB9-BC74-0F70B255B714}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contacto", "Contacto", "{FB6B2FC0-F644-4139-ABE2-A2129175E113}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIKA.Servicio.Contacto", "Servicios\Contacto\PIKA.Servicio.Contacto\PIKA.Servicio.Contacto.csproj", "{D3E2B376-37D9-4081-B78A-622160CDB96C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -184,6 +188,10 @@ Global
 		{6052B817-E04B-4CB9-BC74-0F70B255B714}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6052B817-E04B-4CB9-BC74-0F70B255B714}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6052B817-E04B-4CB9-BC74-0F70B255B714}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3E2B376-37D9-4081-B78A-622160CDB96C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3E2B376-37D9-4081-B78A-622160CDB96C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3E2B376-37D9-4081-B78A-622160CDB96C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3E2B376-37D9-4081-B78A-622160CDB96C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -222,6 +230,8 @@ Global
 		{5C16870C-F768-49C8-AB75-3AD3603489AA} = {A0487E79-3F40-4A93-8596-3D78B33D7389}
 		{180AB39B-3A68-4DBB-AA65-B87ABEDD4873} = {A0487E79-3F40-4A93-8596-3D78B33D7389}
 		{6052B817-E04B-4CB9-BC74-0F70B255B714} = {9DAE2F36-5E04-47D1-B3CF-5B26511A5A9A}
+		{FB6B2FC0-F644-4139-ABE2-A2129175E113} = {4781D904-DF6E-4F9F-9D11-7CD64988B40B}
+		{D3E2B376-37D9-4081-B78A-622160CDB96C} = {FB6B2FC0-F644-4139-ABE2-A2129175E113}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {023A9CA1-A6E7-47B1-A283-AF2339B09C1C}

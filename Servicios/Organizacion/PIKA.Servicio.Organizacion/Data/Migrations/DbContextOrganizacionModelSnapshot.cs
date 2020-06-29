@@ -16,76 +16,6 @@ namespace PIKA.Servicio.Organizacion.Data.Migrations
                 .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("PIKA.Modelo.Organizacion.DireccionPostal", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("CP")
-                        .HasColumnType("varchar(10) CHARACTER SET utf8mb4")
-                        .HasMaxLength(10);
-
-                    b.Property<string>("Calle")
-                        .IsRequired()
-                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
-                        .HasMaxLength(200);
-
-                    b.Property<string>("Colonia")
-                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
-                        .HasMaxLength(200);
-
-                    b.Property<bool>("EsDefault")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(false);
-
-                    b.Property<string>("EstadoId")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("Municipio")
-                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
-                        .HasMaxLength(200);
-
-                    b.Property<string>("NoExterno")
-                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
-                        .HasMaxLength(200);
-
-                    b.Property<string>("NoInterno")
-                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
-                        .HasMaxLength(200);
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
-                        .HasMaxLength(200);
-
-                    b.Property<string>("OrigenId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("PaisId")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("TipoOrigenId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EstadoId");
-
-                    b.HasIndex("PaisId");
-
-                    b.HasIndex("TipoOrigenId", "OrigenId");
-
-                    b.ToTable("org$direccion_postal");
-                });
-
             modelBuilder.Entity("PIKA.Modelo.Organizacion.Dominio", b =>
                 {
                     b.Property<string>("Id")
@@ -117,45 +47,6 @@ namespace PIKA.Servicio.Organizacion.Data.Migrations
                     b.HasIndex("TipoOrigenId", "OrigenId");
 
                     b.ToTable("org$dominio");
-                });
-
-            modelBuilder.Entity("PIKA.Modelo.Organizacion.Estado", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
-                        .HasMaxLength(200);
-
-                    b.Property<string>("PaisId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PaisId");
-
-                    b.ToTable("org$estado");
-                });
-
-            modelBuilder.Entity("PIKA.Modelo.Organizacion.Pais", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
-                        .HasMaxLength(200);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("org$pais");
                 });
 
             modelBuilder.Entity("PIKA.Modelo.Organizacion.Rol", b =>
@@ -232,26 +123,6 @@ namespace PIKA.Servicio.Organizacion.Data.Migrations
                     b.HasIndex("RolId");
 
                     b.ToTable("org$usuarios_rol");
-                });
-
-            modelBuilder.Entity("PIKA.Modelo.Organizacion.DireccionPostal", b =>
-                {
-                    b.HasOne("PIKA.Modelo.Organizacion.Estado", "Estado")
-                        .WithMany("Direcciones")
-                        .HasForeignKey("EstadoId");
-
-                    b.HasOne("PIKA.Modelo.Organizacion.Pais", "Pais")
-                        .WithMany("Direcciones")
-                        .HasForeignKey("PaisId");
-                });
-
-            modelBuilder.Entity("PIKA.Modelo.Organizacion.Estado", b =>
-                {
-                    b.HasOne("PIKA.Modelo.Organizacion.Pais", "Pais")
-                        .WithMany("Estados")
-                        .HasForeignKey("PaisId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("PIKA.Modelo.Organizacion.UnidadOrganizacional", b =>
