@@ -14,7 +14,6 @@ using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.Seguridad;
 using PIKA.Modelo.Seguridad.Validadores;
-using PIKA.Servicio.Seguridad.Data.Migrations;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
 using TimeZoneConverter;

@@ -11,11 +11,21 @@ namespace PIKA.Infraestructura.Comun
     public class ModuloAplicacion : Entidad<string>, IEntidadNombrada
     {
 
+        public enum TipoModulo { 
+            Administracion=0, UsuarioFinal=1
+        }
+
         public ModuloAplicacion()
         {
             Modulos = new HashSet<ModuloAplicacion>();
             Traducciones = new HashSet<TraduccionAplicacionModulo>();
         }
+
+        /// <summary>
+        /// Tipo de módulo
+        /// </summary>
+        public TipoModulo Tipo { get; set; }
+
 
         /// <summary>
         /// Unique appliction ID
@@ -40,7 +50,7 @@ namespace PIKA.Infraestructura.Comun
 
         public ModuloAplicacion(string AplicacionId, string ModuloId, bool Asegurable,
             string Nombre, string Descripcion, string Icon, string UICulture, ulong PermisosDisponibles,
-            string ModuloPadreId, string AplicacionPadreId)
+            string ModuloPadreId, string AplicacionPadreId, TipoModulo Tipo = TipoModulo.Administracion)
         {
             this.AplicacionPadreId = AplicacionPadreId;
             this.ModuloPadreId = ModuloPadreId;
@@ -52,6 +62,7 @@ namespace PIKA.Infraestructura.Comun
             this.Asegurable = Asegurable;
             this.Id = ModuloId;
             this.AplicacionId = AplicacionId;
+            this.Tipo = Tipo;
             Modulos = new HashSet<ModuloAplicacion>();
             Traducciones = new HashSet<TraduccionAplicacionModulo>();
             TiposAdministrados = new HashSet<TipoAdministradorModulo>();

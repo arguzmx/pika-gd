@@ -20,6 +20,8 @@ namespace PIKA.Modelo.Metadatos
         {
             this.OrdenarValoresListaPorNombre = true;
             this.ValoresLista = new HashSet<ValorLista>();
+            this.AtributosEvento = new List<AtributoEvento>();
+            this.AtributosVistaUI = new List<AtributoVistaUI>();
             this.ValorDefault = null;
         }
 
@@ -49,6 +51,13 @@ namespace PIKA.Modelo.Metadatos
         /// Índice de despliegue para la propiedad
         /// </summary>
         public int IndiceOrdenamiento { get; set; }
+
+
+        /// <summary>
+        /// establece la posición del campo en el despliegue tabular
+        /// </summary>
+        [NotMapped]
+        public int IndiceOrdenamientoTabla { get; set; }
 
         /// <summary>
         /// Determina si es posible realizar bpsuquedas sobre la propiedad
@@ -124,16 +133,24 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public string ControlHTML { get; set; }
 
-        /// <summary>
-        ///  Especifica en que acciones de curd participa
-        /// </summary>
-        /// 
-        [NotMapped]
-        public int AccionesCrud { get; set; }
 
+        [NotMapped]
+        public bool MostrarEnTabla { get; set; }
+
+        [NotMapped]
+        public bool AlternarEnTabla { get; set; }
+
+    
         public virtual TipoDato TipoDato { get; set; }
 
+        public virtual AtributoLista AtributoLista { get; set; }
+
         public virtual AtributoTabla AtributoTabla { get; set; }
+
+
+        public virtual List<AtributoEvento> AtributosEvento { get; set; }
+
+        public virtual List<AtributoVistaUI> AtributosVistaUI { get; set; }
 
         public virtual ValidadorTexto ValidadorTexto { get; set; }
 

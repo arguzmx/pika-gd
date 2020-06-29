@@ -1,4 +1,6 @@
-﻿using RepositorioEntidades;
+﻿using PIKA.Modelo.Metadatos;
+using PIKA.Modelo.Metadatos.Atributos;
+using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,6 +9,7 @@ using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Contacto
 {
+
     public class Pais : EntidadCatalogo<string, Pais>
     {
         public Pais()
@@ -16,6 +19,11 @@ namespace PIKA.Modelo.Contacto
 
         }
 
+
+        public override string Id { get; set; }
+
+
+        public override string Nombre { get; set; }
 
         /// <summary>
         /// Esatdos asociados al pais

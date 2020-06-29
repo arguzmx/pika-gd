@@ -20,6 +20,7 @@ namespace PIKA.Modelo.Contacto
 
         [XmlIgnore]
         [JsonIgnore]
+        [NotMapped]
         public string TipoOrigenDefault => ConstantesModelo.IDORIGEN_NULO;
 
         /// <summary>

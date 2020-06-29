@@ -14,7 +14,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace PIKA.Servicio.Organizacion
+namespace PIKA.Servicio.Organizacion.Servicios
 {
     public class ServicioUnidadOrganizacional : 
         ContextoServicioOrganizacion, 

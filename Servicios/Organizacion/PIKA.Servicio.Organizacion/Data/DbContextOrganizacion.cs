@@ -52,25 +52,7 @@ namespace PIKA.Servicio.Organizacion
         public static string TablaRoles { get => "org$rol"; }
 
 
-        /// <summary>
-        /// Nombre de la tabla para las entidades del tipo Pais
-        /// </summary>
-        public static string TablaPais { get => "org$pais"; }
-
-
-        /// <summary>
-        /// Nombre de la tabla para las entidades del tipo estado
-        /// </summary>
-        public static string TablaEstado { get => "org$estado"; }
-
-
-        /// <summary>
-        /// Nombre de la tabla para las entidades del tipo Dirección postal
-        /// </summary>
-        public static string TablaDireccionesPortales { get => "org$direccion_postal"; }
-
-
-        /// <summary>
+                /// <summary>
         /// Nombre de la tabla para las entidades de la relación usuarios-roles
         /// </summary>
         public static string TablaUsuariosRol { get => "org$usuarios_rol"; }
@@ -90,13 +72,6 @@ namespace PIKA.Servicio.Organizacion
         public DbSet<UnidadOrganizacional> UnidadesOrganizacionales { get; set; }
 
 
-
-        /// <summary>
-        /// Direcciones postales individuales existentes en la aplicación
-        /// </summary>
-        public DbSet<DireccionPostal> DireccionesPostales { get; set; }
-
-
         /// <summary>
         /// Roles existentes en la aplicación
         /// </summary>
@@ -112,18 +87,6 @@ namespace PIKA.Servicio.Organizacion
         /// <summary>
         /// Usuarios existentes en la aplicación
         /// </summary>
-   
-
-        /// <summary>
-        /// catálogo de paises en la aplicación
-        /// </summary>
-        public DbSet<Pais> Paises { get; set; }
-
-
-        /// <summary>
-        /// Catálogo de estados de un país existentes en la aplicación
-        /// </summary>
-        public DbSet<Estado> Estados { get; set; }
 
         public void AplicarMigraciones()
         {
@@ -143,9 +106,6 @@ namespace PIKA.Servicio.Organizacion
             builder.ApplyConfiguration<UnidadOrganizacional>(new DbConfOUs());
             builder.ApplyConfiguration<Rol>(new DbConfRoles());
             builder.ApplyConfiguration<UsuariosRol>(new DBConfUsuarioRol());
-            builder.ApplyConfiguration<Pais>(new DbConfPais());
-            builder.ApplyConfiguration<Estado>(new DbConfEstado());
-            builder.ApplyConfiguration<DireccionPostal>(new DbConfDpostales());
             
         }
 

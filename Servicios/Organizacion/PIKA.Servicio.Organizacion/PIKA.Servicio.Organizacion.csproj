@@ -4,17 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Data\Migrations\20200214205211_InicialOrgaizacion.cs" />
-    <Compile Remove="Data\Migrations\20200214205211_InicialOrgaizacion.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200421130300_Demo.cs" />
-    <Compile Remove="Data\Migrations\20200421130300_Demo.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200421181826_AlmacenArchivoGestionDocumental.cs" />
-    <Compile Remove="Data\Migrations\20200421181826_AlmacenArchivoGestionDocumental.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200602210423_RelacionRolUsuario.cs" />
-    <Compile Remove="Data\Migrations\20200602210423_RelacionRolUsuario.Designer.cs" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <ProjectReference Include="..\..\..\Infraestructura\PIKA.Infraestructura.Comun\PIKA.Infraestructura.Comun.csproj" />
     <ProjectReference Include="..\..\..\Infraestructura\RepositorioEntidades\RepositorioEntidades.csproj" />
