@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Operations;
@@ -25,6 +26,7 @@ namespace PIKA.Servicio.Contacto
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<Estado> repo;
+        private IRepositorioAsync<Pais> repoPais;
         private UnidadDeTrabajo<DbContextContacto> UDT;
 
         public ServicioEstado(
@@ -34,6 +36,7 @@ namespace PIKA.Servicio.Contacto
         {
             this.UDT = new UnidadDeTrabajo<DbContextContacto>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Estado>(new QueryComposer<Estado>());
+            this.repoPais = UDT.ObtenerRepositoryAsync<Pais>(new QueryComposer<Pais>());
 
         }
 
@@ -47,6 +50,9 @@ namespace PIKA.Servicio.Contacto
 
         public async Task<Estado> CrearAsync(Estado entity, CancellationToken cancellationToken = default)
         {
+            Pais p = await this.repoPais.UnicoAsync(x => x.Id == entity.PaisId);
+            if(p==null) throw new EXNoEncontrado(entity.PaisId);
+
             Estado tmp = await this.repo.UnicoAsync(x => x.Id == entity.Id);
             if (tmp != null)
             {
@@ -98,7 +104,7 @@ namespace PIKA.Servicio.Contacto
                 }
             }
 
-
+            this.UDT.SaveChanges();
             return listaEliminados;
 
         }
@@ -137,6 +143,20 @@ namespace PIKA.Servicio.Contacto
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
             return respuesta;
+        }
+
+        public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query )
+        {
+            Query = GetDefaultQuery(Query);
+            var resultados = await this.repo.ObtenerPaginadoAsync(Query);
+            List<ValorListaOrdenada> l = resultados.Elementos.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
         }
 
         #region sin implementar

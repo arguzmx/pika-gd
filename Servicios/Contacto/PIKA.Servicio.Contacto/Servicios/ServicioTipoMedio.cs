@@ -93,6 +93,7 @@ namespace PIKA.Servicio.Contacto
                 }
             }
 
+            this.UDT.SaveChanges();
 
             return listaEliminados;
 
@@ -132,6 +133,21 @@ namespace PIKA.Servicio.Contacto
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
             return respuesta;
+        }
+
+
+        public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
+        {
+            Query = GetDefaultQuery(Query);
+            var resultados = await this.repo.ObtenerPaginadoAsync(Query);
+            List<ValorListaOrdenada> l = resultados.Elementos.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
         }
 
         #region sin implementar

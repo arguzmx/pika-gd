@@ -172,5 +172,18 @@ namespace PIKA.GD.API.Controllers.Contacto
 
 
 
+        [HttpGet("pares", Name = "GetParesEstados")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ValorListaOrdenada>>> GetPares(
+      [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        {
+            var data = await servicioEntidad.ObtenerParesAsync(query)
+                .ConfigureAwait(false);
+
+            return Ok(data);
+        }
+
+
     }
 }

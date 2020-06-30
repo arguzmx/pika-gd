@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Contacto
 {
-    public interface  IServicioEstado: IServicioRepositorioAsync<Estado, string>
+    public interface  IServicioEstado: IServicioRepositorioAsync<Estado, string>, 
+        IServicioValorTextoAsync<Estado>
     {
         Task<List<Estado>> ObtienePorPadre(string padreId);
     }

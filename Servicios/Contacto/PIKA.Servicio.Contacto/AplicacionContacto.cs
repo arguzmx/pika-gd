@@ -18,6 +18,7 @@ namespace PIKA.Servicio.Contacto
         public const string MODULO_FUENTES = "PIKA-GD-CONTACTO-FUENTE";
         public const string MODULO_DIRECCION_POSTAL = "PIKA-GD-CONTACTO-POSTAL";
         public const string MODULO_MEDIO_CONTACTO = "PIKA-GD-CONTACTO-MEDIOCONTACTO";
+        public const string MODULO_MEDIO_CONTACTO_HORARIO = "PIKA-GD-CONTACTO-MEDIOCONTACTO-HORARIO";
 
         public static string ID_APLICAICON { get { return ConstantesAplicacion.Id; } }
 
@@ -151,7 +152,7 @@ namespace PIKA.Servicio.Contacto
             //------------------------------------------------------------
 
 
-            /// Modulo administarcion de medios de fuenes de contacto
+            /// Modulo administarcion de direcciones postales
             //------------------------------------------------------------
 
             m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_DIRECCION_POSTAL, true,
@@ -171,7 +172,7 @@ namespace PIKA.Servicio.Contacto
             //------------------------------------------------------------
 
 
-            /// Modulo administarcion de medios de fuenes de contacto
+            /// Modulo administarcion de medios de contacto
             //------------------------------------------------------------
 
             m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_MEDIO_CONTACTO, true,
@@ -185,7 +186,27 @@ namespace PIKA.Servicio.Contacto
             {
                 AplicacionId = ConstantesAplicacion.Id,
                 ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(DireccionPostal) }
+                TiposAdministrados = new List<Type>() { typeof(MedioContacto) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+
+
+            /// Modulo administarcion de horarios medios de contacto
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_MEDIO_CONTACTO_HORARIO, true,
+                "Horarios Contacto",
+                "Gestión Horario de medios de contacto",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), MODULO_CONTACTO_ADMIN,
+                ConstantesAplicacion.Id, ModuloAplicacion.TipoModulo.UsuarioFinal);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(HorarioMedioContacto) }
             });
             l.Add(m);
             //------------------------------------------------------------

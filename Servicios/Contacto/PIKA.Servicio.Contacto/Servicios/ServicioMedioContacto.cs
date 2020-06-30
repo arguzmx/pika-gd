@@ -46,12 +46,8 @@ namespace PIKA.Servicio.Contacto
 
         public async Task<MedioContacto> CrearAsync(MedioContacto entity, CancellationToken cancellationToken = default)
         {
-            MedioContacto tmp = await this.repo.UnicoAsync(x => x.Id == entity.Id);
-            if (tmp != null)
-            {
-                throw new ExElementoExistente(entity.Id);
-            }
 
+            entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
             return entity.Copia();
@@ -99,7 +95,8 @@ namespace PIKA.Servicio.Contacto
                     {}
                 }
             }
-
+            
+            this.UDT.SaveChanges();
 
             return listaEliminados;
 

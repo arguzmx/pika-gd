@@ -11,6 +11,16 @@ namespace PIKA.Modelo.Contacto
     {
         public DireccionPostalValidator(IStringLocalizer<DireccionPostal> localizer)
         {
+            RuleFor(x => x.Colonia).MaximumLength(LongitudDatos.Nombre);
+            RuleFor(x => x.CP).MaximumLength(LongitudDatos.CodigoPostal);
+            RuleFor(x => x.EstadoId).MaximumLength(LongitudDatos.GUID);
+            RuleFor(x => x.PaisId).MaximumLength(LongitudDatos.GUID);
+            RuleFor(x => x.OrigenId).MaximumLength(LongitudDatos.GUID);
+            RuleFor(x => x.TipoOrigenId).MaximumLength(LongitudDatos.GUID);
+            RuleFor(x => x.Municipio).MaximumLength(LongitudDatos.Nombre);
+            RuleFor(x => x.NoExterno).MaximumLength(LongitudDatos.Nombre);
+            RuleFor(x => x.NoInterno).MaximumLength(LongitudDatos.Nombre);
+
             RuleFor(x => x.Nombre)
                 .NotNull().WithMessage(x => localizer["El nombre es obligatorio"])
                 .NotEmpty().WithMessage(x => localizer["El nombre es obligatorio"])

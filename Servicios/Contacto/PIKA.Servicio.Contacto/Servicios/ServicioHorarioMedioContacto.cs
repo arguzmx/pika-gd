@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -24,6 +25,7 @@ namespace PIKA.Servicio.Contacto
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<HorarioMedioContacto> repo;
+        private IRepositorioAsync<MedioContacto> repoMedios;
         private UnidadDeTrabajo<DbContextContacto> UDT;
 
         public ServicioHorarioMedioContacto(
@@ -33,6 +35,7 @@ namespace PIKA.Servicio.Contacto
         {
             this.UDT = new UnidadDeTrabajo<DbContextContacto>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<HorarioMedioContacto>(new QueryComposer<HorarioMedioContacto>());
+            this.repoMedios = UDT.ObtenerRepositoryAsync<MedioContacto>(new QueryComposer<MedioContacto>());
 
         }
 
@@ -44,8 +47,41 @@ namespace PIKA.Servicio.Contacto
         }
 
 
+        private async Task ValidaHorario(HorarioMedioContacto entity)
+        {
+
+            var m = await this.repoMedios.UnicoAsync(x => x.Id == entity.MedioContactoId);
+
+            if(m==null) throw new EXNoEncontrado($"MedioContactoId = {entity.MedioContactoId}");
+
+            if (entity.DiaSemana <= 0)
+            {
+                throw new ExErrorRelacional($"DiaSemana = {entity.DiaSemana}");
+            }
+
+            if (entity.SinHorario)
+            {
+                entity.Inicio = null;
+                entity.Fin = null;
+            }
+            else
+            {
+                if (entity.Inicio == null)
+                {
+                    throw new ExErrorRelacional("Inicio = null");
+                }
+
+                if (entity.Fin == null)
+                {
+                    throw new ExErrorRelacional("Fin = null");
+                }
+            }
+        }
+
         public async Task<HorarioMedioContacto> CrearAsync(HorarioMedioContacto entity, CancellationToken cancellationToken = default)
         {
+
+           await ValidaHorario(entity);
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
@@ -55,6 +91,8 @@ namespace PIKA.Servicio.Contacto
 
         public async Task ActualizarAsync(HorarioMedioContacto entity)
         {
+            await ValidaHorario(entity);
+
             HorarioMedioContacto tmp = await this.repo.UnicoAsync(x => x.Id == entity.Id);
             if (tmp == null)
             {
@@ -90,6 +128,7 @@ namespace PIKA.Servicio.Contacto
                 }
             }
 
+            this.UDT.SaveChanges();
 
             return listaEliminados;
 

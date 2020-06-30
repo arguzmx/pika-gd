@@ -10,6 +10,8 @@ namespace PIKA.Servicio.Contacto
     {
         public static TipoFuenteContacto Copia(this TipoFuenteContacto d)
         {
+            if (d == null) return null;
+
             return new TipoFuenteContacto()
             {
                 Id = d.Id,

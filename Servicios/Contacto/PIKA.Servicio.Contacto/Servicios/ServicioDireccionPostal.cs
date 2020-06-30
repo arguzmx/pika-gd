@@ -24,6 +24,8 @@ namespace PIKA.Servicio.Contacto
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<DireccionPostal> repo;
+        private IRepositorioAsync<Pais> repoPais;
+        private IRepositorioAsync<Estado> repoEstado;
         private UnidadDeTrabajo<DbContextContacto> UDT;
         
         public ServicioDireccionPostal(
@@ -34,6 +36,12 @@ namespace PIKA.Servicio.Contacto
             this.UDT = new UnidadDeTrabajo<DbContextContacto>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<DireccionPostal>(
                 new QueryComposer<DireccionPostal>());
+
+            this.repoPais = UDT.ObtenerRepositoryAsync<Pais>(
+                new QueryComposer<Pais>());
+
+            this.repoEstado = UDT.ObtenerRepositoryAsync<Estado>(
+                new QueryComposer<Estado>());
         }
 
         public async Task<bool> Existe(Expression<Func<DireccionPostal, bool>> predicado)
@@ -45,6 +53,17 @@ namespace PIKA.Servicio.Contacto
 
         public async Task<DireccionPostal> CrearAsync(DireccionPostal entity, CancellationToken cancellationToken = default)
         {
+
+            if (!string.IsNullOrEmpty(entity.PaisId)) {
+                var p = await this.repoPais.UnicoAsync(x => x.Id == entity.PaisId);
+                if (p == null) throw new EXNoEncontrado($"PaisId: { entity.PaisId } ");
+            }
+
+            if (!string.IsNullOrEmpty(entity.EstadoId))
+            {
+                var e = await this.repoEstado.UnicoAsync(x => x.Id == entity.EstadoId);
+                if (e == null) throw new EXNoEncontrado($"EstadoId: { entity.EstadoId } ");
+            }
 
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
@@ -151,7 +170,7 @@ namespace PIKA.Servicio.Contacto
                 dp = await this.repo.UnicoAsync(x => x.Id == Id);
                 if (dp != null)
                 {
-                    UDT.Context.Entry(dp).State = EntityState.Deleted;
+                    await this.repo.Eliminar(dp);
                     listaEliminados.Add(dp.Id);
                 }
             }
