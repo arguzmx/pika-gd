@@ -10,6 +10,8 @@ namespace PIKA.Servicio.Contacto
 
         public static DireccionPostal Copia(this DireccionPostal d)
         {
+            if (d == null) return null;
+
             DireccionPostal dp =
             new DireccionPostal()
             {

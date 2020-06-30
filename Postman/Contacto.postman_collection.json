@@ -6,10 +6,10 @@
 	},
 	"item": [
 		{
-			"name": "Usuarios",
+			"name": "Pais",
 			"item": [
 				{
-					"name": "POST Usuario",
+					"name": "POST Pais",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -27,13 +27,13 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\"username\": \"demo0011\",\n\"email\": \"demo002@algo.com\",\n\"password\": \"Pa$$00123\"\n}",
+							"raw": "{\n\"Id\": \"001\",\n\"Nombre\": \"Pais 001\"\n}",
 							"options": {
 								"raw": {}
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios",
+							"raw": "http://localhost:5000/api/v1.0/contacto/pais",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -42,15 +42,15 @@
 							"path": [
 								"api",
 								"v1.0",
-								"seguridad",
-								"usuarios"
+								"contacto",
+								"pais"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "PUT Usuario",
+					"name": "PUT Pais",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -68,13 +68,13 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n            \"UsuarioId\": \"00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1\",\n            \"name\": \"oswaldo\",\n            \"family_name\": \"Diaz\",\n            \"given_name\": \"Guzman\",\n            \"middle_name\": \"R.\",\n            \"nickname\": \"Oswi\",\n            \"generoid\": \"m\",\n            \"paisid\": \"mx\",\n            \"estadoid\": \"cdmx\",\n            \"gmt\": \"Pacific Standard Time (Mexico)\",\n            \"picture\": \"data:image/jpeg;base64,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\"\n        }",
+							"raw": "{\n    \"Id\": \"001\",\n    \"Nombre\": \"Nombre cambiado\"\n}",
 							"options": {
 								"raw": {}
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1",
+							"raw": "http://localhost:5000/api/v1.0/contacto/pais/001",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -83,16 +83,16 @@
 							"path": [
 								"api",
 								"v1.0",
-								"seguridad",
-								"usuarios",
-								"00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1"
+								"contacto",
+								"pais",
+								"001"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "GET Metadata Usuario",
+					"name": "GET Metadata Pais",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -108,7 +108,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/metadata",
+							"raw": "http://localhost:5000/api/v1.0/contacto/pais/metadata",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -117,8 +117,8 @@
 							"path": [
 								"api",
 								"v1.0",
-								"seguridad",
-								"usuarios",
+								"contacto",
+								"pais",
 								"metadata"
 							]
 						}
@@ -126,7 +126,7 @@
 					"response": []
 				},
 				{
-					"name": "GET Usuario",
+					"name": "GET Pais",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -142,7 +142,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1",
+							"raw": "http://localhost:5000/api/v1.0/contacto/pais/000",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -151,16 +151,16 @@
 							"path": [
 								"api",
 								"v1.0",
-								"seguridad",
-								"usuarios",
-								"00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1"
+								"contacto",
+								"pais",
+								"000"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "GET PAGE Usuario",
+					"name": "GET PAGE Pais",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -186,7 +186,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/page?i=0&t=10&ordc=username&ordd=asc&f[0][p]=email&f[0][o]=contains&f[0][v]=@",
+							"raw": "http://localhost:5000/api/v1.0/contacto/pais/page?i=0&t=10&ordc=Nombre&ordd=asc&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=me",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -195,8 +195,8 @@
 							"path": [
 								"api",
 								"v1.0",
-								"seguridad",
-								"usuarios",
+								"contacto",
+								"pais",
 								"page"
 							],
 							"query": [
@@ -210,7 +210,7 @@
 								},
 								{
 									"key": "ordc",
-									"value": "username"
+									"value": "Nombre"
 								},
 								{
 									"key": "ordd",
@@ -218,7 +218,7 @@
 								},
 								{
 									"key": "f[0][p]",
-									"value": "email"
+									"value": "Nombre"
 								},
 								{
 									"key": "f[0][o]",
@@ -226,7 +226,7 @@
 								},
 								{
 									"key": "f[0][v]",
-									"value": "@"
+									"value": "me"
 								}
 							]
 						}
@@ -234,7 +234,73 @@
 					"response": []
 				},
 				{
-					"name": "DELETE Usuario",
+					"name": "GET PAGE Pares Pais",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/pais/pares?i=0&t=5&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=me",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"pais",
+								"pares"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "5"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Nombre"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "me"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Pais",
 					"request": {
 						"method": "DELETE",
 						"header": [
@@ -257,7 +323,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1,1,2",
+							"raw": "http://localhost:5000/api/v1.0/contacto/pais/000,001",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -266,135 +332,9 @@
 							"path": [
 								"api",
 								"v1.0",
-								"seguridad",
-								"usuarios",
-								"00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1,1,2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PATCH  Restaurar Usuario",
-					"request": {
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "uid",
-								"type": "text",
-								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-							},
-							{
-								"key": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/restaurar/00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1,1,2",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1.0",
-								"seguridad",
-								"usuarios",
-								"restaurar",
-								"00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1,1,2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PATCH  Inactivar Usuario",
-					"request": {
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "uid",
-								"type": "text",
-								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-							},
-							{
-								"key": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/inactivar/00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1,1,2",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1.0",
-								"seguridad",
-								"usuarios",
-								"inactivar",
-								"00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1,1,2"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PATCH  Ractivar Usuario",
-					"request": {
-						"method": "PATCH",
-						"header": [
-							{
-								"key": "uid",
-								"type": "text",
-								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-							},
-							{
-								"key": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/reactivar/00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1,1,2",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1.0",
-								"seguridad",
-								"usuarios",
-								"reactivar",
-								"00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1,1,2"
+								"contacto",
+								"pais",
+								"000,001"
 							]
 						}
 					},
@@ -416,6 +356,1973 @@
 					"listen": "test",
 					"script": {
 						"id": "73ec3e00-a1b0-4ce8-8439-484fd45e3497",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Tipos de Medio de Contacto",
+			"item": [
+				{
+					"name": "POST Tipo Medio de Contacto",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"Id\": \"001\",\n\"Nombre\": \"Tipo medio 001\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/tipomedio",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"tipomedio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Tipo Medio de Contacto",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Id\": \"001\",\n    \"Nombre\": \"Nombre cambiado\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/tipomedio/001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"tipomedio",
+								"001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Tipo Medio de Contacto",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/tipomedio/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"tipomedio",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Tipo Medio de Contacto",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/tipomedio/001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"tipomedio",
+								"001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Tipo Medio de Contacto",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/tipomedio/page?i=0&t=10&ordc=Nombre&ordd=asc&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=te",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"tipomedio",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Nombre"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Nombre"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "te"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Pares Tipo Medio de Contacto",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/tipomedio/pares?i=0&t=5&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=te",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"tipomedio",
+								"pares"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "5"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Nombre"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "te"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Tipo Medio de Contacto",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/tipomedio/000,001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"tipomedio",
+								"000,001"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "cb2187e4-4dea-412f-a447-b909973c7b9e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d16dea14-d5e8-4890-95db-bb695ad9fc1e",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Tipo Fuente Contacto",
+			"item": [
+				{
+					"name": "POST Tipo fuente contacto",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"Id\": \"001\",\n\"Nombre\": \"Fuente 001\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/tipofuentecontacto",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"tipofuentecontacto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Tipo Fuente Contacto",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Id\": \"001\",\n    \"Nombre\": \"Nombre cambiado\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/tipofuentecontacto/001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"tipofuentecontacto",
+								"001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Metadata Tipo Fuente Contacto",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/tipofuentecontacto/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"tipofuentecontacto",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Tipo Fuente Contacto",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/tipofuentecontacto/001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"tipofuentecontacto",
+								"001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Tipo Fuente Contacto",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/tipofuentecontacto/page?i=0&t=10&ordc=Nombre&ordd=asc&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=ca",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"tipofuentecontacto",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Nombre"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Nombre"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "ca"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Pares Tipo Fuente Contacto",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/tipofuentecontacto/pares?i=0&t=5&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=ca",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"tipofuentecontacto",
+								"pares"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "5"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Nombre"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "ca"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Tipo Fuente Contacto",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/tipofuentecontacto/a,b,001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"tipofuentecontacto",
+								"a,b,001"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3979d6b3-7da2-47a3-a867-42255bd7b490",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "78a6c8ac-3ea2-4b35-a8a9-0f2ba7742e77",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Estado",
+			"item": [
+				{
+					"name": "POST Estado",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"Id\": \"ES002\",\n\"Nombre\": \"Estado 001\",\n\"PaisId\": \"001\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/estado",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"estado"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Estado",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Id\": \"ES001\",\n    \"Nombre\": \"Mi estado\",\n    \"PaisId\": \"001\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/estado/ES001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"estado",
+								"ES001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Metadata Estado",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/estado/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"estado",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Estado",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/estado/ES001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"estado",
+								"ES001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Estado",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/estado/page?i=0&t=10&ordc=Nombre&ordd=asc&f[0][p]=PaisId&f[0][o]=eq&f[0][v]=001",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"estado",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Nombre"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "PaisId"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "eq"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "001"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Estado",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/estado/000,ES002",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"estado",
+								"000,ES002"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Pares Estado",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/estado/pares?i=0&t=50&f[0][p]=PaisId&f[0][o]=eq&f[0][v]=MEX",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"estado",
+								"pares"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "50"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "PaisId"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "eq"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "MEX"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c7a0bd1c-6b37-492e-a655-9a55f75728f5",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "45630d28-0244-4c64-8660-dad9e7294b8c",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Direccion Postal",
+			"item": [
+				{
+					"name": "POST Dirección Postal",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"Id\": \"\",\n\"Nombre\": \"Direccion de casa\",\n\"Calle\": \"CAlle Sin sin nombre\",\n\"NoInterno\": \"1\",\n\"NoExterno\": \"A\",\n\"Colonia\": \"Las asas\",\n\"CP\": \"54780\",\n\"Municipio\" : \"GAM\" ,\n\"PaisId\": \"MEX\",\n\"EstadoId\": \"CMX​\",\n\"EsDefault\" : false,\n\"TipoOrigenId\": \"unidad-org\",\n\"OrigenId\": \"001\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/DireccionPostal",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"DireccionPostal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Dirección Postal",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Id\": \"5cc427ea-bcbc-449a-ac46-716671f00abe\",\n    \"Nombre\": \"Direccion de casa\",\n    \"Calle\": \"CAlle Sin nombre\",\n    \"NoInterno\": \"1\",\n    \"NoExterno\": \"A\",\n    \"Colonia\": \"Las asas\",\n    \"CP\": \"54780\",\n    \"Municipio\": \"GAM\",\n    \"PaisId\": \"MEX\",\n    \"EstadoId\": \"CMX​\",\n    \"EsDefault\": false,\n    \"TipoOrigenId\": \"unidad-org\",\n    \"OrigenId\": \"001\"\n    }",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/direccionpostal/5cc427ea-bcbc-449a-ac46-716671f00abe",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"direccionpostal",
+								"5cc427ea-bcbc-449a-ac46-716671f00abe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Metadata Direccion Postal",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/direccionpostal/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"direccionpostal",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Direccion Postal",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/DireccionPostal/5cc427ea-bcbc-449a-ac46-716671f00abe",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"DireccionPostal",
+								"5cc427ea-bcbc-449a-ac46-716671f00abe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Direccion Postal",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/DireccionPostal/page/unidad-org/001?i=0&t=10&ordc=Nombre&ordd=asc&f[0][p]=PaisId&f[0][o]=eq&f[0][v]=MEX",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"DireccionPostal",
+								"page",
+								"unidad-org",
+								"001"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Nombre"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "PaisId"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "eq"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "MEX"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Direccion Postal",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/direccionpostal/5cc427ea-bcbc-449a-ac46-716671f00abe,aaa",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"direccionpostal",
+								"5cc427ea-bcbc-449a-ac46-716671f00abe,aaa"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f06f9821-012c-4e7c-aa82-0b13fa87e0d4",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c0ed3d5d-8dc9-4bd1-81f0-769dad741b88",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Medio de contacto",
+			"item": [
+				{
+					"name": "POST Medio Contacto",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"Id\": \"\",\n\"TipoMedioId\": \"tel\",\n\"TipoFuenteContactoId\": \"casa\",\n\"Principal\": true,\n\"Activo\": true,\n\"Medio\": \"5519a65570\",\n\"Prefijo\": null,\n\"Sufijo\": null,\n\"Notas\": null,\n\"TipoOrigenId\": \"unidad-org\",\n\"OrigenId\": \"001\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/mediocontacto",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"mediocontacto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Medio Contacto",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Id\": \"8b976086-51e7-469b-bb63-20d3c15cdebd\",\n    \"TipoOrigenId\": \"unidad-org\",\n    \"OrigenId\": \"001\",\n    \"TipoMedioId\": \"tel\",\n    \"TipoFuenteContactoId\": \"casa\",\n    \"Principal\": true,\n    \"Activo\": true,\n    \"Medio\": \"5519a65570\",\n    \"Prefijo\": null,\n    \"Sufijo\": null,\n    \"Notas\": \"Nota de ejmeplo para este item\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/mediocontacto/8b976086-51e7-469b-bb63-20d3c15cdebd",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"mediocontacto",
+								"8b976086-51e7-469b-bb63-20d3c15cdebd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Metadata Medio de Contacto",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/mediocontacto/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"mediocontacto",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Medio Contacto",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/mediocontacto/8b976086-51e7-469b-bb63-20d3c15cdebd",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"mediocontacto",
+								"8b976086-51e7-469b-bb63-20d3c15cdebd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Medio Contacto",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/mediocontacto/page/unidad-org/001?i=0&t=10&ordc=Activo&ordd=asc&f[0][p]=TipoFuenteContactoId&f[0][o]=eq&f[0][v]=casa",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"mediocontacto",
+								"page",
+								"unidad-org",
+								"001"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Activo"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "TipoFuenteContactoId"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "eq"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "casa"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Medio Contacto",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/mediocontacto/1,2,8b976086-51e7-469b-bb63-20d3c15cdebd",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"mediocontacto",
+								"1,2,8b976086-51e7-469b-bb63-20d3c15cdebd"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8fca0656-bfc1-42fe-be50-8478334eac06",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "2ecfad11-3c6e-456a-ad8d-fdd90b0791ef",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Horarios Medio de Contacto",
+			"item": [
+				{
+					"name": "POST Horario Medio de Contacto",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"Id\": \"\",\n\"SinHorario\":  false,\n\"DiaSemana\":  3,\n\"Inicio\":  \"2012-04-23T18:25:43.511Z\",\n\"Fin\": \"2012-04-23T19:25:43.511Z\",\n\"MedioContactoId\": \"30eb1c6a-2062-4135-95cc-a622061608d2\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/mediocontactohorario",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"mediocontactohorario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Horario Medio de Contacto",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"MedioContactoId\": \"30eb1c6a-2062-4135-95cc-a622061608d2\",\n    \"Id\": \"d4b09f86-e023-4ab9-a87c-855ad0aae41d\",\n    \"SinHorario\": false,\n    \"DiaSemana\": 11,\n    \"Fin\": \"2012-04-23T19:25:43.511Z\",\n    \"Inicio\": \"2012-04-23T18:25:43.511Z\",\n    \"MedioContacto\": null\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/mediocontactohorario/d4b09f86-e023-4ab9-a87c-855ad0aae41d",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"mediocontactohorario",
+								"d4b09f86-e023-4ab9-a87c-855ad0aae41d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Metadata Horario Medio de Contacto",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/mediocontactohorario/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"mediocontactohorario",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Horario Medio de Contacto",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/mediocontactohorario/82f223cb-1b17-46d5-a7b6-367d979e7fe4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"mediocontactohorario",
+								"82f223cb-1b17-46d5-a7b6-367d979e7fe4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Horario Medio de Contacto",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/mediocontactohorario/page/30eb1c6a-2062-4135-95cc-a622061608d2?i=0&t=10&ordc=DiaSemana&ordd=asc&f[0][p]=SinHorario&f[0][o]=eq&f[0][v]=true",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"mediocontactohorario",
+								"page",
+								"30eb1c6a-2062-4135-95cc-a622061608d2"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "DiaSemana"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "SinHorario"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "eq"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Horario Medio de Contacto",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/mediocontactohorario/a,82f223cb-1b17-46d5-a7b6-367d979e7fe4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"mediocontactohorario",
+								"a,82f223cb-1b17-46d5-a7b6-367d979e7fe4"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8c767417-c4aa-40fc-bfbc-97fc6a1e2155",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7e8059cf-8a39-462f-a8c1-41f864ba5940",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -496,12 +2403,12 @@
 	],
 	"variable": [
 		{
-			"id": "335b1360-6678-4cbb-9aeb-0a41ca5eb7e2",
+			"id": "67e30975-87d0-459d-8d5c-9e6c262d80d6",
 			"key": "accessTokenExpiry",
 			"value": ""
 		},
 		{
-			"id": "5510636b-544f-42ca-a449-7ac9959ee00f",
+			"id": "cab43cbb-82b4-4d09-bb07-11c14faa81d0",
 			"key": "accessToken",
 			"value": ""
 		}

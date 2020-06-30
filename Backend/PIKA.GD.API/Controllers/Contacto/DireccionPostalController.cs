@@ -113,7 +113,8 @@ namespace PIKA.GD.API.Controllers.Contacto
         {
 
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
-            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
+            //query.Filtros.AddRange(ObtieneFiltrosIdentidad());
+
             query.Filtros.Add(new FiltroConsulta() { Propiedad = IEntidadRelacionada.CampoTipo, Operador = FiltroConsulta.OP_EQ, Valor = tipo });
             query.Filtros.Add(new FiltroConsulta() { Propiedad = IEntidadRelacionada.CampoId, Operador = FiltroConsulta.OP_EQ, Valor = id });
 

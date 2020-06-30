@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PIKA.GD.API.Middlewares
@@ -46,14 +47,17 @@ namespace PIKA.GD.API.Middlewares
             switch (exception.GetType())
             {
                 case Type NFType when NFType == typeof(EXNoEncontrado):
+                    detail.Message = exception.Message == null ? "": exception.Message; 
                     context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                     break;
 
                 case Type InvDataType when InvDataType == typeof(ExElementoExistente):
+                    detail.Message = exception.Message == null ? "" : exception.Message;
                     context.Response.StatusCode = (int)HttpStatusCode.Conflict;
                     break;
 
                 case Type InvDataType when InvDataType == typeof(ExErrorRelacional):
+                    detail.Message = exception.Message == null ? "" : exception.Message;
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     break;
 
@@ -79,7 +83,7 @@ namespace PIKA.GD.API.Middlewares
 
 
 
-            return context.Response.WriteAsync(detail.ToString());
+            return context.Response.WriteAsync(JsonSerializer.Serialize(detail));
 
         }
 

@@ -31,9 +31,11 @@ namespace PIKA.GD.API.Controllers.Contacto
             IProveedorMetadatos<MedioContacto> metadataProvider,
             IServicioMedioContacto servicioEntidad)
         {
+            
             this.logger = logger;
             this.servicioEntidad = servicioEntidad;
             this.metadataProvider = metadataProvider;
+
         }
 
         /// <summary>
@@ -96,12 +98,21 @@ namespace PIKA.GD.API.Controllers.Contacto
         /// </summary>
         /// <param name="query">Consulta para la paginación y búsqueda</param>
         /// <returns></returns>
-        [HttpGet("page", Name = "GetPageMEdioContacto")]
+        [HttpGet("page/{tipo}/{id}", Name = "GetPageMEdioContacto")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Paginado<MedioContacto>>> GetPage(
+            string tipo, string id,
             [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
+
+            ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
+            //query.Filtros.AddRange(ObtieneFiltrosIdentidad());
+
+            query.Filtros.Add(new FiltroConsulta() { Propiedad = IEntidadRelacionada.CampoTipo, Operador = FiltroConsulta.OP_EQ, Valor = tipo });
+            query.Filtros.Add(new FiltroConsulta() { Propiedad = IEntidadRelacionada.CampoId, Operador = FiltroConsulta.OP_EQ, Valor = id });
+
+
             var data = await servicioEntidad.ObtenerPaginadoAsync(
                 Query: query,
                 include: null)

@@ -18,6 +18,8 @@ namespace PIKA.Modelo.Contacto
         }
 
 
+        public override string Id { get => base.Id; set => base.Id = value; }
+
         [XmlIgnore]
         [JsonIgnore]
         [NotMapped]
@@ -99,8 +101,10 @@ namespace PIKA.Modelo.Contacto
 
         /// <summary>
         /// Tipo medio contacto
-        /// </summary>
+
         public TipoMedio TipoMedio { get; set; }
+
+
 
     }
 }

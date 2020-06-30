@@ -8,6 +8,7 @@ using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
 using PIKA.Modelo.Contacto;
 using PIKA.Modelo.Metadatos;
+using PIKA.Modelo.Metadatos.Atributos;
 using PIKA.Servicio.Contacto;
 using RepositorioEntidades;
 
@@ -91,17 +92,22 @@ namespace PIKA.GD.API.Controllers.Contacto
         }
 
 
+
         /// <summary>
         /// Devulve una lista de horarios del medio de contacto asociadas al objeto del tipo especificado
         /// </summary>
         /// <param name="query">Consulta para la paginación y búsqueda</param>
-        /// <returns></returns>
-        [HttpGet("page", Name = "GetPageHorarioMEdioContacto")]
+        /// <param name="Id">Identificador único del medio de contacto</param>
+        [HttpGet("page/{id}", Name = "GetPageHorarioMEdioContacto")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Paginado<HorarioMedioContacto>>> GetPage(
+            string Id,
             [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
+
+            query.Filtros.Add(new FiltroConsulta() { Propiedad = "MedioContactoId", Operador = FiltroConsulta.OP_EQ, Valor = Id });
+
             var data = await servicioEntidad.ObtenerPaginadoAsync(
                 Query: query,
                 include: null)
