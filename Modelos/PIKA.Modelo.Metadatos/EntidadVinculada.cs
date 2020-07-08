@@ -10,8 +10,8 @@ namespace PIKA.Modelo.Metadatos
     public class EntidadVinculada
     {
         public  TipoCardinalidad Cardinalidad { get; set; }
-        public string Entidad { get; set; }
-        public string Padre { get; set; }
-        public string Hijo { get; set; }
+        public string EntidadHijo { get; set; }
+        public string PropiedadPadre { get; set; }
+        public string PropiedadHijo { get; set; }
     }
 }

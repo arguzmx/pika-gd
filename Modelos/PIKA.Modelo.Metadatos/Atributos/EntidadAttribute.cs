@@ -14,17 +14,26 @@ namespace PIKA.Modelo.Metadatos
 
         private bool _EliminarLogico;
         private string _Columna;
+        private bool _PaginadoRelacional;
 
-        public EntidadAttribute(bool EliminarLogico = false, string Columna = "Eliminada")
+        public EntidadAttribute(bool PaginadoRelacional=false, bool EliminarLogico = false, string Columna = "Eliminada")
         {
             this._Columna = EliminarLogico ? Columna :"";
             this._EliminarLogico = EliminarLogico;
+            this._PaginadoRelacional = PaginadoRelacional;
         }
 
+        /// <summary>
+        /// Especifica si la entidad requuiere paginado relacionar utlizando el TipoOrigen y el Id del origen
+        /// </summary>
+        public virtual bool PaginadoRelacional
+        {
+            get { return _PaginadoRelacional; }
+        }
 
-       /// <summary>
-       /// Indica si la entidad se elimna de manera lógica o la eliminaicón es permanente
-       /// </summary>
+        /// <summary>
+        /// Indica si la entidad se elimna de manera lógica o la eliminaicón es permanente
+        /// </summary>
         public virtual bool EliminarLogico
         {
             get { return _EliminarLogico; }

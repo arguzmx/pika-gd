@@ -83,6 +83,15 @@ namespace PIKA.Servicio.Organizacion.Servicios
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
+            string[] ids = new string[] { entity.Id };
+            if (entity.Eliminada) {
+                
+                await this.Eliminar(ids);
+            } else
+            {
+                await this.Restaurar(ids);
+            }
+
         }
 
 

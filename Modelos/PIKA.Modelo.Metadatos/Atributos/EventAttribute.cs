@@ -10,7 +10,7 @@ namespace PIKA.Modelo.Metadatos
     {
 
 
-        public EventAttribute(string Entidad, Eventos Evento, Operaciones Opeacion, string Parametros) {
+        public EventAttribute(string Entidad, Eventos Evento, Operaciones Operacion, string Parametros) {
             this._Entidad = Entidad;
             this._Evento = Evento;
             this._Operacion = Operacion;
@@ -43,7 +43,10 @@ namespace PIKA.Modelo.Metadatos
         /// <summary>
         /// Operacion para notificar el cambio
         /// </summary>
-        public Operaciones Operacion { get => _Operacion; }
+        public Operaciones Operacion
+        {
+            get { return _Operacion; }
+        }
 
 
         private Eventos _Evento;
@@ -51,7 +54,10 @@ namespace PIKA.Modelo.Metadatos
         /// <summary>
         /// Evento para notificar el cambio
         /// </summary>
-        public Eventos  Evento { get => _Evento; }
+        public Eventos  Evento
+        {
+            get { return _Evento; }
+        }
 
     }
 }

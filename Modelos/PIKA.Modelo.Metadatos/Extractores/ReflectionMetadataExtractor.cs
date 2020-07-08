@@ -61,6 +61,7 @@ namespace PIKA.Modelo.Metadatos
                 {
                     info.ElminarLogico = ((EntidadAttribute)attr).EliminarLogico;
                     info.ColumaEliminarLogico = ((EntidadAttribute)attr).Columna;
+                    info.PaginadoRelacional = ((EntidadAttribute)attr).PaginadoRelacional;
                 }
 
                 if (attr is EntidadVinculadaAttribute)
@@ -68,9 +69,9 @@ namespace PIKA.Modelo.Metadatos
                     info.EntidadesVinculadas.Add(new EntidadVinculada()
                     {
                         Cardinalidad = ((EntidadVinculadaAttribute)attr).Cardinalidad,
-                        Entidad = ((EntidadVinculadaAttribute)attr).Entidad,
-                        Padre = ((EntidadVinculadaAttribute)attr).Padre,
-                        Hijo = ((EntidadVinculadaAttribute)attr).Hijo
+                        EntidadHijo = ((EntidadVinculadaAttribute)attr).Entidad,
+                        PropiedadPadre = ((EntidadVinculadaAttribute)attr).PropiedadPadre,
+                        PropiedadHijo = ((EntidadVinculadaAttribute)attr).PropiedadHijo
                     });
 
                 }
@@ -159,7 +160,7 @@ namespace PIKA.Modelo.Metadatos
                 Entidad = source.Entidad,
                 Parametro = source.Parametros,
                 Evento = source.Evento,
-                Opeacion = source.Operacion
+                Operacion = source.Operacion
 
             };
         }
@@ -182,7 +183,7 @@ namespace PIKA.Modelo.Metadatos
                 PropiedadId = Id,
                 Entidad = source.Entidad,
                 DatosRemotos = source.DatosRemotos,
-                TypeAhead = source.TypeAhead
+                TypeAhead = source.TypeAhead, Default = source.Default, OrdenarAlfabetico = source.OrdenarAlfabetico
             };
         }
 
@@ -204,7 +205,9 @@ namespace PIKA.Modelo.Metadatos
                 EsIdRegistro = source.isId,
                 IndiceOrdenamientoTabla = source.TableOrderIndex, 
                 MostrarEnTabla = source.ShowInTable,
-                AlternarEnTabla = source.ToggleInTable
+                AlternarEnTabla = source.ToggleInTable,
+                Contextual = source.Contextual,
+                Etiqueta  = source.isLabel
             };
         }
 

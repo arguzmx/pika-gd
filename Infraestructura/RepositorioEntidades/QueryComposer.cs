@@ -18,14 +18,14 @@ namespace RepositorioEntidades
 
         #region expression composer
 
-        private  Expression GetDateTimeExpression(ParameterExpression x, PropertyInfo p, string Operador, string Value)
+        private  Expression GetDateTimeExpression(ParameterExpression x, PropertyInfo p,
+            string Operador, string Value, bool negar)
         {
 
             Expression exp = Expression.Property(x, p.Name);
             Expression comparison = null;
             BinaryExpression nullCheck = Expression.NotEqual(exp, Expression.Constant(null, typeof(object)));
             BinaryExpression IsNUll = Expression.Equal(exp, Expression.Constant(null, typeof(object)));
-
 
             if (DateTime.TryParse(Value, out DateTime t))
             {
@@ -74,12 +74,22 @@ namespace RepositorioEntidades
             }
 
 
-            return comparison;
+
+            if (!negar)
+            {
+                return comparison;
+            }
+            else
+            {
+                return Expression.Not(comparison);
+            }
+
+
         }
 
 
 
-        private  Expression GetNumExpression(ParameterExpression x, PropertyInfo p, string Operador, string Value)
+        private  Expression GetNumExpression(ParameterExpression x, PropertyInfo p, string Operador, string Value, bool negar)
         {
 
             Expression pe = Expression.Property(x, p.Name);
@@ -233,16 +243,25 @@ namespace RepositorioEntidades
             }
 
 
-            return final;
+
+            if (!negar)
+            {
+                return final;
+            }
+            else
+            {
+                return Expression.Not(final);
+            }
         }
 
-        private  Expression GetStringExpression(ParameterExpression x, PropertyInfo p, string Operador, string Value)
+        private  Expression GetStringExpression(ParameterExpression x, PropertyInfo p, string Operador, string Value, bool negar)
         {
             Expression pe = Expression.Property(x, p.Name);
             BinaryExpression isNotNull = Expression.NotEqual(pe, Expression.Constant(null, typeof(object)));
             BinaryExpression IsNUll = Expression.Equal(pe, Expression.Constant(null, typeof(object)));
             Expression constantExpression = Expression.Constant(Value.ToLower(), typeof(string));
             Expression toLower = Expression.Call(pe, typeof(string).GetMethod("ToLower", System.Type.EmptyTypes));
+            
 
             Expression final = null;
    
@@ -299,12 +318,19 @@ namespace RepositorioEntidades
                 }
             }
 
+            if(! negar)
+            {
+                return final;
+            } else
+            {
+                return Expression.Not(final);
+            }
 
-            return final;
+            
         }
 
 
-        private  Expression GetBoolExpression(ParameterExpression x, PropertyInfo p, string Operador, string Value)
+        private  Expression GetBoolExpression(ParameterExpression x, PropertyInfo p, string Operador, string Value, bool negar)
         {
 
             Expression pe = Expression.Property(x, p.Name);
@@ -327,7 +353,15 @@ namespace RepositorioEntidades
             }
 
 
-            return final;
+
+            if (!negar)
+            {
+                return final;
+            }
+            else
+            {
+                return Expression.Not(final);
+            }
         }
 
         #endregion
@@ -361,21 +395,21 @@ namespace RepositorioEntidades
                             case Type longype when longype == typeof(long):
                             case Type floatype when floatype == typeof(float):
                             case Type decimalType when decimalType == typeof(decimal):
-                                e = GetNumExpression(pe, p, f.Operador, f.Valor);
+                                e = GetNumExpression(pe, p, f.Operador, f.Valor, f.Negacion);
                                 break;
 
 
                             case Type datetimeType when datetimeType == typeof(DateTime):
-                                e = GetDateTimeExpression(pe, p, f.Operador, f.Valor);
+                                e = GetDateTimeExpression(pe, p, f.Operador, f.Valor, f.Negacion);
                                 break;
 
                             case Type boolType when boolType == typeof(bool):
-                                e = GetBoolExpression(pe, p, f.Operador, f.Valor);
+                                e = GetBoolExpression(pe, p, f.Operador, f.Valor, f.Negacion);
                                 break;
 
 
                             case Type stringType when stringType == typeof(string):
-                                e = GetStringExpression(pe, p, f.Operador, f.Valor);
+                                e = GetStringExpression(pe, p, f.Operador, f.Valor, f.Negacion);
                                 break;
 
                             default:

@@ -18,7 +18,9 @@ namespace RepositorioEntidades
             Func<IQueryable<T>, IIncludableQueryable<T, object>> incluir = null,
             bool inhabilitarSegumiento = true);
 
-        Task<List<T>> ObtenerAsync(Expression<Func<T, bool>> predicado);
+        Task<List<T>> ObtenerAsync(Expression<Func<T, bool>> predicado,
+              Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null);
 
         Task<List<T>> ObtenerAsync(string SqlCommand);
 

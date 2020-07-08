@@ -176,7 +176,7 @@ namespace PIKA.GD.API.Controllers.Contacto
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ValorListaOrdenada>>> GetPares(
-      [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
             var data = await servicioEntidad.ObtenerParesAsync(query)
                 .ConfigureAwait(false);
@@ -184,6 +184,24 @@ namespace PIKA.GD.API.Controllers.Contacto
             return Ok(data);
         }
 
+        /// <summary>
+        /// Obtiene una lista de estados en base al  los identifiadores proporcioandos en el querystring
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        [HttpGet("pares/{ids}", Name = "GetParesEstadoporId")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ValorListaOrdenada>>> GetParesporId(
+           string ids)
+        {
 
+            List<string> lids = ids.Split(',').ToList()
+               .Where(x => !string.IsNullOrEmpty(x)).ToList();
+            var data = await servicioEntidad.ObtenerParesPorId(lids)
+                .ConfigureAwait(false);
+
+            return Ok(data);
+        }
     }
 }

@@ -150,6 +150,19 @@ namespace PIKA.Servicio.Contacto
             return l.OrderBy(x => x.Texto).ToList();
         }
 
+        public async Task<List<ValorListaOrdenada>> ObtenerParesPorId(List<string> Lista)
+        {
+            var resultados = await this.repo.ObtenerAsync(x => Lista.Contains(x.Id) );
+            List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
+        }
+
         #region sin implementar
 
         public Task<IEnumerable<TipoMedio>> CrearAsync(params TipoMedio[] entities)

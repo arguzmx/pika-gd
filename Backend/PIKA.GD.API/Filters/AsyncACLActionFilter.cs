@@ -8,6 +8,7 @@ using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Seguridad;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -54,7 +55,7 @@ namespace PIKA.GD.API.Filters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-
+            
             StringValues values;
             string DomainId = "";
             string UserId = "";
@@ -110,12 +111,11 @@ namespace PIKA.GD.API.Filters
                 }
 
              
-                if (context.HttpContext.Request.Headers.TryGetValue(Config.header_idusuario, out values)) UserId = values[0];
                 if (context.HttpContext.Request.Headers.TryGetValue(Config.header_dominio, out values)) DomainId = values[0];
                 if (context.HttpContext.Request.Headers.TryGetValue(Config.header_tenantid, out values)) OwnerId = values[0];
 
-
-         
+                var claimid = context.HttpContext.User.Claims.Where(x => x.Type == JwtRegisteredClaimNames.Sub).FirstOrDefault();
+                UserId = claimid != null ? claimid.Value : ""; 
 
                 if (string.IsNullOrEmpty(UserId)  || string.IsNullOrEmpty(AppId))
                 {
