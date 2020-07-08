@@ -9,5 +9,6 @@ namespace RepositorioEntidades
     public interface IServicioValorTextoAsync<T>
     {
         Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query);
+        Task<List<ValorListaOrdenada>> ObtenerParesPorId(List<string> Lista);
     }
 }

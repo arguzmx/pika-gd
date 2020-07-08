@@ -22,6 +22,12 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public bool ElminarLogico { get; set; }
 
+
+        /// <summary>
+        /// Especifica si la entidad requiere paginado relacional
+        /// </summary>
+        public bool PaginadoRelacional { get; set; }
+
         /// <summary>
         /// Identifica la columna utilizada para determinar la eliminación lógica
         /// </summary>

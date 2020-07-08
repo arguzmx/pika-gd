@@ -284,6 +284,7 @@ namespace PIKA.GD.API
             })
 .AddJwtBearer(options =>
 {
+    options.SaveToken = true;
     // base-address of your identityserver
     options.Authority = configuracionServidor.jwtauth;
     // name of the API resource
@@ -300,6 +301,7 @@ namespace PIKA.GD.API
                 if (identity != null)
                 {
                     identity.AddClaim(new Claim("access_token", accessToken.RawData));
+                    identity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, accessToken.Claims.Where(x => x.Type == JwtRegisteredClaimNames.Sub).First().Value));
                 }
             }
 

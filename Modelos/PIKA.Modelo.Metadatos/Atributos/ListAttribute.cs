@@ -10,12 +10,23 @@ namespace PIKA.Modelo.Metadatos
 
 
         public ListAttribute(string Entidad, bool DatosRemotos = false, 
-            bool TypeAhead=false, bool OrdenarAlfabetico = false) {
+            bool TypeAhead=false, bool OrdenarAlfabetico = false, string Default = "") {
             
             this._Entidad = Entidad;
             this._DatosRemotos = DatosRemotos;
             this._OrdenarAlfabetico = OrdenarAlfabetico;
             this._TypeAhead = TypeAhead;
+            this._Default = Default;
+        }
+
+        private string _Default;
+
+        /// <summary>
+        /// Nombre el valor default para la list
+        /// </summary>
+        public virtual string Default
+        {
+            get { return _Default; }
         }
 
         private string _Entidad;

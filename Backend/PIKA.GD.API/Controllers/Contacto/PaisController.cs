@@ -166,5 +166,20 @@ namespace PIKA.GD.API.Controllers.Contacto
             return Ok(data);
         }
 
+        [HttpGet("pares/{ids}", Name = "GetParesPaisporId")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ValorListaOrdenada>>> GetParesporId(
+              string ids)
+        {
+
+            List<string> lids = ids.Split(',').ToList()
+               .Where(x => !string.IsNullOrEmpty(x)).ToList();
+            var data = await servicioEntidad.ObtenerParesPorId(lids)
+                .ConfigureAwait(false);
+
+            return Ok(data);
+        }
+
     }
 }

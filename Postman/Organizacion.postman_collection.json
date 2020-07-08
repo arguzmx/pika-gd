@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "aa34f601-fed0-4f3a-a9c0-35734073c8ec",
-		"name": "Oragnizacion",
+		"_postman_id": "57104d72-e8b1-403f-87bf-905289e1e002",
+		"name": "Organizacion",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -320,7 +320,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "b29f0c12-12a5-46e2-a699-2519fbc131c0",
+						"id": "d6d13687-67c3-4321-939f-e2a528c4d8a1",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -330,294 +330,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "73ec3e00-a1b0-4ce8-8439-484fd45e3497",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "Direccion Postal",
-			"item": [
-				{
-					"name": "POST Dirección Postal",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "uid",
-								"type": "text",
-								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-							},
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"Id\": \"\",\r\n    \"Nombre\": \"mensajes\",\r\n    \"Calle\": \"Friesen Unions\",\r\n    \"NoInterno\": \"50301\",\r\n    \"NoExterno\": \"92545\",\r\n    \"Colonia\": \"Jeffryport\",\r\n    \"CP\": \"59951-1610\",\r\n    \"Municipio\": \"Oklahoma\",\r\n    \"EstadoId\": \"JAL\",\r\n    \"PaisId\": \"MEX\",\r\n    \"EsDefault\": true,\r\n    \"TipoOrigenId\": \"unidad-org\",\r\n    \"OrigenId\": \"d0001\"\r\n}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1.0/org/direccionpostal",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1.0",
-								"org",
-								"direccionpostal"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "PUT Dirección Postal",
-					"request": {
-						"method": "PUT",
-						"header": [
-							{
-								"key": "uid",
-								"type": "text",
-								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-							},
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"Id\": \"9e232434-9570-44f3-b93e-04a59d84bae8\",\r\n    \"Nombre\": \"mensajes 001\",\r\n    \"Calle\": \"Friesen Unions\",\r\n    \"NoInterno\": \"50301\",\r\n    \"NoExterno\": \"92545\",\r\n    \"Colonia\": \"Jeffryport\",\r\n    \"CP\": \"59951-1610\",\r\n    \"Municipio\": \"Oklahoma\",\r\n    \"EstadoId\": \"JAL\",\r\n    \"PaisId\": \"MEX\",\r\n    \"TipoOrigenId\": \"unidad-org\",\r\n    \"OrigenId\": \"d0001\",\r\n    \"EsDefault\": true\r\n}",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1.0/org/direccionpostal/9e232434-9570-44f3-b93e-04a59d84bae8",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1.0",
-								"org",
-								"direccionpostal",
-								"9e232434-9570-44f3-b93e-04a59d84bae8"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "GET Metadata Dominio",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "uid",
-								"type": "text",
-								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-							},
-							{
-								"key": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "https://localhost:5001/api/v1.0/org/dominio/metadata",
-							"protocol": "https",
-							"host": [
-								"localhost"
-							],
-							"port": "5001",
-							"path": [
-								"api",
-								"v1.0",
-								"org",
-								"dominio",
-								"metadata"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "GET Dirección Postal",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "uid",
-								"type": "text",
-								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-							},
-							{
-								"key": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:5000/api/v1.0/org/direccionpostal/dpuo0dominio0",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1.0",
-								"org",
-								"direccionpostal",
-								"dpuo0dominio0"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "GET PAGE Direccion Postal",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "uid",
-								"type": "text",
-								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-							},
-							{
-								"key": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1.0/org/direccionpostal/page/unidad-org/uo0dominio0?i=0&t=10&ordc=Nombre&ordd=asc&f[0]",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1.0",
-								"org",
-								"direccionpostal",
-								"page",
-								"unidad-org",
-								"uo0dominio0"
-							],
-							"query": [
-								{
-									"key": "i",
-									"value": "0"
-								},
-								{
-									"key": "t",
-									"value": "10"
-								},
-								{
-									"key": "ordc",
-									"value": "Nombre"
-								},
-								{
-									"key": "ordd",
-									"value": "asc"
-								},
-								{
-									"key": "f[0]",
-									"value": null
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "DELETE Dirección Postal",
-					"request": {
-						"method": "DELETE",
-						"header": [
-							{
-								"key": "uid",
-								"type": "text",
-								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-							},
-							{
-								"key": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "\n\t[\n\t\"PIKA.Modelo.Organizacion.UnidadOrganizacional\",\n\t\"f5857944-0ab1-4045-aadf-520cff0406fb\",\n\t\"fb0136fd-62a1-4b41-b868-3da5f25df805\"\n\t]\n",
-							"options": {
-								"raw": {}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:5000/api/v1.0/org/direccionpostal",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1.0",
-								"org",
-								"direccionpostal"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "e6456e6c-ef17-4f32-b9f1-300a19d3e1ea",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "757aaf67-d182-479d-bd14-821c2c733d45",
+						"id": "a641da24-a51d-4375-97a7-5a53fae94671",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -976,7 +689,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "f09fd324-9b10-43f6-ba38-8a855befcaaf",
+						"id": "401e2cf2-2e31-4dbe-b820-531c4ac7f55b",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -986,7 +699,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "75bf26ca-3321-4dc1-869c-4e615b0ece8a",
+						"id": "3bff0282-ef80-4d0c-b088-f1680beb6430",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -1387,7 +1100,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "049895a3-db50-4559-9573-1463e5e71e05",
+						"id": "700b64f9-447b-4361-b52b-0226ceb8d617",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -1397,7 +1110,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "792f4c49-ac3b-4c9f-9560-754b8cc2b440",
+						"id": "0ac88619-2ca5-4e48-81af-9834ae73e3dd",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -1422,7 +1135,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "b2452b44-1fe7-4c20-bc7d-c15bb13aa920",
+				"id": "9d909c0d-d26f-4f55-a8bb-2b67073974ec",
 				"type": "text/javascript",
 				"exec": [
 					"const echoPostRequest = {",
@@ -1468,7 +1181,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "204ab867-5937-47f6-8b5e-3537469369bd",
+				"id": "af595280-49c4-4a00-ab28-1f4a44c1e078",
 				"type": "text/javascript",
 				"exec": [
 					""

@@ -19,14 +19,14 @@ namespace PIKA.Modelo.Metadatos
         private string _Padre;
         private string _Hijo;
 
-        public EntidadVinculadaAttribute(string Entidad = ""
+        public EntidadVinculadaAttribute(string EntidadHijo = ""
         , TipoCardinalidad Cardinalidad = TipoCardinalidad.UnoVarios
-        , string Padre ="", string Hijo = "")
+        , string PropiedadPadre ="", string PropiedadHijo = "")
         {
             this._Cardinalidad = Cardinalidad;
-            this._Entidad = Entidad;
-            this._Padre = Padre;
-            this._Hijo = Hijo;
+            this._Entidad = EntidadHijo;
+            this._Padre = PropiedadPadre;
+            this._Hijo = PropiedadHijo;
         }
 
         /// <summary>
@@ -48,13 +48,13 @@ namespace PIKA.Modelo.Metadatos
         /// <summary>
         /// NOm,bre de la propiedad de relación en el padre
         /// </summary>
-        public virtual string Padre
+        public virtual string PropiedadPadre
         {
             get { return _Padre; }
         }
 
         // Nombre de la propiedad de relación en la entidad hiji
-        public virtual string Hijo
+        public virtual string PropiedadHijo
         {
             get { return _Hijo; }
         }

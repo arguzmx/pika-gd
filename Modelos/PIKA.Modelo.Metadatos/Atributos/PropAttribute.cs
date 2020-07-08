@@ -19,7 +19,9 @@ namespace PIKA.Modelo.Metadatos
         private bool _Orderable;
         private bool _isId;
         private bool _Visible;
+        private bool _IsLabel;
         private bool _ShowInTable;
+        private bool _Contextual;
         private bool _ToggleInTable;
         private string _DefaultValue;
         private int _TableOrderIndex;
@@ -27,12 +29,21 @@ namespace PIKA.Modelo.Metadatos
         public PropAttribute(string Type = "",
             [CallerMemberName] string Id = null, string DefaultValue = "",
             int OrderIndex = 0, bool Searchable = true, bool Orderable = true, bool Visible = true,
-            bool Required = false, bool isId = false, bool ShowInTable = true, bool ToggleInTable = true, int TableOrderIndex =0 )
+            bool Required = false, bool isId = false, bool ShowInTable = true, bool ToggleInTable = true,
+            int TableOrderIndex = 0, bool Contextual = false , bool IsLabel = false)
         {
 
+            this._Contextual = Contextual;
             this._TableOrderIndex = (TableOrderIndex == 0) ? OrderIndex : TableOrderIndex;
             this._ShowInTable = ShowInTable;
-            this._ToggleInTable = ToggleInTable;
+            if(!ShowInTable)
+            {
+                this._ToggleInTable = false;
+            } else
+            {
+                this._ToggleInTable = ToggleInTable;
+            }
+            
             this._Required = Required;
             this._Visible = Visible;
             this._Orderable = Orderable;
@@ -42,6 +53,7 @@ namespace PIKA.Modelo.Metadatos
             this._OrderIndex = OrderIndex;
             this._DefaultValue = DefaultValue;
             this._isId = isId;
+            this._IsLabel = IsLabel;
             
 
         }
@@ -52,6 +64,15 @@ namespace PIKA.Modelo.Metadatos
         public virtual bool ShowInTable
         {
             get { return _ShowInTable; }
+        }
+
+
+        /// <summary>
+        ///  Indica si una proidad de obtiene del contexto de ejecución
+        /// </summary>
+        public virtual bool Contextual
+        {
+            get { return _Contextual; }
         }
 
 
@@ -82,6 +103,15 @@ namespace PIKA.Modelo.Metadatos
             get { return _isId; }
         }
 
+
+        /// <summary>
+        /// Determina si el contenido de l apropiedad puede utilizaerse como etiqueta de despliegie
+        /// para humanos
+        /// </summary>
+        public virtual bool isLabel
+        {
+            get { return _IsLabel; }
+        }
 
 
         /// <summary>

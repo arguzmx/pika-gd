@@ -136,9 +136,31 @@ namespace PIKA.Servicio.Contacto
 
         public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
         {
+            for (int i = 0; i < Query.Filtros.Count; i++)
+            {
+                if (Query.Filtros[i].Propiedad.ToLower() == "texto")
+                {
+                    Query.Filtros[i].Propiedad = "Nombre";
+                }
+            }
+
+
             Query = GetDefaultQuery(Query);
             var resultados = await this.repo.ObtenerPaginadoAsync(Query);
             List<ValorListaOrdenada> l = resultados.Elementos.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
+        }
+
+        public async Task<List<ValorListaOrdenada>> ObtenerParesPorId(List<string> Lista)
+        {
+            var resultados = await this.repo.ObtenerAsync(x => Lista.Contains(x.Id));
+            List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
             {
                 Id = x.Id,
                 Indice = 0,
@@ -187,7 +209,7 @@ namespace PIKA.Servicio.Contacto
             throw new NotImplementedException();
         }
 
-
+   
 
 
         #endregion

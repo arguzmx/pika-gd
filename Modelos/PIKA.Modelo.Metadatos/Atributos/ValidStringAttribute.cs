@@ -8,6 +8,8 @@ namespace PIKA.Modelo.Metadatos
     public class ValidStringAttribute : Attribute
     {
 
+        public const string REGEXP_NUMBERS = @"[0-9]*";
+
         private int _minlen;
         private int _maxlen;
         private string _defaulvalue;

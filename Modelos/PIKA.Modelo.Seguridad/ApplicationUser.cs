@@ -121,6 +121,8 @@ namespace PIKA.Modelo.Seguridad
         /// </summary>
         public bool Eliminada { get; set; }
 
+        public bool GlobalAdmin { get; set; }
+
         public virtual ICollection<UsuarioDominio>  UsuariosDominio { get; set; }
 
         public virtual ICollection<UserClaim> Claims { get; set; }

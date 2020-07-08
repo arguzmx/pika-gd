@@ -26,6 +26,7 @@ using Serilog;
 using PIKA.GD.API.Servicios;
 using Serilog.Events;
 using PIKA.Servicio.Contacto;
+using PIKA.Servicio.Usuarios;
 
 namespace PIKA.GD.API
 {
@@ -98,6 +99,7 @@ namespace PIKA.GD.API
             services.AddTransient(typeof(ICompositorConsulta<>), typeof(QueryComposer<>));
             services.AddTransient<IServicioTokenSeguridad, ServicioTokenSeguridad>();
             services.AddTransient<ICacheSeguridad, CacheSeguridadMemoria>();
+            services.AddTransient<IServicioPerfilUsuario, ServicioPerfilUsuario>();
             services.AddTransient(typeof(IProveedorMetadatos<>), typeof(ReflectionMetadataExtractor<>));
 
             services.AddTransient<ILocalizadorFiltroACL, LocalizadorFiltroACLReflectivo>();
@@ -156,7 +158,6 @@ namespace PIKA.GD.API
 
 
             // Configura la autenticación con el servidor de identidad
-            services.AddAuthentication();
             services.ConfiguraAutenticaciónJWT(this.Configuration);
                         
 
@@ -176,6 +177,7 @@ namespace PIKA.GD.API
                 app.UseDeveloperExceptionPage();
             }
 
+            //app.UseMiddleware<JWTAuthenticationMiddleware>();
             app.UseMiddleware<GlobalExceptionMiddleware>();
 
             //app.UseHealthChecks("/health");

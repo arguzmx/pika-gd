@@ -15,7 +15,7 @@ namespace PIKA.Modelo.Organizacion
     /// El dominio es el contenedor todos los recursos asociados a una organización
     /// </summary>
     [Entidad(EliminarLogico: true)]
-    [EntidadVinculada(Entidad: "UnidadOrganizacional", Cardinalidad: TipoCardinalidad.UnoVarios, Padre: "Id", Hijo: "DominioId")]
+    [EntidadVinculada(EntidadHijo: "UnidadOrganizacional", Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id", PropiedadHijo: "DominioId")]
     public class Dominio : Entidad<string>, IEntidadNombrada, IEntidadRelacionada, IEntidadEliminada
     {
         

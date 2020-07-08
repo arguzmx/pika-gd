@@ -8,12 +8,12 @@ using static PIKA.Modelo.Metadatos.PropAttribute;
 
 namespace PIKA.Modelo.Metadatos
 {
-  
+
     /// <summary>
     /// Define una propiedad de meatdatos, se basa en el atributo web PIKA.modelo.Metadatos.PropAttribue
     /// Culauqier cambio en alguno de los 2 debe sincornizarse manualemnte
     /// </summary>
-    public class Propiedad: Entidad<string>, IEntidadNombrada
+    public class Propiedad : Entidad<string>, IEntidadNombrada
     {
 
         public Propiedad()
@@ -40,7 +40,7 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public string TipoDatoId { get; set; }
 
-    
+
         /// <summary>
         /// Valor por defecto de la propiedad serializado como string
         /// en el caso de los binarios debe serializarrse como base 64
@@ -78,8 +78,8 @@ namespace PIKA.Modelo.Metadatos
         /// DEtermina si es una clave primaria
         /// </summary>
         public bool EsIdClaveExterna { get; set; }
-        
-  
+
+
 
         /// <summary>
         /// Dettermina si es el identificador de un registro
@@ -133,6 +133,18 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public string ControlHTML { get; set; }
 
+
+        /// <summary>
+        /// Determina si el contenido de l apropiedad puede utilizaerse como etiqueta de despliegie
+        /// para humanos
+        /// </summary>
+        public bool Etiqueta { get; set; }
+
+        /// <summary>
+        /// Especifica si al propiedad debe inferirse del contexto de ejecución
+        /// </summary>
+        [NotMapped]
+        public bool Contextual { get; set; }
 
         [NotMapped]
         public bool MostrarEnTabla { get; set; }
