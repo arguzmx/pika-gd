@@ -19,5 +19,10 @@ namespace PIKA.Modelo.Metadatos
         /// Accion para la cual se encuentra destiando el desplieguie de UI
         /// </summary>
         public Acciones Accion { get; set; }
+
+        /// <summary>
+        ///  Plataforma destino de la vist
+        /// </summary>
+        public string Plataforma { get; set; }
     }
 }

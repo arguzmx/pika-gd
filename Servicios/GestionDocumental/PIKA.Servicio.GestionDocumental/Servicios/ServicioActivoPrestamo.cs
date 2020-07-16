@@ -29,14 +29,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
         public ServicioActivoPrestamo(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ICompositorConsulta<ActivoPrestamo> compositorConsulta,
-           ILogger<ServicioActivoPrestamo> Logger,
-           IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+           ILogger<ServicioActivoPrestamo> Logger) : base(proveedorOpciones, Logger)
         {
 
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
-            this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<ActivoPrestamo>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<ActivoPrestamo>(new QueryComposer<ActivoPrestamo>());
         }
 
         public async Task<bool> Existe(Expression<Func<ActivoPrestamo, bool>> predicado)

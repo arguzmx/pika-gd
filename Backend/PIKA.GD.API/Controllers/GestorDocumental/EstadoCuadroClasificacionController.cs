@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
@@ -92,11 +93,43 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
 
-        [HttpDelete]
+        [HttpDelete("{ids}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult> Delete([FromBody]string[] id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> Delete(string ids)
         {
-            return Ok(await servicioEstado.Eliminar(id).ConfigureAwait(false));
+            string[] lids = ids.Split(',').ToList()
+               .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            return Ok(await servicioEstado.Eliminar(lids).ConfigureAwait(false));
         }
+
+
+        [HttpGet("pares", Name = "GetParesEstadoCuadroClasificacion")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ValorListaOrdenada>>> GetPares(
+        [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        {
+            var data = await servicioEstado.ObtenerParesAsync(query)
+                .ConfigureAwait(false);
+
+            return Ok(data);
+        }
+
+        [HttpGet("pares/{ids}", Name = "GetParesEstadoCuadroClasificacionPorId")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ValorListaOrdenada>>> GetParesporId(
+              string ids)
+        {
+
+            List<string> lids = ids.Split(',').ToList()
+               .Where(x => !string.IsNullOrEmpty(x)).ToList();
+            var data = await servicioEstado.ObtenerParesPorId(lids)
+                .ConfigureAwait(false);
+
+            return Ok(data);
+        }
+
     }
 }

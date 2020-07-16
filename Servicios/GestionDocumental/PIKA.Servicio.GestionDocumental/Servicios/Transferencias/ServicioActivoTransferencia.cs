@@ -26,17 +26,13 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<ActivoTransferencia> repo;
-        private ICompositorConsulta<ActivoTransferencia> compositor;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
         public ServicioActivoTransferencia(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ICompositorConsulta<ActivoTransferencia> compositorConsulta,
-           ILogger<ServicioActivoTransferencia> Logger,
-           IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+           ILogger<ServicioActivoTransferencia> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
-            this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<ActivoTransferencia>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<ActivoTransferencia>(new QueryComposer<ActivoTransferencia>());
         }
 
         public async Task<bool> Existe(Expression<Func<ActivoTransferencia, bool>> predicado)

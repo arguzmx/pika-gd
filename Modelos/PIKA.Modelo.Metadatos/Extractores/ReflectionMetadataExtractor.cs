@@ -85,7 +85,6 @@ namespace PIKA.Modelo.Metadatos
             {
 
                 Propiedad foundProp = null;
-
                 object[] attrs = prop.GetCustomAttributes(true);
                 foreach (object attr in attrs)
                 {
@@ -106,6 +105,7 @@ namespace PIKA.Modelo.Metadatos
                         {
                             ListAttribute la = (ListAttribute)attr;
                             foundProp.AtributoLista = la.GetLista(prop.Name);
+                            
                         }
 
                         if (attr is EventAttribute)
@@ -171,7 +171,8 @@ namespace PIKA.Modelo.Metadatos
             {
                 PropiedadId = Id,
                 Accion = a.Accion,
-                Control = a.Control
+                Control = a.Control, 
+                Plataforma = a.Plataforma
             };
         }
 

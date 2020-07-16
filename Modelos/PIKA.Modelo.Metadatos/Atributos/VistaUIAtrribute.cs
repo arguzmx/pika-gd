@@ -14,9 +14,10 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         /// <param name="ControlUI">Tipo de control en base a las constante sde la clase ControlUI</param>
         /// <param name="Accion">Accion CRUD en la que participa la vista</param>
-        public VistaUIAttribute(string ControlUI= ControlUI.HTML_TEXT, Acciones Accion =  Acciones.none) {
+        public VistaUIAttribute(string ControlUI= ControlUI.HTML_TEXT, Acciones Accion =  Acciones.none, string Plataforma = ControlUI.PLATAFORMA_WEB) {
             this.Control = ControlUI;
             this.Accion = Accion;
+            this.Plataforma = Plataforma;
         }
 
         /// <summary>
@@ -28,6 +29,11 @@ namespace PIKA.Modelo.Metadatos
         /// Accion para la cual se encuentra destiando el desplieguie de UI
         /// </summary>
         public Acciones Accion { get; }
+
+        /// <summary>
+        /// defina la plataforma para la cual esta destiando la vista
+        /// </summary>
+        public string Plataforma { get; set; }
 
 
     }

@@ -136,7 +136,7 @@ namespace PIKA.Modelo.Contacto
         /// <summary>
         /// Tipo de ojeto origen asociado a la dirección, pr ejemplo UO
         /// </summary>
-        [Prop(Required: true, OrderIndex: 100, Contextual: true, ShowInTable: false)]
+        [Prop(Required: true, OrderIndex: 100, Contextual: true, ShowInTable: false, Searchable: false)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string TipoOrigenId { get; set; }
 
@@ -144,7 +144,7 @@ namespace PIKA.Modelo.Contacto
         /// <summary>
         /// Identificador único del objeto origen, por ejemplo el id de una UO
         /// </summary>
-        [Prop(Required: true, OrderIndex: 110, Contextual: true, ShowInTable: false)]
+        [Prop(Required: true, OrderIndex: 110, Contextual: true, ShowInTable: false,  Searchable: false)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string OrigenId { get; set; }
 

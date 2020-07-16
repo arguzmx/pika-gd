@@ -83,14 +83,10 @@ namespace PIKA.Servicio.Organizacion.Servicios
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
-            string[] ids = new string[] { entity.Id };
-            if (entity.Eliminada) {
-                
-                await this.Eliminar(ids);
-            } else
-            {
-                await this.Restaurar(ids);
-            }
+            await MarcaOUDelDominio(o.Id, entity.Eliminada);
+
+
+
 
         }
 
@@ -132,6 +128,19 @@ namespace PIKA.Servicio.Organizacion.Servicios
             }
         }
 
+
+        private async Task MarcaOUDelDominio(string Id, bool eliminada)
+        {
+            // actualiza las unidads organizacionales para ser marcadas como eliminadas 
+            var ous = await repoOU.ObtenerAsync(x => x.DominioId == Id);
+             foreach (var ou in ous)
+            {
+                ou.Eliminada = true;
+                UDT.Context.Entry(ou).State = EntityState.Modified;
+            }
+            UDT.SaveChanges();
+        }
+
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
             Dominio d;
@@ -141,33 +150,13 @@ namespace PIKA.Servicio.Organizacion.Servicios
                 d = await this.repo.UnicoAsync(x => x.Id == Id);
                 if (d != null)
                 {
-
-
                     d.Eliminada = true;
-                    // actualiza las unidads organizacionales para ser marcadas como eliminadas 
-                    var ous = await repoOU.ObtenerAsync(x => x.DominioId == Id);
-
-#if DEBUG
-                    logger.LogDebug("Marcando Dominio {id} como eliminada ", Id);
-                    logger.LogDebug("Unidades Organizacionales dependientes {0}", ous.Count);
-#endif
-
-
-                    foreach (var ou in ous)
-                    {
-#if DEBUG
-                        logger.LogDebug("Marcando OU {id} como eliminada ", ou.Id);
-#endif
-                        ou.Eliminada = true;
-                        UDT.Context.Entry(ou).State = EntityState.Modified;
-                    }
-
                     UDT.Context.Entry(d).State = EntityState.Modified;
                     listaEliminados.Add(d.Id);
+                    await MarcaOUDelDominio(Id, true);
                 }
             }
             UDT.SaveChanges();
-
 
             return listaEliminados;
         }
@@ -198,26 +187,9 @@ namespace PIKA.Servicio.Organizacion.Servicios
                 if (d != null)
                 {
                     d.Eliminada = false;
-
-                    // actualiza las unidads organizacionales para ser marcadas como eliminadas 
-                    var ous = await repoOU.ObtenerAsync(x => x.DominioId == Id);
-
-#if DEBUG
-                    logger.LogDebug("Marcando Dominio {id} como restaurado", Id);
-                    logger.LogDebug("Unidades Organizacionales dependientes {0}", ous.Count);
-#endif
-
-                    foreach (var ou in ous)
-                    {
-#if DEBUG
-                        logger.LogDebug("Marcando Unidad Organizacional {id} como restaurado", Id);
-#endif
-                        ou.Eliminada = false;
-                        UDT.Context.Entry(ou).State = EntityState.Modified;
-                    }
-
                     UDT.Context.Entry(d).State = EntityState.Modified;
                     listaEliminados.Add(d.Id);
+                    await MarcaOUDelDominio(Id, false);
                 }
             }
             UDT.SaveChanges();
