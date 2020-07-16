@@ -28,14 +28,13 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private ICompositorConsulta<CuadroClasificacion> compositor;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
-        public ServicioCuadroClasificacion(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ICompositorConsulta<CuadroClasificacion> compositorConsulta,
-           ILogger<ServicioCuadroClasificacion> Logger,
-           IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+        public ServicioCuadroClasificacion(
+            IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
+           ILogger<ServicioCuadroClasificacion> Logger
+           ) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
-            this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<CuadroClasificacion>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<CuadroClasificacion>(new QueryComposer<CuadroClasificacion>());
         }
 
         public async Task<bool> Existe(Expression<Func<CuadroClasificacion, bool>> predicado)
@@ -57,7 +56,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            return entity;
+
+            return entity.Copia();
         }
 
         public async Task ActualizarAsync(CuadroClasificacion entity)
@@ -108,6 +108,55 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return respuesta;
         }
 
+        public async Task<ICollection<string>> Eliminar(string[] ids)
+        {
+            CuadroClasificacion c;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                c = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (c != null)
+                {
+                    c.Eliminada = true;
+                    UDT.Context.Entry(c).State = EntityState.Modified;
+                    listaEliminados.Add(c.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
+        }
+
+
+        public async Task<IEnumerable<string>> Restaurar(string[] ids)
+        {
+            CuadroClasificacion c;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                c = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (c != null)
+                {
+                    c.Eliminada = false;
+                    UDT.Context.Entry(c).State = EntityState.Modified;
+                    listaEliminados.Add(c.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
+        }
+
+
+
+        public async Task<CuadroClasificacion> UnicoAsync(Expression<Func<CuadroClasificacion, bool>> predicado = null, Func<IQueryable<CuadroClasificacion>, IOrderedQueryable<CuadroClasificacion>> ordenarPor = null, Func<IQueryable<CuadroClasificacion>, IIncludableQueryable<CuadroClasificacion, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+            CuadroClasificacion c = await this.repo.UnicoAsync(predicado);
+            return c.Copia();
+        }
+
+        #region No implmentados
+
+
+
         public Task<IEnumerable<CuadroClasificacion>> CrearAsync(params CuadroClasificacion[] entities)
         {
             throw new NotImplementedException();
@@ -128,23 +177,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public async Task<ICollection<string>> Eliminar(string[] ids)
-        {
-            CuadroClasificacion c;
-            ICollection<string> listaEliminados = new HashSet<string>();
-            foreach (var Id in ids)
-            {
-                c = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (c != null)
-                {
-                    c.Eliminada = true;
-                    UDT.Context.Entry(c).State = EntityState.Modified;
-                    listaEliminados.Add(c.Id);
-                }
-            }
-            UDT.SaveChanges();
-            return listaEliminados;
-        }
+       
 
         public Task<List<CuadroClasificacion>> ObtenerAsync(Expression<Func<CuadroClasificacion, bool>> predicado)
         {
@@ -163,15 +196,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
 
 
-        public Task<IEnumerable<string>> Restaurar(string[] ids)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<CuadroClasificacion> UnicoAsync(Expression<Func<CuadroClasificacion, bool>> predicado = null, Func<IQueryable<CuadroClasificacion>, IOrderedQueryable<CuadroClasificacion>> ordenarPor = null, Func<IQueryable<CuadroClasificacion>, IIncludableQueryable<CuadroClasificacion, object>> incluir = null, bool inhabilitarSegumiento = true)
-        {
-            CuadroClasificacion c = await this.repo.UnicoAsync(predicado);
-            return c.CopiaCuadro();
-        }
+ 
+        #endregion
     }
 }

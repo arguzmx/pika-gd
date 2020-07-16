@@ -6,7 +6,9 @@ using System.Text;
 
 namespace PIKA.Servicio.GestionDocumental.Interfaces
 {
-    public interface IServicioEstadoCuadroClasificacion: IServicioRepositorioAsync<EstadoCuadroClasificacion, string>
+    public interface IServicioEstadoCuadroClasificacion: 
+        IServicioRepositorioAsync<EstadoCuadroClasificacion, string>, 
+        IServicioValorTextoAsync<EstadoCuadroClasificacion>
     {
     }
 }

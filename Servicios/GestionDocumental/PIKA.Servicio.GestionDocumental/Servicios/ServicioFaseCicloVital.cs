@@ -25,17 +25,13 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<FaseCicloVital> repo;
-        private ICompositorConsulta<FaseCicloVital> compositor;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
         public ServicioFaseCicloVital(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ICompositorConsulta<FaseCicloVital> compositorConsulta,
-           ILogger<ServicioFaseCicloVital> Logger,
-           IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+           ILogger<ServicioFaseCicloVital> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
-            this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<FaseCicloVital>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<FaseCicloVital>(new QueryComposer<FaseCicloVital>());
         }
 
         public async Task<bool> Existe(Expression<Func<FaseCicloVital, bool>> predicado)

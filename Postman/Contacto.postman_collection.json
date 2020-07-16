@@ -186,7 +186,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1.0/contacto/pais/page?i=0&t=10&ordc=Nombre&ordd=asc&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=me",
+							"raw": "http://localhost:5000/api/v1.0/contacto/pais/page?i=0&t=10000&ordc=Nombre&ordd=asc&f[0][p]=Id&f[0][o]=eq&f[0][v]=MEX&f[0][n]=false",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -206,7 +206,7 @@
 								},
 								{
 									"key": "t",
-									"value": "10"
+									"value": "10000"
 								},
 								{
 									"key": "ordc",
@@ -218,15 +218,19 @@
 								},
 								{
 									"key": "f[0][p]",
-									"value": "Nombre"
+									"value": "Id"
 								},
 								{
 									"key": "f[0][o]",
-									"value": "contains"
+									"value": "eq"
 								},
 								{
 									"key": "f[0][v]",
-									"value": "me"
+									"value": "MEX"
+								},
+								{
+									"key": "f[0][n]",
+									"value": "false"
 								}
 							]
 						}
@@ -294,6 +298,117 @@
 									"key": "f[0][v]",
 									"value": "me"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Pares Pais Typeahead",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/pais/pares?i=0&t=5&f[0][p]=TExto&f[0][o]=starts&f[0][v]=m",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"pais",
+								"pares"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "5"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "TExto"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "starts"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "m"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Pares por ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/pais/pares/mex,us",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"pais",
+								"pares",
+								"mex,us"
 							]
 						}
 					},
@@ -1419,6 +1534,117 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "GET PAGE Pares Estado Typeahead",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/estado/pares?i=0&t=50&f[0][p]=Texto&f[0][o]=starts&f[0][v]=b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"estado",
+								"pares"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "50"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Texto"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "starts"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "b"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Pares Estado por Id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contacto/estado/pares/yuc,zac",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contacto",
+								"estado",
+								"pares",
+								"yuc,zac"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"event": [
@@ -2403,12 +2629,12 @@
 	],
 	"variable": [
 		{
-			"id": "7f04da8d-5b82-4dfd-9d67-450772e4dded",
+			"id": "f2f7aaa8-d7ba-42b2-9544-7822ffc7d2a8",
 			"key": "accessTokenExpiry",
 			"value": ""
 		},
 		{
-			"id": "e085f987-e482-4e54-be1c-16c8c26ea330",
+			"id": "c44b9eb4-f698-4080-ab8c-9b6b3445fda6",
 			"key": "accessToken",
 			"value": ""
 		}

@@ -25,18 +25,14 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<EstadoCuadroClasificacion> repo;
-        private ICompositorConsulta<EstadoCuadroClasificacion> compositor;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
 
         public ServicioEstadoCuadroClasificacion(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ICompositorConsulta<EstadoCuadroClasificacion> compositorConsulta,
-           ILogger<ServicioEstadoCuadroClasificacion> Logger,
-           IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+           ILogger<ServicioEstadoCuadroClasificacion> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
-            this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<EstadoCuadroClasificacion>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<EstadoCuadroClasificacion>(new QueryComposer<EstadoCuadroClasificacion>());
         }
 
 
@@ -112,6 +108,70 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return respuesta;
         }
 
+
+
+        public async Task<EstadoCuadroClasificacion> UnicoAsync(Expression<Func<EstadoCuadroClasificacion, bool>> predicado = null, Func<IQueryable<EstadoCuadroClasificacion>, IOrderedQueryable<EstadoCuadroClasificacion>> ordenarPor = null, Func<IQueryable<EstadoCuadroClasificacion>, IIncludableQueryable<EstadoCuadroClasificacion, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+            EstadoCuadroClasificacion c = await this.repo.UnicoAsync(predicado);
+            return c.CopiaEstadoCuadro();
+        }
+
+        public async Task<ICollection<string>> Eliminar(string[] ids)
+        {
+            EstadoCuadroClasificacion ec;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                ec = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (ec != null)
+                {
+                    UDT.Context.Entry(ec).State = EntityState.Deleted;
+                    listaEliminados.Add(ec.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
+        }
+
+        public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
+        {
+            for (int i = 0; i < Query.Filtros.Count; i++)
+            {
+                if (Query.Filtros[i].Propiedad.ToLower() == "texto")
+                {
+                    Query.Filtros[i].Propiedad = "Nombre";
+                }
+            }
+
+            Query = GetDefaultQuery(Query);
+            var resultados = await this.repo.ObtenerPaginadoAsync(Query);
+            List<ValorListaOrdenada> l = resultados.Elementos.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
+        }
+
+
+        public async Task<List<ValorListaOrdenada>> ObtenerParesPorId(List<string> Lista)
+        {
+            var resultados = await this.repo.ObtenerAsync(x => Lista.Contains(x.Id));
+            List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
+        }
+
+
+        #region No Implementados
+
         public Task<IEnumerable<EstadoCuadroClasificacion>> CrearAsync(params EstadoCuadroClasificacion[] entities)
         {
             throw new NotImplementedException();
@@ -132,22 +192,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public async Task<ICollection<string>> Eliminar(string[] ids)
-        {
-            EstadoCuadroClasificacion ec;
-            ICollection<string> listaEliminados = new HashSet<string>();
-            foreach (var Id in ids)
-            {
-                ec = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (ec != null)
-                {
-                    UDT.Context.Entry(ec).State = EntityState.Deleted;
-                    listaEliminados.Add(ec.Id);
-                }
-            }
-            UDT.SaveChanges();
-            return listaEliminados;
-        }
 
         public Task<List<EstadoCuadroClasificacion>> ObtenerAsync(Expression<Func<EstadoCuadroClasificacion, bool>> predicado)
         {
@@ -171,11 +215,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public async Task<EstadoCuadroClasificacion> UnicoAsync(Expression<Func<EstadoCuadroClasificacion, bool>> predicado = null, Func<IQueryable<EstadoCuadroClasificacion>, IOrderedQueryable<EstadoCuadroClasificacion>> ordenarPor = null, Func<IQueryable<EstadoCuadroClasificacion>, IIncludableQueryable<EstadoCuadroClasificacion, object>> incluir = null, bool inhabilitarSegumiento = true)
-        {
-            EstadoCuadroClasificacion c = await this.repo.UnicoAsync(predicado);
-            return c.CopiaEstadoCuadro();
-        }
-
+        #endregion
     }
 }

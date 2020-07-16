@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
@@ -92,11 +93,31 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
 
-        [HttpDelete]
+        [HttpDelete("{ids}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult> Delete([FromBody]string[] id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> Delete(string ids)
         {
-            return Ok(await servicioCuadro.Eliminar(id).ConfigureAwait(false));
+            string[] lids = ids.Split(',').ToList()
+               .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            return Ok(await servicioCuadro.Eliminar(lids).ConfigureAwait(false));
         }
+
+
+        /// <summary>
+        /// Restaura una lista dede dominiios eliminados en base al arreglo de identificadores recibidos
+        /// </summary>
+        /// <param name="ids">Arreglo de identificadores string</param>
+        /// <returns></returns>
+        [HttpPatch("restaurar/{ids}", Name = "restaurarCuadroClasifiacion")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> Undelete(string ids)
+        {
+            string[] lids = ids.Split(',').ToList()
+            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            return Ok(await servicioCuadro.Restaurar(lids).ConfigureAwait(false));
+        }
+
     }
 }

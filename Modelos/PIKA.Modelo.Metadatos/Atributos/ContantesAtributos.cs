@@ -24,6 +24,8 @@ namespace PIKA.Modelo.Metadatos.Atributos
         public const string HTML_AVATAR = "avatar";
         public const string HTML_NONE = "none";
         public const string HTML_LABEL = "label";
+
+        public const string PLATAFORMA_WEB = "web";
     }
 
 

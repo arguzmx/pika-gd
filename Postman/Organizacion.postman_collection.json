@@ -874,7 +874,8 @@
 							{
 								"key": "uid",
 								"type": "text",
-								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+								"disabled": true
 							},
 							{
 								"key": "Content-Type",
@@ -890,7 +891,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/api/v1.0/org/UnidadOrganizacional/page?i=0&t=10&ordc=Nombre&ordd=asc&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=demo",
+							"raw": "http://localhost:5000/api/v1.0/org/unidadorganizacional/page?i=-1&t=10&ordc=&ordd=&f[0][p]=Eliminada&f[0][o]=eq&f[0][v]=false",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -900,13 +901,13 @@
 								"api",
 								"v1.0",
 								"org",
-								"UnidadOrganizacional",
+								"unidadorganizacional",
 								"page"
 							],
 							"query": [
 								{
 									"key": "i",
-									"value": "0"
+									"value": "-1"
 								},
 								{
 									"key": "t",
@@ -914,23 +915,23 @@
 								},
 								{
 									"key": "ordc",
-									"value": "Nombre"
+									"value": ""
 								},
 								{
 									"key": "ordd",
-									"value": "asc"
+									"value": ""
 								},
 								{
 									"key": "f[0][p]",
-									"value": "Nombre"
+									"value": "Eliminada"
 								},
 								{
 									"key": "f[0][o]",
-									"value": "contains"
+									"value": "eq"
 								},
 								{
 									"key": "f[0][v]",
-									"value": "demo"
+									"value": "false"
 								}
 							]
 						}

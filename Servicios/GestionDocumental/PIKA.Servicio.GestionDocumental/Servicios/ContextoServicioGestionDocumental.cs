@@ -10,18 +10,15 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 {
     public class ContextoServicioGestionDocumental
     {
-        protected IServicioCache cache;
         protected ILogger logger;
 
         protected DBContextGestionDocumental contexto;
         public ContextoServicioGestionDocumental(
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-            ILogger Logger,
-            IServicioCache servicioCache)
+            ILogger Logger)
         {
             DbContextGestionDocumentalFactory cf = new DbContextGestionDocumentalFactory(proveedorOpciones);
             this.contexto = cf.Crear();
-            this.cache = servicioCache;
             this.logger = Logger;
         }
 
