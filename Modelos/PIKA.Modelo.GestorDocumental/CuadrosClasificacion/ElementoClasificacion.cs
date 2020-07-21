@@ -5,12 +5,17 @@ using System.Text;
 
 namespace PIKA.Modelo.GestorDocumental
 {
+
+    /// <summary>
+    /// Los elementos de clasificación consituyen la estructura jerárquca para acaomodar las entradas del cuadro
+    /// </summary>
     public class ElementoClasificacion : Entidad<string>, IEntidadNombrada, IEntidadEliminada
     {
 
         public ElementoClasificacion() {
             Padre = null;
             Hijos = new HashSet<ElementoClasificacion>();
+            Entradas = new HashSet<EntradaClasificacion>();
             //Activos = new HashSet<Activo>();
         }
 
@@ -64,5 +69,10 @@ namespace PIKA.Modelo.GestorDocumental
         /// Activos del elemento clasificacion
         /// </summary>
         public virtual ICollection<Activo> Activos { get; set; }
+
+      /// <summary>
+        /// Activos del elemento clasificacion
+        /// </summary>
+        public virtual ICollection<EntradaClasificacion> Entradas { get; set; }
     }
 }
