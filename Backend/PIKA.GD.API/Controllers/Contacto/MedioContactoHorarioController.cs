@@ -38,7 +38,8 @@ namespace PIKA.GD.API.Controllers.Contacto
         }
 
         /// <summary>
-        /// Obtiene los metadatos relacionados con la entidad horario de medio de contacto
+        /// Obtiene los metadatos relacionados con la 
+        /// entidad horario de medio de contacto
         /// </summary>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -67,7 +68,8 @@ namespace PIKA.GD.API.Controllers.Contacto
 
 
         /// <summary>
-        /// Actualoza uan entidad horario medio de contacto, el Id debe incluirse en el querystring así como en 
+        /// Actualiza una entidad horario medio de contacto, 
+        /// el Id debe incluirse en el querystring así como en 
         /// el serializado para la petición PUT
         /// </summary>
         /// <param name="id">Identificador único del dominio</param>
@@ -94,7 +96,8 @@ namespace PIKA.GD.API.Controllers.Contacto
 
 
         /// <summary>
-        /// Devulve una lista de horarios del medio de contacto asociadas al objeto del tipo especificado
+        /// Devulve una lista de horarios del medio de contacto 
+        /// asociadas al objeto del tipo especificado
         /// </summary>
         /// <param name="query">Consulta para la paginación y búsqueda</param>
         /// <param name="Id">Identificador único del medio de contacto</param>
@@ -121,7 +124,7 @@ namespace PIKA.GD.API.Controllers.Contacto
         /// <summary>
         /// Obtiene un horario de medio de contacto en base al Id único
         /// </summary>
-        /// <param name="id">Id único del país</param>
+        /// <param name="id">Id único del horario de medio de contacto</param>
         /// <returns></returns>
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
@@ -141,7 +144,8 @@ namespace PIKA.GD.API.Controllers.Contacto
 
 
         /// <summary>
-        /// Elimina de manera permanente un horario medio de contacto en base al arreglo de identificadores recibidos
+        /// Elimina de manera permanente un horario medio de 
+        /// contacto en base al arreglo de identificadores recibidos
         /// </summary>
         /// <param name="ids">Arreglo de identificadores string</param>
         /// <returns></returns>

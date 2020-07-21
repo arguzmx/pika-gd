@@ -78,7 +78,6 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
             x.Id != entity.Id
             && x.Id.Equals(entity.Id, StringComparison.InvariantCultureIgnoreCase)))
             {
-                Console.WriteLine("fail");
                 throw new ExElementoExistente(entity.PluginId);
             }
 

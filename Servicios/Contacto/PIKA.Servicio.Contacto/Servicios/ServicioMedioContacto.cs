@@ -50,7 +50,7 @@ namespace PIKA.Servicio.Contacto
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            return entity.Copia();
+            return  entity.Copia();
         }
 
 
@@ -137,6 +137,7 @@ namespace PIKA.Servicio.Contacto
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
             return respuesta;
         }
+
 
         #region sin implementar
 

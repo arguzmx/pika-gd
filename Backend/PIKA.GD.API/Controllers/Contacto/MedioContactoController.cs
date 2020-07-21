@@ -68,7 +68,8 @@ namespace PIKA.GD.API.Controllers.Contacto
 
 
         /// <summary>
-        /// Actualoza uan entidad medio de contacto, el Id debe incluirse en el querystring así como en 
+        /// Actualiza una entidad medio de contacto,
+        /// el Id debe incluirse en el querystring así como en 
         /// el serializado para la petición PUT
         /// </summary>
         /// <param name="id">Identificador único del dominio</param>

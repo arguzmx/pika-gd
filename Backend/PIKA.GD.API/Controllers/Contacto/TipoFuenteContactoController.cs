@@ -70,7 +70,8 @@ namespace PIKA.GD.API.Controllers.Contacto
 
 
         /// <summary>
-        /// Actualoza uan entidad tipo fuente contacto, el Id debe incluirse en el querystring así como en 
+        /// Actualiza una entidad tipo fuente contacto,
+        /// el Id debe incluirse en el querystring así como en 
         /// el serializado para la petición PUT
         /// </summary>
         /// <param name="id">Identificador único del dominio</param>
@@ -96,7 +97,8 @@ namespace PIKA.GD.API.Controllers.Contacto
 
 
         /// <summary>
-        /// DEvuelve una lista de tipo fuente contacto asociadas al objeto del tipo especificado
+        /// Devuelve una lista de tipo fuente contacto asociadas
+        /// al objeto del tipo especificado
         /// </summary>
         /// <param name="query">Consulta para la paginación y búsqueda</param>
         /// <returns></returns>
@@ -119,7 +121,7 @@ namespace PIKA.GD.API.Controllers.Contacto
         /// <summary>
         /// Obtiene un tipo fuente contacto en base al Id único
         /// </summary>
-        /// <param name="id">Id único del país</param>
+        /// <param name="id">Id único del tipo especificado</param>
         /// <returns></returns>
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
@@ -139,7 +141,8 @@ namespace PIKA.GD.API.Controllers.Contacto
 
 
         /// <summary>
-        /// Elimina de manera permanente un tipo fuente contacto en base al arreglo de identificadores recibidos
+        /// Elimina de manera permanente un tipo fuente contacto en base al 
+        /// arreglo de identificadores recibidos
         /// </summary>
         /// <param name="ids">Arreglo de identificadores string</param>
         /// <returns></returns>
@@ -153,6 +156,11 @@ namespace PIKA.GD.API.Controllers.Contacto
             return Ok(await servicioEntidad.Eliminar(lids).ConfigureAwait(false));
         }
 
+        /// <summary>
+        /// Obtiene una lista de tipo fuente contacto en base a con el parámetro ID de consulta
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
         [HttpGet("pares", Name = "GetParesTipoFuenteContacto")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -160,6 +168,26 @@ namespace PIKA.GD.API.Controllers.Contacto
     [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
             var data = await servicioEntidad.ObtenerParesAsync(query)
+                .ConfigureAwait(false);
+
+            return Ok(data);
+        }
+        /// <summary>
+        /// Obtiene una lista de tipo fuente contacto en base a con el parámetro ID de consulta
+        /// </summary>
+        /// <param name="ids">parametro Id para consulta a la base de datos</param>
+        /// <returns></returns>
+
+        [HttpGet("pares/{ids}", Name = "GetParesTipoFuenteContactoporId")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ValorListaOrdenada>>> GetParesporId(
+              string ids)
+        {
+        
+            List<string> lids = ids.Split(',').ToList()
+               .Where(x => !string.IsNullOrEmpty(x)).ToList();
+            var data = await servicioEntidad.ObtenerParesPorId(lids)
                 .ConfigureAwait(false);
 
             return Ok(data);

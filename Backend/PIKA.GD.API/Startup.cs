@@ -89,7 +89,7 @@ namespace PIKA.GD.API
             services.RegistraServicioDeMetadatos(this.Configuration);
 
             // Configura el bus de eventos
-            services.ConfiguraBusEventos(this.Configuration);
+           services.ConfiguraBusEventos(this.Configuration);
 
 
             services.Configure<ConfiguracionServidor>(o => this.Configuration.GetSection("ConfiguracionServidor").Bind(o));

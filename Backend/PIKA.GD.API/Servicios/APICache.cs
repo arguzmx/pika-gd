@@ -48,7 +48,6 @@ namespace PIKA.GD.API
                     IdentificadoresRegistrados.Remove(item);
                 }
             }
-            Console.WriteLine("Eliminando si contiene " + id);
             await Task.Delay(1).ConfigureAwait(false);
         }
 

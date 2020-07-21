@@ -95,7 +95,6 @@ namespace PIKA.Servicio.Organizacion
 
         public void Inicializar(string ContentPath, bool generarDatosdemo)
         {
-            Console.WriteLine("Inicializando DB");
             InicializarDatos.Inicializar(this, ContentPath, generarDatosdemo);
         }
 

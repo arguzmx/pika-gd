@@ -23,7 +23,6 @@ namespace PIKA.Servicio.Metadatos.Data
             TipoAlmacenMetadatos t = new TipoAlmacenMetadatos();
             List<TipoAlmacenMetadatos> tipos = t.Seed();
             
-            Console.WriteLine($"Actualizando Tipo almacen de datos con {tipos.Count} elementos");
 
             foreach (TipoAlmacenMetadatos tipo in tipos)
             {
@@ -51,7 +50,6 @@ namespace PIKA.Servicio.Metadatos.Data
         private static void GeneraDatosDemo(DbContextMetadatos dbContext)
         {
 
-            Console.WriteLine($"Instalando datos demo -----");
 
             AlmacenDatos al = new AlmacenDatos()
             {
@@ -111,7 +109,6 @@ namespace PIKA.Servicio.Metadatos.Data
                 TipoDato t = new TipoDato();
                 List<TipoDato> tipodato = t.Seed();
 
-                Console.WriteLine($"Actualizando TipoDato con {tipodato.Count} elementos");
 
                 foreach (TipoDato TipoDatos in tipodato)
                 {
@@ -153,7 +150,6 @@ namespace PIKA.Servicio.Metadatos.Data
 
                 string path = Path.Combine(contentPath, "Data", "Inicializar", "Plantilla.txt");
 
-                Console.WriteLine($"Buscando archivo en {path}");
 
                 if (File.Exists(path))
                 {
@@ -178,7 +174,6 @@ namespace PIKA.Servicio.Metadatos.Data
                     }
                 }
 
-                Console.WriteLine($"Actualizando {plantilla.Count} elementos");
 
                 foreach (Plantilla plantillas in plantilla)
                 {
@@ -217,7 +212,6 @@ namespace PIKA.Servicio.Metadatos.Data
 
                 string path = Path.Combine(contentPath, "Data", "Inicializar", "PropiedadPlantilla.txt");
 
-                Console.WriteLine($"Buscando archivo en {path}");
 
                 if (File.Exists(path))
                 {
@@ -242,7 +236,6 @@ namespace PIKA.Servicio.Metadatos.Data
                     }
                 }
 
-                Console.WriteLine($"Actualizando {propiedadplantilla.Count} elementos");
 
                 foreach (PropiedadPlantilla propiedadesplantilla in propiedadplantilla)
                 {
@@ -283,7 +276,6 @@ namespace PIKA.Servicio.Metadatos.Data
 
                 string path = Path.Combine(contentPath, "Data", "Inicializar", "AtributoTabla.txt");
 
-                Console.WriteLine($"Buscando archivo en {path}");
 
                 if (File.Exists(path))
                 {
@@ -308,7 +300,6 @@ namespace PIKA.Servicio.Metadatos.Data
                     }
                 }
 
-                Console.WriteLine($"Actualizando {atributotabla.Count} elementos");
 
                 foreach (AtributoTabla atributostabla in atributotabla)
                 {
@@ -348,7 +339,6 @@ namespace PIKA.Servicio.Metadatos.Data
 
                 string path = Path.Combine(contentPath, "Data", "Inicializar", "ValidadorNumero.txt");
 
-                Console.WriteLine($"Buscando archivo en {path}");
 
                 if (File.Exists(path))
                 {
@@ -373,7 +363,6 @@ namespace PIKA.Servicio.Metadatos.Data
                     }
                 }
 
-                Console.WriteLine($"Actualizando {validadornumero.Count} elementos");
 
                 foreach (ValidadorNumero validadornumeros in validadornumero)
                 {
@@ -412,7 +401,6 @@ namespace PIKA.Servicio.Metadatos.Data
 
                 string path = Path.Combine(contentPath, "Data", "Inicializar", "ValidadorTexto.txt");
 
-                Console.WriteLine($"Buscando archivo en {path}");
 
                 if (File.Exists(path))
                 {
@@ -437,7 +425,6 @@ namespace PIKA.Servicio.Metadatos.Data
                     }
                 }
 
-                Console.WriteLine($"Actualizando {validadortexto.Count} elementos");
 
                 foreach (ValidadorTexto validadortextos in validadortexto)
                 {
@@ -476,7 +463,6 @@ namespace PIKA.Servicio.Metadatos.Data
 
                 string path = Path.Combine(contentPath, "Data", "Inicializar", "AsociacionPlantilla.txt");
 
-                Console.WriteLine($"Buscando archivo en {path}");
 
                 if (File.Exists(path))
                 {
@@ -501,7 +487,6 @@ namespace PIKA.Servicio.Metadatos.Data
                     }
                 }
 
-                Console.WriteLine($"Actualizando {asociacionplantilla.Count} elementos");
 
                 foreach (AsociacionPlantilla asociacionplantillas in asociacionplantilla)
                 {
@@ -540,7 +525,6 @@ namespace PIKA.Servicio.Metadatos.Data
 
                 string path = Path.Combine(contentPath, "Data", "Inicializar", "TipoAlmacenMetadatos.txt");
 
-                Console.WriteLine($"Buscando archivo en {path}");
 
                 if (File.Exists(path))
                 {
@@ -565,7 +549,6 @@ namespace PIKA.Servicio.Metadatos.Data
                     }
                 }
 
-                Console.WriteLine($"Actualizando {tipoalmacenmetadatos.Count} elementos");
 
                 foreach (TipoAlmacenMetadatos tiposalmacenmetadatos in tipoalmacenmetadatos)
                 {

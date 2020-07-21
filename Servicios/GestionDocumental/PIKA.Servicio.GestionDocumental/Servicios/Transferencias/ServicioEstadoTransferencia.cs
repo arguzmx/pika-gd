@@ -129,17 +129,14 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             
             foreach (var Id in ids)
             {
-                Console.WriteLine("1");
                 a = await this.repo.UnicoAsync(x => x.Id == Id);
                 if (a != null)
                 {
-                    Console.WriteLine("existe" + a.Nombre);
                     UDT.Context.Entry(a).State = EntityState.Deleted;
                     listaEliminados.Add(a.Id);
                 }
             }
             UDT.SaveChanges();
-            Console.WriteLine("elimina");
             return listaEliminados;
         }
 

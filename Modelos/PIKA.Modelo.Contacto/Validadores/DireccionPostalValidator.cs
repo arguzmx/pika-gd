@@ -22,24 +22,24 @@ namespace PIKA.Modelo.Contacto
             RuleFor(x => x.NoInterno).MaximumLength(LongitudDatos.Nombre);
 
             RuleFor(x => x.Nombre)
-                .NotNull().WithMessage(x => localizer["El nombre es obligatorio"])
-                .NotEmpty().WithMessage(x => localizer["El nombre es obligatorio"])
-                .MinimumLength(1).WithMessage(x => localizer["El nombre debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre])
-                .MaximumLength(LongitudDatos.Nombre).WithMessage(x => localizer["El nombre debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre]);
+                .NotNull()
+                .NotEmpty()
+                .MinimumLength(1)
+                .MaximumLength(LongitudDatos.Nombre);
 
             RuleFor(x => x.Calle)
-               .NotNull().WithMessage(x => localizer["La calle es obligatoria"])
-               .NotEmpty().WithMessage(x => localizer["La calle es obligatoria"])
-               .MinimumLength(1).WithMessage(x => localizer["La calle debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre])
-               .MaximumLength(LongitudDatos.Nombre).WithMessage(x => localizer["La calle debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre]);
+               .NotNull()
+               .NotEmpty()
+               .MinimumLength(1)
+               .MaximumLength(LongitudDatos.Nombre);
 
             RuleFor(x => x.TipoOrigenId)
-               .NotNull().WithMessage(x => localizer["El tipo de orígen es obligatorio"])
-               .NotEmpty().WithMessage(x => localizer["El tipo de orígen es obligatorio"]);
+               .NotNull()
+               .NotEmpty();
 
             RuleFor(x => x.OrigenId)
-               .NotNull().WithMessage(x => localizer["El identificador de orígen es obligatorio"])
-               .NotEmpty().WithMessage(x => localizer["El identificador de orígen es obligatorio"]);
+               .NotNull()
+               .NotEmpty();
 
         }
     }

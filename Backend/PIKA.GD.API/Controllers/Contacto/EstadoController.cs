@@ -70,8 +70,8 @@ namespace PIKA.GD.API.Controllers.Contacto
 
 
         /// <summary>
-        /// Actualoza uan entidad estado, el Id debe incluirse en el querystring así como en 
-        /// el serializado para la petición PUT
+        /// Actualiza una entidad estado, el Id debe incluirse en 
+        /// el querystring así como en el serializado para la petición PUT
         /// </summary>
         /// <param name="id">Identificador único del dominio</param>
         /// <param name="entidad">Datos serialziados de la OU</param>
@@ -96,7 +96,7 @@ namespace PIKA.GD.API.Controllers.Contacto
 
 
         /// <summary>
-        /// DEvulve un alista de paises asociadas al objeto del tipo especificado
+        /// Devulve una lista de paises asociadas al objeto del tipo especificado
         /// </summary>
         /// <param name="query">Consulta para la paginación y búsqueda</param>
         /// <returns></returns>
@@ -156,7 +156,8 @@ namespace PIKA.GD.API.Controllers.Contacto
 
 
         /// <summary>
-        /// Elimina de manera permanente un estado en base al arreglo de identificadores recibidos
+        /// Elimina de manera permanente un estado en base 
+        /// al arreglo de identificadores recibidos
         /// </summary>
         /// <param name="ids">Arreglo de identificadores string</param>
         /// <returns></returns>
@@ -172,6 +173,11 @@ namespace PIKA.GD.API.Controllers.Contacto
 
 
 
+        /// <summary>
+        /// Obtiene una lista de Estados en base a los parámetros de consulta
+        /// </summary>
+        /// <param name="query">Query de busqueda a la base de datos</param>
+        /// <returns></returns>
         [HttpGet("pares", Name = "GetParesEstados")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
