@@ -27,7 +27,6 @@ namespace PIKA.Servicio.Contenido.Data
 
                 string path = Path.Combine(contentPath, "Data", "Inicializar", "Elemento.txt");
 
-                Console.WriteLine($"Buscando archivo en {path}");
 
                 if (File.Exists(path))
                 {
@@ -52,7 +51,6 @@ namespace PIKA.Servicio.Contenido.Data
                     }
                 }
 
-                Console.WriteLine($"Actualizando {Elemento.Count} elementos");
 
                 foreach (Elemento Elementos in Elemento)
                 {
@@ -93,7 +91,6 @@ namespace PIKA.Servicio.Contenido.Data
 
                 string path = Path.Combine(contentPath, "Data", "Inicializar", "Parte.txt");
 
-                Console.WriteLine($"Buscando archivo en {path}");
 
                 if (File.Exists(path))
                 {
@@ -118,7 +115,6 @@ namespace PIKA.Servicio.Contenido.Data
                     }
                 }
 
-                Console.WriteLine($"Actualizando {Parte.Count} elementos");
 
                 foreach (Parte Partes in Parte)
                 {
@@ -159,7 +155,6 @@ namespace PIKA.Servicio.Contenido.Data
 
                 string path = Path.Combine(contentPath, "Data", "Inicializar", "TipoGestorES.txt");
 
-                Console.WriteLine($"Buscando archivo en {path}");
 
                 if (File.Exists(path))
                 {
@@ -184,7 +179,6 @@ namespace PIKA.Servicio.Contenido.Data
                     }
                 }
 
-                Console.WriteLine($"Actualizando {TipoGestorES.Count} elementos");
 
                 foreach (TipoGestorES TiposGestorES in TipoGestorES)
                 {
@@ -224,7 +218,6 @@ namespace PIKA.Servicio.Contenido.Data
 
                 string path = Path.Combine(contentPath, "Data", "Inicializar", "Version.txt");
 
-                Console.WriteLine($"Buscando archivo en {path}");
 
                 if (File.Exists(path))
                 {
@@ -249,7 +242,6 @@ namespace PIKA.Servicio.Contenido.Data
                     }
                 }
 
-                Console.WriteLine($"Actualizando {versions.Count} elementos");
 
                 foreach (Modelo.Contenido.Version versiones in versions)
                 {
@@ -289,7 +281,6 @@ namespace PIKA.Servicio.Contenido.Data
 
                 string path = Path.Combine(contentPath, "Data", "Inicializar", "Volumen.txt");
 
-                Console.WriteLine($"Buscando archivo en {path}");
 
                 if (File.Exists(path))
                 {
@@ -314,7 +305,6 @@ namespace PIKA.Servicio.Contenido.Data
                     }
                 }
 
-                Console.WriteLine($"Actualizando {Volumenes.Count} elementos");
 
                 foreach (Volumen volumen in Volumenes)
                 {

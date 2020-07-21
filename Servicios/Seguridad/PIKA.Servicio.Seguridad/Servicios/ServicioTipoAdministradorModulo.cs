@@ -70,6 +70,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
                 throw new EXNoEncontrado(entity.Id);
             }
 
+
             if (await Existe(x =>
             x.Id != entity.Id
             && x.AplicacionId.Equals(entity.AplicacionId, StringComparison.InvariantCultureIgnoreCase) 
@@ -108,6 +109,31 @@ namespace PIKA.Servicio.Seguridad.Servicios
             return respuesta;
         }
 
+      
+
+        public Task<List<TipoAdministradorModulo>> ObtenerAsync(Expression<Func<TipoAdministradorModulo, bool>> predicado)
+        {
+            return this.repo.ObtenerAsync(predicado);
+        }
+
+        public Task<List<TipoAdministradorModulo>> ObtenerAsync(string SqlCommand)
+        {
+            return this.repo.ObtenerAsync(SqlCommand);
+        }
+
+       
+
+
+       
+
+        public async Task<TipoAdministradorModulo> UnicoAsync(Expression<Func<TipoAdministradorModulo, bool>> predicado = null, Func<IQueryable<TipoAdministradorModulo>, IOrderedQueryable<TipoAdministradorModulo>> ordenarPor = null, Func<IQueryable<TipoAdministradorModulo>, IIncludableQueryable<TipoAdministradorModulo, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+
+            TipoAdministradorModulo d = await this.repo.UnicoAsync(predicado);
+
+            return d.Copia();
+        }
+        #region sin implementar 
         public Task<IEnumerable<TipoAdministradorModulo>> CrearAsync(params TipoAdministradorModulo[] entities)
         {
             throw new NotImplementedException();
@@ -132,37 +158,16 @@ namespace PIKA.Servicio.Seguridad.Servicios
         {
             throw new NotImplementedException();
         }
-
-        public Task<List<TipoAdministradorModulo>> ObtenerAsync(Expression<Func<TipoAdministradorModulo, bool>> predicado)
-        {
-            return this.repo.ObtenerAsync(predicado);
-        }
-
-        public Task<List<TipoAdministradorModulo>> ObtenerAsync(string SqlCommand)
-        {
-            return this.repo.ObtenerAsync(SqlCommand);
-        }
-
         public Task<IPaginado<TipoAdministradorModulo>> ObtenerPaginadoAsync(Expression<Func<TipoAdministradorModulo, bool>> predicate = null, Func<IQueryable<TipoAdministradorModulo>, IOrderedQueryable<TipoAdministradorModulo>> orderBy = null, Func<IQueryable<TipoAdministradorModulo>, IIncludableQueryable<TipoAdministradorModulo, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-
-
-        public Task<IEnumerable<string>> Restaurar(string[] ids)
+ public Task<IEnumerable<string>> Restaurar(string[] ids)
         {
             throw new NotImplementedException();
         }
-
-        public async Task<TipoAdministradorModulo> UnicoAsync(Expression<Func<TipoAdministradorModulo, bool>> predicado = null, Func<IQueryable<TipoAdministradorModulo>, IOrderedQueryable<TipoAdministradorModulo>> ordenarPor = null, Func<IQueryable<TipoAdministradorModulo>, IIncludableQueryable<TipoAdministradorModulo, object>> incluir = null, bool inhabilitarSegumiento = true)
-        {
-
-            TipoAdministradorModulo d = await this.repo.UnicoAsync(predicado);
-
-            return d.Copia();
-        }
-
+        #endregion
 
     }
 }

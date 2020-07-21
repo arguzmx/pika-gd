@@ -55,7 +55,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            return entity ?? entity.Copia();
+            return entity.Copia();
         }
 
         public async Task ActualizarAsync(Aplicacion entity)

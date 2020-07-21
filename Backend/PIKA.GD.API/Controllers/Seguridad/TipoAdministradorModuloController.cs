@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
@@ -36,6 +37,8 @@ namespace PIKA.GD.API.Controllers.Seguridad
 
         [HttpGet("metadata", Name = "MetadataTipoAdministradorModulo")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
         {
             return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
@@ -45,6 +48,8 @@ namespace PIKA.GD.API.Controllers.Seguridad
 
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
         public async Task<ActionResult<TipoAdministradorModulo>> Post([FromBody]TipoAdministradorModulo entidad)
         {
 
@@ -55,6 +60,9 @@ namespace PIKA.GD.API.Controllers.Seguridad
 
         [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Put(string id, [FromBody]TipoAdministradorModulo entidad)
         {
             var x = ObtieneFiltrosIdentidad();
@@ -72,6 +80,8 @@ namespace PIKA.GD.API.Controllers.Seguridad
 
         [HttpGet("page", Name = "GetPageTipoAdministradorModulo")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
         public async Task<ActionResult<IEnumerable<TipoAdministradorModulo>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
 
@@ -84,6 +94,8 @@ namespace PIKA.GD.API.Controllers.Seguridad
 
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
         public async Task<ActionResult<TipoAdministradorModulo>> Get(string id)
         {
             var o = await servicioTipoAdministradorModulo.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
@@ -96,6 +108,8 @@ namespace PIKA.GD.API.Controllers.Seguridad
 
         [HttpDelete]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
         public async Task<ActionResult> Delete([FromBody]string[] id)
         {
             

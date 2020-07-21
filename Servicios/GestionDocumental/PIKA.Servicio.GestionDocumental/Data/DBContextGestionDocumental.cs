@@ -286,7 +286,6 @@ namespace PIKA.Servicio.GestionDocumental.Data
 
         public void Inicializar(string ContentPath, bool generarDatosdemo)
         {
-            Console.WriteLine("Inicializando DB-gd");
             InicializarDatos.Inicializar(this, ContentPath);
         }
         protected override void OnModelCreating(ModelBuilder builder)

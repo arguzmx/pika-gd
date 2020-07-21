@@ -25,7 +25,6 @@ namespace PIKA.Servicio.AplicacionPlugin.Data
 
                 string path = Path.Combine(contentPath, "Data", "Inicializar", "Aplicacion.txt");
 
-                Console.WriteLine($"Buscando archivo en {path}");
 
                 if (File.Exists(path))
                 {
@@ -50,7 +49,6 @@ namespace PIKA.Servicio.AplicacionPlugin.Data
                     }
                 }
 
-                Console.WriteLine($"Actualizando {plugin.Count} elementos");
 
                 foreach (Plugin plugins in plugin)
                 {
@@ -91,7 +89,6 @@ namespace PIKA.Servicio.AplicacionPlugin.Data
 
                 string path = Path.Combine(contentPath, "Data", "Inicializar", "ModuloAplicacion.txt");
 
-                Console.WriteLine($"Buscando archivo en {path}");
 
                 if (File.Exists(path))
                 {
@@ -116,7 +113,6 @@ namespace PIKA.Servicio.AplicacionPlugin.Data
                     }
                 }
 
-                Console.WriteLine($"Actualizando {plugininstalado.Count} elementos");
 
                 foreach (PluginInstalado plugininstalados in plugininstalado)
                 {
@@ -157,7 +153,6 @@ namespace PIKA.Servicio.AplicacionPlugin.Data
 
                 string path = Path.Combine(contentPath, "Data", "Inicializar", "TipoAdministradorModulo.txt");
 
-                Console.WriteLine($"Buscando archivo en {path}");
 
                 if (File.Exists(path))
                 {
@@ -182,7 +177,6 @@ namespace PIKA.Servicio.AplicacionPlugin.Data
                     }
                 }
 
-                Console.WriteLine($"Actualizando {VersionPlugin.Count} elementos");
 
                 foreach (VersionPlugin VersionPlugins in VersionPlugin)
                 {

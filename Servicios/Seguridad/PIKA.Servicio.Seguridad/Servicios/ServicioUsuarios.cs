@@ -116,7 +116,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
                 // actualiza los claims
                 await UpdateClaims(entity);
 
-                return entity ?? entity.Copia();
+                return  entity.Copia();
 
             }
             catch (Exception ex)

@@ -12,7 +12,6 @@ namespace PIKA.Servicio.Contacto
 
         public static void Inicializar(DbContextContacto dbContext, string contentPath, bool datosDemo)
         {
-            Console.WriteLine("Inicializando Listado de paises y estados");
             InicializarPaises(dbContext, contentPath);
             GeneraTiposDeMediosDefault(dbContext);
             GeneraTiposFuenteDefault(dbContext);
@@ -24,7 +23,6 @@ namespace PIKA.Servicio.Contacto
             TipoMedio t = new TipoMedio();
             List<TipoMedio> tipos = t.Seed();
 
-            Console.WriteLine($"Actualizando Tipo almacen de datos con {tipos.Count} elementos");
 
             foreach (TipoMedio tipo in tipos)
             {
@@ -54,7 +52,6 @@ namespace PIKA.Servicio.Contacto
             TipoFuenteContacto t = new TipoFuenteContacto();
             List<TipoFuenteContacto> tipos = t.Seed();
 
-            Console.WriteLine($"Actualizando Tipo almacen de datos con {tipos.Count} elementos");
 
             foreach (TipoFuenteContacto tipo in tipos)
             {
@@ -90,7 +87,6 @@ namespace PIKA.Servicio.Contacto
 
                 string path = Path.Combine(contentPath, "Data", "Inicializar", "paises.txt");
 
-                Console.WriteLine($"Buscando archivo en {path}");
 
                 if (File.Exists(path))
                 {
@@ -115,7 +111,6 @@ namespace PIKA.Servicio.Contacto
                     }
                 }
 
-                Console.WriteLine($"Actualizando {paises.Count} elementos");
 
                 foreach (Pais pais in paises)
                 {
@@ -152,7 +147,6 @@ namespace PIKA.Servicio.Contacto
 
                 string path = Path.Combine(contentPath, "Data", "Inicializar", "estados.txt");
 
-                Console.WriteLine($"Buscando archivo en {path}");
 
                 if (File.Exists(path))
                 {
@@ -182,7 +176,6 @@ namespace PIKA.Servicio.Contacto
                     }
                 }
 
-                Console.WriteLine($"Actualizando estados {estados.Count} elementos");
 
                 foreach (Estado estado in estados)
                 {

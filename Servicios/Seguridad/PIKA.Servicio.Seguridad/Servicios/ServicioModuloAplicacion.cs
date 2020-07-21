@@ -53,7 +53,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            return entity ?? entity.Copia();
+            return entity.Copia();
         }
 
         public async Task ActualizarAsync(ModuloAplicacion entity)
@@ -104,25 +104,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             return respuesta;
         }
 
-        public Task<IEnumerable<ModuloAplicacion>> CrearAsync(params ModuloAplicacion[] entities)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<ModuloAplicacion>> CrearAsync(IEnumerable<ModuloAplicacion> entities, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task EjecutarSql(string sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task EjecutarSqlBatch(List<string> sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
+       
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
@@ -151,18 +133,10 @@ namespace PIKA.Servicio.Seguridad.Servicios
             return this.repo.ObtenerAsync(SqlCommand);
         }
 
-        public Task<IPaginado<ModuloAplicacion>> ObtenerPaginadoAsync(Expression<Func<ModuloAplicacion, bool>> predicate = null, Func<IQueryable<ModuloAplicacion>, IOrderedQueryable<ModuloAplicacion>> orderBy = null, Func<IQueryable<ModuloAplicacion>, IIncludableQueryable<ModuloAplicacion, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+      
 
 
-
-        public Task<IEnumerable<string>> Restaurar(string[] ids)
-        {
-            throw new NotImplementedException();
-        }
-
+      
         public async Task<ModuloAplicacion> UnicoAsync(Expression<Func<ModuloAplicacion, bool>> predicado = null, Func<IQueryable<ModuloAplicacion>, IOrderedQueryable<ModuloAplicacion>> ordenarPor = null, Func<IQueryable<ModuloAplicacion>, IIncludableQueryable<ModuloAplicacion, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
 
@@ -171,6 +145,36 @@ namespace PIKA.Servicio.Seguridad.Servicios
             return d.Copia();
         }
 
+        #region sin implementar
+        public Task<IEnumerable<ModuloAplicacion>> CrearAsync(params ModuloAplicacion[] entities)
+        {
+            throw new NotImplementedException();
+        }
 
+        public Task<IEnumerable<ModuloAplicacion>> CrearAsync(IEnumerable<ModuloAplicacion> entities, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task EjecutarSql(string sqlCommand)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task EjecutarSqlBatch(List<string> sqlCommand)
+        {
+            throw new NotImplementedException();
+        }
+        public Task<IPaginado<ModuloAplicacion>> ObtenerPaginadoAsync(Expression<Func<ModuloAplicacion, bool>> predicate = null, Func<IQueryable<ModuloAplicacion>, IOrderedQueryable<ModuloAplicacion>> orderBy = null, Func<IQueryable<ModuloAplicacion>, IIncludableQueryable<ModuloAplicacion, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<string>> Restaurar(string[] ids)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

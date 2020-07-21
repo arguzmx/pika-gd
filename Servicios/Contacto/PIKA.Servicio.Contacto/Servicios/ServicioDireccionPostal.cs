@@ -73,7 +73,7 @@ namespace PIKA.Servicio.Contacto
             // pero sólo puece existir una por defualt
             if (entity.EsDefault) await ActualizaDefault(entity);
 
-            return entity ?? entity.Copia();
+            return entity.Copia();
         }
 
         /// <summary>

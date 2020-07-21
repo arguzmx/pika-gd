@@ -26,8 +26,6 @@ namespace PIKA.Servicio.Seguridad.Data
                 Genero g = new Genero();
                 List<Genero> lista = g.Seed();
 
-                Console.WriteLine($"Añadiendo elementos GENERO");
-                Console.WriteLine($"Actualizando {lista.Count} elementos");
 
                 foreach (var o  in lista)
                 {

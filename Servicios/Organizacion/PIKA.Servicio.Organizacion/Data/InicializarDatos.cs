@@ -17,7 +17,6 @@ namespace PIKA.Servicio.Organizacion
         public static void Inicializar(DbContextOrganizacion dbContext, string contentPath, bool datosDemo) {
             if (datosDemo)
             {
-                Console.WriteLine("Inicializando datos demo de Organización");
                 InicializarDatosDemo(dbContext);
             }
         }
@@ -34,7 +33,6 @@ namespace PIKA.Servicio.Organizacion
             List<UnidadOrganizacional> uos = new List<UnidadOrganizacional>();
             List<Rol> roles = new List<Rol>();
             //AÑADE DOMINIOS
-            Console.WriteLine($"Añadiendo Dominios");
             for (int i = 0; i < 15; i++)
             {
                 Dominio d = new Dominio()
@@ -56,7 +54,6 @@ namespace PIKA.Servicio.Organizacion
 
 
             //AÑDE Uniodades organziacionales para los primeros 2 dominios
-            Console.WriteLine($"Unidades organizacionales");
             for (int k = 0; k < 2; k++) { 
                 for(int i = 0; i <= 15; i++)
                 {
@@ -109,7 +106,6 @@ namespace PIKA.Servicio.Organizacion
 
 
             //Añade roles
-            Console.WriteLine($"Roles");
             for (int i = 0; i < 15; i++)
             {
                 Rol d = new Rol()

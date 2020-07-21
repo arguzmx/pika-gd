@@ -99,7 +99,6 @@ namespace PIKA.Servicio.Contacto
 
         public void Inicializar(string contentPath, bool generarDatosdemo)
         {
-            Console.WriteLine("Inicializando datos des repositorio de contacto");
             InicializarDatos.Inicializar(this, contentPath, generarDatosdemo);
         }
     }

@@ -59,7 +59,6 @@ namespace IdentityServer4.Quickstart.UI
         public async Task<IActionResult> Login(string returnUrl)
         {
 
-            Console.WriteLine("0:: " + returnUrl);
             // build a model so we know what to show on the login page
             var vm = await BuildLoginViewModelAsync(returnUrl);
 
@@ -128,7 +127,6 @@ namespace IdentityServer4.Quickstart.UI
                             // return the response is for better UX for the end user.
                             return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
                         }
-                        Console.WriteLine("-------------------4 " + model.ReturnUrl);
                         // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
                         return Redirect(model.ReturnUrl);
                     }

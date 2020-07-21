@@ -50,7 +50,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
-            Console.WriteLine("validate");
             entity.Id = System.Guid.NewGuid().ToString();
             entity.FechaCreacion = DateTime.UtcNow;
             //entity.EstadoTransferenciaId = EstadoTransferencia.ESTADO_NUEVA;
