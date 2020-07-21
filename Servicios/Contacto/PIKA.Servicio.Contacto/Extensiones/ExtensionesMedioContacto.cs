@@ -11,6 +11,7 @@ namespace PIKA.Servicio.Contacto
     {
         public static MedioContacto Copia(this MedioContacto d)
         {
+            if (d == null) return null;
             var c = new MedioContacto()
             {
                 Activo = d.Activo,

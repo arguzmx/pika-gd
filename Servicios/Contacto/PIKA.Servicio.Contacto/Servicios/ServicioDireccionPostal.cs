@@ -73,7 +73,7 @@ namespace PIKA.Servicio.Contacto
             // pero sólo puece existir una por defualt
             if (entity.EsDefault) await ActualizaDefault(entity);
 
-            return entity;
+            return entity ?? entity.Copia();
         }
 
         /// <summary>
@@ -205,13 +205,6 @@ namespace PIKA.Servicio.Contacto
             }
         }
 
-
-
-        public Task<IEnumerable<string>> Restaurar(string[] ids)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<DireccionPostal> UnicoAsync(Expression<Func<DireccionPostal, bool>> predicado = null, Func<IQueryable<DireccionPostal>, IOrderedQueryable<DireccionPostal>> ordenarPor = null, Func<IQueryable<DireccionPostal>, IIncludableQueryable<DireccionPostal, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             
@@ -219,10 +212,14 @@ namespace PIKA.Servicio.Contacto
             return d.Copia();
         }
 
-
+        
+        public Task<List<DireccionPostal>> ObtenerAsync(Expression<Func<DireccionPostal, bool>> predicado)
+        {
+            return this.repo.ObtenerAsync(predicado);
+        }
         #region sin implementar
 
-        public Task<List<DireccionPostal>> ObtenerAsync(Expression<Func<DireccionPostal, bool>> predicado)
+        public Task<IEnumerable<string>> Restaurar(string[] ids)
         {
             throw new NotImplementedException();
         }

@@ -25,6 +25,8 @@ namespace PIKA.GD.API.Controllers.Contacto
     [ApiVersion("1.0")]
     [ApiController]
     [Route("api/v{version:apiVersion}/contacto/[controller]")]
+
+
     public class PaisController : ACLController
     {
 
@@ -40,6 +42,7 @@ namespace PIKA.GD.API.Controllers.Contacto
             this.metadataProvider = metadataProvider;
         }
 
+     
         /// <summary>
         /// Obtiene los metadatos relacionados con la entidad país
         /// </summary>
@@ -70,7 +73,7 @@ namespace PIKA.GD.API.Controllers.Contacto
 
 
         /// <summary>
-        /// Actualoza uan entidad pais, el Id debe incluirse en el querystring así como en 
+        /// Actualiza unq entidad paìs, el Id debe incluirse en el Querystring así como en 
         /// el serializado para la petición PUT
         /// </summary>
         /// <param name="id">Identificador único del dominio</param>
@@ -96,7 +99,7 @@ namespace PIKA.GD.API.Controllers.Contacto
 
 
         /// <summary>
-        /// DEvulve un alista de paises asociadas al objeto del tipo especificado
+        /// Devulve un alista de paises asociadas al objeto del tipo especificado
         /// </summary>
         /// <param name="query">Consulta para la paginación y búsqueda</param>
         /// <returns></returns>
@@ -152,7 +155,11 @@ namespace PIKA.GD.API.Controllers.Contacto
                 .Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return Ok(await servicioEntidad.Eliminar(lids).ConfigureAwait(false));
         }
-
+        /// <summary>
+        /// Obtiene una lista de paises en base a los parámetros de consulta
+        /// </summary>
+        /// <param name="query">Query de busqueda a la base de datos</param>
+        /// <returns></returns>
 
         [HttpGet("pares", Name = "GetParesPais")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
@@ -165,6 +172,11 @@ namespace PIKA.GD.API.Controllers.Contacto
 
             return Ok(data);
         }
+        /// <summary>
+        /// Obtiene una lista de paises en base a con el parámetro ID de consulta
+        /// </summary>
+        /// <param name="ids">parametro Id para consulta a la base de datos</param>
+        /// <returns></returns>
 
         [HttpGet("pares/{ids}", Name = "GetParesPaisporId")]
         [TypeFilter(typeof(AsyncACLActionFilter))]

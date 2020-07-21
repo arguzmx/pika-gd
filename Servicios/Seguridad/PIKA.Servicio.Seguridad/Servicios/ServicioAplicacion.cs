@@ -55,7 +55,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            return entity;
+            return entity ?? entity.Copia();
         }
 
         public async Task ActualizarAsync(Aplicacion entity)
@@ -108,6 +108,16 @@ namespace PIKA.Servicio.Seguridad.Servicios
             return respuesta;
         }
 
+
+        public async Task<Aplicacion> UnicoAsync(Expression<Func<Aplicacion, bool>> predicado = null, Func<IQueryable<Aplicacion>, IOrderedQueryable<Aplicacion>> ordenarPor = null, Func<IQueryable<Aplicacion>, IIncludableQueryable<Aplicacion, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+
+            Aplicacion d = await this.repo.UnicoAsync(predicado);
+
+            return d.Copia();
+        }
+        #region sin implementar
+
         public Task<IEnumerable<Aplicacion>> CrearAsync(params Aplicacion[] entities)
         {
             throw new NotImplementedException();
@@ -135,7 +145,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
         public Task<List<Aplicacion>> ObtenerAsync(Expression<Func<Aplicacion, bool>> predicado)
         {
-            throw new NotImplementedException();
+            return this.repo.ObtenerAsync(predicado);
         }
 
         public Task<List<Aplicacion>> ObtenerAsync(string SqlCommand)
@@ -154,14 +164,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
         {
             throw new NotImplementedException();
         }
-
-        public async Task<Aplicacion> UnicoAsync(Expression<Func<Aplicacion, bool>> predicado = null, Func<IQueryable<Aplicacion>, IOrderedQueryable<Aplicacion>> ordenarPor = null, Func<IQueryable<Aplicacion>, IIncludableQueryable<Aplicacion, object>> incluir = null, bool inhabilitarSegumiento = true)
-        {
-
-            Aplicacion d = await this.repo.UnicoAsync(predicado);
-
-            return d.CopiaAplicacion();
-        }
+        #endregion
 
 
     }

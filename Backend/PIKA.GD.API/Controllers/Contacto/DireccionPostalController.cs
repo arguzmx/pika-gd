@@ -70,7 +70,7 @@ namespace PIKA.GD.API.Controllers.Contacto
 
 
         /// <summary>
-        /// Actualoza uan entidad dirección postal, el Id debe incluirse en el querystring así como en 
+        /// actualiza una entidad dirección postal, el Id debe incluirse en el querystring así como en 
         /// el serializado para la petición PUT
         /// </summary>
         /// <param name="id">Identificador único del dominio</param>
@@ -98,7 +98,7 @@ namespace PIKA.GD.API.Controllers.Contacto
 
 
 /// <summary>
-/// DEvulve un alista de direcciones postales asociadas al objeto del tipo especificado
+/// Devuelve una lista de direcciones postales asociadas al objeto del tipo especificado
 /// </summary>
 /// <param name="tipo">Tipo de dasto para asociar la dirección</param>
 /// <param name="id">Identificador único del objeto asociado a la dirección</param>
@@ -165,7 +165,13 @@ namespace PIKA.GD.API.Controllers.Contacto
                 .Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return Ok(await servicioDirPost.Eliminar(lids).ConfigureAwait(false));
         }
-
+        /// <summary>
+        /// Inactiva esta propiedad en el resto de las direcciones 
+        /// del objeto en edición
+        /// </summary>
+        /// <param name="id">por Id de la direción postal establece una dirección
+        /// como principal en la base de datos</param>
+        /// <returns></returns>
 
         [HttpPatch("principal/{id}/on", Name = "EstableceDireccionPrincipal" )]
         [TypeFilter(typeof(AsyncACLActionFilter))]
@@ -175,7 +181,13 @@ namespace PIKA.GD.API.Controllers.Contacto
             await servicioDirPost.EstablecerPrincipal(id).ConfigureAwait(false);
             return Ok();
         }
-
+        /// <summary>
+        /// Inactiva esta propiedad en el resto de las direcciones 
+        /// del objeto en edición
+        /// </summary>
+        /// <param name="id">por Id de la direción postal establece una dirección
+        /// como principal en la base de datos</param>
+        /// <returns></returns>
 
         [HttpPatch("principal/{id}/off", Name = "RemoverDireccionPrincipal")]
         [TypeFilter(typeof(AsyncACLActionFilter))]

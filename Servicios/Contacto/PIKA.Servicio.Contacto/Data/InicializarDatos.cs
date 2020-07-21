@@ -14,88 +14,72 @@ namespace PIKA.Servicio.Contacto
         {
             Console.WriteLine("Inicializando Listado de paises y estados");
             InicializarPaises(dbContext, contentPath);
-            InicalizaTiposDeMedios(dbContext, contentPath);
-            InicalizaTiposFuente(dbContext, contentPath);
+            GeneraTiposDeMediosDefault(dbContext);
+            GeneraTiposFuenteDefault(dbContext);
 
         }
-
-        private static void InicalizaTiposFuente(DbContextContacto dbContext, string contentPath)
+        private static void GeneraTiposDeMediosDefault(DbContextContacto dbContext)
         {
-            try
+
+            TipoMedio t = new TipoMedio();
+            List<TipoMedio> tipos = t.Seed();
+
+            Console.WriteLine($"Actualizando Tipo almacen de datos con {tipos.Count} elementos");
+
+            foreach (TipoMedio tipo in tipos)
             {
-                TipoFuenteContacto g = new TipoFuenteContacto();
-                List<TipoFuenteContacto> lista = g.Seed();
 
-                Console.WriteLine($"Añadiendo elementos Tipo Fuente Contacto");
-                Console.WriteLine($"Actualizando {lista.Count} elementos");
-
-                foreach (var o in lista)
+                TipoMedio instancia = dbContext.TiposMedio.Find(tipo.Id);
+                if (instancia == null)
                 {
-
-                    var instancia = dbContext.TiposFuentesContacto.Find(o.Id);
-                    if (instancia == null)
+                    TipoMedio p = new TipoMedio()
                     {
-                        TipoFuenteContacto p = new TipoFuenteContacto()
-                        {
-                            Id = o.Id,
-                            Nombre = o.Nombre
-                        };
+                        Id = tipo.Id,
+                        Nombre = tipo.Nombre
+                    };
 
-                        dbContext.TiposFuentesContacto.Add(p);
-                    }
-                    else
-                    {
-                        instancia.Nombre = o.Nombre;
-                    }
+                    dbContext.TiposMedio.Add(p);
                 }
-                dbContext.SaveChanges();
-
+                else
+                {
+                    instancia.Nombre = tipo.Nombre;
+                }
             }
-            catch (Exception ex)
+            dbContext.SaveChanges();
+
+        }
+        private static void GeneraTiposFuenteDefault(DbContextContacto dbContext)
+        {
+
+            TipoFuenteContacto t = new TipoFuenteContacto();
+            List<TipoFuenteContacto> tipos = t.Seed();
+
+            Console.WriteLine($"Actualizando Tipo almacen de datos con {tipos.Count} elementos");
+
+            foreach (TipoFuenteContacto tipo in tipos)
             {
 
-                throw;
+                TipoFuenteContacto instancia = dbContext.TiposFuentesContacto.Find(tipo.Id);
+                if (instancia == null)
+                {
+                    TipoFuenteContacto p = new TipoFuenteContacto()
+                    {
+                        Id = tipo.Id,
+                        Nombre = tipo.Nombre
+                    };
+
+                    dbContext.TiposFuentesContacto.Add(p);
+                }
+                else
+                {
+                    instancia.Nombre = tipo.Nombre;
+                }
             }
+            dbContext.SaveChanges();
+
         }
 
 
-        private static void InicalizaTiposDeMedios(DbContextContacto dbContext, string contentPath) {
-            try
-            {
-                TipoMedio g = new TipoMedio();
-                List<TipoMedio> lista = g.Seed();
-
-                Console.WriteLine($"Añadiendo elementos Tipo Medio Contacto");
-                Console.WriteLine($"Actualizando {lista.Count} elementos");
-
-                foreach (var o in lista)
-                {
-
-                    var instancia = dbContext.TiposMedio.Find(o.Id);
-                    if (instancia == null)
-                    {
-                        TipoMedio p = new TipoMedio()
-                        {
-                            Id = o.Id,
-                            Nombre = o.Nombre
-                        };
-
-                        dbContext.TiposMedio.Add(p);
-                    }
-                    else
-                    {
-                        instancia.Nombre = o.Nombre;
-                    }
-                }
-                dbContext.SaveChanges();
-
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-        }
 
         private static void InicializarPaises(DbContextContacto dbContext, string contentPath)
         {

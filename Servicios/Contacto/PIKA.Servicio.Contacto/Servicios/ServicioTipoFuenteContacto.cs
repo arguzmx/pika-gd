@@ -54,7 +54,7 @@ namespace PIKA.Servicio.Contacto
 
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            return entity.Copia();
+            return entity ?? entity.Copia();
         }
 
 

@@ -70,7 +70,8 @@ namespace PIKA.GD.API.Controllers.Contacto
 
 
         /// <summary>
-        /// Actualoza uan entidad tipo medio, el Id debe incluirse en el querystring así como en 
+        /// Actualiza una entidad tipo medio,
+        /// el Id debe incluirse en el QueryString así como en 
         /// el serializado para la petición PUT
         /// </summary>
         /// <param name="id">Identificador único del dominio</param>
@@ -152,7 +153,11 @@ namespace PIKA.GD.API.Controllers.Contacto
                 .Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return Ok(await servicioEntidad.Eliminar(lids).ConfigureAwait(false));
         }
-
+        /// <summary>
+        /// Obtiene una lista de tipo de medio en base a con el parámetro ID de consulta
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
         [HttpGet("pares", Name = "GetParesTipoMedio")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -164,7 +169,27 @@ namespace PIKA.GD.API.Controllers.Contacto
 
             return Ok(data);
         }
+        /// <summary>
+        /// Obtiene una lista de tipo de medio en base a con el parámetro ID de consulta
+        /// </summary>
+        /// <param name="ids">parametro Id para consulta a la base de datos</param>
+        /// <returns></returns>
 
+        [HttpGet("pares/{ids}", Name = "GetParestipomedioporId")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ValorListaOrdenada>>> GetParesporId(
+              string ids)
+        {
+            List<string> lids = ids.Split(',').ToList()
+               .Where(x => !string.IsNullOrEmpty(x)).ToList();
+            var data = await servicioEntidad.ObtenerParesPorId(lids)
+                .ConfigureAwait(false);
+
+            return Ok(data);
+        }
 
     }
+
+  
 }

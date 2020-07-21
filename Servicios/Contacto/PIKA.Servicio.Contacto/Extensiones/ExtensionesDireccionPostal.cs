@@ -7,7 +7,7 @@ namespace PIKA.Servicio.Contacto
 {
     public static partial class Extensiones
     {
-
+      
         public static DireccionPostal Copia(this DireccionPostal d)
         {
             if (d == null) return null;

@@ -55,9 +55,9 @@ namespace PIKA.Servicio.Seguridad.Servicios
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-          
 
-            return entity;
+
+            return entity ?? entity.Copia();
         }
 
         public async Task ActualizarAsync(TipoAdministradorModulo entity)
@@ -160,7 +160,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
             TipoAdministradorModulo d = await this.repo.UnicoAsync(predicado);
 
-            return d.CopiaTipoAdministradorModulo();
+            return d.Copia();
         }
 
 
