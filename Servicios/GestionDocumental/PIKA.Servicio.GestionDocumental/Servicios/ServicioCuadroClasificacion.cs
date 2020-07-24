@@ -47,6 +47,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<CuadroClasificacion> CrearAsync(CuadroClasificacion entity, CancellationToken cancellationToken = default)
         {
+           
 
             if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
@@ -54,6 +55,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
 
             entity.Id = System.Guid.NewGuid().ToString();
+            entity.EstadoCuadroClasificacionId = EstadoCuadroClasificacion.ESTADO_ACTIVO; 
+            
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
 
@@ -76,11 +79,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
-
-            o.Nombre = entity.Nombre;
+             o.Nombre = entity.Nombre;
             o.Eliminada = entity.Eliminada;
             o.EstadoCuadroClasificacionId = entity.EstadoCuadroClasificacionId;
-
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 

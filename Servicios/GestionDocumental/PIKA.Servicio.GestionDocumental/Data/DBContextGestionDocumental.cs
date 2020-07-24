@@ -43,13 +43,13 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// <summary>
         /// Nombre de la tabla para las entidades Elemento clasificacion
         /// </summary>
-        public static string TablaElementosClasificacion{ get => "gd$elementoclasificacion"; }
+        public static string TablaElementosClasificacion { get => "gd$elementoclasificacion"; }
 
 
         /// <summary>
         /// Nombre de la tabla para las entidades del tipo Estado cuadro clasificacion
         /// </summary>
-        public static string TablaEstadosCuadro{ get => "gd$estadocuadroclasificacion"; }
+        public static string TablaEstadosCuadro { get => "gd$estadocuadroclasificacion"; }
 
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// <summary>
         /// Nombre de la tabla para las entidades del tipo Fase ciclo vital
         /// </summary>
-        public static string TablaFasesCicloVital{ get => "gd$faseciclovital"; }
+        public static string TablaFasesCicloVital { get => "gd$faseciclovital"; }
 
         /// <summary>
         /// Nombre de la tabla para las entidades del tipo Activo
@@ -87,7 +87,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// <summary>
         /// Nombre de la tabla para las entidades del tipo Asunto 
         /// </summary>
-        public static string TablaAsuntos{ get => "gd$asunto"; }
+        public static string TablaAsuntos { get => "gd$asunto"; }
 
         /// <summary>
         /// Nombre de la tabla para las entidades del tipo Asunto 
@@ -102,12 +102,12 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// <summary>
         /// Nombre de la tabla para las entidades del tipo Asunto 
         /// </summary>
-        public static string TablaActivosPrestamo { get => "gd$activo_prestamo"; }
+        public static string TablaActivosPrestamo { get => "gd$activoprestamo"; }
 
         /// <summary>
         /// Nombre de la tabla para las entidades del tipo Asunto 
         /// </summary>
-        public static string TablaComentariosPrestamo { get => "gd$comentario_prestamo"; }
+        public static string TablaComentariosPrestamo { get => "gd$comentarioprestamo"; }
 
         /// <summary>
         /// Nombre de la tabla para las entidades del tipo Asunto 
@@ -122,7 +122,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// <summary>
         /// Nombre de la tabla para las entidades del tipo Asunto 
         /// </summary>
-        public static string TablaEspaciosEstante { get => "gd$espacio_estante"; }
+        public static string TablaEspaciosEstante { get => "gd$espacioestante"; }
 
 
         /// <summary>
@@ -134,32 +134,47 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// <summary>
         /// Nombre de la tabla para las entidades del tipo EstadoTransferencia 
         /// </summary>
-        public static string TablaEstadosTransferencia { get => "gd$estado_transferencia"; }
+        public static string TablaEstadosTransferencia { get => "gd$estadotransferencia"; }
 
 
         /// <summary>
         /// Nombre de la tabla para las entidades del tipo EventoTransferencia 
         /// </summary>
-        public static string TablaEventosTransferencia{ get => "gd$evento_transferencia"; }
+        public static string TablaEventosTransferencia { get => "gd$eventotransferencia"; }
 
 
         /// <summary>
         /// Nombre de la tabla para las entidades del tipo ComentarioTransferencia 
         /// </summary>
-        public static string TablaComentariosTransferencia{ get => "gd$comentario_transferencia"; }
+        public static string TablaComentariosTransferencia { get => "gd$comentariotransferencia"; }
 
 
         /// <summary>
         /// Nombre de la tabla para las entidades del tipo ActivoTransferencia 
         /// </summary>
-        public static string TablaActivosTransferencia { get => "gd$activo_transferencia"; }
+        public static string TablaActivosTransferencia { get => "gd$activotransferencia"; }
 
         /// <summary>
         /// Nombre de la tabla para las entidades del tipo ActivoDeclinado
         /// </summary>
-        public static string TablaActivosDeclinados { get => "gd$activo_declinado"; }
-
-
+        public static string TablaActivosDeclinados { get => "gd$activodeclinado"; }
+        /// <summary>
+        /// Nombre de  la entrada de clasificacion
+        /// </summary>
+        public static string TablaEntradaClasificacion { get => "gd$entradaclasificacion"; }
+        
+        /// <summary>
+        /// Nombre del tipo de disposicion documental 
+        /// </summary>
+       public static string TablaTipoDisposicionDocumental { get=> "gd$tipodisposiciondocumental"; }
+        /// <summary>
+        /// Nombre del  Valoracion Entrada de clasificacion
+        /// </summary>
+        public static string TablaValoracionEntradaClasificacion {get=> "gd$valoracionentradaclasificacion";}
+        /// <summary>
+        /// Nombre del tipo de Valoracion Entrada de clasificacion
+        /// </summary>
+        public static string TablaTipoValoracionDocumental { get => "gd$tipovaloraciondocumental"; }
 
 
         #endregion
@@ -278,6 +293,23 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// </summary>
         public DbSet<ActivoDeclinado> ActivosDeclinados { get; set; }
 
+        /// <summary>
+        /// Variable de Entrada Clasificacion
+        /// </summary>
+        public DbSet<EntradaClasificacion> EntradaClasificacion{ get; set; }
+        /// <summary>
+        /// Variable de Tipo disposicion documental
+        /// </summary>
+        public DbSet<TipoDisposicionDocumental> TipoDisposicionDocumental { get; set; }
+
+        /// <summary>
+        /// Variable de Valoracion entrada de clasificacion
+        /// </summary>
+        public DbSet<ValoracionEntradaClasificacion> ValoracionEntradaClasificacion { get; set; }
+        /// <summary>
+        /// Variable de Tipo de Valoracion Documental
+        /// </summary>
+        public DbSet<TipoValoracionDocumental> TipoValoracionDocumental { get; set; }
 
         public void AplicarMigraciones()
         {
@@ -321,7 +353,10 @@ namespace PIKA.Servicio.GestionDocumental.Data
             builder.ApplyConfiguration<ComentarioTransferencia>(new DbConfComentarioTransferencia());
             builder.ApplyConfiguration<ActivoTransferencia>(new DbConfActivoTransferencia());
             builder.ApplyConfiguration<ActivoDeclinado>(new DbConfActivoDeclinado());
-
+            builder.ApplyConfiguration<EntradaClasificacion>(new DbConfEntradaClasificacion());
+            builder.ApplyConfiguration<TipoDisposicionDocumental>(new DbConfTipoDisposicionDocumental());
+            builder.ApplyConfiguration<ValoracionEntradaClasificacion>(new DbConfValoracionEntradaClasificacion());
+            builder.ApplyConfiguration<TipoValoracionDocumental>(new DbConfTipoValoracionDocumental());
 
         }
 

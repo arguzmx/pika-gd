@@ -15,7 +15,10 @@ namespace PIKA.Servicio.GestionDocumental
                 Id = d.Id,
                 Nombre = d.Nombre,
                 OrigenId = d.OrigenId,
-                TipoOrigenId = d.TipoOrigenId
+                TipoOrigenId = d.TipoOrigenId,
+                EstadoCuadroClasificacionId=d.EstadoCuadroClasificacionId,
+                Eliminada=d.Eliminada
+                
             };
 
             if (d.Estado != null)

@@ -1,52 +1,51 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.Extensions.Logging;
-using PIKA.Infraestructura.Comun;
-using PIKA.Infraestructura.Comun.Excepciones;
-using PIKA.Infraestructura.Comun.Interfaces;
-using PIKA.Modelo.GestorDocumental;
-using PIKA.Servicio.GestionDocumental.Data;
-using PIKA.Servicio.GestionDocumental.Interfaces;
-using RepositorioEntidades;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.Extensions.Logging;
+using PIKA.Infraestructura.Comun.Excepciones;
+using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Modelo.GestorDocumental;
+using PIKA.Servicio.GestionDocumental.Data;
+using PIKA.Servicio.GestionDocumental.Interfaces;
+using RepositorioEntidades;
 
 namespace PIKA.Servicio.GestionDocumental.Servicios
 {
-    public class ServicioEstadoCuadroClasificacion : ContextoServicioGestionDocumental,
-        IServicioInyectable, IServicioEstadoCuadroClasificacion
+    public class ServicioTipoDisposicionDocumental : ContextoServicioGestionDocumental,
+        IServicioInyectable, IServicioTipoDisposicionDocumental
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
-
-        private IRepositorioAsync<EstadoCuadroClasificacion> repo;
+        private IRepositorioAsync<TipoDisposicionDocumental> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
-
-        public ServicioEstadoCuadroClasificacion(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioEstadoCuadroClasificacion> Logger) : base(proveedorOpciones, Logger)
+        public ServicioTipoDisposicionDocumental(
+         IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
+         ILogger<ServicioTipoDisposicionDocumental> Logger) :
+            base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
-            this.repo = UDT.ObtenerRepositoryAsync<EstadoCuadroClasificacion>(new QueryComposer<EstadoCuadroClasificacion>());
+            this.repo = UDT.ObtenerRepositoryAsync<TipoDisposicionDocumental>(new QueryComposer<TipoDisposicionDocumental>());
+
         }
 
-
-        public async Task<bool> Existe(Expression<Func<EstadoCuadroClasificacion, bool>> predicado)
+        public async Task<bool> Existe(Expression<Func<TipoDisposicionDocumental, bool>> predicado)
         {
-            List<EstadoCuadroClasificacion> l = await this.repo.ObtenerAsync(predicado);
+            List<TipoDisposicionDocumental> l = await this.repo.ObtenerAsync(predicado);
             if (l.Count() == 0) return false;
             return true;
         }
 
 
-        public async Task<EstadoCuadroClasificacion> CrearAsync(EstadoCuadroClasificacion entity, CancellationToken cancellationToken = default)
+        public async Task<TipoDisposicionDocumental> CrearAsync(TipoDisposicionDocumental entity, CancellationToken cancellationToken = default)
         {
-            EstadoCuadroClasificacion tmp = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+            TipoDisposicionDocumental tmp = await this.repo.UnicoAsync(x => x.Id == entity.Id);
             if (tmp != null)
             {
                 throw new ExElementoExistente(entity.Id);
@@ -58,9 +57,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
 
 
-        public async Task ActualizarAsync(EstadoCuadroClasificacion entity)
+        public async Task ActualizarAsync(TipoDisposicionDocumental entity)
         {
-            EstadoCuadroClasificacion tmp = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+            TipoDisposicionDocumental tmp = await this.repo.UnicoAsync(x => x.Id == entity.Id);
             if (tmp == null)
             {
                 throw new EXNoEncontrado(entity.Id);
@@ -76,7 +75,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            EstadoCuadroClasificacion o;
+            TipoDisposicionDocumental o;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
             {
@@ -99,15 +98,15 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
 
 
-        public Task<List<EstadoCuadroClasificacion>> ObtenerAsync(Expression<Func<EstadoCuadroClasificacion, bool>> predicado)
+        public Task<List<TipoDisposicionDocumental>> ObtenerAsync(Expression<Func<TipoDisposicionDocumental, bool>> predicado)
         {
             return this.repo.ObtenerAsync(predicado);
         }
 
 
-        public async Task<EstadoCuadroClasificacion> UnicoAsync(Expression<Func<EstadoCuadroClasificacion, bool>> predicado = null, Func<IQueryable<EstadoCuadroClasificacion>, IOrderedQueryable<EstadoCuadroClasificacion>> ordenarPor = null, Func<IQueryable<EstadoCuadroClasificacion>, IIncludableQueryable<EstadoCuadroClasificacion, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<TipoDisposicionDocumental> UnicoAsync(Expression<Func<TipoDisposicionDocumental, bool>> predicado = null, Func<IQueryable<TipoDisposicionDocumental>, IOrderedQueryable<TipoDisposicionDocumental>> ordenarPor = null, Func<IQueryable<TipoDisposicionDocumental>, IIncludableQueryable<TipoDisposicionDocumental, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            EstadoCuadroClasificacion d = await this.repo.UnicoAsync(predicado);
+            TipoDisposicionDocumental d = await this.repo.UnicoAsync(predicado);
             return d.Copia();
         }
 
@@ -127,7 +126,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return query;
         }
 
-        public async Task<IPaginado<EstadoCuadroClasificacion>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<EstadoCuadroClasificacion>, IIncludableQueryable<EstadoCuadroClasificacion, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
+        public async Task<IPaginado<TipoDisposicionDocumental>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<TipoDisposicionDocumental>, IIncludableQueryable<TipoDisposicionDocumental, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
@@ -175,12 +174,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         #region sin implementar
 
-        public Task<IEnumerable<EstadoCuadroClasificacion>> CrearAsync(params EstadoCuadroClasificacion[] entities)
+        public Task<IEnumerable<TipoDisposicionDocumental>> CrearAsync(params TipoDisposicionDocumental[] entities)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<EstadoCuadroClasificacion>> CrearAsync(IEnumerable<EstadoCuadroClasificacion> entities, CancellationToken cancellationToken = default)
+        public Task<IEnumerable<TipoDisposicionDocumental>> CrearAsync(IEnumerable<TipoDisposicionDocumental> entities, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -196,13 +195,13 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
 
 
-        public Task<List<EstadoCuadroClasificacion>> ObtenerAsync(string SqlCommand)
+        public Task<List<TipoDisposicionDocumental>> ObtenerAsync(string SqlCommand)
         {
             throw new NotImplementedException();
         }
 
 
-        public async Task<IPaginado<EstadoCuadroClasificacion>> ObtenerPaginadoAsync(Expression<Func<EstadoCuadroClasificacion, bool>> predicate = null, Func<IQueryable<EstadoCuadroClasificacion>, IOrderedQueryable<EstadoCuadroClasificacion>> orderBy = null, Func<IQueryable<EstadoCuadroClasificacion>, IIncludableQueryable<EstadoCuadroClasificacion, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
+        public async Task<IPaginado<TipoDisposicionDocumental>> ObtenerPaginadoAsync(Expression<Func<TipoDisposicionDocumental, bool>> predicate = null, Func<IQueryable<TipoDisposicionDocumental>, IOrderedQueryable<TipoDisposicionDocumental>> orderBy = null, Func<IQueryable<TipoDisposicionDocumental>, IIncludableQueryable<TipoDisposicionDocumental, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -212,9 +211,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
+        
 
 
         #endregion
+
 
     }
 }

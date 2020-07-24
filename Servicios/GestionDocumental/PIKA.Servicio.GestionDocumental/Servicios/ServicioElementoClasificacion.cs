@@ -45,15 +45,16 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<ElementoClasificacion> CrearAsync(ElementoClasificacion entity, CancellationToken cancellationToken = default)
         {
 
-            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
+            if (await Existe(x => x.Clave.Equals(entity.Clave, StringComparison.InvariantCultureIgnoreCase)))
             {
-                throw new ExElementoExistente(entity.Nombre);
+                throw new ExElementoExistente(entity.Clave );
             }
+
 
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            return entity;
+            return entity.Copia();
         }
 
         public async Task ActualizarAsync(ElementoClasificacion entity)
@@ -68,20 +69,50 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             if (await Existe(x =>
             x.Id != entity.Id 
-            && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
+            && x.Clave.Equals(entity.Clave, StringComparison.InvariantCultureIgnoreCase)))
             {
-                throw new ExElementoExistente(entity.Nombre);
+                throw new ExElementoExistente(entity.Clave);
             }
-
+           
             o.Nombre = entity.Nombre;
             o.Eliminada = entity.Eliminada;
             o.Posicion = entity.Posicion;
             o.Clave = entity.Clave;
-
+            o.ElementoClasificacionId = entity.ElementoClasificacionId;
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
         }
+        private async Task<bool> ValidarIdPadre(ElementoClasificacion e)
+        {
+            bool padre = false;
+            
+            return padre;
+        }
+        private async Task<bool> ValidarPadreElimando(ElementoClasificacion e) {
+            bool padre=false;
+            ElementoClasificacion o = await this.repo.UnicoAsync(x => x.Id == e.ElementoClasificacionId);
+            if (o != null)
+            {
+                if (o.Eliminada)
+                    padre = true;
+                else
+                {
+                    List<ElementoClasificacion> ListPadre = new List<ElementoClasificacion>();
+                    ListPadre.Where(x => x.Id == e.ElementoClasificacionId);
+                    foreach (var el in ListPadre)
+                    {
+                        if (el.Eliminada)
+                            padre = true;
+                    }
+                }
+            }
+            else
+                padre = true;
+
+            return padre;    
+        }
+      
         private Consulta GetDefaultQuery(Consulta query)
         {
             if (query != null)
@@ -105,25 +136,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return respuesta;
         }
 
-        public Task<IEnumerable<ElementoClasificacion>> CrearAsync(params ElementoClasificacion[] entities)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<ElementoClasificacion>> CrearAsync(IEnumerable<ElementoClasificacion> entities, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task EjecutarSql(string sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task EjecutarSqlBatch(List<string> sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
@@ -143,11 +155,38 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return listaEliminados;
         }
 
-        public Task<List<ElementoClasificacion>> ObtenerAsync(Expression<Func<ElementoClasificacion, bool>> predicado)
+
+        public Task<IEnumerable<ElementoClasificacion>> CrearAsync(params ElementoClasificacion[] entities)
         {
             throw new NotImplementedException();
         }
 
+        public Task<IEnumerable<ElementoClasificacion>> CrearAsync(IEnumerable<ElementoClasificacion> entities, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+      
+        public async Task<ElementoClasificacion> UnicoAsync(Expression<Func<ElementoClasificacion, bool>> predicado = null, Func<IQueryable<ElementoClasificacion>, IOrderedQueryable<ElementoClasificacion>> ordenarPor = null, Func<IQueryable<ElementoClasificacion>, IIncludableQueryable<ElementoClasificacion, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+            ElementoClasificacion c = await this.repo.UnicoAsync(predicado);
+            return c.Copia();
+        }
+
+        public Task<List<ElementoClasificacion>> ObtenerAsync(Expression<Func<ElementoClasificacion, bool>> predicado)
+        {
+            return this.repo.ObtenerAsync(predicado);
+        }
+        #region Sin implementar
+        public async Task EjecutarSql(string sqlCommand)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task EjecutarSqlBatch(List<string> sqlCommand)
+        {
+            throw new NotImplementedException();
+        }
         public Task<List<ElementoClasificacion>> ObtenerAsync(string SqlCommand)
         {
             throw new NotImplementedException();
@@ -158,17 +197,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-
-
         public Task<IEnumerable<string>> Restaurar(string[] ids)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ElementoClasificacion> UnicoAsync(Expression<Func<ElementoClasificacion, bool>> predicado = null, Func<IQueryable<ElementoClasificacion>, IOrderedQueryable<ElementoClasificacion>> ordenarPor = null, Func<IQueryable<ElementoClasificacion>, IIncludableQueryable<ElementoClasificacion, object>> incluir = null, bool inhabilitarSegumiento = true)
-        {
-            ElementoClasificacion c = await this.repo.UnicoAsync(predicado);
-            return c.CopiaElemento();
-        }
+        #endregion
     }
 }

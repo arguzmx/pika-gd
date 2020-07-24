@@ -35,6 +35,10 @@ namespace PIKA.Servicio.GestionDocumental
         public const string MODULO_GD_COMENTARIO_TRANSFERENCIA = "PIKA-GD-GD-COMENTARIO-TRANSFERENCIA";
         public const string MODULO_GD_ACTIVO_TRANSFERENCIA = "PIKA-GD-GD-ACTIVO-TRANSFERENCIA";
         public const string MODULO_GD_ACTIVO_DECLINADO= "PIKA-GD-GD-ACTIVO-DECLINADO";
+        public const string MODULO_GD_ENTRADA_CLASIFICACION = "PIKA-GD-GD-ENTRADA-CLASIFICACION";
+        public const string MODULO_GD_TIPO_DISPOSICION_DOCUMENTAL = "PIKA-GD-GD-TIPO-DISPOSICION-DOCUMENTAL";
+        public const string MODULO_GD_TIPO_VALORACION_DOCUMENTAL = "PIKA-GD-GD-TIPO-VALORACION-DOCUMENTAL";
+        public const string MODULO_GD_VALORACION_ENTRADA_CLASIFICACION = "PIKA-GD-GD-VALORACION-ENTRADA-CLASIFICACION";
 
 
         public static string ID_APLICAICON { get { return ConstantesAplicacion.Id; } }
@@ -519,6 +523,85 @@ namespace PIKA.Servicio.GestionDocumental
             //------------------------------------------------------------
             //------------------------------------------------------------
 
+            /// Modulo administarcion de Entrada de Clasificaciòn
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_ENTRADA_CLASIFICACION, true,
+                "Entrada de Clasificaciòn",
+                "Administrador de Entradas de Clasificaciòn",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(EntradaClasificacion) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+            /// Modulo administarcion de Entrada de Clasificaciòn
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_TIPO_DISPOSICION_DOCUMENTAL, true,
+                "Tipos de Disposiciòn documenal",
+                "Administrador de Tipos de disposiciòn Documental",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(TipoDisposicionDocumental) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+
+            /// Modulo administarcion de Entrada de Clasificaciòn
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_TIPO_VALORACION_DOCUMENTAL, true,
+                "Tipo de Valoracion Documental",
+                "Administrador de Tipos de Valoraciòn Documental",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(TipoValoracionDocumental) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+            /// Modulo administarcion de Entrada de Clasificaciòn
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_VALORACION_ENTRADA_CLASIFICACION, true,
+                "Valoraciòn de Entrada Clasificaciòn",
+                "Administrador de valoracion de entrada clasificacion",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(ValoracionEntradaClasificacion) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
 
             return l;
         }

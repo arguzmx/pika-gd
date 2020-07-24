@@ -10,12 +10,26 @@ namespace PIKA.Servicio.GestionDocumental
         public static ElementoClasificacion Copia(this ElementoClasificacion d)
         {
             if (d == null) return null;
-            return new ElementoClasificacion()
+            var e= new ElementoClasificacion()
             {
                 Id = d.Id,
                 Nombre = d.Nombre,
-                Eliminada = d.Eliminada
+                Eliminada = d.Eliminada,
+                CuadroClasifiacionId=d.CuadroClasifiacionId,
+                ElementoClasificacionId=d.ElementoClasificacionId,
+                Activos=d.Activos,
+                Clave=d.Clave,
+                Posicion=d.Posicion
             };
+            if (d.Padre != null) 
+            {
+                e.Padre = d.Padre.Copia();
+            }
+            if (d.CuadroClasificacion != null) 
+            {
+                e.CuadroClasificacion = d.CuadroClasificacion.Copia();
+            }
+            return e;
         }
     }
 }
