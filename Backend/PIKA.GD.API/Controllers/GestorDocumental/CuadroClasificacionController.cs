@@ -75,12 +75,9 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Put(string id, [FromBody]CuadroClasificacion entidad)
         {
-            Console.WriteLine("UPdate-----------------------------------------------------------------" +
-          "..............................................................................");
             var x = ObtieneFiltrosIdentidad();
 
-            Console.WriteLine("UPdate-----------------------------------------------------------------" +
-                "..............................................................................");
+           
             if (id != entidad.Id)
             {
                 return BadRequest();

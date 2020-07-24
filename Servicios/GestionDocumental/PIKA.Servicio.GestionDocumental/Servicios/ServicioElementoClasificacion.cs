@@ -155,16 +155,24 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return listaEliminados;
         }
 
-
-        public Task<IEnumerable<ElementoClasificacion>> CrearAsync(params ElementoClasificacion[] entities)
+        public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
-            throw new NotImplementedException();
+            ElementoClasificacion c;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                c = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (c != null)
+                {
+                    c.Eliminada = false;
+                    UDT.Context.Entry(c).State = EntityState.Modified;
+                    listaEliminados.Add(c.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
         }
-
-        public Task<IEnumerable<ElementoClasificacion>> CrearAsync(IEnumerable<ElementoClasificacion> entities, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+      
 
       
         public async Task<ElementoClasificacion> UnicoAsync(Expression<Func<ElementoClasificacion, bool>> predicado = null, Func<IQueryable<ElementoClasificacion>, IOrderedQueryable<ElementoClasificacion>> ordenarPor = null, Func<IQueryable<ElementoClasificacion>, IIncludableQueryable<ElementoClasificacion, object>> incluir = null, bool inhabilitarSegumiento = true)
@@ -182,7 +190,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             throw new NotImplementedException();
         }
-
+        public Task<IEnumerable<ElementoClasificacion>> CrearAsync(params ElementoClasificacion[] entities)
+        {
+            throw new NotImplementedException();
+        }
         public Task EjecutarSqlBatch(List<string> sqlCommand)
         {
             throw new NotImplementedException();
@@ -197,7 +208,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<string>> Restaurar(string[] ids)
+
+
+        public Task<IEnumerable<ElementoClasificacion>> CrearAsync(IEnumerable<ElementoClasificacion> entities, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

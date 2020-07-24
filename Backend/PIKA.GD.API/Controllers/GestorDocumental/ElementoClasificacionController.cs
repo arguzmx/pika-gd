@@ -141,6 +141,19 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                .Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return Ok(await servicioElemento.Eliminar(lids).ConfigureAwait(false));
         }
-
+        /// <summary>
+        /// Restaura una lista dede Elemento eliminados en base al arreglo de identificadores recibidos
+        /// </summary>
+        /// <param name="ids">Arreglo de identificadores string</param>
+        /// <returns></returns>
+        [HttpPatch("restaurar/{ids}", Name = "restaurarElementoClasificacion")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> Undelete(string ids)
+        {
+            string[] lids = ids.Split(',').ToList()
+            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            return Ok(await servicioElemento.Restaurar(lids).ConfigureAwait(false));
+        }
     }
 }
