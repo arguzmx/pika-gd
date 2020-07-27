@@ -23,13 +23,16 @@ namespace PIKA.Servicio.Contenido.Data.Configuracion
             builder.Property(x => x.TipoOrigenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.OrigenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.CreadorId).HasMaxLength(LongitudDatos.GUID).IsRequired();
-            //builder.Property(x => x.VolumenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
-            builder.Property(x => x.FechaCreacion).HasDefaultValue(DateTime.Now).IsRequired();
+            builder.Property(x => x.FechaCreacion).IsRequired();
+            builder.Property(x => x.VolumenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
+            builder.Property(x => x.CarpetaId).IsRequired(false).HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.PermisoId).HasMaxLength(LongitudDatos.GUID).IsRequired(false);
+            builder.Property(x => x.Versionado).IsRequired().HasDefaultValue(false);
 
-
-            builder.HasOne(x => x.Volumen).WithOne(y => y.Elemento);
-            builder.HasMany(x=>x.Versiones).WithOne(y=>y.Elemento).HasForeignKey(z=>z.ElementoId);
-
+            builder.HasOne(x => x.Permiso).WithMany(y => y.Elementos).HasForeignKey(z => z.PermisoId);
+            builder.HasOne(x => x.Volumen).WithMany(y => y.Elementos).HasForeignKey(z => z.VolumenId);
+            builder.HasMany(x => x.Versiones).WithOne(y => y.Elemento).HasForeignKey(z => z.ElementoId).OnDelete( DeleteBehavior.Restrict);
+            builder.HasMany(x => x.Partes).WithOne(y => y.Elemento).HasForeignKey(z => z.ElementoId).OnDelete(DeleteBehavior.Restrict);
         }
 
 

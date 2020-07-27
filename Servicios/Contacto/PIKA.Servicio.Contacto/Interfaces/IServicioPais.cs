@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Contacto
 {
-    public interface IServicioPais : IServicioRepositorioAsync<Pais, string>, IServicioValorTextoAsync<Pais>
+    public interface IServicioPais : IServicioRepositorioAsync<Pais, string>, 
+        IServicioValorTextoAsync<Pais>
     {
 
     }

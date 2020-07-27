@@ -49,6 +49,8 @@ namespace RepositorioEntidades
 
         Task Eliminar(T enntity);
 
+        Task EliminarRango(List<T> entities);
+
         Task EjecutarSql(string sqlCommand);
 
         Task EjecutarSqlBatch(List<string> sqlCommand);

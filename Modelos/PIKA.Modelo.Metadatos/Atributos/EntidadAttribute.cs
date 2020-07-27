@@ -15,12 +15,17 @@ namespace PIKA.Modelo.Metadatos
         private bool _EliminarLogico;
         private string _Columna;
         private bool _PaginadoRelacional;
+        private string _ColumnaActivar;
+        private bool _OpcionActivar;
 
-        public EntidadAttribute(bool PaginadoRelacional=false, bool EliminarLogico = false, string Columna = "Eliminada")
+        public EntidadAttribute(bool PaginadoRelacional=false, bool EliminarLogico = false, bool OpcionActivar = false,
+           string ColumnaActivar = "", string Columna = "Eliminada")
         {
             this._Columna = EliminarLogico ? Columna :"";
             this._EliminarLogico = EliminarLogico;
             this._PaginadoRelacional = PaginadoRelacional;
+            this._ColumnaActivar = ColumnaActivar;
+            this._OpcionActivar = OpcionActivar;
         }
 
         /// <summary>
@@ -49,6 +54,22 @@ namespace PIKA.Modelo.Metadatos
             get { return _Columna; }
         }
 
+        /// <summary>
+        /// Determina si la entidad tiene un estado que permit amarcarla como activa/inactiva
+        /// </summary>
+      public virtual bool OpcionActivar
+        {
+            get { return _OpcionActivar; }
+        }
+
+        /// <summary>
+        /// Especifica si la entidad permite los estados activo/inactivo a atrvés de la definicón deuna columna 
+        /// logica que almacene esta información
+        /// </summary>
+        public virtual string ColumnaActivar
+        {
+            get { return _ColumnaActivar; }
+        }
 
     }
 }

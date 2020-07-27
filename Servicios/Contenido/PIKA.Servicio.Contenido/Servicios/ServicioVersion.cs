@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
@@ -24,18 +25,14 @@ namespace PIKA.Servicio.Contenido.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<Version> repo;
-        private ICompositorConsulta<Version> compositor;
         private UnidadDeTrabajo<DbContextContenido> UDT;
 
         public ServicioVersion(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-        ICompositorConsulta<Version> compositorConsulta,
-        ILogger<ServicioVersion> Logger,
-        IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+        ILogger<ServicioVersion> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
-            this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<Version>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<Version>( new QueryComposer<Version>());
         }
 
         public async Task<bool> Existe(Expression<Func<Version, bool>> predicado)
@@ -49,41 +46,41 @@ namespace PIKA.Servicio.Contenido.Servicios
         public async Task<Version> CrearAsync(Version entity, CancellationToken cancellationToken = default)
         {
 
-            if (await Existe(x => x.ElementoId.Equals(entity.ElementoId, StringComparison.InvariantCultureIgnoreCase)))
-            {
-                throw new ExElementoExistente(entity.ElementoId);
-            }
-
-            entity.Id = System.Guid.NewGuid().ToString();
-            entity.Partes.FirstOrDefault().VersionId = entity.Id;
-            await this.repo.CrearAsync(entity);
-            UDT.SaveChanges();
             try
             {
 
+                List<Version> versiones = await this.ObtenerAsync(x => x.ElementoId == entity.ElementoId);
+                foreach(var v in versiones)
+                {
+                    v.Activa = false;
+                    this.UDT.Context.Entry(v).State = EntityState.Modified;
+                }
 
-                return ClonaVersion(entity);
+                entity.Id = System.Guid.NewGuid().ToString();
+                entity.Activa = true;
+                entity.FechaCreacion = DateTime.UtcNow;
+                entity.Eliminada = false;
+                entity.TamanoBytes = 0;
+                entity.MaxIndicePartes = 0;
+                entity.ConteoPartes = 0;
+
+                await this.repo.CrearAsync(entity);
+                UDT.SaveChanges();
+
+                return entity.Copia();
+            }
+            catch (DbUpdateException)
+            {
+                throw new ExErrorRelacional("El identificador del elemento no es válido");
             }
             catch (Exception ex)
             {
-                await this.repo.Eliminar(entity);
-                UDT.SaveChanges();
-                throw (ex);
+                logger.LogError("Error al crear Unidad Organizacional {0}", ex.Message);
+                throw ex;
             }
         }
 
-        private Version ClonaVersion(Version entidad)
-        {
-            Version resuldtado = new Version()
-            {
-                Id = entidad.Id,
-                ElementoId=entidad.ElementoId,
-                FechaActualizacion=entidad.FechaActualizacion,
-                FechaCreacion=entidad.FechaCreacion
-            };
-
-            return resuldtado;
-        }
+   
 
         public async Task ActualizarAsync(Version entity)
         {
@@ -95,15 +92,22 @@ namespace PIKA.Servicio.Contenido.Servicios
                 throw new EXNoEncontrado(entity.Id);
             }
 
-            if (await Existe(x =>
-            x.Id != entity.Id & x.ElementoId == entity.ElementoId ))
+        
+            o.Activa = entity.Activa;
+            o.Eliminada = entity.Eliminada;
+
+            if (entity.Activa)
             {
-                throw new ExElementoExistente(entity.ElementoId);
+                List<Version> versiones = await this.ObtenerAsync(x => 
+                x.Id != entity.Id &&
+                x.ElementoId == entity.ElementoId);
+                foreach (var v in versiones)
+                {
+                    v.Activa = false;
+                    this.UDT.Context.Entry(v).State = EntityState.Modified;
+                }
             }
 
-            o.Activa = entity.Activa;
-            o.FechaActualizacion = entity.FechaActualizacion;
-            o.FechaCreacion = entity.FechaCreacion;
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
@@ -131,6 +135,94 @@ namespace PIKA.Servicio.Contenido.Servicios
             return respuesta;
         }
 
+        public async Task<ICollection<string>> Eliminar(string[] ids)
+        {
+            Version d;
+            bool activaEliminada = false;
+            string elementoId = "";
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids.LimpiaIds())
+            {
+                d = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (d != null)
+                {
+                    if (d.Activa)
+                    {
+                        activaEliminada = true;
+                        elementoId = d.ElementoId;
+                    }
+                    d.Eliminada = true;
+                    UDT.Context.Entry(d).State = EntityState.Modified;
+                    listaEliminados.Add(d.Id);
+                }
+            }
+
+            if (activaEliminada)
+            { 
+                    List<Version> versiones = await this.repo.ObtenerAsync(
+                        x => x.ElementoId == elementoId && x.Eliminada == false , 
+                         x => x.OrderByDescending(y=>y.FechaCreacion)
+                    );
+
+                foreach(var v in versiones)
+                {
+                    if (!ids.Contains(v.Id))
+                    {
+                        v.Activa = true;
+                        this.UDT.Context.Entry(v).State = EntityState.Modified;
+                        break;
+                    }
+                }
+                 
+
+            }
+
+            UDT.SaveChanges();
+            return listaEliminados;
+        }
+
+
+        public async Task<IEnumerable<string>> Restaurar(string[] ids)
+        {
+            Version d;
+            ICollection<string> lista = new HashSet<string>();
+            foreach (var Id in ids.LimpiaIds())
+            {
+                d = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (d != null)
+                {
+                    d.Eliminada = false;
+                    this.UDT.Context.Entry(d).State = EntityState.Modified;
+                    lista.Add(d.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return lista;
+        }
+
+        public Task<List<Version>> ObtenerAsync(Expression<Func<Version, bool>> predicado)
+        {
+            return this.repo.ObtenerAsync(predicado);
+        }
+
+
+        public Task<List<Version>> ObtenerAsync(string SqlCommand)
+        {
+            return this.repo.ObtenerAsync(SqlCommand);
+        }
+
+
+        public async Task<Version> UnicoAsync(Expression<Func<Version, bool>> predicado = null, Func<IQueryable<Version>, IOrderedQueryable<Version>> ordenarPor = null, Func<IQueryable<Version>, IIncludableQueryable<Version, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+
+            Version d = await this.repo.UnicoAsync(predicado);
+
+            return d.Copia();
+        }
+
+
+        #region No Implementado
+
         public Task<IEnumerable<Version>> CrearAsync(params Version[] entities)
         {
             throw new NotImplementedException();
@@ -151,54 +243,17 @@ namespace PIKA.Servicio.Contenido.Servicios
             throw new NotImplementedException();
         }
 
-        public async Task<ICollection<string>> Eliminar(string[] ids)
-        {
-            Version d;
-            ICollection<string> listaEliminados = new HashSet<string>();
-            foreach (var Id in ids)
-            {
-                d = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (d != null)
-                {
-                    d.Eliminada = true;
-                    UDT.Context.Entry(d).State = EntityState.Modified;
-                    listaEliminados.Add(d.Id);
-                }
-            }
-            UDT.SaveChanges();
-            return listaEliminados;
-        }
-
-        public Task<List<Version>> ObtenerAsync(Expression<Func<Version, bool>> predicado)
-        {
-            return this.repo.ObtenerAsync(predicado);
-        }
-
-        public Task<List<Version>> ObtenerAsync(string SqlCommand)
-        {
-            return this.repo.ObtenerAsync(SqlCommand);
-        }
-
         public Task<IPaginado<Version>> ObtenerPaginadoAsync(Expression<Func<Version, bool>> predicate = null, Func<IQueryable<Version>, IOrderedQueryable<Version>> orderBy = null, Func<IQueryable<Version>, IIncludableQueryable<Version, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
 
+        #endregion
 
-        public Task<IEnumerable<string>> Restaurar(string[] ids)
-        {
-            throw new NotImplementedException();
-        }
 
-        public async Task<Version> UnicoAsync(Expression<Func<Version, bool>> predicado = null, Func<IQueryable<Version>, IOrderedQueryable<Version>> ordenarPor = null, Func<IQueryable<Version>, IIncludableQueryable<Version, object>> incluir = null, bool inhabilitarSegumiento = true)
-        {
 
-            Version d = await this.repo.UnicoAsync(predicado);
 
-           
-            return d.CopiaVersion();
-        }
 
     }
 

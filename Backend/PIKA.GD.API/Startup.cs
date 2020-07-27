@@ -70,8 +70,7 @@ namespace PIKA.GD.API
 
 
 
-            //registra los ensamblados validables
-            services.RegistraValidables();
+      
 
             //registra los ensamblados con módulos administrables para  ACL 
             services.RegistraMódulosAdministrados();
@@ -116,9 +115,7 @@ namespace PIKA.GD.API
                   options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
             
-            services.AddDbContext<DbContextContenido>(options =>
-               options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-
+ 
            
 
             services.AddDbContext<DbContextMetadatos>(options =>
@@ -142,6 +139,12 @@ namespace PIKA.GD.API
             services.AddDbContext<DBContextGestionDocumental>(options =>
               options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
+
+            services.AddDbContext<DbContextContenido>(options =>
+    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
+            //registra los ensamblados validables
+            services.RegistraValidables();
             services.AddControllers();
 
 

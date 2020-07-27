@@ -42,16 +42,7 @@ namespace PIKA.GD.API
 
 
             Log.Logger.Information("Tipos validables registrados automáticamente");
-            foreach (var t in ensambladosValidables)
-            {
-                Log.Logger.Information("{Tipo}", t);
-            }
-
-            foreach (string item in ensambladosValidables)
-            {
-                ensambladosValidacion.Add(Assembly.LoadFrom(item));
-            }
-
+       
 
             services.AddMvc(options =>
             {
@@ -64,7 +55,13 @@ namespace PIKA.GD.API
             {
                 opt.LocalizationEnabled = false;
                 opt.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
-                opt.RegisterValidatorsFromAssemblies(ensambladosValidacion);
+
+                foreach (string item in ensambladosValidables)
+                {
+                    Log.Logger.Information("{Tipo}", item);
+                    opt.RegisterValidatorsFromAssembly( Assembly.LoadFrom(item));
+                }
+                //opt.RegisterValidatorsFromAssemblies(ensambladosValidacion);
             });
 
 

@@ -16,13 +16,9 @@ namespace PIKA.Servicio.Contenido.Data.Configuracion
             builder.HasKey(x =>x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
-
-            builder.Property(x=>x.Volumenid).HasMaxLength(LongitudDatos.GUID).IsRequired();
-
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
-            builder.Property(x => x.Eliminada).HasDefaultValue(false).IsRequired();
 
-            builder.HasMany(x => x.Volumenes).WithOne(y=>y.TipoGestorES).HasForeignKey(z=>z.TipoGestorESId);
+            builder.HasMany(x => x.Volumenes).WithOne(y=>y.TipoGestorES).HasForeignKey(z=>z.TipoGestorESId).OnDelete(DeleteBehavior.Restrict);
 
         }
     }

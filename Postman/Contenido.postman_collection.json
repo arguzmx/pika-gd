@@ -1,0 +1,4103 @@
+{
+	"info": {
+		"_postman_id": "4de5238c-fdda-481d-8da3-28df4365f22d",
+		"name": "Contenido",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "TipoGestorES",
+			"item": [
+				{
+					"name": "POST TipoGestorES",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \t\"Nombre\": \"GestorDemo Nuevo\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/tipogestores/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"tipogestores",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Metadata TipoGestoresES",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/tipogestores/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"tipogestores",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT GestoresES",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\": \"ca7a1c1a-46f4-4f6d-a13e-9907f34397c9\",\n\t\"nombre\": \"Nombre cambiado\",\n\t\"TipoOrigenId\": \"global\",\n\t\"OrigenId\": \"global\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/dominio/ca7a1c1a-46f4-4f6d-a13e-9907f34397c9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"dominio",
+								"ca7a1c1a-46f4-4f6d-a13e-9907f34397c9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Dominio",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/tipogestores/ff2c568e-a085-40f3-9515-4aca78785640",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"tipogestores",
+								"ff2c568e-a085-40f3-9515-4aca78785640"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE GestoresES",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/tipogestores/page?i=0&t=10&ordc=Nombre&ordd=asc&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=cam",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"tipogestores",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Nombre"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Nombre"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "cam"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE GestorES",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/tipogestores/1f522157-ba10-49b2-8d4b-7208b31f85e9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"tipogestores",
+								"1f522157-ba10-49b2-8d4b-7208b31f85e9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Pares GestorES",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/tipogestores/pares?i=0&t=5&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=s",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"tipogestores",
+								"pares"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "5"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Nombre"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "s"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Pares GestorES Typeahead",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/tipogestores/pares?i=0&t=5&f[0][p]=TExto&f[0][o]=starts&f[0][v]=b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"tipogestores",
+								"pares"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "5"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "TExto"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "starts"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "b"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Pares GestorES por ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/tipogestores/pares/smb,azure-blob",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"tipogestores",
+								"pares",
+								"smb,azure-blob"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Administra los tipos de gestores de E/S",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Permisos",
+			"item": [
+				{
+					"name": "GET Metadata Permiso",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/permiso/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"permiso",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Permiso",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"Leer\": true,\n\t\"Escribir\": true,\n\t\"Crear\": true,\n\t\"Eliminar\": true,\n\t\"Destinatarios\": [\n\t\t{\n\t\t\t\"DestinatarioId\": \"usuariosid\",\n\t\t\t\"EsGrupo\": false\n\t\t},\n\t\t{\n\t\t\t\"DestinatarioId\": \"grupois\",\n\t\t\t\"EsGrupo\": true\n\t\t}\n\t]\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/permiso/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"permiso",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Permiso",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"Id\": \"01e8688e-8737-4334-b35d-ea6e91a2f0ef\",\n\t\"Leer\": true,\n\t\"Escribir\": true,\n\t\"Crear\": false,\n\t\"Eliminar\": false,\n\t\"Destinatarios\": [\n\t\t{\n\t\t\t\"DestinatarioId\": \"usuariosidv4\",\n\t\t\t\"EsGrupo\": false\n\t\t},\n\t\t{\n\t\t\t\"DestinatarioId\": \"grupoidv4\",\n\t\t\t\"EsGrupo\": true\n\t\t}\n\t]\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/permiso/01e8688e-8737-4334-b35d-ea6e91a2f0ef",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"permiso",
+								"01e8688e-8737-4334-b35d-ea6e91a2f0ef"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Permiso",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/permiso/01e8688e-8737-4334-b35d-ea6e91a2f0ef",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"permiso",
+								"01e8688e-8737-4334-b35d-ea6e91a2f0ef"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Permisos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/permiso/page?i=0&t=10&ordc=Id&ordd=asc&f[0][p]=Leer&f[0][o]=eq&f[0][v]=true",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"permiso",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Id"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Leer"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "eq"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Permiso",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/permiso/01e8688e-8737-4334-b35d-ea6e91a2f0ef",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"permiso",
+								"01e8688e-8737-4334-b35d-ea6e91a2f0ef"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Administra los tipos de gestores de E/S",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Destinatarios permisos",
+			"item": [
+				{
+					"name": "GET Metadata Destinatario Permiso",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/destinatariopermiso/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"destinatariopermiso",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Destinatario Permiso",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"PermisoId\": \"8d090d58-b103-437c-8bd5-82afbf88a6c0\",\n\t\"DestinatarioId\": \"grupo\",\n\t\"EsGrupo\" : true\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/destinatariopermiso/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"destinatariopermiso",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Destinatario Permiso",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/destinatariopermiso/8d090d58-b103-437c-8bd5-82afbf88a6c0/grupo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"destinatariopermiso",
+								"8d090d58-b103-437c-8bd5-82afbf88a6c0",
+								"grupo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Destinatarios Permisos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/destinatariopermiso/page/permiso/8d090d58-b103-437c-8bd5-82afbf88a6c0?i=0&t=10&ordc=PermisoId&ordd=asc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"destinatariopermiso",
+								"page",
+								"permiso",
+								"8d090d58-b103-437c-8bd5-82afbf88a6c0"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "PermisoId"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Destinatario Permisos",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/destinatariopermiso/8d090d58-b103-437c-8bd5-82afbf88a6c0/grupo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"destinatariopermiso",
+								"8d090d58-b103-437c-8bd5-82afbf88a6c0",
+								"grupo"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Administra los tipos de gestores de E/S",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Volumenes",
+			"item": [
+				{
+					"name": "GET Metadata Volumen",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/volumen/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"volumen",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Volumen",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t \"TipoGestorESId\": \"SMB\",\n\t \"TipoOrigenId\": \"aaaaa\",\n\t \"OrigenId\": \"ou123\",\n\t \"Nombre\": \"Volumen0333\",\n\t \"TamanoMaximo\": 10\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/volumen/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"volumen",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Volumen",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Id\": \"5aeb6189-baae-4d42-a8bb-c35964ec9c0b\",\n    \"TipoGestorESId\": \"folder\",\n    \"TipoOrigenId\": \"aaaaa\",\n    \"OrigenId\": \"ou123\",\n    \"Activo\": true,\n    \"EscrituraHabilitada\": true,\n    \"Nombre\": \"Volumen0054\",\n    \"Eliminada\": false,\n    \"TamanoMaximo\": 50\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/volumen/5aeb6189-baae-4d42-a8bb-c35964ec9c0b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"volumen",
+								"5aeb6189-baae-4d42-a8bb-c35964ec9c0b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Volumen",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/volumen/5aeb6189-baae-4d42-a8bb-c35964ec9c0b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"volumen",
+								"5aeb6189-baae-4d42-a8bb-c35964ec9c0b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Volumenes",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/volumen/page?i=0&t=10&ordc=Id&ordd=asc&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"volumen",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Id"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Nombre"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Volumen",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/volumen/69e849dd-bb7e-44b0-8b01-b1d3de31a7e2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"volumen",
+								"69e849dd-bb7e-44b0-8b01-b1d3de31a7e2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REATAURAR Volumen",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/volumen/restaurar/69e849dd-bb7e-44b0-8b01-b1d3de31a7e2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"volumen",
+								"restaurar",
+								"69e849dd-bb7e-44b0-8b01-b1d3de31a7e2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Administra los tipos de gestores de E/S",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Puntos Montaje",
+			"item": [
+				{
+					"name": "GET Metadata Punto Montaje",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/puntomontaje/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"puntomontaje",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Punto Montaje",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t \"TipoOrigenId\": \"TipoOrigenId\",\n\t \"OrigenId\": \"OrigenId\",\n\t \"Nombre\": \"Punto M 0001\",\n\t \"CreadorId\": \"CreadorId\",\n\t \"VolumenDefaultId\": \"69e849dd-bb7e-44b0-8b01-b1d3de31a7e2\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/puntomontaje/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"puntomontaje",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Punto Montaje",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"TipoOrigenId\": \"TipoOrigenId\",\n    \"OrigenId\": \"OrigenId\",\n    \"Nombre\": \"Punto M 0001\",\n    \"Eliminada\": false,\n    \"VolumenDefaultId\": \"ce506524-a3f2-420b-9c47-4eb5ecd591c8\",\n    \"Id\": \"91e66954-2938-476e-9998-9ffdc97c0601\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/puntomontaje/91e66954-2938-476e-9998-9ffdc97c0601",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"puntomontaje",
+								"91e66954-2938-476e-9998-9ffdc97c0601"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Punto Montaje",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/puntomontaje/91e66954-2938-476e-9998-9ffdc97c0601",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"puntomontaje",
+								"91e66954-2938-476e-9998-9ffdc97c0601"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Puntos Montaje",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/puntomontaje/page?i=0&t=10&ordc=Id&ordd=asc&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"puntomontaje",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Id"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Nombre"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Punto Montaje",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/puntomontaje/91e66954-2938-476e-9998-9ffdc97c0601",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"puntomontaje",
+								"91e66954-2938-476e-9998-9ffdc97c0601"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REATAURAR Punto Montaje",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/puntomontaje/restaurar/91e66954-2938-476e-9998-9ffdc97c0601",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"puntomontaje",
+								"restaurar",
+								"91e66954-2938-476e-9998-9ffdc97c0601"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Administra los tipos de gestores de E/S",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Volumenes de puntos de montaje",
+			"item": [
+				{
+					"name": "GET Metadata Volumen de punto de montaje",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/volumenpuntomontaje/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"volumenpuntomontaje",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Volumen de punto de montaje",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"VolumenId\": \"fedf357a-deea-452a-adf7-e0cf02790987\",\n\t\"PuntoMontajeId\": \"91e66954-2938-476e-9998-9ffdc97c0601\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/volumenpuntomontaje/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"volumenpuntomontaje",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Volumen de punto de pontaje",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/volumenpuntomontaje/91e66954-2938-476e-9998-9ffdc97c0601/ce506524-a3f2-420b-9c47-4eb5ecd591c8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"volumenpuntomontaje",
+								"91e66954-2938-476e-9998-9ffdc97c0601",
+								"ce506524-a3f2-420b-9c47-4eb5ecd591c8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Volumnes punto de montaje",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/volumenpuntomontaje/page/puntomontaje/91e66954-2938-476e-9998-9ffdc97c0601?i=0&t=10&ordc=PuntoMontajeId&ordd=asc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"volumenpuntomontaje",
+								"page",
+								"puntomontaje",
+								"91e66954-2938-476e-9998-9ffdc97c0601"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "PuntoMontajeId"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Volumen punto de montaje",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/volumenpuntomontaje/91e66954-2938-476e-9998-9ffdc97c0601/fedf357a-deea-452a-adf7-e0cf02790987",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"volumenpuntomontaje",
+								"91e66954-2938-476e-9998-9ffdc97c0601",
+								"fedf357a-deea-452a-adf7-e0cf02790987"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Administra los tipos de gestores de E/S",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Carpetas",
+			"item": [
+				{
+					"name": "GET Metadata Carpeta",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/carpeta/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"carpeta",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Carpeta Raiz",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t  \"PuntoMontajeId\": \"91e66954-2938-476e-9998-9ffdc97c0601\",\n\t  \"CreadorId\": \"CreadorId\",\n\t  \"Nombre\": \"Raiz II\",\n\t  \"EsRaiz\": true\n\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/carpeta/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"carpeta",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Carpeta Subcarpeta",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t  \"PuntoMontajeId\": \"91e66954-2938-476e-9998-9ffdc97c0601\",\n\t  \"CreadorId\": \"CreadorId\",\n\t  \"Nombre\": \"Caprte Hija 2\",\n\t  \"CarpetaPadreId\": \"14ad8da3-b6f9-4ab3-8b0a-98bec0034d00\",\n\t  \"EsRaiz\": false\n\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/carpeta/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"carpeta",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Carpeta",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"PuntoMontajeId\": \"91e66954-2938-476e-9998-9ffdc97c0601\",\n    \"Id\": \"14ad8da3-b6f9-4ab3-8b0a-98bec0034d00\",\n    \"CreadorId\": \"CreadorId\",\n    \"Nombre\": \"Carpeta Raiz\",\n    \"Eliminada\": false,\n    \"CarpetaPadreId\": null,\n    \"EsRaiz\": true\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/carpeta/14ad8da3-b6f9-4ab3-8b0a-98bec0034d00",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"carpeta",
+								"14ad8da3-b6f9-4ab3-8b0a-98bec0034d00"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Carpeta",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/carpeta/14ad8da3-b6f9-4ab3-8b0a-98bec0034d00",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"carpeta",
+								"14ad8da3-b6f9-4ab3-8b0a-98bec0034d00"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Carpetas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/carpeta/page?i=0&t=10&ordc=Id&ordd=asc&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=?&f[0][n]=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"carpeta",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Id"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Nombre"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "?"
+								},
+								{
+									"key": "f[0][n]",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Carpeta",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/carpeta/14ad8da3-b6f9-4ab3-8b0a-98bec0034d00",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"carpeta",
+								"14ad8da3-b6f9-4ab3-8b0a-98bec0034d00"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REATAURAR Carpeta",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/volumen/restaurar/69e849dd-bb7e-44b0-8b01-b1d3de31a7e2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"volumen",
+								"restaurar",
+								"69e849dd-bb7e-44b0-8b01-b1d3de31a7e2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Carpeta Jerarquia Raices",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/carpeta/jerarquia/raices/91e66954-2938-476e-9998-9ffdc97c0601/0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"carpeta",
+								"jerarquia",
+								"raices",
+								"91e66954-2938-476e-9998-9ffdc97c0601",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Carpeta Jerarquia Hijos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/carpeta/jerarquia/hijos/91e66954-2938-476e-9998-9ffdc97c0601/14ad8da3-b6f9-4ab3-8b0a-98bec0034d00/100",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"carpeta",
+								"jerarquia",
+								"hijos",
+								"91e66954-2938-476e-9998-9ffdc97c0601",
+								"14ad8da3-b6f9-4ab3-8b0a-98bec0034d00",
+								"100"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Administra los tipos de gestores de E/S",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Elementos",
+			"item": [
+				{
+					"name": "GET Metadata Elemento",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/elemento/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"elemento",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Elemento",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \"Nombre\": \"Elemento 003\",\n \"TipoOrigenId\": \"TipoOrigenId\",\n \"OrigenId\": \"OrigenId\",\n \"CreadorId\": \"CreadorId\",\n \"VolumenId\": \"ce506524-a3f2-420b-9c47-4eb5ecd591c8\",\n \"CarpetaId\": \"93f60d54-0ac8-4bc9-93a6-36272881b8fe\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/elemento/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"elemento",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Elemento",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Id\": \"6749a561-3151-44ef-bd91-0763dbf5a894\",\n    \"Nombre\": \"Elemento 003a\",\n    \"Eliminada\": true,\n    \"TipoOrigenId\": \"TipoOrigenId\",\n    \"OrigenId\": \"OrigenId\",\n    \"VolumenId\": \"ce506524-a3f2-420b-9c47-4eb5ecd591c8\",\n    \"CarpetaId\": \"93f60d54-0ac8-4bc9-93a6-36272881b8fe\",\n    \"PermisoId\": null,\n    \"Versionado\": true\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/elemento/6749a561-3151-44ef-bd91-0763dbf5a894",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"elemento",
+								"6749a561-3151-44ef-bd91-0763dbf5a894"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Elemento",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/elemento/6749a561-3151-44ef-bd91-0763dbf5a894",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"elemento",
+								"6749a561-3151-44ef-bd91-0763dbf5a894"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Elemento",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/elemento/page?i=0&t=10&ordc=Id&ordd=asc&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=?&f[0][n]=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"elemento",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Id"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Nombre"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "?"
+								},
+								{
+									"key": "f[0][n]",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Elemento",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/elemento/6749a561-3151-44ef-bd91-0763dbf5a894",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"elemento",
+								"6749a561-3151-44ef-bd91-0763dbf5a894"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REATAURAR Elemento",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/elemento/restaurar/6749a561-3151-44ef-bd91-0763dbf5a894",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"elemento",
+								"restaurar",
+								"6749a561-3151-44ef-bd91-0763dbf5a894"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Administra los tipos de gestores de E/S",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Versiones",
+			"item": [
+				{
+					"name": "GET Metadata Version",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/version/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"version",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Version",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \"ElementoId\": \"6749a561-3151-44ef-bd91-0763dbf5a894\",\n \"CreadorId\": \"CreadorId\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/version/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"version",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Version",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Id\": \"95db1481-6ed7-4281-a799-5550c765fa62\",\n    \"ElementoId\": \"6749a561-3151-44ef-bd91-0763dbf5a894\",\n    \"Activa\": false,\n    \"Eliminada\": true\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/version/95db1481-6ed7-4281-a799-5550c765fa62",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"version",
+								"95db1481-6ed7-4281-a799-5550c765fa62"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Version",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/version/95db1481-6ed7-4281-a799-5550c765fa62",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"version",
+								"95db1481-6ed7-4281-a799-5550c765fa62"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Version",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/version/page?i=0&t=10&ordc=Id&ordd=asc&f[0][p]=ElementoId&f[0][o]=contains&f[0][v]=?&f[0][n]=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"version",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Id"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "ElementoId"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "?"
+								},
+								{
+									"key": "f[0][n]",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Version",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/version/95db1481-6ed7-4281-a799-5550c765fa62",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"version",
+								"95db1481-6ed7-4281-a799-5550c765fa62"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REATAURAR Version",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/version/restaurar/95db1481-6ed7-4281-a799-5550c765fa62",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"version",
+								"restaurar",
+								"95db1481-6ed7-4281-a799-5550c765fa62"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Administra los tipos de gestores de E/S",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Parte",
+			"item": [
+				{
+					"name": "GET Metadata Parte",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/parte/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"parte",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Parte",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ElementoId\": \"6749a561-3151-44ef-bd91-0763dbf5a894\",\n  \"VersionId\": \"9292edfb-2841-4589-a30c-3ba77535c58e\",\n  \"TipoMime\": \"txt\",\n  \"LongitudBytes\": 55,\n  \"NombreOriginal\": \"Ejmeplo txt\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/parte/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"parte",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Parte",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Id\": \"9a4ff9a7-f848-4427-8ef0-828bb5446178\",\n    \"VersionId\": \"9292edfb-2841-4589-a30c-3ba77535c58e\",\n    \"TipoMime\": \"txt\",\n    \"Indice\": 10,\n    \"LongitudBytes\": 1500\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/parte/9a4ff9a7-f848-4427-8ef0-828bb5446178",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"parte",
+								"9a4ff9a7-f848-4427-8ef0-828bb5446178"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Parte",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/parte/9a4ff9a7-f848-4427-8ef0-828bb5446178",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"parte",
+								"9a4ff9a7-f848-4427-8ef0-828bb5446178"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Parte",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/parte/page?i=0&t=10&ordc=Id&ordd=asc&f[0][p]=VersionId&f[0][o]=contains&f[0][v]=?&f[0][n]=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"parte",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "Id"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "VersionId"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "?"
+								},
+								{
+									"key": "f[0][n]",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Parte",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/parte/9a4ff9a7-f848-4427-8ef0-828bb5446178",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"parte",
+								"9a4ff9a7-f848-4427-8ef0-828bb5446178"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REATAURAR Parte",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/parte/restaurar/9a4ff9a7-f848-4427-8ef0-828bb5446178",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"parte",
+								"restaurar",
+								"9a4ff9a7-f848-4427-8ef0-828bb5446178"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Administra los tipos de gestores de E/S",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Gestor Almacenamiento Local",
+			"item": [
+				{
+					"name": "GET Metadata Gestor Almacenamiento Local",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorlocalconfig/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorlocalconfig",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Gestor Almacenamiento Local",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"VolumenId\": \"69e849dd-bb7e-44b0-8b01-b1d3de31a7e2\",\n  \"Ruta\": \"c:\\\\algo\\\\otro\\\\algo\\\\otro\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorlocalconfig/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorlocalconfig",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Gestor Almacenamiento Local",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"VolumenId\": \"065bba4a-9366-4cbf-aa15-6162e0765f29\",\n  \"Ruta\": \"c:\\\\algo\\\\otro\\\\algo\\\\jajaja\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorlocalconfig/065bba4a-9366-4cbf-aa15-6162e0765f29",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorlocalconfig",
+								"065bba4a-9366-4cbf-aa15-6162e0765f29"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Gestor Almacenamiento Local",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorlocalconfig/065bba4a-9366-4cbf-aa15-6162e0765f29",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorlocalconfig",
+								"065bba4a-9366-4cbf-aa15-6162e0765f29"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Gestor Almacenamiento Local",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorlocalconfig/page?i=0&t=10&ordc=VolumenId&ordd=asc&f[0][p]=VolumenId&f[0][o]=contains&f[0][v]=?&f[0][n]=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorlocalconfig",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "VolumenId"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "VolumenId"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "?"
+								},
+								{
+									"key": "f[0][n]",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Gestor Almacenamiento Local",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorlocalconfig/69e849dd-bb7e-44b0-8b01-b1d3de31a7e2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorlocalconfig",
+								"69e849dd-bb7e-44b0-8b01-b1d3de31a7e2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Administra los tipos de gestores de E/S",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Gestor Almacenamiento SMB",
+			"item": [
+				{
+					"name": "GET Metadata Gestor Almacenamiento SMB",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorsmbconfig/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorsmbconfig",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Gestor Almacenamiento SMB",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"VolumenId\": \"69e849dd-bb7e-44b0-8b01-b1d3de31a7e2\",\n  \"Ruta\": \"\\\\\\\\127.0.0.1\\\\algo\\\\otro\\\\algo\\\\otro\",\n  \"Dominio\": \"Dominio\",\n  \"Usuario\": \"Usuario\",\n  \"Contrasena\": \"Contrasena\"\n}\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorsmbconfig/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorsmbconfig",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Gestor Almacenamiento SMB",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"VolumenId\": \"69e849dd-bb7e-44b0-8b01-b1d3de31a7e2\",\n    \"Ruta\": \"\\\\\\\\127.0.0.11\\\\algo\\\\otro\\\\algo\\\\otro\",\n    \"Dominio\": \"Dominio\",\n    \"Usuario\": \"Usuario\",\n    \"Contrasena\": \"Contrasena01\",\n    \"Volumen\": null\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorsmbconfig/69e849dd-bb7e-44b0-8b01-b1d3de31a7e2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorsmbconfig",
+								"69e849dd-bb7e-44b0-8b01-b1d3de31a7e2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Gestor Almacenamiento SMB",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorsmbconfig/69e849dd-bb7e-44b0-8b01-b1d3de31a7e2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorsmbconfig",
+								"69e849dd-bb7e-44b0-8b01-b1d3de31a7e2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Gestor Almacenamiento SMB",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorsmbconfig/page?i=0&t=10&ordc=VolumenId&ordd=asc&f[0][p]=VolumenId&f[0][o]=contains&f[0][v]=?&f[0][n]=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorsmbconfig",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "VolumenId"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "VolumenId"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "?"
+								},
+								{
+									"key": "f[0][n]",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Gestor Almacenamiento SMB",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorsmbconfig/69e849dd-bb7e-44b0-8b01-b1d3de31a7e2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorsmbconfig",
+								"69e849dd-bb7e-44b0-8b01-b1d3de31a7e2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Administra los tipos de gestores de E/S",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Gestor Almacenamiento Azure",
+			"item": [
+				{
+					"name": "GET Metadata Gestor Almacenamiento Azure",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorazureconfig/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorazureconfig",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Gestor Almacenamiento Azure",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"VolumenId\": \"69e849dd-bb7e-44b0-8b01-b1d3de31a7e2\",\n  \"Endpoint\": \"http://127.0.0.1\",\n  \"Usuario\": \"Usuario\",\n  \"Contrasena\": \"Contrasena\"\n}\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorazureconfig/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorazureconfig",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Gestor Almacenamiento Azure",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"VolumenId\": \"69e849dd-bb7e-44b0-8b01-b1d3de31a7e2\",\n    \"Endpoint\": \"http://127.0.0.11\",\n    \"Usuario\": \"Usuario01\",\n    \"Contrasena\": \"Contrasena01\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorazureconfig/69e849dd-bb7e-44b0-8b01-b1d3de31a7e2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorazureconfig",
+								"69e849dd-bb7e-44b0-8b01-b1d3de31a7e2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Gestor Almacenamiento Azure",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorazureconfig/69e849dd-bb7e-44b0-8b01-b1d3de31a7e2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorazureconfig",
+								"69e849dd-bb7e-44b0-8b01-b1d3de31a7e2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Gestor Almacenamiento Azure",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorazureconfig/page?i=0&t=10&ordc=VolumenId&ordd=asc&f[0][p]=VolumenId&f[0][o]=contains&f[0][v]=?&f[0][n]=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorazureconfig",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "VolumenId"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "VolumenId"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "?"
+								},
+								{
+									"key": "f[0][n]",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Gestor Almacenamiento Azure",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/contenido/gestorazureconfig/69e849dd-bb7e-44b0-8b01-b1d3de31a7e2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"contenido",
+								"gestorazureconfig",
+								"69e849dd-bb7e-44b0-8b01-b1d3de31a7e2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Administra los tipos de gestores de E/S",
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "a2e3c9ed-b3ee-49a7-a132-557c0cdcc68a",
+				"type": "text/javascript",
+				"exec": [
+					"const echoPostRequest = {",
+					"  url: 'http://localhost:4000/connect/token',",
+					"  method: 'POST',",
+					"  header: 'Content-Type:application/x-www-form-urlencoded',",
+					"  body: {",
+					"    mode: 'raw',",
+					"    raw: 'grant_type=password&username=bob&password=Pass123%24&scope=openid%20pika-gd&client_id=api-pika-gd-pass&client_secret=secret'",
+					"  }",
+					"};",
+					"",
+					"var getToken = true;",
+					"",
+					"if (!pm.environment.get('accessTokenExpiry') || ",
+					"    !pm.environment.get('accessToken')) {",
+					"    console.log('Token or expiry date are missing')",
+					"} else if (pm.environment.get('accessTokenExpiry') <= (new Date()).getTime()) {",
+					"    console.log('Token is expired')",
+					"} else {",
+					"    getToken = false;",
+					"    console.log('Token and expiry date are all good');",
+					"}",
+					"",
+					"if (getToken === true) {",
+					"    pm.sendRequest(echoPostRequest, function (err, res) {",
+					"    console.log(err ? err : res.json());",
+					"        if (err === null) {",
+					"            console.log('Saving the token and expiry date')",
+					"            var responseJson = res.json();",
+					"            pm.environment.set('accessToken', responseJson.access_token)",
+					"    ",
+					"            var expiryDate = new Date();",
+					"            expiryDate.setSeconds(expiryDate.getSeconds() + responseJson.expires_in);",
+					"            pm.environment.set('accessTokenExpiry', expiryDate.getTime());",
+					"        }",
+					"    });",
+					"}",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "14b0ee5b-fd9a-4683-8659-32ea423b77f2",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "6768cb65-fa22-474b-a76b-987d000c4361",
+			"key": "accessTokenExpiry",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "e0c08fe9-2605-49d7-9dba-5f04565f96b1",
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

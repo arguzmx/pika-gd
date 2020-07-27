@@ -177,6 +177,13 @@ namespace RepositorioEntidades
 
         }
 
+        public async Task EliminarRango(List<T> entities)
+        {
+            _dbContext.RemoveRange(entities);
+            await Task.Delay(1);
+
+        }
+
         public async Task<List<T>> ObtenerAsync(string comandoSql)
         {
 

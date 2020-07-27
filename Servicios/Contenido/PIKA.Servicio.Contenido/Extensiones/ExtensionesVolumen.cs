@@ -16,7 +16,6 @@ namespace PIKA.Servicio.Contenido
                 Id = d.Id,
                 Nombre = d.Nombre,
                 Activo = d.Activo,
-                CadenaConexion = d.CadenaConexion,
                 CanidadPartes = d.CanidadPartes,
                 ConsecutivoVolumen = d.ConsecutivoVolumen,
                 Eliminada = d.Eliminada,
@@ -24,7 +23,8 @@ namespace PIKA.Servicio.Contenido
                 OrigenId = d.OrigenId,
                 Tamano = d.Tamano,
                 TipoGestorESId = d.TipoGestorESId,
-                TipoOrigenId = d.TipoOrigenId
+                TipoOrigenId = d.TipoOrigenId, 
+                TamanoMaximo = d.TamanoMaximo
             };
         }
     }

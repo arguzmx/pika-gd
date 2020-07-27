@@ -50,7 +50,7 @@ namespace PIKA.GD.API.Controllers.Contacto
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet("metadata", Name = "MetadataPais")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
+        public async Task<ActionResult<MetadataInfo>> GetMetadata()
         {
             return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
         }
@@ -155,6 +155,7 @@ namespace PIKA.GD.API.Controllers.Contacto
                 .Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return Ok(await servicioEntidad.Eliminar(lids).ConfigureAwait(false));
         }
+
         /// <summary>
         /// Obtiene una lista de paises en base a los parámetros de consulta
         /// </summary>

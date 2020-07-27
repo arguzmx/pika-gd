@@ -22,6 +22,16 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public bool ElminarLogico { get; set; }
 
+        /// <summary>
+        /// Especifica si hay una columna que controle el estaoo activo/inactivo de la enteidad
+        /// </summary>
+        public bool OpcionActivarDesativar { get; set; }
+
+
+        /// <summary>
+        /// Si OpcionActivr es true este campo defina la columna logica para establecer el estado
+        /// </summary>
+        public string ColumnaActivarDesativar { get; set; }
 
         /// <summary>
         /// Especifica si la entidad requiere paginado relacional
