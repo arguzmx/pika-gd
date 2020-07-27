@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Contenido
 {
-    public class Parte : IEntidadEliminada
+    public class Parte : Entidad<string>, IEntidadEliminada 
     {
 
 
@@ -13,7 +15,8 @@ namespace PIKA.Modelo.Contenido
         {
 
         }
-        
+
+        public override string Id { get => base.Id; set => base.Id = value; }
 
         /// <summary>
         /// Id del elemento contenido padre
@@ -22,7 +25,8 @@ namespace PIKA.Modelo.Contenido
         //#GUID requerida, CLAVE PRIAMRIA
 
         /// <summary>
-        /// Version del elemento al que pertenecen las partes
+        /// Version del elemento al que pertenecen las partes, 
+        /// si el elemento no es versionable esta cadena es nula
         /// </summary>
         public string VersionId { get; set; }
         //#GUID requerida, CLAVE PRIAMRIA
@@ -65,8 +69,12 @@ namespace PIKA.Modelo.Contenido
         public bool Eliminada { get; set; }
         //Default=false
 
+        [JsonIgnore]
+        [XmlIgnore]
         public virtual Elemento Elemento { get; set; }
 
+        [JsonIgnore]
+        [XmlIgnore]
         public virtual Version Version { get; set; }
 
     }

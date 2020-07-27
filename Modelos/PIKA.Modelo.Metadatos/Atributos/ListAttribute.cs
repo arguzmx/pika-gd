@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PIKA.Modelo.Metadatos
 {
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = false)]
     public class ListAttribute : Attribute
     {
 

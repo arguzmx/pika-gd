@@ -17,8 +17,20 @@ namespace PIKA.Modelo.Contenido
         public string TipoOrigenDefault => ConstantesModelo.IDORIGEN_UNIDAD_ORGANIZACIONAL;
 
         public Volumen() {
-            this.TipoOrigenId = TipoOrigenDefault;
+            PuntosMontajeVolumen = new HashSet<VolumenPuntoMontaje>();
         }
+
+        /// <summary>
+        ///  Identificdor únio del volumen
+        /// </summary>
+        public override string Id { get => base.Id; set => base.Id = value; }
+
+
+
+        /// <summary>
+        /// Identificador único del  tipo de gestor, es necesario para la configuración
+        /// </summary>
+        public string TipoGestorESId { get; set; }
 
         /// <summary>
         /// Tipo de origen para el volumen puede ser la Unidaorganizacionla o el Dominio dependiendo del grado de 
@@ -43,16 +55,6 @@ namespace PIKA.Modelo.Contenido
         public bool EscrituraHabilitada { get; set; }
         //Requediro defautl =false
 
-        /// <summary>
-        /// Idemntificadorúnido del tipo de gestor
-        /// </summary>
-        public string TipoGestorESId { get; set; }
-
-        /// <summary>
-        /// Datos serializados para el acceso de lectura y excritea del Volumen
-        /// </summary>
-        public string CadenaConexion { get; set; }
-        //# longitud 2000, es requerida
 
         /// <summary>
         /// Nombre únicop del volumen
@@ -78,25 +80,58 @@ namespace PIKA.Modelo.Contenido
         /// </summary>
         public long CanidadPartes { get; set; }
 
+
+        /// <summary>
+        /// Número de elementos contenidas en el volumen
+        /// </summary>
+        public long CanidadElementos { get; set; }
+
         /// <summary>
         /// Tamaño de volumen en bytes
         /// </summary>
         public long Tamano { get; set; }
 
         /// <summary>
+        /// Tamaño maximo del volumen en bytes, 0 indidica ilimitado
+        /// </summary>
+        public long TamanoMaximo { get; set; }
+
+
+        /// <summary>
+        /// Atributo de uso interno queindica se la configuración del volumen es válida
+        /// </summary>
+        public bool ConfiguracionValida { get; set; }
+
+        /// <summary>
         /// Esta propedad eno debe serializarse en la base de datos
         /// </summary>
         [JsonIgnore]
         [XmlIgnore]
-        public TipoGestorES GestorES { get; set; }
-        /// <summary>
-        /// Identificador único del volúmen para el contenido
-        /// </summary>
-        public string Elementoid { get; set; }
-        public virtual Elemento Elemento { get; set; }
+        public TipoGestorES TipoGestorES { get; set; }
 
-        public virtual TipoGestorES TipoGestorES {get;set;}
-        
+        [XmlIgnore]
+        [JsonIgnore]
+        public ICollection<VolumenPuntoMontaje> PuntosMontajeVolumen { get; set; }
+
+        [XmlIgnore]
+        [JsonIgnore]
+        public ICollection<PuntoMontaje> PuntosMontaje { get; set; }
+
+        [XmlIgnore]
+        [JsonIgnore]
+        public ICollection<Elemento> Elementos { get; set; }
+
+        [XmlIgnore]
+        [JsonIgnore]
+        public GestorAzureConfig AxureConfig { get; set; }
+
+        [XmlIgnore]
+        [JsonIgnore]
+        public GestorLocalConfig LocalConfig { get; set; }
+
+        [XmlIgnore]
+        [JsonIgnore]
+        public GestorSMBConfig SMBConfig { get; set; }
     }
 
 }

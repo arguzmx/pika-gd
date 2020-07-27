@@ -6,6 +6,7 @@ namespace RepositorioEntidades
 {
     public class LongitudDatos
     {
+        public static int NombreLargo { get => 500; }
         public static int Nombre { get => 200; }
         public static int GUID { get => 128; }
         public static int Descripcion { get => 500; }

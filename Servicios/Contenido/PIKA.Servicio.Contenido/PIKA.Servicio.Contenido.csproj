@@ -5,10 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Migrations\20200722162025_inicialcontenido.cs" />
+    <Compile Remove="Data\Migrations\20200722162025_inicialcontenido.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200722163218_inicialcontenido.cs" />
+    <Compile Remove="Data\Migrations\20200722163218_inicialcontenido.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
 
     <PackageReference Include="Bogus" Version="29.0.2" />
 
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
+
+    <PackageReference Include="SimpleImpersonation" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>

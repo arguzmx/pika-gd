@@ -59,6 +59,8 @@ namespace PIKA.Modelo.Metadatos
             foreach (object attr in TypeAttrs) {
                 if (attr is EntidadAttribute)
                 {
+                    info.OpcionActivarDesativar = ((EntidadAttribute)attr).OpcionActivar;
+                    info.ColumnaActivarDesativar = ((EntidadAttribute)attr).ColumnaActivar;
                     info.ElminarLogico = ((EntidadAttribute)attr).EliminarLogico;
                     info.ColumaEliminarLogico = ((EntidadAttribute)attr).Columna;
                     info.PaginadoRelacional = ((EntidadAttribute)attr).PaginadoRelacional;

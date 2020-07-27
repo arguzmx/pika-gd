@@ -14,7 +14,6 @@ namespace PIKA.Servicio.Contenido
             {
                 Id = d.Id,
                 Nombre = d.Nombre,
-                Volumenid = d.Volumenid
             };
         }
     }

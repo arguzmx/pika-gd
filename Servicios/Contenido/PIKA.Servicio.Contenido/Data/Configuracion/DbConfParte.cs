@@ -20,14 +20,16 @@ namespace PIKA.Servicio.Contenido.Data.Configuracion
             builder.Property(x => x.ElementoId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.VersionId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
 
-            builder.Property(x=>x.NombreOriginal).HasMaxLength(LongitudDatos.Nombre).IsRequired();
-            builder.Property(x=>x.Indice).HasDefaultValue(0).IsRequired();
-            builder.Property(x=>x.ConsecutivoVolumen).HasDefaultValue(0).IsRequired();
+            builder.Property(x => x.Indice).IsRequired();
+            builder.Property(x => x.ConsecutivoVolumen).IsRequired();
             builder.Property(x => x.TipoMime).HasMaxLength(LongitudDatos.MIME).IsRequired();
-            builder.Property(x=>x.LongitudBytes).HasDefaultValue(0).IsRequired();
+            builder.Property(x => x.LongitudBytes).IsRequired();
+            builder.Property(x=>x.NombreOriginal).HasMaxLength(LongitudDatos.NombreLargo).IsRequired();
             builder.Property(x => x.Eliminada).HasDefaultValue(false).IsRequired();
 
-            builder.HasOne(x => x.Elemento).WithOne(y=>y.Parte);
+
+
+            builder.HasOne(x => x.Elemento).WithMany(y => y.Partes).HasForeignKey(z => z.ElementoId);
             builder.HasOne(x=>x.Version).WithMany(y=>y.Partes).HasForeignKey(z=>z.VersionId);
 
         }

@@ -32,6 +32,11 @@ namespace PIKA.Infraestructura.Comun
         /// </summary>
         public const string IDORIGEN_USUARIO = "usuario";
 
+        /// <summary>
+        /// Identificador de origen para un punto de montaje de contenido
+        /// </summary>
+        public const string IDORIGEN_PUNTO_MONTAJE = "pmontaje";
+
 
     }
 }

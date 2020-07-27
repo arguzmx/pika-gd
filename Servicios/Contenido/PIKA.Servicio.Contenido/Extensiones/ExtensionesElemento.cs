@@ -18,7 +18,11 @@ namespace PIKA.Servicio.Contenido
                 Eliminada = d.Eliminada,
                 FechaCreacion = d.FechaCreacion,
                 OrigenId = d.OrigenId,
-                TipoOrigenId = d.TipoOrigenId
+                TipoOrigenId = d.TipoOrigenId,
+                VolumenId = d.VolumenId,
+                CarpetaId = d.CarpetaId,
+                PermisoId = d.PermisoId,
+                Versionado = d.Versionado
             };
         }
     }

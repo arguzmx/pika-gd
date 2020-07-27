@@ -20,25 +20,20 @@ namespace PIKA.Servicio.Contenido.Servicios
    public class ServicioTipoGestorES : ContextoServicioContenido,
         IServicioInyectable, IServicioTipoGestorES
     {
-        private const string DEFAULT_SORT_COL = "Volumenid";
+        private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<TipoGestorES> repo;
-        private ICompositorConsulta<TipoGestorES> compositor;
         private UnidadDeTrabajo<DbContextContenido> UDT;
 
         public ServicioTipoGestorES(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-        ICompositorConsulta<TipoGestorES> compositorConsulta,
-        ILogger<ServicioTipoGestorES> Logger,
-        IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+            ILogger<ServicioTipoGestorES> Logger
+        ) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
-            this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<TipoGestorES>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<TipoGestorES>(new QueryComposer<TipoGestorES>());
         }
-
-
 
 
 
@@ -60,35 +55,13 @@ namespace PIKA.Servicio.Contenido.Servicios
             }
 
             entity.Id = System.Guid.NewGuid().ToString();
-            entity.Volumenes.FirstOrDefault().Id = System.Guid.NewGuid().ToString();
-            entity.Volumenid = entity.Volumenes.FirstOrDefault().Id;
-            entity.Volumenes.FirstOrDefault().TipoGestorESId = entity.Id;
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            try
-            {
-                return ClonaTipoGEstorES(entity);
-            }
-            catch (Exception ex)
-            {
-                await this.repo.Eliminar(entity);
-                UDT.SaveChanges();
-                throw (ex);
-            }
+            return entity.Copia();
 
         }
-        private TipoGestorES ClonaTipoGEstorES(TipoGestorES entidad)
-        {
-            TipoGestorES resuldtado = new TipoGestorES()
-            {
-                Id = entidad.Id,
-                Nombre=entidad.Nombre,
-                Volumenid=entidad.Volumenid,
-                Eliminada=entidad.Eliminada
-            };
 
-            return resuldtado;
-        }
+
         public async Task ActualizarAsync(TipoGestorES entity)
         {
 
@@ -110,6 +83,7 @@ namespace PIKA.Servicio.Contenido.Servicios
             UDT.SaveChanges();
 
         }
+
         private Consulta GetDefaultQuery(Consulta query)
         {
             if (query != null)
@@ -128,10 +102,81 @@ namespace PIKA.Servicio.Contenido.Servicios
         public async Task<IPaginado<TipoGestorES>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<TipoGestorES>, IIncludableQueryable<TipoGestorES, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             Query = GetDefaultQuery(Query);
-            var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
-
+            var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
             return respuesta;
         }
+
+      
+
+        public async Task<ICollection<string>> Eliminar(string[] ids)
+        {
+            TipoGestorES d;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids.LimpiaIds())
+            {
+                d = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (d != null)
+                {
+                    await this.repo.Eliminar(d);
+                    listaEliminados.Add(d.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
+        }
+
+
+
+        public async Task<TipoGestorES> UnicoAsync(Expression<Func<TipoGestorES, bool>> predicado = null, Func<IQueryable<TipoGestorES>, IOrderedQueryable<TipoGestorES>> ordenarPor = null, Func<IQueryable<TipoGestorES>, IIncludableQueryable<TipoGestorES, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+
+            TipoGestorES d = await this.repo.UnicoAsync(predicado, ordenarPor, incluir);
+
+
+            return d.Copia();
+        }
+
+
+        public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
+        {
+            for (int i = 0; i < Query.Filtros.Count; i++)
+            {
+                if (Query.Filtros[i].Propiedad.ToLower() == "texto")
+                {
+                    Query.Filtros[i].Propiedad = "Nombre";
+                }
+            }
+
+            Query = GetDefaultQuery(Query);
+            var resultados = await this.repo.ObtenerPaginadoAsync(Query);
+            List<ValorListaOrdenada> l = resultados.Elementos.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
+        }
+
+
+        public async Task<List<ValorListaOrdenada>> ObtenerParesPorId(List<string> Lista)
+        {
+            var resultados = await this.repo.ObtenerAsync(x => Lista.Contains(x.Id));
+            List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
+        }
+
+
+
+
+        #region No Implemenatdaos
 
         public Task<IEnumerable<TipoGestorES>> CrearAsync(params TipoGestorES[] entities)
         {
@@ -151,24 +196,6 @@ namespace PIKA.Servicio.Contenido.Servicios
         public Task EjecutarSqlBatch(List<string> sqlCommand)
         {
             throw new NotImplementedException();
-        }
-
-        public async Task<ICollection<string>> Eliminar(string[] ids)
-        {
-            TipoGestorES d;
-            ICollection<string> listaEliminados = new HashSet<string>();
-            foreach (var Id in ids)
-            {
-                d = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (d != null)
-                {
-                    d.Eliminada = true;
-                    UDT.Context.Entry(d).State = EntityState.Modified;
-                    listaEliminados.Add(d.Id);
-                }
-            }
-            UDT.SaveChanges();
-            return listaEliminados;
         }
 
         public Task<List<TipoGestorES>> ObtenerAsync(Expression<Func<TipoGestorES, bool>> predicado)
@@ -192,16 +219,8 @@ namespace PIKA.Servicio.Contenido.Servicios
         {
             throw new NotImplementedException();
         }
-
-        public async Task<TipoGestorES> UnicoAsync(Expression<Func<TipoGestorES, bool>> predicado = null, Func<IQueryable<TipoGestorES>, IOrderedQueryable<TipoGestorES>> ordenarPor = null, Func<IQueryable<TipoGestorES>, IIncludableQueryable<TipoGestorES, object>> incluir = null, bool inhabilitarSegumiento = true)
-        {
-
-            TipoGestorES d = await this.repo.UnicoAsync(predicado);
-
-         
-            return d.CopiaTipoGestorES();
-        }
-
+ 
+        #endregion
     }
 
 

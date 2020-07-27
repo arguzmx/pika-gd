@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Contenido
 {
@@ -10,6 +12,15 @@ namespace PIKA.Modelo.Contenido
     /// </summary>
     public class Carpeta : Entidad<string>, IEntidadNombrada, IEntidadEliminada, IEntidadRegistroCreacion
     {
+        public Carpeta() {
+            Subcarpetas = new HashSet<Carpeta>();
+        }
+
+        /// <summary>
+        /// Identificador del punto de montaje asociado a la carpeta
+        /// </summary>
+        public string PuntoMontajeId { get; set; }
+
         /// <summary>
         /// Identificador único de la carptea
         /// </summary>
@@ -49,11 +60,24 @@ namespace PIKA.Modelo.Contenido
         public string PermisoId { get; set; }
         // Es opcional
 
+
+        /// <summary>
+        /// Determina si la carpeta es un nodo raíz, en esta caso la propiedad CarpetaPadreId debe ser nula
+        /// </summary>
+        public bool? EsRaiz { get; set; }
+
+
         public Permiso Permiso { get; set; }
 
+        [XmlIgnore]
+        [JsonIgnore]
         public Carpeta CarpetaPadre { get; set; }
-
+       
         public virtual ICollection<Carpeta> Subcarpetas { get; set; }
-        
+
+        [XmlIgnore]
+        [JsonIgnore]
+        public PuntoMontaje PuntoMontaje { get; set; }
+
     }
 }

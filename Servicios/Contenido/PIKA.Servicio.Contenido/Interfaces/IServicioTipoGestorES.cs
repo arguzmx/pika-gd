@@ -6,7 +6,7 @@ using RepositorioEntidades;
 
 namespace PIKA.Servicio.Contenido.Interfaces
 {
-    public interface IServicioTipoGestorES : IServicioRepositorioAsync<TipoGestorES, string>
+    public interface IServicioTipoGestorES : IServicioRepositorioAsync<TipoGestorES, string>, IServicioValorTextoAsync<TipoGestorES>
     {
 
     }

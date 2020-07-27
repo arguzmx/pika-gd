@@ -4,18 +4,25 @@ using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Contenido
 {
     public class Elemento : Entidad<string>, IEntidadRegistroCreacion, IEntidadEliminada, IEntidadRelacionada, IEntidadNombrada
     {
-        public string TipoOrigenDefault => ConstantesModelo.IDORIGEN_UNIDAD_ORGANIZACIONAL;
+        [XmlIgnore]
+        [JsonIgnore]
+        public string TipoOrigenDefault => ConstantesModelo.IDORIGEN_PUNTO_MONTAJE;
+
         public Elemento() {
             this.TipoOrigenId = TipoOrigenDefault;
             this.Versiones = new HashSet<Version>();
-            this.Vinculos = new HashSet<VinculoElemento>();
         }
 
+        /// <summary>
+        /// Indetificador único del elemento de contenido
+        /// </summary>
         public override string Id { get => base.Id; set => base.Id = value; }
 
       
@@ -32,14 +39,13 @@ namespace PIKA.Modelo.Contenido
         //#Requerido default=false
 
         /// <summary>
-        /// Tipo de origen del contenido, por defecto el contenido será propiedad de la Unidad Organizacional que gestiona 
-        /// el reposotorio. El orign tambi´´ien puede ser ConstantesModelo.IDORIGEN_DOMINIO 
+        /// Tipo de origen del contenido, por defecto el contenido será propiedad del punto de montaje
         /// </summary>
         public string TipoOrigenId { get; set; }
         //#Requerido, GUID
 
         /// <summary>
-        /// Identificador único del origen por ejemplo el ID de la unidad organizaciónal
+        /// Identificador único del origen por ejemplo el ID del punto de montaje
         /// </summary>
         public string OrigenId { get; set; }
         //#Requerido, GUID
@@ -60,7 +66,7 @@ namespace PIKA.Modelo.Contenido
         ///// <summary>
         ///// Identificador único del volúmen para el contenido
         ///// </summary>
-        //public string VolumenId { get; set; }
+        public string VolumenId { get; set; }
 
         /// <summary>
         /// Identificador único de la carpeta donde se creó el contenido
@@ -75,11 +81,19 @@ namespace PIKA.Modelo.Contenido
         // Es opcional
 
 
-        public ICollection<VinculoElemento> Vinculos { get; set; }
+        /// <summary>
+        /// Identifica si el elemento es administrado por versiones
+        /// Todos los elementos tiene una versión inicial, 
+        /// cuando se añaden nuevas versiones este campo toma el valor true
+        /// </summary>
+        public bool Versionado { get; set; }
+
+
         public Permiso Permiso { get; set; }
         public virtual Volumen Volumen { get; set; }
         public virtual ICollection<Version> Versiones { get; set; }
 
-        public virtual Parte Parte { get; set; }
+        public virtual ICollection<Parte> Partes { get; set; }
+
     }
 }

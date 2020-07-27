@@ -56,6 +56,11 @@ namespace PIKA.GD.API.Middlewares
                     context.Response.StatusCode = (int)HttpStatusCode.Conflict;
                     break;
 
+                case Type InvDataType when InvDataType == typeof(ExDatosNoValidos):
+                    detail.Message = exception.Message == null ? "" : exception.Message;
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    break;
+
                 case Type InvDataType when InvDataType == typeof(ExErrorRelacional):
                     detail.Message = exception.Message == null ? "" : exception.Message;
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;

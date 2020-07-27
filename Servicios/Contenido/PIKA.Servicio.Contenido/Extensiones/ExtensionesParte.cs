@@ -19,8 +19,8 @@ namespace PIKA.Servicio.Contenido
                 Indice = d.Indice,
                 LongitudBytes = d.LongitudBytes,
                 NombreOriginal = d.NombreOriginal,
-                TipoMime = d.TipoMime,
-
+                TipoMime = d.TipoMime, 
+                Id = d.Id
             };
         }
     }

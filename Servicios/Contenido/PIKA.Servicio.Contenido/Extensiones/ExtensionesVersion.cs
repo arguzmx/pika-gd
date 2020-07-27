@@ -16,7 +16,8 @@ namespace PIKA.Servicio.Contenido
                 Activa = d.Activa,
                 ElementoId = d.ElementoId,
                 FechaCreacion = d.FechaCreacion,
-                FechaActualizacion = d.FechaActualizacion
+                CreadorId = d.CreadorId,
+                Eliminada = d.Eliminada
             };
         }
     }
