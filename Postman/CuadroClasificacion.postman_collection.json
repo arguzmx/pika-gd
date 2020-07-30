@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "4727051a-30ec-450a-8a12-324ccf999bd7",
+		"_postman_id": "2831aad9-82d6-4c05-abb5-1843cd654491",
 		"name": "CuadroClasificacion",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -9,28 +9,42 @@
 			"name": "Cuadro clasificacion",
 			"item": [
 				{
-					"name": "Elementos clasifiacion",
+					"name": "Cuadros Clasificacion",
 					"item": [
 						{
-							"name": "POST Elemento clasificacion",
+							"name": "GET Metadata EntradaClasificacion",
 							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4ODE3NzEsImV4cCI6MTU4ODg4NTM3MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4ODE3NzEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.IPVy_4qVyhCimMo9bxplpXcoUoULQvz93ShEF34KKSpLXDRfXMwVzPqUiFZLKAToBdZD0YM11zNKuHEytz0dSSfX9bbamh3E5jmohiFT7t8u80g-g8FyOadRbIsRC7y16k0z90arfTdhRIWG-NkUkPL3c149G_AV1vSJCWbdtgWAIv7V1y1WxuZoPswcef2oQypPhm5VgVNpD3ts7ehDPCAwihkLitX2ipjAiURJ0xLE1FPq6vnQDliKVMCbRhEjKnlHFjpqx_9Y0qxIjW_QIGmvheU4WtPS62WrNBN7CF9PZTkC2F263do26uD4xm8DQd6KfSJWICi2QPQ011Xe_Q",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
+								"method": "GET",
 								"header": [
 									{
-										"key": "uid",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"key": "Content-Type",
+										"value": "application/json",
 										"type": "text"
-									},
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/CuadroClasificacion/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Cuadro clasificacion",
+							"request": {
+								"method": "POST",
+								"header": [
 									{
 										"key": "Content-Type",
 										"name": "Content-Type",
@@ -40,7 +54,313 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"\",\r\n  \"clave\": \"123abc\",\r\n  \r\n  \"nombre\": \"Segundo elemento hijo\",\r\n  \"eliminada\": false,\r\n  \"posicion\": 0,\r\n  \"cuadroClasifiacionId\": \"56d996d5-d466-4be1-b5c8-42c9cbcf4afa\"\r\n}",
+									"raw": "{\r\n  \"nombre\": \"PreOtro\",\r\n  \"tipoOrigenId\": \"demo\",\r\n  \"origenId\": \"abc\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Cuadro clasificacion",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"f888a033-28da-49a4-b0ee-5e05ec395720\",\r\n  \"tipoOrigenId\": \"tipoOrigenId\",\r\n  \"nombre\": \"asdfgh\",\r\n  \"origenId\": \"origenId\",\r\n  \"estadoCuadroClasificacionId\":\"Off\" \r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion/f888a033-28da-49a4-b0ee-5e05ec395720",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion",
+										"f888a033-28da-49a4-b0ee-5e05ec395720"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Cuadro clasificacion",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/CuadroClasificacion/f888a033-28da-49a4-b0ee-5e05ec395720",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion",
+										"f888a033-28da-49a4-b0ee-5e05ec395720"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page Cuadros clasificacion",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion/page?i=0&t=100&ordc=Nombre&ordd=asc&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=ABCDE&f[0][n]=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										},
+										{
+											"key": "f[0][p]",
+											"value": "Nombre"
+										},
+										{
+											"key": "f[0][o]",
+											"value": "contains"
+										},
+										{
+											"key": "f[0][v]",
+											"value": "ABCDE"
+										},
+										{
+											"key": "f[0][n]",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Cuadro Clasificacion",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion/ABCDE,43e92cbe-bce9-4584-a8a8-f1a0b0018a02",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion",
+										"ABCDE,43e92cbe-bce9-4584-a8a8-f1a0b0018a02"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH  Restaurar Cuadro Clasificación",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion/restaurar/31f624a1-b4b2-4d9f-957e-436af05843e1,2,3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion",
+										"restaurar",
+										"31f624a1-b4b2-4d9f-957e-436af05843e1,2,3"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "8dc90f52-099a-4be2-bd32-b819f18c98de",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "b681bad0-fdda-46e3-8822-c6a78cee4347",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Elementos clasifiacion",
+					"item": [
+						{
+							"name": "GET Metadata Elemento Clasificacion",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/ElementoClasificacion/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ElementoClasificacion",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Elemento Clasificacion",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"Id\": \"\",\r\n    \"Clave\": \"Clave4\",\r\n    \"Nombre\": \"Tests1\",\r\n    \"Eliminada\": false,\r\n    \"Posicion\": 0,\r\n    \"CuadroClasifiacionId\": \"177a4e27-2da8-4af6-8763-aa53fd95833a\",\r\n    \"ElementoClasificacionId\": \"8fd1d65f-1b27-47c1-8d59-51355163fd5e\"\r\n}",
 									"options": {
 										"raw": {}
 									}
@@ -63,25 +383,10 @@
 							"response": []
 						},
 						{
-							"name": "PUT Elemento clasificacion",
+							"name": "PUT Elemento Clasificacion",
 							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODUwMDQ1NDEsImV4cCI6MTU4NTAwODE0MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODUwMDQ1NDEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.LlJPPnE1o5jkK5qwvr7mz5LmqORQ7GByDH99xymFpjO23V3yU60v6tA4kzOzqHfLrYiE1CUVryAqIQgqpxo1Ygw1-iVIDzFq0WEkNoL8ozAclKPlCS3cZenzzRRxZLeLU3dZRHBLjdBMwW0zwFE870fkxlYbqy5ydA2VMrAN7gcWN8KDYwDMuP75umddLCiLgaI0CXBX1GCapjaIod37xO4xtqAHXhv9ZTLmgOdAGPjhscOpdso017PW7g4FVdXM8G6NWPagdG0f6B0mxd_XgjrruM7h6r1JGpTS4zKm1JJzYxj8XZgz1XoLIzVoKOgUWzpzKTlMul20ZVnySl-WOQ",
-											"type": "string"
-										}
-									]
-								},
 								"method": "PUT",
 								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
 									{
 										"key": "Content-Type",
 										"name": "Content-Type",
@@ -91,13 +396,13 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"430b2450-8b33-4e94-b9a8-41942848a9ec\",\r\n  \"clave\": \"123abc\",\r\n  \"nombre\": \"Segundo elemento hijo edited\",\r\n  \"eliminada\": true,\r\n  \"posicion\": 3,\r\n  \"cuadroClasifiacionId\": \"513240df-1c72-4b64-af7d-1b71e7e32875\"\r\n}",
+									"raw": "{\r\n  \"Id\": \"09ff5cc2-38dd-4486-9130-30c5b69ad99f\",\r\n    \"Clave\": \"...\",\r\n    \"Nombre\": \":(Actualizado\",\r\n    \"Eliminada\": false,\r\n    \"Posicion\": 1,\r\n    \"CuadroClasifiacionId\": \"7face386-bd69-4646-be37-92564be841a5\",\r\n    \"ElementoClasificacionId\": \"8f199e94-a8ae-415c-a54d-73b527ca1bee\"\r\n}",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion/430b2450-8b33-4e94-b9a8-41942848a9ec",
+									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion/09ff5cc2-38dd-4486-9130-30c5b69ad99f",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -108,40 +413,25 @@
 										"v1.0",
 										"gd",
 										"ElementoClasificacion",
-										"430b2450-8b33-4e94-b9a8-41942848a9ec"
+										"09ff5cc2-38dd-4486-9130-30c5b69ad99f"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "GET Metadata Elemento clasificacion",
+							"name": "GET Elemento Clasificacion",
 							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODUwMDQ1NDEsImV4cCI6MTU4NTAwODE0MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODUwMDQ1NDEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.LlJPPnE1o5jkK5qwvr7mz5LmqORQ7GByDH99xymFpjO23V3yU60v6tA4kzOzqHfLrYiE1CUVryAqIQgqpxo1Ygw1-iVIDzFq0WEkNoL8ozAclKPlCS3cZenzzRRxZLeLU3dZRHBLjdBMwW0zwFE870fkxlYbqy5ydA2VMrAN7gcWN8KDYwDMuP75umddLCiLgaI0CXBX1GCapjaIod37xO4xtqAHXhv9ZTLmgOdAGPjhscOpdso017PW7g4FVdXM8G6NWPagdG0f6B0mxd_XgjrruM7h6r1JGpTS4zKm1JJzYxj8XZgz1XoLIzVoKOgUWzpzKTlMul20ZVnySl-WOQ",
-											"type": "string"
-										}
-									]
-								},
 								"method": "GET",
 								"header": [
 									{
-										"key": "uid",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
-										"type": "text"
-									},
-									{
 										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
+										"type": "text",
+										"value": "application/json"
 									}
 								],
 								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/ElementoClasificacion/metadata",
+									"raw": "https://localhost:5001/api/v1.0/gd/ElementoClasificacion/e33a27da-7ae0-44b1-8512-03717b98ecf",
 									"protocol": "https",
 									"host": [
 										"localhost"
@@ -152,79 +442,20 @@
 										"v1.0",
 										"gd",
 										"ElementoClasificacion",
-										"metadata"
+										"e33a27da-7ae0-44b1-8512-03717b98ecf"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "GET Metadata Elemento clasificacion Copy",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODc1ODE1NzQsImV4cCI6MTU4NzU4NTE3NCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODc1ODE1NzQsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.VfO1Baxn9mCU4_9LDyUTmw1FGRDATNszmcSlIhb2YaXxg6oHLD19OVxIdBp_kjZ9SJUBSc38bClDed0-1lmmD3oSjWsCGSqFGS9XEyNpudXBvaUPxwnzakrysUU2RYop9_LZTSTZKtbyO3H1F-1LJZWq_0mz17cmfOvvmUSPjVRSsaOZgTnW3gdOsHeyuyYy-sNvdOqIGqL8Fr7bWOJ9Z2e__LIlYjztbCKLjIaA1edP3OkcSSjh12vahCJXk8dCbDfLgFwGrwubVcqRjeSwLFgEmH4kA3W56DD3wdKCQu9ZvGaAg4JkI4X85x87PfiY45ibZJCmUBkdGzvnVz4Smw",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "uid",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
-										"type": "text"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/ElementoClasificacion/430b2450-8b33-4e94-b9a8-41942848a9ec",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"ElementoClasificacion",
-										"430b2450-8b33-4e94-b9a8-41942848a9ec"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET Page Elemento clasificacion",
+							"name": "GET Page Elemento Clasificacion",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
 							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4ODE3NzEsImV4cCI6MTU4ODg4NTM3MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4ODE3NzEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.IPVy_4qVyhCimMo9bxplpXcoUoULQvz93ShEF34KKSpLXDRfXMwVzPqUiFZLKAToBdZD0YM11zNKuHEytz0dSSfX9bbamh3E5jmohiFT7t8u80g-g8FyOadRbIsRC7y16k0z90arfTdhRIWG-NkUkPL3c149G_AV1vSJCWbdtgWAIv7V1y1WxuZoPswcef2oQypPhm5VgVNpD3ts7ehDPCAwihkLitX2ipjAiURJ0xLE1FPq6vnQDliKVMCbRhEjKnlHFjpqx_9Y0qxIjW_QIGmvheU4WtPS62WrNBN7CF9PZTkC2F263do26uD4xm8DQd6KfSJWICi2QPQ011Xe_Q",
-											"type": "string"
-										}
-									]
-								},
 								"method": "GET",
 								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
 									{
 										"key": "Content-Type",
 										"type": "text",
@@ -233,13 +464,13 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n\"indice\": 0,\n\"tamano\": 10,\n\"columna_ordenamiento\": \"Nombre\",\n\"direccion_ordenamiento\": \"asc\",\n\"Filtros\": [\n\t{\"Propiedad\":\"nombre\",\"Operador\": \"contains\", \"Valor\": \" \"}\n\t]\n}",
+									"raw": "",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion/page?i=0&t=100&ordc=Nombre&ordd=asc&",
+									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion/page?i=0&t=100&ordc=Nombre&ordd=asc",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -268,10 +499,6 @@
 										{
 											"key": "ordd",
 											"value": "asc"
-										},
-										{
-											"key": "",
-											"value": null
 										}
 									]
 								}
@@ -279,25 +506,10 @@
 							"response": []
 						},
 						{
-							"name": "DELETE ElementoClasificacion",
+							"name": "DELETE Elemento Clasificacion",
 							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODY4OTM2MjAsImV4cCI6MTU4Njg5NzIyMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODY4OTM2MjAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.H-HwoogEESKjrDOJVOJQP4vqvIr4XmD7JmeBExfS8jkosOC-W9wKnI_EldgKDucXze5Q30vl6FM0hxOUQvMo_8FWEXwH41yAqZ2fXATJ3i158giPay23H82gyoV6CVjrieh-Ccyd_RJqm5MV9Jwfn1vqQ5qBlWmkVLVnms-rzxq-nURrcMJK0tjpp9GV6zn4SvPIm97kUaerJZ87fDoRTfIwcJi_go1z8ayLXv2cuARD0XwChtYRJX3mrOsm3FhDxCozZxdkMnwsQ1VNIRe_XZQHNAI0XZCim-a0gZkWWkLqgiRFPlLghei53g7JiXRTx7SRxLSCDzapbvMhf4JhZQ",
-											"type": "string"
-										}
-									]
-								},
 								"method": "DELETE",
 								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
 									{
 										"key": "Content-Type",
 										"type": "text",
@@ -306,13 +518,13 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "\n\t[\"1b68ee93-b96f-4669-bfe2-2c52b29ee5c6\",\n\t\"bd105bb6-6bfb-4860-84ac-08a6b55a7aca\",\n\t\"39b3c094-9012-485e-a724-d7d212a7c4c2\"\n\t]\n",
+									"raw": "",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion/",
+									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion/d5cc8d37-e01a-4871-a853-f7960a7acd86",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -323,7 +535,44 @@
 										"v1.0",
 										"gd",
 										"ElementoClasificacion",
-										""
+										"d5cc8d37-e01a-4871-a853-f7960a7acd86"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH  Restaurar Elemento Clasificacion",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion/restaurar/d5cc8d37-e01a-4871-a853-f7960a7acd86,2,3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ElementoClasificacion",
+										"restaurar",
+										"d5cc8d37-e01a-4871-a853-f7960a7acd86,2,3"
 									]
 								}
 							},
@@ -334,7 +583,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "1286f989-a82f-4294-bd28-ca1a3b62e887",
+								"id": "4de34712-fd03-41b7-9178-140aabb957b9",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -344,7 +593,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "652049f1-dbf2-4ffe-b168-565370b254a7",
+								"id": "f246af9c-dd0d-4e7d-9170-cd8808d4cfb1",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -359,6 +608,35 @@
 					"name": "Estados Cuadro clasificacion",
 					"item": [
 						{
+							"name": "GET Metadata Estado Cuadro",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/EstadoCuadroClasificacion/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EstadoCuadroClasificacion",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "POST Estado Cuadro",
 							"request": {
 								"method": "POST",
@@ -372,7 +650,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"ejemplo\",\r\n  \"nombre\": \"demo\"\r\n}",
+									"raw": "{\r\n  \"id\": \"0002\",\r\n  \"nombre\": \"Estado\"\r\n}",
 									"options": {
 										"raw": {}
 									}
@@ -408,13 +686,13 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"id\": \"c24ed768-ce7c-4533-85a1-78e39722e291\",\r\n    \"nombre\": \"Inactivo edited\"\r\n}",
+									"raw": "{\r\n    \"id\": \"0002\",\r\n    \"nombre\": \"PruebaActualizacion\"\r\n}",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/EstadoCuadroClasificacion/c24ed768-ce7c-4533-85a1-78e39722e291",
+									"raw": "http://localhost:5000/api/v1.0/gd/EstadoCuadroClasificacion/0002",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -425,36 +703,7 @@
 										"v1.0",
 										"gd",
 										"EstadoCuadroClasificacion",
-										"c24ed768-ce7c-4533-85a1-78e39722e291"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET Metadata Estado Cuadro",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/EstadoCuadroClasificacion/metadata",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"EstadoCuadroClasificacion",
-										"metadata"
+										"0002"
 									]
 								}
 							},
@@ -472,7 +721,7 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/EstadoCuadroClasificacion/off",
+									"raw": "https://localhost:5001/api/v1.0/gd/EstadoCuadroClasificacion/000",
 									"protocol": "https",
 									"host": [
 										"localhost"
@@ -483,7 +732,7 @@
 										"v1.0",
 										"gd",
 										"EstadoCuadroClasificacion",
-										"off"
+										"000"
 									]
 								}
 							},
@@ -551,6 +800,117 @@
 							"response": []
 						},
 						{
+							"name": "GET PAGE Pares Estado Cuadro Clasificacion",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/EstadoCuadroClasificacion/pares?i=0&t=5&f[0][p]=Texto&f[0][o]=starts&f[0][v]=a",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EstadoCuadroClasificacion",
+										"pares"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "5"
+										},
+										{
+											"key": "f[0][p]",
+											"value": "Texto"
+										},
+										{
+											"key": "f[0][o]",
+											"value": "starts"
+										},
+										{
+											"key": "f[0][v]",
+											"value": "a"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET PAGE Estado Cuadro Clasificacion por ID",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/EstadoCuadroClasificacion/pares/off,Inactivo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EstadoCuadroClasificacion",
+										"pares",
+										"off,Inactivo"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "DELETE Estado Cuadro Clasificacion",
 							"request": {
 								"method": "DELETE",
@@ -569,7 +929,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/EstadoCuadroClasificacion/c24ed768-ce7c-4533-85a1-78e39722e291,1,2",
+									"raw": "http://localhost:5000/api/v1.0/gd/EstadoCuadroClasificacion/fb940763-3ce2-4652-b2af-b1b45b7dd970,1,0002",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -580,7 +940,7 @@
 										"v1.0",
 										"gd",
 										"EstadoCuadroClasificacion",
-										"c24ed768-ce7c-4533-85a1-78e39722e291,1,2"
+										"fb940763-3ce2-4652-b2af-b1b45b7dd970,1,0002"
 									]
 								}
 							},
@@ -591,7 +951,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "e992cd3a-2a3e-4910-b5b0-bdc1cc27d73c",
+								"id": "d6ca850c-fc61-45f0-b168-f8cf895739bf",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -601,7 +961,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "1ae61f2d-42e0-4553-ac82-86cb2b90c1c3",
+								"id": "f992551a-6a8c-4fec-92eb-5e4d5131dd46",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -613,29 +973,58 @@
 					"_postman_isSubFolder": true
 				},
 				{
-					"name": "Cuadros Clasificacion",
+					"name": "TipoDisposicionDocumental",
 					"item": [
 						{
-							"name": "POST Cuadro clasificacion",
+							"name": "GET MetadataTipo Disposicion Documental",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/TipoDisposicionDocumental/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoDisposicionDocumental",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Tipo Disposicion Documental",
 							"request": {
 								"method": "POST",
 								"header": [
 									{
 										"key": "Content-Type",
 										"name": "Content-Type",
-										"value": "application/json",
-										"type": "text"
+										"type": "text",
+										"value": "application/json"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"\",\r\n  \"nombre\": \"segundo  cuadro c:\",\r\n  \"eliminada\": false,\r\n  \"tipoOrigenId\": \"demo\",\r\n  \"origenId\": \"abc\",\r\n  \"estadoCuadroClasificacionId\":\"off\"\r\n}",
+									"raw": "{\r\n  \"id\": \"0001\",\r\n  \"nombre\": \"segundo  cuadro c:\"\r\n}",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion",
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoDisposicionDocumental",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -645,14 +1034,14 @@
 										"api",
 										"v1.0",
 										"gd",
-										"CuadroClasificacion"
+										"TipoDisposicionDocumental"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "PUT Cuadro clasificacion",
+							"name": "PUT Tipo Disposicion Documental",
 							"request": {
 								"method": "PUT",
 								"header": [
@@ -665,13 +1054,13 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"31f624a1-b4b2-4d9f-957e-436af05843e1\",\r\n  \"nombre\": \"segundo cuadro editado\",\r\n  \"eliminada\": true,\r\n  \"tipoOrigenId\": \"demo\",\r\n  \"origenId\": \"abc\",\r\n  \"estadoCuadroClasificacionId\":\"off\"\r\n}",
+									"raw": "{\r\n  \"id\": \"0001\",\r\n  \"nombre\": \"Actualizado\"\r\n}",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion/31f624a1-b4b2-4d9f-957e-436af05843e1",
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoDisposicionDocumental/0001",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -681,73 +1070,15 @@
 										"api",
 										"v1.0",
 										"gd",
-										"CuadroClasificacion",
-										"31f624a1-b4b2-4d9f-957e-436af05843e1"
+										"TipoDisposicionDocumental",
+										"0001"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "GET Metadata Cuadro clasificacion",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/CuadroClasificacion/metadata",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"CuadroClasificacion",
-										"metadata"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET Cuadro clasificacion",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/CuadroClasificacion/31f624a1-b4b2-4d9f-957e-436af05843e1",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"CuadroClasificacion",
-										"31f624a1-b4b2-4d9f-957e-436af05843e1"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET Page Cuadros clasificacion",
+							"name": "GET Page Tipo Disposicion Documental",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
@@ -768,7 +1099,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion/page?i=0&t=100&ordc=Nombre&ordd=asc",
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoDisposicionDocumental/page?i=0&t=100&ordc=Nombre&ordd=asc",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -778,7 +1109,7 @@
 										"api",
 										"v1.0",
 										"gd",
-										"CuadroClasificacion",
+										"TipoDisposicionDocumental",
 										"page"
 									],
 									"query": [
@@ -804,7 +1135,147 @@
 							"response": []
 						},
 						{
-							"name": "DELETE Cuadro Clasificacion",
+							"name": "GET Tipo Disposicion Documental",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/TipoDisposicionDocumental/000",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoDisposicionDocumental",
+										"000"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET PAGE Pares Tipo Disposicion Documental",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoDisposicionDocumental/pares?i=0&t=5&f[0][p]=Texto&f[0][o]=starts&f[0][v]=a",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoDisposicionDocumental",
+										"pares"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "5"
+										},
+										{
+											"key": "f[0][p]",
+											"value": "Texto"
+										},
+										{
+											"key": "f[0][o]",
+											"value": "starts"
+										},
+										{
+											"key": "f[0][v]",
+											"value": "a"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET PAGE Tipo Disposicion Documental Por ID",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoDisposicionDocumental/pares/admin,0001",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoDisposicionDocumental",
+										"pares",
+										"admin,0001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Tipo Disposicion Documental",
 							"request": {
 								"method": "DELETE",
 								"header": [
@@ -822,7 +1293,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion/31f624a1-b4b2-4d9f-957e-436af05843e1",
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoDisposicionDocumental/0001",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -832,15 +1303,357 @@
 										"api",
 										"v1.0",
 										"gd",
-										"CuadroClasificacion",
-										"31f624a1-b4b2-4d9f-957e-436af05843e1"
+										"TipoDisposicionDocumental",
+										"0001"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "TipoValoracionDocumental",
+					"item": [
+						{
+							"name": "GET Metadata Tipo Valoracion Documental",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/TipoValoracionDocumental/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoValoracionDocumental",
+										"metadata"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "PATCH  Restaurar Cuadro Clasificación",
+							"name": "POST Tipo Valoracion Documental",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"0001\",\r\n  \"nombre\": \"segundo  cuadro c:\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoValoracionDocumental",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoValoracionDocumental"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page Tipo Valoracion Documental",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoValoracionDocumental/page?i=0&t=100&ordc=Nombre&ordd=asc",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoValoracionDocumental",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Tipo Valoracion Documental",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"0001\",\r\n  \"nombre\": \"Actualizado:\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoValoracionDocumental/0001",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoValoracionDocumental",
+										"0001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Tipo Valoracion Documental",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/TipoValoracionDocumental/0001",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoValoracionDocumental",
+										"0001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET PAGE Pares Tipo Valoracion Documental",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoValoracionDocumental/pares?i=0&t=5&f[0][p]=Texto&f[0][o]=starts&f[0][v]=a",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoValoracionDocumental",
+										"pares"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "5"
+										},
+										{
+											"key": "f[0][p]",
+											"value": "Texto"
+										},
+										{
+											"key": "f[0][o]",
+											"value": "starts"
+										},
+										{
+											"key": "f[0][v]",
+											"value": "a"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET PAGE  Tipo Valoracion Documental por ID",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoValoracionDocumental/pares/0001,ADMIN",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoValoracionDocumental",
+										"pares",
+										"0001,ADMIN"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Tipo Valoracion Documental",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoValoracionDocumental/0001",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoValoracionDocumental",
+										"0001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH  Restaurar Cuadro Clasificación Copy 2",
 							"request": {
 								"method": "PATCH",
 								"header": [
@@ -877,26 +1690,466 @@
 							"response": []
 						}
 					],
-					"event": [
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Entrada Clasificacion",
+					"item": [
 						{
-							"listen": "prerequest",
-							"script": {
-								"id": "3dae49e1-c3e4-4c3f-aac5-7055f374535a",
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
+							"name": "GET Metadata Entrada Clasificacion",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/EntradaClasificacion/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EntradaClasificacion",
+										"metadata"
+									]
+								}
+							},
+							"response": []
 						},
 						{
-							"listen": "test",
-							"script": {
-								"id": "c95fcc1f-2b62-45a8-b590-37dc72ac5e90",
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
+							"name": "POST Entrada Clasificacion",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"\",\r\n  \"nombre\": \"Insert Entradkjla\",\r\n  \"ElementoClasificacionId\": \"fcdd5778-1ecf-4c3e-924c-2aae6ff074dc\",\r\n  \"Clave\": \"demo\",\r\n  \"MesesVigenciConcentracion\": 1,\r\n  \"MesesVigenciHistorico\": 1,\r\n  \"MesesVigenciTramite\":1,\r\n  \"Posicion\": 1,\r\n  \"TipoDisposicionDocumentalId\": \"muestreo\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/EntradaClasificacion",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EntradaClasificacion"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Entrada Clasificacion",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Id\": \"84d23105-22d6-417f-9c7e-ea288e69a1ed\",\r\n    \"ElementoClasificacionId\": \"7909b149-f604-4b1c-ae3b-bea7894d4485\",\r\n    \"Clave\": \"demos\",\r\n    \"Nombre\": \"Actualizadcion\",\r\n    \"Eliminada\": false,\r\n    \"Posicion\": 1,\r\n    \"MesesVigenciTramite\": 1,\r\n    \"MesesVigenciConcentracion\": 1,\r\n    \"MesesVigenciHistorico\": 1,\r\n    \"TipoDisposicionDocumentalId\": \"seleccion-completa\",\r\n    \"ValoracionesEntrada\": [],\r\n    \"DisposicionEntrada\": null\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/EntradaClasificacion/84d23105-22d6-417f-9c7e-ea288e69a1ed",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EntradaClasificacion",
+										"84d23105-22d6-417f-9c7e-ea288e69a1ed"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Entrada Clasificacion",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/EntradaClasificacion/65dce824-85aa-4d65-8566-7bac26e40ba",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EntradaClasificacion",
+										"65dce824-85aa-4d65-8566-7bac26e40ba"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page Entrada Clasificacion",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/EntradaClasificacion/page?i=0&t=100&ordc=Nombre&ordd=asc",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EntradaClasificacion",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Entrada Clasificacion",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/EntradaClasificacion/65dce824-85aa-4d65-8566-7bac26e40bad",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EntradaClasificacion",
+										"65dce824-85aa-4d65-8566-7bac26e40bad"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH  Restaurar Entrada Clasificacion",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/EntradaClasificacion/restaurar/31f624a1-b4b2-4d9f-957e-436af05843e1,2,3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EntradaClasificacion",
+										"restaurar",
+										"31f624a1-b4b2-4d9f-957e-436af05843e1,2,3"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "ValoracionEntradaClasificacion",
+					"item": [
+						{
+							"name": "GET MetadataTipo Disposicion Documental Copy Copy",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/ValoracionEntradaClasificacion/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ValoracionEntradaClasificacion",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Valoracion Entrada Clasificacion",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"EntradaClasificacionId\": \"c964e651-3c67-48c2-8bc2-740793397329\",\r\n  \"TipoValoracionDocumentalId\": \"admin\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/ValoracionEntradaClasificacion",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ValoracionEntradaClasificacion"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Valoracion Entrada Clasificacion",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/ValoracionEntradaClasificacion/53da95b4-74ef-46dc-afb9-f5df1f7b2e13",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ValoracionEntradaClasificacion",
+										"53da95b4-74ef-46dc-afb9-f5df1f7b2e13"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page Valoracion Entrada Clasificacion",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/ValoracionEntradaClasificacion/page?i=0&t=100&ordc=EntradaClasificacionId&ordd=asc",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ValoracionEntradaClasificacion",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "EntradaClasificacionId"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Tipo Disposicion Documental Copy Copy",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/ValoracionEntradaClasificacion/c964e651-3c67-48c2-8bc2-740793397329",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ValoracionEntradaClasificacion",
+										"c964e651-3c67-48c2-8bc2-740793397329"
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"protocolProfileBehavior": {},
@@ -920,7 +2173,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "ad352af6-212b-45d1-8038-a9cd27ca63e0",
+				"id": "98199b30-9cec-4e97-8610-f266639aa4e3",
 				"type": "text/javascript",
 				"exec": [
 					"const echoPostRequest = {",
@@ -966,7 +2219,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "c475eca4-73ff-4388-bc47-08d69606bdba",
+				"id": "d50bc6e8-3016-4fc3-bdff-8be230aaf6f8",
 				"type": "text/javascript",
 				"exec": [
 					""

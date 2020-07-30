@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
+using RepositorioEntidades;
 
 namespace PIKA.Modelo.GestorDocumental
 {
     public class ValoracionEntradaClasificacion
     {
+       
+      
         /// <summary>
         /// Identificaor único de la entrada del clasificación
         /// </summary>
@@ -16,7 +19,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Identificaor único del tipo de valoraión para la entarda
         /// </summary>
-        public string TipoValoracionDocumental { get; set; }
+        public string TipoValoracionDocumentalId { get; set; }
 
         [XmlIgnore]
         [JsonIgnore]
@@ -24,7 +27,7 @@ namespace PIKA.Modelo.GestorDocumental
 
         [XmlIgnore]
         [JsonIgnore]
-        public TipoValoracionDocumental TipoValoracion { get; set; }
+        public TipoValoracionDocumental TipoValoracionDocumental { get; set; }
 
     }
 }

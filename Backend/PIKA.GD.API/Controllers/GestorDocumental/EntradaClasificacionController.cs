@@ -13,71 +13,64 @@ using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.GestionDocumental.Interfaces;
 using RepositorioEntidades;
 
-
 namespace PIKA.GD.API.Controllers.GestorDocumental
 {
     [Authorize]
     [ApiVersion("1.0")]
     [ApiController]
     [Route("api/v{version:apiVersion}/gd/[controller]")]
-    public class CuadroClasificacionController : ACLController
+    public class EntradaClasificacionController : ACLController
     {
-        private readonly ILogger<CuadroClasificacionController> logger;
-        private IServicioCuadroClasificacion servicioCuadro;
-        private IProveedorMetadatos<CuadroClasificacion> metadataProvider;
-        public CuadroClasificacionController(ILogger<CuadroClasificacionController> logger,
-            IProveedorMetadatos<CuadroClasificacion> metadataProvider,
-            IServicioCuadroClasificacion servicioCuadro)
+        private readonly ILogger<EntradaClasificacionController> logger;
+        private IServicioEntradaClasificacion servicioCuadro;
+        private IProveedorMetadatos<EntradaClasificacion> metadataProvider;
+        public EntradaClasificacionController(ILogger<EntradaClasificacionController> logger,
+            IProveedorMetadatos<EntradaClasificacion> metadataProvider,
+            IServicioEntradaClasificacion servicioCuadro)
         {
             this.logger = logger;
             this.servicioCuadro = servicioCuadro;
             this.metadataProvider = metadataProvider;
         }
         /// <summary>
-        /// Obtiene los metadatos relacionados con la entidad Cuadro Clasificacion
+        /// Obtiene los metadatos relacionados con la entidad Entrada Clasificacion
         /// </summary>
         /// <returns></returns>
-        [HttpGet("metadata", Name = "MetadataCuadro")]
+        [HttpGet("metadata", Name = "MetadataEntradaClasificacion")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
+        public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery] Consulta query = null)
         {
             return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
         }
+
+
         /// <summary>
-        /// Añade una nueva entidad del tipo Cuadro Clasificacion
+        /// Añade una nueva entidad del Entrada Clasificacion
         /// </summary>
         /// <param name="entidad"></param>
         /// <returns></returns>
-
-
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<CuadroClasificacion>> Post([FromBody]CuadroClasificacion entidad)
+        public async Task<ActionResult<EntradaClasificacion>> Post([FromBody] EntradaClasificacion entidad)
         {
             entidad = await servicioCuadro.CrearAsync(entidad).ConfigureAwait(false);
-            return Ok(CreatedAtAction("GetCuadro", new { id = entidad.Id.Trim() }, entidad).Value);
+            return Ok(CreatedAtAction("GetEntradaClasificacion", new { id = entidad.Id }, entidad).Value);
         }
-
-
         /// <summary>
-        /// Actualiza unq entidad Cuadro Clasificacion, el Id debe incluirse en el Querystring así como en 
+        /// Actualiza unq entidad Entrada Clasificacion, el Id debe incluirse en el Querystring así como en 
         /// el serializado para la petición PUT
         /// </summary>
         /// <param name="id">Identificador único del dominio</param>
         /// <param name="entidad">Datos serialziados de la OU</param>
         /// <returns></returns>
+
         [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Put(string id, [FromBody]CuadroClasificacion entidad)
+        public async Task<IActionResult> Put(string id, [FromBody] EntradaClasificacion entidad)
         {
             var x = ObtieneFiltrosIdentidad();
 
-           
+
             if (id.Trim() != entidad.Id.Trim())
             {
                 return BadRequest();
@@ -87,16 +80,17 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             return NoContent();
 
         }
+
+
         /// <summary>
-        /// Devulve un alista de Cuadro Clasificacion asociadas al objeto del tipo especificado
+        /// Devulve un alista de paises asociadas al objeto del tipo especificado
         /// </summary>
         /// <param name="query">Consulta para la paginación y búsqueda</param>
         /// <returns></returns>
-
-        [HttpGet("page", Name = "GetPageCuadro")]
+        [HttpGet("page", Name = "GetPageEntradaClasificacion")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Paginado<CuadroClasificacion>>> GetPage(
+        public async Task<ActionResult<Paginado<EntradaClasificacion>>> GetPage(
             [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
             var data = await servicioCuadro.ObtenerPaginadoAsync(
@@ -106,34 +100,37 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
             return Ok(data);
         }
+
         /// <summary>
-        /// Obtiene un Cuadro Clasificacion en base al Id único
+        /// Obtiene un Entrada Clasificacion en base al Id único
         /// </summary>
-        /// <param name="id">Id único del Cuadro Clasificacion</param>
+        /// <param name="id">Id único del país</param>
         /// <returns></returns>
 
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<CuadroClasificacion>> Get(string id)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<EntradaClasificacion>> Get(string id)
         {
             var o = await servicioCuadro.UnicoAsync(x => x.Id == id.Trim()).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }
 
-
         /// <summary>
-        /// Elimina de manera permanente un Cuadro Clasificacion en base al arreglo de identificadores recibidos
+        /// Elimina de manera permanente un Entrada Clasificacion en base al arreglo de identificadores recibidos
         /// </summary>
         /// <param name="ids">Arreglo de identificadores string</param>
         /// <returns></returns>
+
 
         [HttpDelete("{ids}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete(string ids)
         {
+
             string IdsTrim = "";
             foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
             {
@@ -150,12 +147,11 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         /// </summary>
         /// <param name="ids">Arreglo de identificadores string</param>
         /// <returns></returns>
-        [HttpPatch("restaurar/{ids}", Name = "restaurarCuadroClasifiacion")]
+        [HttpPatch("restaurar/{ids}", Name = "restaurarEntradaClasifiacion")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Undelete(string ids)
         {
-           
             string IdsTrim = "";
             foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
             {
@@ -163,7 +159,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             }
             string[] lids = IdsTrim.Split(',').ToList()
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
-
             return Ok(await servicioCuadro.Restaurar(lids).ConfigureAwait(false));
         }
 

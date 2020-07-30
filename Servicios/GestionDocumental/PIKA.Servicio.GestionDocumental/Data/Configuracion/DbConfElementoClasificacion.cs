@@ -22,7 +22,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.Clave).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.Posicion).HasMaxLength(LongitudDatos.CodigoPostal).IsRequired();
             
-            builder.HasMany(x => x.Hijos).WithOne(y => y.Padre).HasForeignKey(z => z.ElementoClasificacionId);
+            builder.HasMany(x => x.Hijos).WithOne(y => y.Padre).HasForeignKey(z => z.ElementoClasificacionId).OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(x => x.Activos).WithOne(y => y.ElementoClasificacion).HasForeignKey(z => z.ElementoClasificacionId);
 
         }

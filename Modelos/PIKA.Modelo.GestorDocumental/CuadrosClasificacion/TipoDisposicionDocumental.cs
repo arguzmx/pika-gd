@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -9,7 +11,7 @@ namespace PIKA.Modelo.GestorDocumental
     {
         public TipoDisposicionDocumental()
         {
-           
+            EntradaClasificacion = new HashSet<EntradaClasificacion>();
         }
 
         public const string SELECCION_COMPLETA = "seleccion-completa";
@@ -29,5 +31,9 @@ namespace PIKA.Modelo.GestorDocumental
 
             return lista;
         }
+
+        [XmlIgnore]
+        [JsonIgnore]
+        public ICollection<EntradaClasificacion> EntradaClasificacion { get; set; }
     }
 }

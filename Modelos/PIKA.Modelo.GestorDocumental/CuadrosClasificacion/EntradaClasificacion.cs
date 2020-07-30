@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -68,10 +70,14 @@ namespace PIKA.Modelo.GestorDocumental
         /// Identificador único del tipo de disposición documental para la entrada
         /// </summary>
         public string TipoDisposicionDocumentalId { get; set; }
-
+        
+        //[XmlIgnore]
+        //[JsonIgnore]
+        //public string[] Valoracionids { get; set; }
         public ICollection<ValoracionEntradaClasificacion> ValoracionesEntrada { get; set; }
+    
 
-        public TipoDisposicionDocumental DisposicionEntrada { get; set; }
+        public virtual TipoDisposicionDocumental DisposicionEntrada { get; set; }
 
     }
 }

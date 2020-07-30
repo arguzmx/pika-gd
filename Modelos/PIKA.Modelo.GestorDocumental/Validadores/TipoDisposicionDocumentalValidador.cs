@@ -1,15 +1,15 @@
-﻿using FluentValidation;
-using Microsoft.Extensions.Localization;
-using RepositorioEntidades;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using FluentValidation;
+using Microsoft.Extensions.Localization;
+using RepositorioEntidades;
 
 namespace PIKA.Modelo.GestorDocumental.Validadores
 {
-public   class EstadoCuadroClasificacionValidador : AbstractValidator<EstadoCuadroClasificacion>
+    public class TipoDisposicionDocumentalValidador : AbstractValidator<TipoDisposicionDocumental>
     {
-        public EstadoCuadroClasificacionValidador(IStringLocalizer<EstadoCuadroClasificacion> localizer)
+        public TipoDisposicionDocumentalValidador(IStringLocalizer<TipoDisposicionDocumental> localizer)
         {
             RuleFor(x => x.Nombre)
                 .NotEmpty()
@@ -20,6 +20,8 @@ public   class EstadoCuadroClasificacionValidador : AbstractValidator<EstadoCuad
               .MinimumLength(1)
               .MaximumLength(LongitudDatos.Nombre);
 
+
         }
+
     }
 }

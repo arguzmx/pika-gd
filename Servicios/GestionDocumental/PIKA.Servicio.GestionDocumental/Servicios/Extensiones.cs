@@ -10,14 +10,17 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
     {
         #region Cuadro clasificacion
 
-        public static CuadroClasificacion Copia(this CuadroClasificacion d)
+        public static CuadroClasificacion CopiacuadroElemto(this CuadroClasificacion d)
         {
+            if (d == null) return null;
             var c = new CuadroClasificacion()
             {
                 Id = d.Id,
                 Nombre = d.Nombre,
                 OrigenId = d.OrigenId,
-                TipoOrigenId = d.TipoOrigenId
+                TipoOrigenId = d.TipoOrigenId,
+                EstadoCuadroClasificacionId=d.EstadoCuadroClasificacionId,
+                Eliminada=d.Eliminada
             };
 
             if (d.Estado != null)

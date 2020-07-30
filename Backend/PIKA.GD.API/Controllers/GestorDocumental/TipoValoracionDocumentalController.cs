@@ -13,22 +13,20 @@ using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.GestionDocumental.Interfaces;
 using RepositorioEntidades;
 
-
 namespace PIKA.GD.API.Controllers.GestorDocumental
 {
     [Authorize]
     [ApiVersion("1.0")]
     [ApiController]
     [Route("api/v{version:apiVersion}/gd/[controller]")]
-    public class EstadoCuadroClasificacionController : ACLController
+    public class TipoValoracionDocumentalController : ACLController
     {
-
-        private ILogger<EstadoCuadroClasificacionController> logger;
-        private IServicioEstadoCuadroClasificacion servicioEntidad;
-        private IProveedorMetadatos<EstadoCuadroClasificacion> metadataProvider;
-        public EstadoCuadroClasificacionController(ILogger<EstadoCuadroClasificacionController> logger,
-            IProveedorMetadatos<EstadoCuadroClasificacion> metadataProvider,
-            IServicioEstadoCuadroClasificacion servicioEntidad)
+        private ILogger<TipoValoracionDocumentalController> logger;
+        private IServicioTipoValoracionDocumental servicioEntidad;
+        private IProveedorMetadatos<TipoValoracionDocumental> metadataProvider;
+        public TipoValoracionDocumentalController(ILogger<TipoValoracionDocumentalController> logger,
+            IProveedorMetadatos<TipoValoracionDocumental> metadataProvider,
+            IServicioTipoValoracionDocumental servicioEntidad)
         {
             this.logger = logger;
             this.servicioEntidad = servicioEntidad;
@@ -37,11 +35,11 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
         /// <summary>
-        /// Obtiene los metadatos relacionados con la entidad Estado Cuadro Clasificacion
+        /// Obtiene los metadatos relacionados con la entidad Tipo de Valoracion Documental
         /// </summary>
         /// <returns></returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [HttpGet("metadata", Name = "MetadataEstadoCuadroClasificacion")]
+        [HttpGet("metadata", Name = "MetadataTipoValoracionDocumental")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery] Consulta query = null)
         {
@@ -51,22 +49,22 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
         /// <summary>
-        /// Añade una nueva entidad del tipo Estado Cuadro Clasificacion
+        /// Añade una nueva entidad de Tipo de Valoracion Documental
         /// </summary>
         /// <param name="entidad"></param>
         /// <returns></returns>
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<EstadoCuadroClasificacion>> Post([FromBody] EstadoCuadroClasificacion entidad)
+        public async Task<ActionResult<TipoValoracionDocumental>> Post([FromBody] TipoValoracionDocumental entidad)
         {
             entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
-            return Ok(CreatedAtAction("GetEstadoCuadro", new { id = entidad.Id }, entidad).Value);
+            return Ok(CreatedAtAction("GetTipoValoracionDocumental", new { id = entidad.Id }, entidad).Value);
         }
 
 
         /// <summary>
-        /// Actualiza unq entidad Estado Cuadro Clasificacion, el Id debe incluirse en el Querystring así como en 
+        /// Actualiza unq entidad Tipo de Valoracion Documental , el Id debe incluirse en el Querystring así como en 
         /// el serializado para la petición PUT
         /// </summary>
         /// <param name="id">Identificador único del dominio</param>
@@ -77,7 +75,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Put(string id, [FromBody] EstadoCuadroClasificacion entidad)
+        public async Task<IActionResult> Put(string id, [FromBody] TipoValoracionDocumental entidad)
         {
 
             if (id.Trim() != entidad.Id.Trim())
@@ -92,14 +90,14 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
         /// <summary>
-        /// Devulve un alista de Estado Cuadro Clasificaciones asociadas al objeto del tipo especificado
+        /// Devulve una lista de Tipo de Disposicion de Documental asociadas al objeto del tipo especificado
         /// </summary>
         /// <param name="query">Consulta para la paginación y búsqueda</param>
         /// <returns></returns>
-        [HttpGet("page", Name = "GetPageEstadoCuadroClasificacion")]
+        [HttpGet("page", Name = "GetPageTipoValoracionDocumental")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Paginado<EstadoCuadroClasificacion>>> GetPage(
+        public async Task<ActionResult<Paginado<TipoValoracionDocumental>>> GetPage(
             [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
             var data = await servicioEntidad.ObtenerPaginadoAsync(
@@ -113,15 +111,15 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
         /// <summary>
-        /// Obtiene un Estado Cuadro Clasificacion en base al Id único
+        /// Obtiene un país en base al Id único
         /// </summary>
-        /// <param name="id">Id único del Estado Cuadro Clasificacion</param>
+        /// <param name="id">Id único del país</param>
         /// <returns></returns>
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<EstadoCuadroClasificacion>> Get(string id)
+        public async Task<ActionResult<TipoValoracionDocumental>> Get(string id)
         {
             var o = await servicioEntidad.UnicoAsync(
                 predicado: x => x.Id.Trim() == id.Trim())
@@ -135,7 +133,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
         /// <summary>
-        /// Elimina de manera permanente un Estado Cuadro Clasificacion en base al arreglo de identificadores recibidos
+        /// Elimina de manera permanente un Tipo de Disposicion de Documental en base al arreglo de identificadores recibidos
         /// </summary>
         /// <param name="ids">Arreglo de identificadores string</param>
         /// <returns></returns>
@@ -144,22 +142,22 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete(string ids)
         {
-            string IdsTrim = "" ;
+            string IdsTrim = "";
             foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
             {
-                IdsTrim+=item.Trim()+",";
+                IdsTrim += item.Trim() + ",";
             }
-            string[] Ids = IdsTrim.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray();
-
-            return Ok(await servicioEntidad.Eliminar(Ids).ConfigureAwait(false));
+            string[] lids = IdsTrim.Split(',').ToList()
+           .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            return Ok(await servicioEntidad.Eliminar(lids).ConfigureAwait(false));
         }
         /// <summary>
-        /// Obtiene una lista de Estado Cuadro Clasificaciones en base a los parámetros de consulta
+        /// Obtiene una lista de Tipo de Disposicion de Documental en base a los parámetros de consulta
         /// </summary>
         /// <param name="query">Query de busqueda a la base de datos</param>
         /// <returns></returns>
 
-        [HttpGet("pares", Name = "GetParesEstadoCuadroClasificacion")]
+        [HttpGet("pares", Name = "GetParesTipoValoracionDocumental")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ValorListaOrdenada>>> GetPares(
@@ -171,24 +169,25 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             return Ok(data);
         }
         /// <summary>
-        /// Obtiene una lista de Estado Cuadro Clasificaciones en base a con el parámetro ID de consulta
+        /// Obtiene una lista de Tipo de Disposicion de Documental en base a con el parámetro ID de consulta
         /// </summary>
         /// <param name="ids">parametro Id para consulta a la base de datos</param>
         /// <returns></returns>
 
-        [HttpGet("pares/{ids}", Name = "GetParesEstadoCuadroClasificacionporId")]
+        [HttpGet("pares/{ids}", Name = "GetParesTipoValoracionDocumentalporId")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ValorListaOrdenada>>> GetParesporId(
               string ids)
         {
+
             string[] ArregloId = ids.Split(',').ToArray();
             List<string> lids = new List<string>();
             foreach (string i in ArregloId)
             {
                 lids.Add(i.Trim());
             }
-           lids.Where(x => !string.IsNullOrEmpty(x.Trim())).ToList();
+            lids.Where(x => !string.IsNullOrEmpty(x.Trim())).ToList();
             var data = await servicioEntidad.ObtenerParesPorId(lids)
                 .ConfigureAwait(false);
 

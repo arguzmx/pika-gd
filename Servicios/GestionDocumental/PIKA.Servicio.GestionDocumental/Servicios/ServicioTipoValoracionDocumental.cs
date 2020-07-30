@@ -1,95 +1,100 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.Extensions.Logging;
-using PIKA.Infraestructura.Comun;
-using PIKA.Infraestructura.Comun.Excepciones;
-using PIKA.Infraestructura.Comun.Interfaces;
-using PIKA.Modelo.GestorDocumental;
-using PIKA.Servicio.GestionDocumental.Data;
-using PIKA.Servicio.GestionDocumental.Interfaces;
-using RepositorioEntidades;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.Extensions.Logging;
+using PIKA.Infraestructura.Comun.Excepciones;
+using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Modelo.GestorDocumental;
+using PIKA.Servicio.GestionDocumental.Data;
+using PIKA.Servicio.GestionDocumental.Interfaces;
+using RepositorioEntidades;
 
 namespace PIKA.Servicio.GestionDocumental.Servicios
 {
-    public class ServicioEstadoCuadroClasificacion : ContextoServicioGestionDocumental,
-        IServicioInyectable, IServicioEstadoCuadroClasificacion
+   public class ServicioTipoValoracionDocumental: ContextoServicioGestionDocumental,
+        IServicioInyectable, IServicioTipoValoracionDocumental
     {
+       
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
-
-        private IRepositorioAsync<EstadoCuadroClasificacion> repo;
+        
+        private IRepositorioAsync<TipoValoracionDocumental> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
-        private IRepositorioAsync<CuadroClasificacion> repoCC;
+        private IRepositorioAsync<ValoracionEntradaClasificacion> repoVC;
 
-        public ServicioEstadoCuadroClasificacion(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioEstadoCuadroClasificacion> Logger) : base(proveedorOpciones, Logger)
+        public ServicioTipoValoracionDocumental(
+         IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
+         ILogger<ServicioTipoValoracionDocumental> Logger) :
+            base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
-            this.repo = UDT.ObtenerRepositoryAsync<EstadoCuadroClasificacion>(new QueryComposer<EstadoCuadroClasificacion>());
-            this.repoCC= UDT.ObtenerRepositoryAsync<CuadroClasificacion>(new QueryComposer<CuadroClasificacion>());
+            this.repo = UDT.ObtenerRepositoryAsync<TipoValoracionDocumental>(new QueryComposer<TipoValoracionDocumental>());
+            this.repoVC= UDT.ObtenerRepositoryAsync<ValoracionEntradaClasificacion>(new QueryComposer<ValoracionEntradaClasificacion>());
         }
 
-        public async Task<bool> Existe(Expression<Func<EstadoCuadroClasificacion, bool>> predicado)
+        public async Task<bool> Existe(Expression<Func<TipoValoracionDocumental, bool>> predicado)
         {
-            List<EstadoCuadroClasificacion> l = await this.repo.ObtenerAsync(predicado);
+            List<TipoValoracionDocumental> l = await this.repo.ObtenerAsync(predicado);
             if (l.Count() == 0) return false;
             return true;
         }
 
-        public async Task<EstadoCuadroClasificacion> CrearAsync(EstadoCuadroClasificacion entity, CancellationToken cancellationToken = default)
+        public async Task<TipoValoracionDocumental> CrearAsync(TipoValoracionDocumental entity, CancellationToken cancellationToken = default)
         {
-            entity.Id = entity.Id.Trim();
-            if (await Existe(x=>x.Id==entity.Id && string.Equals(x.Nombre.Trim(), entity.Nombre.Trim(), StringComparison.InvariantCultureIgnoreCase)))
+            if (await Existe(x => x.Id == entity.Id && string.Equals(x.Nombre.Trim(), entity.Nombre.Trim(), StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
-            EstadoCuadroClasificacion tmp = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+            TipoValoracionDocumental tmp = await this.repo.UnicoAsync(x => x.Id == entity.Id.Trim());
             if (tmp != null)
             {
                 throw new ExElementoExistente(entity.Id);
             }
-
             entity.Nombre = entity.Nombre.Trim();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
             return entity.Copia();
         }
-        
-        public async Task ActualizarAsync(EstadoCuadroClasificacion entity)
+
+        public async Task ActualizarAsync(TipoValoracionDocumental entity)
         {
-            entity.Id = entity.Id.Trim();
-            entity.Nombre= entity.Nombre.Trim();
             if (await Existe(x => x.Id != entity.Id &&
-           string.Equals(x.Nombre, entity.Nombre.Trim(), StringComparison.InvariantCultureIgnoreCase)))
+          string.Equals(x.Nombre, entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
-                throw new ExElementoExistente(entity.Nombre.Trim());
+                throw new ExElementoExistente(entity.Nombre);
             }
-            EstadoCuadroClasificacion tmp = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+            TipoValoracionDocumental tmp = await this.repo.UnicoAsync(x => x.Id == entity.Id);
             if (tmp == null)
             {
                 throw new EXNoEncontrado(entity.Id);
             }
-            tmp.Id = entity.Id;
+
             tmp.Nombre = entity.Nombre;
             UDT.Context.Entry(tmp).State = EntityState.Modified;
             UDT.SaveChanges();
         }
-    
+        public async Task<bool> ValidateRelacion(TipoValoracionDocumental tvd)
+        {
+            ValoracionEntradaClasificacion cc = await this.repoVC.UnicoAsync(x => x.TipoValoracionDocumentalId == tvd.Id);
+            if (cc != null)
+                return true;
+            else
+                return false;
+        }
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            EstadoCuadroClasificacion o;
+            TipoValoracionDocumental o;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
             {
                 o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
-                if (o != null )
+                if (o != null)
                 {
                     try
                     {
@@ -117,14 +122,14 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         }
 
-        public Task<List<EstadoCuadroClasificacion>> ObtenerAsync(Expression<Func<EstadoCuadroClasificacion, bool>> predicado)
+        public Task<List<TipoValoracionDocumental>> ObtenerAsync(Expression<Func<TipoValoracionDocumental, bool>> predicado)
         {
             return this.repo.ObtenerAsync(predicado);
         }
 
-        public async Task<EstadoCuadroClasificacion> UnicoAsync(Expression<Func<EstadoCuadroClasificacion, bool>> predicado = null, Func<IQueryable<EstadoCuadroClasificacion>, IOrderedQueryable<EstadoCuadroClasificacion>> ordenarPor = null, Func<IQueryable<EstadoCuadroClasificacion>, IIncludableQueryable<EstadoCuadroClasificacion, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task<TipoValoracionDocumental> UnicoAsync(Expression<Func<TipoValoracionDocumental, bool>> predicado = null, Func<IQueryable<TipoValoracionDocumental>, IOrderedQueryable<TipoValoracionDocumental>> ordenarPor = null, Func<IQueryable<TipoValoracionDocumental>, IIncludableQueryable<TipoValoracionDocumental, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-            EstadoCuadroClasificacion d = await this.repo.UnicoAsync(predicado);
+            TipoValoracionDocumental d = await this.repo.UnicoAsync(predicado);
             return d.Copia();
         }
 
@@ -144,7 +149,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return query;
         }
 
-        public async Task<IPaginado<EstadoCuadroClasificacion>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<EstadoCuadroClasificacion>, IIncludableQueryable<EstadoCuadroClasificacion, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
+        public async Task<IPaginado<TipoValoracionDocumental>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<TipoValoracionDocumental>, IIncludableQueryable<TipoValoracionDocumental, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
@@ -174,10 +179,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return l.OrderBy(x => x.Texto).ToList();
         }
 
-
         public async Task<List<ValorListaOrdenada>> ObtenerParesPorId(List<string> Lista)
         {
-            var resultados = await this.repo.ObtenerAsync(x => Lista.Contains(x.Id.Trim()));
+            var resultados = await this.repo.ObtenerAsync(x => Lista.Contains(x.Id));
             List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
             {
                 Id = x.Id,
@@ -192,12 +196,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         #region sin implementar
 
-        public Task<IEnumerable<EstadoCuadroClasificacion>> CrearAsync(params EstadoCuadroClasificacion[] entities)
+        public Task<IEnumerable<TipoValoracionDocumental>> CrearAsync(params TipoValoracionDocumental[] entities)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<EstadoCuadroClasificacion>> CrearAsync(IEnumerable<EstadoCuadroClasificacion> entities, CancellationToken cancellationToken = default)
+        public Task<IEnumerable<TipoValoracionDocumental>> CrearAsync(IEnumerable<TipoValoracionDocumental> entities, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -212,13 +216,14 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<List<EstadoCuadroClasificacion>> ObtenerAsync(string SqlCommand)
+
+        public Task<List<TipoValoracionDocumental>> ObtenerAsync(string SqlCommand)
         {
             throw new NotImplementedException();
         }
 
 
-        public async Task<IPaginado<EstadoCuadroClasificacion>> ObtenerPaginadoAsync(Expression<Func<EstadoCuadroClasificacion, bool>> predicate = null, Func<IQueryable<EstadoCuadroClasificacion>, IOrderedQueryable<EstadoCuadroClasificacion>> orderBy = null, Func<IQueryable<EstadoCuadroClasificacion>, IIncludableQueryable<EstadoCuadroClasificacion, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
+        public async Task<IPaginado<TipoValoracionDocumental>> ObtenerPaginadoAsync(Expression<Func<TipoValoracionDocumental, bool>> predicate = null, Func<IQueryable<TipoValoracionDocumental>, IOrderedQueryable<TipoValoracionDocumental>> orderBy = null, Func<IQueryable<TipoValoracionDocumental>, IIncludableQueryable<TipoValoracionDocumental, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -230,7 +235,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
 
 
-        #endregion
 
+        #endregion
     }
 }

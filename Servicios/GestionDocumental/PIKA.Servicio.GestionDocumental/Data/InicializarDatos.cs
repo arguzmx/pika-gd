@@ -11,69 +11,105 @@ namespace PIKA.Servicio.GestionDocumental.Data
     {
         public static void Inicializar(DBContextGestionDocumental dbContext, string contentPath)
         {
-            InicializarEstadosCuadroClasificacion(dbContext, contentPath);
+            GeneraEstadoCuadroClasificacionDefault(dbContext);
             InicializarFasesCicloVital(dbContext, contentPath);
             InicializarTiposArchivo(dbContext, contentPath);
             InicializarEstadosTransferencia(dbContext, contentPath);
             InicializarTiposAmpliacion(dbContext, contentPath);
+            GeneraTipoValoracionDocumentalDefault(dbContext);
+            GeneraTipoDisposicionDocumentalDefault(dbContext);
+
+
         }
 
-        private static void InicializarEstadosCuadroClasificacion(DBContextGestionDocumental dbContext, string contentPath)
+        private static void GeneraTipoValoracionDocumentalDefault(DBContextGestionDocumental dbContext)
         {
-            try
-            {
-                List<EstadoCuadroClasificacion> estadosCuadro = new List<EstadoCuadroClasificacion>();
-                string path = Path.Combine(contentPath, "Data", "Inicializar", "estadosCuadro.txt");
 
-                if (File.Exists(path))
-                {
-                    int index = 0;
-                    List<string> lineas = File.ReadAllText(path).Split('\n').ToList();
-                    foreach (string linea in lineas)
-                    {
-                        if (index > 0)
-                        {
-                            List<string> partes = linea.TrimStart().TrimEnd().Split('\t').ToList();
-                            estadosCuadro.Add(new EstadoCuadroClasificacion()
-                            {
-                                Id = partes[0],
-                                Nombre = partes[1]
-                            });
+            TipoValoracionDocumental t = new TipoValoracionDocumental();
+            List<TipoValoracionDocumental> tipos = t.Seed();
 
-                        }
-                        index++;
-                    }
-                }
 
-                foreach (EstadoCuadroClasificacion edo in estadosCuadro)
-                {
-
-                    EstadoCuadroClasificacion instancia = dbContext.EstadosCuadroClasificacion.Find(edo.Id);
-                    if (instancia == null)
-                    {
-                        EstadoCuadroClasificacion p = new EstadoCuadroClasificacion()
-                        {
-                            Id = edo.Id,
-                            Nombre = edo.Nombre
-                        };
-
-                        dbContext.EstadosCuadroClasificacion.Add(p);
-                    }
-                    else
-                    {
-                        instancia.Nombre = edo.Nombre;
-                    }
-                }
-                dbContext.SaveChanges();
-            }
-            catch (Exception ex)
+            foreach (TipoValoracionDocumental tipo in tipos)
             {
 
-                throw;
+                TipoValoracionDocumental instancia = dbContext.TipoValoracionDocumental.Find(tipo.Id);
+                if (instancia == null)
+                {
+                    TipoValoracionDocumental p = new TipoValoracionDocumental()
+                    {
+                        Id = tipo.Id,
+                        Nombre = tipo.Nombre
+                    };
+
+                    dbContext.TipoValoracionDocumental.Add(p);
+                }
+                else
+                {
+                    instancia.Nombre = tipo.Nombre;
+                }
             }
+            dbContext.SaveChanges();
 
         }
 
+        private static void GeneraTipoDisposicionDocumentalDefault(DBContextGestionDocumental dbContext)
+        {
+
+            TipoDisposicionDocumental t = new TipoDisposicionDocumental();
+            List<TipoDisposicionDocumental> tipos = t.Seed();
+
+
+            foreach (TipoDisposicionDocumental tipo in tipos)
+            {
+
+                TipoDisposicionDocumental instancia = dbContext.TipoDisposicionDocumental.Find(tipo.Id);
+                if (instancia == null)
+                {
+                    TipoDisposicionDocumental p = new TipoDisposicionDocumental()
+                    {
+                        Id = tipo.Id,
+                        Nombre = tipo.Nombre
+                    };
+
+                    dbContext.TipoDisposicionDocumental.Add(p);
+                }
+                else
+                {
+                    instancia.Nombre = tipo.Nombre;
+                }
+            }
+            dbContext.SaveChanges();
+
+        }
+        private static void GeneraEstadoCuadroClasificacionDefault(DBContextGestionDocumental dbContext)
+        {
+
+            EstadoCuadroClasificacion t = new EstadoCuadroClasificacion();
+            List<EstadoCuadroClasificacion> tipos = t.Seed();
+
+
+            foreach (EstadoCuadroClasificacion tipo in tipos)
+            {
+
+                EstadoCuadroClasificacion instancia = dbContext.EstadosCuadroClasificacion.Find(tipo.Id);
+                if (instancia == null)
+                {
+                    EstadoCuadroClasificacion p = new EstadoCuadroClasificacion()
+                    {
+                        Id = tipo.Id,
+                        Nombre = tipo.Nombre
+                    };
+
+                    dbContext.EstadosCuadroClasificacion.Add(p);
+                }
+                else
+                {
+                    instancia.Nombre = tipo.Nombre;
+                }
+            }
+            dbContext.SaveChanges();
+
+        }
         private static void InicializarFasesCicloVital(DBContextGestionDocumental dbContext, string contentPath)
         {
             try
