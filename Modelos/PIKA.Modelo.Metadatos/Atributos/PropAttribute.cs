@@ -22,6 +22,7 @@ namespace PIKA.Modelo.Metadatos
         private bool _IsLabel;
         private bool _ShowInTable;
         private bool _Contextual;
+        private string _IdContextual;
         private bool _ToggleInTable;
         private string _DefaultValue;
         private int _TableOrderIndex;
@@ -30,7 +31,7 @@ namespace PIKA.Modelo.Metadatos
             [CallerMemberName] string Id = null, string DefaultValue = "",
             int OrderIndex = 0, bool Searchable = true, bool Orderable = true, bool Visible = true,
             bool Required = false, bool isId = false, bool ShowInTable = true, bool ToggleInTable = true,
-            int TableOrderIndex = 0, bool Contextual = false , bool IsLabel = false)
+            int TableOrderIndex = 0, bool Contextual = false, string IdContextual = "" , bool IsLabel = false)
         {
 
             this._Contextual = Contextual;
@@ -55,6 +56,10 @@ namespace PIKA.Modelo.Metadatos
             this._isId = isId;
             this._IsLabel = IsLabel;
             
+            if(this.Contextual)
+            {
+                this._IdContextual = IdContextual;
+            }
 
         }
 
@@ -75,6 +80,13 @@ namespace PIKA.Modelo.Metadatos
             get { return _Contextual; }
         }
 
+        /// <summary>
+        /// Identificadorúnico de la variable contextual para el mapeo
+        /// </summary>
+        public virtual string IdContextual
+        {
+            get { return _IdContextual; }
+        }
 
         /// <summary>
         /// Especifica si la propiedad al formar parte de una tabla puede alternar su visibilidad

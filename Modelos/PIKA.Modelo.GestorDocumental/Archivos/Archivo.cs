@@ -95,7 +95,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Prestamos realizados en el archivo
         /// </summary>
-        //public virtual ICollection<Prestamo> Prestamos { get; set; }
+        public virtual ICollection<Prestamo> Prestamos { get; set; }
 
         /// <summary>
         /// Almacenes donde se encuentra en el archivo

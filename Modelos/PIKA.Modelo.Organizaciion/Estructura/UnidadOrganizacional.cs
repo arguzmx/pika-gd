@@ -50,7 +50,7 @@ namespace PIKA.Modelo.Organizacion
         /// Identiicador único del cominio al que se asocia la UO
         /// </summary>
 
-        [Prop(Required: true,  Visible: false, OrderIndex: 3, Contextual: true)]
+        [Prop(Required: true,  Visible: false, OrderIndex: 3, Contextual: true, IdContextual: "Global.IdDominio")]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string DominioId { get; set; }
 

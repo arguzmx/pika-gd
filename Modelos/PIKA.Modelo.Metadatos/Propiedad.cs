@@ -147,6 +147,10 @@ namespace PIKA.Modelo.Metadatos
         public bool Contextual { get; set; }
 
         [NotMapped]
+        public string IdContextual { get; set; }
+
+
+        [NotMapped]
         public bool MostrarEnTabla { get; set; }
 
         [NotMapped]

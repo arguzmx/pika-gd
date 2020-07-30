@@ -98,9 +98,8 @@ namespace PIKA.Servicio.Organizacion.Servicios
         }
         public async Task<IPaginado<Rol>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Rol>, IIncludableQueryable<Rol, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
-            Query = GetDefaultQuery(Query);
-            var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
-
+            Query= this.GetDefaultQuery(Query);
+            var respuesta = await this.repo.ObtenerPaginadoAsync(Query);
             return respuesta;
         }
 
