@@ -12,7 +12,6 @@ namespace PIKA.Servicio.GestionDocumental.Data
         public static void Inicializar(DBContextGestionDocumental dbContext, string contentPath)
         {
             GeneraEstadoCuadroClasificacionDefault(dbContext);
-            InicializarFasesCicloVital(dbContext, contentPath);
             InicializarTiposArchivo(dbContext, contentPath);
             InicializarEstadosTransferencia(dbContext, contentPath);
             InicializarTiposAmpliacion(dbContext, contentPath);
@@ -110,61 +109,6 @@ namespace PIKA.Servicio.GestionDocumental.Data
             dbContext.SaveChanges();
 
         }
-        private static void InicializarFasesCicloVital(DBContextGestionDocumental dbContext, string contentPath)
-        {
-            try
-            {
-                List<FaseCicloVital> fases = new List<FaseCicloVital>();
-                string path = Path.Combine(contentPath, "Data", "Inicializar", "fasesCicloVital.txt");
-
-                if (File.Exists(path))
-                {
-                    int index = 0;
-                    List<string> lineas = File.ReadAllText(path).Split('\n').ToList();
-                    foreach (string linea in lineas)
-                    {
-                        if (index > 0)
-                        {
-                            List<string> partes = linea.TrimStart().TrimEnd().Split('\t').ToList();
-                            fases.Add(new FaseCicloVital()
-                            {
-                                Id = partes[0],
-                                Nombre = partes[1]
-                            });
-
-                        }
-                        index++;
-                    }
-                }
-
-                foreach (FaseCicloVital fase in fases)
-                {
-                    FaseCicloVital instancia = dbContext.FasesCicloVital.Find(fase.Id);
-                    if (instancia == null)
-                    {
-                        FaseCicloVital p = new FaseCicloVital()
-                        {
-                            Id = fase.Id,
-                            Nombre = fase.Nombre
-                        };
-
-                        dbContext.FasesCicloVital.Add(p);
-                    }
-                    else
-                    {
-                        instancia.Nombre = fase.Nombre;
-                    }
-                }
-                dbContext.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-
-        }
-
         private static void InicializarTiposArchivo(DBContextGestionDocumental dbContext, string contentPath)
         {
             try

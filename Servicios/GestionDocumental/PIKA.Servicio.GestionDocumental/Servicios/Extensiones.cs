@@ -76,14 +76,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             };
         }
 
-        public static FaseCicloVital CopiaFase(this FaseCicloVital f)
-        {
-            return new FaseCicloVital()
-            {
-                Id = f.Id,
-                Nombre = f.Nombre,
-            };
-        }
+ 
         #endregion
 
         #region Actvos
