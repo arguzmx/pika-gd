@@ -204,10 +204,6 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// </summary>
         public DbSet<TipoArchivo> TiposArchivo { get; set; }
 
-        /// <summary>
-        /// Fases del ciclo vital existentes en la aplicación
-        /// </summary>
-        public DbSet<FaseCicloVital> FasesCicloVital { get; set; }
 
         /// <summary>
         /// Activos existentes en la aplicación
@@ -330,7 +326,6 @@ namespace PIKA.Servicio.GestionDocumental.Data
 
             builder.ApplyConfiguration<Archivo>(new DbConfArchivo());
             builder.ApplyConfiguration<TipoArchivo>(new DbConfTipoArchivo());
-            builder.ApplyConfiguration<FaseCicloVital>(new DbConfFaseCicloVital());
 
             builder.ApplyConfiguration<Activo>(new DbConfActivo());
             builder.ApplyConfiguration<Asunto>(new DbConfAsunto());

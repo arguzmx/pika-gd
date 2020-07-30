@@ -19,7 +19,6 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.FaseCicloVitalId).HasMaxLength(LongitudDatos.GUID).IsRequired();
 
-            builder.HasOne(x => x.Fase).WithMany(y => y.TiposArchivo).HasForeignKey(z => z.FaseCicloVitalId);
         }
     }
 }

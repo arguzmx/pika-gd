@@ -181,26 +181,6 @@ namespace PIKA.Servicio.GestionDocumental
             //------------------------------------------------------------
             //------------------------------------------------------------
 
-            /// Modulo administarcion de FAse Ciclo vital
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_FASE_CICLO_VITAL, true,
-                "Fases ciclo vital",
-                "Administrador de fase ciclo vital",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(FaseCicloVital) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-            //------------------------------------------------------------
-
             /// Modulo administarcion de ACtivos 
             //------------------------------------------------------------
 
