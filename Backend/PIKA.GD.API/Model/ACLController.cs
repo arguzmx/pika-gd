@@ -38,6 +38,17 @@ namespace PIKA.GD.API
             return l;
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [NonAction]
+        protected List<FiltroConsulta> ObtieneFiltrosIdentidadSinDominio()
+        {
+            List<FiltroConsulta> l = new List<FiltroConsulta>();
+            l.Add(new FiltroConsulta() { Operador = FiltroConsulta.OP_EQ, Propiedad = "UsuarioId", Valor = UsuarioId });
+            l.Add(new FiltroConsulta() { Operador = FiltroConsulta.OP_EQ, Propiedad = "TenatId", Valor = TenatId });
+
+            return l;
+        }
+
     } 
 
 }

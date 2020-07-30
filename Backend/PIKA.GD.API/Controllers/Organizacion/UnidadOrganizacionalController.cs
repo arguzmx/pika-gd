@@ -124,7 +124,7 @@ namespace PIKA.GD.API.Controllers.Organizacion
         public async Task<ActionResult<Paginado<UnidadOrganizacional>>> GetPageDominio(string id, [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
-            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
+            query.Filtros.AddRange(ObtieneFiltrosIdentidadSinDominio());
             query.Filtros.Add(new FiltroConsulta() { Propiedad = UnidadOrganizacional.CampoDominioId, Operador = FiltroConsulta.OP_EQ, Valor = id });
             var data = await servicioUO.ObtenerPaginadoAsync(query).ConfigureAwait(false);
 
