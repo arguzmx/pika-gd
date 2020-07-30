@@ -21,9 +21,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 TipoOrigenId = d.TipoOrigenId,
                 EstadoCuadroClasificacionId=d.EstadoCuadroClasificacionId,
                 Eliminada=d.Eliminada
-              
-
-                
             };
 
             if (d.Estado != null)
