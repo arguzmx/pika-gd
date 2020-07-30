@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -101,6 +102,14 @@ namespace PIKA.GD.API.Controllers.Organizacion
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
+            var filtroOrigen = query.Filtros.Where(x => x.Propiedad == "DominioId").SingleOrDefault();
+            if(filtroOrigen != null)
+            {
+                filtroOrigen.Propiedad = "OrigenId";
+                query.Filtros.Add(filtroOrigen);
+
+                query.Filtros.Add(new FiltroConsulta() { Operador = FiltroConsulta.OP_EQ, Propiedad = "TipoOrigenId", Valor = "dominio" });
+            }
             var data = await servicioRol.ObtenerPaginadoAsync(query).ConfigureAwait(false);
             return Ok(data);
         }

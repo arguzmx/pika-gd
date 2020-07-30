@@ -32,11 +32,6 @@ namespace PIKA.Modelo.GestorDocumental
         public string FaseCicloVitalId { get; set; }
 
 
-        /// <summary>
-        /// Fase vital a la que pertenece el archivo
-        /// </summary>
-        public virtual FaseCicloVital Fase { get; set; }
-
         public IEnumerable<Archivo> Archivos { get; set; }
 
     }

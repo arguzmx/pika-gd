@@ -17,60 +17,94 @@ namespace PIKA.Modelo.Seguridad
         /// <summary>
         /// Identificador único del usuario
         /// </summary>
+        [Prop(Required: false, isId: true, Visible: false, OrderIndex: 0)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.update)]
         public string UsuarioId { get; set; }
 
         /// <summary>
         /// Esta propeidad viene de la tabla aspnetuser en oeraciones GET, debe incluirse en POST
         /// </summary>
+        [Prop(Required: true, OrderIndex: 20)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
+        [ValidString(minlen: 2, maxlen: 200)]
         public string username{ get; set; }
 
         /// <summary>
         ///  OIDC Claims se alamcenana en la tabla aspnetuserclaims
         /// </summary>
+        [Prop(Required: true, OrderIndex: 30)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
+        [ValidString(minlen: 2, maxlen: 200)]
         public string email { get; set; }
 
+
+        [Prop(Required: true, OrderIndex: 40)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
+        [ValidString(minlen: 2, maxlen: 200)]
         public string name { get; set; }
 
+        [Prop(Required: true, OrderIndex: 50)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
+        [ValidString(minlen: 2, maxlen: 200)]
         public string family_name { get; set; }
 
+        [Prop(Required: true, OrderIndex: 60)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
+        [ValidString(minlen: 2, maxlen: 200)]
         public string given_name { get; set; }
 
-  
+        [Prop(Required: true, OrderIndex: 70)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
+        [ValidString(minlen: 2, maxlen: 200)]
         public string middle_name { get; set; }
 
-
+        [Prop(Required: true, OrderIndex: 80)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
+        [ValidString(minlen: 2, maxlen: 200)]
         public string nickname { get; set; }
 
-        public DateTime? updated_at { get; set; }
+        /// <summary>
+        /// Especifica si la cuenta se encuentra ainactiva
+        /// </summary>
+        [Prop(Required: false, OrderIndex: 90, DefaultValue: "false")]
+        [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
+        public bool Inactiva { get; set; }
 
-        public bool? email_verified { get; set; }
-
+        /// <summary>
+        /// Especifica si la cuenta ha sido marcada para eliminar
+        /// </summary>
+        [Prop(Required: false, OrderIndex: 90, DefaultValue: "false")]
+        [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
+        public bool Eliminada { get; set; }
 
         /// <summary>
         ///  Propeidades de la aplciación
         /// </summary>
 
-        public string generoid { get; set; }
+
+        [Prop(Required: false, OrderIndex: 70)]
+        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
+        [List(Entidad: "Pais", DatosRemotos: true, TypeAhead: false, Default: "MEX")]
         public string paisid { get; set; }
 
-
+        [Prop(Required: false, OrderIndex: 80)]
+        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
+        [List(Entidad: "Estado", DatosRemotos: true, TypeAhead: false)]
+        [Event(Entidad: "PaisId", Evento: Eventos.AlCambiar, Operacion: Operaciones.Actualizar, "PaisId")]
         public string estadoid { get; set; }
+
+
+        public string generoid { get; set; }
 
         public string gmt { get; set; }
 
 
        public float? gmt_offset { get; set; }
 
+        public DateTime? updated_at { get; set; }
 
-        /// <summary>
-        /// Especifica si la cuenta se encuentra ainactiva
-        /// </summary>
-         public bool Inactiva { get; set; }
+        public bool? email_verified { get; set; }
 
-        /// <summary>
-        /// Especifica si la cuenta ha sido marcada para eliminar
-        /// </summary>
-        public bool Eliminada { get; set; }
 
         /// <summary>
         /// Esta propiedad se alamcena y debe obtenerse de la tabla de los claims del usuario 

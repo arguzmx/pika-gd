@@ -15,6 +15,9 @@ namespace PIKA.Modelo.Metadatos
         public float max { get; set; }
         public float valordefault { get; set; }
 
+        public bool UtilizarMax { get; set; }
+
+        public bool UtilizarMin { get; set; }
 
         /// <summary>
         /// Propeidad de navegación

@@ -210,6 +210,7 @@ namespace PIKA.Modelo.Metadatos
                 MostrarEnTabla = source.ShowInTable,
                 AlternarEnTabla = source.ToggleInTable,
                 Contextual = source.Contextual,
+                IdContextual = source.IdContextual,
                 Etiqueta  = source.isLabel
             };
         }
@@ -235,7 +236,8 @@ namespace PIKA.Modelo.Metadatos
                 PropiedadId = Id,
                 valordefault = source.defaulvalue,
                 max = source.max,
-                min = source.min
+                min = source.min, UtilizarMax = source.usemax, 
+                UtilizarMin = source.usemin
             };
         }
 
