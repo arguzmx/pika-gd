@@ -12,13 +12,11 @@ namespace PIKA.Modelo.GestorDocumental.Validadores
         public ValoracionEntradaClasificacionValidador(IStringLocalizer<ValoracionEntradaClasificacion> localizer)
         {
             RuleFor(x => x.EntradaClasificacionId)
-                .NotNull()
                 .NotEmpty()
                 .MinimumLength(1)
                 .MaximumLength(LongitudDatos.GUID);
 
             RuleFor(x => x.TipoValoracionDocumentalId)
-               .NotNull()
                .NotEmpty()
                .MinimumLength(1)
                .MaximumLength(LongitudDatos.GUID);

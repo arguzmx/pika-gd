@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +26,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<CuadroClasificacion> repo;
+        private IRepositorioAsync<EstadoCuadroClasificacion> repoec;
         private ICompositorConsulta<CuadroClasificacion> compositor;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
@@ -35,6 +37,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<CuadroClasificacion>(new QueryComposer<CuadroClasificacion>());
+            this.repoec = UDT.ObtenerRepositoryAsync<EstadoCuadroClasificacion>(new QueryComposer<EstadoCuadroClasificacion>());
         }
 
         public async Task<bool> Existe(Expression<Func<CuadroClasificacion, bool>> predicado)
@@ -47,41 +50,49 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<CuadroClasificacion> CrearAsync(CuadroClasificacion entity, CancellationToken cancellationToken = default)
         {
-           
-
-            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
+            if (await Existe(x => x.Nombre.Equals(entity.Nombre.Trim(), StringComparison.InvariantCultureIgnoreCase)
+            &&x.Eliminada!=true))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
 
             entity.Id = System.Guid.NewGuid().ToString();
-            entity.EstadoCuadroClasificacionId = EstadoCuadroClasificacion.ESTADO_ACTIVO; 
             
+            entity.EstadoCuadroClasificacionId = EstadoCuadroClasificacion.ESTADO_ACTIVO;
+            entity.Nombre=entity.Nombre.Trim();
+            entity.OrigenId = entity.OrigenId.Trim();
+            entity.TipoOrigenId = entity.TipoOrigenId.Trim();
+
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
 
             return entity.Copia();
         }
 
+       
         public async Task ActualizarAsync(CuadroClasificacion entity)
         {
+            if (!await ValidarRelacionEstado(entity.EstadoCuadroClasificacionId.Trim()))
+                throw new ExDatosNoValidos(entity.EstadoCuadroClasificacionId.Trim());
 
-            CuadroClasificacion o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+            if (await Existe(x=> x.Id != entity.Id.Trim() && 
+            string.Equals(x.Nombre, entity.Nombre.Trim(), StringComparison.InvariantCultureIgnoreCase)
+            && x.OrigenId == entity.OrigenId && x.TipoOrigenId == entity.TipoOrigenId && x.Eliminada != true))
+            {
+                throw new ExElementoExistente(entity.Nombre.Trim());
+            }
+            
+            CuadroClasificacion o = await this.repo.UnicoAsync(x => x.Id == entity.Id.Trim());
 
             if (o == null)
             {
                 throw new EXNoEncontrado(entity.Id);
             }
-
-            if (await Existe(x =>
-            x.Id != entity.Id & x.TipoOrigenId == entity.TipoOrigenId && x.OrigenId == entity.OrigenId
-            && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
-            {
-                throw new ExElementoExistente(entity.Nombre);
-            }
-             o.Nombre = entity.Nombre;
+            o.Nombre = entity.Nombre.Trim();
             o.Eliminada = entity.Eliminada;
-            o.EstadoCuadroClasificacionId = entity.EstadoCuadroClasificacionId;
+            if(!String.IsNullOrEmpty(entity.EstadoCuadroClasificacionId.Trim()))
+                o.EstadoCuadroClasificacionId = entity.EstadoCuadroClasificacionId.Trim();
+
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
@@ -115,7 +126,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
             {
-                c = await this.repo.UnicoAsync(x => x.Id == Id);
+                c = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
                 if (c != null)
                 {
                     c.Eliminada = true;
@@ -137,6 +148,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 c = await this.repo.UnicoAsync(x => x.Id == Id);
                 if (c != null)
                 {
+                    c.Nombre = await RestaurarNombre(c.Nombre); ;
                     c.Eliminada = false;
                     UDT.Context.Entry(c).State = EntityState.Modified;
                     listaEliminados.Add(c.Id);
@@ -145,9 +157,27 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.SaveChanges();
             return listaEliminados;
         }
+        private async Task<string> RestaurarNombre(string nombre)
+        {
+              CuadroClasificacion cc = await UnicoAsync(x => x.Nombre == nombre && x.Eliminada != false);
+                if (cc != null)
+                    nombre = cc.Nombre + " restaurado " + DateTime.Now.Ticks;
+           
 
+            return nombre;
 
+        }
 
+        private async Task<bool> ValidarRelacionEstado(string EstadoCuadroClasificacionId)
+
+        {
+            EstadoCuadroClasificacion ec = await this.repoec.UnicoAsync(x=>x.Id== EstadoCuadroClasificacionId);
+            if (ec != null)
+                return true;
+            else
+                return false;
+        }
+       
         public async Task<CuadroClasificacion> UnicoAsync(Expression<Func<CuadroClasificacion, bool>> predicado = null, Func<IQueryable<CuadroClasificacion>, IOrderedQueryable<CuadroClasificacion>> ordenarPor = null, Func<IQueryable<CuadroClasificacion>, IIncludableQueryable<CuadroClasificacion, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             CuadroClasificacion c = await this.repo.UnicoAsync(predicado);

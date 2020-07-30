@@ -71,7 +71,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             var x = ObtieneFiltrosIdentidad();
 
 
-            if (id != entidad.Id)
+            if (id.Trim() != entidad.Id.Trim())
             {
                 return BadRequest();
             }
@@ -113,7 +113,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<EntradaClasificacion>> Get(string id)
         {
-            var o = await servicioCuadro.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            var o = await servicioCuadro.UnicoAsync(x => x.Id == id.Trim()).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }
@@ -130,8 +130,14 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete(string ids)
         {
-            string[] lids = ids.Split(',').ToList()
-               .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+
+            string IdsTrim = "";
+            foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+            {
+                IdsTrim += item.Trim() + ",";
+            }
+            string[] lids = IdsTrim.Split(',').ToList()
+           .Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return Ok(await servicioCuadro.Eliminar(lids).ConfigureAwait(false));
         }
 
@@ -146,8 +152,13 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Undelete(string ids)
         {
-            string[] lids = ids.Split(',').ToList()
-            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            string IdsTrim = "";
+            foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+            {
+                IdsTrim += item.Trim() + ",";
+            }
+            string[] lids = IdsTrim.Split(',').ToList()
+           .Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return Ok(await servicioCuadro.Restaurar(lids).ConfigureAwait(false));
         }
 

@@ -116,6 +116,50 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
             return d.Copia();
         }
+        public Task<List<Aplicacion>> ObtenerAsync(Expression<Func<Aplicacion, bool>> predicado)
+        {
+            return this.repo.ObtenerAsync(predicado);
+        }
+        public async Task<ICollection<string>> Eliminar(string[] ids)
+        {
+            Aplicacion o;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                o = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (o != null)
+                {
+                    try
+                    {
+                        await this.repo.Eliminar(o);
+                        listaEliminados.Add(o.Id);
+                    }
+                    catch (Exception)
+                    { }
+                }
+            }
+            UDT.SaveChanges();
+
+            return listaEliminados;
+
+        }
+
+        public async Task<IEnumerable<string>> Restaurar(string[] ids)
+        {
+            Aplicacion c;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                c = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (c != null)
+                {
+                    listaEliminados.Add(c.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
+        }
+
         #region sin implementar
 
         public Task<IEnumerable<Aplicacion>> CrearAsync(params Aplicacion[] entities)
@@ -138,15 +182,6 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<ICollection<string>> Eliminar(string[] ids)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<Aplicacion>> ObtenerAsync(Expression<Func<Aplicacion, bool>> predicado)
-        {
-            return this.repo.ObtenerAsync(predicado);
-        }
 
         public Task<List<Aplicacion>> ObtenerAsync(string SqlCommand)
         {
@@ -159,11 +194,6 @@ namespace PIKA.Servicio.Seguridad.Servicios
         }
 
 
-
-        public Task<IEnumerable<string>> Restaurar(string[] ids)
-        {
-            throw new NotImplementedException();
-        }
         #endregion
 
 

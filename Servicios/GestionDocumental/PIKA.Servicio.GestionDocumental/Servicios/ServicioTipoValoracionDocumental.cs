@@ -26,6 +26,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         
         private IRepositorioAsync<TipoValoracionDocumental> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
+        private IRepositorioAsync<ValoracionEntradaClasificacion> repoVC;
 
         public ServicioTipoValoracionDocumental(
          IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
@@ -34,7 +35,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<TipoValoracionDocumental>(new QueryComposer<TipoValoracionDocumental>());
-
+            this.repoVC= UDT.ObtenerRepositoryAsync<ValoracionEntradaClasificacion>(new QueryComposer<ValoracionEntradaClasificacion>());
         }
 
         public async Task<bool> Existe(Expression<Func<TipoValoracionDocumental, bool>> predicado)
@@ -46,12 +47,16 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<TipoValoracionDocumental> CrearAsync(TipoValoracionDocumental entity, CancellationToken cancellationToken = default)
         {
-            TipoValoracionDocumental tmp = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+            if (await Existe(x => x.Id == entity.Id && string.Equals(x.Nombre.Trim(), entity.Nombre.Trim(), StringComparison.InvariantCultureIgnoreCase)))
+            {
+                throw new ExElementoExistente(entity.Nombre);
+            }
+            TipoValoracionDocumental tmp = await this.repo.UnicoAsync(x => x.Id == entity.Id.Trim());
             if (tmp != null)
             {
                 throw new ExElementoExistente(entity.Id);
             }
-
+            entity.Nombre = entity.Nombre.Trim();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
             return entity.Copia();
@@ -59,6 +64,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task ActualizarAsync(TipoValoracionDocumental entity)
         {
+            if (await Existe(x => x.Id != entity.Id &&
+          string.Equals(x.Nombre, entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                throw new ExElementoExistente(entity.Nombre);
+            }
             TipoValoracionDocumental tmp = await this.repo.UnicoAsync(x => x.Id == entity.Id);
             if (tmp == null)
             {
@@ -69,23 +79,41 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.Context.Entry(tmp).State = EntityState.Modified;
             UDT.SaveChanges();
         }
-
+        public async Task<bool> ValidateRelacion(TipoValoracionDocumental tvd)
+        {
+            ValoracionEntradaClasificacion cc = await this.repoVC.UnicoAsync(x => x.TipoValoracionDocumentalId == tvd.Id);
+            if (cc != null)
+                return true;
+            else
+                return false;
+        }
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
             TipoValoracionDocumental o;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
             {
-                o = await this.repo.UnicoAsync(x => x.Id == Id);
+                o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
                 if (o != null)
                 {
                     try
                     {
-                        await this.repo.Eliminar(o);
+                        o = await this.repo.UnicoAsync(x => x.Id == Id);
+                        if (o != null)
+                        {
+                            await this.repo.Eliminar(o);
+                        }
+                        this.UDT.SaveChanges();
                         listaEliminados.Add(o.Id);
                     }
+                    catch (DbUpdateException)
+                    {
+                        throw new ExErrorRelacional(Id);
+                    }
                     catch (Exception)
-                    { }
+                    {
+                        throw;
+                    }
                 }
             }
             UDT.SaveChanges();

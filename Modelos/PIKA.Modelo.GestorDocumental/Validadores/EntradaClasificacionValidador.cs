@@ -11,14 +11,14 @@ namespace PIKA.Modelo.GestorDocumental.Validadores
     {
         public EntradaClasificacionValidador(IStringLocalizer<EntradaClasificacion> localizer)
         {
-            RuleFor(x => x.Nombre).NotNull().NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.Nombre);
-            RuleFor(x => x.ElementoClasificacionId).NotNull().NotEmpty();
-            RuleFor(x => x.TipoDisposicionDocumentalId).NotNull().NotEmpty().MaximumLength(LongitudDatos.GUID);
-            RuleFor(x=>x.Clave).NotNull().NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.GUID);
-            RuleFor(x=>x.Posicion).NotNull().NotEmpty();
-            RuleFor(x=>x.MesesVigenciTramite).NotNull().NotEmpty();
-            RuleFor(x=>x.MesesVigenciConcentracion).NotNull().NotEmpty();
-            RuleFor(x=>x.MesesVigenciHistorico).NotNull().NotEmpty();
+            RuleFor(x => x.Nombre).MinimumLength(1).MaximumLength(LongitudDatos.Nombre);
+            RuleFor(x => x.ElementoClasificacionId).NotEmpty();
+            RuleFor(x => x.TipoDisposicionDocumentalId).MaximumLength(LongitudDatos.GUID);
+            RuleFor(x=>x.Clave).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.GUID);
+            RuleFor(x=>x.Posicion).GreaterThanOrEqualTo(0);
+            RuleFor(x=>x.MesesVigenciTramite).GreaterThanOrEqualTo(0);
+            RuleFor(x=>x.MesesVigenciConcentracion).GreaterThanOrEqualTo(0);
+            RuleFor(x=>x.MesesVigenciHistorico).GreaterThanOrEqualTo(0);
         }
     }
 }

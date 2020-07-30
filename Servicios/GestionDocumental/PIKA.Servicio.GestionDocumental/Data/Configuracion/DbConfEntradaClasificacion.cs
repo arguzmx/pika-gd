@@ -16,7 +16,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.ElementoClasificacionId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
-            builder.Property(x => x.TipoDisposicionDocumentalId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
+           
 
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.Clave).HasMaxLength(LongitudDatos.GUID).IsRequired();
@@ -26,8 +26,8 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.MesesVigenciConcentracion).IsRequired();
             builder.Property(x => x.MesesVigenciHistorico).IsRequired();
 
-            builder.HasMany(x => x.ValoracionesEntrada).WithOne(y => y.EntradaClasificacion).HasForeignKey(z => z.EntradaClasificacionId);
-            builder.HasOne(x => x.DisposicionEntrada).WithMany(y => y.EntradaClasificacion).HasForeignKey(z => z.TipoDisposicionDocumentalId);
+            builder.HasMany(x => x.ValoracionesEntrada).WithOne(y => y.EntradaClasificacion).HasForeignKey(z => z.EntradaClasificacionId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(x => x.DisposicionEntrada).WithMany(y => y.EntradaClasificacion).HasForeignKey(z=>z.TipoDisposicionDocumentalId).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -12,12 +12,15 @@ namespace PIKA.Modelo.GestorDocumental.Validadores
         public TipoDisposicionDocumentalValidador(IStringLocalizer<TipoDisposicionDocumental> localizer)
         {
             RuleFor(x => x.Nombre)
-                .NotNull()
                 .NotEmpty()
                 .MinimumLength(1)
                 .MaximumLength(LongitudDatos.Nombre);
+            RuleFor(x => x.Id)
+              .NotEmpty()
+              .MinimumLength(1)
+              .MaximumLength(LongitudDatos.Nombre);
 
-           
+
         }
 
     }

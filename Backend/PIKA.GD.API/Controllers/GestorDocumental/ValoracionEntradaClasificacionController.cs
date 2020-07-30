@@ -79,7 +79,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             var x = ObtieneFiltrosIdentidad();
 
 
-            if (id != entidad.EntradaClasificacionId)
+            if (id.Trim() != entidad.EntradaClasificacionId.Trim())
             {
                 return BadRequest();
             }
@@ -120,7 +120,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ValoracionEntradaClasificacion>> Get(string id)
         {
-            var o = await ServicioValoracion.UnicoAsync(x => x.EntradaClasificacionId == id).ConfigureAwait(false);
+            var o = await ServicioValoracion.UnicoAsync(x => x.EntradaClasificacionId == id.Trim()).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }
@@ -132,13 +132,16 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         /// <param name="ids">Arreglo de identificadores string</param>
         /// <returns></returns>
 
-        [HttpDelete("{ids}")]
+        [HttpDelete("delete", Name = "DeleteValoracionEntradaClasificacion")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult> Delete(string ids)
+        public async Task<ActionResult> Delete(string IdEntrada, string IdTipo)
         {
-            string[] lids = ids.Split(',').ToList()
-               .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+
+            string Ids=$"{IdEntrada},|{IdTipo}";
+           
+            string[] lids = Ids.Split(',').ToList()
+      .Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return Ok(await ServicioValoracion.Eliminar(lids).ConfigureAwait(false));
         }
 

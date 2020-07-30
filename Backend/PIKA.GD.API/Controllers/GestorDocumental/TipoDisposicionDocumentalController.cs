@@ -79,7 +79,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         public async Task<IActionResult> Put(string id, [FromBody] TipoDisposicionDocumental entidad)
         {
 
-            if (id != entidad.Id)
+            if (id.Trim() != entidad.Id.Trim())
             {
                 return BadRequest();
             }
@@ -123,11 +123,11 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         public async Task<ActionResult<TipoDisposicionDocumental>> Get(string id)
         {
             var o = await servicioEntidad.UnicoAsync(
-                predicado: x => x.Id == id)
+                predicado: x => x.Id == id.Trim())
                 .ConfigureAwait(false);
 
             if (o != null) return Ok(o);
-            return NotFound(id);
+            return NotFound(id.Trim());
         }
 
 
@@ -143,8 +143,15 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete(string ids)
         {
-            string[] lids = ids.Split(',').ToList()
-                .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+        
+            string IdsTrim = "";
+            foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+            {
+                IdsTrim += item.Trim() + ",";
+            }
+            string[] lids = IdsTrim.Split(',').ToList()
+            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+
             return Ok(await servicioEntidad.Eliminar(lids).ConfigureAwait(false));
         }
         /// <summary>
@@ -177,8 +184,13 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
               string ids)
         {
 
-            List<string> lids = ids.Split(',').ToList()
-               .Where(x => !string.IsNullOrEmpty(x)).ToList();
+            string[] ArregloId = ids.Split(',').ToArray();
+            List<string> lids = new List<string>();
+            foreach (string i in ArregloId)
+            {
+                lids.Add(i.Trim());
+            }
+            lids.Where(x => !string.IsNullOrEmpty(x.Trim())).ToList();
             var data = await servicioEntidad.ObtenerParesPorId(lids)
                 .ConfigureAwait(false);
 

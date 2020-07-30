@@ -24,6 +24,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<ValoracionEntradaClasificacion> repo;
+        private IRepositorioAsync<EntradaClasificacion> repoEC;
+        private IRepositorioAsync<TipoValoracionDocumental> repoTV;
+
         private ICompositorConsulta<ValoracionEntradaClasificacion> compositor;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
@@ -35,6 +38,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<ValoracionEntradaClasificacion>(new QueryComposer<ValoracionEntradaClasificacion>());
+            this.repoEC= UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>());
+            this.repoTV = UDT.ObtenerRepositoryAsync<TipoValoracionDocumental>(new QueryComposer<TipoValoracionDocumental>());
         }
 
         public async Task<bool> Existe(Expression<Func<ValoracionEntradaClasificacion, bool>> predicado)
@@ -48,16 +53,56 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<ValoracionEntradaClasificacion> CrearAsync(ValoracionEntradaClasificacion entity, CancellationToken cancellationToken = default)
         {
 
+            if (!await ExisteEntradaClasificacion(x=>x.Id==entity.EntradaClasificacionId))
+                throw new ExElementoExistente(entity.EntradaClasificacionId);
 
+            if (!await ExisteTipoValoracionDocumental(x=>x.Id==entity.TipoValoracionDocumentalId))
+                throw new ExElementoExistente(entity.TipoValoracionDocumentalId);
+            
 
-            await this.repo.CrearAsync(entity);
-            UDT.SaveChanges();
-
+            if (!await Existe(x=>x.EntradaClasificacionId==entity.EntradaClasificacionId
+           && x.TipoValoracionDocumentalId==entity.TipoValoracionDocumentalId))
+            {
+                entity.EntradaClasificacionId = entity.EntradaClasificacionId.Trim();
+                entity.TipoValoracionDocumentalId = entity.TipoValoracionDocumentalId.Trim();
+                await this.repo.CrearAsync(entity);
+                entity.EntradaClasificacionId.Trim();
+                UDT.SaveChanges();
+            }
             return entity.Copia();
         }
 
+        public async Task<bool> ExisteEntradaClasificacion(Expression<Func<EntradaClasificacion, bool>> predicadoelemento)
+        {
+            List<EntradaClasificacion> l = await this.repoEC.ObtenerAsync(predicadoelemento);
+            if (l.Count() == 0) return false;
+            return true;
+        }
+        public async Task<bool> ExisteTipoValoracionDocumental(Expression<Func<TipoValoracionDocumental, bool>> predicadoelemento)
+        {
+            List<TipoValoracionDocumental> l = await this.repoTV.ObtenerAsync(predicadoelemento);
+            if (l.Count() == 0) return false;
+            return true;
+        }
+
+
+      
         public async Task ActualizarAsync(ValoracionEntradaClasificacion entity)
         {
+            if (!await ExisteEntradaClasificacion(x => x.Id == entity.EntradaClasificacionId))
+                throw new ExElementoExistente(entity.EntradaClasificacionId);
+
+            if (!await ExisteTipoValoracionDocumental(x => x.Id == entity.TipoValoracionDocumentalId))
+                throw new ExElementoExistente(entity.TipoValoracionDocumentalId);
+
+            //if (!await Existe(x => x.EntradaClasificacionId == entity.EntradaClasificacionId ))
+            //    throw new EXNoEncontrado(entity.EntradaClasificacionId);
+
+            //if (!await Existe(x => x.TipoValoracionDocumentalId == entity.TipoValoracionDocumentalId))
+            //    throw new EXNoEncontrado(entity.TipoValoracionDocumentalId);
+
+            if (await ExisteEntradaClasificacion(x => x.Id == entity.EntradaClasificacionId && x.Eliminada == true))
+                throw new ExElementoExistente(entity.EntradaClasificacionId);
 
             ValoracionEntradaClasificacion o = await this.repo.UnicoAsync(x => x.EntradaClasificacionId == entity.EntradaClasificacionId);
 
@@ -65,13 +110,16 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                 throw new EXNoEncontrado(entity.EntradaClasificacionId);
             }
+                
 
-           
+            if (!await Existe(x => x.EntradaClasificacionId == entity.EntradaClasificacionId
+             && x.TipoValoracionDocumentalId == entity.TipoValoracionDocumentalId))
+            {
+                o.EntradaClasificacionId = entity.EntradaClasificacionId.Trim();
+                o.TipoValoracionDocumentalId = entity.TipoValoracionDocumentalId.Trim();
 
-            o.EntradaClasificacionId = entity.EntradaClasificacionId;
-            o.TipoValoracionDocumentalId = entity.TipoValoracionDocumentalId;
-
-            UDT.Context.Entry(o).State = EntityState.Modified;
+                UDT.Context.Entry(o).State = EntityState.Modified;
+            }
             UDT.SaveChanges();
 
         }
@@ -98,26 +146,49 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return respuesta;
         }
 
+               
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
             ValoracionEntradaClasificacion c;
             ICollection<string> listaEliminados = new HashSet<string>();
+            List<string> Ids1 = new List<string>();
+            List<string> Ids2 = new List<string>();
+            string idRemplazado = "";
             foreach (var Id in ids)
             {
-                c = await this.repo.UnicoAsync(x => x.EntradaClasificacionId == Id);
-                if (c != null)
+                if (Id.Contains('|'))
                 {
-                    UDT.Context.Entry(c).State = EntityState.Deleted;
-                    listaEliminados.Add(c.EntradaClasificacionId);
+                    idRemplazado = Id.Replace('|', ' ');
+                    Ids2.Add(idRemplazado.Trim());
                 }
+                else {
+                    idRemplazado = Id.Trim();
+                    Ids1.Add(idRemplazado);
+                } 
+
             }
+            if (Ids1.Count()>0 && Ids2.Count()>0)
+            {
+                foreach (var id1 in Ids1)
+                {
+                    foreach (var id2 in Ids2)
+                    {
+                        c = await this.repo.UnicoAsync(x => x.EntradaClasificacionId == id1
+                        && x.TipoValoracionDocumentalId==id2);
+                        if (c != null)
+                             {
+                          UDT.Context.Entry(c).State = EntityState.Deleted;
+                           listaEliminados.Add(c.EntradaClasificacionId + " / "+c.TipoValoracionDocumentalId);
+                             }
+                    }
+
+                }
+
+            }
+           
             UDT.SaveChanges();
             return listaEliminados;
         }
-
-
-        
-
 
         public async Task<ValoracionEntradaClasificacion> UnicoAsync(Expression<Func<ValoracionEntradaClasificacion, bool>> predicado = null, Func<IQueryable<ValoracionEntradaClasificacion>, IOrderedQueryable<ValoracionEntradaClasificacion>> ordenarPor = null, Func<IQueryable<ValoracionEntradaClasificacion>, IIncludableQueryable<ValoracionEntradaClasificacion, object>> incluir = null, bool inhabilitarSegumiento = true)
         {

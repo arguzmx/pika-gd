@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PIKA.Servicio.GestionDocumental.Data;
 
 namespace PIKA.Servicio.GestionDocumental.Data.Migrations
 {
     [DbContext(typeof(DBContextGestionDocumental))]
-    partial class DBContextGestionDocumentalModelSnapshot : ModelSnapshot
+    [Migration("20200727185105_CambioRelacionTipoDisposisicon")]
+    partial class CambioRelacionTipoDisposisicon
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -964,7 +966,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.HasOne("PIKA.Modelo.GestorDocumental.EstadoCuadroClasificacion", "Estado")
                         .WithMany("Cuadros")
                         .HasForeignKey("EstadoCuadroClasificacionId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -978,8 +980,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
 
                     b.HasOne("PIKA.Modelo.GestorDocumental.ElementoClasificacion", "Padre")
                         .WithMany("Hijos")
-                        .HasForeignKey("ElementoClasificacionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ElementoClasificacionId");
                 });
 
             modelBuilder.Entity("PIKA.Modelo.GestorDocumental.EntradaClasificacion", b =>
@@ -992,8 +993,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
 
                     b.HasOne("PIKA.Modelo.GestorDocumental.TipoDisposicionDocumental", "DisposicionEntrada")
                         .WithMany("EntradaClasificacion")
-                        .HasForeignKey("TipoDisposicionDocumentalId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("TipoDisposicionDocumentalId");
                 });
 
             modelBuilder.Entity("PIKA.Modelo.GestorDocumental.EventoTransferencia", b =>
@@ -1088,12 +1088,13 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.HasOne("PIKA.Modelo.GestorDocumental.EntradaClasificacion", "EntradaClasificacion")
                         .WithMany("ValoracionesEntrada")
                         .HasForeignKey("EntradaClasificacionId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PIKA.Modelo.GestorDocumental.TipoValoracionDocumental", "TipoValoracionDocumental")
                         .WithMany("ValoracionEntradas")
                         .HasForeignKey("TipoValoracionDocumentalId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618
