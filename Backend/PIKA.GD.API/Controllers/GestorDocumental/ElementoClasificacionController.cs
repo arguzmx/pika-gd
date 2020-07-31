@@ -165,5 +165,29 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return Ok(await servicioElemento.Restaurar(lids).ConfigureAwait(false));
         }
+
+
+        [HttpGet("jerarquia/{jerarquiaid}/{padreid}", Name = "ObtenerHijosAsyncElementoClasificacion")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<ElementoClasificacion>>> ObtenerHijosAsync(string padreid, string jerarquiaid)
+        {
+            var l = await servicioElemento.ObtenerHijosAsync(padreid, jerarquiaid).ConfigureAwait(false);
+            return Ok(l.ToList());
+        }
+    
+
+        [HttpGet("jerarquia/{jerarquiaid}", Name = "ObtenerRaicesAsyncElementoClasificacion")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<ElementoClasificacion>>> ObtenerRaicesAsync(string jerarquiaid)
+        {
+            var l = await servicioElemento.ObtenerRaicesAsync(jerarquiaid).ConfigureAwait(false);
+            return Ok(l.ToList());
+        }
+
+ 
     }
 }

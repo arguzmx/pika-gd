@@ -61,7 +61,7 @@ namespace PIKA.Modelo.Organizacion
         /// <summary>
         /// Identificador único del dominio que contiene los roles
         /// </summary>
-        [Prop(Required: true, Visible: false, OrderIndex: 3, Contextual: true, IdContextual: ConstantesModelo.CONTEXTO_DOMINIOID)]
+        [Prop(Required: true, Visible: false, OrderIndex: 3, Contextual: true, IdContextual: ConstantesModelo.GLOBAL_DOMINIOID)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string OrigenId {get; set;}
 

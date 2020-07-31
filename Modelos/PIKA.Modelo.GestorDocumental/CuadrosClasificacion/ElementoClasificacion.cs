@@ -5,6 +5,9 @@ using System.Text;
 using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
+using System.Xml.Serialization;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -13,7 +16,8 @@ namespace PIKA.Modelo.GestorDocumental
     /// Los elementos de clasificación consituyen la estructura jerárquca para acaomodar las entradas del cuadro
     /// </summary>
     [Entidad( EliminarLogico: true)]
-    public class ElementoClasificacion : Entidad<string>, IEntidadNombrada, IEntidadEliminada
+    public class ElementoClasificacion : Entidad<string>, IEntidadNombrada, 
+        IEntidadEliminada, IEntidadJerarquica
     {
 
         public ElementoClasificacion() {
@@ -67,7 +71,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Cuadro de clasificación al que pertenecen los elementos
         /// </summary>
-        [Prop(Required: true, Visible: false, OrderIndex: 1010, Contextual: true, IdContextual: "CuadroClasificacion.Id")]
+        [Prop(Required: true, Visible: false, OrderIndex: 1010, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "CuadroClasificacion")]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string CuadroClasifiacionId { get; set; }
 
@@ -75,7 +79,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Padre  del elemento actual 
         /// </summary>
-        [Prop(Required: true, Visible: false, OrderIndex: 1020, Contextual: true, IdContextual: "ElementoClasificacion.Id")]
+        [Prop(Required: true, Visible: false, OrderIndex: 1020, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "PadreId")]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string ElementoClasificacionId { get; set; }
 
@@ -86,29 +90,45 @@ namespace PIKA.Modelo.GestorDocumental
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.add)]
         public bool EsRaiz { get; set; }
 
+
+        [NotMapped]
+        public string NombreJerarquico { get {
+                return this.Clave + " " + this.Nombre;
+            } }
+
         /// <summary>
         /// Elemento padre del actual
         /// </summary>
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ElementoClasificacion Padre { get; set; }
 
         /// <summary>
         /// Elementos descencientes del elemento actual
         /// </summary>
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<ElementoClasificacion> Hijos { get; set; }
 
         /// <summary>
         /// Instancia del cuadro de clasificación
         /// </summary>
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual CuadroClasificacion CuadroClasificacion { get; set; }
 
         /// <summary>
         /// Activos del elemento clasificacion
         /// </summary>
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<Activo> Activos { get; set; }
 
-      /// <summary>
+        /// <summary>
         /// Activos del elemento clasificacion
         /// </summary>
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<EntradaClasificacion> Entradas { get; set; }
     }
 }

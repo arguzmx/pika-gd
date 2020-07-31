@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Bogus.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
@@ -43,31 +44,50 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
         public async Task<ElementoClasificacion> CrearAsync(ElementoClasificacion entity, CancellationToken cancellationToken = default)
         {
-        if (await ValidaCuadroClasificacion(entity.CuadroClasifiacionId))
+       
+                if (entity.EsRaiz)
+                {
+                    entity.ElementoClasificacionId = null;
+                }
+                else
+                {
+                    if (String.IsNullOrEmpty(entity.ElementoClasificacionId))
+                    {
+                        throw new ExDatosNoValidos("ElementoClasificacionId");
+                    }
+                    else
+                    {
+                        if (!String.IsNullOrEmpty(entity.ElementoClasificacionId))
+                            if (await ValidaElementoCuadroClasificacion(entity.ElementoClasificacionId))
+                                throw new ExDatosNoValidos(entity.ElementoClasificacionId);
+
+                        entity.ElementoClasificacionId = entity.ElementoClasificacionId.Trim();
+                    }
+                }
+
+                if (await ValidaCuadroClasificacion(entity.CuadroClasifiacionId))
                     throw new ExDatosNoValidos(entity.CuadroClasifiacionId);
 
-       if (!String.IsNullOrEmpty(entity.ElementoClasificacionId))
-         if (await ValidaElementoCuadroClasificacion(entity.ElementoClasificacionId))
-                    throw new ExDatosNoValidos(entity.ElementoClasificacionId);
 
-            if (await Existe(x => x.Clave.Equals(entity.Clave.Trim(),
-                StringComparison.InvariantCultureIgnoreCase) && x.Eliminada!=true
-                && x.CuadroClasifiacionId==entity.CuadroClasifiacionId
-                ))
-            {
-                throw new ExElementoExistente(entity.Clave);
-            }
 
-            entity.Id = System.Guid.NewGuid().ToString().Trim();
-            entity.Clave= entity.Clave.Trim();
-            entity.Nombre = entity.Nombre.Trim();
-            if(!String.IsNullOrEmpty(entity.CuadroClasifiacionId))
-            entity.CuadroClasifiacionId = entity.CuadroClasifiacionId.Trim();
-            if(!String.IsNullOrEmpty(entity.ElementoClasificacionId))
-            entity.ElementoClasificacionId = entity.ElementoClasificacionId.Trim();
-            await this.repo.CrearAsync(entity);
-            UDT.SaveChanges();
-            return entity.Copia();
+                if (await Existe(x => x.Clave.Equals(entity.Clave.Trim(),
+                    StringComparison.InvariantCultureIgnoreCase) && x.Eliminada != true
+                    && x.CuadroClasifiacionId == entity.CuadroClasifiacionId
+                    ))
+                {
+                    throw new ExElementoExistente(entity.Clave);
+                }
+
+                entity.Id = System.Guid.NewGuid().ToString().Trim();
+                entity.Clave = entity.Clave.Trim();
+                entity.Nombre = entity.Nombre.Trim();
+                entity.CuadroClasifiacionId = entity.CuadroClasifiacionId.Trim();
+
+
+                await this.repo.CrearAsync(entity);
+                UDT.SaveChanges();
+                return entity.Copia();
+    
         }
 
        public async Task<bool> ValidaCuadroClasificacion(string CuadroClasificacionID)
@@ -298,6 +318,25 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.SaveChanges();
             return listaEliminados;
         }
+
+
+        public async Task<List<ElementoClasificacion>> ObtenerHijosAsync(string PadreId, string JerquiaId)
+        {
+            var  l= await this.repo.ObtenerAsync( x=> x.CuadroClasifiacionId == JerquiaId 
+            && x.ElementoClasificacionId == PadreId,  y => y.OrderBy(z=>z.NombreJerarquico));
+            return l.ToList();
+        }
+
+        public async Task<List<ElementoClasificacion>> ObtenerRaicesAsync(string JerquiaId)
+        {
+            var l = await this.repo.ObtenerAsync(x => x.CuadroClasifiacionId == JerquiaId
+            && x.EsRaiz == true, y => y.OrderBy(z => z.NombreJerarquico));
+            return l.ToList();
+        }
+
+ 
+
+
         private async Task<string> RestaurarNombre(string Clave, string CuadroClasificacionId,string id,string Nombre)
         {
            
@@ -354,6 +393,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             throw new NotImplementedException();
         }
+
 
         #endregion
     }
