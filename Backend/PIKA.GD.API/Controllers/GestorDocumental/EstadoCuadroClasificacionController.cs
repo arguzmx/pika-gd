@@ -153,6 +153,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
             return Ok(await servicioEntidad.Eliminar(Ids).ConfigureAwait(false));
         }
+       
         /// <summary>
         /// Obtiene una lista de Estado Cuadro Clasificaciones en base a los parámetros de consulta
         /// </summary>

@@ -26,38 +26,39 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         private IRepositorioAsync<TipoArchivo> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
-
+        private IRepositorioAsync<Archivo> repoA;
         public ServicioTipoArchivo(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
            ILogger<ServicioTipoArchivo> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<TipoArchivo>(new QueryComposer<TipoArchivo>());
+            this.repoA=UDT.ObtenerRepositoryAsync<Archivo>(new QueryComposer<Archivo>());
         }
-
         public async Task<bool> Existe(Expression<Func<TipoArchivo, bool>> predicado)
         {
             List<TipoArchivo> l = await this.repo.ObtenerAsync(predicado);
             if (l.Count() == 0) return false;
             return true;
         }
-
-
         public async Task<TipoArchivo> CrearAsync(TipoArchivo entity, CancellationToken cancellationToken = default)
         {
+            if (await Existe(x => x.Id.Equals(entity.Id.Trim(), StringComparison.InvariantCultureIgnoreCase)))
+                throw new ExErrorRelacional(entity.Id);
 
-            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
+            if (await Existe(x => x.Nombre.Equals(entity.Nombre.Trim(), StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
-
-            entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            return entity;
+            return entity.Copia();
         }
-
         public async Task ActualizarAsync(TipoArchivo entity)
         {
+            if (await Existe(x => x.Id!=entity.Id && x.Nombre.Equals(entity.Nombre.Trim(), StringComparison.InvariantCultureIgnoreCase)))
+            {
+                throw new ExElementoExistente(entity.Nombre);
+            }
 
             TipoArchivo o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
@@ -66,15 +67,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new EXNoEncontrado(entity.Id);
             }
 
-            if (await Existe(x =>
-            x.Id != entity.Id
-            && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
-            {
-                throw new ExElementoExistente(entity.Nombre);
-            }
 
-            o.Nombre = entity.Nombre;
-            o.FaseCicloVitalId = o.FaseCicloVitalId;
+            o.Nombre = entity.Nombre.Trim();
+            o.FaseCicloVitalId = o.FaseCicloVitalId.Trim();
 
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
@@ -102,6 +97,87 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             return respuesta;
         }
+        public async Task<ICollection<string>> Eliminar(string[] ids)
+        {
+            TipoArchivo o;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
+                if (o != null)
+                {
+                    try
+                    {
+                        o = await this.repo.UnicoAsync(x => x.Id == Id);
+                        if (o != null)
+                        {
+                            await this.repo.Eliminar(o);
+                        }
+                        this.UDT.SaveChanges();
+                        listaEliminados.Add(o.Id);
+                    }
+                    catch (DbUpdateException)
+                    {
+                        throw new ExErrorRelacional(Id);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+            }
+            UDT.SaveChanges();
+
+            return listaEliminados;
+
+        }
+        public async Task<TipoArchivo> UnicoAsync(Expression<Func<TipoArchivo, bool>> predicado = null, Func<IQueryable<TipoArchivo>, IOrderedQueryable<TipoArchivo>> ordenarPor = null, Func<IQueryable<TipoArchivo>, IIncludableQueryable<TipoArchivo, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+            TipoArchivo t = await this.repo.UnicoAsync(predicado);
+            return t.Copia();
+        }
+
+        public Task<List<TipoArchivo>> ObtenerAsync(Expression<Func<TipoArchivo, bool>> predicado)
+        {
+            return this.repo.ObtenerAsync(predicado);
+        }
+
+        public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
+        {
+            for (int i = 0; i < Query.Filtros.Count; i++)
+            {
+                if (Query.Filtros[i].Propiedad.ToLower() == "texto")
+                {
+                    Query.Filtros[i].Propiedad = "Nombre";
+                }
+            }
+
+            Query = GetDefaultQuery(Query);
+            var resultados = await this.repo.ObtenerPaginadoAsync(Query);
+            List<ValorListaOrdenada> l = resultados.Elementos.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
+        }
+
+        public async Task<List<ValorListaOrdenada>> ObtenerParesPorId(List<string> Lista)
+        {
+            var resultados = await this.repo.ObtenerAsync(x => Lista.Contains(x.Id.Trim()));
+            List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
+        }
+
+        #region Sin Implementar
 
         public Task<IEnumerable<TipoArchivo>> CrearAsync(params TipoArchivo[] entities)
         {
@@ -123,27 +199,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public async Task<ICollection<string>> Eliminar(string[] ids)
-        {
-            TipoArchivo ta;
-            ICollection<string> listaEliminados = new HashSet<string>();
-            foreach (var Id in ids)
-            {
-                ta = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (ta != null)
-                {
-                    UDT.Context.Entry(ta).State = EntityState.Deleted;
-                    listaEliminados.Add(ta.Id);
-                }
-            }
-            UDT.SaveChanges();
-            return listaEliminados;
-        }
-
-        public Task<List<TipoArchivo>> ObtenerAsync(Expression<Func<TipoArchivo, bool>> predicado)
-        {
-            throw new NotImplementedException();
-        }
 
         public Task<List<TipoArchivo>> ObtenerAsync(string SqlCommand)
         {
@@ -155,17 +210,13 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-
-
         public Task<IEnumerable<string>> Restaurar(string[] ids)
         {
             throw new NotImplementedException();
         }
+        #endregion
 
-        public async Task<TipoArchivo> UnicoAsync(Expression<Func<TipoArchivo, bool>> predicado = null, Func<IQueryable<TipoArchivo>, IOrderedQueryable<TipoArchivo>> ordenarPor = null, Func<IQueryable<TipoArchivo>, IIncludableQueryable<TipoArchivo, object>> incluir = null, bool inhabilitarSegumiento = true)
-        {
-            TipoArchivo t = await this.repo.UnicoAsync(predicado);
-            return t.CopiaTipoArchivo();
-        }
+
+
     }
 }

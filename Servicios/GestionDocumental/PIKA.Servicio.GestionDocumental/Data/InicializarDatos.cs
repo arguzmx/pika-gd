@@ -12,7 +12,6 @@ namespace PIKA.Servicio.GestionDocumental.Data
         public static void Inicializar(DBContextGestionDocumental dbContext, string contentPath)
         {
             GeneraEstadoCuadroClasificacionDefault(dbContext);
-            InicializarTiposArchivo(dbContext, contentPath);
             InicializarEstadosTransferencia(dbContext, contentPath);
             InicializarTiposAmpliacion(dbContext, contentPath);
             GeneraTipoValoracionDocumentalDefault(dbContext);
@@ -109,63 +108,36 @@ namespace PIKA.Servicio.GestionDocumental.Data
             dbContext.SaveChanges();
 
         }
-        private static void InicializarTiposArchivo(DBContextGestionDocumental dbContext, string contentPath)
+        private static void GeneraTiposArchivoDefault(DBContextGestionDocumental dbContext)
         {
-            try
-            {
-                List<TipoArchivo> tiposArchivo = new List<TipoArchivo>();
-                string path = Path.Combine(contentPath, "Data", "Inicializar", "tiposArchivo.txt");
 
-                if (File.Exists(path))
-                {
-                    int index = 0;
-                    List<string> lineas = File.ReadAllText(path).Split('\n').ToList();
-                    foreach (string linea in lineas)
-                    {
-                        if (index > 0)
-                        {
-                            List<string> partes = linea.TrimStart().TrimEnd().Split('\t').ToList();
-                            tiposArchivo.Add(new TipoArchivo()
-                            {
-                                Id = partes[0],
-                                Nombre = partes[1],
-                                FaseCicloVitalId = partes[2]
-                            });
+            TipoArchivo t = new TipoArchivo();
+            List<TipoArchivo> tipos = t.Seed();
 
-                        }
-                        index++;
-                    }
-                }
 
-                foreach (TipoArchivo tipo in tiposArchivo)
-                {
-                    TipoArchivo instancia = dbContext.TiposArchivo.Find(tipo.Id);
-                    if (instancia == null)
-                    {
-                        TipoArchivo p = new TipoArchivo()
-                        {
-                            Id = tipo.Id,
-                            Nombre = tipo.Nombre,
-                            FaseCicloVitalId = tipo.FaseCicloVitalId,
-                        };
-
-                        dbContext.TiposArchivo.Add(p);
-                    }
-                    else
-                    {
-                        instancia.Nombre = tipo.Nombre;
-                    }
-                }
-                dbContext.SaveChanges();
-            }
-            catch (Exception ex)
+            foreach (TipoArchivo tipo in tipos)
             {
 
-                throw;
+                TipoArchivo instancia = dbContext.TiposArchivo.Find(tipo.Id);
+                if (instancia == null)
+                {
+                    TipoArchivo p = new TipoArchivo()
+                    {
+                        Id = tipo.Id,
+                        Nombre = tipo.Nombre
+                    };
+
+                    dbContext.TiposArchivo.Add(p);
+                }
+                else
+                {
+                    instancia.Nombre = tipo.Nombre;
+                }
             }
+            dbContext.SaveChanges();
 
         }
-
+      
         private static void InicializarEstadosTransferencia(DBContextGestionDocumental dbContext, string contentPath)
         {
             try

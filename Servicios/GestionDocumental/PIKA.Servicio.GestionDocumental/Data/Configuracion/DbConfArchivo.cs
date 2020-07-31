@@ -21,9 +21,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.TipoOrigenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.TipoArchivoId).HasMaxLength(LongitudDatos.GUID).IsRequired();
 
-            builder.HasOne(x => x.Tipo).WithMany(y => y.Archivos).HasForeignKey(z => z.TipoArchivoId);
-            builder.HasMany(x => x.Activos).WithOne(z => z.ArchivoActual).HasForeignKey(y => y.ArchivoId);
-            builder.HasMany(x => x.HistorialArchivosActivo).WithOne(y => y.Archivo).HasForeignKey(z => z.ArchivoId);
+            builder.HasOne(x => x.Tipo).WithMany(y => y.Archivos).HasForeignKey(z => z.TipoArchivoId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(x => x.Activos).WithOne(z => z.ArchivoActual).HasForeignKey(y => y.ArchivoId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(x => x.HistorialArchivosActivo).WithOne(y => y.Archivo).HasForeignKey(z => z.ArchivoId).OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(x => x.Almacenes).WithOne(y => y.Archivo).HasForeignKey(z => z.ArchivoId);
 
         }

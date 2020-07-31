@@ -34,8 +34,8 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.Confidencial).HasDefaultValue(false).IsRequired();
             builder.Property(x => x.Ampliado).HasDefaultValue(false).IsRequired();
 
-            builder.HasMany(x => x.Ampliaciones).WithOne(y => y.activo).HasForeignKey(z => z.ActivoId);
-            builder.HasMany(x => x.HistorialArchivosActivo).WithOne(y => y.Activo).HasForeignKey(z => z.ActivoId);
+            builder.HasMany(x => x.Ampliaciones).WithOne(y => y.activo).HasForeignKey(z => z.ActivoId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(x => x.HistorialArchivosActivo).WithOne(y => y.Activo).HasForeignKey(z => z.ActivoId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

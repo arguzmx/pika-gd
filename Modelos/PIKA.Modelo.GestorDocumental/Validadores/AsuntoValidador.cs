@@ -11,14 +11,9 @@ namespace PIKA.Modelo.GestorDocumental.Validadores
     {
         public AsuntoValidador(IStringLocalizer<Asunto> localizer)
         {
-            RuleFor(x => x.Contenido)
-                .NotNull().WithMessage(x => localizer["El contenido es obligatorio"])
-                .NotEmpty().WithMessage(x => localizer["El contenido es obligatorio"])
-                .MinimumLength(1).WithMessage(x => localizer["El nombre debe tener al menos {0} caracteres"]);
-
-            RuleFor(x => x.ActivoId)
-                .NotNull().WithMessage(x => localizer["El activo es obligatorio"])
-                .NotEmpty().WithMessage(x => localizer["El activo es obligatorio"]);
+            RuleFor(x => x.Id).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.GUID);
+            RuleFor(x => x.Contenido).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.ControlHTML);
+            RuleFor(x => x.ActivoId).NotEmpty().MinimumLength(1);
         }
     }
 }
