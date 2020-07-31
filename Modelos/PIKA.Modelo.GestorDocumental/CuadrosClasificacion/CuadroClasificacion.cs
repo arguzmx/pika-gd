@@ -54,14 +54,14 @@ namespace PIKA.Modelo.GestorDocumental
         /// Especifica si el elemento ha sido marcado como eliminado
         /// </summary>
         [Prop(Required: false, OrderIndex: 15, DefaultValue: "false")]
-        [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.update)]
+        [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.none)]
         public bool Eliminada { get; set; }
 
 
         /// <summary>
         /// El tipo de orígen en para este modelo es el dominio a la que pertenece el cuadro de clasificacion
         /// </summary>
-        [Prop(Required: true, OrderIndex: 100, Contextual: true, ShowInTable: false, Searchable: false)]
+        [Prop(Required: true, OrderIndex: 1000, Contextual: true, ShowInTable: false, Searchable: false, DefaultValue: ConstantesModelo.IDORIGEN_DOMINIO)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string TipoOrigenId { get; set; }
 
@@ -69,7 +69,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Identificador de la organización a la que pertenece el cuadro de clasificación
         /// </summary>
-        [Prop(Required: true, OrderIndex: 110, Contextual: true, ShowInTable: false, Searchable: false)]
+        [Prop(Required: true, Visible: false, OrderIndex: 1010, Contextual: true, IdContextual: ConstantesModelo.CONTEXTO_DOMINIOID)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string OrigenId { get; set; }
 

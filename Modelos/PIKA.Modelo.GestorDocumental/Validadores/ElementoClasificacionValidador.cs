@@ -16,9 +16,6 @@ namespace PIKA.Modelo.GestorDocumental.Validadores
             RuleFor(x => x.Posicion).GreaterThanOrEqualTo(0);
             RuleFor(x => x.CuadroClasifiacionId).NotEmpty().MaximumLength(LongitudDatos.GUID);
             RuleFor(x=>x.ElementoClasificacionId).MaximumLength(LongitudDatos.GUID);
-            
-
-
         }
     }
 }

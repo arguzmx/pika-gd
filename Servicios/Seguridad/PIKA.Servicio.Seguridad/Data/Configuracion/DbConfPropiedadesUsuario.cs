@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PIKA.Modelo.Seguridad;
 using PIKA.Modelo.Seguridad.Base;
 using RepositorioEntidades;
+using System.Security.Cryptography.X509Certificates;
 
 namespace PIKA.Servicio.Seguridad.Data.Configuracion
 {
@@ -32,7 +33,7 @@ namespace PIKA.Servicio.Seguridad.Data.Configuracion
             builder.Property(x => x.Ultimoacceso).IsRequired(false);
 
             builder.HasOne(x => x.Usuario).WithOne(y => y.Propiedades).HasForeignKey<PropiedadesUsuario>(z => z.UsuarioId);
-            builder.HasOne(x => x.genero).WithMany(y => y.PropiedadesUsuario).HasForeignKey(z => z.generoid);
+            builder.HasOne(x => x.genero).WithMany(y => y.PropiedadesUsuario).HasForeignKey(z => z.generoid).OnDelete(DeleteBehavior.NoAction);
 
         }
     }

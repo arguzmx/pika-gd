@@ -24,77 +24,88 @@ namespace PIKA.Modelo.Seguridad
         /// <summary>
         /// Esta propeidad viene de la tabla aspnetuser en oeraciones GET, debe incluirse en POST
         /// </summary>
-        [Prop(Required: true, OrderIndex: 20)]
+        [Prop(Required: true, OrderIndex: 10)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
         [ValidString(minlen: 2, maxlen: 200)]
         public string username{ get; set; }
+
+
+        /// <summary>
+        /// Esta propiedad solo es util al creal el usuario y no debe persisttirse
+        /// </summary>
+        [NotMapped]
+        [Prop(Required: true, OrderIndex: 20, ShowInTable:false, Visible:false, Searchable: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_PASSWORD_CONFIRM, Accion: Acciones.add)]
+        [ValidString(minlen: 6, maxlen: 50, regexp: ValidStringAttribute.REGEXP_USERPASS)]
+        public string password { get; set; }
 
         /// <summary>
         ///  OIDC Claims se alamcenana en la tabla aspnetuserclaims
         /// </summary>
         [Prop(Required: true, OrderIndex: 30)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
-        [ValidString(minlen: 2, maxlen: 200)]
+        [ValidString(minlen: 2, maxlen: 200, regexp: ValidStringAttribute.REGEXP_EMAIL)]
         public string email { get; set; }
 
+        /// <summary>
+        /// Especifica si la cuenta se encuentra inactiva
+        /// </summary>
+        [Prop(Required: false, OrderIndex: 40, DefaultValue: "false")]
+        [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
+        public bool Inactiva { get; set; }
 
-        [Prop(Required: true, OrderIndex: 40)]
-        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
+
+        [Prop(Required: false, OrderIndex: 50)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
         [ValidString(minlen: 2, maxlen: 200)]
         public string name { get; set; }
 
-        [Prop(Required: true, OrderIndex: 50)]
-        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
+        [Prop(Required: false, OrderIndex: 60)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
         [ValidString(minlen: 2, maxlen: 200)]
         public string family_name { get; set; }
 
-        [Prop(Required: true, OrderIndex: 60)]
-        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
+        [Prop(Required: false, OrderIndex: 70)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
         [ValidString(minlen: 2, maxlen: 200)]
         public string given_name { get; set; }
 
-        [Prop(Required: true, OrderIndex: 70)]
+        [Prop(Required: false, OrderIndex: 80)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
         [ValidString(minlen: 2, maxlen: 200)]
         public string middle_name { get; set; }
 
-        [Prop(Required: true, OrderIndex: 80)]
-        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
+        [Prop(Required: false, OrderIndex: 90)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
         [ValidString(minlen: 2, maxlen: 200)]
         public string nickname { get; set; }
 
-        /// <summary>
-        /// Especifica si la cuenta se encuentra ainactiva
-        /// </summary>
-        [Prop(Required: false, OrderIndex: 90, DefaultValue: "false")]
-        [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
-        public bool Inactiva { get; set; }
-
-        /// <summary>
-        /// Especifica si la cuenta ha sido marcada para eliminar
-        /// </summary>
-        [Prop(Required: false, OrderIndex: 90, DefaultValue: "false")]
-        [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
-        public bool Eliminada { get; set; }
+        [Prop(Required: false, OrderIndex: 100)]
+        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
+        [List(Entidad: "Genero", DatosRemotos: true, TypeAhead: false)]
+        public string generoid { get; set; }
 
         /// <summary>
         ///  Propeidades de la aplciación
         /// </summary>
-
-
-        [Prop(Required: false, OrderIndex: 70)]
+        [Prop(Required: false, OrderIndex: 110)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
         [List(Entidad: "Pais", DatosRemotos: true, TypeAhead: false, Default: "MEX")]
         public string paisid { get; set; }
 
-        [Prop(Required: false, OrderIndex: 80)]
+        [Prop(Required: false, OrderIndex: 120)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
         [List(Entidad: "Estado", DatosRemotos: true, TypeAhead: false)]
         [Event(Entidad: "PaisId", Evento: Eventos.AlCambiar, Operacion: Operaciones.Actualizar, "PaisId")]
         public string estadoid { get; set; }
 
+     
 
-        public string generoid { get; set; }
+        /// <summary>
+        /// Especifica si la cuenta ha sido marcada para eliminar
+        /// </summary>
+        public bool Eliminada { get; set; }
+
 
         public string gmt { get; set; }
 
@@ -116,11 +127,7 @@ namespace PIKA.Modelo.Seguridad
 
 
 
-        /// <summary>
-        /// Esta propiedad solo es util al creal el suaurio y no debe persisttirse
-        /// </summary>
-        [NotMapped]
-        public string password { get; set; }
+
 
         /// <summary>
         ///  Esta propeida se actualzai vía el login del usuario

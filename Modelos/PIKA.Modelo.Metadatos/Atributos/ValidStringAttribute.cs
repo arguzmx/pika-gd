@@ -9,6 +9,10 @@ namespace PIKA.Modelo.Metadatos
     {
 
         public const string REGEXP_NUMBERS = @"[0-9]*";
+        public const string REGEXP_USERPASS = @"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}";
+        public const string REGEXP_EMAIL = @"[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}";
+
+        //^$
 
         private int _minlen;
         private int _maxlen;

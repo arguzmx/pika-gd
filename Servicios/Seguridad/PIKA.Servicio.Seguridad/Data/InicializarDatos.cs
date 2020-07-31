@@ -20,9 +20,7 @@ namespace PIKA.Servicio.Seguridad.Data
         private static void InicializarGeneros(
            DbContextSeguridad dbContext)
         {
-
-            try
-            {
+ 
                 Genero g = new Genero();
                 List<Genero> lista = g.Seed();
 
@@ -30,7 +28,7 @@ namespace PIKA.Servicio.Seguridad.Data
                 foreach (var o  in lista)
                 {
 
-                    var instancia = dbContext.ModuloAplicacion.Find(o.Id);
+                    var instancia = dbContext.Generos.Find(o.Id);
                     if (instancia == null)
                     {
                         Genero p = new Genero()
@@ -47,13 +45,7 @@ namespace PIKA.Servicio.Seguridad.Data
                     }
                 }
                 dbContext.SaveChanges();
-
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+ 
         }
 
     }

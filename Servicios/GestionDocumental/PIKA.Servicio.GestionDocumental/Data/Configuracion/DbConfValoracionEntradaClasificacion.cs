@@ -18,7 +18,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.EntradaClasificacionId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.TipoValoracionDocumentalId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
 
-            builder.HasOne(x => x.TipoValoracionDocumental).WithMany(y => y.ValoracionEntradas).HasForeignKey(z=>z.TipoValoracionDocumentalId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(x => x.TipoValoracionDocumental).WithMany(y => y.ValoracionEntradas).HasForeignKey(z=>z.TipoValoracionDocumentalId).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

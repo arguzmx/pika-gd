@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PIKA.Servicio.GestionDocumental.Data;
 
-namespace PIKA.Servicio.GestionDocumental.Data.Migrations
+namespace PIKA.Servicio.GestionDocumental.data.Migrations
 {
     [DbContext(typeof(DBContextGestionDocumental))]
-    partial class DBContextGestionDocumentalModelSnapshot : ModelSnapshot
+    [Migration("20200731161850_AdicionRaizElemento")]
+    partial class AdicionRaizElemento
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

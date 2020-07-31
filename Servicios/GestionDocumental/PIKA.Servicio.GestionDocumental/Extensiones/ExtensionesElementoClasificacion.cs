@@ -19,7 +19,8 @@ namespace PIKA.Servicio.GestionDocumental
                 ElementoClasificacionId=d.ElementoClasificacionId,
                 Activos=d.Activos,
                 Clave=d.Clave,
-                Posicion=d.Posicion
+                Posicion=d.Posicion,
+                EsRaiz = d.EsRaiz
             };
             if (d.Padre != null) 
             {
