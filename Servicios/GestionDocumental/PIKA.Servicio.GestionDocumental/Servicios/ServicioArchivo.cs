@@ -53,26 +53,23 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             if (!await ExisteTipoArchivos(x => x.Id == entity.TipoArchivoId.Trim()))
                 throw new ExDatosNoValidos(entity.TipoArchivoId);
-            Console.WriteLine("\n validacion1");
 
             if (await Existe(x=>x.Nombre.Equals(entity.Nombre,StringComparison.InvariantCultureIgnoreCase)
-            && x.Id!=entity.Id && x.Eliminada!=true && x.TipoArchivoId.Equals(entity.TipoArchivoId,StringComparison.InvariantCultureIgnoreCase)
+            && x.Id!=entity.Id && x.Eliminada!=true 
+            && x.TipoArchivoId.Equals(entity.TipoArchivoId,StringComparison.InvariantCultureIgnoreCase)
+            && x.TipoOrigenId.Equals(entity.TipoOrigenId,StringComparison.InvariantCultureIgnoreCase)
+            && x.OrigenId.Equals(entity.OrigenId, StringComparison.InvariantCultureIgnoreCase)
             ))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
-
-
-            Console.WriteLine("\n validacion2");
-
             entity.Nombre = entity.Nombre.Trim();
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
             return entity.Copia();
         }
-
-        public async Task ActualizarAsync(Archivo entity)
+                public async Task ActualizarAsync(Archivo entity)
         {
             if (!await ExisteTipoArchivos(x => x.Id == entity.TipoArchivoId.Trim()))
                 throw new ExDatosNoValidos(entity.TipoArchivoId);
