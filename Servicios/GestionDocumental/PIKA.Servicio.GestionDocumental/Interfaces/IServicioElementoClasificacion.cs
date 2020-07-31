@@ -7,6 +7,7 @@ using System.Text;
 namespace PIKA.Servicio.GestionDocumental.Interfaces
 {
     public interface IServicioElementoClasificacion : IServicioRepositorioAsync<ElementoClasificacion, string>
+        , IRepositorioJerarquia<ElementoClasificacion, string, string>
     {
     }
 }
