@@ -7,7 +7,7 @@ using System.Text;
 
 namespace PIKA.Modelo.GestorDocumental.Validadores
 {
-    class TipoArchivoValidador : AbstractValidator<TipoArchivo>
+    public class TipoArchivoValidador : AbstractValidator<TipoArchivo>
     {
         public TipoArchivoValidador(IStringLocalizer<TipoArchivo> localizer)
         {

@@ -19,7 +19,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// Identifica si la amplaición se encuentra vigente
         /// </summary>
         public bool Vigente { get; set; }
-        //# debe formar parte de un undice compuesto con  ActivoId
+        //# debe formar parte de un indice compuesto con  ActivoId
 
         /// <summary>
         /// Identificadorúnico del tipo de ampliacion
