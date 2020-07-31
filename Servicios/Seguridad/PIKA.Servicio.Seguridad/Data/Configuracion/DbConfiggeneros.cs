@@ -15,10 +15,9 @@ namespace PIKA.Servicio.Seguridad.Data.Configuracion
             builder.ToTable(DbContextSeguridad.TablaGeneros);
             builder.HasKey(x => new  { x.Id });
 
-            builder.Property(x => x.Id).ValueGeneratedNever();
-
+            builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
-
+            builder.HasMany(x => x.PropiedadesUsuario).WithOne(y => y.genero).HasForeignKey(z => z.UsuarioId).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

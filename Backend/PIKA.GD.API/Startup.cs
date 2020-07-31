@@ -126,20 +126,21 @@ namespace PIKA.GD.API
                options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
 
-       
-            services.AddDbContext<DbContextSeguridad>(options =>
-                 options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-
-
-
             services.AddDbContext<DbContextContacto>(options =>
                     options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
             services.AddDbContext<DbContextContenido>(options =>
-    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+                options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+          
+            
+            services.AddDbContext<DbContextSeguridad>(options =>
+            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
             services.AddDbContext<DBContextGestionDocumental>(options =>
              options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
+
+       
 
             //registra los ensamblados validables
             services.RegistraValidables();

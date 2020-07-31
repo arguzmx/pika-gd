@@ -4,6 +4,15 @@
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20200730173352_ActualizacionCataloogGenero.cs" />
+    <Compile Remove="Data\Migrations\20200730173352_ActualizacionCataloogGenero.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200730173749_ActualizacionCataloogGenero.cs" />
+    <Compile Remove="Data\Migrations\20200730173749_ActualizacionCataloogGenero.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200730174119_ActualizacionCataloogGenero.cs" />
+    <Compile Remove="Data\Migrations\20200730174119_ActualizacionCataloogGenero.Designer.cs" />
+  </ItemGroup>
+
 
 
   <ItemGroup>

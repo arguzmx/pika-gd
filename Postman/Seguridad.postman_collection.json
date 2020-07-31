@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "aa34f601-fed0-4f3a-a9c0-35734073c8ec",
+		"_postman_id": "2545366e-6103-42af-8c85-2263bab50c3c",
 		"name": "Seguridad",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -8,6 +8,40 @@
 		{
 			"name": "Usuarios",
 			"item": [
+				{
+					"name": "GET Metadata Usuario",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"usuarios",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "POST Usuario",
 					"request": {
@@ -86,40 +120,6 @@
 								"seguridad",
 								"usuarios",
 								"00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "GET Metadata Usuario",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "uid",
-								"type": "text",
-								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-							},
-							{
-								"key": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/metadata",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "5000",
-							"path": [
-								"api",
-								"v1.0",
-								"seguridad",
-								"usuarios",
-								"metadata"
 							]
 						}
 					},
@@ -405,7 +405,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "b29f0c12-12a5-46e2-a699-2519fbc131c0",
+						"id": "78df9a0d-9e60-4fbe-a244-c8c7409bd34d",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -415,7 +415,482 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "73ec3e00-a1b0-4ce8-8439-484fd45e3497",
+						"id": "f6cb9cca-6df7-49ac-9070-0fca70c479f8",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Género",
+			"item": [
+				{
+					"name": "GET Metadata Género",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/genero/metadata",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"genero",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Género",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Id\": \"T\",\n    \"Nombre\": \"Transexual\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/genero",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"genero"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Género",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Id\": \"T\",\n    \"Nombre\": \"Otro genero\"\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/genero/T",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"genero",
+								"T"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Género",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/genero/T",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"genero",
+								"T"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Género",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/genero/page?i=0&t=10000&ordc=Nombre&ordd=asc&f[0][p]=Id&f[0][o]=eq&f[0][v]=MEX&f[0][n]=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"genero",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10000"
+								},
+								{
+									"key": "ordc",
+									"value": "Nombre"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Id"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "eq"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "MEX"
+								},
+								{
+									"key": "f[0][n]",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Pares Género",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/genero/pares?i=0&t=5&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=m",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"genero",
+								"pares"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "5"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Nombre"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "m"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Pares Pais Typeahead",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/genero/pares?i=0&t=5&f[0][p]=Texto&f[0][o]=starts&f[0][v]=m",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"genero",
+								"pares"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "5"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Texto"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "starts"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "m"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Pares por ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/genero/pares/M,f",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"genero",
+								"pares",
+								"M,f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Género",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/genero/T",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"genero",
+								"T"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "26a5cb41-c9ac-4987-84f8-00ce41568e75",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "e01cb39f-4c55-40b7-a750-5bf027fa0545",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -440,7 +915,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "b2452b44-1fe7-4c20-bc7d-c15bb13aa920",
+				"id": "364efabb-4da9-4334-abdf-613be366d60f",
 				"type": "text/javascript",
 				"exec": [
 					"const echoPostRequest = {",
@@ -486,7 +961,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "204ab867-5937-47f6-8b5e-3537469369bd",
+				"id": "d63ad025-e63f-4ad1-b3d7-5915239aa53c",
 				"type": "text/javascript",
 				"exec": [
 					""

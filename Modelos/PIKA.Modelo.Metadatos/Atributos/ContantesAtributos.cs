@@ -21,6 +21,7 @@ namespace PIKA.Modelo.Metadatos.Atributos
         public const string HTML_TEXTAREA = "textarea";
         public const string HTML_SELECT = "select";
         public const string HTML_PASSWORD = "password";
+        public const string HTML_PASSWORD_CONFIRM = "passconfirm";
         public const string HTML_AVATAR = "avatar";
         public const string HTML_NONE = "none";
         public const string HTML_LABEL = "label";

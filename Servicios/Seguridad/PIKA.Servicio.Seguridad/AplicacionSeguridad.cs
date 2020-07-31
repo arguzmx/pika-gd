@@ -12,6 +12,7 @@ namespace PIKA.Servicio.Seguridad
     {
         public const string MODULO_BASE_SEGURIDAD = "PIKA-GD-SEG";
         public const string MODULO_SEGURIDAD_USUARIOS = "PIKA-GD-SEG_USUSARIOS";
+        public const string MODULO_SEGURIDAD_GENERO = "PIKA-GD-SEG_GENERO";
         public const string MODULO_SEGURIDAD_APLICACION = "PIKA-GD-SEG-APLICIACION";
         public const string MODULO_SEGURIDAD_MODULO_APLICACION = "PIKA-GD-SEG_MODAPLI";
         public const string MODULO_SEGURIDAD_TIPO_ADMINISTRADOR_MODULO = "PIKA-GD-SEG-TIPO-ADMONAPP";
@@ -54,6 +55,26 @@ namespace PIKA.Servicio.Seguridad
             //------------------------------------------------------------
             //------------------------------------------------------------
 
+
+            /// Modulo administarcion de catálogo géneros
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_SEGURIDAD_GENERO, true,
+                "Catálogo de Géneros",
+                "Administrador del catálogo de géneros para los usuarios",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloBase,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(Genero) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
 
             /// Modulo administarcion de Aplicacion
             //------------------------------------------------------------

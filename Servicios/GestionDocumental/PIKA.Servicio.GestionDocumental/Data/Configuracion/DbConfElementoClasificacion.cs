@@ -21,8 +21,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.Eliminada).HasDefaultValue(false).IsRequired();
             builder.Property(x => x.Clave).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.Posicion).HasMaxLength(LongitudDatos.CodigoPostal).IsRequired();
-            
-            builder.HasMany(x => x.Hijos).WithOne(y => y.Padre).HasForeignKey(z => z.ElementoClasificacionId).OnDelete(DeleteBehavior.Cascade);
+            builder.Property(x => x.EsRaiz).IsRequired();
+
+            builder.HasMany(x => x.Hijos).WithOne(y => y.Padre).HasForeignKey(z => z.ElementoClasificacionId).OnDelete(DeleteBehavior.Restrict);
             builder.HasMany(x => x.Activos).WithOne(y => y.ElementoClasificacion).HasForeignKey(z => z.ElementoClasificacionId);
 
         }
