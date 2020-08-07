@@ -49,31 +49,37 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
-            await this.repo.CrearAsync(entity);
-            UDT.SaveChanges();
+
+            if (!await Existe(x => x.Id.Equals(entity.Id, StringComparison.InvariantCultureIgnoreCase)
+             && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)
+            )) {
+                entity.Id = entity.Id.Trim();
+                entity.Nombre = entity.Nombre.Trim();
+                await this.repo.CrearAsync(entity);
+                UDT.SaveChanges();
+            }
+            
             return entity.Copia();
         }
         public async Task ActualizarAsync(TipoArchivo entity)
         {
-            if (await Existe(x => x.Id!=entity.Id && x.Nombre.Equals(entity.Nombre.Trim(), StringComparison.InvariantCultureIgnoreCase)))
+            TipoArchivo o = await this.repo.UnicoAsync(x => x.Id == entity.Id.Trim());
+            if (o == null)
+                throw new EXNoEncontrado(entity.Id);
+
+            if (await Existe(x => x.Id!=entity.Id.Trim() && x.Nombre.Equals(entity.Nombre.Trim(), StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
 
-            TipoArchivo o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
-
-            if (o == null)
+            if (!await Existe(x => x.Id.Equals(entity.Id, StringComparison.InvariantCultureIgnoreCase)
+             && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)
+            ))
             {
-                throw new EXNoEncontrado(entity.Id);
+                o.Nombre = entity.Nombre.Trim();
+                UDT.Context.Entry(o).State = EntityState.Modified;
+                UDT.SaveChanges();
             }
-
-
-            o.Nombre = entity.Nombre.Trim();
-            o.FaseCicloVitalId = o.FaseCicloVitalId.Trim();
-
-            UDT.Context.Entry(o).State = EntityState.Modified;
-            UDT.SaveChanges();
-
         }
         private Consulta GetDefaultQuery(Consulta query)
         {

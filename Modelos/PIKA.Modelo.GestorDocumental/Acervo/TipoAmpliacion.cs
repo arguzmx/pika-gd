@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -24,6 +26,8 @@ namespace PIKA.Modelo.GestorDocumental
             return lista;
         }
 
+        [XmlIgnore]
+        [JsonIgnore]
         public ICollection<Ampliacion> Ampliaciones { get; set; }
     }
 }

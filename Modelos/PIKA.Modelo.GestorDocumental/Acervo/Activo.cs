@@ -3,6 +3,8 @@ using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -13,6 +15,10 @@ namespace PIKA.Modelo.GestorDocumental
         {
             TipoOrigenId = TipoOrigenDefault;
             HistorialArchivosActivo = new HashSet<HistorialArchivoActivo>();
+            Ampliaciones = new HashSet<Ampliacion>();
+            PrestamosRelacionados = new HashSet<ActivoPrestamo>();
+            TransferenciasRelacionados = new HashSet<ActivoTransferencia>();
+            DeclinadosTransferenciaRelacionados = new HashSet<ActivoDeclinado>();
         }
 
         public override string Id { get => base.Id; set => base.Id = value; }
@@ -110,23 +116,39 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         public bool Ampliado { get; set; }
 
-
+        [XmlIgnore]
+        [JsonIgnore]
         public ElementoClasificacion ElementoClasificacion { get; set; }
 
+        [XmlIgnore]
+        [JsonIgnore]
         public Archivo ArchivoActual { get; set; }
-
-        public Asunto oAsunto { get; set; }
+        [XmlIgnore]
+        [JsonIgnore]
+        public Asunto Asuntos { get; set; }
 
         /// <summary>
         /// Historial de archivos por los que ha pasado el activo
         /// </summary>
+        
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<HistorialArchivoActivo> HistorialArchivosActivo { get; set; }
 
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<Ampliacion> Ampliaciones { get; set; }
-       
+
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<ActivoPrestamo> PrestamosRelacionados { get; set; }
 
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<ActivoTransferencia> TransferenciasRelacionados { get; set; }
+
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<ActivoDeclinado> DeclinadosTransferenciaRelacionados { get; set; }
 
     }

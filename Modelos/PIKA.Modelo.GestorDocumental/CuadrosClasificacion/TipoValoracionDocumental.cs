@@ -19,7 +19,7 @@ namespace PIKA.Modelo.GestorDocumental
 
         public TipoValoracionDocumental()
         {
-        
+            ValoracionEntradas = new HashSet<ValoracionEntradaClasificacion>();
         }
 
         public override List<TipoValoracionDocumental> Seed()

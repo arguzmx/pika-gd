@@ -58,7 +58,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new EXNoEncontrado(entity.ElementoClasificacionId);
             if (!await Existelemento(x => x.Id == entity.ElementoClasificacionId))
                 throw new EXNoEncontrado(entity.ElementoClasificacionId);
-
+            if(!String.IsNullOrEmpty( entity.TipoDisposicionDocumentalId))
             if (!await ExisteTipoDisposicionDocumental(x => x.Id == entity.TipoDisposicionDocumentalId))
                 throw new ExDatosNoValidos(entity.TipoDisposicionDocumentalId);
 
@@ -99,11 +99,17 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task ActualizarAsync(EntradaClasificacion entity)
         {
-           if (await Existelemento(x=>x.Id==entity.ElementoClasificacionId && x.Eliminada==true))
+            EntradaClasificacion o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+
+            if (o == null)
+            {
+                throw new EXNoEncontrado(entity.Id);
+            }
+            if (await Existelemento(x=>x.Id==entity.ElementoClasificacionId && x.Eliminada==true))
                     throw new EXNoEncontrado(entity.ElementoClasificacionId);
            if(!await Existelemento(x => x.Id == entity.ElementoClasificacionId))
                 throw new EXNoEncontrado(entity.ElementoClasificacionId);
-
+            if (!String.IsNullOrEmpty(entity.TipoDisposicionDocumentalId))
             if (!await ExisteTipoDisposicionDocumental(x => x.Id == entity.TipoDisposicionDocumentalId))
                 throw new ExDatosNoValidos(entity.TipoDisposicionDocumentalId);
 
@@ -115,14 +121,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                 throw new ExElementoExistente(entity.Clave);
             }
-
-            EntradaClasificacion o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
-
-            if (o == null)
-            {
-                throw new EXNoEncontrado(entity.Id);
-            }
-
             
             o.Nombre = entity.Nombre.Trim();
             o.Eliminada = entity.Eliminada;

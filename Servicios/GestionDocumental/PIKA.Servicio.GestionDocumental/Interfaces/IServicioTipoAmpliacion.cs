@@ -6,7 +6,8 @@ using System.Text;
 
 namespace PIKA.Servicio.GestionDocumental.Interfaces
 {
-    public interface IServicioTipoAmpliacion : IServicioRepositorioAsync<TipoAmpliacion, string>
+    public interface IServicioTipoAmpliacion : IServicioRepositorioAsync<TipoAmpliacion, string>,
+        IServicioValorTextoAsync<TipoAmpliacion>
     {
     }
 }

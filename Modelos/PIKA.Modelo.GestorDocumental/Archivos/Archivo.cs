@@ -3,6 +3,8 @@ using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -25,8 +27,9 @@ namespace PIKA.Modelo.GestorDocumental
             this.Almacenes = new HashSet<AlmacenArchivo>();
             this.Activos = new HashSet<Activo>();
             HistorialArchivosActivo = new HashSet<HistorialArchivoActivo>();
-            //Prestamos = new HashSet<Prestamo>();
-
+            Prestamos = new HashSet<Prestamo>();
+            TransferenciasOrigen = new HashSet<Transferencia>();
+            TransferenciasDestino = new HashSet<Transferencia>();
         }
 
 
@@ -39,23 +42,18 @@ namespace PIKA.Modelo.GestorDocumental
         /// Especifica si el elemento ha sido marcado como eliminado
         /// </summary>
         public bool Eliminada { get; set; }
-
-
-
-        private string _TipoOrigenId;
         /// <summary>
         /// El tipo de orígen en para este modelo es el elemento de la unidad organizacional 
         /// Este elemento puede ser unn departamento u oficina que tiene acervo as su cargo
         /// </summary>
-        public string TipoOrigenId
-        {
-            get { return _TipoOrigenId; }
-            set
-            {
-                // el valor no debe cambiarse
 
-            }
-        }
+
+        private string _TipoOrigenId;
+  
+        /// <summary>
+        /// En este ID 
+        /// </summary>
+        public string TipoOrigenId { get; set; }
 
         /// <summary>
         /// Identificador de la organización a la que pertenece el cuadro de clasificación
@@ -68,7 +66,8 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         public string TipoArchivoId { get; set; }
 
-
+        [XmlIgnore]
+        [JsonIgnore]
         /// <summary>
         /// Tipo de archivo 
         /// </summary>
@@ -83,29 +82,42 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Historial movimientos de activos en el archivo
         /// </summary>
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<HistorialArchivoActivo> HistorialArchivosActivo { get; set; }
 
 
         /// <summary>
         /// Todos los activos que se encuentran en un archivo
         /// </summary>
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<Activo> Activos { get; set; }
 
 
         /// <summary>
         /// Prestamos realizados en el archivo
         /// </summary>
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<Prestamo> Prestamos { get; set; }
 
         /// <summary>
         /// Almacenes donde se encuentra en el archivo
         /// </summary>
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<AlmacenArchivo> Almacenes { get; set; }
 
         /// <summary>
         /// Transferencias realizadoas en el archivo
         /// </summary>
-         public virtual ICollection<Transferencia> TransferenciasOrigen { get; set; }
+        [XmlIgnore]
+        [JsonIgnore]
+        public virtual ICollection<Transferencia> TransferenciasOrigen { get; set; }
+
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<Transferencia> TransferenciasDestino { get; set; }
 
     }

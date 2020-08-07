@@ -12,7 +12,6 @@ namespace PIKA.Modelo.GestorDocumental.Validadores
         public TipoArchivoValidador(IStringLocalizer<TipoArchivo> localizer)
         {
             RuleFor(x => x.Nombre).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.Nombre);
-            RuleFor(x => x.FaseCicloVitalId).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.GUID);
             RuleFor(x => x.Id).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.GUID);
         }
     }

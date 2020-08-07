@@ -17,7 +17,8 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
 
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
-            builder.Property(x => x.FaseCicloVitalId).HasMaxLength(LongitudDatos.GUID).IsRequired();
+
+            
 
         }
     }

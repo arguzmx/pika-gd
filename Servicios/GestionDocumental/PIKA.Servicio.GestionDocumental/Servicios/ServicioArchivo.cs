@@ -36,7 +36,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             this.repo = UDT.ObtenerRepositoryAsync<Archivo>(new QueryComposer<Archivo>());
             this.repoTA = UDT.ObtenerRepositoryAsync<TipoArchivo>(new QueryComposer<TipoArchivo>());
         }
-
         public async Task<bool> Existe(Expression<Func<Archivo, bool>> predicado)
         {
             List<Archivo> l = await this.repo.ObtenerAsync(predicado);
@@ -55,31 +54,23 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new ExDatosNoValidos(entity.TipoArchivoId);
 
             if (await Existe(x=>x.Nombre.Equals(entity.Nombre,StringComparison.InvariantCultureIgnoreCase)
-            && x.Id!=entity.Id && x.Eliminada!=true 
-            && x.TipoArchivoId.Equals(entity.TipoArchivoId,StringComparison.InvariantCultureIgnoreCase)
-            && x.TipoOrigenId.Equals(entity.TipoOrigenId,StringComparison.InvariantCultureIgnoreCase)
-            && x.OrigenId.Equals(entity.OrigenId, StringComparison.InvariantCultureIgnoreCase)
+            && x.Id!=entity.Id && x.Eliminada!=true && x.TipoArchivoId.Equals(entity.TipoArchivoId,StringComparison.InvariantCultureIgnoreCase)
             ))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
+
+
             entity.Nombre = entity.Nombre.Trim();
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
+
             return entity.Copia();
         }
-                public async Task ActualizarAsync(Archivo entity)
-        {
-            if (!await ExisteTipoArchivos(x => x.Id == entity.TipoArchivoId.Trim()))
-                throw new ExDatosNoValidos(entity.TipoArchivoId);
-            if (await Existe(x => x.Id != entity.Id.Trim() &&
-         string.Equals(x.Nombre, entity.Nombre.Trim(), StringComparison.InvariantCultureIgnoreCase)
-         && x.OrigenId == entity.OrigenId && x.TipoOrigenId == entity.TipoOrigenId && x.Eliminada != true))
-            {
-                throw new ExElementoExistente(entity.Nombre.Trim());
-            }
 
+        public async Task ActualizarAsync(Archivo entity)
+        {
             Archivo o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
             if (o == null)
@@ -87,6 +78,14 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new EXNoEncontrado(entity.Id);
             }
 
+            if (!await ExisteTipoArchivos(x => x.Id == entity.TipoArchivoId.Trim()))
+                throw new ExDatosNoValidos(entity.TipoArchivoId);
+            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)
+            && x.Id != entity.Id && x.Eliminada != true && x.TipoArchivoId.Equals(entity.TipoArchivoId, StringComparison.InvariantCultureIgnoreCase)
+            ))
+            {
+                throw new ExElementoExistente(entity.Nombre);
+            }
           
             o.Nombre = entity.Nombre.Trim();
             o.Eliminada = entity.Eliminada;
@@ -152,7 +151,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<Archivo> UnicoAsync(Expression<Func<Archivo, bool>> predicado = null, Func<IQueryable<Archivo>, IOrderedQueryable<Archivo>> ordenarPor = null, Func<IQueryable<Archivo>, IIncludableQueryable<Archivo, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             Archivo a = await this.repo.UnicoAsync(predicado);
-            return a.CopiaArchivo();
+            return a.Copia();
         }
 
         private async Task<string> RestaurarNombre(string nombre, string TipoArchivoId, string id)

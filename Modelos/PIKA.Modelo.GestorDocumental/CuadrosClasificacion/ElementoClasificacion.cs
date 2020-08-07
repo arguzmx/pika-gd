@@ -24,7 +24,7 @@ namespace PIKA.Modelo.GestorDocumental
             Padre = null;
             Hijos = new HashSet<ElementoClasificacion>();
             Entradas = new HashSet<EntradaClasificacion>();
-            //Activos = new HashSet<Activo>();
+            Activos = new HashSet<Activo>();
         }
 
         [Prop(Required: false, isId: true, Visible: false, OrderIndex: 10)]

@@ -7,11 +7,34 @@
   <ItemGroup>
     <Compile Remove="Data\Migrations\20200731161327_AdicionRaizElemento.cs" />
     <Compile Remove="Data\Migrations\20200731161327_AdicionRaizElemento.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200803182030_AgregarIdAmpliacion.cs" />
+    <Compile Remove="Data\Migrations\20200803182030_AgregarIdAmpliacion.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200803183809_AgregarIdAmpliacion.cs" />
+    <Compile Remove="Data\Migrations\20200803183809_AgregarIdAmpliacion.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200803203038_AgregarIdAmpliacion.cs" />
+    <Compile Remove="Data\Migrations\20200803203038_AgregarIdAmpliacion.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200803203358_AgregarIdAmpliacion.cs" />
+    <Compile Remove="Data\Migrations\20200803203358_AgregarIdAmpliacion.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200803203805_AgregarIdAmpliacion.cs" />
+    <Compile Remove="Data\Migrations\20200803203805_AgregarIdAmpliacion.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200803213838_AgregarIdAmpliacion.cs" />
+    <Compile Remove="Data\Migrations\20200803213838_AgregarIdAmpliacion.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200803215101_AgregarIdAmpliacion.cs" />
+    <Compile Remove="Data\Migrations\20200803215101_AgregarIdAmpliacion.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200803221628_AgregarIdAmpliacion.cs" />
+    <Compile Remove="Data\Migrations\20200803221628_AgregarIdAmpliacion.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200803223048_AgregarkeyAmpliacion.cs" />
+    <Compile Remove="Data\Migrations\20200803223048_AgregarkeyAmpliacion.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200804143422_CambioAmpliacionPK.cs" />
+    <Compile Remove="Data\Migrations\20200804143422_CambioAmpliacionPK.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200804145128_CreaNuevaAmpliacion.cs" />
+    <Compile Remove="Data\Migrations\20200804145128_CreaNuevaAmpliacion.Designer.cs" />
   </ItemGroup>
 
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="29.0.2" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.11.3" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="8.6.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
   </ItemGroup>

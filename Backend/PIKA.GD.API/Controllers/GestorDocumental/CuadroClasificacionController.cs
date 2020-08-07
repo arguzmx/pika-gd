@@ -146,7 +146,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
         /// <summary>
-        /// Restaura una lista dede dominiios eliminados en base al arreglo de identificadores recibidos
+        /// Restaura una lista dede Cuadro Clasificaicón eliminados en base al arreglo de identificadores recibidos
         /// </summary>
         /// <param name="ids">Arreglo de identificadores string</param>
         /// <returns></returns>

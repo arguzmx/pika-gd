@@ -7,15 +7,19 @@ namespace PIKA.Servicio.GestionDocumental
 {
     public static partial class Extensiones
     {
-        public static Asunto Copia(this Asunto a)
+        public static HistorialArchivoActivo Copia(this HistorialArchivoActivo a)
         {
             if (a == null) return null;
-            return new Asunto()
+            return new HistorialArchivoActivo()
             {
                 Id = a.Id,
-                Contenido = a.Contenido,
-                ActivoId=a.ActivoId
+                ArchivoId = a.ArchivoId,
+                FechaEgreso = a.FechaEgreso,
+                FechaIngreso = a.FechaIngreso,
+                ActivoId = a.ActivoId
+                 
             };
         }
     }
 }
+

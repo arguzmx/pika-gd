@@ -11,9 +11,9 @@ namespace PIKA.Modelo.GestorDocumental.Validadores
     {
         public AsuntoValidador(IStringLocalizer<Asunto> localizer)
         {
-            RuleFor(x => x.Id).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.GUID);
             RuleFor(x => x.Contenido).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.ControlHTML);
-            RuleFor(x => x.ActivoId).NotEmpty().MinimumLength(1);
+            RuleFor(x => x.ActivoId).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.GUID)
+                .When(x=>string.IsNullOrEmpty( x.Id ) );
         }
     }
 }
