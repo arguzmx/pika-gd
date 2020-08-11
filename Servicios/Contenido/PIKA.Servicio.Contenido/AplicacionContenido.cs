@@ -11,22 +11,8 @@ namespace PIKA.Servicio.Contenido
 {
     public class AplicacionContenido : IInformacionAplicacion
     {
-        public const string MODULO_BASE_CONTENIDO = "PIKA-GD-COTENIDO-";
-        public const string MODULO_GESTOR_ES = "GESTORES-ES";
-        public const string MODULO_PERMISOS = "PERMISOS";
-        public const string MODULO_DESTINATARIOS_PERMISOS = "DEST-PERMISOS";
-        public const string MODULO_VOLUMENES = "VOLS";
-        public const string MODULO_PUNTOS_MONTAJE = "PUNTOSMONTAJE";
-        public const string MODULO_VOL_PUNTOS_MONTAJE = "VOL-PUNTOSMONTAJE";
-        public const string MODULO_CARPETAS = "CARPETAS";
-        public const string MODULO_ELEMENTOS = "ELEMENTOS";
-        public const string MODULO_VERSIONES = "VERSIONS";
-        public const string MODULO_VERSIONES_PARTES = "PARTESVERSIONES";
-        public const string MODULO_CONFIG_ALMACENAMIENTO_LOCAL = "CONFIG-ALM-LOCAL";
-        public const string MODULO_CONFIG_ALMACENAMIENTO_SMB = "CONFIG-ALM-SMB";
-        public const string MODULO_CONFIG_ALMACENAMIENTO_AZURE = "CONFIG-ALM-AZURE";
-
-        public static string ID_APLICAICON { get { return ConstantesAplicacion.Id; } }
+        public const string MODULO_BASE = "PIKA-GD-COTENIDO-";
+        public const string APP_ID = "PIKA-GD-COTENIDO";
 
         public Aplicacion Info()
         {
@@ -36,303 +22,112 @@ namespace PIKA.Servicio.Contenido
         }
 
 
+     
+        public List<ElementoAplicacion> GetModulos()
+        {
+            List<ElementoAplicacion> m = new List<ElementoAplicacion>()
+            {
+                new ElementoAplicacion(MODULO_BASE, "AZURE-STORAGE" ) { 
+                    Titulo = "Configuración de almacenamiento Azure", 
+                    Descripcion = "Permite administrar la configuración de los almacenamientos Azure", 
+                    Tipos = new List<Type> { typeof(GestorAzureConfig) }  
+                },
+                new ElementoAplicacion(MODULO_BASE, "SMB-STORAGE" ) {
+                    Titulo = "Configuración de almacenamiento SMB",
+                    Descripcion = "Permite administrar la configuración de los almacenamientos SMB",
+                    Tipos = new List<Type> { typeof(GestorSMBConfig) }
+                },
+                new ElementoAplicacion(MODULO_BASE, "LOCAL-STORAGE" ) {
+                    Titulo = "Configuración de almacenamiento local",
+                    Descripcion = "Permite administrar la configuración de los almacenamientos locales",
+                    Tipos = new List<Type> { typeof(GestorLocalConfig) }
+                },
+                new ElementoAplicacion(MODULO_BASE, "PARTES" ) {
+                    Titulo = "Partes de versiones de elementos de contenido",
+                    Descripcion = "Permite administrar las partes para las versiones de los elementos de contenido",
+                    Tipos = new List<Type> { typeof(Parte) }
+                },
+                new ElementoAplicacion(MODULO_BASE, "VERSIONES" ) {
+                    Titulo = "Versiones para elementos de contenido",
+                    Descripcion = "Permite administrar Version versiones para los elementos de contenido",
+                    Tipos = new List<Type> { typeof(Parte) }
+                },
+                new ElementoAplicacion(MODULO_BASE, "ELEMENTOS" ) {
+                    Titulo = "Elementos de contenido del repositorio",
+                    Descripcion = "Permite gestionar los elementos de contenido de un reositorio",
+                    Tipos = new List<Type> { typeof(Elemento) }
+                },
+                new ElementoAplicacion(MODULO_BASE, "FOLDERS" ) {
+                    Titulo = "Carpetas de repositorio",
+                    Descripcion = "Permite gestionar las carpetas de un reositorio",
+                    Tipos = new List<Type> { typeof(Carpeta) }
+                },
+                new ElementoAplicacion(MODULO_BASE, "VOL-PM" ) {
+                    Titulo = "Volúmnes para puntos de montaje de contenido",
+                    Descripcion = "Permite administrar los valomenes asociados a los puntos de montaje para los repositorios de contenidos",
+                    Tipos = new List<Type> { typeof(VolumenPuntoMontaje) }
+                },
+                new ElementoAplicacion(MODULO_BASE, "PMS" ) {
+                    Titulo = "Puntos de montaje de contenido",
+                    Descripcion =  "Permite administrar los puntos de montaje para los repositorios de contenidos",
+                    Tipos = new List<Type> { typeof(PuntoMontaje) }
+                },
+                new ElementoAplicacion(MODULO_BASE, "PMS" ) {
+                    Titulo = "Gestores de entrada/salida",
+                    Descripcion =  "Catálogo de gestores de entrada salida para los volumenes de contenido",
+                    Tipos = new List<Type> { typeof(TipoGestorES) }
+                },
+                new ElementoAplicacion(MODULO_BASE, "PMS" ) {
+                    Titulo = "Permisos sobre el contenido",
+                    Descripcion =  "Permite administrar los permisos sobre el contenido",
+                    Tipos = new List<Type> { typeof(Permiso) }
+                },
+                new ElementoAplicacion(MODULO_BASE, "PMS" ) {
+                    Titulo = "Destinatarios de los permisos",
+                    Descripcion =  "Permite administrar los destinatarios para un permiso de acceso",
+                    Tipos = new List<Type> { typeof(DestinatarioPermiso) }
+                },
+                new ElementoAplicacion(MODULO_BASE, "PMS" ) {
+                    Titulo =  "Volumenes de contenido",
+                    Descripcion =  "Permite administrar los volumenes para los repositorios de contenidos",
+                    Tipos = new List<Type> { typeof(Volumen) }
+                }
+
+            };
+            
+
+
+            return m;
+        }
+
+
         public List<ModuloAplicacion> ModulosAplicacion()
         {
             List<ModuloAplicacion> l = new List<ModuloAplicacion>();
-            ModuloAplicacion m;
-
-            string IdModuloRaiz = $"{MODULO_BASE_CONTENIDO}ADMIN";
-
-            /// Modulo de MODULO_CONFIG_ALMACENAMIENTO_SMB 
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, $"{MODULO_BASE_CONTENIDO}{MODULO_CONFIG_ALMACENAMIENTO_AZURE}", true,
-                "Configuración de almacenamiento Azure",
-                "Permite administrar la configuración de los almacenamientos Azure",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloRaiz,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(GestorAzureConfig) }
-            });
-            l.Add(m);
-            //--------
-
-
-            /// Modulo de MODULO_CONFIG_ALMACENAMIENTO_SMB 
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, $"{MODULO_BASE_CONTENIDO}{MODULO_CONFIG_ALMACENAMIENTO_SMB}", true,
-                "Configuración de almacenamiento SMB",
-                "Permite administrar la configuración de los almacenamientos SMB",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloRaiz,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(GestorSMBConfig) }
-            });
-            l.Add(m);
-            //--------
-
-
-            /// Modulo de MODULO_CONFIG_ALMACENAMIENTO_LOCAL 
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, $"{MODULO_BASE_CONTENIDO}{MODULO_CONFIG_ALMACENAMIENTO_LOCAL}", true,
-                "Configuración de almacenamiento local",
-                "Permite administrar la configuración de los almacenamientos locales",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloRaiz,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(GestorLocalConfig) }
-            });
-            l.Add(m);
-            //--------
-
-
-            /// Modulo de MODULO_VERSIONES 
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, $"{MODULO_BASE_CONTENIDO}{MODULO_VERSIONES_PARTES}", true,
-                "Partes de versiones de elementos de contenido",
-                "Permite administrar las partes para las versiones de los elementos de contenido",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloRaiz,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(Parte) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-
-
-            /// Modulo de MODULO_VERSIONES 
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, $"{MODULO_BASE_CONTENIDO}{MODULO_VERSIONES}", true,
-                "Versiones para elementos de contenido",
-                "Permite administrar las versiones para los elementos de contenido",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloRaiz,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(Version) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-
-
-
-            /// Modulo de MODULO_ELEMENTOS 
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, $"{MODULO_BASE_CONTENIDO}{MODULO_ELEMENTOS}", true,
-                "Elementos de contenido del repositorio",
-                "Permite gestionar los elementos de contenido de un reositorio",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloRaiz,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(Elemento) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-
-
-
-            /// Modulo de MODULO_CARPETAS 
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, $"{MODULO_BASE_CONTENIDO}{MODULO_CARPETAS}", true,
-                "CArpetas de repositorio",
-                "Permite gestionar las carpetas de un reositorio",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloRaiz,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(Carpeta) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-
-
-            /// Modulo de MODULO_VOL_PUNTOS_MONTAJE 
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, $"{MODULO_BASE_CONTENIDO}{MODULO_VOL_PUNTOS_MONTAJE}", true,
-                "Volúmnes para puntos de montaje de contenido",
-                "Permite administrar los valomenes asociados a los puntos de montaje para los repositorios de contenidos",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloRaiz,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(VolumenPuntoMontaje) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-
-
-            /// Modulo de MODULO_PUNTOS_MONTAJE 
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, $"{MODULO_BASE_CONTENIDO}{MODULO_PUNTOS_MONTAJE}", true,
-                "Puntos de montaje de contenido",
-                "Permite administrar los puntos de montaje para los repositorios de contenidos",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloRaiz,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(PuntoMontaje) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-            //------------------------------------------------------------
-
 
             /// Modulo Raíz 
             //------------------------------------------------------------
             ModuloAplicacion mAdministracion = new ModuloAplicacion(
                 ConstantesAplicacion.Id,
-                IdModuloRaiz, true,
+                MODULO_BASE, true,
                 "Administración de contenido",
-                "Agrupa las funciones para la administarción de repositorios de contenido",
+                "Agrupa las funciones para la administración de repositorios de contenido",
                 "",
                 "es-MX",
                 PermisoAplicacion.PermisosAdministrables(),
                 "",
                 "");
 
-
             l.Add(mAdministracion);
 
-            //------------------------------------------------------------
-            //------------------------------------------------------------
-
-
-            /// Modulo administarcion de Elementos
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, $"{MODULO_BASE_CONTENIDO}{MODULO_GESTOR_ES}", true,
-                "Gestores de entrada/salida",
-                "Catálogo de gestores de entrada salida para los volumenes de contenido",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloRaiz,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            foreach (var item in GetModulos())
             {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(TipoGestorES) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-            //------------------------------------------------------------
-
-
-            /// Modulo de MODULO_PERMISOS 
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, $"{MODULO_BASE_CONTENIDO}{MODULO_PERMISOS}", true,
-                "Permisos sobre el contenido",
-                "Permite administrar los permisos sobre el contenido",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloRaiz,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(Permiso) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-            //------------------------------------------------------------
-
-            /// Modulo de MODULO_DESTINATARIOS_PERMISOS 
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, $"{MODULO_BASE_CONTENIDO}{MODULO_DESTINATARIOS_PERMISOS}", true,
-                "Destinatarios de los permisos",
-                "Permite administrar los destinatarios para un permiso de acceso",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloRaiz,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(DestinatarioPermiso) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-            //------------------------------------------------------------
-
-
-
-            /// Modulo de MODULO_DESTINATARIOS_PERMISOS 
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, $"{MODULO_BASE_CONTENIDO}{MODULO_VOLUMENES}", true,
-                "Volumenes de contenido",
-                "Permite administrar los volumenes para los repositorios de contenidos",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), IdModuloRaiz,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(Volumen) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-            //------------------------------------------------------------
-
+                Console.WriteLine( item.Descripcion );
+                l.Add(ElementoAplicacion.CreaModuloTipico(APP_ID, MODULO_BASE,
+                    item.IdModulo, item.Titulo, item.Descripcion, item.Tipos));
+            }
 
             return l;
-       
-        
         }
 
         public List<TipoAdministradorModulo> TiposAdministrados()

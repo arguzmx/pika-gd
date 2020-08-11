@@ -51,30 +51,45 @@ namespace PIKA.Modelo.Metadatos
         {
 
             var t = typeof(T);
-            MetadataInfo info = new MetadataInfo() { Tipo = t.Name, FullName = t.FullName,
-                EntidadesVinculadas = new List<EntidadVinculada>() };
+            MetadataInfo info = new MetadataInfo()
+            {
+                Tipo = t.Name,
+                FullName = t.FullName,
+                EntidadesVinculadas = new List<EntidadVinculada>(),
+                CatalogosVinculados = new List<CatalogoVinculado>()
+            };
 
 
             object[] TypeAttrs = t.GetCustomAttributes(true);
             foreach (object attr in TypeAttrs) {
                 if (attr is EntidadAttribute)
                 {
-                    info.OpcionActivarDesativar = ((EntidadAttribute)attr).OpcionActivar;
-                    info.ColumnaActivarDesativar = ((EntidadAttribute)attr).ColumnaActivar;
-                    info.ElminarLogico = ((EntidadAttribute)attr).EliminarLogico;
-                    info.ColumaEliminarLogico = ((EntidadAttribute)attr).Columna;
-                    info.PaginadoRelacional = ((EntidadAttribute)attr).PaginadoRelacional;
+                    var ea = ((EntidadAttribute)attr);
+                    info.OpcionActivarDesativar = ea.OpcionActivar;
+                    info.ColumnaActivarDesativar = ea.ColumnaActivar;
+                    info.ElminarLogico = ea.EliminarLogico;
+                    info.ColumaEliminarLogico = ea.Columna;
+                    info.PaginadoRelacional = ea.PaginadoRelacional;
                 }
 
                 if (attr is EntidadVinculadaAttribute)
                 {
+                    var ev = ((EntidadVinculadaAttribute)attr);
                     info.EntidadesVinculadas.Add(new EntidadVinculada()
                     {
-                        Cardinalidad = ((EntidadVinculadaAttribute)attr).Cardinalidad,
-                        EntidadHijo = ((EntidadVinculadaAttribute)attr).Entidad,
-                        PropiedadPadre = ((EntidadVinculadaAttribute)attr).PropiedadPadre,
-                        PropiedadHijo = ((EntidadVinculadaAttribute)attr).PropiedadHijo
+                        Cardinalidad = ev.Cardinalidad,
+                        EntidadHijo = ev.Entidad,
+                        PropiedadPadre = ev.PropiedadPadre,
+                        PropiedadHijo = ev.PropiedadHijo,
+                        TipoDespliegue = ev.TipoDespliegue,
                     });
+
+                }
+
+                if (attr is LinkCatalogoAttribute)
+                {
+                    
+                    info.CatalogosVinculados.Add( ((LinkCatalogoAttribute)attr).Copia());
 
                 }
             }
@@ -211,7 +226,11 @@ namespace PIKA.Modelo.Metadatos
                 AlternarEnTabla = source.ToggleInTable,
                 Contextual = source.Contextual,
                 IdContextual = source.IdContextual,
-                Etiqueta  = source.isLabel
+                Etiqueta  = source.isLabel,
+                EsIdJerarquia = source.HieId,
+                EsTextoJerarquia = source.HIeName,
+                EsIdRaizJerarquia = source.HieRoot,
+                EsFiltroJerarquia = source.HieParent
             };
         }
 

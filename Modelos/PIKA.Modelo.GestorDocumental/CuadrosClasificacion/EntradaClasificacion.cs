@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
+using PIKA.Modelo.Metadatos;
+using PIKA.Modelo.Metadatos.Atributos;
+using PIKA.Infraestructura.Comun;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -11,7 +15,16 @@ namespace PIKA.Modelo.GestorDocumental
     /// <summary>
     /// Corresponde a una instacia que permite la clasificación documental
     /// </summary>
-    public class EntradaClasificacion : Entidad<string>, IEntidadNombrada, IEntidadEliminada
+    [Entidad(EliminarLogico: true)]
+    [LinkCatalogo(EntidadCatalogo: "TipoValoracionDocumental",
+        IdCatalogo: "Id", IdEntidad: "Id",
+        IdCatalogoMap: "TipoValoracionDocumentalId", IdEntidadMap: "EntradaClasificacionId",
+        EntidadVinculo: "ValoracionEntradaClasificacion",
+        PropiedadReceptora: "TipoValoracionDocumentalId",
+        Despliegue: TipoDespliegueVinculo.GrupoCheckbox)]
+
+    public class EntradaClasificacion : Entidad<string>, IEntidadNombrada,
+        IEntidadEliminada
     {
 
         public EntradaClasificacion()
@@ -22,28 +35,73 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         ///  Identificador único del la entrada del cuadro de clasificación
         /// </summary>
+        [Prop(Required: false, isId: true, Visible: false, OrderIndex: 10)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.update)]
         public override string Id { get; set; }
 
 
-        /// <summary>
-        /// Identificador único del elemento de clasificación al que pertenece la entrada
-        /// </summary>
-        public string ElementoClasificacionId { get; set; }
 
         /// <summary>
         /// Clave para la entrada del cuandro, generalmente comienza con la del elemento de clasificación
         /// </summary>
+        [Prop(Required: true, OrderIndex: 20)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
+        [ValidString(minlen: 2, maxlen: 200)]
         public string Clave { get; set; }
 
         /// <summary>
         /// Nombre de la entrada
         /// </summary>
+        [Prop(Required: true, OrderIndex: 30)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
+        [ValidString(minlen: 2, maxlen: 200)]
         public string Nombre { get; set; }
+
+        /// <summary>
+        /// Especifica los meses que debe permanecer el expediente o documento en el archivo de trámite una vez que ha sido cerrado
+        /// </summary>
+        [Prop(Required: true, OrderIndex: 40)]
+        [VistaUI(ControlUI: ControlUI.HTML_NUMBER, Accion: Acciones.addupdate)]
+        [ValidNumeric(min: 0, max: 60, defaulvalue: 0)]
+        public int MesesVigenciTramite { get; set; }
+
+        /// <summary>
+        /// Especifica los meses que debe permanecer el expediente o documento en el archivo de concentración una vez que ha sido cerrado
+        /// </summary>
+        [Prop(Required: true, OrderIndex: 50)]
+        [VistaUI(ControlUI: ControlUI.HTML_NUMBER, Accion: Acciones.addupdate)]
+        [ValidNumeric(min: 0, max: 60, defaulvalue: 0)]
+        public int MesesVigenciConcentracion { get; set; }
+
+        /// <summary>
+        /// Especifica los meses que debe permanecer el expediente o documento en el archivo de histórico una vez que ha sido cerrado
+        /// </summary>
+        [Prop(Required: true, OrderIndex: 60)]
+        [VistaUI(ControlUI: ControlUI.HTML_NUMBER, Accion: Acciones.addupdate)]
+        [ValidNumeric(min: 0, max: 60, defaulvalue: 0)]
+        public int MesesVigenciHistorico { get; set; }
+
+        /// <summary>
+        /// Identificador único del tipo de disposición documental para la entrada
+        /// </summary>
+        [Prop(Required: false, OrderIndex: 70)]
+        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
+        [List(Entidad: "TipoDisposicionDocumental", DatosRemotos: true, TypeAhead: false)]
+        public string TipoDisposicionDocumentalId { get; set; }
+
+        /// <summary>
+        /// Identificador único del elemento de clasificación al que pertenece la entrada
+        /// </summary>
+        [Prop(Required: false, Visible: false, OrderIndex: 1000, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "PadreId")]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
+        public string ElementoClasificacionId { get; set; }
 
 
         /// <summary>
         /// Determina si la entrada del cuadro ha sido eliminada
         /// </summary>
+        [Prop(OrderIndex: 90, DefaultValue: "false")]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
         public bool Eliminada { get; set; }
 
         /// <summary>
@@ -51,26 +109,14 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         public int Posicion { get; set; }
 
-        /// <summary>
-        /// Especifica los meses que debe permanecer el expediente o documento en el archivo de trámite una vez que ha sido cerrado
-        /// </summary>
-        public int MesesVigenciTramite { get; set; }
 
         /// <summary>
-        /// Especifica los meses que debe permanecer el expediente o documento en el archivo de concentración una vez que ha sido cerrado
+        /// propiedad receptora para el arreglo de ids de valoración documental
         /// </summary>
-        public int MesesVigenciConcentracion { get; set; }
+        [NotMapped]
+        public string[] TipoValoracionDocumentalId { get; set; }
 
-        /// <summary>
-        /// Especifica los meses que debe permanecer el expediente o documento en el archivo de histórico una vez que ha sido cerrado
-        /// </summary>
-        public int MesesVigenciHistorico { get; set; }
 
-        /// <summary>
-        /// Identificador único del tipo de disposición documental para la entrada
-        /// </summary>
-        public string TipoDisposicionDocumentalId { get; set; }
-        
         //[XmlIgnore]
         //[JsonIgnore]
         //public string[] Valoracionids { get; set; }

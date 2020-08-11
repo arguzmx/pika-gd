@@ -17,7 +17,7 @@ namespace PIKA.Servicio.Metadatos
                 EsFiltroJerarquia = d.EsFiltroJerarquia,
                 EsIdClaveExterna = d.EsIdClaveExterna,
                 EsIdJerarquia = d.EsIdJerarquia,
-                EsIdPadreJerarquia = d.EsIdPadreJerarquia,
+                EsIdRaizJerarquia= d.EsIdRaizJerarquia,
                 EsIdRegistro = d.EsIdRegistro,
                 EsTextoJerarquia = d.EsTextoJerarquia,
                 Ordenable = d.Ordenable,

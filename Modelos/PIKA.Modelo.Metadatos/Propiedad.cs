@@ -101,7 +101,7 @@ namespace PIKA.Modelo.Metadatos
         /// <summary>
         /// Dettermina si coreresponde a la propiedad padre para una relacion jerárquica
         /// </summary>
-        public bool EsIdPadreJerarquia { get; set; }
+        public bool EsIdRaizJerarquia { get; set; }
 
 
         /// <summary>
