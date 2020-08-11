@@ -82,13 +82,15 @@ namespace PIKA.GD.API
             services.AddLazyCache();
 
             // REgistra los serviicos para eventos basados en IEventBusService
-            services.RegistraServiciosParaEventos();
+            //services.RegistraServiciosParaEventos();
+
+
+            // Configura el bus de eventos
+            //services.ConfiguraBusEventos(this.Configuration);
 
             // ergistra la instancia del servicio de metadatos en base al tipo 
             services.RegistraServicioDeMetadatos(this.Configuration);
 
-            // Configura el bus de eventos
-           services.ConfiguraBusEventos(this.Configuration);
 
 
             services.Configure<ConfiguracionServidor>(o => this.Configuration.GetSection("ConfiguracionServidor").Bind(o));
@@ -203,7 +205,7 @@ namespace PIKA.GD.API
             app.UseOpenApi();
             app.UseSwaggerUi3();
 
-            app.ConfigureEventBus();
+            //app.ConfigureEventBus();
         }
     }
 }
