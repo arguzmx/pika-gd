@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
@@ -29,12 +31,17 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<EstadoCuadroClasificacion> repoec;
         private ICompositorConsulta<CuadroClasificacion> compositor;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
+        private readonly ConfiguracionServidor ConfiguracionServidor;
 
         public ServicioCuadroClasificacion(
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioCuadroClasificacion> Logger
+           ILogger<ServicioCuadroClasificacion> Logger,
+           IOptions<ConfiguracionServidor> Config
            ) : base(proveedorOpciones, Logger)
         {
+            this.ConfiguracionServidor = Config.Value;
+            logger.LogError($"{this.ConfiguracionServidor.ruta_cache_fisico}");
+            logger.LogError($"{this.ConfiguracionServidor.separador_ruta}");
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<CuadroClasificacion>(new QueryComposer<CuadroClasificacion>());
             this.repoec = UDT.ObtenerRepositoryAsync<EstadoCuadroClasificacion>(new QueryComposer<EstadoCuadroClasificacion>());
