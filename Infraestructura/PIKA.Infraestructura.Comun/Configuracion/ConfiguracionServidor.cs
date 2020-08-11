@@ -28,11 +28,15 @@ namespace PIKA.Infraestructura.Comun
 
         public int cache_seguridad_segundos { get; set; }
 
-        public bool alamcenar_cache_seguridad { get; set; }
+        public bool alamacenar_cache_seguridad { get; set; }
 
         public string jwtclient { get; set; }
 
         public string jwtclientsecret { get; set; }
+
+        public string ruta_cache_fisico { get; set; }
+
+        public string separador_ruta { get; set; }
 
     }
 }
