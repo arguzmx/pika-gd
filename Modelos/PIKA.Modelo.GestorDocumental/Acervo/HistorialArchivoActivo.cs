@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -21,7 +23,7 @@ namespace PIKA.Modelo.GestorDocumental
         public string ArchivoId { get; set; }
 
         /// <summary>
-        /// Fecha de ingreso del activo al archiv
+        /// Fecha de ingreso del activo al archivo
         /// </summary>
         public DateTime FechaIngreso { get; set; }
 
@@ -31,8 +33,12 @@ namespace PIKA.Modelo.GestorDocumental
         public DateTime? FechaEgreso { get; set; }
 
 
+        [XmlIgnore]
+        [JsonIgnore]
         public Archivo Archivo { get; set; }
 
+        [XmlIgnore]
+        [JsonIgnore]
         public Activo Activo { get; set; }
 
     }

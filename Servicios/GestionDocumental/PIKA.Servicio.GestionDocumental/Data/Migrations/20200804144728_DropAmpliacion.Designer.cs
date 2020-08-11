@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PIKA.Servicio.GestionDocumental.Data;
 
 namespace PIKA.Servicio.GestionDocumental.Data.Migrations
 {
     [DbContext(typeof(DBContextGestionDocumental))]
-    partial class DBContextGestionDocumentalModelSnapshot : ModelSnapshot
+    [Migration("20200804144728_DropAmpliacion")]
+    partial class DropAmpliacion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,7 +26,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasMaxLength(128);
 
                     b.Property<bool>("Ampliado")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ArchivoId")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
@@ -42,7 +46,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasMaxLength(1024);
 
                     b.Property<bool>("Confidencial")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ElementoClasificacionId")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
@@ -54,10 +60,14 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasDefaultValue(false);
 
                     b.Property<bool>("EnPrestamo")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("EsElectronio")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
 
                     b.Property<DateTime>("FechaApertura")
                         .HasColumnType("datetime(6)");
@@ -76,7 +86,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasMaxLength(128);
 
                     b.Property<bool>("Reservado")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("TipoOrigenId")
                         .IsRequired()
@@ -182,61 +194,6 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.HasIndex("ArchivoId");
 
                     b.ToTable("gd$almacen");
-                });
-
-            modelBuilder.Entity("PIKA.Modelo.GestorDocumental.Ampliacion", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("ActivoId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<int?>("Anos")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Dias")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("FechaFija")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(false);
-
-                    b.Property<DateTime?>("Fin")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("FundamentoLegal")
-                        .IsRequired()
-                        .HasColumnType("varchar(2000) CHARACTER SET utf8mb4")
-                        .HasMaxLength(2000);
-
-                    b.Property<DateTime?>("Inicio")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("Meses")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TipoAmpliacionId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<bool>("Vigente")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(false);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ActivoId");
-
-                    b.HasIndex("TipoAmpliacionId");
-
-                    b.ToTable("gd$ampliacion");
                 });
 
             modelBuilder.Entity("PIKA.Modelo.GestorDocumental.Archivo", b =>
@@ -653,6 +610,11 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
+                    b.Property<string>("FaseCicloVitalId")
+                        .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
@@ -888,21 +850,6 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PIKA.Modelo.GestorDocumental.Ampliacion", b =>
-                {
-                    b.HasOne("PIKA.Modelo.GestorDocumental.Activo", "activo")
-                        .WithMany("Ampliaciones")
-                        .HasForeignKey("ActivoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("PIKA.Modelo.GestorDocumental.TipoAmpliacion", "TipoAmpliacion")
-                        .WithMany("Ampliaciones")
-                        .HasForeignKey("TipoAmpliacionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("PIKA.Modelo.GestorDocumental.Archivo", b =>
                 {
                     b.HasOne("PIKA.Modelo.GestorDocumental.TipoArchivo", "Tipo")
@@ -915,7 +862,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
             modelBuilder.Entity("PIKA.Modelo.GestorDocumental.Asunto", b =>
                 {
                     b.HasOne("PIKA.Modelo.GestorDocumental.Activo", "Activo")
-                        .WithOne("Asuntos")
+                        .WithOne("oAsunto")
                         .HasForeignKey("PIKA.Modelo.GestorDocumental.Asunto", "ActivoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

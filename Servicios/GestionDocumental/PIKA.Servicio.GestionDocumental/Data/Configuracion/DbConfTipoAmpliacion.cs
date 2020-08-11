@@ -18,7 +18,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
 
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
 
-            builder.HasMany(x => x.Ampliaciones).WithOne(y => y.TipoAmpliacion).HasForeignKey(z => z.TipoAmpliacionId);
+            builder.HasMany(x => x.Ampliaciones).WithOne(y => y.TipoAmpliacion).HasForeignKey(z => z.TipoAmpliacionId).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

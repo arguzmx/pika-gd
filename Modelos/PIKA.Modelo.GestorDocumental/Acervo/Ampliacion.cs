@@ -2,12 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.GestorDocumental
 {
 
-    public class Ampliacion
+    public class Ampliacion: Entidad<string>
     {
+
+        public override string Id { get => base.Id; set => base.Id = value; }
 
         /// <summary>
         /// Identificador único del activo al que se asocia la reserva
@@ -53,7 +57,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         public DateTime? Fin { get; set; }
 
-                /// <summary>
+        /// <summary>
         /// Años para la amepliación
         /// </summary>
         public int? Anos { get; set; }
@@ -70,8 +74,13 @@ namespace PIKA.Modelo.GestorDocumental
 
 
 
+        [XmlIgnore]
+        [JsonIgnore]
         public TipoAmpliacion TipoAmpliacion { get; set; }
 
+
+        [XmlIgnore]
+        [JsonIgnore]
         public Activo activo { get; set; }
 
     }

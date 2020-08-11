@@ -116,7 +116,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return listaEliminados;
 
         }
-
         public Task<List<EstadoCuadroClasificacion>> ObtenerAsync(Expression<Func<EstadoCuadroClasificacion, bool>> predicado)
         {
             return this.repo.ObtenerAsync(predicado);
@@ -151,7 +150,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return respuesta;
         }
 
-
         public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
         {
             for (int i = 0; i < Query.Filtros.Count; i++)
@@ -173,7 +171,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             return l.OrderBy(x => x.Texto).ToList();
         }
-
 
         public async Task<List<ValorListaOrdenada>> ObtenerParesPorId(List<string> Lista)
         {
@@ -227,8 +224,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             throw new NotImplementedException();
         }
-
-
 
         #endregion
 

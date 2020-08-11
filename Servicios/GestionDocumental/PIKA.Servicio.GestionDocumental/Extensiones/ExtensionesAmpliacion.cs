@@ -12,6 +12,7 @@ namespace PIKA.Servicio.GestionDocumental
             if (a == null) return null;
             return new Ampliacion()
             {
+                Id=a.Id,
                 ActivoId = a.ActivoId,
                 Vigente = a.Vigente,
                 TipoAmpliacionId = a.TipoAmpliacionId,

@@ -582,6 +582,23 @@ namespace PIKA.Servicio.GestionDocumental
             l.Add(m);
             //------------------------------------------------------------
             //------------------------------------------------------------
+            /// Modulo administarcion de Historiales
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_GD_HISTORIAL_ARCHIVO_ACTIVO, true,
+                "Historial Archivo Activo",
+                "Administrador de Historiales del usuario",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(HistorialArchivoActivo) }
+            });
+            l.Add(m);
 
             return l;
         }

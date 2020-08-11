@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PIKA.Servicio.GestionDocumental.Data;
 
 namespace PIKA.Servicio.GestionDocumental.Data.Migrations
 {
     [DbContext(typeof(DBContextGestionDocumental))]
-    partial class DBContextGestionDocumentalModelSnapshot : ModelSnapshot
+    [Migration("20200805214254_EliminacionFaseVital")]
+    partial class EliminacionFaseVital
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,7 +26,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasMaxLength(128);
 
                     b.Property<bool>("Ampliado")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ArchivoId")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
@@ -42,7 +46,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasMaxLength(1024);
 
                     b.Property<bool>("Confidencial")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ElementoClasificacionId")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
@@ -54,10 +60,14 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasDefaultValue(false);
 
                     b.Property<bool>("EnPrestamo")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("EsElectronio")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
 
                     b.Property<DateTime>("FechaApertura")
                         .HasColumnType("datetime(6)");
@@ -76,7 +86,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasMaxLength(128);
 
                     b.Property<bool>("Reservado")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("TipoOrigenId")
                         .IsRequired()

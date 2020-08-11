@@ -28,12 +28,20 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<ElementoClasificacion> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
         private IRepositorioAsync<CuadroClasificacion> RepoCuadro;
+        private IRepositorioAsync<EntradaClasificacion> RepoEntrda;
+        private IRepositorioAsync<TipoArchivo> repoTA;
+        private IRepositorioAsync<TipoDisposicionDocumental> repoTD;
+        private IRepositorioAsync<TipoValoracionDocumental> repoTVD;
         public ServicioElementoClasificacion(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
            ILogger<ServicioElementoClasificacion> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<ElementoClasificacion>(new QueryComposer<ElementoClasificacion>());
             this.RepoCuadro= UDT.ObtenerRepositoryAsync<CuadroClasificacion>(new QueryComposer<CuadroClasificacion>());
+            this.RepoEntrda = UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>());
+            this.repoTA = UDT.ObtenerRepositoryAsync<TipoArchivo>(new QueryComposer<TipoArchivo>());
+            this.repoTD = UDT.ObtenerRepositoryAsync<TipoDisposicionDocumental>(new QueryComposer<TipoDisposicionDocumental>());
+            this.repoTVD = UDT.ObtenerRepositoryAsync<TipoValoracionDocumental>(new QueryComposer<TipoValoracionDocumental>());
         }
 
         public async Task<bool> Existe(Expression<Func<ElementoClasificacion, bool>> predicado)
@@ -89,7 +97,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 return entity.Copia();
     
         }
-
        public async Task<bool> ValidaCuadroClasificacion(string CuadroClasificacionID)
         {
             if (!String.IsNullOrEmpty(CuadroClasificacionID))
@@ -218,6 +225,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
         public async Task ActualizarAsync(ElementoClasificacion entity)
         {
+            ElementoClasificacion o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+
+            if (o == null)
+            {
+                throw new EXNoEncontrado(entity.Id);
+            }
             if (await Existe(x =>
             x.Id != entity.Id && x.Clave.Equals(entity.Clave.Trim(),
             StringComparison.InvariantCultureIgnoreCase) && x.Eliminada!=true
@@ -226,12 +239,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new ExElementoExistente(entity.Clave);
             }
 
-            ElementoClasificacion o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
-
-            if (o == null)
-            {
-                throw new EXNoEncontrado(entity.Id);
-            }
+            
             if(!String.IsNullOrEmpty(entity.ElementoClasificacionId))
              if (entity.Id == entity.ElementoClasificacionId) { throw new ExElementoExistente(entity.Id); }
 
@@ -318,25 +326,18 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.SaveChanges();
             return listaEliminados;
         }
-
-
         public async Task<List<ElementoClasificacion>> ObtenerHijosAsync(string PadreId, string JerquiaId)
         {
             var  l= await this.repo.ObtenerAsync( x=> x.CuadroClasifiacionId == JerquiaId 
             && x.ElementoClasificacionId == PadreId,  y => y.OrderBy(z=>z.NombreJerarquico));
             return l.ToList();
         }
-
         public async Task<List<ElementoClasificacion>> ObtenerRaicesAsync(string JerquiaId)
         {
             var l = await this.repo.ObtenerAsync(x => x.CuadroClasifiacionId == JerquiaId
             && x.EsRaiz == true, y => y.OrderBy(z => z.NombreJerarquico));
             return l.ToList();
         }
-
- 
-
-
         private async Task<string> RestaurarNombre(string Clave, string CuadroClasificacionId,string id,string Nombre)
         {
            
@@ -358,12 +359,92 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<ElementoClasificacion> UnicoAsync(Expression<Func<ElementoClasificacion, bool>> predicado = null, Func<IQueryable<ElementoClasificacion>, IOrderedQueryable<ElementoClasificacion>> ordenarPor = null, Func<IQueryable<ElementoClasificacion>, IIncludableQueryable<ElementoClasificacion, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             ElementoClasificacion c = await this.repo.UnicoAsync(predicado);
+            await CrearArchivo();
             return c.Copia();
         }
         public Task<List<ElementoClasificacion>> ObtenerAsync(Expression<Func<ElementoClasificacion, bool>> predicado)
         {
             return this.repo.ObtenerAsync(predicado);
         }
+
+       
+        public async Task CrearArchivo() 
+        {
+            List<CuadroClasificacion> listaCuadro = await this.RepoCuadro.ObtenerAsync(x=>x.Eliminada!=true);
+            
+            List<ExporFile> listExport = new List<ExporFile>();
+            
+            int columna = 1;
+            int Row = 0;
+            int Region = 0 ;
+            foreach (CuadroClasificacion i in listaCuadro)
+            {
+                listExport.Add(new ExporFile
+                {
+                    NumeroCulumna = columna,
+                    NumeroRenglon = Row,
+                    PosicionColumna = "",
+                    ValorRenglon = $" {i.Nombre} ",
+                    Region = Region,
+                    hijos = 0
+
+                }); ;
+
+               await PadresElementos(listExport,columna,Row,Region,i.Id,null);
+                Row++;
+            }
+
+            foreach (ExporFile item in listExport)
+            {
+                Console.WriteLine($"Columna::  {item.NumeroCulumna } Renglon :: {item.NumeroRenglon } " +
+                    $"ValorRenglon {item.ValorRenglon } Posición:: {item.PosicionColumna }" +
+                    $" REgión :: {item.Region } Hijos {item.hijos}");
+            }
+           
+        }
+
+        public async Task PadresElementos(List<ExporFile> listExport,int columna,int Row, int Region, string idcuadro,string? idElemento)
+        {
+            List<ElementoClasificacion> ListaElemntosPadre = new List<ElementoClasificacion>();
+            List<ElementoClasificacion> ListaElemntosHijos = new List<ElementoClasificacion>();
+            if (!String.IsNullOrEmpty(idElemento))
+                ListaElemntosPadre = await ObtenerAsync(x => x.Id.Equals(idElemento, StringComparison.InvariantCultureIgnoreCase)
+              && x.CuadroClasifiacionId.Equals(idcuadro, StringComparison.InvariantCultureIgnoreCase));
+            else
+                ListaElemntosPadre = await ObtenerRaicesAsync(idcuadro);
+
+                if (ListaElemntosPadre.Count() > 0)
+                {
+
+                foreach (ElementoClasificacion EP in ListaElemntosPadre)
+                {
+
+                    ListaElemntosHijos = await ObtenerHijosAsync(EP.Id, idcuadro);
+                    listExport.Add(new ExporFile
+                    {
+                        NumeroCulumna = columna,
+                        NumeroRenglon = Row,
+                        PosicionColumna = "",
+                        ValorRenglon = $" {EP.Clave}| {EP.Nombre} ",
+                        Region = Region,
+                        hijos = ListaElemntosHijos.Count()
+                    });
+                    Row++;
+
+                    foreach (ElementoClasificacion EH in ListaElemntosHijos)
+                    {
+                        columna++;
+                        Row++;
+                        await PadresElementos(listExport, columna, Row, Region, idcuadro, EH.Id);
+
+                    }
+                   
+                }
+                }
+            
+
+        }
+
         #region Sin implementar
         public async Task EjecutarSql(string sqlCommand)
         {

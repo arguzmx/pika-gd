@@ -62,7 +62,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
         /// <summary>
-        /// Actualiza unq entidad Cuadro Clasificacion, el Id debe incluirse en el Querystring así como en 
+        /// Actualiza una entidad Cuadro Clasificacion, el Id debe incluirse en el Querystring así como en 
         /// el serializado para la petición PUT
         /// </summary>
         /// <param name="id">Identificador único del dominio</param>
@@ -146,7 +146,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
         /// <summary>
-        /// Restaura una lista dede dominiios eliminados en base al arreglo de identificadores recibidos
+        /// Restaura una lista dede Cuadro Clasificaicón eliminados en base al arreglo de identificadores recibidos
         /// </summary>
         /// <param name="ids">Arreglo de identificadores string</param>
         /// <returns></returns>

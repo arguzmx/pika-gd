@@ -218,7 +218,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// <summary>
         /// Activos existentes en la amplacion
         /// </summary>
-        public DbSet<Ampliacion> Ampliaciones { get; set; }
+      public DbSet<Ampliacion> Ampliaciones { get; set; }
 
         /// <summary>
         /// Activos existentes en la amplacion

@@ -13,7 +13,7 @@ namespace PIKA.Servicio.GestionDocumental
             return new TipoArchivo()
             {
                 Id = t.Id,
-                Nombre = t.Nombre,
+                Nombre = t.Nombre
             };
         }
     }

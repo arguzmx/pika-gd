@@ -18,7 +18,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
 
             builder.Property(x => x.Contenido).IsRequired();
 
-            builder.HasOne(x => x.Activo).WithOne(y => y.oAsunto).HasForeignKey<Asunto>(z=>z.ActivoId).IsRequired();
+            builder.HasOne(x => x.Activo).WithOne(y => y.Asuntos).HasForeignKey<Asunto>(z=>z.ActivoId).IsRequired();
 
         }
     }
