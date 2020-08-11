@@ -5,7 +5,10 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Bogus;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun.Excepciones;
@@ -24,10 +27,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<EntradaClasificacion> repo;
-        private IRepositorioAsync<ValoracionEntradaClasificacion> respoEC;
+        private IRepositorioAsync<ValoracionEntradaClasificacion> repoEC;
+        private IRepositorioAsync<TipoValoracionDocumental> repoTEC;
         private IRepositorioAsync<ElementoClasificacion> repoEL;
         private IRepositorioAsync<TipoDisposicionDocumental> repoTD;
-        private ICompositorConsulta<EntradaClasificacion> compositor;
 
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
          
@@ -38,9 +41,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>());
-            this.respoEC = UDT.ObtenerRepositoryAsync<ValoracionEntradaClasificacion>(new QueryComposer<ValoracionEntradaClasificacion>());
+            this.repoEC = UDT.ObtenerRepositoryAsync<ValoracionEntradaClasificacion>(new QueryComposer<ValoracionEntradaClasificacion>());
             this.repoEL = UDT.ObtenerRepositoryAsync<ElementoClasificacion>(new QueryComposer<ElementoClasificacion>());
             this.repoTD = UDT.ObtenerRepositoryAsync<TipoDisposicionDocumental>(new QueryComposer<TipoDisposicionDocumental>());
+            this.repoTEC = UDT.ObtenerRepositoryAsync<TipoValoracionDocumental>(new QueryComposer<TipoValoracionDocumental>());
         }
 
 
@@ -78,6 +82,28 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             if (!String.IsNullOrEmpty(entity.TipoDisposicionDocumentalId))
                 entity.TipoDisposicionDocumentalId = entity.TipoDisposicionDocumentalId.Trim();
             await this.repo.CrearAsync(entity);
+
+
+            if(entity.TipoValoracionDocumentalId != null 
+                && entity.TipoValoracionDocumentalId.Length > 0)
+            {
+
+
+                foreach(string id in entity.TipoValoracionDocumentalId)
+                {
+                    var tipo = repoTEC.UnicoAsync(x => x.Id.Equals(id.Trim(), StringComparison.InvariantCultureIgnoreCase) );
+                    if( tipo != null)
+                    {
+                        ValoracionEntradaClasificacion vec = new ValoracionEntradaClasificacion()
+                        {
+                            EntradaClasificacionId = entity.Id,
+                            TipoValoracionDocumentalId = id.Trim()
+                        };
+                        await repoEC.CrearAsync(vec);
+                    }
+                }
+            }
+
             UDT.SaveChanges();
 
             return entity.Copia();
@@ -137,6 +163,53 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
+            List<ValoracionEntradaClasificacion> lista = await repoEC.ObtenerAsync(x => x.EntradaClasificacionId.Equals( entity.Id.Trim() , StringComparison.InvariantCultureIgnoreCase));
+
+            if (entity.TipoValoracionDocumentalId != null
+                && entity.TipoValoracionDocumentalId.Length > 0)
+            {
+
+                // Añade las faltantes
+                foreach (string id in entity.TipoValoracionDocumentalId)
+                {
+                    var tipo = repoTEC.UnicoAsync(x => x.Id.Equals(id.Trim(), StringComparison.InvariantCultureIgnoreCase));
+                    if (tipo != null)
+                    {
+
+                    }
+                    
+                    if ((await repoEC.ObtenerAsync(x=>
+                        x.TipoValoracionDocumentalId.Equals(id.Trim(), StringComparison.InvariantCultureIgnoreCase)
+                        && x.EntradaClasificacionId.Equals(entity.Id.Trim(), StringComparison.InvariantCultureIgnoreCase)))
+                        .Count() == 0)
+                    {
+
+                            ValoracionEntradaClasificacion vec = new ValoracionEntradaClasificacion()
+                            {
+                                EntradaClasificacionId = entity.Id,
+                                TipoValoracionDocumentalId = id.Trim()
+                            };
+                            await repoEC.CrearAsync(vec);
+                        UDT.SaveChanges();
+                    }
+                }
+            } else
+            {
+                entity.TipoValoracionDocumentalId = new string [0];
+            }
+
+            List<string> elementos = entity.TipoValoracionDocumentalId.ToList();
+            foreach (var item in lista)
+            {
+                if (elementos.IndexOf(item.TipoValoracionDocumentalId) < 0)
+                {
+                    logger.LogError($"- {item.TipoValoracionDocumentalId}");
+                    UDT.Context.Entry(item).State = EntityState.Deleted;
+                }
+            }
+            UDT.SaveChanges();
+
+
         }
         private Consulta GetDefaultQuery(Consulta query)
         {
@@ -180,8 +253,24 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
+            foreach(var item in respuesta.Elementos)
+            {
+                item.TipoValoracionDocumentalId = await ObtieneValoracionDocumental(item); 
+            }
             return respuesta;
         }
+
+        private async Task<string[]> ObtieneValoracionDocumental(EntradaClasificacion item)
+        {
+            var l = await repoEC.ObtenerAsync(x => x.EntradaClasificacionId.Equals(item.Id, StringComparison.InvariantCultureIgnoreCase));
+            item.TipoValoracionDocumentalId = new string[l.Count];
+            for(int i=0; i < l.Count; i++)
+            {
+                item.TipoValoracionDocumentalId[i] = l[i].TipoValoracionDocumentalId;
+            }
+            return item.TipoValoracionDocumentalId;
+        }
+
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
             EntradaClasificacion c;
@@ -250,6 +339,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<EntradaClasificacion> UnicoAsync(Expression<Func<EntradaClasificacion, bool>> predicado = null, Func<IQueryable<EntradaClasificacion>, IOrderedQueryable<EntradaClasificacion>> ordenarPor = null, Func<IQueryable<EntradaClasificacion>, IIncludableQueryable<EntradaClasificacion, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             EntradaClasificacion c = await this.repo.UnicoAsync(predicado);
+            c.TipoValoracionDocumentalId = await ObtieneValoracionDocumental(c);
             return c.Copia();
         }
 

@@ -56,7 +56,7 @@ namespace PIKA.Modelo.Metadatos.Validadores
      .NotNull().WithMessage(x => localizer["El id jerarquia es obligatorio"])
      .NotEmpty().WithMessage(x => localizer["El id jerarquia es obligatorio"]);
 
-            RuleFor(x => x.EsIdPadreJerarquia)
+            RuleFor(x => x.EsIdRaizJerarquia)
 .NotNull().WithMessage(x => localizer["El id padre de jerarquia es obligatorio"])
 .NotEmpty().WithMessage(x => localizer["El id padre de jerarquia es obligatorio"]);
 

@@ -89,7 +89,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
                 EsIdJerarquia=entidad.EsIdJerarquia,
                 EsTextoJerarquia=entidad.EsTextoJerarquia,
                 EsFiltroJerarquia=entidad.EsFiltroJerarquia,
-                EsIdPadreJerarquia=entidad.EsIdPadreJerarquia,
+                EsIdRaizJerarquia = entidad.EsIdRaizJerarquia,
                 EsIndice=entidad.EsIndice,
                 Requerido=entidad.Requerido,
                 Autogenerado=entidad.Autogenerado,

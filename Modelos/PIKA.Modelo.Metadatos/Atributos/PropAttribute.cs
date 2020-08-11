@@ -20,6 +20,10 @@ namespace PIKA.Modelo.Metadatos
         private bool _isId;
         private bool _Visible;
         private bool _IsLabel;
+        private bool _HieId;
+        private bool _HieRoot;
+        private bool _HieName;
+        private bool _HieParent;
         private bool _ShowInTable;
         private bool _Contextual;
         private string _IdContextual;
@@ -31,7 +35,8 @@ namespace PIKA.Modelo.Metadatos
             [CallerMemberName] string Id = null, string DefaultValue = "",
             int OrderIndex = 0, bool Searchable = true, bool Orderable = true, bool Visible = true,
             bool Required = false, bool isId = false, bool ShowInTable = true, bool ToggleInTable = true,
-            int TableOrderIndex = 0, bool Contextual = false, string IdContextual = "" , bool IsLabel = false)
+            int TableOrderIndex = 0, bool Contextual = false, string IdContextual = "" , bool IsLabel = false,
+            bool HieId = false, bool HieName = false, bool HieRoot = false, bool HieParent = false)
         {
 
             this._Contextual = Contextual;
@@ -55,7 +60,10 @@ namespace PIKA.Modelo.Metadatos
             this._DefaultValue = DefaultValue;
             this._isId = isId;
             this._IsLabel = IsLabel;
-            
+            this._HieName = HieName;
+            this._HieRoot = HieRoot;
+            this._HieParent = HieParent;
+            this._HieId = HieId;
             if(this.Contextual)
             {
                 this._IdContextual = IdContextual;
@@ -191,6 +199,37 @@ namespace PIKA.Modelo.Metadatos
         {
             get { return _DefaultValue; }
         }
+
+        public virtual bool HieId
+        {
+            get { return _HieId; }
+        }
+
+        /// <summary>
+        /// Especifica si la propiedad es el identiicador padre para una jerarquia de entidades
+        /// </summary>
+        public virtual bool HieRoot
+        {
+            get { return _HieRoot; }
+        }
+
+
+        /// <summary>
+        /// Especifica si la propiedad es la etiqueta para una jerarquía de entidades
+        /// </summary>
+        public virtual bool HIeName
+        {
+            get { return _HieName; }
+        }
+
+        /// <summary>
+        /// Determina si el nodo se utiliza como padre en las jerarquias
+        /// </summary>
+        public virtual bool HieParent
+        {
+            get { return _HieParent; }
+        }
+
 
     }
 }

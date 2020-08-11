@@ -36,6 +36,12 @@ namespace PIKA.Modelo.Metadatos.Atributos
         UnoVarios = 0, UnoUno = 1
     }
 
+    public enum TipoDespliegueVinculo
+    {
+       Tabular = 1, Jerarquico =2, GrupoCheckbox =10, ListaMultiple =20
+    }
+
+
     public enum Eventos
     {
         AlCambiar = 1

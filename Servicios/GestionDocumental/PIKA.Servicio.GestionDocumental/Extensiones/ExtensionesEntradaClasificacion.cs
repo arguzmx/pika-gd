@@ -22,7 +22,8 @@ namespace PIKA.Servicio.GestionDocumental
                 Eliminada = d.Eliminada,
                 MesesVigenciHistorico = d.MesesVigenciHistorico,
                 Posicion = d.Posicion,
-                TipoDisposicionDocumentalId = d.TipoDisposicionDocumentalId
+                TipoDisposicionDocumentalId = d.TipoDisposicionDocumentalId,
+                TipoValoracionDocumentalId = d.TipoValoracionDocumentalId
             };
 
           

@@ -27,7 +27,7 @@ namespace PIKA.Modelo.GestorDocumental
             Activos = new HashSet<Activo>();
         }
 
-        [Prop(Required: false, isId: true, Visible: false, OrderIndex: 10)]
+        [Prop(Required: false, isId: true, Visible: false, OrderIndex: 10, HieId: true)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.update)]
         public override string Id { get => base.Id; set => base.Id = value; }
 
@@ -71,7 +71,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Cuadro de clasificación al que pertenecen los elementos
         /// </summary>
-        [Prop(Required: true, Visible: false, OrderIndex: 1010, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "CuadroClasificacion")]
+        [Prop(Required: true, Visible: false, HieRoot: true, OrderIndex: 1010, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "CuadroClasificacion")]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string CuadroClasifiacionId { get; set; }
 
@@ -79,7 +79,8 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Padre  del elemento actual 
         /// </summary>
-        [Prop(Required: true, Visible: false, OrderIndex: 1020, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "PadreId")]
+        [Prop(Required: false, Visible: false, OrderIndex: 1020, HieParent: true,
+            Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "PadreId")]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string ElementoClasificacionId { get; set; }
 
@@ -92,6 +93,8 @@ namespace PIKA.Modelo.GestorDocumental
 
 
         [NotMapped]
+        [Prop(Required: false, Visible: false, OrderIndex: 1050,  ShowInTable: false, HieName: true)]
+        [VistaUI()]
         public string NombreJerarquico { get {
                 return this.Clave + " " + this.Nombre;
             } }

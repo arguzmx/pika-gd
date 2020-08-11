@@ -46,17 +46,9 @@ namespace PIKA.Modelo.Metadatos
         public virtual List<Propiedad> Propiedades { get; set; }
 
         public virtual List<EntidadVinculada> EntidadesVinculadas { get; set; }
+        
+        public virtual List<CatalogoVinculado> CatalogosVinculados { get; set; }
 
-
-        public virtual bool PoseeJerarquia()
-        {
-
-            bool IdJ = Propiedades.Where(x => x.EsIdJerarquia == true).Any();
-            bool TextoJ = Propiedades.Where(x => x.EsTextoJerarquia == true).Any();
-            bool IdPadreJ = Propiedades.Where(x => x.EsIdPadreJerarquia == true).Any();
-            return (IdJ && TextoJ && IdPadreJ);
-
-        }
 
     }
 }

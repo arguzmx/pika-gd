@@ -32,7 +32,7 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
             builder.Property(x=>x.EsIdRegistro).HasDefaultValue(false).IsRequired();
             builder.Property(x=>x.EsIdJerarquia).HasDefaultValue(false).IsRequired();
             builder.Property(x=>x.EsTextoJerarquia).HasDefaultValue(false).IsRequired();
-            builder.Property(x=>x.EsIdPadreJerarquia).HasDefaultValue(false).IsRequired();
+            builder.Property(x=>x.EsIdRaizJerarquia).HasDefaultValue(false).IsRequired();
             builder.Property(x=>x.EsFiltroJerarquia).HasDefaultValue(false).IsRequired();
             builder.Property(x=>x.Requerido).HasDefaultValue(false).IsRequired();
             builder.Property(x=>x.Autogenerado).HasDefaultValue(false).IsRequired();

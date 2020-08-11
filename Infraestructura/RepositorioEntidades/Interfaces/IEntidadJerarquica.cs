@@ -6,6 +6,7 @@ namespace RepositorioEntidades
 {
     public interface IEntidadJerarquica
     {
+        public Boolean EsRaiz { get; set; }
         public string NombreJerarquico { get;}
     }
 }

@@ -296,9 +296,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
             {
+                logger.LogError(Id);
                 e = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
                 if (e != null)
                 {
+                    logger.LogError(Id + " OK");
                     e.Eliminada = true;
                     UDT.Context.Entry(e).State = EntityState.Modified;
                     listaEliminados.Add(e.Id);
@@ -329,13 +331,13 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<List<ElementoClasificacion>> ObtenerHijosAsync(string PadreId, string JerquiaId)
         {
             var  l= await this.repo.ObtenerAsync( x=> x.CuadroClasifiacionId == JerquiaId 
-            && x.ElementoClasificacionId == PadreId,  y => y.OrderBy(z=>z.NombreJerarquico));
+            && x.ElementoClasificacionId == PadreId && x.Eliminada == false,  y => y.OrderBy(z=>z.NombreJerarquico));
             return l.ToList();
         }
         public async Task<List<ElementoClasificacion>> ObtenerRaicesAsync(string JerquiaId)
         {
             var l = await this.repo.ObtenerAsync(x => x.CuadroClasifiacionId == JerquiaId
-            && x.EsRaiz == true, y => y.OrderBy(z => z.NombreJerarquico));
+            && x.EsRaiz == true && x.Eliminada == false, y => y.OrderBy(z => z.NombreJerarquico));
             return l.ToList();
         }
         private async Task<string> RestaurarNombre(string Clave, string CuadroClasificacionId,string id,string Nombre)
