@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using PIKA.Modelo.Contenido;
 
 namespace PIKA.GD.API.Controllers.Contenido
 {
@@ -17,10 +18,18 @@ namespace PIKA.GD.API.Controllers.Contenido
     {
         private ILogger<UploadController> logger;
         private IConfiguration Config;
-        public UploadController(ILogger<UploadController> logger, IConfiguration config)
+
+
+        public UploadController(ILogger<UploadController> logger, IConfiguration Config)
         {
             this.logger = logger;
-            this.Config = config;
+            this.Config = Config;
+            FiltroArchivos.minimo = 1024; //1 KB
+            FiltroArchivos.maximo = 1048576; //1 MB
+            FiltroArchivos.addExt(".jpg");
+            FiltroArchivos.addExt(".pdf");
+            FiltroArchivos.addExt(".doc");
+            FiltroArchivos.addExt(".docx");
         }
 
         [HttpPost]
@@ -39,5 +48,60 @@ namespace PIKA.GD.API.Controllers.Contenido
             }
             return Ok(new { size, filePath });
         }
+
+        [HttpPost("ContenidoFiltrado")]
+        public async Task<IActionResult> PostContenidoFiltrado(IFormFile file)
+        {
+            if (tamanoValido(file.Length, FiltroArchivos.minimo, FiltroArchivos.maximo))
+            {
+                if (extensionValida(file, FiltroArchivos.extensionesValidas))
+                {
+                    var filePath = Path.Combine(Config["FILE_PATH"], Path.GetRandomFileName() + Path.GetExtension(file.FileName));
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream).ConfigureAwait(false);
+                        return Ok(new { file.Length, filePath });
+                    }
+                }
+                else
+                    ModelState.AddModelError(file.Name, "extensión inválida");
+            }
+            else
+                ModelState.AddModelError(file.Name, "tamaño inválido");
+            return BadRequest(ModelState);
+        }
+
+        private bool extensionValida(IFormFile file, ICollection<string> extensionesV)
+        {
+            var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+            if (string.IsNullOrEmpty(ext) || !extensionesV.Contains(ext)) return false;
+            if (!firmaValida(file.OpenReadStream(), ext)) return false;
+            return true;
+        }
+        private bool firmaValida(Stream file, string ext)
+        {
+            bool valida = false;
+            var firmasValidas = FiltroArchivos.firmasArchivo;
+            using (var reader = new BinaryReader(file))
+            {
+                var signatures = firmasValidas[ext] != null ? firmasValidas[ext] : null;
+                if (signatures != null)
+                {
+                    var headerBytes = reader.ReadBytes(signatures.Max(m => m.Length));
+                    valida = signatures.Any(signature =>
+                             headerBytes.Take(signature.Length).SequenceEqual(signature));
+                }
+            }
+            return valida;
+        }
+        private bool tamanoValido(long size, int min, int max)
+        {
+            if (size > 0)
+                if (size > min && size <= max)
+                    return true;
+            return false;
+        }
+
     }
 }
+
