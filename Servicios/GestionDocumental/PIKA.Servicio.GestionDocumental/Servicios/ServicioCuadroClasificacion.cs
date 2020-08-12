@@ -29,7 +29,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         private IRepositorioAsync<CuadroClasificacion> repo;
         private IRepositorioAsync<EstadoCuadroClasificacion> repoec;
-        private ICompositorConsulta<CuadroClasificacion> compositor;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
         private readonly ConfiguracionServidor ConfiguracionServidor;
 

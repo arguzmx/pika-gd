@@ -11,6 +11,9 @@ using System.Xml.Serialization;
 namespace PIKA.Modelo.GestorDocumental
 {
     [Entidad(PaginadoRelacional:false, EliminarLogico: true)]
+    [EntidadVinculada(EntidadHijo: "ElementoClasificacion,EntradaClasificacion", 
+        Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id", 
+        PropiedadHijo: "CuadroClasifiacionId", TipoDespliegueVinculo: TipoDespliegueVinculo.Jerarquico) ]
     public class CuadroClasificacion : Entidad<string>, IEntidadNombrada, IEntidadEliminada, IEntidadRelacionada
     {
 

@@ -53,9 +53,10 @@ namespace PIKA.Identity.Server
         public  void ConfigureServices(IServiceCollection services)
         {
           services.AddLocalization(options => options.ResourcesPath = "Resources");
-           
 
-        services
+            services.AddCors();
+
+            services
         .AddMvc()
             .AddViewLocalization(
             LanguageViewLocationExpanderFormat.Suffix,
@@ -135,9 +136,11 @@ namespace PIKA.Identity.Server
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
+            
 
-     
             this.AutofacContainer = app.ApplicationServices.GetAutofacRoot();
+
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
             app.UseRequestLocalization(
                 app.ApplicationServices.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
