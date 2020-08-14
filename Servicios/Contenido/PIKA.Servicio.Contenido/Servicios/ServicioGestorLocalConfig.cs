@@ -10,10 +10,12 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.Contenido;
+using PIKA.Servicio.Contenido.Gestores;
 using PIKA.Servicio.Contenido.Helpers;
 using PIKA.Servicio.Contenido.Interfaces;
 using RepositorioEntidades;
@@ -27,13 +29,18 @@ namespace PIKA.Servicio.Contenido.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<GestorLocalConfig> repo;
+        private IRepositorioAsync<Volumen> repoVol;
         private UnidadDeTrabajo<DbContextContenido> UDT;
+        private IOptions<ConfiguracionServidor> configServer;
         public ServicioGestorLocalConfig(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-        ILogger<ServicioGestorLocalConfig> Logger) : base(proveedorOpciones, Logger)
+        ILogger<ServicioGestorLocalConfig> Logger, 
+        IOptions<ConfiguracionServidor> opciones) : base(proveedorOpciones, Logger)
         {
+            this.configServer = opciones;
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<GestorLocalConfig>( new QueryComposer<GestorLocalConfig>());
+            this.repoVol = UDT.ObtenerRepositoryAsync<Volumen>(new QueryComposer<Volumen>());
         }
 
         public async Task<bool> Existe(Expression<Func<GestorLocalConfig, bool>> predicado)
@@ -44,16 +51,39 @@ namespace PIKA.Servicio.Contenido.Servicios
         }
 
 
+        private async Task ValidaEntidad(GestorLocalConfig entity)
+        {
+            Volumen v = await repoVol.UnicoAsync(x => x.Id == entity.VolumenId);
+            if (v == null)
+            {
+                throw new ExDatosNoValidos($"VolumenId: {entity.VolumenId}");
+            }
+
+            if (string.IsNullOrEmpty(entity.Ruta))
+            {
+                throw new ExDatosNoValidos($"Ruta: {entity.Ruta}");
+            }
+
+            GestorLocal g = new GestorLocal(entity, v, configServer);
+            if (!g.ConexionValida() )
+            {
+                throw new ExDatosNoValidos($"Sin acceso a ruta: {entity.Ruta}");
+            }
+
+        }
+
         public async Task<GestorLocalConfig> CrearAsync(GestorLocalConfig entity, CancellationToken cancellationToken = default)
         {
 
+
+           
 
             try
             {
                 GestorLocalConfig o = await this.repo.UnicoAsync(x => x.VolumenId == entity.VolumenId);
                 if (o == null)
                 {
-
+                    await ValidaEntidad(entity);
                     await this.repo.CrearAsync(entity);
                     UDT.SaveChanges();
 
@@ -87,6 +117,7 @@ namespace PIKA.Servicio.Contenido.Servicios
                     throw new EXNoEncontrado(entity.VolumenId);
                 }
 
+            await ValidaEntidad(entity);
 
             o.Ruta = entity.Ruta;
 

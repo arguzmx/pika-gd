@@ -137,14 +137,20 @@ namespace RepositorioEntidades
 
 
 
-        public Task<List<T>> ObtenerAsync(Expression<Func<T, bool>> predicado,
+        public async Task<List<T>> ObtenerAsync(Expression<Func<T, bool>> predicado,
             Func<IQueryable<T>, IOrderedQueryable<T>> ordenarPor = null,
             Func<IQueryable<T>, IIncludableQueryable<T, object>> incluir = null)
         {
             IQueryable<T> query = _dbSet;
+
+            if (incluir != null) query = incluir(query);
+
             if (predicado != null) query = query.Where(predicado);
 
-            return query.ToListAsync();
+            if (ordenarPor != null)
+                return await ordenarPor(query).ToListAsync();
+
+            return query.ToList();
         }
 
         public void ActualizarAsync(T entity)

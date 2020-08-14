@@ -165,7 +165,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<AlmacenArchivo> UnicoAsync(Expression<Func<AlmacenArchivo, bool>> predicado = null, Func<IQueryable<AlmacenArchivo>, IOrderedQueryable<AlmacenArchivo>> ordenarPor = null, Func<IQueryable<AlmacenArchivo>, IIncludableQueryable<AlmacenArchivo, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             AlmacenArchivo a = await this.repo.UnicoAsync(predicado);
-            return a.CopiaAlamacen();
+            return a.Copia();
         }
     }
 }

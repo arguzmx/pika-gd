@@ -82,6 +82,8 @@ namespace PIKA.Modelo.Metadatos
                         PropiedadPadre = ev.PropiedadPadre,
                         PropiedadHijo = ev.PropiedadHijo,
                         TipoDespliegue = ev.TipoDespliegue,
+                        HijoDinamico = ev.HijoDinamico, 
+                        DiccionarioEntidadesVinculadas = ev.DiccionarioEntidadesVinculadas
                     });
 
                 }

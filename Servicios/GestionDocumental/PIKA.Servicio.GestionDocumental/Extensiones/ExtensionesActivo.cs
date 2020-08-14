@@ -25,7 +25,7 @@ namespace PIKA.Servicio.GestionDocumental
                 EnPrestamo = a.EnPrestamo,
                 Confidencial = a.Confidencial,
                 Ampliado = a.Ampliado,
-                ElementoClasificacionId = a.ElementoClasificacionId,
+                EntradaClasificacionId = a.EntradaClasificacionId,
                 ArchivoId = a.ArchivoId,
                 Eliminada = a.Eliminada,
             };

@@ -19,7 +19,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.OrigenId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
 
             //¿Requerida?
-            builder.Property(x => x.ElementoClasificacionId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.EntradaClasificacionId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
 
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.Asunto).HasMaxLength(2048).IsRequired(false);
@@ -34,7 +34,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.Confidencial).IsRequired();
             builder.Property(x => x.Ampliado).IsRequired();
 
-             builder.HasMany(x => x.HistorialArchivosActivo).WithOne(y => y.Activo).HasForeignKey(z => z.ActivoId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(x => x.HistorialArchivosActivo).WithOne(y => y.Activo).HasForeignKey(z => z.ActivoId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

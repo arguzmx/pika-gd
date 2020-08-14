@@ -96,12 +96,12 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
 
-        public async Task<ActionResult<IEnumerable<TipoArchivo>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<Paginado<TipoArchivo>>> GetPage([FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
             var data = await servicioTipoArchivo.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<TipoArchivo>());
+            return Ok(data);
         }
 
 
