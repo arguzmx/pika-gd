@@ -19,314 +19,6 @@ using RepositorioEntidades;
 
 namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar
 {
-  public  class Estructuraexcel
-    {
-        public void ExportarCuadroCalsificacionExcel(string id) 
-        { 
-        }
-        /// <summary>
-        /// Idenificador del nùmero de columna
-        /// </summary>
-        public int NumeroCulumna { get; set; }
-        /// <summary>
-        /// Identidicador de Nùmero de Fila o renglòn
-        /// </summary>
-        public int NumeroRenglon { get; set; }
-        /// <summary>
-        /// La posiciòn coresponde a la letra de la columna que se asigna por medio del nivel obtenido en la regiòn 1
-        /// </summary>
-        public string PosicionColumna { get; set; }
-        /// <summary>
-        /// Valor de Renglon o el contenido que tendra el texto.
-        /// </summary>
-        public string ValorCelda { get; set; }
-  
-
-    }
-    public class CrearDocumento {
-        
-        public bool ValidarRuta(string ruta) {
-            if (File.Exists(ruta))
-                return true;
-
-            else
-            {
-                System.IO.Directory.CreateDirectory(ruta);
-                return false;
-            }
-        }
-
-        public async Task<Array> CrearArchivo(List<Estructuraexcel> ListaFile,string CuadroClasificacionId,string ruta,string separador,string nombre)
-        {
-            byte[] byteArray;
-          
-            string fileName = $@"{ruta}{separador}{CuadroClasificacionId}{separador}{nombre}.xlsx";
-
-
-            if (ValidarRuta($"{ruta}{separador}{CuadroClasificacionId}"))
-            {
-                byte[] arrayFile = File.ReadAllBytes(fileName);
-                return arrayFile;
-            }
-            else { 
-                
-            // Crea un spreadsheet del documento con la ruta establecida.
-            // lo autoguarda y edita con el tipo de extensión Xlsx.
-            SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Create(fileName, SpreadsheetDocumentType.Workbook);
-
-                // agrega una WorkbookPart al documento.
-                WorkbookPart workbookpart = spreadsheetDocument.AddWorkbookPart();
-                workbookpart.Workbook = new Workbook();
-                // agrega una WorksheetPart dentro del  WorkbookPart.
-                WorksheetPart worksheetPart = workbookpart.AddNewPart<WorksheetPart>();
-                worksheetPart.Worksheet = new Worksheet(new SheetData());
-                // Agrga una Sheets dentro del libro de trabajo.
-                Sheets sheets = spreadsheetDocument.WorkbookPart.Workbook.
-                    AppendChild<Sheets>(new Sheets());
-                // Agregar un nuevo worksheet y lo asocia al libro de trabajo.
-                Sheet sheet = new Sheet()
-                {
-                    Id = spreadsheetDocument.WorkbookPart.
-                    GetIdOfPart(worksheetPart),
-                    SheetId = 1,
-                    Name = nombre
-                };
-                sheets.Append(sheet);
-                // obtiene el SharedStringTablePart. si no existe crea uno nuevo.
-                SharedStringTablePart shareStringPart;
-                if (spreadsheetDocument.WorkbookPart.GetPartsOfType<SharedStringTablePart>().Count() > 0)
-                {
-                    shareStringPart = spreadsheetDocument.WorkbookPart.GetPartsOfType<SharedStringTablePart>().First();
-                }
-                else
-                {
-                    shareStringPart = spreadsheetDocument.WorkbookPart.AddNewPart<SharedStringTablePart>();
-                }
-
-                int index = 0;
-                Cell cell = new Cell();
-                // inserta el  text dentro del SharedStringTablePart.
-                foreach (Estructuraexcel m in ListaFile)
-                {
-                    index = InsertSharedStringItem($"{m.ValorCelda}", shareStringPart);
-                    // inserta una cell A1 dentro de la nueva worksheet.
-                    cell = InsertCellInWorksheet($"{m.PosicionColumna}", (uint)m.NumeroRenglon, worksheetPart);
-                    //agrega el valor a la celda recibida
-                    cell.CellValue = new CellValue(index.ToString());
-                    cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
-
-                }
-                //Guarda la  workbookpart.Workbook
-                workbookpart.Workbook.Save();
-                // cierra el documento
-                spreadsheetDocument.Close();
-            byte[] array = File.ReadAllBytes(fileName);
-            return array;
-            }
-
-        }
-
-       
-        public void CreaArchivoExistente(List<Estructuraexcel> ListaFile,string NombreArchivo) {
-            // Open the document for editing.
-            using (SpreadsheetDocument spreadSheet = SpreadsheetDocument.Open(NombreArchivo, true))
-            {
-                // Get the SharedStringTablePart. If it does not exist, create a new one.
-                SharedStringTablePart shareStringPart;
-                if (spreadSheet.WorkbookPart.GetPartsOfType<SharedStringTablePart>().Count() > 0)
-                {
-                    shareStringPart = spreadSheet.WorkbookPart.GetPartsOfType<SharedStringTablePart>().First();
-                }
-                else
-                {
-                    shareStringPart = spreadSheet.WorkbookPart.AddNewPart<SharedStringTablePart>();
-                }
-                int index = 0;
-                Cell cell = new Cell();
-                // Insert the text into the SharedStringTablePart.
-                WorksheetPart worksheetPart = InsertWorksheet(spreadSheet.WorkbookPart);
-
-                foreach (Estructuraexcel m in ListaFile)
-                {
-                    index = InsertSharedStringItem($"{m.ValorCelda}", shareStringPart);
-                    // Insert cell A1 into the new worksheet.
-                    cell = InsertCellInWorksheet($"{m.PosicionColumna}", (uint)m.NumeroRenglon, worksheetPart);
-                    // Set the value of cell A1.
-                    cell.CellValue = new CellValue(index.ToString());
-                    cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
-
-                }
-
-                // Save the new worksheet.
-                worksheetPart.Worksheet.Save();
-                // Close the document.
-                spreadSheet.Close();
-            }
-
-        }
-        /// <summary>
-        // recibe un SharedStringTablePart, crea el texto SharedStringItem con el texto enviado para cada celda 
-        // lo inserta en SharedStringTablePart. si ya existe regresa un indice
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="shareStringPart"></param>
-        /// <returns></returns>
-        private static int InsertSharedStringItem(string text, SharedStringTablePart shareStringPart)
-        {
-            // si la parte no contiene un SharedStringTable, crea uno.
-            if (shareStringPart.SharedStringTable == null)
-            {
-                shareStringPart.SharedStringTable = new SharedStringTable();
-            }
-
-            int i = 0;
-
-            // itera en todos los items del SharedStringTable. si el txto ya existe regresa el indice donde se encuentra.
-            foreach (SharedStringItem item in shareStringPart.SharedStringTable.Elements<SharedStringItem>())
-            {
-                if (item.InnerText == text)
-                {
-                    return i;
-                }
-
-                i++;
-            }
-            // si no existe lo crea y regresa el indice
-            shareStringPart.SharedStringTable.AppendChild(new SharedStringItem(new DocumentFormat.OpenXml.Spreadsheet.Text(text)));
-            shareStringPart.SharedStringTable.Save();
-
-            return i;
-        }
-        /// <summary>
-        //recibe un WorkbookPart, inserta un nuevo worksheet.
-        // 
-        /// </summary>
-        /// <param name="workbookPart">recibe un WorkbookPart, inserta un nuevo worksheet.</param>
-        /// <returns></returns>
-        private static WorksheetPart InsertWorksheet(WorkbookPart workbookPart)
-        {
-            // agrega un nuevo worksheet en el workbook.
-            WorksheetPart newWorksheetPart = workbookPart.AddNewPart<WorksheetPart>();
-            newWorksheetPart.Worksheet = new Worksheet(new SheetData());
-            newWorksheetPart.Worksheet.Save();
-
-            Sheets sheets = workbookPart.Workbook.GetFirstChild<Sheets>();
-            string relationshipId = workbookPart.GetIdOfPart(newWorksheetPart);
-
-            // Obtiene el Id de la Sheet(hoja).
-            uint sheetId = 1;
-            if (sheets.Elements<Sheet>().Count() > 0)
-            {
-                sheetId = sheets.Elements<Sheet>().Select(s => s.SheetId.Value).Max() + 1;
-            }
-
-            string sheetName = "Sheet";
-
-            // abre un nuevo worksheet y lo asicia con el workbook(libro).
-            Sheet sheet = new Sheet() { Id = relationshipId, SheetId = sheetId, Name = sheetName };
-            sheets.Append(sheet);
-            workbookPart.Workbook.Save();
-
-            return newWorksheetPart;
-        }
-        
-        /// <summary>
-        /// recibe el nombre de la columna con su respectivo indice , 
-        /// recibe el la parte del libro donde se trabajara, inserta en la celda y regresa esta
-        /// </summary>
-        /// <param name="columnName"></param>
-        /// <param name="rowIndex"></param>
-        /// <param name="worksheetPart"></param>
-        /// <returns></returns>
-        private static Cell InsertCellInWorksheet(string columnName, uint rowIndex, WorksheetPart worksheetPart)
-        {
-            Worksheet worksheet = worksheetPart.Worksheet;
-            SheetData sheetData = worksheet.GetFirstChild<SheetData>();
-            string cellReference = columnName + rowIndex;
-
-            // valida si el libro worksheet no contiene la fila con las especificacione del index e inserta una.
-            Row row;
-            if (sheetData.Elements<Row>().Where(r => r.RowIndex == rowIndex).Count() != 0)
-            {
-                row = sheetData.Elements<Row>().Where(r => r.RowIndex == rowIndex).First();
-            }
-            else
-            {
-
-                row = new Row() { RowIndex = rowIndex };
-                sheetData.Append(row);
-            }
-
-            //valida si esta no contiene las espeficicaciones de la columna,  inserta una columna
-            if (row.Elements<Cell>().Where(c => c.CellReference.Value == columnName).Count() > 0)
-            {
-
-                return row.Elements<Cell>().Where(c => c.CellReference.Value == cellReference).First();
-            }
-            else
-            {
-                //se inserta una nueva columna con las especificaciones recibidas
-                Cell refCell = null;
-                foreach (Cell cell in row.Elements<Cell>())
-                {
-                    if (string.Compare(cell.CellReference.Value, cellReference, true) > 0)
-                    {
-                        refCell = cell;
-                        break;
-                    }
-                }
-
-                Cell newCell = new Cell() { CellReference = cellReference };
-                row.InsertBefore(newCell, refCell);
-
-                worksheet.Save();
-                return newCell;
-            }
-        }
-       /// <summary>
-       /// Esta función busca el indice en de la A a la Z del alfabeto y
-       /// retorna el valor del abecedario que corresponde al indice ingresado
-       /// </summary>
-       /// <param name="indice">Indice de la detra el alfabeto</param>
-       /// <returns></returns>
-        public string GetAbecedario(int indice)
-        {
-            indice--;
-            String col = Convert.ToString((char)('A' + (indice % 26)));
-            while (indice >= 26)
-            {
-                indice = (indice / 26) - 1;
-                col = Convert.ToString((char)('A' + (indice % 26))) + col;
-            }
-            return col;
-        }
-
-    }
-    public class RegionElementoClasificacion
-    {
-        /// <summary>
-        /// Identificador ùnico del Elemento.
-        /// </summary>
-        public string ElementoId { get; set; }
-        /// <summary>
-        /// Identificador ùnico del Cuadro Clasificaciòn
-        /// </summary>
-        public string CuadroClasificacionId { get; set; }
-        /// <summary>
-        /// Nivel del Elemento,esto representa la posicion de la columna que le correspode en el excel.
-        /// </summary>
-        public int Nivel { get; set; }
-        /// <summary>
-        /// Si el elemento esta eliminado agrega un 1 de lo contrario un 0
-        /// </summary>
-        public int Eliminado { get; set; }
-        /// <summary>
-        /// Esta propiedad representa la uniòn entre Nombre y clave del Elemento
-        /// </summary>
-        public string NombreClave { get; set; }
-
-    }
-
     public class IOCuadroClasificacion : ContextoServicioGestionDocumental,
         IServicioInyectable
     {
@@ -495,26 +187,27 @@ namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar
         /// <returns></returns>
         private string ValorEncabezado(int indice) 
         {
-            string text = "";
+            string ListEncabezado = "Clave,AT,AC,AH,Tipo Disposición,Eliminado";
+            string text="";
             switch (indice)
             {
                 case 1:
-                    text = EncabezadoTabla.NombreEntrada;
+                    text = ListEncabezado.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray()[0];
                     break;
                 case 2:
-                    text = EncabezadoTabla.AT;
+                    text = ListEncabezado.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray()[1];
                     break;
                 case 3:
-                    text = EncabezadoTabla.AC;
+                    text = ListEncabezado.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray()[2];
                     break;
                 case 4:
-                    text = EncabezadoTabla.AH;
+                    text = ListEncabezado.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray()[3];
                     break;
                 case 5:
-                    text = EncabezadoTabla.Eliminado;
+                    text = ListEncabezado.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray()[5];
                     break;
                 case 6:
-                    text = EncabezadoTabla.Tipo_dis;
+                    text = ListEncabezado.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray()[4];
                     break;
             }
             return text;
