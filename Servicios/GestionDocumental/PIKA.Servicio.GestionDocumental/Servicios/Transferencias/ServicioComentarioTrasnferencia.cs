@@ -28,8 +28,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<ComentarioTransferencia> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
-        public ServicioComentarioTransferencia(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioComentarioTransferencia> Logger) : base(proveedorOpciones, Logger)
+        public ServicioComentarioTransferencia(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, ILogger<ServicioCuadroClasificacion> Logger)
+            : base(proveedorOpciones,Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<ComentarioTransferencia>(new QueryComposer<ComentarioTransferencia>());

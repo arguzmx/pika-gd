@@ -88,7 +88,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIKA.Servicio.Contacto", "S
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Usuario", "Usuario", "{2B77DB42-2749-4F8D-B56C-5A7C6D258E1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIKA.Servicio.Usuarios", "Servicios\PIKA.Servicio.Usuarios\PIKA.Servicio.Usuarios.csproj", "{2A086DE3-2B94-4BA1-85FB-389A4140A6CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIKA.Servicio.Usuarios", "Servicios\PIKA.Servicio.Usuarios\PIKA.Servicio.Usuarios.csproj", "{2A086DE3-2B94-4BA1-85FB-389A4140A6CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

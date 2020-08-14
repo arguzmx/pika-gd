@@ -27,8 +27,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<AlmacenArchivo> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
-        public ServicioAlmacenArchivo(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioAlmacenArchivo> Logger) : base(proveedorOpciones, Logger)
+        public ServicioAlmacenArchivo(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, ILogger<ServicioCuadroClasificacion> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<AlmacenArchivo>(new QueryComposer<AlmacenArchivo>());

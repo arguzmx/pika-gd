@@ -28,8 +28,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<EventoTransferencia> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
-        public ServicioEventoTransferencia(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioEventoTransferencia> Logger) : base(proveedorOpciones, Logger)
+        public ServicioEventoTransferencia(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, ILogger<ServicioCuadroClasificacion> Logger) : base(proveedorOpciones,Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<EventoTransferencia>(new QueryComposer<EventoTransferencia>());
