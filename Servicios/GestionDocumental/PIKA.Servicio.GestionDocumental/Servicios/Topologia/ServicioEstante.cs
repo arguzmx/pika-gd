@@ -28,8 +28,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<Estante> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
-        public ServicioEstante(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioEstante> Logger) : base(proveedorOpciones, Logger)
+        public ServicioEstante(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, ILogger<ServicioCuadroClasificacion> Logger) : base(proveedorOpciones,Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Estante>(new QueryComposer<Estante>());
