@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="Comunes\" />
+    <Folder Include="Interfaces\" />
     <Folder Include="Resources\" />
   </ItemGroup>
 

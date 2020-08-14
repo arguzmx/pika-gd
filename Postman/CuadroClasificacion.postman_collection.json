@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2831aad9-82d6-4c05-abb5-1843cd654491",
+		"_postman_id": "db691582-7b29-4717-8008-481d18ad3764",
 		"name": "CuadroClasificacion",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -697,7 +697,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "d6ca850c-fc61-45f0-b168-f8cf895739bf",
+								"id": "b68076ab-3c51-4bed-95fa-88eeb922f2a4",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -707,7 +707,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f992551a-6a8c-4fec-92eb-5e4d5131dd46",
+								"id": "4152ffdd-82a8-4254-b21f-cacfd9bda465",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -1345,7 +1345,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "8dc90f52-099a-4be2-bd32-b819f18c98de",
+								"id": "b5120968-260b-4b40-b221-a12d94ec14d5",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -1355,7 +1355,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "b681bad0-fdda-46e3-8822-c6a78cee4347",
+								"id": "5bf42073-00e5-4c1f-8293-2df6c32fc867",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -1766,7 +1766,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "4de34712-fd03-41b7-9178-140aabb957b9",
+								"id": "f1cd32e7-8afe-49e5-bb99-b5a6f9c056fd",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -1776,7 +1776,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f246af9c-dd0d-4e7d-9170-cd8808d4cfb1",
+								"id": "2caa32a5-3399-4aee-973b-0433334574e4",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -2933,7 +2933,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "0e9a2e0e-e49f-420f-9048-a26befa7e715",
+								"id": "88372786-ac90-4318-83e6-f3042a5218fe",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -2943,7 +2943,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f3cb9724-e467-4a6a-892f-0d46f938873e",
+								"id": "2d06453b-45de-4a7f-ba63-9ef0d663b311",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -3268,7 +3268,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"Nombre\": \"x\",\r\n  \"TipoOrigenId\":\"activa\",\r\n  \"OrigenId\":\"OrigenId\",\r\n  \"Asunto\":\"a-tra\",\r\n  \"FechaApertura\":\"1997-07-16T19:20:30.45\",\r\n   \"CodigoOptico\":\"algo\",\r\n  \"CodigoElectronico\":\"Otro\",\r\n  \"ElementoClasificacionId\":\"c0dd3150-b999-47fb-adaa-da81ea4c6018\",\r\n  \"ArchivoId\":\"5ddf89e6-3bbc-4e3b-946d-1d7cf360ea43\"\r\n}",
+									"raw": "{\r\n  \"Nombre\": \"x\",\r\n  \"TipoOrigenId\":\"activa\",\r\n  \"OrigenId\":\"OrigenId\",\r\n  \"Asunto\":\"a-tra\",\r\n  \"FechaApertura\":\"1997-07-16T19:20:30.45\",\r\n   \"CodigoOptico\":\"algo\",\r\n  \"CodigoElectronico\":\"Otro\",\r\n  \"EntradaClasificacionId\":\"00ca2c0e-b7ae-4c86-9afa-14e692fafa28\",\r\n  \"ArchivoId\":\"id\"\r\n}",
 									"options": {
 										"raw": {}
 									}
@@ -3304,13 +3304,13 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"Id\": \"b430edd0-c8a1-4ace-9a1c-de28f478a4ba\",\r\n    \"TipoOrigenDefault\": \"unidad-org\",\r\n    \"TipoOrigenId\": \"activa\",\r\n    \"OrigenId\": \"OrigenId\",\r\n    \"Nombre\": \"x\",\r\n    \"Asunto\": \"a-tra\",\r\n    \"FechaApertura\": \"1997-07-16T19:20:30.45\",\r\n    \"FechaCierre\": null,\r\n    \"EsElectronio\": true,\r\n    \"CodigoOptico\": \"algo\",\r\n    \"Eliminada\": false,\r\n    \"CodigoElectronico\": \"Otro\",\r\n    \"ElementoClasificacionId\": \" c0dd3150-b999-47fb-adaa-da81ea4c6018\",\r\n    \"ArchivoId\": \"5ddf89e6-3bbc-4e3b-946d-1d7cf360ea43\",\r\n    \"EnPrestamo\": false,\r\n    \"Reservado\": false,\r\n    \"Confidencial\": false,\r\n    \"Ampliado\": false,\r\n    \"ElementoClasificacion\": null,\r\n    \"ArchivoActual\": null,\r\n    \"oAsunto\": null,\r\n    \"HistorialArchivosActivo\": [],\r\n    \"Ampliaciones\": [],\r\n    \"PrestamosRelacionados\": [],\r\n    \"TransferenciasRelacionados\": [],\r\n    \"DeclinadosTransferenciaRelacionados\": []\r\n}",
+									"raw": "{\r\n    \"Id\": \"b89ff5a1-b58c-4eea-9df6-64961b86a7a4\",\r\n    \"TipoOrigenDefault\": \"unidad-org\",\r\n    \"TipoOrigenId\": \"activa\",\r\n    \"OrigenId\": \"OrigenId\",\r\n    \"Nombre\": \"x\",\r\n    \"Asunto\": \"a-tra\",\r\n    \"FechaApertura\": \"1997-07-16T19:20:30.45\",\r\n    \"FechaCierre\": null,\r\n    \"EsElectronio\": true,\r\n    \"CodigoOptico\": \"algo\",\r\n    \"Eliminada\": false,\r\n    \"CodigoElectronico\": \"Otro\",\r\n    \"EntradaClasificacionId\": \"00ca2c0e-b7ae-4c86-9afa-14e692fafa28\",\r\n    \"ArchivoId\": \"Id\",\r\n    \"EnPrestamo\": false,\r\n    \"Reservado\": false,\r\n    \"Confidencial\": false,\r\n    \"Ampliado\": false,\r\n    \"ElementoClasificacion\": null,\r\n    \"ArchivoActual\": null,\r\n    \"oAsunto\": null,\r\n    \"HistorialArchivosActivo\": [],\r\n    \"Ampliaciones\": [],\r\n    \"PrestamosRelacionados\": [],\r\n    \"TransferenciasRelacionados\": [],\r\n    \"DeclinadosTransferenciaRelacionados\": []\r\n}",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Activo/b430edd0-c8a1-4ace-9a1c-de28f478a4ba",
+									"raw": "http://localhost:5000/api/v1.0/gd/Activo/b89ff5a1-b58c-4eea-9df6-64961b86a7a4",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -3321,7 +3321,7 @@
 										"v1.0",
 										"gd",
 										"Activo",
-										"b430edd0-c8a1-4ace-9a1c-de28f478a4ba"
+										"b89ff5a1-b58c-4eea-9df6-64961b86a7a4"
 									]
 								}
 							},
@@ -4201,7 +4201,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "98199b30-9cec-4e97-8610-f266639aa4e3",
+				"id": "609a6ebf-8bf5-436d-b4d5-4780546c9644",
 				"type": "text/javascript",
 				"exec": [
 					"const echoPostRequest = {",
@@ -4247,7 +4247,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "d50bc6e8-3016-4fc3-bdff-8be230aaf6f8",
+				"id": "5011370c-29e6-41c0-99a9-0d1f81c65d32",
 				"type": "text/javascript",
 				"exec": [
 					""

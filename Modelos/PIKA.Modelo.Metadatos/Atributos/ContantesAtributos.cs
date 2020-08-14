@@ -38,7 +38,7 @@ namespace PIKA.Modelo.Metadatos.Atributos
 
     public enum TipoDespliegueVinculo
     {
-       Tabular = 1, Jerarquico =2, GrupoCheckbox =10, ListaMultiple =20
+       Tabular = 1, Jerarquico =2, EntidadUnica = 3, GrupoCheckbox =10, ListaMultiple =20
     }
 
 

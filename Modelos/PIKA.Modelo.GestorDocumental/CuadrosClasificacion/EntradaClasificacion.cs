@@ -30,6 +30,7 @@ namespace PIKA.Modelo.GestorDocumental
         public EntradaClasificacion()
         {
             ValoracionesEntrada = new HashSet<ValoracionEntradaClasificacion>();
+            Activos = new HashSet<Activo>();
         }
 
         /// <summary>
@@ -121,7 +122,13 @@ namespace PIKA.Modelo.GestorDocumental
         //[JsonIgnore]
         //public string[] Valoracionids { get; set; }
         public ICollection<ValoracionEntradaClasificacion> ValoracionesEntrada { get; set; }
-    
+
+        /// <summary>
+        /// Activos del elemento clasificacion
+        /// </summary>
+        [XmlIgnore]
+        [JsonIgnore]
+        public virtual ICollection<Activo> Activos { get; set; }
 
         public virtual TipoDisposicionDocumental DisposicionEntrada { get; set; }
 

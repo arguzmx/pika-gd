@@ -20,6 +20,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using IdentityServer4.Configuration;
 using PIKA.Modelo.Seguridad;
+using Microsoft.AspNetCore.Http;
 
 namespace PIKA.Identity.Server
 {
@@ -122,6 +123,17 @@ namespace PIKA.Identity.Server
                             sql => sql.MigrationsAssembly(migrationsAssembly));
                     })
                 .AddAspNetIdentity<ApplicationUser>();
+
+
+            builder.Services.ConfigureExternalCookie(options => {
+                options.Cookie.IsEssential = true;
+                options.Cookie.SameSite = SameSiteMode.Unspecified; 
+            });
+
+            builder.Services.ConfigureApplicationCookie(options => {
+                options.Cookie.IsEssential = true;
+                options.Cookie.SameSite = SameSiteMode.Unspecified; 
+            });
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();

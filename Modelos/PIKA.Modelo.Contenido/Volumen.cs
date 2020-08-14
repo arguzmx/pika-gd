@@ -13,6 +13,10 @@ namespace PIKA.Modelo.Contenido
     /// Define el espacio físico al que serán anexados las partes de un contenido
     /// </summary>
     [Entidad(EliminarLogico: true)]
+    [EntidadVinculada(EntidadHijo: "TipoGestorESId", Cardinalidad: TipoCardinalidad.UnoUno, 
+        HijoDinamico: true, TipoDespliegueVinculo: TipoDespliegueVinculo.EntidadUnica,
+        PropiedadPadre: "Id", PropiedadHijo: "VolumenId",
+        Diccionario: "azure-blob,GestorAzureConfig|folder,GestorLocalConfig|smb,GestorSMBConfig")]
     public class Volumen : Entidad<string>, IEntidadNombrada, IEntidadEliminada, IEntidadRelacionada
     {
 
@@ -130,7 +134,8 @@ namespace PIKA.Modelo.Contenido
         /// <summary>
         /// Identificador único del origen, por ejempl el ID de la UO o el dominio
         /// </summary>
-        [Prop(Required: true, OrderIndex: 1010, Contextual: true, ShowInTable: false, Searchable: false)]
+        [Prop(Required: true, OrderIndex: 1010, ShowInTable: false, Searchable: false,
+            Contextual: true, IdContextual: ConstantesModelo.GLOBAL_DOMINIOID)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string OrigenId { get; set; }
 

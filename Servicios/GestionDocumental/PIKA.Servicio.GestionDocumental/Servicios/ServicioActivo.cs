@@ -25,7 +25,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<Activo> repo;
-        private IRepositorioAsync<ElementoClasificacion> repoEC;
+        private IRepositorioAsync<EntradaClasificacion> repoEC;
         private IRepositorioAsync<Archivo> repoA;
         
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
@@ -38,7 +38,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Activo>(new QueryComposer<Activo>());
             this.repoA = UDT.ObtenerRepositoryAsync<Archivo>(new QueryComposer<Archivo>());
-            this.repoEC = UDT.ObtenerRepositoryAsync<ElementoClasificacion>(new QueryComposer<ElementoClasificacion>());
+            this.repoEC = UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>());
         }
 
         public async Task<bool> Existe(Expression<Func<Activo, bool>> predicado)
@@ -55,9 +55,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return true;
         }
 
-        public async Task<bool> ExisteElemento(Expression<Func<ElementoClasificacion, bool>> predicado)
+        public async Task<bool> ExisteElemento(Expression<Func<EntradaClasificacion, bool>> predicado)
         {
-            List<ElementoClasificacion> l = await this.repoEC.ObtenerAsync(predicado);
+            List<EntradaClasificacion> l = await this.repoEC.ObtenerAsync(predicado);
             if (l.Count() == 0) return false;
             return true;
         }
@@ -70,9 +70,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new ExElementoExistente(entity.Nombre);
             }
 
-            if (!await ExisteElemento(x => x.Id.Equals(entity.ElementoClasificacionId.Trim(), StringComparison.InvariantCultureIgnoreCase)
+            if (!await ExisteElemento(x => x.Id.Equals(entity.EntradaClasificacionId.Trim(), StringComparison.InvariantCultureIgnoreCase)
            && x.Eliminada != true))
-                throw new ExErrorRelacional(entity.ElementoClasificacionId);
+                throw new ExErrorRelacional(entity.EntradaClasificacionId);
             if (!await ExisteArchivo(x => x.Id.Equals(entity.ArchivoId.Trim(), StringComparison.InvariantCultureIgnoreCase)
             && x.Eliminada != true))
                 throw new ExErrorRelacional(entity.ArchivoId);
@@ -92,8 +92,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                 throw new EXNoEncontrado(entity.Id);
             }
-            if (!await ExisteElemento(x => x.Id.Equals(entity.ElementoClasificacionId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
-                throw new ExErrorRelacional(entity.ElementoClasificacionId);
+            if (!await ExisteElemento(x => x.Id.Equals(entity.EntradaClasificacionId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
+                throw new ExErrorRelacional(entity.EntradaClasificacionId);
             if (!await ExisteArchivo(x => x.Id.Equals(entity.ArchivoId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
                 throw new ExErrorRelacional(entity.ArchivoId);
             
@@ -173,7 +173,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<Activo> UnicoAsync(Expression<Func<Activo, bool>> predicado = null, Func<IQueryable<Activo>, IOrderedQueryable<Activo>> ordenarPor = null, Func<IQueryable<Activo>, IIncludableQueryable<Activo, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             Activo a = await this.repo.UnicoAsync(predicado);
-            return a.CopiaActivo();
+            return a.Copia();
         }
         public Task<List<Activo>> ObtenerAsync(Expression<Func<Activo, bool>> predicado)
         {
@@ -187,7 +187,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         x.Id != id && x.Nombre.Equals(nombre, StringComparison.InvariantCultureIgnoreCase)
         && x.Eliminada == false
          && x.ArchivoId.Equals( ArchivoId,StringComparison.InvariantCultureIgnoreCase)
-         && x.ElementoClasificacionId.Equals( IdElemento,StringComparison.InvariantCultureIgnoreCase)))
+         && x.EntradaClasificacionId.Equals( IdElemento,StringComparison.InvariantCultureIgnoreCase)))
             {
 
                 nombre = nombre + " restaurado " + DateTime.Now.Ticks;
@@ -212,7 +212,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 c = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
                 if (c != null)
                 {
-                    c.Nombre = await RestaurarNombre(c.Nombre, c.ArchivoId, c.Id,c.ElementoClasificacionId);
+                    c.Nombre = await RestaurarNombre(c.Nombre, c.ArchivoId, c.Id, c.EntradaClasificacionId);
                     c.Eliminada = false;
                     UDT.Context.Entry(c).State = EntityState.Modified;
                     listaEliminados.Add(c.Id);

@@ -24,7 +24,6 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.EsRaiz).IsRequired();
 
             builder.HasMany(x => x.Hijos).WithOne(y => y.Padre).HasForeignKey(z => z.ElementoClasificacionId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasMany(x => x.Activos).WithOne(y => y.ElementoClasificacion).HasForeignKey(z => z.ElementoClasificacionId);
 
         }
     }

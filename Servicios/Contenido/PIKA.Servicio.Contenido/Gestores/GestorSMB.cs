@@ -1,7 +1,12 @@
-﻿using PIKA.Modelo.Contenido;
+﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Options;
+using PIKA.Infraestructura.Comun;
+using PIKA.Modelo.Contenido;
 using SimpleImpersonation;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 
@@ -10,10 +15,18 @@ namespace PIKA.Servicio.Contenido.Gestores
     public class GestorSMB : IGestorES
     {
 
-        public string RutaCompartida { get; set; }
-        public string Dominio { get; set; }
-        public string Usuario { get; set; }
-        public string Contraena { get; set; }
+        private GestorSMBConfig configGestor;
+        private ConfiguracionServidor configServidor;
+        private Volumen volumen;
+
+        public GestorSMB(GestorSMBConfig configGestor,
+            Volumen volumen,
+            IOptions<ConfiguracionServidor> opciones)
+        {
+            this.volumen = volumen;
+            this.configGestor = configGestor;
+            this.configServidor = opciones.Value;
+        }
 
         public string TipoGestorId => TipoGestorES.SMB;
 
@@ -23,12 +36,13 @@ namespace PIKA.Servicio.Contenido.Gestores
             bool valido = false;
             try
             {
-                var credentials = new UserCredentials(Dominio, Usuario, Contraena);
+                var credentials = new UserCredentials(configGestor.Dominio,
+                    configGestor.Usuario, configGestor.Contrasena);
 
                 var result = Impersonation.RunAsUser(credentials, LogonType.NewCredentials, () =>
                 {
                     valido = true;
-                    return System.IO.Directory.GetFiles(RutaCompartida);
+                    return System.IO.Directory.GetFiles(configGestor.Ruta);
                 });
             }
             catch (Exception)
@@ -36,36 +50,52 @@ namespace PIKA.Servicio.Contenido.Gestores
 
             }
 
-
             return valido;
         }
 
-      
-
-        public bool AplicaConfiguracion(string entidadSerializada)
+        public long EscribeBytes(string Id, byte[] contenido, FileInfo informacion, bool sobreescribir)
         {
-            try
-            {
-                var gestor = JsonSerializer.Deserialize<GestorSMB>(entidadSerializada);
 
-                this.RutaCompartida = gestor.RutaCompartida;
-                this.Dominio = gestor.Dominio;
-                this.Usuario = gestor.Usuario;
-                this.Contraena = gestor.Contraena;
-                return true;
-            }
-            catch (Exception)
+            ValidaEscritura(Id, contenido, informacion);
+            if (ConexionValida())
             {
-                return false;
-
+                string ruta = Path.Combine(configGestor.Ruta, volumen.Id, $"{Id},{informacion.Extension}");
+                if (File.Exists(ruta) )
+                {
+                    if(!sobreescribir)
+                    {
+                        throw new Exception("Archivo existente");
+                    } else
+                    {
+                        File.Delete(ruta);
+                    }
+                }
+                File.WriteAllBytes(ruta, contenido);
+                return contenido.Length;
             }
+            return -1;
         }
 
- 
-
-        public string ObtieneConfiguracion()
+        private void ValidaEscritura(string Id, byte[] contenido, FileInfo informacion)
         {
-            return JsonSerializer.Serialize(this);
+
+            if (string.IsNullOrEmpty(Id))
+                throw new Exception("Identificador no válido");
+
+            if (contenido == null || contenido.Length == 0)
+                throw new Exception("Contenido no válido");
+
+            if (!volumen.Activo)
+                throw new Exception("El volumen no se encuentra activo");
+
+            if (!volumen.EscrituraHabilitada)
+                throw new Exception("El volumen no tiene la escritura habilitada");
+
+            if (volumen.TamanoMaximo != 0)
+            {
+                if (volumen.Tamano + informacion.Length > volumen.TamanoMaximo)
+                    throw new Exception("El tamaño del contenido excede el disponible del volumen");
+            }
         }
     }
 

@@ -169,7 +169,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<Prestamo> UnicoAsync(Expression<Func<Prestamo, bool>> predicado = null, Func<IQueryable<Prestamo>, IOrderedQueryable<Prestamo>> ordenarPor = null, Func<IQueryable<Prestamo>, IIncludableQueryable<Prestamo, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             Prestamo p = await this.repo.UnicoAsync(predicado);
-            return p.CopiaPrestamo();
+            return p.Copia();
         }
     }
 }

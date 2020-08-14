@@ -84,9 +84,9 @@ namespace PIKA.Modelo.GestorDocumental
         //# Longitus 1024, opcional
 
         /// <summary>
-        /// Identificador único del ElementoClasificacion
+        /// Identificador único de la etraada de clasificación
         /// </summary>
-        public string ElementoClasificacionId { get; set; }
+        public string EntradaClasificacionId { get; set; }
 
 
         /// <summary>
@@ -118,11 +118,12 @@ namespace PIKA.Modelo.GestorDocumental
 
         [XmlIgnore]
         [JsonIgnore]
-        public ElementoClasificacion ElementoClasificacion { get; set; }
+        public EntradaClasificacion EntradaClasificacion { get; set; }
 
         [XmlIgnore]
         [JsonIgnore]
         public Archivo ArchivoActual { get; set; }
+
         [XmlIgnore]
         [JsonIgnore]
         public Asunto Asuntos { get; set; }

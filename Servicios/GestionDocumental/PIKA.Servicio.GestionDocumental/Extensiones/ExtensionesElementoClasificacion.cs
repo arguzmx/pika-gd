@@ -17,7 +17,6 @@ namespace PIKA.Servicio.GestionDocumental
                 Eliminada = d.Eliminada,
                 CuadroClasifiacionId=d.CuadroClasifiacionId,
                 ElementoClasificacionId=d.ElementoClasificacionId,
-                Activos=d.Activos,
                 Clave=d.Clave,
                 Posicion=d.Posicion,
                 EsRaiz = d.EsRaiz
