@@ -54,7 +54,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             //entity.EstadoTransferenciaId = EstadoTransferencia.ESTADO_NUEVA;
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            return entity;
+            return entity.Copia();
         }
 
         public async Task ActualizarAsync(Transferencia entity)
