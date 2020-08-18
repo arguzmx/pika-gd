@@ -11,7 +11,7 @@ namespace PIKA.Identity.Server
     public static class Config
     {
 
-        public const string spaClientUrl = "http://localhost";
+        public const string spaClientUrl = "http://localhost:4200";
 
         public const string PIKAGDNAME = "pika-gd";
         //public const string PIKAGDCLIENTNAME = "api-pika-gd";
@@ -79,32 +79,34 @@ new Client {
 
     RequireClientSecret = false,
     AllowedGrantTypes = GrantTypes.Code,
-    RequirePkce = false,
+    RequirePkce = true,
 
     AllowAccessTokensViaBrowser = true,
     RedirectUris = new List<string>
     {
-        $"{spaClientUrl}",
-        $"{spaClientUrl}/acceso/callback",
-        $"{spaClientUrl}/acceso/login",
-
+        $"http://localhost:4200",
+        $"http://localhost:4200/acceso/callback",
+        $"http://localhost:4200/acceso/login",
+         "http://localhost:4200/silent-refresh.html"
 
     },
     PostLogoutRedirectUris = new List<string>
     {
         $"{spaClientUrl}",
-        $"{spaClientUrl}/acceso/callback",
-        $"{spaClientUrl}/acceso/login",
+        $"http://localhost:4200/acceso/callback",
+        $"http://localhost:4200/acceso/login",
+        "http://localhost:4200/silent-refresh.html"
     },
     AllowedCorsOrigins = new List<string>
     {
-        $"{spaClientUrl}",
+        $"http://localhost:4200",
 
     },
     AllowedScopes = new List<string>
     {
         IdentityServerConstants.StandardScopes.OpenId,
         IdentityServerConstants.StandardScopes.Profile,
+        IdentityServerConstants.StandardScopes.OfflineAccess,
         PIKAGDNAME
     }, AlwaysIncludeUserClaimsInIdToken = true, AlwaysSendClientClaims = true
 },

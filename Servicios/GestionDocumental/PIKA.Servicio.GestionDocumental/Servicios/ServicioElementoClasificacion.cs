@@ -331,14 +331,19 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<List<ElementoClasificacion>> ObtenerHijosAsync(string PadreId, string JerquiaId)
         {
             var  l= await this.repo.ObtenerAsync( x=> x.CuadroClasifiacionId == JerquiaId 
-            && x.ElementoClasificacionId == PadreId && x.Eliminada == false,  y => y.OrderBy(z=>z.NombreJerarquico));
-            return l.ToList();
+            && x.ElementoClasificacionId == PadreId && x.Eliminada == false);
+
+            return l.ToList().OrderBy(x => x.NombreJerarquico).ToList();
         }
         public async Task<List<ElementoClasificacion>> ObtenerRaicesAsync(string JerquiaId)
         {
-            var l = await this.repo.ObtenerAsync(x => x.CuadroClasifiacionId == JerquiaId
-            && x.EsRaiz == true && x.Eliminada == false, y => y.OrderBy(z => z.NombreJerarquico));
-            return l.ToList();
+ 
+         var l = await this.repo.ObtenerAsync(x => x.CuadroClasifiacionId == JerquiaId
+         && x.EsRaiz == true && x.Eliminada == false);
+         
+          return l.ToList().OrderBy(x=>x.NombreJerarquico).ToList();
+ 
+         
         }
         private async Task<string> RestaurarNombre(string Clave, string CuadroClasificacionId,string id,string Nombre)
         {
