@@ -3000,7 +3000,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"Nombre\": \"r\",\r\n  \"TipoOrigenId\":\"\",\r\n  \"OrigenId\":\"o\",\r\n  \"TipoArchivoId\":\"test\"\r\n}",
+									"raw": "{\r\n  \"Nombre\": \"r\",\r\n  \"TipoOrigenId\":\"s\",\r\n  \"OrigenId\":\"o\",\r\n  \"TipoArchivoId\":\"a-tra\"\r\n}",
 									"options": {
 										"raw": {}
 									}
@@ -3268,7 +3268,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"Nombre\": \"x\",\r\n  \"TipoOrigenId\":\"activa\",\r\n  \"OrigenId\":\"OrigenId\",\r\n  \"Asunto\":\"a-tra\",\r\n  \"FechaApertura\":\"1997-07-16T19:20:30.45\",\r\n   \"CodigoOptico\":\"algo\",\r\n  \"CodigoElectronico\":\"Otro\",\r\n  \"ElementoClasificacionId\":\"c0dd3150-b999-47fb-adaa-da81ea4c6018\",\r\n  \"ArchivoId\":\"5ddf89e6-3bbc-4e3b-946d-1d7cf360ea43\"\r\n}",
+									"raw": "{\r\n  \"Nombre\": \"x\",\r\n  \"TipoOrigenId\":\"activa\",\r\n  \"OrigenId\":\"OrigenId\",\r\n  \"Asunto\":\"a-tra\",\r\n  \"FechaApertura\":\"1997-07-16T19:20:30.45\",\r\n   \"CodigoOptico\":\"algo\",\r\n  \"CodigoElectronico\":\"Otro\",\r\n  \"ElementoClasificacionId\":\"c0dd3150-b999-47fb-adaa-da81ea4c6018\",\r\n  \"ArchivoId\":\"dc5e7106-4754-44ee-924a-27cbb18c9aa1\"\r\n}",
 									"options": {
 										"raw": {}
 									}
@@ -5521,13 +5521,13 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"ActivoId\": \"5401871f-274c-4623-bb23-896b14b915fa\",\r\n  \"TransferenciaId\": \"be51e993-c9d0-4dfb-b738-14607f865efa\",\r\n  \"Motivo\": \"segundo  cuadro \"\r\n}",
+									"raw": "{\r\n  \"ActivoId\": \"id\",\r\n  \"TransferenciaId\": \"be51e993-c9d0-4dfb-b738-14607f865efa\",\r\n  \"Motivo\": \"segundo  cuadro 2 \"\r\n}",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoDeclinado",
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoDeclinado/id",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -5539,7 +5539,8 @@
 										"gd",
 										"Transferencia",
 										"be51e993-c9d0-4dfb-b738-14607f865efa",
-										"ActivoDeclinado"
+										"ActivoDeclinado",
+										"id"
 									]
 								}
 							},
@@ -5559,13 +5560,13 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"ActivoId\": \"5401871f-274c-4623-bb23-896b14b915fa\",\r\n  \"TransferenciaId\": \"be51e993-c9d0-4dfb-b738-14607f865efa\",\r\n  \"Motivo\": \"segundo  cuadro \"\r\n}",
+									"raw": "{\r\n    \"ActivoId\": \"id\",\r\n    \"TransferenciaId\": \"be51e993-c9d0-4dfb-b738-14607f865efa\",\r\n    \"Motivo\": \"x\"\r\n}",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoDeclinado/",
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoDeclinado/id",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -5578,193 +5579,7 @@
 										"Transferencia",
 										"be51e993-c9d0-4dfb-b738-14607f865efa",
 										"ActivoDeclinado",
-										""
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET Activo Declinado",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoDeclinado/",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"be51e993-c9d0-4dfb-b738-14607f865efa",
-										"ActivoDeclinado",
-										""
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET Page Activo Declinado",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoDeclinado",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"be51e993-c9d0-4dfb-b738-14607f865efa",
-										"ActivoDeclinado"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET PAGE Pares Activo Declinado",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoDeclinado/pares?i=0&t=5&f[0][p]=Texto&f[0][o]=starts&f[0][v]=a",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"be51e993-c9d0-4dfb-b738-14607f865efa",
-										"ActivoDeclinado",
-										"pares"
-									],
-									"query": [
-										{
-											"key": "i",
-											"value": "0"
-										},
-										{
-											"key": "t",
-											"value": "5"
-										},
-										{
-											"key": "f[0][p]",
-											"value": "Texto"
-										},
-										{
-											"key": "f[0][o]",
-											"value": "starts"
-										},
-										{
-											"key": "f[0][v]",
-											"value": "a"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET PAGE Activo Declinado Por ID",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoDeclinado/pares/admin,0001",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"be51e993-c9d0-4dfb-b738-14607f865efa",
-										"ActivoDeclinado",
-										"pares",
-										"admin,0001"
+										"id"
 									]
 								}
 							},
@@ -5789,7 +5604,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoDeclinado/0001",
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoDeclinado/0001,id,5401871f-274c-4623-bb23-896b14b915fa",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -5802,7 +5617,7 @@
 										"Transferencia",
 										"be51e993-c9d0-4dfb-b738-14607f865efa",
 										"ActivoDeclinado",
-										"0001"
+										"0001,id,5401871f-274c-4623-bb23-896b14b915fa"
 									]
 								}
 							},
@@ -5829,7 +5644,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"nombre\": \"de acta a curp edited 2\",\r\n    \"estadoTransferenciaId\": \"nueva\",\r\n    \"archivoOrigenId\": \"id\",\r\n    \"archivoDestinoId\": \"id2\",\r\n    \"usuarioId\": \"userTEstID\"\r\n}",
+									"raw": "{\r\n    \"nombre\": \"de acta a curp edited 3\",\r\n    \"estadoTransferenciaId\": \"nueva\",\r\n    \"archivoOrigenId\": \"dc5e7106-4754-44ee-924a-27cbb18c9aa1\",\r\n    \"archivoDestinoId\": \"id2\",\r\n    \"usuarioId\": \"userTEstID\"\r\n}",
 									"options": {
 										"raw": {}
 									}
@@ -6739,82 +6554,14 @@
 					"_postman_isSubFolder": true
 				},
 				{
-					"name": "ActivoTransferenia",
+					"name": "Activo Trasferencia",
 					"item": [
 						{
-							"name": "POST ActivoTransferencia",
+							"name": "POST Activo Declinado",
 							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4NzExODksImV4cCI6MTU4ODg3NDc4OSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4NzExODksImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.gJ_VcZ92G-AKu_E-FnA0FOvxlOW4zdQenHT0bEeuY_J3a2vQD5b1NByIB-pHETOBekP_C-IW4ZxyXkiWIz3BQzh2208uW6FDbDWlo91cS7-y6W7oA5DvVtQ94amNVg4JE0cHu5NMNLoAI8EjwVBiKy8itZ7g8UO0nIQlv7mnyies1xro78m4ICj0ZViqufV_NmwhIbml4t5g3ootTn3AJ2GknN2y0_nSSj_f3VtVr344LMc78cxXeIw6CfXuTHgopCvDCnSR7U4bWfexadE8NCT2BDZx7G46XUft1b-8qbWM30vFtr6gxWwoTuN9vdpwwX6EYp2qdEY1ZUwZeFUuyQ",
-											"type": "string"
-										}
-									]
-								},
 								"method": "POST",
 								"header": [
 									{
-										"key": "uid",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
-										"type": "text"
-									},
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"ActivoId\": \"5401871f-274c-4623-bb23-896b14b915fa\",\r\n  \"TransferenciaId\": \"be51e993-c9d0-4dfb-b738-14607f865efa\"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoTransferencia",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"be51e993-c9d0-4dfb-b738-14607f865efa",
-										"ActivoTransferencia"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "PUT ActivoTransferencia",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4NzExODksImV4cCI6MTU4ODg3NDc4OSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4NzExODksImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.gJ_VcZ92G-AKu_E-FnA0FOvxlOW4zdQenHT0bEeuY_J3a2vQD5b1NByIB-pHETOBekP_C-IW4ZxyXkiWIz3BQzh2208uW6FDbDWlo91cS7-y6W7oA5DvVtQ94amNVg4JE0cHu5NMNLoAI8EjwVBiKy8itZ7g8UO0nIQlv7mnyies1xro78m4ICj0ZViqufV_NmwhIbml4t5g3ootTn3AJ2GknN2y0_nSSj_f3VtVr344LMc78cxXeIw6CfXuTHgopCvDCnSR7U4bWfexadE8NCT2BDZx7G46XUft1b-8qbWM30vFtr6gxWwoTuN9vdpwwX6EYp2qdEY1ZUwZeFUuyQ",
-											"type": "string"
-										}
-									]
-								},
-								"method": "PUT",
-								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
-									{
 										"key": "Content-Type",
 										"name": "Content-Type",
 										"type": "text",
@@ -6823,13 +6570,13 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"ActivoId\": \"5401871f-274c-4623-bb23-896b14b915fa\",\r\n  \"TransferenciaId\": \"be51e993-c9d0-4dfb-b738-14607f865efa\"\r\n}",
+									"raw": "{\r\n  \"ActivoId\": \"id\",\r\n  \"TransferenciaId\": \"be51e993-c9d0-4dfb-b738-14607f865efa\",\r\n  \"Motivo\": \"segundo  cuadro 2 \"\r\n}",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoTransferencia/c64c457a-ce57-4ba9-92f0-3e6512fd0fcd",
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoTransferencia/id",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -6842,203 +6589,18 @@
 										"Transferencia",
 										"be51e993-c9d0-4dfb-b738-14607f865efa",
 										"ActivoTransferencia",
-										"c64c457a-ce57-4ba9-92f0-3e6512fd0fcd"
+										"id"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "GET metadata ActivoTransferencia",
+							"name": "DELETE Activo Declinado",
 							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4ODE3NzEsImV4cCI6MTU4ODg4NTM3MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4ODE3NzEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.IPVy_4qVyhCimMo9bxplpXcoUoULQvz93ShEF34KKSpLXDRfXMwVzPqUiFZLKAToBdZD0YM11zNKuHEytz0dSSfX9bbamh3E5jmohiFT7t8u80g-g8FyOadRbIsRC7y16k0z90arfTdhRIWG-NkUkPL3c149G_AV1vSJCWbdtgWAIv7V1y1WxuZoPswcef2oQypPhm5VgVNpD3ts7ehDPCAwihkLitX2ipjAiURJ0xLE1FPq6vnQDliKVMCbRhEjKnlHFjpqx_9Y0qxIjW_QIGmvheU4WtPS62WrNBN7CF9PZTkC2F263do26uD4xm8DQd6KfSJWICi2QPQ011Xe_Q",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "uid",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
-										"type": "text"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoTransferencia/metadata",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"be51e993-c9d0-4dfb-b738-14607f865efa",
-										"ActivoTransferencia",
-										"metadata"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET ActivoTransferencia",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4NzExODksImV4cCI6MTU4ODg3NDc4OSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4NzExODksImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.gJ_VcZ92G-AKu_E-FnA0FOvxlOW4zdQenHT0bEeuY_J3a2vQD5b1NByIB-pHETOBekP_C-IW4ZxyXkiWIz3BQzh2208uW6FDbDWlo91cS7-y6W7oA5DvVtQ94amNVg4JE0cHu5NMNLoAI8EjwVBiKy8itZ7g8UO0nIQlv7mnyies1xro78m4ICj0ZViqufV_NmwhIbml4t5g3ootTn3AJ2GknN2y0_nSSj_f3VtVr344LMc78cxXeIw6CfXuTHgopCvDCnSR7U4bWfexadE8NCT2BDZx7G46XUft1b-8qbWM30vFtr6gxWwoTuN9vdpwwX6EYp2qdEY1ZUwZeFUuyQ",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoTransferencia/8c68a7a1-fb62-4838-b7cc-7ac89ea2e40e",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"be51e993-c9d0-4dfb-b738-14607f865efa",
-										"ActivoTransferencia",
-										"8c68a7a1-fb62-4838-b7cc-7ac89ea2e40e"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET page ActivoTransferencia",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4NzExODksImV4cCI6MTU4ODg3NDc4OSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4NzExODksImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.gJ_VcZ92G-AKu_E-FnA0FOvxlOW4zdQenHT0bEeuY_J3a2vQD5b1NByIB-pHETOBekP_C-IW4ZxyXkiWIz3BQzh2208uW6FDbDWlo91cS7-y6W7oA5DvVtQ94amNVg4JE0cHu5NMNLoAI8EjwVBiKy8itZ7g8UO0nIQlv7mnyies1xro78m4ICj0ZViqufV_NmwhIbml4t5g3ootTn3AJ2GknN2y0_nSSj_f3VtVr344LMc78cxXeIw6CfXuTHgopCvDCnSR7U4bWfexadE8NCT2BDZx7G46XUft1b-8qbWM30vFtr6gxWwoTuN9vdpwwX6EYp2qdEY1ZUwZeFUuyQ",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n\"indice\": 0,\n\"tamano\": 10,\n\"columna_ordenamiento\": \"Nombre\",\n\"direccion_ordenamiento\": \"asc\",\n\"Filtros\": [\n\t{\"Propiedad\":\"nombre\",\"Operador\": \"contains\", \"Valor\": \" \"}\n\t]\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoTransferenciao/page?i=0&t=100&ordc=Nombre&ordd=asc&",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"be51e993-c9d0-4dfb-b738-14607f865efa",
-										"ActivoTransferenciao",
-										"page"
-									],
-									"query": [
-										{
-											"key": "i",
-											"value": "0"
-										},
-										{
-											"key": "t",
-											"value": "100"
-										},
-										{
-											"key": "ordc",
-											"value": "Nombre"
-										},
-										{
-											"key": "ordd",
-											"value": "asc"
-										},
-										{
-											"key": "",
-											"value": null
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Delete ActivoTransferencia",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg4NzY0NTcsImV4cCI6MTU4ODg4MDA1NywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg4NzY0NTcsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.EUIPSC1ZBPqK2Ajjf_7DW9TIRr39irXWTWdPM8Wa4v6nDyogfZhGFE2VqXrO8-gxUByl4fgHo0yVakoprQ6dGrdnMlFkT5G-bdlVUX4Z8O-G4RsYG0ISJX9-lwAhxus1dZrzmpn_JG8OV5Dzxg3Tl6PWmtnm7xxYNroJkRcnhWqo6OZ9QZ33pz9OSDrCnm0MTcJMI4r1W7DkPR4dDAVVbaOlTL26ry8f5sUamqkxXtkVcEETNcMGeboEjz0x84ryM1wi13hhcUsI8TfAlrN8AiTPUVDc5201QUeP2RHSsagvoGnvXF3CJn_0j37leVW4ukwcdHca0QqeCAozAHHBuw",
-											"type": "string"
-										}
-									]
-								},
 								"method": "DELETE",
 								"header": [
 									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
-									{
 										"key": "Content-Type",
 										"type": "text",
 										"value": "application/json"
@@ -7046,13 +6608,13 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "[\t\"prueba\",\n\t\"c64c457a-ce57-4ba9-92f0-3e6512fd0fcd\",\n\t\"a97a64fa-5c12-4b31-925b-d212baef66bc\",\n\t\"asdad\"\n]",
+									"raw": "",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoTransferencia/",
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoTransferencia/0001,id,5401871f-274c-4623-bb23-896b14b915fa",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -7065,11 +6627,33 @@
 										"Transferencia",
 										"be51e993-c9d0-4dfb-b738-14607f865efa",
 										"ActivoTransferencia",
-										""
+										"0001,id,5401871f-274c-4623-bb23-896b14b915fa"
 									]
 								}
 							},
 							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "63e954f3-ec08-4916-96f4-62ef3c97b5ba",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "88e45d78-aa93-41e4-bd59-de8d0bae0e64",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
 						}
 					],
 					"protocolProfileBehavior": {},

@@ -138,25 +138,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return respuesta;
         }
 
-        public Task<IEnumerable<ActivoTransferencia>> CrearAsync(params ActivoTransferencia[] entities)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<ActivoTransferencia>> CrearAsync(IEnumerable<ActivoTransferencia> entities, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task EjecutarSql(string sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task EjecutarSqlBatch(List<string> sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
@@ -175,7 +156,24 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return listaEliminados;
         }
 
-        public async Task<ICollection<string>> Eliminar(string TransferenciaId, string[] ids)
+      
+        public Task<List<ActivoTransferencia>> ObtenerAsync(Expression<Func<ActivoTransferencia, bool>> predicado)
+        {
+            return this.repo.ObtenerAsync(predicado);
+        }
+
+        public Task<List<ActivoTransferencia>> ObtenerAsync(string SqlCommand)
+        {
+            return this.repo.ObtenerAsync(SqlCommand);
+        }
+    
+        public async Task<ActivoTransferencia> UnicoAsync(Expression<Func<ActivoTransferencia, bool>> predicado = null, Func<IQueryable<ActivoTransferencia>, IOrderedQueryable<ActivoTransferencia>> ordenarPor = null, Func<IQueryable<ActivoTransferencia>, IIncludableQueryable<ActivoTransferencia, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+            ActivoTransferencia t = await this.repo.UnicoAsync(predicado);
+            return t.Copia();
+        }
+
+        public async Task<ICollection<string>> EliminarActivoTransferencia(string TransferenciaId, string[] ids)
         {
             ActivoTransferencia a;
             ICollection<string> listaEliminados = new HashSet<string>();
@@ -191,34 +189,36 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.SaveChanges();
             return listaEliminados;
         }
-
-        public Task<List<ActivoTransferencia>> ObtenerAsync(Expression<Func<ActivoTransferencia, bool>> predicado)
+        #region Sin Implementar
+        public Task<IEnumerable<string>> Restaurar(string[] ids)
         {
-            return this.repo.ObtenerAsync(predicado);
+            throw new NotImplementedException();
         }
-
-        public Task<List<ActivoTransferencia>> ObtenerAsync(string SqlCommand)
-        {
-            return this.repo.ObtenerAsync(SqlCommand);
-        }
-
         public Task<IPaginado<ActivoTransferencia>> ObtenerPaginadoAsync(Expression<Func<ActivoTransferencia, bool>> predicate = null, Func<IQueryable<ActivoTransferencia>, IOrderedQueryable<ActivoTransferencia>> orderBy = null, Func<IQueryable<ActivoTransferencia>, IIncludableQueryable<ActivoTransferencia, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-
-
-        public Task<IEnumerable<string>> Restaurar(string[] ids)
+        public async Task EjecutarSql(string sqlCommand)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ActivoTransferencia> UnicoAsync(Expression<Func<ActivoTransferencia, bool>> predicado = null, Func<IQueryable<ActivoTransferencia>, IOrderedQueryable<ActivoTransferencia>> ordenarPor = null, Func<IQueryable<ActivoTransferencia>, IIncludableQueryable<ActivoTransferencia, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public Task EjecutarSqlBatch(List<string> sqlCommand)
         {
-            ActivoTransferencia t = await this.repo.UnicoAsync(predicado);
-            return t.Copia();
+            throw new NotImplementedException();
         }
 
+
+        public Task<IEnumerable<ActivoTransferencia>> CrearAsync(params ActivoTransferencia[] entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<ActivoTransferencia>> CrearAsync(IEnumerable<ActivoTransferencia> entities, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
     }
 }
