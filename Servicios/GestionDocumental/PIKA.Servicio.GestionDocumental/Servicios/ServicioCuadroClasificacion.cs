@@ -8,6 +8,7 @@ using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
+using PIKA.Servicio.GestionDocumental.Data.Exportar_Importar;
 using PIKA.Servicio.GestionDocumental.Interfaces;
 using RepositorioEntidades;
 using System;
@@ -31,7 +32,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<EstadoCuadroClasificacion> repoec;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
         private readonly ConfiguracionServidor ConfiguracionServidor;
-
+        private IOCuadroClasificacion ioCuadroClasificacion;
         public ServicioCuadroClasificacion(
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
            ILogger<ServicioCuadroClasificacion> Logger,
@@ -39,12 +40,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
            ) : base(proveedorOpciones, Logger)
         {
             this.ConfiguracionServidor = Config.Value;
-            logger.LogError($"{this.ConfiguracionServidor.ruta_cache_fisico}");
-            logger.LogError($"{this.ConfiguracionServidor.separador_ruta}");
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<CuadroClasificacion>(new QueryComposer<CuadroClasificacion>());
             this.repoec = UDT.ObtenerRepositoryAsync<EstadoCuadroClasificacion>(new QueryComposer<EstadoCuadroClasificacion>());
+            this.ioCuadroClasificacion = new IOCuadroClasificacion(Logger, proveedorOpciones);
         }
+
 
         public async Task<bool> Existe(Expression<Func<CuadroClasificacion, bool>> predicado)
         {
@@ -101,7 +102,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
-
+            await ioCuadroClasificacion.EliminarCuadroCalsificacionExcel(entity.Id, ConfiguracionServidor.ruta_cache_fisico, ConfiguracionServidor.separador_ruta);
         }
         private Consulta GetDefaultQuery(Consulta query)
         {
@@ -138,6 +139,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                     c.Eliminada = true;
                     UDT.Context.Entry(c).State = EntityState.Modified;
                     listaEliminados.Add(c.Id);
+                    await ioCuadroClasificacion.EliminarCuadroCalsificacionExcel(c.Id, ConfiguracionServidor.ruta_cache_fisico, ConfiguracionServidor.separador_ruta);
+
                 }
             }
             UDT.SaveChanges();
@@ -156,9 +159,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 {
                     c.Nombre = await RestaurarNombre(c.Nombre); ;
                     c.Eliminada = false;
+                    await ioCuadroClasificacion.EliminarCuadroCalsificacionExcel(Id, ConfiguracionServidor.ruta_cache_fisico, ConfiguracionServidor.separador_ruta);
                     UDT.Context.Entry(c).State = EntityState.Modified;
                     listaEliminados.Add(c.Id);
                 }
+
             }
             UDT.SaveChanges();
             return listaEliminados;
@@ -188,6 +193,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             CuadroClasificacion c = await this.repo.UnicoAsync(predicado);
             return c.Copia();
+        }
+        public async Task<Array> ExportarCuadroCalsificacionExcel(string id)
+        {
+            Array a = await ioCuadroClasificacion.ExportarCuadroCalsificacionExcel(id, ConfiguracionServidor.ruta_cache_fisico,ConfiguracionServidor.separador_ruta);
+            return a;
         }
 
         #region No implmentados

@@ -108,7 +108,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
             return Ok(data);
         }
-
+        
         /// <summary>
         /// Obtiene un Elemento Clasificacion en base al Id único
         /// </summary>
@@ -121,6 +121,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         public async Task<ActionResult<ElementoClasificacion>> Get(string id)
         {
+            
             var o = await servicioElemento.UnicoAsync(x => x.Id == id.Trim()).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
@@ -165,7 +166,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return Ok(await servicioElemento.Restaurar(lids).ConfigureAwait(false));
         }
-
 
         [HttpGet("jerarquia/{jerarquiaid}/{padreid}", Name = "ObtenerHijosAsyncElementoClasificacion")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
