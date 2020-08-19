@@ -195,6 +195,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             ValoracionEntradaClasificacion c = await this.repo.UnicoAsync(predicado);
             return c.Copia();
         }
+        public Task<List<ValoracionEntradaClasificacion>> ObtenerAsync(string SqlCommand)
+        {
+            return this.repo.ObtenerAsync(SqlCommand);
+
+        }
 
         #region No implmentados
 
@@ -227,10 +232,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<List<ValoracionEntradaClasificacion>> ObtenerAsync(string SqlCommand)
-        {
-            throw new NotImplementedException();
-        }
+       
 
         public Task<IPaginado<ValoracionEntradaClasificacion>> ObtenerPaginadoAsync(Expression<Func<ValoracionEntradaClasificacion, bool>> predicate = null, Func<IQueryable<ValoracionEntradaClasificacion>, IOrderedQueryable<ValoracionEntradaClasificacion>> orderBy = null, Func<IQueryable<ValoracionEntradaClasificacion>, IIncludableQueryable<ValoracionEntradaClasificacion, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {

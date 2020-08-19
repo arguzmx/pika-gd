@@ -54,7 +54,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            return entity;
+            return entity.Copia();
         }
 
         public async Task ActualizarAsync(ComentarioTransferencia entity)
@@ -143,14 +143,13 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public Task<List<ComentarioTransferencia>> ObtenerAsync(Expression<Func<ComentarioTransferencia, bool>> predicado)
         {
-            throw new NotImplementedException();
+            return this.repo.ObtenerAsync(predicado);
         }
 
         public Task<List<ComentarioTransferencia>> ObtenerAsync(string SqlCommand)
         {
-            throw new NotImplementedException();
+            return this.repo.ObtenerAsync(SqlCommand);
         }
-
         public Task<IPaginado<ComentarioTransferencia>> ObtenerPaginadoAsync(Expression<Func<ComentarioTransferencia, bool>> predicate = null, Func<IQueryable<ComentarioTransferencia>, IOrderedQueryable<ComentarioTransferencia>> orderBy = null, Func<IQueryable<ComentarioTransferencia>, IIncludableQueryable<ComentarioTransferencia, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
@@ -166,7 +165,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<ComentarioTransferencia> UnicoAsync(Expression<Func<ComentarioTransferencia, bool>> predicado = null, Func<IQueryable<ComentarioTransferencia>, IOrderedQueryable<ComentarioTransferencia>> ordenarPor = null, Func<IQueryable<ComentarioTransferencia>, IIncludableQueryable<ComentarioTransferencia, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             ComentarioTransferencia t = await this.repo.UnicoAsync(predicado);
-            return t.CopiaComentarioTransferencia();
+            return t.Copia();
         }
     }
 }

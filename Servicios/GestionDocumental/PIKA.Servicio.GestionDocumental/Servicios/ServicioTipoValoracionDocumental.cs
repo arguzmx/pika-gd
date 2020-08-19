@@ -191,7 +191,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             return l.OrderBy(x => x.Texto).ToList();
         }
+        public Task<List<TipoValoracionDocumental>> ObtenerAsync(string SqlCommand)
+        {
+            return this.repo.ObtenerAsync(SqlCommand);
 
+        }
 
 
         #region sin implementar
@@ -217,10 +221,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
 
 
-        public Task<List<TipoValoracionDocumental>> ObtenerAsync(string SqlCommand)
-        {
-            throw new NotImplementedException();
-        }
+     
 
 
         public async Task<IPaginado<TipoValoracionDocumental>> ObtenerPaginadoAsync(Expression<Func<TipoValoracionDocumental, bool>> predicate = null, Func<IQueryable<TipoValoracionDocumental>, IOrderedQueryable<TipoValoracionDocumental>> orderBy = null, Func<IQueryable<TipoValoracionDocumental>, IIncludableQueryable<TipoValoracionDocumental, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)

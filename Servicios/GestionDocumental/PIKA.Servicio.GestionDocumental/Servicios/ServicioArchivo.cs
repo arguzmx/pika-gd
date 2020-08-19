@@ -142,7 +142,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return listaEliminados;
 
         }
-
+        public Task<List<Archivo>> ObtenerAsync(string SqlCommand)
+        {
+            return this.repo.ObtenerAsync(SqlCommand);
+        }
         public Task<List<Archivo>> ObtenerAsync(Expression<Func<Archivo, bool>> predicado)
         {
             return this.repo.ObtenerAsync(predicado);
@@ -195,12 +198,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         #region Sin Implementación
         public Task<IPaginado<Archivo>> ObtenerPaginadoAsync(Expression<Func<Archivo, bool>> predicate = null, Func<IQueryable<Archivo>, IOrderedQueryable<Archivo>> orderBy = null, Func<IQueryable<Archivo>, IIncludableQueryable<Archivo, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-      
-        public Task<List<Archivo>> ObtenerAsync(string SqlCommand)
         {
             throw new NotImplementedException();
         }

@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -52,9 +54,11 @@ namespace PIKA.Modelo.GestorDocumental
 
 
         public Archivo Archivo { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<ActivoPrestamo> ActivosRelacionados { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<ComentarioPrestamo> Comentarios { get; set; }
 
     }

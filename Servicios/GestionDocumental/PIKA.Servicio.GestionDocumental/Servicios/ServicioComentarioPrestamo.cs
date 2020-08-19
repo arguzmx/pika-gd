@@ -54,7 +54,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             entity.Fecha = DateTime.UtcNow;
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            return entity;
+            return entity.Copia();
         }
 
         public async Task ActualizarAsync(ComentarioPrestamo entity)
@@ -163,7 +163,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<ComentarioPrestamo> UnicoAsync(Expression<Func<ComentarioPrestamo, bool>> predicado = null, Func<IQueryable<ComentarioPrestamo>, IOrderedQueryable<ComentarioPrestamo>> ordenarPor = null, Func<IQueryable<ComentarioPrestamo>, IIncludableQueryable<ComentarioPrestamo, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             ComentarioPrestamo a = await this.repo.UnicoAsync(predicado);
-            return a.CopiaComentarioPrestamo();
+            return a.Copia();
         }
     }
 }

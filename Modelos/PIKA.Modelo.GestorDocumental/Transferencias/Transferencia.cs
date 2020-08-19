@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -59,20 +61,27 @@ namespace PIKA.Modelo.GestorDocumental
         /// Identificador único del usuario que la creó
         /// </summary>
         public string UsuarioId { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<EventoTransferencia> Eventos { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<ActivoTransferencia> ActivosIncluidos { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<ActivoDeclinado> ActivosDeclinados { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual  ICollection<ComentarioTransferencia> Comentarios { get; set; }
 
-
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual EstadoTransferencia Estado { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual Archivo ArchivoOrigen { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual Archivo ArchivoDestino { get; set; }
         
     }

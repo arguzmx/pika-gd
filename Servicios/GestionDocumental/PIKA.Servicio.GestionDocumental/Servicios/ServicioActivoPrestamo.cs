@@ -53,7 +53,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges(); 
-            return entity;
+            return entity.Copia();
         }
 
         public async Task ActualizarAsync(ActivoPrestamo entity)
@@ -157,7 +157,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<ActivoPrestamo> UnicoAsync(Expression<Func<ActivoPrestamo, bool>> predicado = null, Func<IQueryable<ActivoPrestamo>, IOrderedQueryable<ActivoPrestamo>> ordenarPor = null, Func<IQueryable<ActivoPrestamo>, IIncludableQueryable<ActivoPrestamo, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             ActivoPrestamo a = await this.repo.UnicoAsync(predicado);
-            return a.CopiaActivoPrestamo();
+            return a.Copia();
         }
     }
 }

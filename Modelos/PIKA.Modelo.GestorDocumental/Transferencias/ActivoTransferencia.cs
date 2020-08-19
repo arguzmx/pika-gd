@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -19,8 +21,11 @@ namespace PIKA.Modelo.GestorDocumental
         /// Identificador único de la trasnfernecia
         /// </summary>
         public string TransferenciaId { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public Activo Activo { get; set; }
+        [XmlIgnore]
+        [JsonIgnore]
         public Transferencia Transferencia { get; set; }
     }
 }

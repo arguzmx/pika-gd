@@ -200,9 +200,15 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return a;
         }
 
+        public Task<List<CuadroClasificacion>> ObtenerAsync(Expression<Func<CuadroClasificacion, bool>> predicado)
+        {
+            return this.repo.ObtenerAsync(predicado);
+        }
+        public Task<List<CuadroClasificacion>> ObtenerAsync(string SqlCommand)
+        {
+            return this.repo.ObtenerAsync(SqlCommand);
+        }
         #region No implmentados
-
-
 
         public Task<IEnumerable<CuadroClasificacion>> CrearAsync(params CuadroClasificacion[] entities)
         {
@@ -224,25 +230,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-       
-
-        public Task<List<CuadroClasificacion>> ObtenerAsync(Expression<Func<CuadroClasificacion, bool>> predicado)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<CuadroClasificacion>> ObtenerAsync(string SqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<IPaginado<CuadroClasificacion>> ObtenerPaginadoAsync(Expression<Func<CuadroClasificacion, bool>> predicate = null, Func<IQueryable<CuadroClasificacion>, IOrderedQueryable<CuadroClasificacion>> orderBy = null, Func<IQueryable<CuadroClasificacion>, IIncludableQueryable<CuadroClasificacion, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
-
-
-
  
         #endregion
     }
