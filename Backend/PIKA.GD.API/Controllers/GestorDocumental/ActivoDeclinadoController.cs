@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
@@ -33,32 +34,41 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             this.metadataProvider = metadataProvider;
         }
 
-        [HttpGet("metadata", Name = "MetadataActivoDeclinado")]
+        
+
+        /// <summary>
+        /// Añade una nueva entidad 
+        /// del Transferencia
+        /// </summary>
+        /// <param name="entidad"></param>
+        /// <returns></returns>
+
+        [HttpPost("{ActivoId}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ActivoDeclinado>> Post(string TransferenciaId, string ActivoId,[FromBody]ActivoDeclinado entidad)
         {
-            return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
-        }
-
-
-
-        [HttpPost]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<ActivoDeclinado>> Post([FromBody]ActivoDeclinado entidad)
-        {
+            if (TransferenciaId.Trim() != entidad.TransferenciaId.Trim() && ActivoId.Trim() != entidad.ActivoId.Trim())
+            {
+                return BadRequest();
+            }
+            Console.WriteLine(TransferenciaId);
             entidad = await servicioActivoDeclinado.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetActivoDeclinado", new { ActivoId = entidad.ActivoId }, entidad).Value);
         }
 
 
         [HttpPut("{ActivoId}")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<IActionResult> Put(string ActivoId, [FromBody]ActivoDeclinado entidad)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+
+        public async Task<IActionResult> Put(string TransferenciaId, string ActivoId, [FromBody]ActivoDeclinado entidad)
         {
             var x = ObtieneFiltrosIdentidad();
 
 
-            if (ActivoId != entidad.ActivoId)
+            if (TransferenciaId.Trim() != entidad.TransferenciaId.Trim() && ActivoId.Trim() != entidad.ActivoId.Trim())
             {
                 return BadRequest();
             }
@@ -68,35 +78,25 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         }
 
-
-        [HttpGet("page", Name = "GetPageActivoDeclinado")]
+        /// <summary>
+        /// Elimina de manera permanente un Activo Declinado en base al arreglo de identificadores recibidos
+        /// </summary>
+        /// <param name="ids">Arreglo de identificadores string</param>
+        /// <returns></returns>
+        [HttpDelete("{Ids}",Name ="DeleteActivoDeclinado")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<ActivoDeclinado>>> GetPage([FromQuery]Consulta query = null)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> Delete(string TransferenciaId, string ids)
         {
-            ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
-            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioActivoDeclinado.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<ActivoDeclinado>());
-        }
-
-
-        [HttpGet("{ActivoId}")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<ActivoDeclinado>> Get(string ActivoId)
-        {
-            var o = await servicioActivoDeclinado.UnicoAsync(x => x.ActivoId == ActivoId).ConfigureAwait(false);
-            if (o != null) return Ok(o);
-            return NotFound(ActivoId);
-        }
-
-
-
-
-        [HttpDelete]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult> Delete([FromBody]string[] ActivoId)
-        {
-            return Ok(await servicioActivoDeclinado.Eliminar(ActivoId).ConfigureAwait(false));
+            string IdsTrim = "";
+            TransferenciaId = TransferenciaId.Trim();
+            foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+            {
+                IdsTrim += item.Trim() + ",";
+            }
+            string[] lids = IdsTrim.Split(',').ToList()
+           .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            return Ok(await servicioActivoDeclinado.EliminarActivoDeclinado(TransferenciaId,lids).ConfigureAwait(false));
         }
     }
 }

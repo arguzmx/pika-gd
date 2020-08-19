@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
@@ -33,70 +34,52 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             this.metadataProvider = metadataProvider;
         }
 
-        [HttpGet("metadata", Name = "MetadataActivoTransferencia")]
+        
+
+        /// <summary>
+        /// Añade una nueva entidad 
+        /// del Transferencia
+        /// </summary>
+        /// <param name="entidad"></param>
+        /// <returns></returns>
+
+        [HttpPost("{ActivoId}", Name ="PostActivoTransferencia")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
+        public async Task<ActionResult<ActivoTransferencia>> Post(string TransferenciaId,string ActivoId, [FromBody]ActivoTransferencia entidad)
         {
-            return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
-        }
+            if (TransferenciaId.Trim() != entidad.TransferenciaId.Trim() && ActivoId.Trim() != entidad.ActivoId.Trim())
+            {
+                return BadRequest();
+            }
 
 
-
-        [HttpPost]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<ActivoTransferencia>> Post([FromBody]ActivoTransferencia entidad)
-        {
             entidad = await servicioActivoTransferencia.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetActivoTransferencia", new { ActivoId = entidad.ActivoId }, entidad).Value);
         }
 
 
-        [HttpPut("{ActivoId}")]
+        
+        /// <summary>
+        /// Elimina de manera permanente un Activo Transferencia en base al arreglo de identificadores recibidos
+        /// </summary>
+        /// <param name="ids">Arreglo de identificadores string</param>
+        /// <returns></returns>
+        [HttpDelete("{Ids}", Name = "DeleteActivoTransferencia")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<IActionResult> Put(string ActivoId, [FromBody]ActivoTransferencia entidad)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> Delete(string TransferenciaId, string ids)
         {
-            var x = ObtieneFiltrosIdentidad();
-
-
-            if (ActivoId != entidad.ActivoId)
+            string IdsTrim = "";
+            TransferenciaId = TransferenciaId.Trim();
+            foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
             {
-                return BadRequest();
+                IdsTrim += item.Trim() + ",";
             }
-
-            await servicioActivoTransferencia.ActualizarAsync(entidad).ConfigureAwait(false);
-            return NoContent();
-
-        }
-
-
-        [HttpGet("page", Name = "GetPageActivoTransferencia")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<ActivoTransferencia>>> GetPage([FromQuery]Consulta query = null)
-        {
-            ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
-            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioActivoTransferencia.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<ActivoTransferencia>());
-        }
-
-
-        [HttpGet("{ActivoId}")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<ActivoTransferencia>> Get(string ActivoId)
-        {
-            var o = await servicioActivoTransferencia.UnicoAsync(x => x.ActivoId == ActivoId).ConfigureAwait(false);
-            if (o != null) return Ok(o);
-            return NotFound(ActivoId);
-        }
-
-
-
-
-        [HttpDelete]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult> Delete([FromBody]string[] ActivoId)
-        {
-            return Ok(await servicioActivoTransferencia.Eliminar(ActivoId).ConfigureAwait(false));
+            string[] lids = IdsTrim.Split(',').ToList()
+           .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            return Ok(await servicioActivoTransferencia.EliminarActivoTransferencia(TransferenciaId, lids).ConfigureAwait(false));
         }
     }
 }

@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -57,11 +59,16 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Propiedad de navegacion
         /// </summary>
+        ///   [XmlIgnore]
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<Transferencia> Transferencias { get; set; }
 
         /// <summary>
         /// Prop de nav
         /// </summary>
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<EventoTransferencia> Eventos { get; set; }
 
         public override List<EstadoTransferencia> Seed()

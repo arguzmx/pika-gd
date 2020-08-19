@@ -53,7 +53,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            return entity;
+            return entity.Copia();
         }
 
         public async Task ActualizarAsync(EventoTransferencia entity)
@@ -142,12 +142,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public Task<List<EventoTransferencia>> ObtenerAsync(Expression<Func<EventoTransferencia, bool>> predicado)
         {
-            throw new NotImplementedException();
+            return this.repo.ObtenerAsync(predicado);
         }
 
         public Task<List<EventoTransferencia>> ObtenerAsync(string SqlCommand)
         {
-            throw new NotImplementedException();
+            return this.repo.ObtenerAsync(SqlCommand);
         }
 
         public Task<IPaginado<EventoTransferencia>> ObtenerPaginadoAsync(Expression<Func<EventoTransferencia, bool>> predicate = null, Func<IQueryable<EventoTransferencia>, IOrderedQueryable<EventoTransferencia>> orderBy = null, Func<IQueryable<EventoTransferencia>, IIncludableQueryable<EventoTransferencia, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
@@ -165,7 +165,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<EventoTransferencia> UnicoAsync(Expression<Func<EventoTransferencia, bool>> predicado = null, Func<IQueryable<EventoTransferencia>, IOrderedQueryable<EventoTransferencia>> ordenarPor = null, Func<IQueryable<EventoTransferencia>, IIncludableQueryable<EventoTransferencia, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             EventoTransferencia t = await this.repo.UnicoAsync(predicado);
-            return t.CopiaEventoTransferencia();
+            return t.Copia();
         }
     }
 }

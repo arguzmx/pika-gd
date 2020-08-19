@@ -70,7 +70,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]

@@ -133,6 +133,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return listaEliminados;
         }
 
+        public Task<List<Asunto>> ObtenerAsync(string SqlCommand)
+        {
+            return this.repo.ObtenerAsync(SqlCommand);
+
+        }
 
         #region Sin Implementar
         public Task<IEnumerable<Asunto>> CrearAsync(params Asunto[] entities)
@@ -154,11 +159,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             throw new NotImplementedException();
         }
-        public Task<List<Asunto>> ObtenerAsync(string SqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
+       
         public Task<IPaginado<Asunto>> ObtenerPaginadoAsync(Expression<Func<Asunto, bool>> predicate = null, Func<IQueryable<Asunto>, IOrderedQueryable<Asunto>> orderBy = null, Func<IQueryable<Asunto>, IIncludableQueryable<Asunto, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();

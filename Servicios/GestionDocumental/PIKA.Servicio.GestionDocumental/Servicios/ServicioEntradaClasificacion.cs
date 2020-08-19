@@ -349,7 +349,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             return this.repo.ObtenerAsync(predicado);
         }
-
+        public Task<List<EntradaClasificacion>> ObtenerAsync(string SqlCommand)
+        {
+            return this.repo.ObtenerAsync(SqlCommand);
+        }
         #region No implmentados
 
 
@@ -378,10 +381,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         
 
-        public Task<List<EntradaClasificacion>> ObtenerAsync(string SqlCommand)
-        {
-            throw new NotImplementedException();
-        }
+     
 
         public Task<IPaginado<EntradaClasificacion>> ObtenerPaginadoAsync(Expression<Func<EntradaClasificacion, bool>> predicate = null, Func<IQueryable<EntradaClasificacion>, IOrderedQueryable<EntradaClasificacion>> orderBy = null, Func<IQueryable<EntradaClasificacion>, IIncludableQueryable<EntradaClasificacion, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {

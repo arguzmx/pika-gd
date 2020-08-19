@@ -163,7 +163,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             HistorialArchivoActivo a = await this.repo.UnicoAsync(predicado);
             return a.Copia();
         }
-
+        public Task<List<HistorialArchivoActivo>> ObtenerAsync(string SqlCommand)
+        {
+            return this.repo.ObtenerAsync(SqlCommand);
+        }
         #region Sin Implementación
         public Task<IPaginado<HistorialArchivoActivo>> ObtenerPaginadoAsync(Expression<Func<HistorialArchivoActivo, bool>> predicate = null, Func<IQueryable<HistorialArchivoActivo>, IOrderedQueryable<HistorialArchivoActivo>> orderBy = null, Func<IQueryable<HistorialArchivoActivo>, IIncludableQueryable<HistorialArchivoActivo, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
@@ -174,10 +177,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<List<HistorialArchivoActivo>> ObtenerAsync(string SqlCommand)
-        {
-            throw new NotImplementedException();
-        }
+       
 
         public Task EjecutarSqlBatch(List<string> sqlCommand)
         {

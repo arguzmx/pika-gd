@@ -81,6 +81,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 UDT.SaveChanges();
             }
         }
+        public Task<List<TipoArchivo>> ObtenerAsync(string SqlCommand)
+        {
+            return this.repo.ObtenerAsync(SqlCommand);
+        }
         private Consulta GetDefaultQuery(Consulta query)
         {
             if (query != null)
@@ -205,11 +209,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-
-        public Task<List<TipoArchivo>> ObtenerAsync(string SqlCommand)
-        {
-            throw new NotImplementedException();
-        }
 
         public Task<IPaginado<TipoArchivo>> ObtenerPaginadoAsync(Expression<Func<TipoArchivo, bool>> predicate = null, Func<IQueryable<TipoArchivo>, IOrderedQueryable<TipoArchivo>> orderBy = null, Func<IQueryable<TipoArchivo>, IIncludableQueryable<TipoArchivo, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {

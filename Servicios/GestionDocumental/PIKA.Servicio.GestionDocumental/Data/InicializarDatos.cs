@@ -12,7 +12,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
         public static void Inicializar(DBContextGestionDocumental dbContext, string contentPath)
         {
             GeneraEstadoCuadroClasificacionDefault(dbContext);
-            InicializarEstadosTransferencia(dbContext, contentPath);
+            GeneraEstadoTransferenciaDefault(dbContext);
             GeneraTiposAmpliacionDefault(dbContext);
             GeneraTipoValoracionDocumentalDefault(dbContext);
             GeneraTipoDisposicionDocumentalDefault(dbContext);
@@ -107,58 +107,34 @@ namespace PIKA.Servicio.GestionDocumental.Data
             dbContext.SaveChanges();
 
         }
-        private static void InicializarEstadosTransferencia(DBContextGestionDocumental dbContext, string contentPath)
+        
+            private static void GeneraEstadoTransferenciaDefault(DBContextGestionDocumental dbContext)
         {
-            try
-            {
-                List<EstadoTransferencia> estados = new List<EstadoTransferencia>();
-                string path = Path.Combine(contentPath, "Data", "Inicializar", "estadosTransferencia.txt");
 
-                if (File.Exists(path))
-                {
-                    int index = 0;
-                    List<string> lineas = File.ReadAllText(path).Split('\n').ToList();
-                    foreach (string linea in lineas)
-                    {
-                        if (index > 0)
-                        {
-                            List<string> partes = linea.TrimStart().TrimEnd().Split('\t').ToList();
-                            estados.Add(new EstadoTransferencia()
-                            {
-                                Id = partes[0],
-                                Nombre = partes[1],
-                            });
+            EstadoTransferencia te = new EstadoTransferencia();
+            List<EstadoTransferencia> tipos = te.Seed();
 
-                        }
-                        index++;
-                    }
-                }
 
-                foreach (EstadoTransferencia tipo in estados)
-                {
-                    EstadoTransferencia instancia = dbContext.EstadosTransferencia.Find(tipo.Id);
-                    if (instancia == null)
-                    {
-                        EstadoTransferencia p = new EstadoTransferencia()
-                        {
-                            Id = tipo.Id,
-                            Nombre = tipo.Nombre,
-                        };
-
-                        dbContext.EstadosTransferencia.Add(p);
-                    }
-                    else
-                    {
-                        instancia.Nombre = tipo.Nombre;
-                    }
-                }
-                dbContext.SaveChanges();
-            }
-            catch (Exception ex)
+            foreach (EstadoTransferencia tipo in tipos)
             {
 
-                throw;
+                EstadoTransferencia instancia = dbContext.EstadosTransferencia.Find(tipo.Id);
+                if (instancia == null)
+                {
+                    EstadoTransferencia p = new EstadoTransferencia()
+                    {
+                        Id = tipo.Id,
+                        Nombre = tipo.Nombre
+                    };
+
+                    dbContext.EstadosTransferencia.Add(p);
+                }
+                else
+                {
+                    instancia.Nombre = tipo.Nombre;
+                }
             }
+            dbContext.SaveChanges();
 
         }
         private static void GeneraTiposAmpliacionDefault(DBContextGestionDocumental dbContext)

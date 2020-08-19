@@ -26,55 +26,76 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<Transferencia> repo;
+        private IRepositorioAsync<EstadoTransferencia> repoET;
+        private IRepositorioAsync<Archivo> repoA;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
         public ServicioTransferencia(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, ILogger<ServicioCuadroClasificacion> Logger) : base(proveedorOpciones,Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Transferencia>(new QueryComposer<Transferencia>());
+            this.repoET = UDT.ObtenerRepositoryAsync<EstadoTransferencia>(new QueryComposer<EstadoTransferencia>());
+            this.repoA = UDT.ObtenerRepositoryAsync<Archivo>(new QueryComposer<Archivo>());
         }
-
         public async Task<bool> Existe(Expression<Func<Transferencia, bool>> predicado)
         {
             List<Transferencia> l = await this.repo.ObtenerAsync(predicado);
             if (l.Count() == 0) return false;
             return true;
         }
-
-
+        public async Task<bool> ExisteET(Expression<Func<EstadoTransferencia, bool>> predicado)
+        {
+            List<EstadoTransferencia> l = await this.repoET.ObtenerAsync(predicado);
+            if (l.Count() == 0) return false;
+            return true;
+        }
+        public async Task<bool> ExisteA(Expression<Func<Archivo, bool>> predicado)
+        {
+            List<Archivo> l = await this.repoA.ObtenerAsync(predicado);
+            if (l.Count() == 0) return false;
+            return true;
+        }
         public async Task<Transferencia> CrearAsync(Transferencia entity, CancellationToken cancellationToken = default)
         {
-
+            if (!await ExisteET(x => x.Id.Equals(entity.EstadoTransferenciaId, StringComparison.InvariantCultureIgnoreCase)))
+            { throw new ExErrorRelacional( entity.EstadoTransferenciaId); }
+            if (!await ExisteA(x => x.Id.Equals(entity.ArchivoOrigenId, StringComparison.InvariantCultureIgnoreCase)))
+            { throw new ExErrorRelacional(entity.ArchivoOrigenId); }
+            if (!await ExisteA(x => x.Id.Equals(entity.ArchivoDestinoId, StringComparison.InvariantCultureIgnoreCase)))
+            { throw new ExErrorRelacional( entity.ArchivoDestinoId); }
             if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
-            {
-                throw new ExElementoExistente(entity.Nombre);
-            }
+            { throw new ExElementoExistente(entity.Nombre); }
+            
+            entity.Nombre = entity.Nombre.Trim();
             entity.Id = System.Guid.NewGuid().ToString();
             entity.FechaCreacion = DateTime.UtcNow;
-            //entity.EstadoTransferenciaId = EstadoTransferencia.ESTADO_NUEVA;
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            return entity;
+            return entity.Copia();
         }
-
         public async Task ActualizarAsync(Transferencia entity)
         {
-
-            Transferencia o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+            Transferencia o = await this.repo.UnicoAsync(x => x.Id.Trim() == entity.Id.Trim());
 
             if (o == null)
             {
                 throw new EXNoEncontrado(entity.Id);
             }
-
+            if (!await ExisteA(x => x.Id.Equals(entity.ArchivoOrigenId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
+            { throw new ExErrorRelacional( entity.ArchivoOrigenId.Trim()); }
+            if (!await ExisteA(x => x.Id.Equals(entity.ArchivoDestinoId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
+            { throw new ExErrorRelacional(entity.ArchivoDestinoId.Trim()); }
+            if (!await ExisteET(x => x.Id.Equals(entity.EstadoTransferenciaId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
+            { throw new ExErrorRelacional(entity.EstadoTransferenciaId.Trim()); }
             if (await Existe(x =>
-            x.Id != entity.Id
+            x.Id.Trim() != entity.Id.Trim()
             && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
-
-            o.Nombre = entity.Nombre;
+            
+            entity.Id = entity.Id.Trim();
+            o.Nombre = entity.Nombre.Trim();
             o.FechaCreacion = DateTime.UtcNow;
 
             UDT.Context.Entry(o).State = EntityState.Modified;
@@ -99,30 +120,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
-
             return respuesta;
         }
-
-        public Task<IEnumerable<Transferencia>> CrearAsync(params Transferencia[] entities)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Transferencia>> CrearAsync(IEnumerable<Transferencia> entities, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task EjecutarSql(string sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task EjecutarSqlBatch(List<string> sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
             Transferencia a;
@@ -139,16 +138,23 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.SaveChanges();
             return listaEliminados;
         }
-
         public Task<List<Transferencia>> ObtenerAsync(Expression<Func<Transferencia, bool>> predicado)
         {
-            throw new NotImplementedException();
+            return this.repo.ObtenerAsync(predicado);
         }
 
         public Task<List<Transferencia>> ObtenerAsync(string SqlCommand)
         {
-            throw new NotImplementedException();
+            return this.repo.ObtenerAsync(SqlCommand);
         }
+        public async Task<Transferencia> UnicoAsync(Expression<Func<Transferencia, bool>> predicado = null, Func<IQueryable<Transferencia>, IOrderedQueryable<Transferencia>> ordenarPor = null, Func<IQueryable<Transferencia>, IIncludableQueryable<Transferencia, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+            Transferencia t = await this.repo.UnicoAsync(predicado);
+            return t.Copia();
+        }
+
+        #region Sin Implementar
+       
 
         public Task<IPaginado<Transferencia>> ObtenerPaginadoAsync(Expression<Func<Transferencia, bool>> predicate = null, Func<IQueryable<Transferencia>, IOrderedQueryable<Transferencia>> orderBy = null, Func<IQueryable<Transferencia>, IIncludableQueryable<Transferencia, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
@@ -161,11 +167,30 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             throw new NotImplementedException();
         }
-
-        public async Task<Transferencia> UnicoAsync(Expression<Func<Transferencia, bool>> predicado = null, Func<IQueryable<Transferencia>, IOrderedQueryable<Transferencia>> ordenarPor = null, Func<IQueryable<Transferencia>, IIncludableQueryable<Transferencia, object>> incluir = null, bool inhabilitarSegumiento = true)
+        public async Task EjecutarSql(string sqlCommand)
         {
-            Transferencia t = await this.repo.UnicoAsync(predicado);
-            return t.CopiaTransferencia();
+            throw new NotImplementedException();
         }
+        public Task<IEnumerable<Transferencia>> CrearAsync(params Transferencia[] entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Transferencia>> CrearAsync(IEnumerable<Transferencia> entities, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+        public Task EjecutarSqlBatch(List<string> sqlCommand)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+
+
     }
 }

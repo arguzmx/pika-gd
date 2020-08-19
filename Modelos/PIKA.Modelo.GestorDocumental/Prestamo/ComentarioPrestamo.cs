@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -30,6 +32,8 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Préstamo al que pertenece el comentario
         /// </summary>
+        [XmlIgnore]
+        [JsonIgnore]
         public Prestamo Prestamo { get; set; }
 
 
