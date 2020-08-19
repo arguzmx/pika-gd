@@ -27,12 +27,14 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         private IRepositorioAsync<ComentarioTransferencia> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
+        private IRepositorioAsync<Transferencia> repoT;
 
         public ServicioComentarioTransferencia(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, ILogger<ServicioCuadroClasificacion> Logger)
             : base(proveedorOpciones,Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<ComentarioTransferencia>(new QueryComposer<ComentarioTransferencia>());
+            this.repoT = UDT.ObtenerRepositoryAsync<Transferencia>(new QueryComposer<Transferencia>());
         }
 
         public async Task<bool> Existe(Expression<Func<ComentarioTransferencia, bool>> predicado)
@@ -42,11 +44,21 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return true;
         }
 
-
+        public async Task<bool> ExisteTranferencia(Expression<Func<Transferencia, bool>> predicado)
+        {
+            List<Transferencia> l = await this.repoT.ObtenerAsync(predicado);
+            if (l.Count() == 0) return false;
+            return true;
+        }
         public async Task<ComentarioTransferencia> CrearAsync(ComentarioTransferencia entity, CancellationToken cancellationToken = default)
         {
-
-            if (await Existe(x => x.Comentario.Equals(entity.Comentario, StringComparison.InvariantCultureIgnoreCase)))
+            if (! await  ExisteTranferencia(x=>x.Id.Equals(entity.TransferenciaId,StringComparison.InvariantCultureIgnoreCase)))
+            {
+                throw new ExDatosNoValidos(entity.TransferenciaId);
+            }
+            if (await Existe(x => x.Comentario.Equals(entity.Comentario, StringComparison.InvariantCultureIgnoreCase)
+            && x.TransferenciaId.Equals(entity.TransferenciaId,StringComparison.InvariantCultureIgnoreCase)
+            && x.UsuarioId.Equals(entity.UsuarioId,StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Comentario);
             }
@@ -104,26 +116,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return respuesta;
         }
 
-        public Task<IEnumerable<ComentarioTransferencia>> CrearAsync(params ComentarioTransferencia[] entities)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<ComentarioTransferencia>> CrearAsync(IEnumerable<ComentarioTransferencia> entities, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task EjecutarSql(string sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task EjecutarSqlBatch(List<string> sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
             ComentarioTransferencia a;
@@ -150,22 +142,43 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             return this.repo.ObtenerAsync(SqlCommand);
         }
-        public Task<IPaginado<ComentarioTransferencia>> ObtenerPaginadoAsync(Expression<Func<ComentarioTransferencia, bool>> predicate = null, Func<IQueryable<ComentarioTransferencia>, IOrderedQueryable<ComentarioTransferencia>> orderBy = null, Func<IQueryable<ComentarioTransferencia>, IIncludableQueryable<ComentarioTransferencia, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-
-
-        public Task<IEnumerable<string>> Restaurar(string[] ids)
-        {
-            throw new NotImplementedException();
-        }
+      
 
         public async Task<ComentarioTransferencia> UnicoAsync(Expression<Func<ComentarioTransferencia, bool>> predicado = null, Func<IQueryable<ComentarioTransferencia>, IOrderedQueryable<ComentarioTransferencia>> ordenarPor = null, Func<IQueryable<ComentarioTransferencia>, IIncludableQueryable<ComentarioTransferencia, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             ComentarioTransferencia t = await this.repo.UnicoAsync(predicado);
             return t.Copia();
         }
+        #region Sin Implementación
+  public Task<IPaginado<ComentarioTransferencia>> ObtenerPaginadoAsync(Expression<Func<ComentarioTransferencia, bool>> predicate = null, Func<IQueryable<ComentarioTransferencia>, IOrderedQueryable<ComentarioTransferencia>> orderBy = null, Func<IQueryable<ComentarioTransferencia>, IIncludableQueryable<ComentarioTransferencia, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+     public async Task EjecutarSql(string sqlCommand)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task EjecutarSqlBatch(List<string> sqlCommand)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<string>> Restaurar(string[] ids)
+        {
+            throw new NotImplementedException();
+        }
+        public Task<IEnumerable<ComentarioTransferencia>> CrearAsync(params ComentarioTransferencia[] entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<ComentarioTransferencia>> CrearAsync(IEnumerable<ComentarioTransferencia> entities, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }

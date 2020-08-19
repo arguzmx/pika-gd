@@ -54,7 +54,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 return BadRequest();
             }
 
-            Console.WriteLine(TransferenciaId.Trim());
 
             entidad = await servicioActivoTransferencia.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetActivoTransferencia", new { ActivoId = entidad.ActivoId }, entidad).Value);

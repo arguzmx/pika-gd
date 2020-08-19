@@ -92,8 +92,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         }
 
         /// <summary>
-        /// Devulve una lista de la entidad Transferencia
-        /// asociadas al objeto del tipo especificado
+        /// Devulve un alista de  Transferencia asociadas al objeto del tipo especificado
         /// </summary>
         /// <param name="query">Consulta para la paginación y búsqueda</param>
         /// <returns></returns>
@@ -101,10 +100,8 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [HttpGet("page", Name = "GetPageTransferencia")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-
-        public async Task<ActionResult<IEnumerable<Transferencia>>> GetPage([FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<Transferencia>>> GetPage([FromQuery] Consulta query = null)
         {
-            ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidad());
             var data = await servicioTransferencia.ObtenerPaginadoAsync(query).ConfigureAwait(false);
             return Ok(data.Elementos.ToList<Transferencia>());

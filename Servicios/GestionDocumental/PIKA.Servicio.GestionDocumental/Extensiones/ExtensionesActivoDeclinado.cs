@@ -15,6 +15,7 @@ namespace PIKA.Servicio.GestionDocumental
                 ActivoId = c.ActivoId,
                 TransferenciaId = c.TransferenciaId,
                 Motivo = c.Motivo,
+                
             };
         }
 

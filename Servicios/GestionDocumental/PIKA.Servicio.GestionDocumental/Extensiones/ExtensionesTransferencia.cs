@@ -15,8 +15,8 @@ namespace PIKA.Servicio.GestionDocumental
                 Id = t.Id,
                 Nombre = t.Nombre,
                 FechaCreacion = t.FechaCreacion,
-                ArchivoOrigen = t.ArchivoOrigen,
-                ArchivoDestino = t.ArchivoDestino,
+                ArchivoOrigenId = t.ArchivoOrigenId,
+                ArchivoDestinoId = t.ArchivoDestinoId,
                 EstadoTransferenciaId = t.EstadoTransferenciaId,
                 UsuarioId = t.UsuarioId
             };

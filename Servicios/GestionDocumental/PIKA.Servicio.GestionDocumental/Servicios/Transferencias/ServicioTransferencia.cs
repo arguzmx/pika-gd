@@ -120,7 +120,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
-
             return respuesta;
         }
         public async Task<ICollection<string>> Eliminar(string[] ids)
