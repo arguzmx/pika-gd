@@ -64,21 +64,22 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<Activo> CrearAsync(Activo entity, CancellationToken cancellationToken = default)
         {
 
-            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)
-            && x.Eliminada!=true))
-            {
-                throw new ExElementoExistente(entity.Nombre);
-            }
+            //if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)
+            //&& x.Eliminada!=true))
+            //{
+            //    throw new ExElementoExistente(entity.Nombre);
+            //}
 
             if (!await ExisteElemento(x => x.Id.Equals(entity.EntradaClasificacionId.Trim(), StringComparison.InvariantCultureIgnoreCase)
            && x.Eliminada != true))
                 throw new ExErrorRelacional(entity.EntradaClasificacionId);
-            if (!await ExisteArchivo(x => x.Id.Equals(entity.ArchivoId.Trim(), StringComparison.InvariantCultureIgnoreCase)
+            if (!await ExisteArchivo(x => x.Id.Equals(entity.ArchivoOrigenId.Trim(), StringComparison.InvariantCultureIgnoreCase)
             && x.Eliminada != true))
                 throw new ExErrorRelacional(entity.ArchivoId);
            
             
             entity.Id = System.Guid.NewGuid().ToString();
+            entity.ArchivoId = entity.ArchivoOrigenId;
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
             return entity.Copia();
@@ -94,29 +95,44 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
             if (!await ExisteElemento(x => x.Id.Equals(entity.EntradaClasificacionId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
                 throw new ExErrorRelacional(entity.EntradaClasificacionId);
-            if (!await ExisteArchivo(x => x.Id.Equals(entity.ArchivoId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
-                throw new ExErrorRelacional(entity.ArchivoId);
-            
-            if (await Existe(x =>
-            x.Id != entity.Id & x.TipoOrigenId == entity.TipoOrigenId && x.OrigenId == entity.OrigenId
-            && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase) 
-            && x.Eliminada != true))
-            {
-                throw new ExElementoExistente(entity.Nombre);
-            }
 
+            
+            //if (await Existe(x =>
+            //x.Id != entity.Id & x.TipoOrigenId == entity.TipoOrigenId && x.OrigenId == entity.OrigenId
+            //&& x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase) 
+            //&& x.Eliminada != true))
+            //{
+            //    throw new ExElementoExistente(entity.Nombre);
+            //}
+
+
+         
             o.Nombre = entity.Nombre;
             o.Asunto = entity.Asunto;
             o.FechaApertura = entity.FechaApertura;
             o.FechaCierre = entity.FechaCierre;
+            if (o.FechaCierre.HasValue)
+            {
+                EntradaClasificacion ec = await repoEC.UnicoAsync(x => x.Id == entity.EntradaClasificacionId);
+                o.FechaRetencionAT = ((DateTime)o.FechaCierre).AddYears(ec.MesesVigenciTramite);
+                o.FechaRetencionAC = ((DateTime)o.FechaCierre).AddYears(ec.MesesVigenciTramite + ec.MesesVigenciConcentracion);
+            } else
+            {
+                o.FechaRetencionAT = null;
+                o.FechaRetencionAC = null;
+            }
             o.EsElectronio = entity.EsElectronio;
             o.CodigoOptico = entity.CodigoOptico;
             o.CodigoElectronico = entity.CodigoElectronico;
-            o.EnPrestamo = entity.EnPrestamo;
+            
 
             o.Reservado = entity.Reservado;
             o.Confidencial = entity.Confidencial;
-            o.Ampliado = entity.Ampliado;
+
+            // Sea ctualizan via el proceso de transfernecia, ampliación y préstamo
+            // o.ArchivoId = entity.ArchivoId;
+            //o.EnPrestamo = entity.EnPrestamo;
+            //o.Ampliado = entity.Ampliado;
 
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();

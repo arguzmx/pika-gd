@@ -20,6 +20,9 @@ namespace RepositorioEntidades
         public static int ControlHTML { get => 128; }
         public static int MIME { get => 50; }
 
+        public static int TEXTO_INDEXABLE_LARGO { get => 512; }
+
+
         public static int CadenaConexion { get => 2000; }
 
     }

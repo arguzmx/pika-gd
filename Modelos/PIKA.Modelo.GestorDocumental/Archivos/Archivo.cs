@@ -5,15 +5,18 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
+using PIKA.Modelo.Metadatos;
+using PIKA.Modelo.Metadatos.Atributos;
 
 namespace PIKA.Modelo.GestorDocumental
 {
 
-
+    [Entidad(PaginadoRelacional: false, EliminarLogico: true)]
     public class Archivo : Entidad<string>, IEntidadNombrada, IEntidadEliminada, IEntidadRelacionada
     {
 
-
+        [XmlIgnore]
+        [JsonIgnore]
         public string TipoOrigenDefault => ConstantesModelo.IDORIGEN_UNIDAD_ORGANIZACIONAL;
 
         /// <summary>
@@ -23,7 +26,6 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         public Archivo()
         {
-            this._TipoOrigenId = this.TipoOrigenDefault;
             this.Almacenes = new HashSet<AlmacenArchivo>();
             this.Activos = new HashSet<Activo>();
             HistorialArchivosActivo = new HashSet<HistorialArchivoActivo>();
@@ -33,37 +35,47 @@ namespace PIKA.Modelo.GestorDocumental
         }
 
 
+        [Prop(Required: false, isId: true, Visible: false, OrderIndex: 0)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.update)]
+        public override string Id { get => base.Id; set => base.Id = value; }
+
         /// <summary>
         /// Nombre único del cuadro de clasificación
         /// </summary>
+        [Prop(Required: true, OrderIndex: 5)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
+        [ValidString(minlen: 2, maxlen: 200)]
         public string Nombre { get; set; }
 
         /// <summary>
         /// Especifica si el elemento ha sido marcado como eliminado
         /// </summary>
+        [Prop(Required: false, OrderIndex: 100, DefaultValue: "false")]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.none)]
         public bool Eliminada { get; set; }
+
         /// <summary>
         /// El tipo de orígen en para este modelo es el elemento de la unidad organizacional 
         /// Este elemento puede ser unn departamento u oficina que tiene acervo as su cargo
         /// </summary>
-
-
-        private string _TipoOrigenId;
-  
-        /// <summary>
-        /// En este ID 
-        /// </summary>
+        [Prop(Required: true, OrderIndex: 1000, Contextual: true, ShowInTable: false, Searchable: false, DefaultValue: ConstantesModelo.IDORIGEN_UNIDAD_ORGANIZACIONAL)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string TipoOrigenId { get; set; }
 
         /// <summary>
         /// Identificador de la organización a la que pertenece el cuadro de clasificación
         /// </summary>
+        [Prop(Required: true, Visible: false, OrderIndex: 1010, Contextual: true, IdContextual: ConstantesModelo.GLOBAL_UOID)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string OrigenId { get; set; }
 
 
         /// <summary>
         /// IDentificador del tipo de archivo
         /// </summary>
+        [Prop(Required: false, OrderIndex: 70)]
+        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
+        [List(Entidad: "TipoArchivo", DatosRemotos: true, TypeAhead: false)]
         public string TipoArchivoId { get; set; }
 
         [XmlIgnore]
@@ -94,6 +106,9 @@ namespace PIKA.Modelo.GestorDocumental
         [JsonIgnore]
         public virtual ICollection<Activo> Activos { get; set; }
 
+        [XmlIgnore]
+        [JsonIgnore]
+        public virtual ICollection<Activo> ActivosOrigen { get; set; }
 
         /// <summary>
         /// Prestamos realizados en el archivo

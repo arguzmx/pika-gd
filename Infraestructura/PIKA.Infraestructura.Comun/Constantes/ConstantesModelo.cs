@@ -38,6 +38,7 @@ namespace PIKA.Infraestructura.Comun
         public const string IDORIGEN_PUNTO_MONTAJE = "pmontaje";
 
         public const string GLOBAL_DOMINIOID = "Global.IdDominio";
+        public const string GLOBAL_UOID = "Global.IdUnidadOrganizacional";
         public const string CONTEXTO_ESRAIZ = "Contexto.EsRaiz";
         public const string PREFIJO_CONEXTO = "Contexto.";
     }

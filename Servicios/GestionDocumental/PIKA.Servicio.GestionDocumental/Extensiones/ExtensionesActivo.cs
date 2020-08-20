@@ -28,6 +28,9 @@ namespace PIKA.Servicio.GestionDocumental
                 EntradaClasificacionId = a.EntradaClasificacionId,
                 ArchivoId = a.ArchivoId,
                 Eliminada = a.Eliminada,
+                ArchivoOrigenId = a.ArchivoOrigenId,
+                FechaRetencionAC = a.FechaRetencionAC,
+                FechaRetencionAT = a.FechaRetencionAT
             };
         }
     }

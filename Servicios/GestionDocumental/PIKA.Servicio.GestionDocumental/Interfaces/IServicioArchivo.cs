@@ -6,7 +6,8 @@ using System.Text;
 
 namespace PIKA.Servicio.GestionDocumental.Interfaces
 {
-    public interface IServicioArchivo : IServicioRepositorioAsync<Archivo, string>
+    public interface IServicioArchivo : IServicioRepositorioAsync<Archivo, string>,
+        IServicioValorTextoAsync<Archivo>
     {
     }
 }
