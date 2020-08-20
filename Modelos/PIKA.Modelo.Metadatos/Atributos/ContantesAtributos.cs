@@ -10,8 +10,8 @@ namespace PIKA.Modelo.Metadatos.Atributos
         public const string HTML_TOGGLE = "toggle";
         public const string HTML_CHECKBOX = "checkbox";
         public const string HTML_CHECKBOX_MULTI = "checkboxmulti";
-        public const string HTML_DATE = "datetime";
-        public const string HTML_TIME = "datetime";
+        public const string HTML_DATE = "date";
+        public const string HTML_TIME = "time";
         public const string HTML_DATETIME = "datetime";
         public const string HTML_FILE = "file";
         public const string HTML_HIDDEN = "hidden";

@@ -29,6 +29,14 @@
     <Compile Remove="Data\Migrations\20200804143422_CambioAmpliacionPK.Designer.cs" />
     <Compile Remove="Data\Migrations\20200804145128_CreaNuevaAmpliacion.cs" />
     <Compile Remove="Data\Migrations\20200804145128_CreaNuevaAmpliacion.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200820151655_ModificacionActivo.cs" />
+    <Compile Remove="Data\Migrations\20200820151655_ModificacionActivo.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200820152651_ModificacionActivo.cs" />
+    <Compile Remove="Data\Migrations\20200820152651_ModificacionActivo.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200820152950_ModificacionActivo.cs" />
+    <Compile Remove="Data\Migrations\20200820152950_ModificacionActivo.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200820153233_ModificacionActivo.cs" />
+    <Compile Remove="Data\Migrations\20200820153233_ModificacionActivo.Designer.cs" />
   </ItemGroup>
 
 

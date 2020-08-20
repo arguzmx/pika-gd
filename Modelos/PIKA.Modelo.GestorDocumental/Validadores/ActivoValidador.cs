@@ -21,7 +21,7 @@ namespace PIKA.Modelo.GestorDocumental.Validadores
 
             RuleFor(x => x.CodigoElectronico).MaximumLength(1024);
 
-            RuleFor(x => x.ArchivoId).NotEmpty().MaximumLength(LongitudDatos.GUID);
+            RuleFor(x => x.ArchivoOrigenId).NotEmpty().MaximumLength(LongitudDatos.GUID);
 
             RuleFor(x => x.EntradaClasificacionId).NotEmpty().MaximumLength(LongitudDatos.GUID);
 

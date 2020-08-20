@@ -6,7 +6,9 @@ using RepositorioEntidades;
 
 namespace PIKA.Servicio.GestionDocumental.Interfaces
 {
-    public interface IServicioEntradaClasificacion : IServicioRepositorioAsync<EntradaClasificacion, string>
+    public interface IServicioEntradaClasificacion : 
+        IServicioRepositorioAsync<EntradaClasificacion, string>,
+          IServicioValorTextoAsync<EntradaClasificacion>
     {
     }
     

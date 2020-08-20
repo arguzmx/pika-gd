@@ -111,6 +111,9 @@ namespace PIKA.Modelo.GestorDocumental
         public int Posicion { get; set; }
 
 
+        [NotMapped]
+        public string NombreCompleto { get { return $"{Clave} {Nombre}"; } }
+
         /// <summary>
         /// propiedad receptora para el arreglo de ids de valoración documental
         /// </summary>

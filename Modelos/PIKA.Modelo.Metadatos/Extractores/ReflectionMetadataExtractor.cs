@@ -26,7 +26,8 @@ namespace PIKA.Modelo.Metadatos
                 case Type decimalType when decimalType == typeof(decimal):
                     return TipoDato.tDouble;
 
-
+                case Type datetimeTypeNulable when datetimeTypeNulable == typeof(DateTime?):
+                    return TipoDato.tDateTime;
 
                 case Type datetimeType when datetimeType == typeof(DateTime):
                     return TipoDato.tDateTime;
