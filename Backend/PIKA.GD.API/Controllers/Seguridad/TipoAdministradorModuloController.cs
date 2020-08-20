@@ -86,9 +86,13 @@ namespace PIKA.GD.API.Controllers.Seguridad
         {
 
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
-            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioTipoAdministradorModulo.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<TipoAdministradorModulo>());
+            query.Filtros.AddRange(ObtieneFiltrosIdentidad()); 
+            var data = await servicioTipoAdministradorModulo.ObtenerPaginadoAsync(
+           Query: query,
+           include: null)
+           .ConfigureAwait(false);
+
+            return Ok(data);
         }
 
 

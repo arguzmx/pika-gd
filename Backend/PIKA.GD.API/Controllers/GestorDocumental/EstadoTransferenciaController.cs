@@ -104,9 +104,12 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         public async Task<ActionResult<IEnumerable<EstadoTransferencia>>> GetPage([FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
-            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioEstadoTransferencia.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<EstadoTransferencia>());
+            var data = await servicioEstadoTransferencia.ObtenerPaginadoAsync(
+                     Query: query,
+                     include: null)
+                     .ConfigureAwait(false);
+
+            return Ok(data);
         }
         /// <summary>
         /// Obtiene un Estado Transferencia en base al Id único

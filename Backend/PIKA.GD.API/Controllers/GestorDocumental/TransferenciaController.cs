@@ -102,9 +102,12 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Transferencia>>> GetPage([FromQuery] Consulta query = null)
         {
-            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioTransferencia.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<Transferencia>());
+            var data = await servicioTransferencia.ObtenerPaginadoAsync(
+                    Query: query,
+                    include: null)
+                    .ConfigureAwait(false);
+
+            return Ok(data);
         }
 
         /// <summary>

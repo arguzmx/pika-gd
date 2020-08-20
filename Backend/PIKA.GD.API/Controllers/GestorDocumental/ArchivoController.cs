@@ -106,10 +106,12 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         /// <returns></returns>
         public async Task<ActionResult<IEnumerable<Archivo>>> GetPage([FromQuery]Consulta query = null)
         {
-            ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
-            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioArchivo.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<Archivo>());
+            var data = await servicioArchivo.ObtenerPaginadoAsync(
+                  Query: query,
+                  include: null)
+                  .ConfigureAwait(false);
+
+            return Ok(data);
         }
         /// <summary>
         /// Obtiene un Archivo en base al Id único

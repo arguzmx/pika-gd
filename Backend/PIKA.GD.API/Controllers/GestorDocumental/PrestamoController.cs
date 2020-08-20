@@ -83,9 +83,12 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         public async Task<ActionResult<IEnumerable<Prestamo>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
-            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioPrestamo.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<Prestamo>());
+            var data = await servicioPrestamo.ObtenerPaginadoAsync(
+                  Query: query,
+                  include: null)
+                  .ConfigureAwait(false);
+
+            return Ok(data);
         }
 
 
@@ -163,9 +166,12 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 Valor = PrestamoId 
             });
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
-            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioActivoPrestamo.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<ActivoPrestamo>());
+            var data = await servicioActivoPrestamo.ObtenerPaginadoAsync(
+                       Query: query,
+                       include: null)
+                       .ConfigureAwait(false);
+
+            return Ok(data);
         }
 
 
