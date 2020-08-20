@@ -76,9 +76,12 @@ namespace PIKA.GD.API.Controllers.Metadatos
         public async Task<ActionResult<IEnumerable<Plantilla>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
-            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioPlantilla.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<Plantilla>());
+            var data = await servicioPlantilla.ObtenerPaginadoAsync(
+                 Query: query,
+                 include: null)
+                 .ConfigureAwait(false);
+
+            return Ok(data);
         }
 
 

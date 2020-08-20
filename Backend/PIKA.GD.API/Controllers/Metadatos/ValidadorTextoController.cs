@@ -75,11 +75,14 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<IEnumerable<ValidadorTexto>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
-            
+
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
-            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioValidadorTexto.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data.Elementos.ToList<ValidadorTexto>());
+            var data = await servicioValidadorTexto.ObtenerPaginadoAsync(
+                       Query: query,
+                       include: null)
+                       .ConfigureAwait(false);
+
+            return Ok(data);
         }
 
 
