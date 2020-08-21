@@ -149,8 +149,13 @@ namespace PIKA.GD.API.Controllers.Contacto
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete(string ids)
         {
-            string[] lids = ids.Split(',').ToList()
-                .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            string IdsTrim = "";
+            foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+            {
+                IdsTrim += item.Trim() + ",";
+            }
+            string[] lids = IdsTrim.Split(',').ToList()
+           .Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return Ok(await servicioEntidad.Eliminar(lids).ConfigureAwait(false));
         }
         /// <summary>

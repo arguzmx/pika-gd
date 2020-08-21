@@ -139,10 +139,41 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<ICollection<string>> Eliminar(string[] ids)
+        public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            throw new NotImplementedException();
+            TraduccionAplicacionModulo o;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
+                if (o != null)
+                {
+                    try
+                    {
+                        o = await this.repo.UnicoAsync(x => x.Id == Id);
+                        if (o != null)
+                        {
+                            await this.repo.Eliminar(o);
+                        }
+                        this.UDT.SaveChanges();
+                        listaEliminados.Add(o.Id);
+                    }
+                    catch (DbUpdateException)
+                    {
+                        throw new ExErrorRelacional(Id);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+            }
+            UDT.SaveChanges();
+
+            return listaEliminados;
+
         }
+
 
         public Task<List<TraduccionAplicacionModulo>> ObtenerAsync(Expression<Func<TraduccionAplicacionModulo, bool>> predicado)
         {

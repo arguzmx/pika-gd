@@ -102,10 +102,17 @@ namespace PIKA.GD.API.Controllers.Metadatos
 
         [HttpDelete("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult> Delete([FromBody]string[] id)
+        public async Task<ActionResult> Delete([FromBody]string id)
         {
-            await servicioValidadorTexto.Eliminar(id).ConfigureAwait(false);
-            return NoContent();
+            string IdsTrim = "";
+            foreach (string item in id.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+            {
+                IdsTrim += item.Trim() + ",";
+            }
+            string[] lids = IdsTrim.Split(',').ToList()
+           .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            return Ok(await servicioValidadorTexto.Eliminar(lids).ConfigureAwait(false));
+
         }
     }
 }

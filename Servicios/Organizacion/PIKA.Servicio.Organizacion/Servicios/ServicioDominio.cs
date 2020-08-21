@@ -143,23 +143,39 @@ namespace PIKA.Servicio.Organizacion.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            Dominio d;
+            Dominio o;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
             {
-                d = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (d != null)
+                o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
+                if (o != null)
                 {
-                    d.Eliminada = true;
-                    UDT.Context.Entry(d).State = EntityState.Modified;
-                    listaEliminados.Add(d.Id);
-                    await MarcaOUDelDominio(Id, true);
+                    try
+                    {
+                        o = await this.repo.UnicoAsync(x => x.Id == Id);
+                        if (o != null)
+                        {
+                            await this.repo.Eliminar(o);
+                        }
+                        this.UDT.SaveChanges();
+                        listaEliminados.Add(o.Id);
+                    }
+                    catch (DbUpdateException)
+                    {
+                        throw new ExErrorRelacional(Id);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
                 }
             }
             UDT.SaveChanges();
 
             return listaEliminados;
+
         }
+
 
 
 

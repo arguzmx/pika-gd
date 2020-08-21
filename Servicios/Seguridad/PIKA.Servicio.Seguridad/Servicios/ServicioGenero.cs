@@ -84,16 +84,27 @@ namespace PIKA.Servicio.Seguridad.Servicios
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
             {
-                o = await this.repo.UnicoAsync(x => x.Id == Id);
+                o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
                 if (o != null)
                 {
                     try
                     {
-                        await this.repo.Eliminar(o);
+                        o = await this.repo.UnicoAsync(x => x.Id == Id);
+                        if (o != null)
+                        {
+                            await this.repo.Eliminar(o);
+                        }
+                        this.UDT.SaveChanges();
                         listaEliminados.Add(o.Id);
                     }
+                    catch (DbUpdateException)
+                    {
+                        throw new ExErrorRelacional(Id);
+                    }
                     catch (Exception)
-                    {}
+                    {
+                        throw;
+                    }
                 }
             }
             UDT.SaveChanges();

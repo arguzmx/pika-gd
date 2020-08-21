@@ -154,10 +154,41 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public Task<ICollection<string>> Eliminar(string[] ids)
+        public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            throw new NotImplementedException();
+            TipoAdministradorModulo o;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
+                if (o != null)
+                {
+                    try
+                    {
+                        o = await this.repo.UnicoAsync(x => x.Id == Id);
+                        if (o != null)
+                        {
+                            await this.repo.Eliminar(o);
+                        }
+                        this.UDT.SaveChanges();
+                        listaEliminados.Add(o.Id);
+                    }
+                    catch (DbUpdateException)
+                    {
+                        throw new ExErrorRelacional(Id);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+            }
+            UDT.SaveChanges();
+
+            return listaEliminados;
+
         }
+
         public Task<IPaginado<TipoAdministradorModulo>> ObtenerPaginadoAsync(Expression<Func<TipoAdministradorModulo, bool>> predicate = null, Func<IQueryable<TipoAdministradorModulo>, IOrderedQueryable<TipoAdministradorModulo>> orderBy = null, Func<IQueryable<TipoAdministradorModulo>, IIncludableQueryable<TipoAdministradorModulo, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();

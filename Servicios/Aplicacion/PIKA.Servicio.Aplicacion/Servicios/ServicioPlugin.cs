@@ -158,19 +158,35 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            Plugin m;
+            Plugin o;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
             {
-                m = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (m != null)
+                o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
+                if (o != null)
                 {
-                    m.Eliminada = true;
-                    UDT.Context.Entry(m).State = EntityState.Modified;
-                    listaEliminados.Add(m.Id);
+                    try
+                    {
+                        o = await this.repo.UnicoAsync(x => x.Id == Id);
+                        if (o != null)
+                        {
+                            await this.repo.Eliminar(o);
+                        }
+                        this.UDT.SaveChanges();
+                        listaEliminados.Add(o.Id);
+                    }
+                    catch (DbUpdateException)
+                    {
+                        throw new ExErrorRelacional(Id);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
                 }
             }
             UDT.SaveChanges();
+
             return listaEliminados;
         }
 

@@ -56,7 +56,6 @@ namespace PIKA.Servicio.Contenido.Servicios
             return true;
         }
 
-
         private async Task ValidaEntidad(Elemento entity, Elemento instancia,  bool esActualizacion)
         {
 
@@ -137,9 +136,6 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         }
 
-
-
-
         public async Task<Elemento> CrearAsync(Elemento entity, CancellationToken cancellationToken = default)
         {
             await this.ValidaEntidad(entity, null, false);
@@ -183,7 +179,6 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         }
 
-
         public async Task ActualizarAsync(Elemento entity)
         {
 
@@ -217,8 +212,6 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         }
 
-      
-
         private Consulta GetDefaultQuery(Consulta query)
         {
             if (query != null)
@@ -240,21 +233,19 @@ namespace PIKA.Servicio.Contenido.Servicios
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
             return respuesta;
         }
-
-      
-
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            Elemento d;
+            Elemento o;
             ICollection<string> listaEliminados = new HashSet<string>();
-            foreach (var Id in ids.LimpiaIds())
+            foreach (var Id in ids)
             {
-                d = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (d != null)
+                o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
+                if (o != null)
                 {
-                    d.Eliminada = true;
-                    this.UDT.Context.Entry(d).State = EntityState.Modified;
-                    listaEliminados.Add(d.Id);
+                    o.Eliminada = true;
+                    UDT.Context.Entry(o).State = EntityState.Modified;
+                    listaEliminados.Add(o.Id);
+
                 }
             }
             UDT.SaveChanges();
@@ -263,30 +254,22 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
-            Elemento d;
+            Elemento o;
             ICollection<string> listaEliminados = new HashSet<string>();
-            foreach (var Id in ids.LimpiaIds())
+            foreach (var Id in ids)
             {
-                d = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (d != null)
+                o = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (o != null)
                 {
-
-                    if (await Existe(x => x.Nombre == d.Nombre && x.TipoOrigenId == d.TipoOrigenId
-                 && x.OrigenId == d.OrigenId && x.Eliminada == false && x.Id != d.Id))
-                    {
-                        d.Nombre = d.Nombre + $" restaurado {DateTime.Now.Ticks}";
-                    }
-
-                    d.Eliminada = false;
-                    this.UDT.Context.Entry(d).State = EntityState.Modified;
-                    listaEliminados.Add(d.Id);
+                    o.Eliminada = false;
+                    UDT.Context.Entry(o).State = EntityState.Modified;
+                    listaEliminados.Add(o.Id);
                 }
+
             }
             UDT.SaveChanges();
             return listaEliminados;
         }
-
-
 
         public async Task<Elemento> UnicoAsync(Expression<Func<Elemento, bool>> predicado = null, Func<IQueryable<Elemento>, IOrderedQueryable<Elemento>> ordenarPor = null, Func<IQueryable<Elemento>, IIncludableQueryable<Elemento, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
@@ -339,7 +322,5 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         #endregion
     }
-
-
 
 }

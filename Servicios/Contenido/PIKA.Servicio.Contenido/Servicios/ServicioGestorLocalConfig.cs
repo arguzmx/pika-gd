@@ -74,10 +74,6 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<GestorLocalConfig> CrearAsync(GestorLocalConfig entity, CancellationToken cancellationToken = default)
         {
-
-
-           
-
             try
             {
                 GestorLocalConfig o = await this.repo.UnicoAsync(x => x.VolumenId == entity.VolumenId);

@@ -155,12 +155,20 @@ namespace PIKA.GD.API.Controllers.Organizacion
         /// </summary>
         /// <param name="ids">Arreglo de identificadores string</param>
         /// <returns></returns>
-        [HttpDelete]
+        [HttpDelete("{ids}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult> Delete([FromBody ]string[] id)
+        public async Task<ActionResult> Delete([FromBody ]string id)
         {
-            return Ok(await servicioUO.Eliminar(id).ConfigureAwait(false));
+            string IdsTrim = "";
+            foreach (string item in id.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+            {
+                IdsTrim += item.Trim() + ",";
+            }
+            string[] lids = IdsTrim.Split(',').ToList()
+           .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            return Ok(await servicioUO.Eliminar(lids).ConfigureAwait(false));
+
         }
 
 
@@ -172,9 +180,17 @@ namespace PIKA.GD.API.Controllers.Organizacion
         [HttpPatch("restaurar", Name = "restaurarUO")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult> Undelete([FromBody] string[] ids)
+        public async Task<ActionResult> Undelete([FromBody] string ids)
         {
-            return Ok(await servicioUO.Restaurar(ids).ConfigureAwait(false));
+            string IdsTrim = "";
+            foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+            {
+                IdsTrim += item.Trim() + ",";
+            }
+            string[] lids = IdsTrim.Split(',').ToList()
+           .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            return Ok(await servicioUO.Restaurar(lids).ConfigureAwait(false));
+
         }
 
     }

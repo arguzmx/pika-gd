@@ -146,8 +146,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.SaveChanges();
             return listaEliminados;
         }
-
-
         public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
             CuadroClasificacion c;

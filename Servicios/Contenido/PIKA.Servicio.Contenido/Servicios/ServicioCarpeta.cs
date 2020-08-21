@@ -43,8 +43,6 @@ namespace PIKA.Servicio.Contenido.Servicios
             if (l.Count() == 0) return false;
             return true;
         }
-
-
         public async Task<Carpeta> CrearAsync(Carpeta entity, CancellationToken cancellationToken = default)
         {
 
@@ -94,14 +92,9 @@ namespace PIKA.Servicio.Contenido.Servicios
            
 
         }
-
-
         public async Task ActualizarAsync(Carpeta entity)
         {
-
             Carpeta o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
-
-
             if (string.IsNullOrEmpty(entity.CarpetaPadreId))
             {
                 if (await Existe(x => x.Nombre == entity.Nombre
@@ -141,7 +134,6 @@ namespace PIKA.Servicio.Contenido.Servicios
 
                 o.Nombre = entity.Nombre;
                 o.CarpetaPadreId = entity.CarpetaPadreId;
-                o.Eliminada = entity.Eliminada;
                 o.PermisoId = entity.PermisoId;
                 o.EsRaiz = (string.IsNullOrEmpty(entity.CarpetaPadreId));
 
@@ -159,10 +151,6 @@ namespace PIKA.Servicio.Contenido.Servicios
             }
 
         }
-
-     
-
-
         private Consulta GetDefaultQuery(Consulta query)
         {
             if (query != null)
@@ -184,47 +172,42 @@ namespace PIKA.Servicio.Contenido.Servicios
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
             return respuesta;
         }
-
-      
-
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            Carpeta d;
+            Carpeta o;
             ICollection<string> listaEliminados = new HashSet<string>();
-            foreach (var Id in ids.LimpiaIds())
+            foreach (var Id in ids)
             {
-                d = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (d != null)
+                o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
+                if (o != null)
                 {
-                    d.Eliminada = true;
-                    this.UDT.Context.Entry(d).State = EntityState.Modified;
-                    listaEliminados.Add(d.Id);
+                    o.Eliminada = true;
+                    UDT.Context.Entry(o).State = EntityState.Modified;
+                    listaEliminados.Add(o.Id);
+
                 }
             }
             UDT.SaveChanges();
             return listaEliminados;
         }
-
         public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
-            Carpeta d;
+            Carpeta o;
             ICollection<string> listaEliminados = new HashSet<string>();
-            foreach (var Id in ids.LimpiaIds())
+            foreach (var Id in ids)
             {
-                d = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (d != null)
+                o = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (o != null)
                 {
-                    d.Eliminada = false;
-                    this.UDT.Context.Entry(d).State = EntityState.Modified;
-                    listaEliminados.Add(d.Id);
+                    o.Eliminada = false;
+                    UDT.Context.Entry(o).State = EntityState.Modified;
+                    listaEliminados.Add(o.Id);
                 }
+
             }
             UDT.SaveChanges();
             return listaEliminados;
         }
-
-
-
         public async Task<Carpeta> UnicoAsync(Expression<Func<Carpeta, bool>> predicado = null, Func<IQueryable<Carpeta>, IOrderedQueryable<Carpeta>> ordenarPor = null, Func<IQueryable<Carpeta>, IIncludableQueryable<Carpeta, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
 
@@ -233,7 +216,6 @@ namespace PIKA.Servicio.Contenido.Servicios
 
             return d.Copia();
         }
-
         public async Task<List<NodoJerarquico>> ObtenerRaices(string IdJerarquia, int N)
         {
             int nivel = 0;
@@ -241,8 +223,6 @@ namespace PIKA.Servicio.Contenido.Servicios
             lista = await this.ObtenerRaices(IdJerarquia, "", N, nivel);
             return lista;
         }
-
-
         private async Task<List<NodoJerarquico>> ObtenerRaices(string IdJerarquia,
         string Id, int N, int Actual)
         {
@@ -294,8 +274,6 @@ namespace PIKA.Servicio.Contenido.Servicios
                 
             }
         }
-
-
         public async  Task<List<NodoJerarquico>> ObtenerDescendientes(string IdJerarquia, string Id, int N)
         {
             int nivel = 0;
@@ -303,8 +281,6 @@ namespace PIKA.Servicio.Contenido.Servicios
             lista = await this.ObtenerDescendientes(IdJerarquia, Id, N, nivel);
             return lista;
         }
-
-
         private async Task<List<NodoJerarquico>> ObtenerDescendientes(string IdJerarquia, 
             string Id, int N, int Actual)
         {
@@ -347,7 +323,6 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         }
 
-
         #region No Implemenatdaos
 
         public Task<IEnumerable<Carpeta>> CrearAsync(params Carpeta[] entities)
@@ -385,12 +360,7 @@ namespace PIKA.Servicio.Contenido.Servicios
             throw new NotImplementedException();
         }
 
-
-
-
         #endregion
     }
-
-
 
 }

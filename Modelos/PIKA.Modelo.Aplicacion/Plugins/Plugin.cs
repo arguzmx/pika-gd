@@ -1,7 +1,9 @@
-﻿using RepositorioEntidades;
+﻿using Newtonsoft.Json;
+using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Aplicacion.Plugins
 {
@@ -27,8 +29,11 @@ namespace PIKA.Modelo.Aplicacion.Plugins
         /// Establece si el Plugin ha sido eliminada
         /// </summary>
         public bool Eliminada { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public ICollection <VersionPlugin> versionPlugins  { get; set; }
+        [XmlIgnore]
+        [JsonIgnore]
         public ICollection<PluginInstalado> PluginInstalados { get; set; }
         
     }

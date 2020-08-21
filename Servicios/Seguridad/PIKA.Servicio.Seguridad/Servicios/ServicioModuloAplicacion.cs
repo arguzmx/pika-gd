@@ -108,18 +108,35 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            ModuloAplicacion m;
+            ModuloAplicacion o;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
             {
-                m = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (m != null)
+                o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
+                if (o != null)
                 {
-                    UDT.Context.Entry(m).State = EntityState.Deleted;
-                    listaEliminados.Add(m.Id);
+                    try
+                    {
+                        o = await this.repo.UnicoAsync(x => x.Id == Id);
+                        if (o != null)
+                        {
+                            await this.repo.Eliminar(o);
+                        }
+                        this.UDT.SaveChanges();
+                        listaEliminados.Add(o.Id);
+                    }
+                    catch (DbUpdateException)
+                    {
+                        throw new ExErrorRelacional(Id);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
                 }
             }
             UDT.SaveChanges();
+
             return listaEliminados;
         }
 

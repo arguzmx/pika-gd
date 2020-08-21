@@ -137,8 +137,13 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete(string ids)
         {
-            string[] lids = ids.Split(',').ToList()
-                .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            string IdsTrim = "";
+            foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+            {
+                IdsTrim += item.Trim() + ",";
+            }
+            string[] lids = IdsTrim.Split(',').ToList()
+           .Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return Ok(await servicioEntidad.Eliminar(lids).ConfigureAwait(false));
         }
 
@@ -152,8 +157,13 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Undelete(string ids)
         {
-            string[] lids = ids.Split(',').ToList()
-            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            string IdsTrim = "";
+            foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+            {
+                IdsTrim += item.Trim() + ",";
+            }
+            string[] lids = IdsTrim.Split(',').ToList()
+           .Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return Ok(await servicioEntidad.Restaurar(lids).ConfigureAwait(false));
         }
 

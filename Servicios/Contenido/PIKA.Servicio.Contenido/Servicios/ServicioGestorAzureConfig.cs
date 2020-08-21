@@ -46,8 +46,6 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<GestorAzureConfig> CrearAsync(GestorAzureConfig entity, CancellationToken cancellationToken = default)
         {
-
-
             try
             {
                 GestorAzureConfig o = await this.repo.UnicoAsync(x => x.VolumenId == entity.VolumenId);
@@ -75,9 +73,6 @@ namespace PIKA.Servicio.Contenido.Servicios
                 throw ex;
             }
         }
-
-   
-
         public async Task ActualizarAsync(GestorAzureConfig entity)
         {
             GestorAzureConfig o =  await this.repo.UnicoAsync(x => x.VolumenId == entity.VolumenId);
@@ -86,8 +81,6 @@ namespace PIKA.Servicio.Contenido.Servicios
                 {
                     throw new EXNoEncontrado(entity.VolumenId);
                 }
-
-
             o.Endpoint = entity.Endpoint;
             o.Usuario = entity.Usuario;
             o.VolumenId = entity.VolumenId;

@@ -88,11 +88,17 @@ namespace PIKA.Modelo.Contenido
         /// </summary>
         public bool Versionado { get; set; }
 
-
+        [XmlIgnore]
+        [JsonIgnore]
         public Permiso Permiso { get; set; }
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual Volumen Volumen { get; set; }
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<Version> Versiones { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<Parte> Partes { get; set; }
 
     }

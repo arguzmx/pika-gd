@@ -1,7 +1,9 @@
-﻿using RepositorioEntidades;
+﻿using Newtonsoft.Json;
+using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Aplicacion.Plugins
 {
@@ -17,8 +19,11 @@ namespace PIKA.Modelo.Aplicacion.Plugins
 
         public DateTime FechaInstalacion { get; set; }
         //Not null
-
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual VersionPlugin VersionPlugin { get; set; }
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual Plugin Plugin { get; set; }
     }
 }
