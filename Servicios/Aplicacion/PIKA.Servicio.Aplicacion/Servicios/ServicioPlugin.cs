@@ -197,9 +197,7 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
 
         public async Task<Plugin> UnicoAsync(Expression<Func<Plugin, bool>> predicado = null, Func<IQueryable<Plugin>, IOrderedQueryable<Plugin>> ordenarPor = null, Func<IQueryable<Plugin>, IIncludableQueryable<Plugin, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-
             Plugin d = await this.repo.UnicoAsync(predicado);
-
             return d.CopiaPlugin();
         }
 
