@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Wordprocessing;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.GestorDocumental;
@@ -12,7 +9,7 @@ using PIKA.Servicio.GestionDocumental.Servicios;
 using RepositorioEntidades;
 
 namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar.Reporte_Transferencia
-{ 
+{
     public  class IOTransferencia : ContextoServicioGestionDocumental,
         IServicioInyectable
     {
@@ -73,14 +70,14 @@ namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar.Reporte_Transfe
             return name ;
         }
         /// <summary>
-        /// Con esta funcion se llena la primer taba del reporte
+        /// Con esta funcion se llena la primer tabla del reporte
         /// </summary>
-        /// <param name="li">lista de</param>
-        /// <param name="TransferenciaId"></param>
-        /// <param name="Columnas"></param>
-        /// <param name="ArchivoID"></param>
-        /// <param name="t"></param>
-        /// <param name="ac"></param>
+        /// <param name="li">lista de Filas y celdas </param>
+        /// <param name="TransferenciaId">Identificador Unico transferencia</param>
+        /// <param name="Columnas">Columnas String</param>
+        /// <param name="ArchivoID">Identificacdor unico del archivo</param>
+        /// <param name="t">Entidad Tansferencia</param>
+        /// <param name="ac">Entidad Archivo</param>
         /// <returns></returns>
         private async Task<List<Estructuraexcel>> LlenadoTabla1(List<Estructuraexcel>li,string TransferenciaId, string[] Columnas,string ArchivoID, Transferencia t,Activo ac)
         {
@@ -97,6 +94,17 @@ namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar.Reporte_Transfe
             return li;
 
         }
+       /// <summary>
+       /// Esta función llena el contenido de los Transferencia
+       /// </summary>
+       /// <param name="indice">Indice de la columna</param>
+       /// <param name="li">lista de llenado de filas y columnas</param>
+       /// <param name="renglon">Numero de renglon</param>
+       /// <param name="col">Numero de columna</param>
+       /// <param name="ArchivoID">Identificador unico del archivoId</param>
+       /// <param name="t">Entidad transferencia</param>
+       /// <param name="ac1">Entidad Activos</param>
+       /// <returns></returns>
         private async Task<List<Estructuraexcel>> llenadoTablaDetalleTransferencia(int indice,List<Estructuraexcel>li, int renglon,string[] col,string ArchivoID,Transferencia t, Activo ac1) 
         {
             switch (indice)
@@ -136,6 +144,15 @@ namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar.Reporte_Transfe
             }
             return li;
         }
+       /// <summary>
+       /// Creación de columnas
+       /// </summary>
+       /// <param name="li">lista de Filas y Celdas</param>
+       /// <param name="Columnas">Arreglo de columnas</param>
+       /// <param name="renglon">Numero de Renglon</param>
+       /// <param name="EntradaId">Identificador unico de EntradasClasificación</param>
+       /// <param name="ac">Entidad ARchivo</param>
+       /// <returns></returns>
         private async Task<List<Estructuraexcel>> ColumnasDetalle(List<Estructuraexcel> li,string[] Columnas, int renglon,string EntradaId, Activo ac) 
         {
             int columna = 2;
@@ -157,6 +174,17 @@ namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar.Reporte_Transfe
             
             return li;
         }
+     /// <summary>
+     /// Creación encabezado de columnas
+     /// </summary>
+     /// <param name="tipoColumna"></param>
+     /// <param name="li"></param>
+     /// <param name="valorRenglon"></param>
+     /// <param name="Pocisíon"></param>
+     /// <param name="columna"></param>
+     /// <param name="renglon"></param>
+     /// <param name="liA"></param>
+     /// <returns></returns>
         private async Task llenado(string tipoColumna, List<Estructuraexcel> li, string valorRenglon, string Pocisíon, int columna, int renglon, List<Activo> liA) 
         {
             int x = 1;
@@ -212,6 +240,14 @@ namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar.Reporte_Transfe
             }
             
         }
+      /// <summary>
+      /// Funcion de llenado de Celdas 
+      /// </summary>
+      /// <param name="lista"></param>
+      /// <param name="valorRenglon"></param>
+      /// <param name="Pocisíon"></param>
+      /// <param name="columna"></param>
+      /// <param name="renglon"></param>
         private void LlenadoExcel(List<Estructuraexcel> lista, string valorRenglon, string Pocisíon, int columna, int renglon)
         {
             lista.Add(new Estructuraexcel
@@ -223,6 +259,11 @@ namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar.Reporte_Transfe
             });
            
         }
+      /// <summary>
+      /// función de Abecedario por indice de la columna
+      /// </summary>
+      /// <param name="indice">Indice de la columna</param>
+      /// <returns></returns>
         private string GetAbecedario(int indice)
         {
             indice--;
