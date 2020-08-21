@@ -62,10 +62,6 @@ namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar.Reporte_Transfe
             EntradaClasificacion ec1 = await this.RepoEntrda.UnicoAsync(x => x.Id.Equals(ac1.EntradaClasificacionId, StringComparison.InvariantCultureIgnoreCase));
             ElementoClasificacion EC1 = await this.RepoElemento.UnicoAsync(x => x.Id.Equals(ec1.ElementoClasificacionId, StringComparison.InvariantCultureIgnoreCase));
             CuadroClasificacion cc = await this.repo.UnicoAsync(x => x.Id.Equals(EC1.CuadroClasifiacionId, StringComparison.InvariantCultureIgnoreCase));
-
-   
-
-            //List<EntradaClasificacion> liEn = await this.RepoEntrda.ObtenerAsync(x=>x.Id.Contains());
             string name = await c.CrearArchivoExcel(await LlenadoTabla1(ListEx, TransferenciaId, Columnas,t.ArchivoOrigenId,t,ac1), TransferenciaId, ruta, separador, ec1.Clave);
             ListEx = new List<Estructuraexcel>();
              ac1 = await this.repoAc.UnicoAsync(x => x.ArchivoId.Equals(t.ArchivoDestinoId, StringComparison.InvariantCultureIgnoreCase));
@@ -73,9 +69,6 @@ namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar.Reporte_Transfe
              EC1 = await this.RepoElemento.UnicoAsync(x => x.Id.Equals(ec1.ElementoClasificacionId, StringComparison.InvariantCultureIgnoreCase));
              cc = await this.repo.UnicoAsync(x => x.Id.Equals(EC1.CuadroClasifiacionId, StringComparison.InvariantCultureIgnoreCase));
             await c.CreaArchivoExistente(await LlenadoTabla1(ListEx, TransferenciaId, Columnas, t.ArchivoDestinoId,t, ac1), TransferenciaId, name, ec1.Clave);
-
-
-
            
             return name ;
         }

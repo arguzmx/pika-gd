@@ -135,7 +135,6 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
 
             return respuesta;
         }
-
         public Task<IEnumerable<Plugin>> CrearAsync(params Plugin[] entities)
         {
             throw new NotImplementedException();
