@@ -74,7 +74,6 @@ namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar
 
            return await CD.CrearArchivo(listExport, CuadroClasificaiconId, ruta,separador, await ObtineNombreCuadroClasificacion(CuadroClasificaiconId));
          
-
         }
         /// <summary>
         /// Elemina la ruta del cuadro clasificacion siempre y cuando se haga un cambbio a la estructura del cuadro clasificación
