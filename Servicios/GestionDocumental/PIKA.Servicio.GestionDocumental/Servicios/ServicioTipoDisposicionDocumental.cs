@@ -92,11 +92,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 {
                     try
                     {
-                        Console.WriteLine($"\n Delete *** {Id}");
                         o = await this.repo.UnicoAsync(x => x.Id == Id);
                         if (o != null)
                         {
-                            Console.WriteLine($"\n Delete entidad != nuu *** {Id}");
 
                             await this.repo.Eliminar(o);
                         }
