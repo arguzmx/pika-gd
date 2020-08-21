@@ -86,7 +86,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar
         public async Task EliminarCuadroCalsificacionExcel(string CuadroClasificacionId, string ruta, string separador) 
         {
             CuadroClasificacion cc = await this.repo.UnicoAsync(x=>x.Id.Equals(CuadroClasificacionId,StringComparison.InvariantCultureIgnoreCase));
-          if(cc!=null)
+         string Directory= $"{ ruta }{ separador}{ CuadroClasificacionId}";
+            if(File.Exists(Directory))
+            if (cc!=null)
             System.IO.Directory.Delete($"{ruta}{separador}{CuadroClasificacionId}",true);
 
         }

@@ -175,7 +175,6 @@ namespace PIKA.Servicio.GestionDocumental.Data
 
             foreach (TipoArchivo tipo in tipos)
             {
-                Console.WriteLine($"\n {tipo.Nombre}");
                 TipoArchivo instancia = dbContext.TiposArchivo.Find(tipo.Id);
                 if (instancia == null)
                 {
