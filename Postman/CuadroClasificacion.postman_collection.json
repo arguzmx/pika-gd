@@ -2050,6 +2050,79 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "GET Page Cuadros clasificacion Copy",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion/page?i=0&t=100&ordc=Nombre&ordd=asc&f[0][p]=Nombre&f[0][o]=contains&f[0][v]=ABCDE&f[0][n]=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										},
+										{
+											"key": "f[0][p]",
+											"value": "Nombre"
+										},
+										{
+											"key": "f[0][o]",
+											"value": "contains"
+										},
+										{
+											"key": "f[0][v]",
+											"value": "ABCDE"
+										},
+										{
+											"key": "f[0][n]",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"protocolProfileBehavior": {},
@@ -5389,51 +5462,6 @@
 							"response": []
 						},
 						{
-							"name": "GET PAGE Estado Transferencia Por ID",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/EstadoTransferencia/pares/admin,0001",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"EstadoTransferencia",
-										"pares",
-										"admin,0001"
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "DELETE Estado Transferencia",
 							"request": {
 								"method": "DELETE",
@@ -5477,37 +5505,6 @@
 					"name": "Activo Declinado",
 					"item": [
 						{
-							"name": "GET Metadata Activo Declinado",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoDeclinado/metadata",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"be51e993-c9d0-4dfb-b738-14607f865efa",
-										"ActivoDeclinado",
-										"metadata"
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "POST Activo Declinado",
 							"request": {
 								"method": "POST",
@@ -5521,13 +5518,13 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"ActivoId\": \"id\",\r\n  \"TransferenciaId\": \"be51e993-c9d0-4dfb-b738-14607f865efa\",\r\n  \"Motivo\": \"segundo  cuadro 2 \"\r\n}",
+									"raw": "{\r\n  \"ActivoId\": \"id\",\r\n  \"TransferenciaId\": \"ca6bdfc2-9563-4a38-8c9c-03800839f041\",\r\n  \"Motivo\": \"segundo  cuadro 3 \"\r\n}",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoDeclinado/id",
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/ca6bdfc2-9563-4a38-8c9c-03800839f041/ActivoDeclinado/id",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -5538,7 +5535,7 @@
 										"v1.0",
 										"gd",
 										"Transferencia",
-										"be51e993-c9d0-4dfb-b738-14607f865efa",
+										"ca6bdfc2-9563-4a38-8c9c-03800839f041",
 										"ActivoDeclinado",
 										"id"
 									]
@@ -5631,6 +5628,35 @@
 					"name": "Transferencia",
 					"item": [
 						{
+							"name": "GET Metadata Transferencia",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Transferencia/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Transferencia",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "POST  Transferencia",
 							"request": {
 								"method": "POST",
@@ -5669,23 +5695,8 @@
 						{
 							"name": "PUT Transferencia",
 							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODk1NjI4NTAsImV4cCI6MTU4OTU2NjQ1MCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiIxYzI4MDdmMC1mYTE2LTQ3MmItODY2Ni04MmQ2OTUxNjFiZjIiLCJhdXRoX3RpbWUiOjE1ODk1NjI4NTAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.dbFu3oyMFSBvqYEVMfHzi4GdavpkKthLd81lSn20ff-v-FNRv-u9qXDVZvaKZt_z-lzBl0nBw7knrVPyFeZR5ltZB0B2Nb1u6yVSss5sLid5EEYTbKEPkKQ2inERTXaL27TTPtGE7DjsaC-rixs32V506hsNBalVkSvz2Ht3e7bK1CeiGZOHiFzSlKe4-N9WjZ0it30mmnPbTPOg7bPRgDE6W1_MNbs1ai0uTAJjx3VQQmYDqrHkc268CfJk6dvEhDUbJbhqBs5thA-TnXsMvPAvl4ThWsOrNDkswSJX9cABZjWMU8YAqHqLXVoN9r8dv6IIrL2QssHxMK0AF-wFDg",
-											"type": "string"
-										}
-									]
-								},
 								"method": "PUT",
 								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
 									{
 										"key": "Content-Type",
 										"name": "Content-Type",
@@ -5695,13 +5706,13 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"Id\": \"ea784109-03e6-4cd2-8192-58c901278789\",\n    \"Nombre\": \"de acta a curp edited 2\",\n    \"FechaCreacion\": \"2020-08-17T18:51:51.2356172Z\",\n    \"EstadoTransferenciaId\": \"nueva\",\n    \"ArchivoOrigenId\": null,\n    \"ArchivoDestinoId\": null,\n    \"UsuarioId\": \"userTEstID\",\n    \"Eventos\": [],\n    \"ActivosIncluidos\": [],\n    \"ActivosDeclinados\": [],\n    \"Comentarios\": [],\n    \"Estado\": null\n}",
+									"raw": "{\r\n    \"Id\": \"78332d4e-6fc6-488e-974d-0e98e8aea71f\",\r\n    \"TransferenciaId\": \"ca6bdfc2-9563-4a38-8c9c-03800839f041\",\r\n    \"UsuarioId\": \"userTestID\",\r\n    \"Fecha\": \"2020-05-15T00:00:00\",\r\n    \"Comentario\": \"sad\",\r\n    \"Publico\": false\r\n}",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/0fce5a39-24c1-43fc-9757-fdb8e9ee77b2",
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/ca6bdfc2-9563-4a38-8c9c-03800839f041/ComentarioTransferencia/78332d4e-6fc6-488e-974d-0e98e8aea71f",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -5712,51 +5723,9 @@
 										"v1.0",
 										"gd",
 										"Transferencia",
-										"0fce5a39-24c1-43fc-9757-fdb8e9ee77b2"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET metadata Transferencia",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODk0OTM0NjMsImV4cCI6MTU4OTQ5NzA2MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiIxYzI4MDdmMC1mYTE2LTQ3MmItODY2Ni04MmQ2OTUxNjFiZjIiLCJhdXRoX3RpbWUiOjE1ODk0OTM0NjMsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.D7lm3eg-jILys3o4PiERz9uPFLAQ79xLYkCG9xtpOwe5Uh2p4R3k1SfoY6ICvgbXJUO03pvQnW6HDH085F0eoQ1doIpLr41G51xjjG1PLH20cfD60JuzrZPRc5flQB0HCrl97t7cP5ljktj2SaJUp09_cCtMXnU_tUFGDEtI1QrelvPZi0jmW9gdiozcKjLhPOCSDcLpO-rGJhTJm9f7iRcZIWU810xchKzOXjdW8n0QGfyJg5F4q6YpV146klYt1GTNFHIUzZJiWai7MssJhHmBUJa_Lcs1e45dCvQrfJNj4SmYOIpYepKCG9bIqw0G5ncMN0Zo5zqslNqrT9IFwA",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "uid",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
-										"type": "text"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/Transferencia/metadata",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"metadata"
+										"ca6bdfc2-9563-4a38-8c9c-03800839f041",
+										"ComentarioTransferencia",
+										"78332d4e-6fc6-488e-974d-0e98e8aea71f"
 									]
 								}
 							},
@@ -5765,23 +5734,8 @@
 						{
 							"name": "GET Transferencia",
 							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODk1NjI4NTAsImV4cCI6MTU4OTU2NjQ1MCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiIxYzI4MDdmMC1mYTE2LTQ3MmItODY2Ni04MmQ2OTUxNjFiZjIiLCJhdXRoX3RpbWUiOjE1ODk1NjI4NTAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.dbFu3oyMFSBvqYEVMfHzi4GdavpkKthLd81lSn20ff-v-FNRv-u9qXDVZvaKZt_z-lzBl0nBw7knrVPyFeZR5ltZB0B2Nb1u6yVSss5sLid5EEYTbKEPkKQ2inERTXaL27TTPtGE7DjsaC-rixs32V506hsNBalVkSvz2Ht3e7bK1CeiGZOHiFzSlKe4-N9WjZ0it30mmnPbTPOg7bPRgDE6W1_MNbs1ai0uTAJjx3VQQmYDqrHkc268CfJk6dvEhDUbJbhqBs5thA-TnXsMvPAvl4ThWsOrNDkswSJX9cABZjWMU8YAqHqLXVoN9r8dv6IIrL2QssHxMK0AF-wFDg",
-											"type": "string"
-										}
-									]
-								},
 								"method": "GET",
 								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
 									{
 										"key": "Content-Type",
 										"type": "text",
@@ -5789,7 +5743,7 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/Transferencia/0fce5a39-24c1-43fc-9757-fdb8e9ee77b2",
+									"raw": "https://localhost:5001/api/v1.0/gd/Transferencia/513ec2e1-bd43-4891-a3ee-35422066e466",
 									"protocol": "https",
 									"host": [
 										"localhost"
@@ -5800,35 +5754,20 @@
 										"v1.0",
 										"gd",
 										"Transferencia",
-										"0fce5a39-24c1-43fc-9757-fdb8e9ee77b2"
+										"513ec2e1-bd43-4891-a3ee-35422066e466"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "GET page Transferencia",
+							"name": "GET Page Transferencia",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
 							},
 							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODk1NjI4NTAsImV4cCI6MTU4OTU2NjQ1MCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiIxYzI4MDdmMC1mYTE2LTQ3MmItODY2Ni04MmQ2OTUxNjFiZjIiLCJhdXRoX3RpbWUiOjE1ODk1NjI4NTAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.dbFu3oyMFSBvqYEVMfHzi4GdavpkKthLd81lSn20ff-v-FNRv-u9qXDVZvaKZt_z-lzBl0nBw7knrVPyFeZR5ltZB0B2Nb1u6yVSss5sLid5EEYTbKEPkKQ2inERTXaL27TTPtGE7DjsaC-rixs32V506hsNBalVkSvz2Ht3e7bK1CeiGZOHiFzSlKe4-N9WjZ0it30mmnPbTPOg7bPRgDE6W1_MNbs1ai0uTAJjx3VQQmYDqrHkc268CfJk6dvEhDUbJbhqBs5thA-TnXsMvPAvl4ThWsOrNDkswSJX9cABZjWMU8YAqHqLXVoN9r8dv6IIrL2QssHxMK0AF-wFDg",
-											"type": "string"
-										}
-									]
-								},
 								"method": "GET",
 								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
 									{
 										"key": "Content-Type",
 										"type": "text",
@@ -5837,13 +5776,13 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n\"indice\": 0,\n\"tamano\": 10,\n\"columna_ordenamiento\": \"Nombre\",\n\"direccion_ordenamiento\": \"asc\",\n\"Filtros\": [\n\t{\"Propiedad\":\"nombre\",\"Operador\": \"contains\", \"Valor\": \" \"}\n\t]\n}",
+									"raw": "",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Archivo/page?i=0&t=100&ordc=Nombre&ordd=asc&",
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/page?i=0&t=100&ordc=Nombre&ordd=asc",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -5853,7 +5792,7 @@
 										"api",
 										"v1.0",
 										"gd",
-										"Archivo",
+										"Transferencia",
 										"page"
 									],
 									"query": [
@@ -5872,10 +5811,6 @@
 										{
 											"key": "ordd",
 											"value": "asc"
-										},
-										{
-											"key": "",
-											"value": null
 										}
 									]
 								}
@@ -5883,25 +5818,10 @@
 							"response": []
 						},
 						{
-							"name": "Delete Transferencia",
+							"name": "DELETE Transferencia",
 							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODk1NjI4NTAsImV4cCI6MTU4OTU2NjQ1MCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiIxYzI4MDdmMC1mYTE2LTQ3MmItODY2Ni04MmQ2OTUxNjFiZjIiLCJhdXRoX3RpbWUiOjE1ODk1NjI4NTAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.dbFu3oyMFSBvqYEVMfHzi4GdavpkKthLd81lSn20ff-v-FNRv-u9qXDVZvaKZt_z-lzBl0nBw7knrVPyFeZR5ltZB0B2Nb1u6yVSss5sLid5EEYTbKEPkKQ2inERTXaL27TTPtGE7DjsaC-rixs32V506hsNBalVkSvz2Ht3e7bK1CeiGZOHiFzSlKe4-N9WjZ0it30mmnPbTPOg7bPRgDE6W1_MNbs1ai0uTAJjx3VQQmYDqrHkc268CfJk6dvEhDUbJbhqBs5thA-TnXsMvPAvl4ThWsOrNDkswSJX9cABZjWMU8YAqHqLXVoN9r8dv6IIrL2QssHxMK0AF-wFDg",
-											"type": "string"
-										}
-									]
-								},
 								"method": "DELETE",
 								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
 									{
 										"key": "Content-Type",
 										"type": "text",
@@ -5910,13 +5830,13 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "[\t\"0fce5a39-24c1-43fc-9757-fdb8e9ee77b2\",\n\t\"c64c457a-ce57-4ba9-92f0-3e6512fd0fcd\",\n\t\"a97a64fa-5c12-4b31-925b-d212baef66bc\",\n\t\"asdad\"\n]",
+									"raw": "",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/",
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -5927,7 +5847,7 @@
 										"v1.0",
 										"gd",
 										"Transferencia",
-										""
+										"be51e993-c9d0-4dfb-b738-14607f865efa"
 									]
 								}
 							},
@@ -6246,124 +6166,32 @@
 					"_postman_isSubFolder": true
 				},
 				{
-					"name": "ComentarioTransferencia",
+					"name": "Comentario Transferencia",
 					"item": [
 						{
-							"name": "POST ComentarioTransferencia",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "uid",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
-										"type": "text"
-									},
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"string\",\r\n  \"transferenciaId\": \"0ec7addb-d1d4-413f-8255-513568198650\",\r\n  \"usuarioId\": \"userTestID\",\r\n  \"fecha\": \"2020-05-15\",\r\n  \"comentario\": \"Pendientes de ver para pasarlos a transporte\",\r\n  \"publico\": false\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/test/ComentarioTransferencia",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"test",
-										"ComentarioTransferencia"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "PUT ComentarioTransferencia",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"cd712c0a-c5cf-47e2-a4c7-941777cd7496\",\r\n \"TransferenciaId\": \"0ec7addb-d1d4-413f-8255-513568198650\",\r\n    \"UsuarioId\": \"userTestID\",\r\n    \"Fecha\": \"2020-05-10\",\r\n    \"Comentario\": \"Pendientes de ver para pasarlos a transporte edited\",\r\n    \"Publico\": true\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/test/ComentarioTransferencia/cd712c0a-c5cf-47e2-a4c7-941777cd7496",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"test",
-										"ComentarioTransferencia",
-										"cd712c0a-c5cf-47e2-a4c7-941777cd7496"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET metadata ComentarioTransferencia",
+							"name": "GET Metadata Comentario Transferencia",
 							"request": {
 								"method": "GET",
 								"header": [
 									{
-										"key": "uid",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
-										"type": "text"
-									},
-									{
 										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
+										"type": "text",
+										"value": "application/json"
 									}
 								],
 								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/Transferencia/test/ComentarioTransferencia/metadata",
-									"protocol": "https",
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/ca6bdfc2-9563-4a38-8c9c-03800839f041/ComentarioTransferencia/metadata",
+									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "5001",
+									"port": "5000",
 									"path": [
 										"api",
 										"v1.0",
 										"gd",
 										"Transferencia",
-										"test",
+										"ca6bdfc2-9563-4a38-8c9c-03800839f041",
 										"ComentarioTransferencia",
 										"metadata"
 									]
@@ -6372,69 +6200,26 @@
 							"response": []
 						},
 						{
-							"name": "GET ComentarioTransferencia",
+							"name": "POST  Comentario Transferencia",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [
 									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
-									{
 										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/Transferencia/test/ComentarioTransferencia/cd712c0a-c5cf-47e2-a4c7-941777cd7496",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"test",
-										"ComentarioTransferencia",
-										"cd712c0a-c5cf-47e2-a4c7-941777cd7496"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET page ComentarioTransferencia",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
-									{
-										"key": "Content-Type",
+										"name": "Content-Type",
 										"type": "text",
 										"value": "application/json"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n\"indice\": 0,\n\"tamano\": 10,\n\"columna_ordenamiento\": \"Nombre\",\n\"direccion_ordenamiento\": \"asc\",\n\"Filtros\": [\n\t{\"Propiedad\":\"nombre\",\"Operador\": \"contains\", \"Valor\": \" \"}\n\t]\n}",
+									"raw": "{\r\n  \"transferenciaId\": \"ca6bdfc2-9563-4a38-8c9c-03800839f041\",\r\n  \"usuarioId\": \"userTestID\",\r\n  \"fecha\": \"2020-05-15\",\r\n  \"comentario\": \"Pendientes de ver para pasarlos a transporte\",\r\n  \"publico\": false\r\n}",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/test/ComentarioTransferencia/page?i=0&t=100&ordc=Comentario&ordd=asc&",
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/ca6bdfc2-9563-4a38-8c9c-03800839f041/ComentarioTransferencia",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -6445,7 +6230,86 @@
 										"v1.0",
 										"gd",
 										"Transferencia",
-										"test",
+										"ca6bdfc2-9563-4a38-8c9c-03800839f041",
+										"ComentarioTransferencia"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Comentario Transferencia",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Id\": \"4e39656a-7391-4071-91bb-fb3b8e3c6cae\",\r\n    \"TransferenciaId\": \"be51e993-c9d0-4dfb-b738-14607f865efa\",\r\n    \"UsuarioId\": \"userTestID\",\r\n    \"Fecha\": \"2020-05-15T00:00:00\",\r\n    \"Comentario\": \"Pendientes de ver para pasarlos a transporte\",\r\n    \"Publico\": false\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ComentarioTransferencia/4e39656a-7391-4071-91bb-fb3b8e3c6cae",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Transferencia",
+										"be51e993-c9d0-4dfb-b738-14607f865efa",
+										"ComentarioTransferencia",
+										"4e39656a-7391-4071-91bb-fb3b8e3c6cae"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page  Comentario Transferencia",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ComentarioTransferencia/page?i=0&t=100&ordc=Comentario&ordd=asc",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Transferencia",
+										"be51e993-c9d0-4dfb-b738-14607f865efa",
 										"ComentarioTransferencia",
 										"page"
 									],
@@ -6465,10 +6329,6 @@
 										{
 											"key": "ordd",
 											"value": "asc"
-										},
-										{
-											"key": "",
-											"value": null
 										}
 									]
 								}
@@ -6476,15 +6336,10 @@
 							"response": []
 						},
 						{
-							"name": "Delete ComentarioTransferencia",
+							"name": "DELETE Comentario Transferencia",
 							"request": {
 								"method": "DELETE",
 								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
 									{
 										"key": "Content-Type",
 										"type": "text",
@@ -6493,13 +6348,13 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "[\t\"prueba\",\n\t\"cd712c0a-c5cf-47e2-a4c7-941777cd7496\",\n\t\"a97a64fa-5c12-4b31-925b-d212baef66bc\",\n\t\"asdad\"\n]",
+									"raw": "",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/test/ComentarioTransferencia",
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ComentarioTransferencia/b979c3a3-af6b-4399-a03a-cdf0d11a4c45",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -6510,44 +6365,13 @@
 										"v1.0",
 										"gd",
 										"Transferencia",
-										"test",
-										"ComentarioTransferencia"
+										"be51e993-c9d0-4dfb-b738-14607f865efa",
+										"ComentarioTransferencia",
+										"b979c3a3-af6b-4399-a03a-cdf0d11a4c45"
 									]
 								}
 							},
 							"response": []
-						}
-					],
-					"auth": {
-						"type": "bearer",
-						"bearer": [
-							{
-								"key": "token",
-								"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODk4Mjc0NDYsImV4cCI6MTU4OTgzMTA0NiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiJlYWJlZTkzNy1mMDA2LTQ4MTUtODBkMy00NjJjOTIzZDUwNWEiLCJhdXRoX3RpbWUiOjE1ODk4Mjc0NDUsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.OyMQOiEjbkp6Uy6gd3iKFzXEtsJu4vnwJtA_MbH8g7_skMzmbn4qTMfIdUv70e04EhCyLmmzt6XyySJITYsV256qEFqK8ysKQ-R96bwNudoyaoCJerF7pl-2pugExiUs3Mj4xPH3pngaNg6WSwpY9rA74W6Q7c89kaT_2xTejwJ-n2bYQifXeYdtsKNxQ_VySV7nQ6gm75RWSGahVflB7rwbVE7GLvknN3uFM0qgxRV3JTN5DLb9V4TQBszpgkZbOaRSc7HwmBXs-kXMl2byt_Dm5cibZ_j3wyNjZHqJKGHytaTPIbPzySrjzoBQ1QRrmDPcjML-vYsu5DYsW5qtow",
-								"type": "string"
-							}
-						]
-					},
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "0b71a891-74b6-4d4a-b7d8-6069651acb4c",
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"id": "924cc412-3bd3-4499-8d0e-c232fa387f4d",
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
 						}
 					],
 					"protocolProfileBehavior": {},
