@@ -180,8 +180,6 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
             throw new NotImplementedException();
         }
 
-
-
         public  Task<IEnumerable<string>>  Restaurar(string[] ids)
         {
             throw new NotImplementedException();

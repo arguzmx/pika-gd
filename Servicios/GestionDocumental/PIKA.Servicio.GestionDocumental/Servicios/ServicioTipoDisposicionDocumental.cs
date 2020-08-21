@@ -148,6 +148,16 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<IPaginado<TipoDisposicionDocumental>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<TipoDisposicionDocumental>, IIncludableQueryable<TipoDisposicionDocumental, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
+            if (Query.Filtros.Where(x => x.Propiedad.ToLower() == "eliminada").Count() == 0)
+            {
+                Query.Filtros.Add(new FiltroConsulta()
+                {
+                    Propiedad = "Eliminada",
+                    Negacion = true,
+                    Operador = "eq",
+                    Valor = "true"
+                });
+            }
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
             return respuesta;
