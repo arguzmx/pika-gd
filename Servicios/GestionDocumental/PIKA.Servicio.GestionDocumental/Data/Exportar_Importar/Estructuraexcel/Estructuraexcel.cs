@@ -6,9 +6,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
 {
     public class Estructuraexcel
     {
-        public void ExportarCuadroCalsificacionExcel(string id)
-        {
-        }
+        
         /// <summary>
         /// Idenificador del nùmero de columna
         /// </summary>

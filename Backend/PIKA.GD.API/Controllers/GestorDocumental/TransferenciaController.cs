@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.Metadatos;
+using PIKA.Servicio.GestionDocumental.Data.Exportar_Importar.Reporte_Transferencia;
 using PIKA.Servicio.GestionDocumental.Interfaces;
 using RepositorioEntidades;
 
@@ -122,7 +124,25 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             if (o != null) return Ok(o);
             return NotFound(id);
         }
-
+        /// <summary>
+        /// Obtiene un Transferencia en base al Id único
+        /// </summary>
+        /// <param name="id">Id único del Estado Cuadro Clasificacion</param>
+        /// <returns></returns>
+        [HttpGet("pageReporte", Name = "GetReporteTransferencia")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<Transferencia>> GetReporte(string TransferenciaId,string? columnas)
+        {
+            string[] Cols;
+            if (!String.IsNullOrEmpty(columnas))
+               Cols = columnas.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            else
+                Cols = "EntradaClasificacion.Clave,EntradaClasificacion.Nombre,Nombre,Asunto,FechaApertura,FechaCierre,CodigoOptico,CodigoElectronico,Reservado,Confidencial,Ampliado".Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            var o = await servicioTransferencia.ReporteTransferencia(TransferenciaId, Cols);
+            if (o != null) return Ok(o);
+            return NotFound(TransferenciaId);
+        }
         /// <summary>
         /// Elimina de manera permanente un Transferencia en base al arreglo de identificadores recibidos
         /// </summary>
