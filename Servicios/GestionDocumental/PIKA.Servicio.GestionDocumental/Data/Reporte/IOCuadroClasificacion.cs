@@ -45,7 +45,6 @@ namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar
 
         }
 
-
         /// <summary>
         /// Regresa una lista de la entidad Elementos Clasificación obtenio los hijos de cada elemento
         /// </summary>
@@ -63,18 +62,16 @@ namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar
       /// </summary>
       /// <param name="CuadroClasificacionId"></param>
       /// <returns></returns>
-        public async Task<Array> ExportarCuadroCalsificacionExcel(string CuadroClasificacionId,string ruta,string separador)
+        public async Task<byte[]> ExportarCuadroCalsificacionExcel(string CuadroClasificacionId,string ruta,string separador)
         {
-            byte[] byteArray;
             CrearDocumento CD = new CrearDocumento();
             List<Estructuraexcel> listExport = new List<Estructuraexcel>();
 
             string CuadroClasificaiconId = CuadroClasificacionId;
                 await LlenadoCuadroClasificacion(CuadroClasificacionId, listExport);
 
-           return await CD.CrearArchivo(listExport, CuadroClasificaiconId, ruta,separador, await ObtineNombreCuadroClasificacion(CuadroClasificaiconId));
+           return  CD.CrearArchivo(listExport, CuadroClasificaiconId, ruta,separador, await ObtineNombreCuadroClasificacion(CuadroClasificaiconId));
          
-
         }
         /// <summary>
         /// Elemina la ruta del cuadro clasificacion siempre y cuando se haga un cambbio a la estructura del cuadro clasificación
