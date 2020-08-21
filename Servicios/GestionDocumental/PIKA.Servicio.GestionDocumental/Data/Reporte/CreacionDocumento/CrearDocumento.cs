@@ -36,9 +36,8 @@ namespace PIKA.Servicio.GestionDocumental.Data
             }
         }
 
-        public async Task<Array> CrearArchivo(List<Estructuraexcel> ListaFile, string CuadroClasificacionId, string ruta, string separador, string nombre)
+        public byte[] CrearArchivo(List<Estructuraexcel> ListaFile, string CuadroClasificacionId, string ruta, string separador, string nombre)
         {
-            byte[] byteArray;
 
             string fileName = $@"{ruta}{separador}{CuadroClasificacionId}{separador}{nombre}.xlsx";
 
@@ -105,7 +104,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
             }
 
         }
-        public async Task<string> CrearArchivoExcel(List<Estructuraexcel> ListaFile,string id, string ruta, string separador, string nombre)
+        public string CrearArchivoExcel(List<Estructuraexcel> ListaFile,string id, string ruta, string separador, string nombre)
         {
 
             string fileName = $@"{ruta}{separador}{id}{separador}{nombre}.xlsx";
@@ -173,7 +172,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
 
         }
 
-        public async Task<string> CreaArchivoExistente(List<Estructuraexcel> ListaFile, string id, string ruta, string nombre)
+        public string CreaArchivoExistente(List<Estructuraexcel> ListaFile, string id, string ruta, string nombre)
         {
            
                 // Open the document for editing.

@@ -46,15 +46,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             this.ioCuadroClasificacion = new IOCuadroClasificacion(Logger, proveedorOpciones);
         }
 
-
         public async Task<bool> Existe(Expression<Func<CuadroClasificacion, bool>> predicado)
         {
             List<CuadroClasificacion> l = await this.repo.ObtenerAsync(predicado);
             if (l.Count() == 0) return false;
             return true;
         }
-
-
         public async Task<CuadroClasificacion> CrearAsync(CuadroClasificacion entity, CancellationToken cancellationToken = default)
         {
             if (await Existe(x => x.Nombre.Equals(entity.Nombre.Trim(), StringComparison.InvariantCultureIgnoreCase)
@@ -75,8 +72,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             return entity.Copia();
         }
-
-       
         public async Task ActualizarAsync(CuadroClasificacion entity)
         {
             if (!await ValidarRelacionEstado(entity.EstadoCuadroClasificacionId.Trim()))
@@ -126,7 +121,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             return respuesta;
         }
-
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
             CuadroClasificacion c;
@@ -146,8 +140,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.SaveChanges();
             return listaEliminados;
         }
-
-
         public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
             CuadroClasificacion c;
@@ -178,7 +170,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return nombre;
 
         }
-
         private async Task<bool> ValidarRelacionEstado(string EstadoCuadroClasificacionId)
 
         {
@@ -188,18 +179,16 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             else
                 return false;
         }
-       
         public async Task<CuadroClasificacion> UnicoAsync(Expression<Func<CuadroClasificacion, bool>> predicado = null, Func<IQueryable<CuadroClasificacion>, IOrderedQueryable<CuadroClasificacion>> ordenarPor = null, Func<IQueryable<CuadroClasificacion>, IIncludableQueryable<CuadroClasificacion, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             CuadroClasificacion c = await this.repo.UnicoAsync(predicado);
             return c.Copia();
         }
-        public async Task<Array> ExportarCuadroCalsificacionExcel(string id)
+        public async Task<byte[]> ExportarCuadroCalsificacionExcel(string id)
         {
-            Array a = await ioCuadroClasificacion.ExportarCuadroCalsificacionExcel(id, ConfiguracionServidor.ruta_cache_fisico,ConfiguracionServidor.separador_ruta);
+            byte[] a = await ioCuadroClasificacion.ExportarCuadroCalsificacionExcel(id, ConfiguracionServidor.ruta_cache_fisico,ConfiguracionServidor.separador_ruta);
             return a;
         }
-
         public Task<List<CuadroClasificacion>> ObtenerAsync(Expression<Func<CuadroClasificacion, bool>> predicado)
         {
             return this.repo.ObtenerAsync(predicado);
