@@ -11,6 +11,8 @@ using PIKA.Modelo.Metadatos.Atributos;
 namespace PIKA.Modelo.GestorDocumental
 {
     [Entidad(PaginadoRelacional: false, EliminarLogico: true)]
+    [EntidadVinculada(EntidadHijo: "ampliacion", Cardinalidad: TipoCardinalidad.UnoVarios,
+        PropiedadPadre: "Id", PropiedadHijo: "ActivoId")]
     public class Activo: Entidad<string>, IEntidadRelacionada, IEntidadIdElectronico, IEntidadEliminada
     {
 
@@ -32,7 +34,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Establece el archivo en el que fue originado el activo
         /// </summary>
-        [Prop(Required: true, OrderIndex: 4)]
+        [Prop(Required: true, OrderIndex: 4, Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
         [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false)]
         public string ArchivoOrigenId { get; set; }
@@ -70,7 +72,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Asunto de la entrada de inventario
         /// </summary>
-        [Prop(Required: false, OrderIndex: 30)]
+        [Prop(Required: false, OrderIndex: 30, Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXTAREA, Accion: Acciones.addupdate)]
         [ValidString(minlen: 2, maxlen: 2048)]
         public string Asunto { get; set; }
@@ -79,7 +81,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Código de barras o QR de la entrada para ser leído por un scanner 
         /// </summary>
-        [Prop(Required: false, OrderIndex: 40)]
+        [Prop(Required: false, OrderIndex: 40, Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
         [ValidString(minlen: 1, maxlen: 512)]
         public string CodigoOptico { get; set; }
@@ -89,7 +91,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Código electrónico de acceso al elemento por ejemplo RFID
         /// </summary>
-        [Prop(Required: false, OrderIndex: 50)]
+        [Prop(Required: false, OrderIndex: 50, Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.update)]
         [ValidString(minlen: 1, maxlen: 512)]
         public string CodigoElectronico { get; set; }
@@ -97,27 +99,27 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Indica que el elemento se encuentra en formato electrónico desde su creación
         /// </summary>
-        [Prop(Required: false, OrderIndex: 60, DefaultValue: "false")]
+        [Prop(Required: false, OrderIndex: 60, DefaultValue: "false", Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
         public bool EsElectronio { get; set; }
 
         /// <summary>
         /// Especifica si el activo se encuentra marcado como en reserva
         /// </summary>
-        [Prop(Required: false, OrderIndex: 60, DefaultValue: "false")]
+        [Prop(Required: false, OrderIndex: 60, DefaultValue: "false", Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
         public bool Reservado { get; set; }
 
         /// <summary>
         /// Especifica si el activo se encuentra marcado como confidenxial
         /// </summary>
-        [Prop(Required: false, OrderIndex: 60, DefaultValue: "false")]
+        [Prop(Required: false, OrderIndex: 60, DefaultValue: "false", Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
         public bool Confidencial { get; set; }
 
 
 
-        [Prop(Required: false, OrderIndex: 100, DefaultValue: "false")]
+        [Prop(Required: false, OrderIndex: 100, DefaultValue: "false", Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.none)]
         public bool Eliminada { get; set; }
 
@@ -137,7 +139,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// ESTOS VALORES SE CALCULAR POR SISTEMA  EN BASE AL CONTROL DE PRESTAMO
         /// </summary>
-        [Prop(Required: false, OrderIndex: 110, DefaultValue: "false")]
+        [Prop(Required: false, OrderIndex: 110, DefaultValue: "false", Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.none)]
         public bool EnPrestamo { get; set; }
 
@@ -146,7 +148,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// Especifica si el activo tiene ampliaciones vigentes
         /// ESTOS VALORES SE CALCULAR POR SISTEMA  EN BASE A SI TIENE AMPLIACIONES ACTIVAS
         /// </summary>
-        [Prop(Required: false, OrderIndex: 120, DefaultValue: "false")]
+        [Prop(Required: false, OrderIndex: 120, DefaultValue: "false", Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.none)]
         public bool Ampliado { get; set; }
 
@@ -154,7 +156,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// Fecha límite de retención calculada al cierre para el archivo de trámite
         /// ESTOS VALORES SE CALCULAR POR SISTEMA CUANDO SE ESTABLECE LA FECHA DE CIERRE
         /// </summary>
-        [Prop(Required: false, OrderIndex: 130)]
+        [Prop(Required: false, OrderIndex: 130, Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_DATE, Accion: Acciones.none)]
         public DateTime? FechaRetencionAT { get; set; }
 
@@ -162,7 +164,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// Fecha límite de retención calculada al cierre para el archivo de concentracion
         /// ESTOS VALORES SE CALCULAR POR SISTEMA CUANDO SE ESTABLECE LA FECHA DE CIERRE
         /// </summary>
-        [Prop(Required: false, OrderIndex: 140)]
+        [Prop(Required: false, OrderIndex: 140, Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_DATE, Accion: Acciones.none)]
         public DateTime? FechaRetencionAC { get; set; }
 

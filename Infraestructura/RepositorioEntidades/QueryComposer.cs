@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-
+using System.Resources;
 
 namespace RepositorioEntidades
 {
@@ -22,47 +23,148 @@ namespace RepositorioEntidades
             string Operador, string Value, bool negar)
         {
 
+            //2020-07-14T12:33:12-05:00,2020-11-27T12:43:08-06:00
+            string[] valores = Value.Split(',');
+
+            List<DateTime> fechas = new List<DateTime>();
+            foreach (string v in valores)
+            {
+                if (DateTime.TryParse(v, out DateTime f))
+                {
+                    fechas.Add(f);
+                }
+            }
+
+            if (fechas.Count == 0)
+            {
+                return null;
+            }else
+            {
+                switch(Operador)
+                {
+                    case FiltroConsulta.OP_BETWEN:
+                        if (fechas.Count < 2) return null;
+                        break;
+                }
+            }
+
+
+
             Expression exp = Expression.Property(x, p.Name);
             Expression comparison = null;
-            BinaryExpression nullCheck = Expression.NotEqual(exp, Expression.Constant(null, typeof(object)));
-            BinaryExpression IsNUll = Expression.Equal(exp, Expression.Constant(null, typeof(object)));
+            Expression hasValueExpression = null;
+            Expression valueExpression = null;
+            bool nulable = Nullable.GetUnderlyingType(p.PropertyType) != null;
+            //UnaryExpression nullCheck = null;
+            //BinaryExpression IsNUll = null;
 
-            if (DateTime.TryParse(Value, out DateTime t))
+            if (nulable)
             {
+                hasValueExpression = Expression.Property(exp, "HasValue");
+                valueExpression = Expression.Property(exp, "Value");
+            }
 
                 switch (Operador)
                 {
 
-                    case FiltroConsulta.OP_ISNULL:
-                        comparison = IsNUll;
-                        break;
+                //case FiltroConsulta.OP_ISNULL:
+                //    comparison = IsNUll;
+                //    break;
 
-                    case FiltroConsulta.OP_ISNOTNULL:
-                        comparison = nullCheck;
-                        break;
+                //case FiltroConsulta.OP_ISNOTNULL:
+                //    comparison = nullCheck;
+                //    break;
+
+                case FiltroConsulta.OP_BETWEN:
+                    if (nulable)
+                    {
+                        Expression despuesE = Expression.GreaterThanOrEqual(valueExpression, Expression.Constant(fechas[0]));
+                        Expression anteE = Expression.LessThanOrEqual(valueExpression, Expression.Constant(fechas[1]));
+                        Expression despuesEV = Expression.AndAlso(hasValueExpression, despuesE);
+                        Expression anteEV = Expression.AndAlso(hasValueExpression, anteE);
+                        comparison = Expression.AndAlso(despuesEV, anteEV);
+                    }
+                    else
+                    {
+                        Expression despuesE = Expression.GreaterThanOrEqual(exp, Expression.Constant(fechas[0]));
+                        Expression anteE = Expression.LessThanOrEqual(exp, Expression.Constant(fechas[1]));
+                        comparison = Expression.AndAlso(despuesE, anteE);
+                    }
+                    break;
 
                     case FiltroConsulta.OP_NEQ:
-                        comparison = Expression.AndAlso(nullCheck, Expression.NotEqual(exp, Expression.Constant(t)));
+                        if (nulable)
+                        {
+                            Expression tmp = Expression.NotEqual(valueExpression, Expression.Constant(fechas[0]));
+                            comparison = Expression.AndAlso(hasValueExpression, tmp);
+
+                        } else
+                        {
+                            comparison = Expression.NotEqual(exp, Expression.Constant(fechas[0]));
+                        }
+                        
                         break;
 
                     case FiltroConsulta.OP_EQ:
-                        comparison = Expression.AndAlso(nullCheck, Expression.Equal(exp, Expression.Constant(t)));
+                        if (nulable)
+                        {
+                            Expression tmp = Expression.Equal(valueExpression, Expression.Constant(fechas[0]));
+                            comparison = Expression.AndAlso(hasValueExpression, tmp);
+                        }
+                        else
+                        {
+                            comparison = Expression.Equal(exp, Expression.Constant(fechas[0]));
+                        }
                         break;
 
                     case FiltroConsulta.OP_GT:
-                        comparison = Expression.AndAlso(nullCheck, Expression.GreaterThan(exp, Expression.Constant(t)));
+                        if (nulable)
+                        {
+                            Expression tmp = Expression.GreaterThan(valueExpression, Expression.Constant(fechas[0]));
+                            comparison = Expression.AndAlso(hasValueExpression, tmp);
+                        }
+                        else
+                        {
+                            comparison = Expression.GreaterThan(exp, Expression.Constant(fechas[0]));
+                        }
+                        
                         break;
 
                     case FiltroConsulta.OP_GTE:
-                        comparison = Expression.AndAlso(nullCheck, Expression.GreaterThanOrEqual(exp, Expression.Constant(t)));
+                        if (nulable)
+                        {
+                            Expression tmp = Expression.GreaterThanOrEqual(valueExpression, Expression.Constant(fechas[0]));
+                            comparison = Expression.AndAlso(hasValueExpression, tmp);
+                        }
+                        else
+                        {
+                            comparison = Expression.GreaterThanOrEqual(exp, Expression.Constant(fechas[0]));
+                        }
+                        
                         break;
 
                     case FiltroConsulta.OP_LT:
-                        comparison = Expression.AndAlso(nullCheck, Expression.LessThan(exp, Expression.Constant(t)));
+                        if (nulable)
+                        {
+                            Expression tmp = Expression.LessThan(valueExpression, Expression.Constant(fechas[0]));
+                            comparison = Expression.AndAlso(hasValueExpression, tmp);
+                        }
+                        else
+                        {
+                            comparison = Expression.LessThan(exp, Expression.Constant(fechas[0]));
+                        }
                         break;
 
                     case FiltroConsulta.OP_LTE:
-                        comparison = Expression.AndAlso(nullCheck, Expression.LessThanOrEqual(exp, Expression.Constant(t)));
+                        if (nulable)
+                        {
+                            Expression tmp = Expression.LessThanOrEqual(valueExpression, Expression.Constant(fechas[0]));
+                            comparison = Expression.AndAlso(hasValueExpression, tmp);
+                        }
+                        else
+                        {
+                            comparison = Expression.LessThanOrEqual(exp, Expression.Constant(fechas[0]));
+                        }
                         break;
 
                     case FiltroConsulta.OP_EXIST:
@@ -71,7 +173,6 @@ namespace RepositorioEntidades
                     default:
                         return null;
                 }
-            }
 
 
 
@@ -96,38 +197,60 @@ namespace RepositorioEntidades
             BinaryExpression isNotNull = Expression.NotEqual(pe, Expression.Constant(null, typeof(object)));
             BinaryExpression IsNUll = Expression.Equal(pe, Expression.Constant(null, typeof(object)));
             Expression constantExpression = null;
+            Expression constantExpression2 = null;
             Expression final = null;
+
+            string[] valores = Value.Split(',');
+            List<string> numeros = new List<string>();
+            foreach (string v in valores)
+            {
+                if (decimal.TryParse(v, out decimal f))
+                {
+                    numeros.Add(v);
+                }
+            }
+
+            if (numeros.Count == 0)
+            {
+                return null;
+            }
+            else
+            {
+                switch (Operador)
+                {
+                    case FiltroConsulta.OP_BETWEN:
+                        if (numeros.Count < 2) return null;
+                        break;
+                }
+            }
 
 
             switch (p.PropertyType)
             {
 
+                case Type intTypeNull when intTypeNull == typeof(int?):
                 case Type intType when intType == typeof(int):
-                    if (int.TryParse(Value, out int i))
-                    {
-                        constantExpression = Expression.Constant(i);
-                    }
+                    constantExpression = Expression.Constant(int.Parse(numeros[0]));
+                    constantExpression2 = numeros.Count<2 ? null : Expression.Constant(int.Parse(numeros[1]));
                     break;
 
+                case Type longypeNull when longypeNull == typeof(long?):
                 case Type longype when longype == typeof(long):
-                    if (long.TryParse(Value, out long l))
-                    {
-                        constantExpression = Expression.Constant(l);
-                    }
+                    constantExpression = Expression.Constant(long.Parse(numeros[0]));
+                    constantExpression2 = numeros.Count < 2 ? null : Expression.Constant(long.Parse(numeros[1]));
                     break;
 
+
+                case Type floatypeNull when floatypeNull == typeof(float?):
                 case Type floatype when floatype == typeof(float):
-                    if (float.TryParse(Value, out float f))
-                    {
-                        constantExpression = Expression.Constant(f);
-                    }
+                    constantExpression = Expression.Constant(float.Parse(numeros[0]));
+                    constantExpression2 = numeros.Count < 2 ? null : Expression.Constant(float.Parse(numeros[1]));
                     break;
 
+                case Type decimalTypeNull when decimalTypeNull == typeof(decimal?):
                 case Type decimalType when decimalType == typeof(decimal):
-                    if (decimal.TryParse(Value, out decimal d))
-                    {
-                        constantExpression = Expression.Constant(d);
-                    }
+                    constantExpression = Expression.Constant(decimal.Parse(numeros[0]));
+                    constantExpression2 = numeros.Count < 2 ? null : Expression.Constant(decimal.Parse(numeros[1]));
                     break;
             }
 
@@ -142,6 +265,12 @@ namespace RepositorioEntidades
 
                     case FiltroConsulta.OP_ISNOTNULL:
                         final = isNotNull;
+                        break;
+
+                    case FiltroConsulta.OP_BETWEN:
+                        Expression despuesE = Expression.GreaterThanOrEqual(pe, constantExpression);
+                        Expression anteE = Expression.LessThanOrEqual(pe, constantExpression2);
+                        final = Expression.AndAlso(despuesE, anteE);
                         break;
 
                     case FiltroConsulta.OP_NEQ:
@@ -267,7 +396,6 @@ namespace RepositorioEntidades
    
             if (!string.IsNullOrEmpty(Value))
             {
-                Console.Write($" opgse: {Operador}      {Value}");
                 switch (Operador)
                 {
                     case FiltroConsulta.OP_ISNULL:
@@ -386,7 +514,6 @@ namespace RepositorioEntidades
                     var p = Props.Where(x => x.Name == f.Propiedad).FirstOrDefault();
                     if (p == null) continue;
 
-
                     if (p != null)
                     {
                         switch (p.PropertyType)
@@ -399,6 +526,7 @@ namespace RepositorioEntidades
                                 break;
 
 
+                            case Type datetimeTypeNull when datetimeTypeNull == typeof(DateTime?):
                             case Type datetimeType when datetimeType == typeof(DateTime):
                                 e = GetDateTimeExpression(pe, p, f.Operador, f.Valor, f.Negacion);
                                 break;
@@ -428,7 +556,6 @@ namespace RepositorioEntidades
                 }
 
             }
-
           
             return final;
         }
