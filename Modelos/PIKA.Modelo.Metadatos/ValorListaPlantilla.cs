@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RepositorioEntidades;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,7 +12,7 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public string PropiedadId { get; set; }
 
+  
         public PropiedadPlantilla Propiedad { get; set; }
-
     }
 }
