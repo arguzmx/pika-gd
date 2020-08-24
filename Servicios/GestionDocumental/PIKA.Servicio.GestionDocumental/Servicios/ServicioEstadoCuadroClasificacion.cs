@@ -159,7 +159,16 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                     Query.Filtros[i].Propiedad = "Nombre";
                 }
             }
-
+            if (Query.Filtros.Where(x => x.Propiedad.ToLower() == "eliminada").Count() == 0)
+            {
+                Query.Filtros.Add(new FiltroConsulta()
+                {
+                    Propiedad = "Eliminada",
+                    Negacion = true,
+                    Operador = "eq",
+                    Valor = "true"
+                });
+            }
             Query = GetDefaultQuery(Query);
             var resultados = await this.repo.ObtenerPaginadoAsync(Query);
             List<ValorListaOrdenada> l = resultados.Elementos.Select(x => new ValorListaOrdenada()
