@@ -64,7 +64,7 @@ namespace PIKA.Modelo.GestorDocumental
         [Prop(Required: true, OrderIndex: 40)]
         [VistaUI(ControlUI: ControlUI.HTML_NUMBER, Accion: Acciones.addupdate)]
         [ValidNumeric(min: 0, max: 60, defaulvalue: 0)]
-        public int MesesVigenciTramite { get; set; }
+        public int VigenciaTramite { get; set; }
 
         /// <summary>
         /// Especifica los meses que debe permanecer el expediente o documento en el archivo de concentración una vez que ha sido cerrado
@@ -72,15 +72,9 @@ namespace PIKA.Modelo.GestorDocumental
         [Prop(Required: true, OrderIndex: 50)]
         [VistaUI(ControlUI: ControlUI.HTML_NUMBER, Accion: Acciones.addupdate)]
         [ValidNumeric(min: 0, max: 60, defaulvalue: 0)]
-        public int MesesVigenciConcentracion { get; set; }
+        public int VigenciaConcentracion { get; set; }
 
-        /// <summary>
-        /// Especifica los meses que debe permanecer el expediente o documento en el archivo de histórico una vez que ha sido cerrado
-        /// </summary>
-        [Prop(Required: true, OrderIndex: 60)]
-        [VistaUI(ControlUI: ControlUI.HTML_NUMBER, Accion: Acciones.addupdate)]
-        [ValidNumeric(min: 0, max: 60, defaulvalue: 0)]
-        public int MesesVigenciHistorico { get; set; }
+        
 
         /// <summary>
         /// Identificador único del tipo de disposición documental para la entrada

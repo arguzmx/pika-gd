@@ -186,7 +186,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar
         /// <returns></returns>
         private string ValorEncabezado(int indice) 
         {
-            string ListEncabezado = "Clave,AT,AC,AH,Tipo Disposición,Eliminado";
+            string ListEncabezado = "Clave,AT,AC,Tipo Disposición,Eliminado";
             string text="";
             switch (indice)
             {
@@ -202,9 +202,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar
                 case 4:
                     text = ListEncabezado.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray()[3];
                     break;
-                case 5:
-                    text = ListEncabezado.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray()[5];
-                    break;
+              
                 case 6:
                     text = ListEncabezado.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray()[4];
                     break;
@@ -246,11 +244,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar
             {
                 IndiceColumna = IndiceColumna + 1;
                 if (i == 2)
-                { nombreclave = EntradasClasificion.MesesVigenciTramite.ToString(); }
+                { nombreclave = EntradasClasificion.VigenciaTramite.ToString(); }
                 if (i == 3)
-                { nombreclave = EntradasClasificion.MesesVigenciConcentracion.ToString(); }
-                if (i == 4)
-                { nombreclave = EntradasClasificion.MesesVigenciHistorico.ToString(); }
+                { nombreclave = EntradasClasificion.VigenciaConcentracion.ToString(); }
                 if (i == 5)
                 { nombreclave = EntradasClasificion.Eliminada ? "Eliminado" : ""; }
                 if (i == 6)
