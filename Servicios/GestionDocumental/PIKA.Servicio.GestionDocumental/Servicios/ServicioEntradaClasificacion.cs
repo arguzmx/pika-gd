@@ -46,8 +46,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             this.repoTD = UDT.ObtenerRepositoryAsync<TipoDisposicionDocumental>(new QueryComposer<TipoDisposicionDocumental>());
             this.repoTEC = UDT.ObtenerRepositoryAsync<TipoValoracionDocumental>(new QueryComposer<TipoValoracionDocumental>());
         }
-
-
         public async Task<bool> Existe(Expression<Func<EntradaClasificacion, bool>> predicado)
         {
             List<EntradaClasificacion> l = await this.repo.ObtenerAsync(predicado);
