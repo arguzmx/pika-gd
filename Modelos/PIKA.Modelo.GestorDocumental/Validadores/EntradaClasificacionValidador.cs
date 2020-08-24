@@ -16,9 +16,8 @@ namespace PIKA.Modelo.GestorDocumental.Validadores
             RuleFor(x => x.TipoDisposicionDocumentalId).MaximumLength(LongitudDatos.GUID);
             RuleFor(x=>x.Clave).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.GUID);
             RuleFor(x=>x.Posicion).GreaterThanOrEqualTo(0);
-            RuleFor(x=>x.MesesVigenciTramite).GreaterThanOrEqualTo(0);
-            RuleFor(x=>x.MesesVigenciConcentracion).GreaterThanOrEqualTo(0);
-            RuleFor(x=>x.MesesVigenciHistorico).GreaterThanOrEqualTo(0);
+            RuleFor(x=>x.VigenciaTramite).GreaterThanOrEqualTo(0);
+            RuleFor(x=>x.VigenciaConcentracion).GreaterThanOrEqualTo(0);
         }
     }
 }

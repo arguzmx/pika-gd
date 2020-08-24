@@ -152,9 +152,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             o.Eliminada = entity.Eliminada;
             o.Clave = entity.Clave.Trim();
             o.DisposicionEntrada = entity.DisposicionEntrada;
-            o.MesesVigenciConcentracion = entity.MesesVigenciConcentracion;
-            o.MesesVigenciHistorico = entity.MesesVigenciHistorico;
-            o.MesesVigenciTramite = entity.MesesVigenciTramite;
+            o.VigenciaConcentracion = entity.VigenciaConcentracion;
+            o.VigenciaTramite = entity.VigenciaTramite;
             o.Posicion = entity.Posicion;
             
             if(!String.IsNullOrEmpty(entity.TipoDisposicionDocumentalId))

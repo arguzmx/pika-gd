@@ -114,8 +114,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             if (o.FechaCierre.HasValue)
             {
                 EntradaClasificacion ec = await repoEC.UnicoAsync(x => x.Id == entity.EntradaClasificacionId);
-                o.FechaRetencionAT = ((DateTime)o.FechaCierre).AddYears(ec.MesesVigenciTramite);
-                o.FechaRetencionAC = ((DateTime)o.FechaCierre).AddYears(ec.MesesVigenciTramite + ec.MesesVigenciConcentracion);
+                o.FechaRetencionAT = ((DateTime)o.FechaCierre).AddYears(ec.VigenciaTramite);
+                o.FechaRetencionAC = ((DateTime)o.FechaCierre).AddYears(ec.VigenciaTramite + ec.VigenciaConcentracion);
             } else
             {
                 o.FechaRetencionAT = null;

@@ -22,10 +22,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.Clave).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.Posicion).IsRequired();
-            builder.Property(x => x.MesesVigenciTramite).IsRequired();
+            builder.Property(x => x.VigenciaTramite).IsRequired();
             builder.Property(x => x.Eliminada).HasDefaultValue(false).IsRequired();
-            builder.Property(x => x.MesesVigenciConcentracion).IsRequired();
-            builder.Property(x => x.MesesVigenciHistorico).IsRequired();
+            builder.Property(x => x.VigenciaConcentracion).IsRequired();
 
             builder.Ignore(x => x.NombreCompleto);
 
