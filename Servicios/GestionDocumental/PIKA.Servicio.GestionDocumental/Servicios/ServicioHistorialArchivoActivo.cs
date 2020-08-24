@@ -176,9 +176,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             throw new NotImplementedException();
         }
-
-       
-
         public Task EjecutarSqlBatch(List<string> sqlCommand)
         {
             throw new NotImplementedException();

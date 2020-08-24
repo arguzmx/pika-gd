@@ -104,12 +104,9 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Transferencia>>> GetPage([FromQuery] Consulta query = null)
         {
-            var data = await servicioTransferencia.ObtenerPaginadoAsync(
-                    Query: query,
-                    include: null)
-                    .ConfigureAwait(false);
-
-            return Ok(data);
+            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
+            var data = await servicioTransferencia.ObtenerPaginadoAsync(query).ConfigureAwait(false);
+            return Ok(data.Elementos.ToList<Transferencia>());
         }
 
         /// <summary>
@@ -135,13 +132,10 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [HttpGet("pageReporte", Name = "GetReporteTransferencia")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Transferencia>> GetReporte(string TransferenciaId,string? columnas)
+        public async Task<ActionResult<Transferencia>> GetReporte(string TransferenciaId,string columnas)
         {
-            string[] Cols;
-            if (!String.IsNullOrEmpty(columnas))
-               Cols = columnas.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            else
-                Cols = "EntradaClasificacion.Clave,EntradaClasificacion.Nombre,Nombre,Asunto,FechaApertura,FechaCierre,CodigoOptico,CodigoElectronico,Reservado,Confidencial,Ampliado".Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            string[] Cols = columnas.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray();
+
             var o = await servicioTransferencia.ReporteTransferencia(TransferenciaId, Cols);
             if (o != null) return Ok(o);
             return NotFound(TransferenciaId);
