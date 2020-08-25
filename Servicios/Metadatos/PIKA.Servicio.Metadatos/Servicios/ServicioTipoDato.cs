@@ -29,8 +29,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
         public ServicioTipoDato(
           IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
           ICompositorConsulta<TipoDato> compositorConsulta,
-          ILogger<ServicioTipoDato> Logger,
-          IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+          ILogger<ServicioTipoDato> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
             this.compositor = compositorConsulta;
@@ -56,7 +55,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            return entity;
+            return entity.Copia();
         }
 
         public async Task ActualizarAsync(TipoDato entity)
@@ -172,7 +171,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
             TipoDato d = await this.repo.UnicoAsync(predicado);
 
-            return d.CopiaTipoDato();
+            return d.Copia();
         }
     }
 }

@@ -20,20 +20,13 @@ namespace PIKA.Servicio.Metadatos.Data
 
         public DbContextMetadatos Crear()
         {
-
-
             return new DbContextMetadatos(proveedorOpciones.ObtieneOpciones());
         }
     }
-
     public class DbContextMetadatos : DbContext, IRepositorioInicializable
     {
         public DbContextMetadatos(DbContextOptions options)
-
-
-       : base(options)
-
-
+     : base(options)
         {
         }
 
@@ -94,7 +87,9 @@ namespace PIKA.Servicio.Metadatos.Data
         /// Almacenes de datos disponibles en la aplicación
         /// </summary>
         public static string TablaAlmacenDatos { get => "metadatos$almacendatos"; }
-
+        /// <summary>
+        /// Valores Lista propiedad
+        /// </summary>
         public static string TablaValoresListaPropiedad { get => "metadatos$valorespropiedad"; }
 
         #endregion

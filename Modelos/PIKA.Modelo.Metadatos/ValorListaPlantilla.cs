@@ -1,7 +1,8 @@
-﻿using RepositorioEntidades;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Metadatos
 {
@@ -11,8 +12,9 @@ namespace PIKA.Modelo.Metadatos
         ///  Identificadro único de la propiead a la que pertenece el elemento
         /// </summary>
         public string PropiedadId { get; set; }
-
-  
+        [XmlIgnore]
+        [JsonIgnore]
         public PropiedadPlantilla Propiedad { get; set; }
+
     }
 }
