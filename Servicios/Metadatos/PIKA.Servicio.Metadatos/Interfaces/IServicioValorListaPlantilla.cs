@@ -6,7 +6,7 @@ using RepositorioEntidades;
 
 namespace PIKA.Servicio.Metadatos.Interfaces
 {
-  public interface IServicioTipoAlmacenMetadatos : IServicioRepositorioAsync<TipoAlmacenMetadatos, string>, IServicioValorTextoAsync<TipoAlmacenMetadatos>
+    public interface IServicioValorListaPlantilla : IServicioRepositorioAsync<ValorListaPlantilla, string>
     {
 
     }

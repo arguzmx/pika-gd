@@ -29,8 +29,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
         public ServicioAsociacionPlantilla(
           IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
           ICompositorConsulta<AsociacionPlantilla> compositorConsulta,
-          ILogger<ServicioAsociacionPlantilla> Logger,
-          IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+          ILogger<ServicioAsociacionPlantilla> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
             this.compositor = compositorConsulta;
@@ -55,7 +54,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            return entity;
+            return entity.Copia();
         }
 
         public async Task ActualizarAsync(AsociacionPlantilla entity)
@@ -159,7 +158,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
             AsociacionPlantilla d = await this.repo.UnicoAsync(predicado);
 
-            return d.CopiaAsociacionPlantilla();
+            return d.Copia();
         }
 
 

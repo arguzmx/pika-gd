@@ -29,8 +29,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
         public ServicioAtributoTabla(
            IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
            ICompositorConsulta<AtributoTabla> compositorConsulta,
-           ILogger<ServicioAtributoTabla> Logger,
-           IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+           ILogger<ServicioAtributoTabla> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
             this.compositor = compositorConsulta;
@@ -179,7 +178,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
             AtributoTabla d = await this.repo.UnicoAsync(predicado);
 
-            return d.CopiaAtributoTabla();
+            return d.Copia();
         }
     }
 }

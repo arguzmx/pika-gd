@@ -11,29 +11,11 @@ namespace PIKA.Modelo.Metadatos.Validadores
     {
         public AtributoTablaValidador(IStringLocalizer<AtributoTabla> localizer)
         {
-            RuleFor(x => x.PropiedadId)
-                .NotNull().WithMessage(x => localizer["El id propiedad es obligatorio"])
-                .NotEmpty().WithMessage(x => localizer["El id propiedad es obligatorio"])
-                .MinimumLength(1).WithMessage(x => localizer["El id propiedad debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre])
-                .MaximumLength(LongitudDatos.Nombre).WithMessage(x => localizer["El id propiedad debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre]);
-          
-            RuleFor(x => x.IdTablaCliente)
-                            .NotNull().WithMessage(x => localizer["El id tabla cliente es obligatorio"])
-                            .NotEmpty().WithMessage(x => localizer["El id tabla cliente es obligatorio"])
-                            .MinimumLength(1).WithMessage(x => localizer["El id tabla cliente debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre])
-                            .MaximumLength(LongitudDatos.Nombre).WithMessage(x => localizer["El id tabla cliente debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre]);
-
-            RuleFor(x => x.Incluir)
-             .NotNull().WithMessage(x => localizer["El incluir es obligatoria"])
-             .NotEmpty().WithMessage(x => localizer["El incluir es obligatorio"]);
-
-            RuleFor(x => x.Visible)
-           .NotNull().WithMessage(x => localizer["El visible es obligatoria"])
-           .NotEmpty().WithMessage(x => localizer["El visible es obligatorio"]);
-
-            RuleFor(x => x.Alternable)
-           .NotNull().WithMessage(x => localizer["El alternable es obligatoria"])
-           .NotEmpty().WithMessage(x => localizer["El alternable es obligatorio"]);
+            RuleFor(x => x.PropiedadId).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.Nombre);
+            RuleFor(x => x.IdTablaCliente).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.Nombre);
+            RuleFor(x => x.Incluir).NotEmpty();
+            RuleFor(x => x.Visible).NotEmpty();
+            RuleFor(x => x.Alternable).NotEmpty();
 
         }
     }
