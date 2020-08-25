@@ -33,7 +33,8 @@ namespace PIKA.Modelo.Metadatos
         [JsonIgnore]
         public Plantilla Plantilla { get; set; }
 
-
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ICollection<ValorListaPlantilla> ValoresLista { get; set; }
 
 

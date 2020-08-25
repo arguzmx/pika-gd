@@ -29,8 +29,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
         public ServicioTipoAlmacenMetadatos(
           IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
           ICompositorConsulta<TipoAlmacenMetadatos> compositorConsulta,
-          ILogger<ServicioTipoAlmacenMetadatos> Logger,
-          IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+          ILogger<ServicioTipoAlmacenMetadatos> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
             this.compositor = compositorConsulta;
@@ -43,19 +42,16 @@ namespace PIKA.Servicio.Metadatos.Servicios
             return true;
         }
 
-
         public async Task<TipoAlmacenMetadatos> CrearAsync(TipoAlmacenMetadatos entity, CancellationToken cancellationToken = default)
         {
-
             if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
-
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            return entity;
+            return entity.Copia();
         }
 
         public async Task ActualizarAsync(TipoAlmacenMetadatos entity)
@@ -158,13 +154,23 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
             TipoAlmacenMetadatos d = await this.repo.UnicoAsync(predicado);
 
-            return d.CopiaTipoAlmacenMetadatos();
+            return d.Copia();
         }
 
 
      
 
         Task<ICollection<string>> IServicioRepositorioAsync<TipoAlmacenMetadatos, string>.Eliminar(string[] ids)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<ValorListaOrdenada>> ObtenerParesPorId(List<string> Lista)
         {
             throw new NotImplementedException();
         }

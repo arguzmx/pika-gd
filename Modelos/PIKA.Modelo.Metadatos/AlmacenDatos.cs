@@ -58,7 +58,8 @@ namespace PIKA.Modelo.Metadatos
         [XmlIgnore]
         [JsonIgnore]
         public ICollection<Plantilla>  Plantillas { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public TipoAlmacenMetadatos TipoAlmacen { get; set; }
         
     }
