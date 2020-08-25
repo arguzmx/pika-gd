@@ -158,9 +158,11 @@ namespace PIKA.Modelo.Metadatos
         [NotMapped]
         public bool AlternarEnTabla { get; set; }
 
-    
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual TipoDato TipoDato { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual AtributoLista AtributoLista { get; set; }
         [XmlIgnore]
         [JsonIgnore]
