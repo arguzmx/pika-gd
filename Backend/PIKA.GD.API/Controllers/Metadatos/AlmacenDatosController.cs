@@ -12,73 +12,66 @@ using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Interfaces;
 using RepositorioEntidades;
 
-
 namespace PIKA.GD.API.Controllers.Metadatos
 {
     [Authorize]
     [ApiVersion("1.0")]
     [ApiController]
     [Route("api/v{version:apiVersion}/metadatos/[controller]")]
-    public class TipoAlmacenMetadatosController : ACLController
+    public class AlmacenDatosController : ACLController
     {
-        private readonly ILogger<TipoAlmacenMetadatosController> logger;
-        private IServicioTipoAlmacenMetadatos servicioTipoAlmacenMetadatos;
-        private IProveedorMetadatos<TipoAlmacenMetadatos> metadataProvider;
-        public TipoAlmacenMetadatosController(ILogger<TipoAlmacenMetadatosController> logger,
-            IProveedorMetadatos<TipoAlmacenMetadatos> metadataProvider,
-            IServicioTipoAlmacenMetadatos servicioTipoAlmacenMetadatos)
+        private readonly ILogger<AlmacenDatosController> logger;
+        private IServicioAlmacenDatos servicioEntidad;
+        private IProveedorMetadatos<AlmacenDatos> metadataProvider;
+        public AlmacenDatosController(ILogger<AlmacenDatosController> logger,
+            IProveedorMetadatos<AlmacenDatos> metadataProvider,
+            IServicioAlmacenDatos servicioEntidad)
         {
             this.logger = logger;
-            this.servicioTipoAlmacenMetadatos = servicioTipoAlmacenMetadatos;
+            this.servicioEntidad = servicioEntidad;
             this.metadataProvider = metadataProvider;
         }
 
-
         /// <summary>
-        /// Obtiene los metadatos relacionados con la entidad Tipo Almacen Metadatos
+        /// Obtiene los metadatos relacionados con la entidad Almacen Datos
         /// </summary>
         /// <returns></returns>
-        [HttpGet("metadata", Name = "MetadataTipoAlmacenMetadatos")]
+        [HttpGet("metadata", Name = "MetadataAlmacenDatos")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery] Consulta query = null)
         {
-            Console.WriteLine("\n Ingreso.... \n");
             return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
         }
 
 
         /// <summary>
-        /// Añade una nueva entidad del tipo Tipo Almacen Metadatos
+        /// Añade una nueva entidad del tipo Almacen Datos
         /// </summary>
         /// <param name="entidad"></param>
         /// <returns></returns>
-
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-
-        public async Task<ActionResult<TipoAlmacenMetadatos>> Post([FromBody] TipoAlmacenMetadatos entidad)
+        public async Task<ActionResult<AlmacenDatos>> Post([FromBody] AlmacenDatos entidad)
         {
-            entidad = await servicioTipoAlmacenMetadatos.CrearAsync(entidad).ConfigureAwait(false);
-            return Ok(CreatedAtAction("GetTipoAlmacenMetadatos", new { id = entidad.Id }, entidad).Value);
+            entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
+            return Ok(CreatedAtAction("GetAlmacenDatos", new { id = entidad.Id }, entidad).Value);
         }
-
-
         /// <summary>
-        /// Actualiza una entidad Tipo Almacen Metadatos, el Id debe incluirse en el Querystring así como en 
+        /// Actualiza unq entidad Almacen Datos, el Id debe incluirse en el Querystring así como en 
         /// el serializado para la petición PUT
         /// </summary>
         /// <param name="id">Identificador único del dominio</param>
         /// <param name="entidad">Datos serialziados de la OU</param>
         /// <returns></returns>
+
         [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Put(string id, [FromBody] TipoAlmacenMetadatos entidad)
+        public async Task<IActionResult> Put(string id, [FromBody] AlmacenDatos entidad)
         {
             var x = ObtieneFiltrosIdentidad();
 
@@ -88,22 +81,24 @@ namespace PIKA.GD.API.Controllers.Metadatos
                 return BadRequest();
             }
 
-            await servicioTipoAlmacenMetadatos.ActualizarAsync(entidad).ConfigureAwait(false);
+            await servicioEntidad.ActualizarAsync(entidad).ConfigureAwait(false);
             return NoContent();
 
         }
-
         /// <summary>
-        /// Devulve un alista de Tipo Almacen Metadatos asociadas al objeto del tipo especificado
+        /// Devulve un alista de Almacen Datos asociadas al objeto del tipo especificado
         /// </summary>
         /// <param name="query">Consulta para la paginación y búsqueda</param>
         /// <returns></returns>
 
-        [HttpGet("page", Name = "GetPageTipoAlmacenMetadatos")]
+        [HttpGet("page", Name = "GetPageAlmacenDatos")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<TipoAlmacenMetadatos>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
+        public async Task<ActionResult<Paginado<AlmacenDatos>>> GetPage(
+            [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
-            var data = await servicioTipoAlmacenMetadatos.ObtenerPaginadoAsync(
+            var data = await servicioEntidad.ObtenerPaginadoAsync(
                 Query: query,
                 include: null)
                 .ConfigureAwait(false);
@@ -111,32 +106,26 @@ namespace PIKA.GD.API.Controllers.Metadatos
             return Ok(data);
         }
 
-
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-
         /// <summary>
-        /// Obtiene un Tipo Almacen Metadatos en base al Id único
+        /// Obtiene un Almacen Datos en base al Id único
         /// </summary>
-        /// <param name="id">Id único del Tipo Almacen Metadatos</param>
+        /// <param name="id">Id único del país</param>
         /// <returns></returns>
-
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<TipoAlmacenMetadatos>> Get(string id)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+        public async Task<ActionResult<AlmacenDatos>> Get(string id)
         {
-            var o = await servicioTipoAlmacenMetadatos.UnicoAsync(x => x.Id == id.Trim()).ConfigureAwait(false);
+
+            var o = await servicioEntidad.UnicoAsync(x => x.Id == id.Trim()).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }
 
-
-
         /// <summary>
-        /// Elimina de manera permanente un Tipo Almacen Metadatos en base al arreglo de identificadores recibidos
+        /// Elimina de manera permanente un Almacen Datos en base al arreglo de identificadores recibidos
         /// </summary>
         /// <param name="ids">Arreglo de identificadores string</param>
         /// <returns></returns>
@@ -153,21 +142,18 @@ namespace PIKA.GD.API.Controllers.Metadatos
             }
             string[] lids = IdsTrim.Split(',').ToList()
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            return Ok(await servicioTipoAlmacenMetadatos.Eliminar(lids).ConfigureAwait(false));
+            return Ok(await servicioEntidad.Eliminar(lids).ConfigureAwait(false));
         }
-
-
         /// <summary>
-        /// Restaura una lista dede Tipo Almacen Metadatoss eliminados en base al arreglo de identificadores recibidos
+        /// Restaura una lista dede Elemento eliminados en base al arreglo de identificadores recibidos
         /// </summary>
         /// <param name="ids">Arreglo de identificadores string</param>
         /// <returns></returns>
-        [HttpPatch("restaurar/{ids}", Name = "restaurarTipoAlmacenMetadatos")]
+        [HttpPatch("restaurar/{ids}", Name = "restaurarAlmacenDatos")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Undelete(string ids)
         {
-
             string IdsTrim = "";
             foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
             {
@@ -175,9 +161,13 @@ namespace PIKA.GD.API.Controllers.Metadatos
             }
             string[] lids = IdsTrim.Split(',').ToList()
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
-
-            return Ok(await servicioTipoAlmacenMetadatos.Restaurar(lids).ConfigureAwait(false));
+            return Ok(await servicioEntidad.Restaurar(lids).ConfigureAwait(false));
         }
+
+       
+
+
+
 
     }
 }
