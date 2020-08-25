@@ -12,6 +12,13 @@ namespace PIKA.Modelo.GestorDocumental
     [Entidad(PaginadoRelacional: false, EliminarLogico: false)]
     public class Ampliacion: Entidad<string>
     {
+        public Ampliacion()
+        {
+            this.Anos = 0;
+            this.Meses = 0;
+            this.Dias = 0;
+        }
+
         [Prop(Required: false, isId: true, Visible: false, OrderIndex: 0)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.update)]
         public override string Id { get => base.Id; set => base.Id = value; }
@@ -39,7 +46,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// Este valor se calcula a partir de las fechas de inicio y la fecha final o el periodo
         /// </summary>
         [Prop(Required: true, OrderIndex: 150, DefaultValue: "false", Visible: false)]
-        [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
         public bool Vigente { get; set; }
 
 
@@ -58,6 +65,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         [Prop(Required: false, OrderIndex: 250)]
         [VistaUI(ControlUI: ControlUI.HTML_DATE, Accion: Acciones.addupdate)]
+        [Event(Entidad: "FechaFija", Evento: Eventos.AlCambiar, Operacion: Operaciones.Mostrar, "{0}===true")]
         public DateTime? Fin { get; set; }
 
 
@@ -74,19 +82,28 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Años para la amepliación
         /// </summary>
-        [Prop(Required: false, OrderIndex: 2000, Visible: false, ShowInTable: false)]
+        [Prop(Required: false, OrderIndex: 2000, Visible: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_NUMBER, Accion: Acciones.addupdate)]
+        [ValidNumeric(min: 0, max: 0, usemin: true, usemax: false, defaulvalue:0)]
+        [Event(Entidad: "FechaFija", Evento: Eventos.AlCambiar, Operacion: Operaciones.Mostrar, "{0}===false")]
         public int? Anos { get; set; }
 
         /// <summary>
         /// Meses para la ampliacion
         /// </summary>
-        [Prop(Required: false, OrderIndex: 2000, Visible: false, ShowInTable: false)]
+        [Prop(Required: false, OrderIndex: 2000, Visible: false)]
+        [Event(Entidad: "FechaFija", Evento: Eventos.AlCambiar, Operacion: Operaciones.Mostrar, "{0}===false")]
+        [VistaUI(ControlUI: ControlUI.HTML_NUMBER, Accion: Acciones.addupdate)]
+        [ValidNumeric(min: 0, max: 0, usemin: true, usemax: false, defaulvalue: 0)]
         public int? Meses { get; set; }
 
         /// <summary>
         /// Dias para la ampliación
         /// </summary>
-        [Prop(Required: false, OrderIndex: 2000, Visible: false, ShowInTable: false)]
+        [Prop(Required: false, OrderIndex: 2000, Visible: false)]
+        [Event(Entidad: "FechaFija", Evento: Eventos.AlCambiar, Operacion: Operaciones.Mostrar, "{0}===false")]
+        [VistaUI(ControlUI: ControlUI.HTML_NUMBER, Accion: Acciones.addupdate)]
+        [ValidNumeric(min: 0, max: 0, usemin: true, usemax: false, defaulvalue: 0)]
         public int? Dias { get; set; }
 
 

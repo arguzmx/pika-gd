@@ -27,6 +27,7 @@ using PIKA.GD.API.Servicios;
 using Serilog.Events;
 using PIKA.Servicio.Contacto;
 using PIKA.Servicio.Usuarios;
+using PIKA.GD.API.JsonConverters;
 
 namespace PIKA.GD.API
 {
@@ -65,7 +66,7 @@ namespace PIKA.GD.API
             {
                 jsonOptions.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 jsonOptions.JsonSerializerOptions.PropertyNamingPolicy = null;
-
+                jsonOptions.JsonSerializerOptions.Converters.Add(new IntNulableConverter());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
 

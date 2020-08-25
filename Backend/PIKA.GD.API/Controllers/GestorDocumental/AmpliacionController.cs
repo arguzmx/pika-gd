@@ -93,12 +93,20 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         /// </summary>
         /// <param name="query">Consulta para la paginación y búsqueda</param>
         /// <returns></returns>
-        [HttpGet("page", Name = "GetPageAmpliacion")]
+        [HttpGet("page/activo/{id}", Name = "GetPageAmpliacion")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
 
-        public async Task<ActionResult<IEnumerable<Ampliacion>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<Ampliacion>>> GetPage(string Id, [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
+
+            query.Filtros.Add(new FiltroConsulta()
+            {
+                Operador = FiltroConsulta.OP_EQ,
+                Valor = Id,
+                Propiedad = "ActivoId"
+            });
+
             var data = await servicioAmpliacion.ObtenerPaginadoAsync(
                      Query: query,
                      include: null)
