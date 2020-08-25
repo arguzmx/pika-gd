@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 using static PIKA.Modelo.Metadatos.PropAttribute;
 
 namespace PIKA.Modelo.Metadatos
@@ -156,22 +158,29 @@ namespace PIKA.Modelo.Metadatos
         [NotMapped]
         public bool AlternarEnTabla { get; set; }
 
-    
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual TipoDato TipoDato { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual AtributoLista AtributoLista { get; set; }
 
         public virtual AtributoTabla AtributoTabla { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
 
         public virtual List<AtributoEvento> AtributosEvento { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual List<AtributoVistaUI> AtributosVistaUI { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ValidadorTexto ValidadorTexto { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public virtual ValidadorNumero ValidadorNumero { get; set; }
-
+        [XmlIgnore]
+        [JsonIgnore]
         public ICollection<ValorLista> ValoresLista { get; set; }
 
         

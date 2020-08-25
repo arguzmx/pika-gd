@@ -30,8 +30,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
         public ServicioPropiedadPlantilla(
            IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
            ICompositorConsulta<PropiedadPlantilla> compositorConsulta,
-           ILogger<ServicioPropiedadPlantilla> Logger,
-           IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+           ILogger<ServicioPropiedadPlantilla> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
             this.compositor = compositorConsulta;
@@ -230,7 +229,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
             PropiedadPlantilla d = await this.repo.UnicoAsync(predicado);
 
-            return d.CopiaPropiedadPlantilla();
+            return d.Copia();
         }
     }
 }

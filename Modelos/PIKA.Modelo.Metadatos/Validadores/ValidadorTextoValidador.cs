@@ -11,29 +11,11 @@ namespace PIKA.Modelo.Metadatos.Validadores
     {
         public ValidadorTextoValidador(IStringLocalizer<ValidadorTexto> localizer)
         {
-            RuleFor(x => x.PropiedadId)
-                .NotNull().WithMessage(x => localizer["El id propiedad es obligatorio"])
-                .NotEmpty().WithMessage(x => localizer["El id propiedad es obligatorio"])
-                .MinimumLength(1).WithMessage(x => localizer["El id propiedad debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre])
-                .MaximumLength(LongitudDatos.Nombre).WithMessage(x => localizer["El id propiedad debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre]);
-
-            RuleFor(x => x.longmin)
-          .NotNull().WithMessage(x => localizer["La longitud minima es obligatoria"])
-          .NotEmpty().WithMessage(x => localizer["La longitud minima es obligatorio"]);
-            RuleFor(x => x.longmax)
-                    .NotNull().WithMessage(x => localizer["La longuitud màxima es obligatoria"])
-                    .NotEmpty().WithMessage(x => localizer["La longuitud màxima es obligatorio"]);
-       
-            RuleFor(x => x.valordefault)
-                          .NotNull().WithMessage(x => localizer["El valor default es obligatorio"])
-                          .NotEmpty().WithMessage(x => localizer["El valor default es obligatorio"])
-                          .MinimumLength(1).WithMessage(x => localizer["El valor default debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre])
-                          .MaximumLength(LongitudDatos.Nombre).WithMessage(x => localizer["El valor default debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre]);
-            RuleFor(x => x.regexp)
-                   .NotNull().WithMessage(x => localizer["El regexp es obligatorio"])
-                   .NotEmpty().WithMessage(x => localizer["El regexp es obligatorio"])
-                   .MinimumLength(1).WithMessage(x => localizer["El regexp debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre])
-                   .MaximumLength(LongitudDatos.Nombre).WithMessage(x => localizer["El regexp debe tener entre {0} y {1} caracteres", 1, LongitudDatos.Nombre]);
+            RuleFor(x => x.PropiedadId).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.Nombre);
+            RuleFor(x => x.longmin).NotEmpty();
+            RuleFor(x => x.longmax).NotEmpty();
+            RuleFor(x => x.valordefault).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.Nombre);
+            RuleFor(x => x.regexp).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.Nombre);
 
         }
     }
