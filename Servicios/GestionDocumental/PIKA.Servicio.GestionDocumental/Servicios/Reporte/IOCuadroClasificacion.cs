@@ -8,6 +8,7 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Http;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -68,11 +69,12 @@ namespace PIKA.Servicio.GestionDocumental
             CrearDocumento CD = new CrearDocumento();
             List<Estructuraexcel> listExport = new List<Estructuraexcel>();
 
-            string CuadroClasificaiconId = CuadroClasificacionId;
-                await LlenadoCuadroClasificacion(CuadroClasificacionId, listExport);
+            string Nombre =   await LlenadoCuadroClasificacion(CuadroClasificacionId.Trim(), listExport);
+        string fileName= CD.CrearArchivo(listExport, CuadroClasificacionId.Trim(), ruta, separador, Nombre);
+            byte[] array = File.ReadAllBytes(fileName);
+            return array;
 
-           return  CD.CrearArchivo(listExport, CuadroClasificaiconId, ruta,separador, await ObtineNombreCuadroClasificacion(CuadroClasificaiconId));
-         
+
         }
         /// <summary>
         /// Elemina la ruta del cuadro clasificacion siempre y cuando se haga un cambbio a la estructura del cuadro clasificación
@@ -96,10 +98,13 @@ namespace PIKA.Servicio.GestionDocumental
         /// <returns></returns>
         private async Task<string> ObtineNombreCuadroClasificacion(string CuadroClasificacionId) 
         {
-
-            CuadroClasificacion cc = await this.repo.UnicoAsync(x=>x.Id.Equals(CuadroClasificacionId,StringComparison.InvariantCultureIgnoreCase));
+            Console.WriteLine(CuadroClasificacionId);
+            CuadroClasificacion cc = await this.repo.UnicoAsync(x=>x.Id.Equals(CuadroClasificacionId.Trim(),StringComparison.InvariantCultureIgnoreCase));
             if (cc != null)
-                return cc.Nombre;
+            {
+                Console.WriteLine("CC algo "+CuadroClasificacionId);
+                return cc.Nombre; 
+            }
             else
                 return "Sin Nombre";
         }
@@ -115,13 +120,16 @@ namespace PIKA.Servicio.GestionDocumental
             string nombre="";
             CuadroClasificacion cuadroclasificacion = await this.repo.UnicoAsync(x=> x.Id.Equals(CuadroClasificacionId,StringComparison.InvariantCultureIgnoreCase));
             List<RegionElementoClasificacion> lr1 = new List<RegionElementoClasificacion>();
-
             if (cuadroclasificacion != null)
             {
                 nombre = cuadroclasificacion.Nombre;
                 LlenadoEstructuraExcel(listExport, columna, Row, $" {cuadroclasificacion.Nombre} ");
                 Row = Row + 3;
-                await ObtnerHijosElmentos(lr1, columna, cuadroclasificacion.Id, null);
+                ElementoClasificacion e = await this.RepoElemento.UnicoAsync(x=>x.CuadroClasifiacionId.Equals(CuadroClasificacionId,StringComparison.InvariantCultureIgnoreCase) && x.EsRaiz==true);
+                LlenadoRegion1(lr1, columna, $" {e.Clave} {e.Nombre} ", e.CuadroClasifiacionId, e.Id);
+
+
+                await ObtnerHijosElmentos(lr1, columna, cuadroclasificacion.Id, e.Id);
             }
 
            await LlenadoRegion2y3(lr1, listExport);
@@ -311,11 +319,12 @@ namespace PIKA.Servicio.GestionDocumental
             }
 
             List<ElementoClasificacion> ListaElemntosHijos = new List<ElementoClasificacion>();
-            ListaElemntosHijos = await ObtenerHijosAsync(ElementoClasificacionId, CuadroClasificacionId);
-
+            ListaElemntosHijos = await this.RepoElemento.ObtenerAsync(x=>x.ElementoClasificacionId.Equals(ElementoClasificacionId,StringComparison.InvariantCulture)
+            &&x.CuadroClasifiacionId.Equals(CuadroClasificacionId,StringComparison.InvariantCulture));
+                /*await ObtenerHijosAsync(ElementoClasificacionId, CuadroClasificacionId);*/
+            Console.WriteLine($"\n Datos { ListaElemntosHijos.Count()}");
             if (ListaElemntosHijos.Count() > 0)
             { Indicecolumna++;  }
-
             foreach (ElementoClasificacion hijos in ListaElemntosHijos)
             {
                 LlenadoRegion1(lr1,Indicecolumna, $" {hijos.Clave} {hijos.Nombre} ",hijos.CuadroClasifiacionId,hijos.Id);
