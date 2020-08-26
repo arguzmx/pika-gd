@@ -181,7 +181,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         {
             logger.LogInformation(id);
 
-            byte[]  bytes = await  servicioCuadro.ExportarCuadroCalsificacionExcel(id).ConfigureAwait(false);
+            byte[] bytes = await  servicioCuadro.ExportarCuadroCalsificacionExcel(id).ConfigureAwait(false);
             var cuadro = await servicioCuadro.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
 
             const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
