@@ -8,7 +8,7 @@ using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Servicios;
 using RepositorioEntidades;
 
-namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar.Reporte_Transferencia
+namespace PIKA.Servicio.GestionDocumental.Data
 {
     public  class IOTransferencia : ContextoServicioGestionDocumental,
         IServicioInyectable

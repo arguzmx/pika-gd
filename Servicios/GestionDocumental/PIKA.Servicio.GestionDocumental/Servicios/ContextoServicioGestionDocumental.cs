@@ -11,6 +11,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
     public class ContextoServicioGestionDocumental
     {
         protected ILogger logger;
+        protected IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones;
 
         protected DBContextGestionDocumental contexto;
         public ContextoServicioGestionDocumental(
@@ -20,6 +21,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             DbContextGestionDocumentalFactory cf = new DbContextGestionDocumentalFactory(proveedorOpciones);
             this.contexto = cf.Crear();
             this.logger = Logger;
+            this.proveedorOpciones = proveedorOpciones;
         }
 
     }

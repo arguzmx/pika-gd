@@ -8,7 +8,6 @@ using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
-using PIKA.Servicio.GestionDocumental.Data.Exportar_Importar;
 using PIKA.Servicio.GestionDocumental.Interfaces;
 using RepositorioEntidades;
 using System;
@@ -184,11 +183,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             CuadroClasificacion c = await this.repo.UnicoAsync(predicado);
             return c.Copia();
         }
-        public async Task<byte[]> ExportarCuadroCalsificacionExcel(string id)
-        {
-            byte[] a = await ioCuadroClasificacion.ExportarCuadroCalsificacionExcel(id, ConfiguracionServidor.ruta_cache_fisico,ConfiguracionServidor.separador_ruta);
-            return a;
-        }
+
+   
+
         public Task<List<CuadroClasificacion>> ObtenerAsync(Expression<Func<CuadroClasificacion, bool>> predicado)
         {
             return this.repo.ObtenerAsync(predicado);
@@ -197,6 +194,16 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             return this.repo.ObtenerAsync(SqlCommand);
         }
+
+
+
+        public async Task<byte[]> ExportarCuadroCalsificacionExcel(string CuadroClasificacionId)
+        {
+            IOCuadroClasificacion iocuadro = new IOCuadroClasificacion(this.logger, this.proveedorOpciones);
+
+            return await iocuadro.ExportarCuadroCalsificacionExcel(CuadroClasificacionId, ConfiguracionServidor.ruta_cache_fisico, ConfiguracionServidor.separador_ruta);
+        }
+
         #region No implmentados
 
         public Task<IEnumerable<CuadroClasificacion>> CrearAsync(params CuadroClasificacion[] entities)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.Extensions.Logging;
 using PIKA.Modelo.Metadatos.Atributos;
 using System;
 using System.Collections.Generic;
@@ -60,6 +61,16 @@ namespace PIKA.Modelo.Metadatos
                 CatalogosVinculados = new List<CatalogoVinculado>()
             };
 
+            if (typeof(IEntidadReportes).IsAssignableFrom(typeof(T)))
+            {
+                T instance = Activator.CreateInstance<T>();
+                ((IEntidadReportes)instance).Reportes.ForEach(r =>
+                {
+                    Console.WriteLine($"{r.Nombre}");
+                    info.Reportes.Add(r);
+                });
+
+            }  
 
             object[] TypeAttrs = t.GetCustomAttributes(true);
             foreach (object attr in TypeAttrs) {
