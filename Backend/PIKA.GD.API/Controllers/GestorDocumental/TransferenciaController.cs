@@ -141,7 +141,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                Cols = columnas.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray();
             else
                 Cols = "EntradaClasificacion.Clave,EntradaClasificacion.Nombre,Nombre,Asunto,FechaApertura,FechaCierre,CodigoOptico,CodigoElectronico,Reservado,Confidencial,Ampliado".Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            var o = await servicioTransferencia.ReporteTransferencia(TransferenciaId, Cols);
+            var o =  servicioTransferencia.ReporteTransferencia(TransferenciaId, Cols);
             if (o != null) return Ok(o);
             return NotFound(TransferenciaId);
         }

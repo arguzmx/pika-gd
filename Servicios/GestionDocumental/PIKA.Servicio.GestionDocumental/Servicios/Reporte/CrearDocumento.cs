@@ -17,30 +17,29 @@ namespace PIKA.Servicio.GestionDocumental
         {
             if (File.Exists(ruta))
                 return true;
-
             else
             {
+                Console.WriteLine("Ruta creada" + ruta);
+
                 System.IO.Directory.CreateDirectory(ruta);
                 return false;
             }
         }
 
-        public byte[] CrearArchivo(List<Estructuraexcel> ListaFile, string CuadroClasificacionId, string ruta, string separador, string nombre)
+        public string   CrearArchivo(List<Estructuraexcel> ListaFile, string CuadroClasificacionId, string ruta, string separador, string nombre)
         {
 
             string fileName = $@"{ruta}{separador}{CuadroClasificacionId}{separador}{nombre}.xlsx";
-
+            Console.WriteLine("Metodo create reporte"+ruta);
+           
             if (ValidarRuta($"{ruta}{separador}{CuadroClasificacionId}"))
             {
-                byte[] arrayFile = File.ReadAllBytes(fileName);
-                return arrayFile;
+                return fileName;
             }
-            else
-            {
 
-                // Crea un spreadsheet del documento con la ruta establecida.
-                // lo autoguarda y edita con el tipo de extensión Xlsx.
-                SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Create(fileName, SpreadsheetDocumentType.Workbook);
+            // Crea un spreadsheet del documento con la ruta establecida.
+            // lo autoguarda y edita con el tipo de extensión Xlsx.
+            SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Create(fileName, SpreadsheetDocumentType.Workbook);
 
                 // agrega una WorkbookPart al documento.
                 WorkbookPart workbookpart = spreadsheetDocument.AddWorkbookPart();
@@ -88,9 +87,9 @@ namespace PIKA.Servicio.GestionDocumental
                 workbookpart.Workbook.Save();
                 // cierra el documento
                 spreadsheetDocument.Close();
-                byte[] array = File.ReadAllBytes(fileName);
-                return array;
-            }
+                
+                return fileName;
+           
 
         }
         public string CrearArchivoExcel(List<Estructuraexcel> ListaFile,string id, string ruta, string separador, string nombre)
