@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Elasticsearch.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -40,21 +41,21 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [HttpGet("metadata", Name = "MetadataCuadro")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
+        public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery] Consulta query = null)
         {
             return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
         }
+
+
         /// <summary>
         /// Añade una nueva entidad del tipo Cuadro Clasificacion
         /// </summary>
         /// <param name="entidad"></param>
         /// <returns></returns>
-
-
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<CuadroClasificacion>> Post([FromBody]CuadroClasificacion entidad)
+        public async Task<ActionResult<CuadroClasificacion>> Post([FromBody] CuadroClasificacion entidad)
         {
             entidad = await servicioCuadro.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetCuadro", new { id = entidad.Id.Trim() }, entidad).Value);
@@ -73,11 +74,11 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Put(string id, [FromBody]CuadroClasificacion entidad)
+        public async Task<IActionResult> Put(string id, [FromBody] CuadroClasificacion entidad)
         {
             var x = ObtieneFiltrosIdentidad();
 
-           
+
             if (id.Trim() != entidad.Id.Trim())
             {
                 return BadRequest();
@@ -155,7 +156,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Undelete(string ids)
         {
-           
+
             string IdsTrim = "";
             foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
             {
@@ -165,6 +166,33 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
 
             return Ok(await servicioCuadro.Restaurar(lids).ConfigureAwait(false));
+        }
+
+
+
+        /// <summary>
+        /// Obtiene los metadatos relacionados con la entidad Cuadro Clasificacion
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("reporte/cc/{id}", Name = "GetReporteCuadroClasificacion")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<FileResult> GetReporteCuadroClasificacion(string id)
+        {
+            logger.LogInformation(id);
+
+            byte[]  bytes = await  servicioCuadro.ExportarCuadroCalsificacionExcel(id).ConfigureAwait(false);
+            var cuadro = await servicioCuadro.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+
+            const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            HttpContext.Response.ContentType = contentType;
+            HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+
+            var fileContentResult = new FileContentResult(bytes, contentType)
+            {
+                FileDownloadName = cuadro.Nombre
+            };
+            return fileContentResult;
         }
 
     }

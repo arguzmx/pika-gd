@@ -11,7 +11,6 @@ using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.Metadatos;
-using PIKA.Servicio.GestionDocumental.Data.Exportar_Importar.Reporte_Transferencia;
 using PIKA.Servicio.GestionDocumental.Interfaces;
 using RepositorioEntidades;
 

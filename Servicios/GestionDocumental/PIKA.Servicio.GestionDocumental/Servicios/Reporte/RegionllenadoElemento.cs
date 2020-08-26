@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PIKA.Servicio.GestionDocumental.Data
+namespace PIKA.Servicio.GestionDocumental
 {
     public class RegionElementoClasificacion
     {

@@ -49,7 +49,7 @@ namespace PIKA.Modelo.Metadatos.Atributos
 
     public enum Operaciones
     {
-        Actualizar = 1
+        Actualizar = 1, Mostrar=10
     }
 
 

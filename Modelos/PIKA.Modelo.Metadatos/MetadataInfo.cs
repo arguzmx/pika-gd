@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -7,6 +8,12 @@ namespace PIKA.Modelo.Metadatos
 {
     public class MetadataInfo
     {
+
+        public MetadataInfo()
+        {
+            Reportes = new HashSet<IProveedorReporte>();
+        }
+
         /// <summary>
         /// Tipo de elemento basado en el nombre del ensamblado
         /// </summary>
@@ -49,6 +56,6 @@ namespace PIKA.Modelo.Metadatos
         
         public virtual List<CatalogoVinculado> CatalogosVinculados { get; set; }
 
-
+        public ICollection<IProveedorReporte> Reportes { get; set; }
     }
 }

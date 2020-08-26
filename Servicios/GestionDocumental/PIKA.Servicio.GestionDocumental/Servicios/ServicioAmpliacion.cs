@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
@@ -57,38 +58,82 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             if (l.Count() == 0) return false;
             return true;
         }
-        public async Task<Ampliacion> CrearAsync(Ampliacion entity, CancellationToken cancellationToken = default)
+
+
+        private async Task<Ampliacion> ValidaAmpliacion(Ampliacion entity , bool isUpdate)
         {
-            if(!await ExisteTipoAmpliacion(x=>x.Id.Equals(entity.TipoAmpliacionId.Trim(),StringComparison.InvariantCulture)))
+            if (isUpdate)
+            {
+        
+            }
+
+            if (!await ExisteTipoAmpliacion(x => x.Id.Equals(entity.TipoAmpliacionId.Trim(), StringComparison.InvariantCulture)))
                 throw new ExDatosNoValidos(entity.TipoAmpliacionId.Trim());
-            
+
             if (!await ExisteActivo(x => x.Id.Equals(entity.ActivoId.Trim(), StringComparison.InvariantCulture)))
                 throw new ExDatosNoValidos(entity.ActivoId);
-           
             
+            if (!entity.Inicio.HasValue) throw new ExDatosNoValidos("Inicio");
+
+            if (entity.FechaFija)
+            {
+ 
+                if (!entity.Fin.HasValue) throw new ExDatosNoValidos("Fin");
+                entity.Dias = null;
+                entity.Anos = null;
+                entity.Meses = null;
+                entity.Vigente = (DateTime.Now.Ticks < entity.Fin.Value.Ticks);
+            }
+            else
+            {
+                if (entity.Dias.HasValue || entity.Anos.HasValue || entity.Meses.HasValue)
+                {
+                    DateTime f = entity.Inicio.Value;
+
+                    if (entity.Dias.HasValue) f.AddDays(entity.Dias.Value);
+                    if (entity.Anos.HasValue) f.AddDays(entity.Anos.Value);
+                    if (entity.Meses.HasValue) f.AddDays(entity.Meses.Value);
+
+                    entity.Vigente = (DateTime.Now.Ticks < f.Ticks);
+
+                } else
+                {
+                    if (!entity.Fin.HasValue) throw new ExDatosNoValidos("Periodo requerido");
+                }
+            }
+
+            return entity;
+        }
+
+        public async Task<Ampliacion> CrearAsync(Ampliacion entity, CancellationToken cancellationToken = default)
+        {
+
+            entity = await ValidaAmpliacion(entity, false);
+
             entity.Id = System.Guid.NewGuid().ToString();
             entity.ActivoId = entity.ActivoId.Trim();
             entity.TipoAmpliacionId = entity.TipoAmpliacionId.Trim();
             entity.FundamentoLegal = entity.FundamentoLegal.Trim();
+
+         
+
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
             return entity.Copia();
         }
         public async Task ActualizarAsync(Ampliacion entity)
         {
-            Ampliacion o = await this.repo.UnicoAsync(x => x.ActivoId == entity.ActivoId.Trim() && x.Vigente == entity.Vigente);
+
+            entity = await ValidaAmpliacion(entity, true);
+
+            Ampliacion o = await this.repo.UnicoAsync(x=>x.Id == entity.Id);
 
             if (o == null)
             {
-                throw new EXNoEncontrado(entity.ActivoId.Trim() + "|" + entity.Vigente);
+                throw new EXNoEncontrado(entity.Id);
             }
-            if (!await ExisteTipoAmpliacion(x => x.Id.Equals(entity.TipoAmpliacionId.Trim(), StringComparison.InvariantCulture)))
-                throw new ExDatosNoValidos(entity.TipoAmpliacionId.Trim());
+            
 
-            if (!await ExisteActivo(x => x.Id.Equals(entity.ActivoId.Trim(), StringComparison.InvariantCulture)))
-                throw new ExDatosNoValidos(entity.ActivoId);
-         
-            o.ActivoId = entity.ActivoId.Trim();
             o.Vigente = entity.Vigente;
             o.TipoAmpliacionId = entity.TipoAmpliacionId.Trim();
             o.FechaFija = entity.FechaFija;
@@ -99,7 +144,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             o.Anos = entity.Anos;
             o.Meses = entity.Meses;
             o.Dias = entity.Dias;
-
 
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();

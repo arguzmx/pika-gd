@@ -174,7 +174,7 @@ namespace PIKA.Modelo.Metadatos
 
         public ICollection<ValorLista> ValoresLista { get; set; }
 
-        
+
 
     }
 }

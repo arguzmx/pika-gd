@@ -1,9 +1,11 @@
 ﻿using PIKA.Infraestructura.Comun;
+using PIKA.Modelo.GestorDocumental.Reportes;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
@@ -14,7 +16,8 @@ namespace PIKA.Modelo.GestorDocumental
     [EntidadVinculada(EntidadHijo: "ElementoClasificacion,EntradaClasificacion", 
         Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id", 
         PropiedadHijo: "CuadroClasifiacionId", TipoDespliegueVinculo: TipoDespliegueVinculo.Jerarquico) ]
-    public class CuadroClasificacion : Entidad<string>, IEntidadNombrada, IEntidadEliminada, IEntidadRelacionada
+    public class CuadroClasificacion : Entidad<string>, IEntidadNombrada, IEntidadEliminada, 
+        IEntidadRelacionada, IEntidadReportes
     {
 
         [XmlIgnore]
@@ -25,6 +28,8 @@ namespace PIKA.Modelo.GestorDocumental
         {
             this.TipoOrigenId = this.TipoOrigenDefault;
             this.Elementos = new HashSet<ElementoClasificacion>();
+            this.Reportes = new List<IProveedorReporte>();
+            this.Reportes.Add(new ReporteCuadroClasificacion());
         }
 
 
@@ -87,6 +92,13 @@ namespace PIKA.Modelo.GestorDocumental
         [JsonIgnore]
         [XmlIgnore]
         public virtual ICollection<ElementoClasificacion> Elementos { get; set; }
+
+
+
+        [NotMapped]
+        [JsonIgnore]
+        [XmlIgnore]
+        public List<IProveedorReporte> Reportes { get; set; }
 
     }
 }

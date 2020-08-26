@@ -2,23 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using PIKA.Infraestructura.Comun;
-using PIKA.Infraestructura.Comun.Interfaces;
-using PIKA.Modelo.GestorDocumental;
-using PIKA.Servicio.GestionDocumental.Data.Exportar_Importar;
-using PIKA.Servicio.GestionDocumental.Servicios;
-using RepositorioEntidades;
 
-namespace PIKA.Servicio.GestionDocumental.Data
+
+namespace PIKA.Servicio.GestionDocumental
 {
     public class CrearDocumento
     {

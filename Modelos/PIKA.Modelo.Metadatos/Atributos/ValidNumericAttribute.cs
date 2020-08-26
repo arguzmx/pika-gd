@@ -16,7 +16,7 @@ namespace PIKA.Modelo.Metadatos.Atributos
         private bool _usemin;
         private float _defaulvalue;
 
-        public ValidNumericAttribute(float min = 0, float max = 0, float defaulvalue = float.NaN, bool usemin=false, bool usemax=false)
+        public ValidNumericAttribute(float min = 0, float max = 0, float defaulvalue = 0, bool usemin=false, bool usemax=false)
         {
             _min = min;
             _max = max;

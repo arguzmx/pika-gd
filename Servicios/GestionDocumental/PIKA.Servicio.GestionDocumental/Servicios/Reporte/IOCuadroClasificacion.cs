@@ -14,10 +14,11 @@ using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.GestorDocumental;
+using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.GestionDocumental.Servicios;
 using RepositorioEntidades;
 
-namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar
+namespace PIKA.Servicio.GestionDocumental
 {
     public class IOCuadroClasificacion : ContextoServicioGestionDocumental,
         IServicioInyectable
@@ -30,7 +31,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Exportar_Importar
         private IRepositorioAsync<TipoValoracionDocumental> repoTVD;
         private IRepositorioAsync<ValoracionEntradaClasificacion> repoTV;
         private IRepositorioAsync<ElementoClasificacion> RepoElemento;
-        public IOCuadroClasificacion(ILogger<ServicioCuadroClasificacion> Logger, IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones) 
+        public IOCuadroClasificacion(ILogger Logger, IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones) 
             : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
