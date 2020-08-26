@@ -18,7 +18,7 @@ namespace PIKA.Modelo.GestorDocumental.Reportes
             parametroes = new List<ParametroReporte>();
             formatos = new List<FormatoReporte>();
 
-            parametroes.Add(new ParametroReporte() { Id = "Id", 
+            parametroes.Add(new ParametroReporte() { Id = "id", 
                 Nombre = "Identificador único cuadro clasifiacion", 
                 Tipo = TipoDato.tString , 
                 Contextual = true,

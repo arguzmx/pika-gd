@@ -6,6 +6,7 @@ using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection.Emit;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
@@ -44,7 +45,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Nombre único del cuadro de clasificación
         /// </summary>
-        [Prop(Required: true, OrderIndex: 5)]
+        [Prop(Required: true, OrderIndex: 5, IsLabel: true)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
         [ValidString(minlen: 2, maxlen: 200)]
         public string Nombre { get ; set ; }
