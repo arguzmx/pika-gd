@@ -171,7 +171,7 @@ namespace PIKA.Servicio.GestionDocumental
         {
             int row = 2;
             
-            for (int i = 1; i < 7; i++)
+            for (int i = 1; i < 6; i++)
             {
                 c = c + 1;
                 LlenadoEstructuraExcel(exp, c, row, ValorEncabezado(i));
@@ -212,7 +212,7 @@ namespace PIKA.Servicio.GestionDocumental
                     text = ListEncabezado.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray()[3];
                     break;
               
-                case 6:
+                case 5:
                     text = ListEncabezado.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray()[4];
                     break;
             }
@@ -249,7 +249,7 @@ namespace PIKA.Servicio.GestionDocumental
         private async Task InsertaValoresCuadro2(List<Estructuraexcel> exp, EntradaClasificacion EntradasClasificion, int IndiceColumna, int NumeroFila)
         {
             string nombreclave = $"{ EntradasClasificion.Clave}{ EntradasClasificion.Nombre}";
-            for (int i = 1; i < 7; i++)
+            for (int i = 1; i < 6; i++)
             {
                 IndiceColumna = IndiceColumna + 1;
                 if (i == 2)
@@ -258,7 +258,7 @@ namespace PIKA.Servicio.GestionDocumental
                 { nombreclave = EntradasClasificion.VigenciaConcentracion.ToString(); }
                 if (i == 5)
                 { nombreclave = EntradasClasificion.Eliminada ? "Eliminado" : ""; }
-                if (i == 6)
+                if (i == 4)
                 {
                     TipoDisposicionDocumental tp = await this.repoTD.UnicoAsync(x => x.Id == EntradasClasificion.TipoDisposicionDocumentalId);
                     if (tp != null)
