@@ -16,13 +16,13 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
-            builder.Property(x => x.Eliminada).HasDefaultValue(false).IsRequired();
+            builder.Property(x => x.Eliminada).IsRequired();
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x=>x.TipoOrigenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x=>x.OrigenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
 
-            builder.HasMany(x => x.Asociaciones).WithOne(y => y.Plantilla).HasForeignKey(z => z.PlantillaId);
-            builder.HasMany(x => x.Propiedades).WithOne(y => y.Plantilla).HasForeignKey(z => z.PlantillaId);
+            builder.HasMany(x => x.Asociaciones).WithOne(y => y.Plantilla).HasForeignKey(z => z.PlantillaId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(x => x.Propiedades).WithOne(y => y.Plantilla).HasForeignKey(z => z.PlantillaId).OnDelete(DeleteBehavior.Restrict);
 
 
         }

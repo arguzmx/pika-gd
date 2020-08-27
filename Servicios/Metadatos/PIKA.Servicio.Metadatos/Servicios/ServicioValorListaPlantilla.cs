@@ -20,7 +20,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
   public  class ServicioValorListaPlantilla : ContextoServicioMetadatos,
         IServicioInyectable, IServicioValorListaPlantilla
     {
-        private const string DEFAULT_SORT_COL = "Nombre";
+        private const string DEFAULT_SORT_COL = "Texto";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<ValorListaPlantilla> repo;
@@ -44,7 +44,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
         {
 
 
-            if (await Existe(x => x.PropiedadId.Equals(entity.PropiedadId, StringComparison.InvariantCultureIgnoreCase)
+            if (await Existe(x => x.PropiedadId.Equals(entity.PropiedadId.Trim(), StringComparison.InvariantCultureIgnoreCase)
             && x.Id != entity.Id))
             {
                 throw new ExElementoExistente(entity.PropiedadId);
@@ -69,14 +69,15 @@ namespace PIKA.Servicio.Metadatos.Servicios
             }
 
 
-            if (await Existe(x => x.PropiedadId.Equals(entity.PropiedadId, StringComparison.InvariantCultureIgnoreCase)
+            if (await Existe(x => x.PropiedadId.Equals(entity.PropiedadId.Trim(), StringComparison.InvariantCultureIgnoreCase)
             && x.Id != entity.Id))
             {
                 throw new ExElementoExistente(entity.PropiedadId);
             }
 
+            o.Texto = entity.Texto.Trim();
+            o.Indice = entity.Indice;
             o.PropiedadId = entity.PropiedadId.Trim();
-
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
@@ -106,20 +107,27 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            ValorListaPlantilla c;
+            ValorListaPlantilla o;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
             {
-                c = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (c != null)
+                o = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (o != null)
                 {
                     try
                     {
-                        UDT.Context.Entry(c).State = EntityState.Deleted;
-                        listaEliminados.Add(c.Id);
+                        await this.repo.Eliminar(o);
+                        this.UDT.SaveChanges();
+                        listaEliminados.Add(o.Id);
+                    }
+                    catch (DbUpdateException)
+                    {
+                        throw new ExErrorRelacional(Id);
                     }
                     catch (Exception)
-                    { }
+                    {
+                        throw;
+                    }
                 }
             }
             UDT.SaveChanges();
