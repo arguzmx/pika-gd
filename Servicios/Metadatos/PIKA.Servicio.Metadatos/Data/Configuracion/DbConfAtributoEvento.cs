@@ -12,7 +12,7 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
     {
         public void Configure(EntityTypeBuilder<AtributoEvento> builder)
         {
-            //builder.ToTable(DbContextMetadatos.TablaAtributoEvento);
+            builder.ToTable(DbContextMetadatos.TablaAtributoEvento);
             builder.HasKey(x => x.PropiedadId);
 
             builder.Property(x => x.PropiedadId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();

@@ -12,7 +12,7 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
     {
         public void Configure(EntityTypeBuilder<DiccionarioEntidadVinculada> builder)
         {
-            //builder.ToTable(DbContextMetadatos.TablaDiccionarioEntidadVinculada);
+            builder.ToTable(DbContextMetadatos.TablaDiccionarioEntidadVinculada);
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
