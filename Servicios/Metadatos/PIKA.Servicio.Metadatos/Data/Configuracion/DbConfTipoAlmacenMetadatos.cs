@@ -17,7 +17,8 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
 
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
-            builder.HasMany(x => x.AlmacensDatos).WithOne(y => y.TipoAlmacen).HasForeignKey(z => z.TipoAlmacenMetadatosId);
+            
+            builder.HasMany(x => x.AlmacensDatos).WithOne(y => y.TipoAlmacen).HasForeignKey(z => z.TipoAlmacenMetadatosId).OnDelete(DeleteBehavior.Restrict);
 
         }
     }

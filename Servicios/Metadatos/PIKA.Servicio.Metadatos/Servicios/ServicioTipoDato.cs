@@ -29,8 +29,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
         public ServicioTipoDato(
           IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
           ICompositorConsulta<TipoDato> compositorConsulta,
-          ILogger<ServicioTipoDato> Logger,
-          IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+          ILogger<ServicioTipoDato> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
             this.compositor = compositorConsulta;
@@ -44,25 +43,36 @@ namespace PIKA.Servicio.Metadatos.Servicios
             return true;
         }
 
-
         public async Task<TipoDato> CrearAsync(TipoDato entity, CancellationToken cancellationToken = default)
         {
-
-            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
+            if (await Existe(x => x.Id.Equals(entity.Id.Trim(), StringComparison.InvariantCultureIgnoreCase)))
+            {
+                throw new ExElementoExistente(entity.Id);
+            }
+            if (await Existe(x => x.Nombre.Equals(entity.Nombre.Trim(), StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
+            try
+            {
+                entity.Id = entity.Id.Trim();
+                entity.Nombre = entity.Nombre.Trim();
+                await this.repo.CrearAsync(entity);
+                UDT.SaveChanges();
+            }
+            catch (DbUpdateException)
+            {
 
-            entity.Id = System.Guid.NewGuid().ToString();
-            await this.repo.CrearAsync(entity);
-            UDT.SaveChanges();
-            return entity;
+                throw new ExErrorRelacional(entity.Id);
+            }
+            
+
+            return entity.Copia();
         }
-
         public async Task ActualizarAsync(TipoDato entity)
         {
-
-            TipoDato o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+           
+            TipoDato o = await this.repo.UnicoAsync(x => x.Id == entity.Id.Trim());
 
             if (o == null)
             {
@@ -71,15 +81,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
             if (await Existe(x =>
             x.Id != entity.Id
-            && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
+            && x.Nombre.Equals(entity.Nombre.Trim(), StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
 
-            o.Nombre = entity.Nombre;
-          
-
-
+            o.Nombre = entity.Nombre.Trim();
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
@@ -106,6 +113,113 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
             return respuesta;
         }
+        public async Task<TipoDato> UnicoAsync(Expression<Func<TipoDato, bool>> predicado = null, Func<IQueryable<TipoDato>, IOrderedQueryable<TipoDato>> ordenarPor = null, Func<IQueryable<TipoDato>, IIncludableQueryable<TipoDato, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+
+            TipoDato d = await this.repo.UnicoAsync(predicado);
+
+            return d.Copia();
+        }
+        public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
+        {
+            for (int i = 0; i < Query.Filtros.Count; i++)
+            {
+                if (Query.Filtros[i].Propiedad.ToLower() == "texto")
+                {
+                    Query.Filtros[i].Propiedad = "Nombre";
+                }
+            }
+            if (Query.Filtros.Where(x => x.Propiedad.ToLower() == "eliminada").Count() == 0)
+            {
+                Query.Filtros.Add(new FiltroConsulta()
+                {
+                    Propiedad = "Eliminada",
+                    Negacion = true,
+                    Operador = "eq",
+                    Valor = "true"
+                });
+            }
+            Query = GetDefaultQuery(Query);
+            var resultados = await this.repo.ObtenerPaginadoAsync(Query);
+            List<ValorListaOrdenada> l = resultados.Elementos.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
+        }
+        public async Task<List<ValorListaOrdenada>> ObtenerParesPorId(List<string> Lista)
+        {
+            var resultados = await this.repo.ObtenerAsync(x => Lista.Contains(x.Id.Trim()));
+            List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
+        }
+        public async Task<ICollection<string>> Eliminar(string[] ids)
+        {
+            TipoDato o;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
+                if (o != null)
+                {
+                    try
+                    {
+                        o = await this.repo.UnicoAsync(x => x.Id == Id);
+                        if (o != null)
+                        {
+
+                            await this.repo.Eliminar(o);
+                        }
+                        this.UDT.SaveChanges();
+                        listaEliminados.Add(o.Id);
+                    }
+                    catch (DbUpdateException)
+                    {
+                        throw new ExErrorRelacional(Id);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+            }
+            UDT.SaveChanges();
+
+            return listaEliminados;
+        }
+        public Task<List<TipoDato>> ObtenerAsync(Expression<Func<TipoDato, bool>> predicado)
+        {
+            return this.repo.ObtenerAsync(predicado);
+        }
+        public Task<List<TipoDato>> ObtenerAsync(string SqlCommand)
+        {
+            return this.repo.ObtenerAsync(SqlCommand);
+        }
+      
+        #region Sin implementar
+        public Task<IPaginado<TipoDato>> ObtenerPaginadoAsync(Expression<Func<TipoDato, bool>> predicate = null, Func<IQueryable<TipoDato>, IOrderedQueryable<TipoDato>> orderBy = null, Func<IQueryable<TipoDato>, IIncludableQueryable<TipoDato, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<string>> Restaurar(string[] ids)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task EjecutarSqlBatch(List<string> sqlCommand)
+        {
+            throw new NotImplementedException();
+        }
 
         public Task<IEnumerable<TipoDato>> CrearAsync(params TipoDato[] entities)
         {
@@ -121,58 +235,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
         {
             throw new NotImplementedException();
         }
+        #endregion
 
-        public Task EjecutarSqlBatch(List<string> sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<ICollection<string>> Eliminar(string[] ids)
-        {
-            TipoDato td;
-            ICollection<string> listaEliminados = new HashSet<string>();
-            foreach (var Id in ids)
-            {
-                td = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (td != null)
-                {
-                    UDT.Context.Entry(td).State = EntityState.Deleted;
-                    listaEliminados.Add(td.Id);
-                }
-            }
-            UDT.SaveChanges();
-            return listaEliminados;
-        }
-
-
-        public Task<List<TipoDato>> ObtenerAsync(Expression<Func<TipoDato, bool>> predicado)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<TipoDato>> ObtenerAsync(string SqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IPaginado<TipoDato>> ObtenerPaginadoAsync(Expression<Func<TipoDato, bool>> predicate = null, Func<IQueryable<TipoDato>, IOrderedQueryable<TipoDato>> orderBy = null, Func<IQueryable<TipoDato>, IIncludableQueryable<TipoDato, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-
-
-        public Task<IEnumerable<string>> Restaurar(string[] ids)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<TipoDato> UnicoAsync(Expression<Func<TipoDato, bool>> predicado = null, Func<IQueryable<TipoDato>, IOrderedQueryable<TipoDato>> ordenarPor = null, Func<IQueryable<TipoDato>, IIncludableQueryable<TipoDato, object>> incluir = null, bool inhabilitarSegumiento = true)
-        {
-
-            TipoDato d = await this.repo.UnicoAsync(predicado);
-
-            return d.CopiaTipoDato();
-        }
     }
 }

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace PIKA.Servicio.Metadatos.Interfaces
 {
-    public interface IServicioTipoDato: IServicioRepositorioAsync<TipoDato, string>
+    public interface IServicioTipoDato: IServicioRepositorioAsync<TipoDato, string>, IServicioValorTextoAsync<TipoDato>
     {
 
     }

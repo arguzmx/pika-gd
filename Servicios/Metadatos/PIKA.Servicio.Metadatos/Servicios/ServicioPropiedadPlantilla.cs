@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
@@ -20,22 +21,27 @@ namespace PIKA.Servicio.Metadatos.Servicios
 {
    public class ServicioPropiedadPlantilla : ContextoServicioMetadatos, IServicioInyectable, IServicioPropiedadPlantilla
     {
-        //perame voy a buscar a mi exploradoroki
+        
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<PropiedadPlantilla> repo;
+        private IRepositorioAsync<TipoDato> repoTP;
+        private IRepositorioAsync<Plantilla> repoP;
         private ICompositorConsulta<PropiedadPlantilla> compositor;
         private UnidadDeTrabajo<DbContextMetadatos> UDT;
+
         public ServicioPropiedadPlantilla(
            IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
            ICompositorConsulta<PropiedadPlantilla> compositorConsulta,
-           ILogger<ServicioPropiedadPlantilla> Logger,
-           IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+           ILogger<ServicioPropiedadPlantilla> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
             this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<PropiedadPlantilla>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<PropiedadPlantilla>(new QueryComposer<PropiedadPlantilla>());
+            this.repoP = UDT.ObtenerRepositoryAsync<Plantilla>(new QueryComposer<Plantilla>());
+            this.repoTP = UDT.ObtenerRepositoryAsync<TipoDato>(new QueryComposer<TipoDato>());
+
         }
 
         public async Task<bool> Existe(Expression<Func<PropiedadPlantilla, bool>> predicado)
@@ -44,20 +50,36 @@ namespace PIKA.Servicio.Metadatos.Servicios
             if (l.Count() == 0) return false;
             return true;
         }
-
+        public async Task<bool> ExisteP(Expression<Func<Plantilla, bool>> predicado)
+        {
+            List<Plantilla> l = await this.repoP.ObtenerAsync(predicado);
+            if (l.Count() == 0) return false;
+            return true;
+        }
+        public async Task<bool> ExisteTP(Expression<Func<TipoDato, bool>> predicado)
+        {
+            List<TipoDato> l = await this.repoTP.ObtenerAsync(predicado);
+            if (l.Count() == 0) return false;
+            return true;
+        }
 
         public async Task<PropiedadPlantilla> CrearAsync(PropiedadPlantilla entity, CancellationToken cancellationToken = default)
         {
-
+            if (!await ExisteP(x=>x.Id.Equals(entity.PlantillaId.Trim(),StringComparison.InvariantCultureIgnoreCase)&& x.Eliminada!=true)) 
+                throw new ExErrorRelacional(entity.PlantillaId);
+            if (!await ExisteTP(x => x.Id.Equals(entity.TipoDatoId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
+                throw new ExErrorRelacional(entity.TipoDatoId);
             if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
+                        entity.Id = System.Guid.NewGuid().ToString();
+                await this.repo.CrearAsync(entity);
+                entity.PlantillaId = entity.PlantillaId.Trim();
+                
+                UDT.SaveChanges();
+            
 
-            entity.Id = System.Guid.NewGuid().ToString();
-            await this.repo.CrearAsync(entity);
-
-            UDT.SaveChanges();
 
             try
             {
@@ -121,7 +143,10 @@ namespace PIKA.Servicio.Metadatos.Servicios
             {
                 throw new EXNoEncontrado(entity.Id);
             }
-
+            if (!await ExisteP(x => x.Id.Equals(entity.PlantillaId, StringComparison.InvariantCultureIgnoreCase) && x.Eliminada!=true))
+                throw new ExErrorRelacional(entity.PlantillaId);
+            if (!await ExisteTP(x => x.Id.Equals(entity.TipoDatoId, StringComparison.InvariantCultureIgnoreCase)))
+                throw new ExErrorRelacional(entity.TipoDatoId);
             if (await Existe(x =>
             x.Id != entity.Id
             && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
@@ -230,7 +255,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
             PropiedadPlantilla d = await this.repo.UnicoAsync(predicado);
 
-            return d.CopiaPropiedadPlantilla();
+            return d.Copia();
         }
     }
 }
