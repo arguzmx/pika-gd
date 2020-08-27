@@ -54,6 +54,13 @@ namespace PIKA.Modelo.GestorDocumental
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
         [ValidString(minlen: 2, maxlen: 200)]
         public string Nombre { get; set; }
+        /// <summary>
+        /// ID Unico de la entrada de inventario por ejemplo el número de expediente
+        /// </summary>
+        [Prop(Required: true, OrderIndex: 10)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
+        [ValidString(minlen: 2, maxlen: 250)]
+        public string IDunico { get; set; }
 
         /// <summary>
         /// Fecha de apertura UTC del activo
@@ -101,7 +108,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         [Prop(Required: false, OrderIndex: 60, DefaultValue: "false", Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
-        public bool EsElectronio { get; set; }
+        public bool EsElectronico { get; set; }
 
         /// <summary>
         /// Especifica si el activo se encuentra marcado como en reserva

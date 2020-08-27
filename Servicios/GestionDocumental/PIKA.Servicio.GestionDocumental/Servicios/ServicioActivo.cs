@@ -80,6 +80,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             
             entity.Id = System.Guid.NewGuid().ToString();
             entity.ArchivoId = entity.ArchivoOrigenId;
+            entity.IDunico = entity.IDunico;
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
             return entity.Copia();
@@ -121,18 +122,14 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 o.FechaRetencionAT = null;
                 o.FechaRetencionAC = null;
             }
-            o.EsElectronio = entity.EsElectronio;
+            o.EsElectronico = entity.EsElectronico;
             o.CodigoOptico = entity.CodigoOptico;
             o.CodigoElectronico = entity.CodigoElectronico;
-            
+            o.IDunico = entity.IDunico;
 
             o.Reservado = entity.Reservado;
             o.Confidencial = entity.Confidencial;
 
-            // Sea ctualizan via el proceso de transfernecia, ampliación y préstamo
-            // o.ArchivoId = entity.ArchivoId;
-            //o.EnPrestamo = entity.EnPrestamo;
-            //o.Ampliado = entity.Ampliado;
 
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
