@@ -15,7 +15,9 @@ namespace PIKA.Servicio.Metadatos
                 Id = d.Id,
                 Nombre = d.Nombre,
                 OrigenId = d.OrigenId,
-                TipoOrigenId = d.TipoOrigenId
+                TipoOrigenId = d.TipoOrigenId,
+                AlmacenDatosId=d.AlmacenDatosId
+                
             };
 
             foreach (PropiedadPlantilla pp in d.Propiedades)

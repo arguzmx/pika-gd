@@ -50,10 +50,26 @@ namespace PIKA.Servicio.Metadatos.Servicios
             {
                 throw new ExElementoExistente(entity.PlantillaId);
             }
+            try
+            {
+                entity.Id = System.Guid.NewGuid().ToString();
+                entity.PlantillaId = entity.PlantillaId.Trim();
+                entity.TipoOrigenId = entity.TipoOrigenId.Trim();
+                entity.OrigenId = entity.OrigenId.Trim();
+                entity.IdentificadorAlmacenamiento = entity.IdentificadorAlmacenamiento.Trim();
+                await this.repo.CrearAsync(entity);
+                UDT.SaveChanges();
+            }
+            catch (DbUpdateException)
+            {
+                throw new ExErrorRelacional(entity.PlantillaId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            
 
-            entity.Id = System.Guid.NewGuid().ToString();
-            await this.repo.CrearAsync(entity);
-            UDT.SaveChanges();
             return entity.Copia();
         }
 
@@ -74,13 +90,22 @@ namespace PIKA.Servicio.Metadatos.Servicios
                 throw new ExElementoExistente(entity.PlantillaId);
             }
 
-            o.PlantillaId = entity.PlantillaId;
-            o.OrigenId = entity.OrigenId;
-            o.TipoOrigenId = entity.TipoOrigenId;
+            o.PlantillaId = entity.PlantillaId.Trim();
+            o.IdentificadorAlmacenamiento = entity.IdentificadorAlmacenamiento.Trim();
+            try
+            {
+                UDT.Context.Entry(o).State = EntityState.Modified;
+                UDT.SaveChanges();
+            }
+            catch (DbUpdateException)
+            {
+                throw new ExErrorRelacional(entity.PlantillaId);
+    }
+            catch (Exception)
+            {
+                throw;
+            }
 
-
-            UDT.Context.Entry(o).State = EntityState.Modified;
-            UDT.SaveChanges();
 
         }
         private Consulta GetDefaultQuery(Consulta query)
@@ -126,31 +151,43 @@ namespace PIKA.Servicio.Metadatos.Servicios
             throw new NotImplementedException();
         }
 
-        public Task Eliminar(string[] ids)
+        public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            throw new NotImplementedException();
+            AsociacionPlantilla o;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
+                if (o != null)
+                {
+                    try
+                    {
+                        o = await this.repo.UnicoAsync(x => x.Id == Id);
+                        if (o != null)
+                        {
+                            await this.repo.Eliminar(o);
+                        }
+                        this.UDT.SaveChanges();
+                        listaEliminados.Add(o.Id);
+                    }
+                    catch (DbUpdateException)
+                    {
+                        throw new ExErrorRelacional(Id);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+            }
+            UDT.SaveChanges();
+
+            return listaEliminados;
         }
 
         public Task<List<AsociacionPlantilla>> ObtenerAsync(Expression<Func<AsociacionPlantilla, bool>> predicado)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<AsociacionPlantilla>> ObtenerAsync(string SqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IPaginado<AsociacionPlantilla>> ObtenerPaginadoAsync(Expression<Func<AsociacionPlantilla, bool>> predicate = null, Func<IQueryable<AsociacionPlantilla>, IOrderedQueryable<AsociacionPlantilla>> orderBy = null, Func<IQueryable<AsociacionPlantilla>, IIncludableQueryable<AsociacionPlantilla, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-
-
-        public Task<IEnumerable<string>> Restaurar(string[] ids)
-        {
-            throw new NotImplementedException();
+            return this.repo.ObtenerAsync(predicado);
         }
 
         public async Task<AsociacionPlantilla> UnicoAsync(Expression<Func<AsociacionPlantilla, bool>> predicado = null, Func<IQueryable<AsociacionPlantilla>, IOrderedQueryable<AsociacionPlantilla>> ordenarPor = null, Func<IQueryable<AsociacionPlantilla>, IIncludableQueryable<AsociacionPlantilla, object>> incluir = null, bool inhabilitarSegumiento = true)
@@ -161,10 +198,24 @@ namespace PIKA.Servicio.Metadatos.Servicios
             return d.Copia();
         }
 
+ public Task<List<AsociacionPlantilla>> ObtenerAsync(string SqlCommand)
+        {
+            return this.repo.ObtenerAsync(SqlCommand);
+        }
+    
+        #region Sin Implementar
 
-        Task<ICollection<string>> IServicioRepositorioAsync<AsociacionPlantilla, string>.Eliminar(string[] ids)
+
+        public Task<IPaginado<AsociacionPlantilla>> ObtenerPaginadoAsync(Expression<Func<AsociacionPlantilla, bool>> predicate = null, Func<IQueryable<AsociacionPlantilla>, IOrderedQueryable<AsociacionPlantilla>> orderBy = null, Func<IQueryable<AsociacionPlantilla>, IIncludableQueryable<AsociacionPlantilla, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
+        public Task<IEnumerable<string>> Restaurar(string[] ids)
+        {
+            throw new NotImplementedException();
+        }
+
+   
+        #endregion
     }
 }
