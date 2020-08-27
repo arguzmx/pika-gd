@@ -43,13 +43,13 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery] Consulta query = null)
         {
-            Console.WriteLine("\n Ingreso.... \n");
             return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
         }
 
 
+
         /// <summary>
-        /// Añade una nueva entidad del tipo Tipo Almacen Metadatos
+        /// Añade una nueva entidad de Tipo Almacen Metadatos
         /// </summary>
         /// <param name="entidad"></param>
         /// <returns></returns>
@@ -94,8 +94,9 @@ namespace PIKA.GD.API.Controllers.Metadatos
 
         }
 
+
         /// <summary>
-        /// Devulve un alista de Tipo Almacen Metadatos asociadas al objeto del tipo especificado
+        /// Devulve una lista de Tipo Almacen Metadatos asociadas al objeto del tipo especificado
         /// </summary>
         /// <param name="query">Consulta para la paginación y búsqueda</param>
         /// <returns></returns>
@@ -121,10 +122,6 @@ namespace PIKA.GD.API.Controllers.Metadatos
         }
 
 
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------
 
         /// <summary>
         /// Obtiene un país en base al Id único
@@ -144,6 +141,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
             if (o != null) return Ok(o);
             return NotFound(id.Trim());
         }
+
 
 
 
