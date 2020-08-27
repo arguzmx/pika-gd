@@ -164,15 +164,10 @@ namespace PIKA.Modelo.Metadatos
         [XmlIgnore]
         [JsonIgnore]
         public virtual AtributoLista AtributoLista { get; set; }
-        [XmlIgnore]
-        [JsonIgnore]
-        public virtual AtributoLista AtributoLista { get; set; }
+       
         [XmlIgnore]
         [JsonIgnore]
         public virtual AtributoTabla AtributoTabla { get; set; }
-        [XmlIgnore]
-        [JsonIgnore]
-
         [XmlIgnore]
         [JsonIgnore]
         public virtual List<AtributoEvento> AtributosEvento { get; set; }
