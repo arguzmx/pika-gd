@@ -13,7 +13,10 @@ namespace PIKA.Servicio.Metadatos
             return new ValorListaPlantilla()
             {
                 Id = d.Id,
-                PropiedadId=d.PropiedadId
+                PropiedadId=d.PropiedadId,
+                Texto=d.Texto,
+                Indice=d.Indice
+                
             };
         }
     }

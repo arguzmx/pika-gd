@@ -46,14 +46,26 @@ namespace PIKA.Servicio.Metadatos.Servicios
         public async Task<Plantilla> CrearAsync(Plantilla entity, CancellationToken cancellationToken = default)
         {
 
-            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
+            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)
+            && x.Eliminada!=true ))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
-
-            entity.Id = System.Guid.NewGuid().ToString();
-            await this.repo.CrearAsync(entity);
-            UDT.SaveChanges();
+            try
+            {
+                entity.Id = System.Guid.NewGuid().ToString();
+                await this.repo.CrearAsync(entity);
+                UDT.SaveChanges();
+            }
+            catch (DbUpdateException)
+            {
+                throw new ExErrorRelacional(entity.AlmacenDatosId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        
             return entity.Copia();
         }
 
@@ -69,20 +81,28 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
             if (await Existe(x =>
             x.Id != entity.Id
-            && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
+            && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)
+            && x.Eliminada!=true))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
+            try
+            {
+                o.Nombre = entity.Nombre.Trim();
+                o.AlmacenDatosId = entity.AlmacenDatosId.Trim();
 
-            o.Nombre = entity.Nombre;
-            o.Eliminada = entity.Eliminada;
-            o.OrigenId = entity.OrigenId;
-            o.Propiedades = entity.Propiedades;
-            o.TipoOrigenId= entity.TipoOrigenId;
+                UDT.Context.Entry(o).State = EntityState.Modified;
+                UDT.SaveChanges();
+            }
+            catch (DbUpdateException)
+            {
+                throw new ExErrorRelacional(entity.AlmacenDatosId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
            
-
-            UDT.Context.Entry(o).State = EntityState.Modified;
-            UDT.SaveChanges();
 
         }
         private Consulta GetDefaultQuery(Consulta query)
@@ -106,26 +126,6 @@ namespace PIKA.Servicio.Metadatos.Servicios
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
 
             return respuesta;
-        }
-
-        public Task<IEnumerable<Plantilla>> CrearAsync(params Plantilla[] entities)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Plantilla>> CrearAsync(IEnumerable<Plantilla> entities, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task EjecutarSql(string sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task EjecutarSqlBatch(List<string> sqlCommand)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
@@ -154,34 +154,65 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
             Plantilla d = await this.repo.UnicoAsync(predicado,ordenarPor, incluir);
 
-            return d?.Copia();
+            return d.Copia();
         }
-
-
-
-        #region Sin Implementar
-
-        public Task<List<Plantilla>> ObtenerAsync(Expression<Func<Plantilla, bool>> predicado)
+        public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
-            throw new NotImplementedException();
-        }
+            Plantilla c;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                c = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (c != null)
+                {
+                    if(await Existe(x => x.Id != c.Id && x.Nombre.Equals(c.Nombre,StringComparison.InvariantCultureIgnoreCase)&&x.Eliminada==false))
+                    c.Nombre = $"{c.Nombre} Restaurado {DateTime.Now.Ticks}";
 
+                    c.Eliminada = false;
+                    UDT.Context.Entry(c).State = EntityState.Modified;
+                    listaEliminados.Add(c.Id);
+                }
+
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
+        }
         public Task<List<Plantilla>> ObtenerAsync(string SqlCommand)
         {
+            return this.repo.ObtenerAsync(SqlCommand);
+        }
+        public  Task<List<Plantilla>> ObtenerAsync(Expression<Func<Plantilla, bool>> predicado)
+        {
+            return this.repo.ObtenerAsync(predicado);
+        }
+
+        #region Sin Implementar
+        public Task<IEnumerable<Plantilla>> CrearAsync(params Plantilla[] entities)
+        {
+            throw new NotImplementedException();
+        }
+        public Task<IEnumerable<Plantilla>> CrearAsync(IEnumerable<Plantilla> entities, CancellationToken cancellationToken = default)
+        {
             throw new NotImplementedException();
         }
 
+        public async Task EjecutarSql(string sqlCommand)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task EjecutarSqlBatch(List<string> sqlCommand)
+        {
+            throw new NotImplementedException();
+        }
+       
+        
         public Task<IPaginado<Plantilla>> ObtenerPaginadoAsync(Expression<Func<Plantilla, bool>> predicate = null, Func<IQueryable<Plantilla>, IOrderedQueryable<Plantilla>> orderBy = null, Func<IQueryable<Plantilla>, IIncludableQueryable<Plantilla, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-
-
-        public Task<IEnumerable<string>> Restaurar(string[] ids)
-        {
-            throw new NotImplementedException();
-        }
+        
         #endregion
 
 

@@ -12,9 +12,9 @@ namespace PIKA.Modelo.Metadatos.Validadores
         public PlantillaValidador(IStringLocalizer<Plantilla> localizer)
         {
             RuleFor(x => x.Nombre).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.Nombre);
-            RuleFor(x => x.TipoOrigenId).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.Nombre);
-            RuleFor(x => x.OrigenId).NotNull().NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.Nombre);
-            RuleFor(x => x.Eliminada).NotEmpty();
+            RuleFor(x => x.TipoOrigenId).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.GUID);
+            RuleFor(x => x.OrigenId).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.GUID);
+            RuleFor(x=>x.AlmacenDatosId).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.GUID);
         }
     }
 }
