@@ -47,18 +47,7 @@ namespace PIKA.Servicio.GestionDocumental
 
         }
 
-        /// <summary>
-        /// Regresa una lista de la entidad Elementos Clasificación obtenio los hijos de cada elemento
-        /// </summary>
-        /// <param name="PadreId">Identificador único de los elementos</param>
-        /// <param name="JerquiaId">Identificador único de cuadro clasificación</param>
-        /// <returns></returns>
-        private async Task<List<ElementoClasificacion>> ObtenerHijosAsync(string PadreId, string JerquiaId)
-        {
-            var l = await this.RepoElemento.ObtenerAsync(x => x.CuadroClasifiacionId == JerquiaId &&x.Eliminada!=true
-           && x.ElementoClasificacionId == PadreId, y => y.OrderBy(z => z.NombreJerarquico));
-            return l.ToList();
-        }
+       
       /// <summary>
       /// Crea el archivo xml
       /// </summary>
@@ -70,7 +59,9 @@ namespace PIKA.Servicio.GestionDocumental
             List<Estructuraexcel> listExport = new List<Estructuraexcel>();
 
             string Nombre =   await LlenadoCuadroClasificacion(CuadroClasificacionId.Trim(), listExport);
-        string fileName= CD.CrearArchivo(listExport, CuadroClasificacionId.Trim(), ruta, separador, Nombre);
+
+            string fileName= CD.CrearArchivo(listExport, CuadroClasificacionId.Trim(), ruta, separador, Nombre);
+
             byte[] array = File.ReadAllBytes(fileName);
             return array;
 
@@ -86,28 +77,20 @@ namespace PIKA.Servicio.GestionDocumental
         public async Task EliminarCuadroCalsificacionExcel(string CuadroClasificacionId, string ruta, string separador) 
         {
             CuadroClasificacion cc = await this.repo.UnicoAsync(x=>x.Id.Equals(CuadroClasificacionId,StringComparison.InvariantCultureIgnoreCase));
-         string Directory= $"{ ruta }{ separador}{ CuadroClasificacionId}";
-            if(File.Exists(Directory))
-            if (cc!=null)
-            System.IO.Directory.Delete($"{ruta}{separador}{CuadroClasificacionId}",true);
+            string Directory= $"{ ruta }{ CuadroClasificacionId}";
+            try
+            {
+                    System.IO.Directory.Delete($"{ruta}{CuadroClasificacionId}", true);
+               
+            }
+            catch (Exception ex)
+            {
+                //Do something
+            }
+            
 
         }
-        /// <summary>
-        /// Obtiene el nombre del cuadro clasificación
-        /// </summary>
-        /// <returns></returns>
-        private async Task<string> ObtineNombreCuadroClasificacion(string CuadroClasificacionId) 
-        {
-            Console.WriteLine(CuadroClasificacionId);
-            CuadroClasificacion cc = await this.repo.UnicoAsync(x=>x.Id.Equals(CuadroClasificacionId.Trim(),StringComparison.InvariantCultureIgnoreCase));
-            if (cc != null)
-            {
-                Console.WriteLine("CC algo "+CuadroClasificacionId);
-                return cc.Nombre; 
-            }
-            else
-                return "Sin Nombre";
-        }
+  
         /// <summary>
         /// llenado del cuadro clasidicación
         /// </summary>
@@ -118,6 +101,8 @@ namespace PIKA.Servicio.GestionDocumental
             int columna = 1;
             int Row = 2;
             string nombre="";
+            
+
             CuadroClasificacion cuadroclasificacion = await this.repo.UnicoAsync(x=> x.Id.Equals(CuadroClasificacionId,StringComparison.InvariantCultureIgnoreCase));
             List<RegionElementoClasificacion> lr1 = new List<RegionElementoClasificacion>();
             if (cuadroclasificacion != null)
@@ -125,11 +110,14 @@ namespace PIKA.Servicio.GestionDocumental
                 nombre = cuadroclasificacion.Nombre;
                 LlenadoEstructuraExcel(listExport, columna, Row, $" {cuadroclasificacion.Nombre} ");
                 Row = Row + 3;
-                ElementoClasificacion e = await this.RepoElemento.UnicoAsync(x=>x.CuadroClasifiacionId.Equals(CuadroClasificacionId,StringComparison.InvariantCultureIgnoreCase) && x.EsRaiz==true);
-                LlenadoRegion1(lr1, columna, $" {e.Clave} {e.Nombre} ", e.CuadroClasifiacionId, e.Id);
 
+                List <ElementoClasificacion> el = await this.RepoElemento.ObtenerAsync(x=>x.CuadroClasifiacionId.Equals(CuadroClasificacionId,StringComparison.InvariantCultureIgnoreCase) && x.EsRaiz==true);
+                foreach (ElementoClasificacion e in el)
+                {
+                    LlenadoRegion1(lr1, columna, $" {e.Clave} {e.Nombre} ", e.CuadroClasifiacionId, e.Id);
+                    await ObtnerHijosElmentos(lr1, columna, cuadroclasificacion.Id, e.Id);
 
-                await ObtnerHijosElmentos(lr1, columna, cuadroclasificacion.Id, e.Id);
+                }
             }
 
            await LlenadoRegion2y3(lr1, listExport);
@@ -170,21 +158,23 @@ namespace PIKA.Servicio.GestionDocumental
         private async Task encabezados(List<Estructuraexcel> exp, int c)
         {
             int row = 2;
-            
-            for (int i = 1; i < 6; i++)
-            {
-                c = c + 1;
-                LlenadoEstructuraExcel(exp, c, row, ValorEncabezado(i));
-            }
-
+            c = c + 1;
+            LlenadoEstructuraExcel(exp, c, row, "Clave");
             List<TipoValoracionDocumental> list = await this.repoTVD.ObtenerAsync(x => x.Id != null, include: null);
 
             foreach (TipoValoracionDocumental tp in list)
             {
                 c = c + 1;
-                LlenadoEstructuraExcel(exp,c,row,tp.Nombre);
-               
+                LlenadoEstructuraExcel(exp, c, row, tp.Nombre);
+
             }
+            for (int i = 1; i < 4; i++)
+            {
+                c = c + 1;
+                LlenadoEstructuraExcel(exp, c, row, ValorEncabezado(i));
+            }
+
+            
 
 
         }
@@ -195,7 +185,7 @@ namespace PIKA.Servicio.GestionDocumental
         /// <returns></returns>
         private string ValorEncabezado(int indice) 
         {
-            string ListEncabezado = "Clave,AT,AC,Tipo Disposición,Eliminado";
+            string ListEncabezado = "AT,AC,Tipo Disposición";
             string text="";
             switch (indice)
             {
@@ -208,13 +198,7 @@ namespace PIKA.Servicio.GestionDocumental
                 case 3:
                     text = ListEncabezado.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray()[2];
                     break;
-                case 4:
-                    text = ListEncabezado.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray()[3];
-                    break;
               
-                case 5:
-                    text = ListEncabezado.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray()[4];
-                    break;
             }
             return text;
         }
@@ -249,31 +233,10 @@ namespace PIKA.Servicio.GestionDocumental
         private async Task InsertaValoresCuadro2(List<Estructuraexcel> exp, EntradaClasificacion EntradasClasificion, int IndiceColumna, int NumeroFila)
         {
             string nombreclave = $"{ EntradasClasificion.Clave}{ EntradasClasificion.Nombre}";
-            for (int i = 1; i < 6; i++)
-            {
-                IndiceColumna = IndiceColumna + 1;
-                if (i == 2)
-                { nombreclave = EntradasClasificion.VigenciaTramite.ToString(); }
-                if (i == 3)
-                { nombreclave = EntradasClasificion.VigenciaConcentracion.ToString(); }
-                if (i == 5)
-                { nombreclave = EntradasClasificion.Eliminada ? "Eliminado" : ""; }
-                if (i == 4)
-                {
-                    TipoDisposicionDocumental tp = await this.repoTD.UnicoAsync(x => x.Id == EntradasClasificion.TipoDisposicionDocumentalId);
-                    if (tp != null)
-                    {
-                        if (!String.IsNullOrEmpty(tp.Nombre))
-                            nombreclave = tp.Nombre;
-                        else
-                            nombreclave = "sin Tipo Disposición";
-                    }
-                }
-                LlenadoEstructuraExcel(exp, IndiceColumna, NumeroFila, nombreclave);
-
-            }
             List<TipoValoracionDocumental> list = await this.repoTVD.ObtenerAsync(x => x.Id != null, include: null);
-
+            IndiceColumna = IndiceColumna + 1;
+            LlenadoEstructuraExcel(exp, IndiceColumna, NumeroFila, nombreclave);
+           
             foreach (TipoValoracionDocumental tp in list)
             {
                 IndiceColumna = IndiceColumna + 1;
@@ -284,6 +247,35 @@ namespace PIKA.Servicio.GestionDocumental
                 }
 
             }
+            for (int i = 1; i < 4; i++)
+            {
+
+                IndiceColumna = IndiceColumna + 1;
+                if (i == 1)
+                { nombreclave = EntradasClasificion.VigenciaTramite.ToString();
+                    LlenadoEstructuraExcel(exp, IndiceColumna, NumeroFila, nombreclave);
+                }
+                if (i == 2)
+                { nombreclave = EntradasClasificion.VigenciaConcentracion.ToString();
+                    LlenadoEstructuraExcel(exp, IndiceColumna, NumeroFila, nombreclave);
+                }
+                if (i == 3)
+                {
+                    TipoDisposicionDocumental tp = await this.repoTD.UnicoAsync(x => x.Id == EntradasClasificion.TipoDisposicionDocumentalId);
+                    if (tp != null)
+                    {
+                        nombreclave =  tp.Nombre;
+                    }
+                    else {
+                        nombreclave = " " ;
+                    }
+                    LlenadoEstructuraExcel(exp, IndiceColumna, NumeroFila, nombreclave);
+
+                }
+
+
+            }
+           
         }
 
         /// <summary>
@@ -321,8 +313,6 @@ namespace PIKA.Servicio.GestionDocumental
             List<ElementoClasificacion> ListaElemntosHijos = new List<ElementoClasificacion>();
             ListaElemntosHijos = await this.RepoElemento.ObtenerAsync(x=>x.ElementoClasificacionId.Equals(ElementoClasificacionId,StringComparison.InvariantCulture)
             &&x.CuadroClasifiacionId.Equals(CuadroClasificacionId,StringComparison.InvariantCulture));
-                /*await ObtenerHijosAsync(ElementoClasificacionId, CuadroClasificacionId);*/
-            Console.WriteLine($"\n Datos { ListaElemntosHijos.Count()}");
             if (ListaElemntosHijos.Count() > 0)
             { Indicecolumna++;  }
             foreach (ElementoClasificacion hijos in ListaElemntosHijos)

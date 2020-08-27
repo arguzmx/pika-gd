@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.GestorDocumental;
@@ -31,20 +33,24 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<TipoValoracionDocumental> repoTEC;
         private IRepositorioAsync<ElementoClasificacion> repoEL;
         private IRepositorioAsync<TipoDisposicionDocumental> repoTD;
-
+        private ILogger<ServicioCuadroClasificacion> LoggerCuadro;
+        private IOCuadroClasificacion ioCuadroClasificacion;
+        private readonly ConfiguracionServidor ConfiguracionServidor;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
          
         public ServicioEntradaClasificacion(
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioEntradaClasificacion> Logger
+           ILogger<ServicioEntradaClasificacion> Logger, IOptions<ConfiguracionServidor> Config
            ) : base(proveedorOpciones, Logger)
         {
+            this.ConfiguracionServidor = Config.Value;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>());
             this.repoEC = UDT.ObtenerRepositoryAsync<ValoracionEntradaClasificacion>(new QueryComposer<ValoracionEntradaClasificacion>());
             this.repoEL = UDT.ObtenerRepositoryAsync<ElementoClasificacion>(new QueryComposer<ElementoClasificacion>());
             this.repoTD = UDT.ObtenerRepositoryAsync<TipoDisposicionDocumental>(new QueryComposer<TipoDisposicionDocumental>());
             this.repoTEC = UDT.ObtenerRepositoryAsync<TipoValoracionDocumental>(new QueryComposer<TipoValoracionDocumental>());
+            this.ioCuadroClasificacion = new IOCuadroClasificacion(LoggerCuadro, proveedorOpciones);
         }
         public async Task<bool> Existe(Expression<Func<EntradaClasificacion, bool>> predicado)
         {
@@ -110,7 +116,15 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<bool> Existelemento(Expression<Func<ElementoClasificacion, bool>> predicadoelemento)
         {
             List<ElementoClasificacion> l = await this.repoEL.ObtenerAsync(predicadoelemento);
-            if (l.Count() == 0) return false;
+
+            if (l.Count() == 0) { return false; }
+            foreach (ElementoClasificacion item in l)
+            {
+                await ioCuadroClasificacion.EliminarCuadroCalsificacionExcel(item.CuadroClasifiacionId, ConfiguracionServidor.ruta_cache_fisico, ConfiguracionServidor.separador_ruta);
+
+            }
+           
+
             return true;
         }
         public async Task<bool> ExisteTipoDisposicionDocumental(Expression<Func<TipoDisposicionDocumental, bool>> predicadoelemento)
@@ -279,6 +293,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 {
                     try
                     {
+                        await Existelemento(x => x.Id == c.ElementoClasificacionId && x.Eliminada == true);
                         c.Eliminada = true;
                         UDT.Context.Entry(c).State = EntityState.Modified;
                         listaEliminados.Add(c.Id);
@@ -306,6 +321,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
             else {
             }
+            await Existelemento(x => x.Id == ElementoCuadroClasificacionId && x.Eliminada == true);
 
 
             return Nombre;

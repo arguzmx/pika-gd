@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.GestorDocumental;
@@ -26,6 +28,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<ValoracionEntradaClasificacion> repo;
         private IRepositorioAsync<EntradaClasificacion> repoEC;
         private IRepositorioAsync<TipoValoracionDocumental> repoTV;
+        private readonly ConfiguracionServidor ConfiguracionServidor;
 
         private ICompositorConsulta<ValoracionEntradaClasificacion> compositor;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
@@ -33,9 +36,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public ServicioValoracionEntradaClasificacion(
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioValoracionEntradaClasificacion> Logger
+           ILogger<ServicioValoracionEntradaClasificacion> Logger,
+           IOptions<ConfiguracionServidor> Config
            ) : base(proveedorOpciones, Logger)
         {
+            this.ConfiguracionServidor = Config.Value;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<ValoracionEntradaClasificacion>(new QueryComposer<ValoracionEntradaClasificacion>());
             this.repoEC= UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>());
@@ -49,7 +54,16 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return true;
         }
 
-
+        public void EliminarArchivo()
+        {
+            try
+            {
+                System.IO.Directory.Delete($"{ConfiguracionServidor.ruta_cache_fisico}", true);
+            }
+            catch (Exception)
+            {
+            }
+        }
         public async Task<ValoracionEntradaClasificacion> CrearAsync(ValoracionEntradaClasificacion entity, CancellationToken cancellationToken = default)
         {
 
@@ -69,6 +83,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 entity.EntradaClasificacionId.Trim();
                 UDT.SaveChanges();
             }
+            EliminarArchivo();
             return entity.Copia();
         }
 
@@ -120,6 +135,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
                 UDT.Context.Entry(o).State = EntityState.Modified;
             }
+            EliminarArchivo();
             UDT.SaveChanges();
 
         }
@@ -185,7 +201,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 }
 
             }
-           
+            EliminarArchivo();
             UDT.SaveChanges();
             return listaEliminados;
         }

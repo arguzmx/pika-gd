@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.GestorDocumental;
@@ -26,12 +28,14 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<TipoDisposicionDocumental> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
         private IRepositorioAsync<EntradaClasificacion> repoEC;
+        private readonly ConfiguracionServidor ConfiguracionServidor;
 
         public ServicioTipoDisposicionDocumental(
          IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-         ILogger<ServicioTipoDisposicionDocumental> Logger) :
+         ILogger<ServicioTipoDisposicionDocumental> Logger, IOptions<ConfiguracionServidor> Config) :
             base(proveedorOpciones, Logger)
         {
+            this.ConfiguracionServidor = Config.Value;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<TipoDisposicionDocumental>(new QueryComposer<TipoDisposicionDocumental>());
             this.repoEC= UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>());
@@ -44,7 +48,16 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return true;
         }
 
-
+        public void EliminarArchivo()
+        {
+            try
+            {
+                System.IO.Directory.Delete($"{ConfiguracionServidor.ruta_cache_fisico}", true);
+            }
+            catch (Exception)
+            {
+            }
+        }
         public async Task<TipoDisposicionDocumental> CrearAsync(TipoDisposicionDocumental entity, CancellationToken cancellationToken = default)
         {
             if (await Existe(x => x.Id == entity.Id && string.Equals(x.Nombre.Trim(), entity.Nombre.Trim(), StringComparison.InvariantCultureIgnoreCase)))
@@ -59,6 +72,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             entity.Nombre = entity.Nombre.Trim();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
+            EliminarArchivo();
             return entity.Copia();
         }
 
@@ -78,6 +92,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             tmp.Nombre = entity.Nombre.Trim();
             UDT.Context.Entry(tmp).State = EntityState.Modified;
             UDT.SaveChanges();
+            EliminarArchivo();
         }
 
 
@@ -100,6 +115,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                         }
                         this.UDT.SaveChanges();
                         listaEliminados.Add(o.Id);
+                        EliminarArchivo();
                     }
                     catch (DbUpdateException)
                     {
