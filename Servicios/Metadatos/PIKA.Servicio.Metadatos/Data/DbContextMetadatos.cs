@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FluentValidation.Internal;
+using Microsoft.EntityFrameworkCore;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Data;
 using PIKA.Servicio.Metadatos.Data.Configuracion;
@@ -90,8 +91,41 @@ namespace PIKA.Servicio.Metadatos.Data
         /// <summary>
         /// Valores Lista propiedad
         /// </summary>
-        public static string TablaValoresListaPropiedad { get => "metadatos$valorespropiedad"; }
+        public static string TablaValoresListaPropiedad { get => "metadatos$ValoresListaPropiedad"; }
 
+        /// <summary>
+        /// Atributos eventos
+        /// </summary>
+        public static string TablaAtributoEvento { get => "metadatos$atributoevento"; }
+
+        /// <summary>
+        /// Atributos Listas
+        /// </summary>
+        public static string TablaAtributoLista { get => "metadatos$atributolista"; }
+        /// <summary>
+        /// AtributoVistaUI
+        /// </summary>
+        public static string TablaAtributoVistaUI { get => "metadatos$atributovistaUI"; }
+        /// <summary>
+        /// Catalogo Vinculado
+        /// </summary>
+        public static string TablaCatalogoVinculado { get => "metadatos$catalogovinculado"; }
+        /// <summary>
+        /// Diccionario Entidad Vinculada
+        /// </summary>
+        public static string TablaDiccionarioEntidadVinculada { get => "metadatos$diccionarioentidadvinculada"; }
+        /// <summary>
+        /// Entidad Vinculada
+        /// </summary>
+        public static string TablaEntidadVinculada { get => "metadatos$entidadvinculada"; }
+        /// <summary>
+        /// Metadata Info
+        /// </summary>
+        public static string TablaMetadataInfo { get => "metadatos$metadatainfo"; }
+        /// <summary>
+        /// Valor Lista
+        /// </summary>
+        public static string TablaValorLista { get => "metadatos$valorlista"; }
         #endregion
 
         /// <summary>
@@ -102,7 +136,9 @@ namespace PIKA.Servicio.Metadatos.Data
         /// Metadatos existentes en la PropiedadPlantilla
         /// </summary>
         public DbSet<PropiedadPlantilla> PropiedadPlantilla { get; set; }
-
+        /// <summary>
+        /// Metadatos existentes en la PropiedadPlantilla
+        /// </summary>
         public DbSet<ValorListaPlantilla> ValoresListaPropiedad { get; set; }
 
 
@@ -132,9 +168,35 @@ namespace PIKA.Servicio.Metadatos.Data
         /// </summary>
 
         public DbSet<AsociacionPlantilla> AsociacionPlantilla { get; set; }
-
+        /// <summary>
+        /// Metadatos existentes en la Asociacion plantilla
+        /// </summary>
         public DbSet<AlmacenDatos> AlmacenesDatos { get; set; }
+        /// <summary>
+        /// Atributos eventos
+        /// </summary>
+        public DbSet<AtributoEvento> AtributoEventos { get; set; }
+        /// <summary>
+        /// Atributos de listas
+        /// </summary>
+        public DbSet<AtributoLista> AtributoListas { get; set; }
+        /// <summary>
+        /// Atributos de vistas UI
+        /// </summary>
+        public DbSet<AtributoVistaUI> AtributoVistaUIs { get; set; }
+        /// <summary>
+        /// Catalogos
+        /// </summary>
+        public DbSet<CatalogoVinculado> CatalogoVinculados { get; set; }
+        /// <summary>
+        /// Diccionario de entidades
+        /// </summary>
+        public DbSet<DiccionarioEntidadVinculada> DiccionarioEntidadVinculadas { get; set; }
 
+
+        /// <summary>
+        /// Tipo de almacenes
+        /// </summary>
 
         public DbSet<TipoAlmacenMetadatos> TipoAlmacenMetadatos { get; set; }
         public void AplicarMigraciones()
@@ -160,6 +222,14 @@ namespace PIKA.Servicio.Metadatos.Data
             builder.ApplyConfiguration<ValidadorTexto>(new DbConfValidadorTexto());
             builder.ApplyConfiguration<AsociacionPlantilla>(new DbConfAsociacionPlantilla());
             builder.ApplyConfiguration<TipoAlmacenMetadatos>(new DbConfTipoAlmacenMetadatos());
+            
+            builder.ApplyConfiguration<AtributoEvento>(new DbConfAtributoEvento());
+            builder.ApplyConfiguration<AtributoLista>(new DbConfAtributoLista());
+            builder.ApplyConfiguration<AtributoVistaUI>(new DbConfAtributoVistaUI());
+            builder.ApplyConfiguration<CatalogoVinculado>(new DbConfCatalogoVinculado());
+            builder.ApplyConfiguration<DiccionarioEntidadVinculada>(new DbConfDiccionarioEntidadVinculada());
+            builder.ApplyConfiguration<ValorLista>(new DbConfValorLista());
+
         }
 
     }

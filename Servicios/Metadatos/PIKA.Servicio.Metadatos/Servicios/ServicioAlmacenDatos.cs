@@ -14,6 +14,7 @@ using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Data;
 using PIKA.Servicio.Metadatos.Interfaces;
 using RepositorioEntidades;
+using Serilog.Data;
 
 namespace PIKA.Servicio.Metadatos.Servicios
 {
@@ -30,8 +31,17 @@ namespace PIKA.Servicio.Metadatos.Servicios
         public ServicioAlmacenDatos(IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
            ILogger<ServicioAlmacenDatos> Logger) : base(proveedorOpciones, Logger)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
-            this.repo = UDT.ObtenerRepositoryAsync<AlmacenDatos>(new QueryComposer<AlmacenDatos>());
+            try
+            {
+                this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
+                this.repo = UDT.ObtenerRepositoryAsync<AlmacenDatos>(new QueryComposer<AlmacenDatos>());
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.ToString());
+                throw;
+            }
+            
         }
         public async Task<bool> Existe(Expression<Func<AlmacenDatos, bool>> predicado)
         {
@@ -60,7 +70,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task ActualizarAsync(AlmacenDatos entity)
         {
-            AlmacenDatos o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+            AlmacenDatos o = await this.repo.UnicoAsync(x => x.Id == entity.Id.Trim());
 
             if (o == null)
             {
@@ -68,14 +78,19 @@ namespace PIKA.Servicio.Metadatos.Servicios
             }
 
             
-            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)
+            if (await Existe(x => x.Nombre.Equals(entity.Nombre.Trim(), StringComparison.InvariantCultureIgnoreCase)
             && x.Id != entity.Id   ))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
 
             o.Nombre = entity.Nombre.Trim();
-
+            o.Usuario = entity.Usuario.Trim();
+            o.Contrasena = entity.Contrasena.Trim();
+            o.Direccion = entity.Direccion.Trim();
+            o.Protocolo = entity.Protocolo.Trim();
+            o.TipoAlmacenMetadatosId = entity.TipoAlmacenMetadatosId.Trim();
+            o.Puerto = entity.Puerto.Trim();
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
@@ -105,20 +120,31 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            AlmacenDatos c;
+            AlmacenDatos o;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
             {
-                c = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (c != null)
+                o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
+                if (o != null)
                 {
                     try
                     {
-                        UDT.Context.Entry(c).State = EntityState.Modified;
-                        listaEliminados.Add(c.Id);
+                        o = await this.repo.UnicoAsync(x => x.Id == Id);
+                        if (o != null)
+                        {
+                            await this.repo.Eliminar(o);
+                        }
+                        this.UDT.SaveChanges();
+                        listaEliminados.Add(o.Id);
+                    }
+                    catch (DbUpdateException)
+                    {
+                        throw new ExErrorRelacional(Id);
                     }
                     catch (Exception)
-                    { }
+                    {
+                        throw;
+                    }
                 }
             }
             UDT.SaveChanges();

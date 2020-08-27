@@ -1,0 +1,2056 @@
+{
+	"info": {
+		"_postman_id": "653d9f4c-5139-46bf-beb5-c6baa06f6a42",
+		"name": "Metadatos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Plantilla",
+			"item": [
+				{
+					"name": "Tipo Almacen Metadatos",
+					"item": [
+						{
+							"name": "GET Metadata Tipo Almacen Metadatos",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/TipoAlmacenMetadatos/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"TipoAlmacenMetadatos",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Tipo Almacen Metadatos",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"0001\",\r\n  \"nombre\": \"segundo  cuadro c:\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/TipoAlmacenMetadatos",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"TipoAlmacenMetadatos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Tipo Almacen Metadatos",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"0001\",\r\n  \"nombre\": \"Actualizado\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/metadatos/TipoAlmacenMetadatos/0001",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"TipoAlmacenMetadatos",
+										"0001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Tipo Almacen Metadatos",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/TipoAlmacenMetadatos/9ef8ca8f-b72c-4365-afda-092fea381143",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"TipoAlmacenMetadatos",
+										"9ef8ca8f-b72c-4365-afda-092fea381143"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page Tipo Almacen Metadatos",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/metadatos/TipoAlmacenMetadatos/page?i=0&t=100&ordc=Nombre&ordd=asc",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"TipoAlmacenMetadatos",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET PAGE Pares Tipo Almacen Metadatos",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/TipoAlmacenMetadatos/pares?i=0&t=5&f[0][p]=Texto&f[0][o]=starts&f[0][v]=e",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"TipoAlmacenMetadatos",
+										"pares"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "5"
+										},
+										{
+											"key": "f[0][p]",
+											"value": "Texto"
+										},
+										{
+											"key": "f[0][o]",
+											"value": "starts"
+										},
+										{
+											"key": "f[0][v]",
+											"value": "e"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET PAGE Tipo Almacen Metadatos  Por ID",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/TipoAlmacenMetadatos/pares/admin,0001,sql,9ef8ca8f-b72c-4365-afda-092fea381143",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"TipoAlmacenMetadatos",
+										"pares",
+										"admin,0001,sql,9ef8ca8f-b72c-4365-afda-092fea381143"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Tipo Almacen Metadatos",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/TipoAlmacenMetadatos/9ef8ca8f-b72c-4365-afda-092fea381143,102",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"TipoAlmacenMetadatos",
+										"9ef8ca8f-b72c-4365-afda-092fea381143,102"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "5f5f012a-9cc9-4c81-97a8-bd19dae89b9b",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "0f5fc882-90de-49f5-b1a8-91d8275d5a5c",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Almacen Datos",
+					"item": [
+						{
+							"name": "GET Metadata Almacen Datos",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/AlmacenDatos/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"AlmacenDatos",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Almacen Datos",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n   \"nombre\": \"servidor\",\r\n    \"Protocolo\": \"441\",\r\n    \"Direccion\": \"Conexion\",\r\n    \"Usuario\": \"Malu\",\r\n    \"Contrasena\": \"algo\",\r\n    \"Puerto\": \"456\",\r\n    \"TipoAlmacenMetadatosId\": \"sql\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/metadatos/AlmacenDatos",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"AlmacenDatos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Almacen Datos",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Id\": \"e0d9a22e-b2d0-4960-9371-3124d41902d3\",\r\n    \"Nombre\": \"Actualizado Estado\",\r\n    \"Protocolo\": \"441\",\r\n    \"Direccion\": \"Conexion\",\r\n    \"Usuario\": \"algo\",\r\n    \"Contrasena\": \"algo\",\r\n    \"Puerto\": \"456\",\r\n    \"TipoAlmacenMetadatosId\": \"sql\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/metadatos/AlmacenDatos/e0d9a22e-b2d0-4960-9371-3124d41902d3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"AlmacenDatos",
+										"e0d9a22e-b2d0-4960-9371-3124d41902d3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Almacen Datos",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/metadatos/AlmacenDatos/e0d9a22e-b2d0-4960-9371-3124d41902d3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"AlmacenDatos",
+										"e0d9a22e-b2d0-4960-9371-3124d41902d3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page Almacen Datos",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\"indice\": 0,\n\"tamano\": 10,\n\"columna_ordenamiento\": \"Nombre\",\n\"direccion_ordenamiento\": \"asc\",\n\"Filtros\": [\n\t{\"Propiedad\":\"nombre\",\"Operador\": \"contains\", \"Valor\": \" \"}\n\t]\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/metadatos/AlmacenDatos/page?i=0&t=100&ordc=Nombre&ordd=asc&",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"AlmacenDatos",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										},
+										{
+											"key": "",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE  Almacen Datos",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/metadatos/AlmacenDatos/fb940763-3ce2-4652-b2af-b1b45b7dd970,1,0002,e0d9a22e-b2d0-4960-9371-3124d41902d3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"AlmacenDatos",
+										"fb940763-3ce2-4652-b2af-b1b45b7dd970,1,0002,e0d9a22e-b2d0-4960-9371-3124d41902d3"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d9db6dd0-0adb-4cf9-97cd-e83828e4f314",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "7a998e1b-b5a6-4429-a004-eb0d75509410",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Plantilla",
+					"item": [
+						{
+							"name": "GET Metadata Plantilla",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/Plantilla/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"Plantilla",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Plantilla",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nombre\": \"actualizar\",\r\n  \"TipoOrigenId\":\"tipoorigen\",\r\n  \"OrigenId\":\"OrigenId\",\r\n\"AlmacenDatosId\":\"3189ea4c-0053-4846-b824-cf1e0b214d6e\"\r\n\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/Plantilla",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"Plantilla"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Valor Lista Plantilla",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"TipoOrigenDefault\": \"dominio\",\r\n    \"Nombre\": \"Actualizado\",\r\n    \"TipoOrigenId\": \"tipoorigen\",\r\n    \"OrigenId\": \"OrigenId\",\r\n    \"Eliminada\": false,\r\n    \"AlmacenDatosId\": \"3189ea4c-0053-4846-b824-cf1e0b214d6e\",\r\n    \"Id\": \"d0721dca-67d4-46bd-855d-1187791a92de\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/ValorListaPlantilla/d0721dca-67d4-46bd-855d-1187791a92de",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"ValorListaPlantilla",
+										"d0721dca-67d4-46bd-855d-1187791a92de"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page Plantilla",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/Plantilla/page?i=0&t=100&ordc=Nombre&ordd=asc",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"Plantilla",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Plantilla",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/Plantilla/51f43d07-c645-4af2-9a4f-8a2c27672278",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"Plantilla",
+										"51f43d07-c645-4af2-9a4f-8a2c27672278"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Plantilla",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/Plantilla/0001,51f43d07-c645-4af2-9a4f-8a2c27672278",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"Plantilla",
+										"0001,51f43d07-c645-4af2-9a4f-8a2c27672278"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH  Restaurar Plantilla",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/Plantilla/restaurar/31f624a1-b4b2-4d9f-957e-436af05843e1,2,3,51f43d07-c645-4af2-9a4f-8a2c27672278",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"Plantilla",
+										"restaurar",
+										"31f624a1-b4b2-4d9f-957e-436af05843e1,2,3,51f43d07-c645-4af2-9a4f-8a2c27672278"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Asociacion Plantilla",
+					"item": [
+						{
+							"name": "GET Metadata Asociación Plantilla",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/asociacionPlantilla/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"asociacionPlantilla",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Asociacion Plantilla",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"PlantillaId\": \"51f43d07-c645-4af2-9a4f-8a2c27672278\",\r\n  \"tipoOrigenId\": \"tipoOrigenId\",\r\n  \"origenId\": \"origenId\",\r\n  \"IdentificadorAlmacenamiento\":\"algo\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/asociacionPlantilla",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"asociacionPlantilla"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT  Asociacion Plantilla",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"TipoOrigenDefault\": \"\",\r\n    \"Id\": \"f17e87b3-665b-4ba0-afea-b1a8efbc157d\",\r\n    \"TipoOrigenId\": \"tipoOrigenId\",\r\n    \"OrigenId\": \"origenId\",\r\n    \"PlantillaId\": \"26d73a25-5403-49fb-ad69-f6dbaa475526\",\r\n    \"IdentificadorAlmacenamiento\": \"algo\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/asociacionPlantilla/f17e87b3-665b-4ba0-afea-b1a8efbc157d",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"asociacionPlantilla",
+										"f17e87b3-665b-4ba0-afea-b1a8efbc157d"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Asociacion Plantilla",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/asociacionPlantilla/ f17e87b3-665b-4ba0-afea-b1a8efbc157d",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"asociacionPlantilla",
+										" f17e87b3-665b-4ba0-afea-b1a8efbc157d"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page Asociacion Plantilla",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/asociacionPlantilla/page?i=0&t=100",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"asociacionPlantilla",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Asociacion Plantilla",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/asociacionPlantilla/ABCDE,43e92cbe-bce9-4584-a8a8-f1a0b0018a02,f17e87b3-665b-4ba0-afea-b1a8efbc157d",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"asociacionPlantilla",
+										"ABCDE,43e92cbe-bce9-4584-a8a8-f1a0b0018a02,f17e87b3-665b-4ba0-afea-b1a8efbc157d"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "cc1c03d2-63a4-4aa6-a397-99d44dfcf51c",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "6aefcb5b-9e59-420f-87b7-59a090e0d34f",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Propiedad Plantilla",
+					"item": [
+						{
+							"name": "GET Metadata Propiedad Plantilla",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/PropiedadPlantilla/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"PropiedadPlantilla",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Propiedad Plantilla",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"PlantillaId\": \" 26d73a25-5403-49fb-ad69-f6dbaa475526\",\r\n    \"Nombre\": \"Tests14411\",\r\n    \"TipoDatoId\": \"bin\",\r\n    \"IndiceOrdenamiento\":1,\r\n    \"Buscable\":true,\r\n    \"Ordenable\":true,\r\n    \"Visible\":true,\r\n    \"EsIdClaveExterna\":true,\r\n    \"EsIdRegistro\":true,\r\n    \"EsIdJerarquia\":true,\r\n    \"EsTextoJerarquia\":true,\r\n    \"EsFiltroJerarquia\":true,\r\n    \"EsIdRaizJerarquia\":true,\r\n    \"EsIndice\":true,\r\n    \"Requerido\":true,\r\n    \"ControlHTML\": \"86018595-5612-4c8b-a645-872303585ec6\",\r\n    \"Autogenerado\": true\r\n\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/PropiedadPlantilla",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"PropiedadPlantilla"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Propiedades Plantilla",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"PlantillaId\": \"26d73a25-5403-49fb-ad69-f6dbaa475526\",\r\n    \"Plantilla\": null,\r\n    \"ValoresLista\": [],\r\n    \"Id\": \"50caa8f2-25fc-453d-99d6-b450eac62c8c\",\r\n    \"Nombre\": \"Tests14411\",\r\n    \"TipoDatoId\": \"bin\",\r\n    \"ValorDefault\": null,\r\n    \"IndiceOrdenamiento\": 1,\r\n    \"IndiceOrdenamientoTabla\": 0,\r\n    \"Buscable\": true,\r\n    \"Ordenable\": true,\r\n    \"Visible\": true,\r\n    \"EsIdClaveExterna\": true,\r\n    \"EsIdRegistro\": true,\r\n    \"EsIdJerarquia\": true,\r\n    \"EsTextoJerarquia\": true,\r\n    \"EsIdRaizJerarquia\": true,\r\n    \"EsFiltroJerarquia\": true,\r\n    \"Requerido\": true,\r\n    \"Autogenerado\": true,\r\n    \"EsIndice\": true,\r\n    \"OrdenarValoresListaPorNombre\": true,\r\n    \"ControlHTML\": \"86018595-5612-4c8b-a645-872303585ec6\",\r\n    \"Etiqueta\": false,\r\n    \"Contextual\": false,\r\n    \"IdContextual\": null,\r\n    \"MostrarEnTabla\": false,\r\n    \"AlternarEnTabla\": false\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/PropiedadPlantilla/ 26d73a25-5403-49fb-ad69-f6dbaa47552",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"PropiedadPlantilla",
+										" 26d73a25-5403-49fb-ad69-f6dbaa47552"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Propiedades Plantilla",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/PropiedadPlantilla/27cce9f3-cdfe-4988-ade4-bd65b3dc4040",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"PropiedadPlantilla",
+										"27cce9f3-cdfe-4988-ade4-bd65b3dc4040"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page Propiedades Plantilla",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/PropiedadPlantilla/page?i=0&t=100&ordc=Nombre&ordd=asc",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"PropiedadPlantilla",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Propiedades Plantilla",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/PropiedadPlantilla/0fb1a023-511c-426c-8685-4404a9de745d,50caa8f2-25fc-453d-99d6-b450eac62c8c,27cce9f3-cdfe-4988-ade4-bd65b3dc4040",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"PropiedadPlantilla",
+										"0fb1a023-511c-426c-8685-4404a9de745d,50caa8f2-25fc-453d-99d6-b450eac62c8c,27cce9f3-cdfe-4988-ade4-bd65b3dc4040"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "33a05c09-f74a-43b5-8754-bd5eca3a9826",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "256ebb06-b4cd-4dd6-ae0c-4a87e870a162",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Tipo Dato",
+					"item": [
+						{
+							"name": "GET Metadata Tipo Dato",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/tipodato/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"tipodato",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Tipo Dato",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nombre\": \"Insert Entradkjlañ\",\r\n  \"Id\": \"Algo\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/tipodato",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"tipodato"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Tipo Dato",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nombre\": \"actualizadoi\",\r\n  \"Id\": \"Algo\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/tipodato/Algo",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"tipodato",
+										"Algo"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Tipo Dato",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/tipodato/Algo",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"tipodato",
+										"Algo"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page Tipo Dato",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/tipodato/page?i=0&t=100&ordc=Nombre&ordd=asc",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"tipodato",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Tipo Dato",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/tipodato/65dce824-85aa-4d65-8566-7bac26e40bad,algo,bin",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"tipodato",
+										"65dce824-85aa-4d65-8566-7bac26e40bad,algo,bin"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET PAGE Pares Tipo Dato",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/tipodato/pares?i=0&t=5&f[0][p]=Texto&f[0][o]=starts&f[0][v]=e",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"tipodato",
+										"pares"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "5"
+										},
+										{
+											"key": "f[0][p]",
+											"value": "Texto"
+										},
+										{
+											"key": "f[0][o]",
+											"value": "starts"
+										},
+										{
+											"key": "f[0][v]",
+											"value": "e"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET PAGE Tipo Dato  Por ID",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/TipoAlmacenMetadatos/pares/admin,0001,sql,9ef8ca8f-b72c-4365-afda-092fea381143",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"TipoAlmacenMetadatos",
+										"pares",
+										"admin,0001,sql,9ef8ca8f-b72c-4365-afda-092fea381143"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Valor Lista Plantilla",
+					"item": [
+						{
+							"name": "GET Metadata Valor Lista Plantilla",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/ValorListaPlantilla/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"ValorListaPlantilla",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Valor Lista Plantilla",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"Texto\": \"actualizar\",\r\n  \"indice\":1,\r\n  \"PropiedadId\":\"a6032a57-00fb-4a23-aac6-dfb154cbd0b1\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/ValorListaPlantilla",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"ValorListaPlantilla"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT ValorListaPlantilla",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"PropiedadId\": \"a6032a57-00fb-4a23-aac6-dfb154cbd0b1\",\r\n    \"Id\": \"7c8b51a7-c2d5-4879-836c-43db215f8d44\",\r\n    \"Texto\": \"Cambio\",\r\n    \"Indice\": 1\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/ValorListaPlantilla/7c8b51a7-c2d5-4879-836c-43db215f8d44",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"ValorListaPlantilla",
+										"7c8b51a7-c2d5-4879-836c-43db215f8d44"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page Valor Lista Plantilla",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/ValorListaPlantilla/page?i=0&t=100&ordc=Texto&ordd=asc",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"ValorListaPlantilla",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Texto"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Valor Lista Plantilla",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/ValorListaPlantilla/7c8b51a7-c2d5-4879-836c-43db215f8d44",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"ValorListaPlantilla",
+										"7c8b51a7-c2d5-4879-836c-43db215f8d44"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Valor Lista Plantilla",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/metadatos/ValorListaPlantilla/0001,51f43d07-c645-4af2-9a4f-8a2c27672278,7c8b51a7-c2d5-4879-836c-43db215f8d44",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"metadatos",
+										"ValorListaPlantilla",
+										"0001,51f43d07-c645-4af2-9a4f-8a2c27672278,7c8b51a7-c2d5-4879-836c-43db215f8d44"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "1a4ac084-8565-4d5a-818d-60d6a87fac4c",
+				"type": "text/javascript",
+				"exec": [
+					"const echoPostRequest = {",
+					"  url: 'http://localhost:4000/connect/token',",
+					"  method: 'POST',",
+					"  header: 'Content-Type:application/x-www-form-urlencoded',",
+					"  body: {",
+					"    mode: 'raw',",
+					"    raw: 'grant_type=password&username=bob&password=Pass123%24&scope=openid%20pika-gd&client_id=api-pika-gd-pass&client_secret=secret'",
+					"  }",
+					"};",
+					"",
+					"var getToken = true;",
+					"",
+					"if (!pm.environment.get('accessTokenExpiry') || ",
+					"    !pm.environment.get('accessToken')) {",
+					"    console.log('Token or expiry date are missing')",
+					"} else if (pm.environment.get('accessTokenExpiry') <= (new Date()).getTime()) {",
+					"    console.log('Token is expired')",
+					"} else {",
+					"    getToken = false;",
+					"    console.log('Token and expiry date are all good');",
+					"}",
+					"",
+					"if (getToken === true) {",
+					"    pm.sendRequest(echoPostRequest, function (err, res) {",
+					"    console.log(err ? err : res.json());",
+					"        if (err === null) {",
+					"            console.log('Saving the token and expiry date')",
+					"            var responseJson = res.json();",
+					"            pm.environment.set('accessToken', responseJson.access_token)",
+					"    ",
+					"            var expiryDate = new Date();",
+					"            expiryDate.setSeconds(expiryDate.getSeconds() + responseJson.expires_in);",
+					"            pm.environment.set('accessTokenExpiry', expiryDate.getTime());",
+					"        }",
+					"    });",
+					"}",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "6e743def-5b9d-4488-835c-0561808a22f9",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d3613383-4d15-4ec9-bd27-9690f20cb1f9",
+			"key": "accessTokenExpiry",
+			"value": ""
+		},
+		{
+			"id": "3aa91915-4c03-41e7-8b97-87d4423458e8",
+			"key": "accessToken",
+			"value": ""
+		}
+	],
+	"protocolProfileBehavior": {}
+}
