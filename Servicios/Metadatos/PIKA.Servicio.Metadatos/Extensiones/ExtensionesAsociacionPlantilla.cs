@@ -16,7 +16,8 @@ namespace PIKA.Servicio.Metadatos
                 IdentificadorAlmacenamiento = d.IdentificadorAlmacenamiento,
                 OrigenId = d.OrigenId,
                 PlantillaId = d.PlantillaId,
-                TipoOrigenId = d.TipoOrigenId
+                TipoOrigenId = d.TipoOrigenId,
+                
             };
         }
     }

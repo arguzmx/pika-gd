@@ -25,24 +25,23 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
             builder.Property(x => x.TipoDatoId).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.ValorDefault).HasColumnType("TEXT").IsRequired(false);
             builder.Property(x=>x.IndiceOrdenamiento).IsRequired();
-            builder.Property(x=>x.Buscable).HasDefaultValue(true).IsRequired();
-            builder.Property(x=>x.Ordenable).HasDefaultValue(false).IsRequired();
-            builder.Property(x=>x.Visible).HasDefaultValue(true).IsRequired();
-            builder.Property(x=>x.EsIdClaveExterna).HasDefaultValue(false).IsRequired();
-            builder.Property(x=>x.EsIdRegistro).HasDefaultValue(false).IsRequired();
-            builder.Property(x=>x.EsIdJerarquia).HasDefaultValue(false).IsRequired();
-            builder.Property(x=>x.EsTextoJerarquia).HasDefaultValue(false).IsRequired();
-            builder.Property(x=>x.EsIdRaizJerarquia).HasDefaultValue(false).IsRequired();
-            builder.Property(x=>x.EsFiltroJerarquia).HasDefaultValue(false).IsRequired();
-            builder.Property(x=>x.Requerido).HasDefaultValue(false).IsRequired();
-            builder.Property(x=>x.Autogenerado).HasDefaultValue(false).IsRequired();
-            builder.Property(x=>x.EsIndice).HasDefaultValue(false).IsRequired();
+            builder.Property(x=>x.Buscable).IsRequired();
+            builder.Property(x=>x.Ordenable).IsRequired();
+            builder.Property(x=>x.Visible).IsRequired();
+            builder.Property(x=>x.EsIdClaveExterna).IsRequired();
+            builder.Property(x=>x.EsIdRegistro).IsRequired();
+            builder.Property(x=>x.EsIdJerarquia).IsRequired();
+            builder.Property(x=>x.EsTextoJerarquia).IsRequired();
+            builder.Property(x=>x.EsIdRaizJerarquia).IsRequired();
+            builder.Property(x=>x.EsFiltroJerarquia).IsRequired();
+            builder.Property(x=>x.Requerido).IsRequired();
+            builder.Property(x=>x.Autogenerado).IsRequired();
+            builder.Property(x=>x.EsIndice).IsRequired();
             builder.Property(x=>x.ControlHTML).HasMaxLength(LongitudDatos.ControlHTML).IsRequired();
 
-            builder.HasOne(x => x.Plantilla).WithMany(y => y.Propiedades).HasForeignKey(z => z.PlantillaId);
-            builder.HasOne(x => x.AtributoTabla).WithOne(y => y.PropiedadPlantilla).HasForeignKey<AtributoTabla>(z=>z.PropiedadId);
-            builder.HasOne(x => x.ValidadorTexto).WithOne(y => y.PropiedadPlantilla).HasForeignKey<ValidadorTexto>(z => z.PropiedadId);
-            builder.HasOne(x => x.ValidadorNumero).WithOne(y => y.PropiedadPlantilla).HasForeignKey<ValidadorNumero>(z => z.PropiedadId);
+            builder.HasOne(x => x.AtributoTabla).WithOne(y => y.PropiedadPlantilla).HasForeignKey<AtributoTabla>(z=>z.PropiedadId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(x => x.ValidadorTexto).WithOne(y => y.PropiedadPlantilla).HasForeignKey<ValidadorTexto>(z => z.PropiedadId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(x => x.ValidadorNumero).WithOne(y => y.PropiedadPlantilla).HasForeignKey<ValidadorNumero>(z => z.PropiedadId).OnDelete(DeleteBehavior.Restrict);
            
 
         }

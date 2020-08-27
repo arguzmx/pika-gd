@@ -18,6 +18,7 @@ namespace PIKA.Servicio.Metadatos
                 Direccion=d.Direccion,
                 Protocolo=d.Protocolo,
                 Puerto=d.Puerto,
+                Usuario=d.Usuario,
                 TipoAlmacenMetadatosId=d.TipoAlmacenMetadatosId,
             };
         }
