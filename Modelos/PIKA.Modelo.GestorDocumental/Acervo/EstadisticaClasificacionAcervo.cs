@@ -37,7 +37,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Cantidad de activos marcados como eliminados que pertenecen al archivo
         /// </summary>
-        public int ConteoActivosEliminadod { get; set; }
+        public int ConteoActivosEliminados { get; set; }
 
         [XmlIgnore]
         [JsonIgnore]
