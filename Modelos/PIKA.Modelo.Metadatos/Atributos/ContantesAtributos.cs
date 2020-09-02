@@ -20,6 +20,7 @@ namespace PIKA.Modelo.Metadatos.Atributos
         public const string HTML_TEXT = "textbox";
         public const string HTML_TEXTAREA = "textarea";
         public const string HTML_SELECT = "select";
+        public const string HTML_SELECT_MULTI = "selectmulti";
         public const string HTML_PASSWORD = "password";
         public const string HTML_PASSWORD_CONFIRM = "passconfirm";
         public const string HTML_AVATAR = "avatar";
@@ -38,7 +39,7 @@ namespace PIKA.Modelo.Metadatos.Atributos
 
     public enum TipoDespliegueVinculo
     {
-       Tabular = 1, Jerarquico =2, EntidadUnica = 3, GrupoCheckbox =10, ListaMultiple =20
+       Tabular = 1, Jerarquico =2, EntidadUnica = 3, GrupoCheckbox =10, ListaMultiple =20, Membresia = 30
     }
 
 

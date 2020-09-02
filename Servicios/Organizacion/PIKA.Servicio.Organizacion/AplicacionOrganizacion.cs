@@ -113,6 +113,27 @@ namespace PIKA.Servicio.Organizacion
             //------------------------------------------------------------
             //------------------------------------------------------------
 
+            /// Modulo administarcion de Roles 
+            //------------------------------------------------------------
+
+            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_ORGANIZACION_ROLES, true,
+                "Usuariosn en rol",
+                "Administrador de los usuarios perteneicnetes a un rol",
+                "",
+                "es-MX",
+                PermisoAplicacion.PermisosAdministrables(), IdModuloAdminOrg,
+                ConstantesAplicacion.Id);
+            m.TiposAdministrados.Add(new TipoAdministradorModulo()
+            {
+                AplicacionId = ConstantesAplicacion.Id,
+                ModuloId = m.Id,
+                TiposAdministrados = new List<Type>() { typeof(UsuariosRol) }
+            });
+            l.Add(m);
+            //------------------------------------------------------------
+            //------------------------------------------------------------
+
+
             return l;
         }
 

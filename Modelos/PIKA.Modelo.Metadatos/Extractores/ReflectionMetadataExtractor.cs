@@ -95,9 +95,23 @@ namespace PIKA.Modelo.Metadatos
                         PropiedadHijo = ev.PropiedadHijo,
                         TipoDespliegue = ev.TipoDespliegue,
                         HijoDinamico = ev.HijoDinamico, 
-                        DiccionarioEntidadesVinculadas = ev.DiccionarioEntidadesVinculadas
+                        DiccionarioEntidadesVinculadas = ev.DiccionarioEntidadesVinculadas,
+                        PropiedadIdMiembro = ev.PropiedadIdMiembro
                     });
 
+                }
+
+                if( attr is EntidadMiembroAttribute)
+                {
+                    var em = ((EntidadMiembroAttribute)attr);
+                    info.EntidadesMiembro.Add(new EntidadMiembro()
+                    {
+                        ColumnaIdMembresia = em.ColumnaIdMembresia,
+                        ColumnaIdMiembro = em.ColumnaIdMiembro,
+                        ObjetoMembresia = em.ObjetoMembresia,
+                        ObjetoMiembro = em.ObjetoMiembro,  
+                        PropiedadPadre = em.PropiedadPadre
+                    });
                 }
 
                 if (attr is LinkCatalogoAttribute)

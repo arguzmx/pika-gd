@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "57104d72-e8b1-403f-87bf-905289e1e002",
+		"_postman_id": "98ff5833-a319-4ba9-ad6f-d90c96803d54",
 		"name": "Organizacion",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -321,7 +321,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "d6d13687-67c3-4321-939f-e2a528c4d8a1",
+						"id": "5d0f442c-895f-45c8-a166-fc23e4cc96b9",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -331,7 +331,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "a641da24-a51d-4375-97a7-5a53fae94671",
+						"id": "50bd7f20-4f4a-48e3-8ee1-5e5b28c26685",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -690,7 +690,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "401e2cf2-2e31-4dbe-b820-531c4ac7f55b",
+						"id": "dd39f2ab-ec15-4840-9ce5-46a382fd9056",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -700,7 +700,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "3bff0282-ef80-4d0c-b088-f1680beb6430",
+						"id": "6e9f73d5-49bc-4cd7-8c88-c85bfcb1dcc9",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -963,7 +963,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:5001/api/v1.0/org/unidadorganizacional/",
+							"raw": "https://localhost:5001/api/v1.0/org/usuariosrol/4d192c25-44c1-4fac-9695-6f927d6062b6/a,b,123",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -973,8 +973,9 @@
 								"api",
 								"v1.0",
 								"org",
-								"unidadorganizacional",
-								""
+								"usuariosrol",
+								"4d192c25-44c1-4fac-9695-6f927d6062b6",
+								"a,b,123"
 							]
 						}
 					},
@@ -1102,7 +1103,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "700b64f9-447b-4361-b52b-0226ceb8d617",
+						"id": "a6873d2b-6c4f-444c-8d85-8900b60dc2fb",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -1112,12 +1113,232 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "0ac88619-2ca5-4e48-81af-9834ae73e3dd",
+						"id": "15475bc4-f581-4896-8924-a3b0bb3804a6",
 						"type": "text/javascript",
 						"exec": [
 							""
 						]
 					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Usuarios Rol",
+			"item": [
+				{
+					"name": "GET Metadata Usuarios Rol",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/org/usuariosrol/metadata",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"usuariosrol",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Usuario Rol Unico",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"RolId\": \"4d192c25-44c1-4fac-9695-6f927d6062b6\",\r\n    \"ApplicationUserId\": \"c177b4a1-6eb8-4542-875b-ce339dbfeaa8\"\r\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/org/usuariosrol",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"usuariosrol"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Usuario Rol Múltiples",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\"c177b4a1-6eb8-4542-875b-ce339dbfeaa8\", \"123\"]",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/org/usuariosrol/4d192c25-44c1-4fac-9695-6f927d6062b6",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"usuariosrol",
+								"4d192c25-44c1-4fac-9695-6f927d6062b6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Usuarios Rol",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/usuariosrol/page/rol/4d192c25-44c1-4fac-9695-6f927d6062b6?i=0&t=10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"usuariosrol",
+								"page",
+								"rol",
+								"4d192c25-44c1-4fac-9695-6f927d6062b6"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Usuarios Rol",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n\t[\n\t\"b9352cf2-dee0-4258-b9c8-93e1bc837182\",\n\t\"a\",\n\t\"b\"\n\t]\n",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/org/unidadorganizacional/",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"unidadorganizacional",
+								""
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -1137,7 +1358,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "9d909c0d-d26f-4f55-a8bb-2b67073974ec",
+				"id": "21ecb941-191f-4f07-b790-e30452a7c55d",
 				"type": "text/javascript",
 				"exec": [
 					"const echoPostRequest = {",
@@ -1183,7 +1404,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "af595280-49c4-4a00-ab28-1f4a44c1e078",
+				"id": "278aca53-ad6d-480f-90b8-dc2f28bc2738",
 				"type": "text/javascript",
 				"exec": [
 					""

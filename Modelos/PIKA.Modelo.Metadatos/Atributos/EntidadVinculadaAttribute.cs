@@ -21,6 +21,7 @@ namespace PIKA.Modelo.Metadatos
         private string _Entidad;
         private string _Padre;
         private string _Hijo;
+        private string _PropiedadIdMiembro;
         private bool _HijoDinamico;
         private TipoDespliegueVinculo _TipoDespliegueVinculo;
         private List<DiccionarioEntidadVinculada> _DiccionarioEntidadVinculada;
@@ -33,13 +34,15 @@ namespace PIKA.Modelo.Metadatos
         /// <param name="Cardinalidad"></param>
         /// <param name="PropiedadPadre"></param>
         /// <param name="PropiedadHijo"></param>
+        /// <param name="PropiedadIdMiembro"> Nombre de la propiedad Id de los miembros cuando el tipo de vlculo es membresia</param>
         /// <param name="TipoDespliegueVinculo">Tipo de despliegue</param>
         /// <param name="HijoDinamico">Determina si el hijo de vinculación es dinámico en base a la propeieda del objecto definida por EntidadHijo</param>
         /// <param name="Diccionario">El diccionario se forma de pres seprardos por , separados por |</param>
         public EntidadVinculadaAttribute(string EntidadHijo = ""
         , TipoCardinalidad Cardinalidad = TipoCardinalidad.UnoVarios
         , string PropiedadPadre = "", string PropiedadHijo = ""
-        , TipoDespliegueVinculo TipoDespliegueVinculo = TipoDespliegueVinculo.Tabular, bool HijoDinamico = false, string Diccionario = "")
+        , TipoDespliegueVinculo TipoDespliegueVinculo = TipoDespliegueVinculo.Tabular, 
+            bool HijoDinamico = false, string PropiedadIdMiembro="", string Diccionario = "")
         {
             _DiccionarioEntidadVinculada = new List<DiccionarioEntidadVinculada>();
             if ( !string.IsNullOrEmpty(Diccionario))
@@ -62,6 +65,7 @@ namespace PIKA.Modelo.Metadatos
                     
                 }
             }
+            this._PropiedadIdMiembro = PropiedadIdMiembro;
             this._Cardinalidad = Cardinalidad;
             this._Entidad = EntidadHijo;
             this._Padre = PropiedadPadre;
@@ -100,6 +104,12 @@ namespace PIKA.Modelo.Metadatos
             get { return _Hijo; }
         }
 
+
+        // Nombre de la propiedad Id de los miembros cuando el tipo de vlculo es membresia
+        public virtual string PropiedadIdMiembro
+        {
+            get { return _PropiedadIdMiembro; }
+        }
 
         public virtual TipoDespliegueVinculo TipoDespliegue
         {
