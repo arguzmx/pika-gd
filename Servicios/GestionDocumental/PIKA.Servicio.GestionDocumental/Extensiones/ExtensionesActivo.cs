@@ -18,7 +18,7 @@ namespace PIKA.Servicio.GestionDocumental
                 Asunto = a.Asunto,
                 FechaApertura = a.FechaApertura,
                 FechaCierre = a.FechaCierre,
-                EsElectronio = a.EsElectronio,
+                EsElectronico = a.EsElectronico,
                 CodigoElectronico = a.CodigoElectronico,
                 CodigoOptico = a.CodigoOptico,
                 Reservado = a.Reservado,
