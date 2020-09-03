@@ -394,10 +394,17 @@ namespace PIKA.Servicio.Seguridad.Servicios
         public async Task<IPaginado<PropiedadesUsuario>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<PropiedadesUsuario>, IIncludableQueryable<PropiedadesUsuario, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             Query = GetDefaultQuery(Query);
-            var respuesta = await this.repo.ObtenerPaginadoAsync(Query,  include);
+            var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
             return respuesta;
         }
 
+
+        public async Task<IPaginado<PropiedadesUsuario>> ObtenerPaginadoIdsAsync(List<string> ids, Consulta Query, Func<IQueryable<PropiedadesUsuario>, IIncludableQueryable<PropiedadesUsuario, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
+        {
+            Query = GetDefaultQuery(Query);
+            var respuesta = await this.repo.ObtenerPaginadoAsync(x => ids.Contains(x.UsuarioId), Query, include);
+            return respuesta;
+        }
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
@@ -531,6 +538,48 @@ namespace PIKA.Servicio.Seguridad.Servicios
             return d;
         }
 
+
+
+        public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
+        {
+            string nombre = "";
+            for (int i = 0; i < Query.Filtros.Count; i++)
+            {
+                if (Query.Filtros[i].Propiedad.ToLower() == "texto")
+                {
+                    nombre = Query.Filtros[i].Valor;
+                }
+            }
+
+            Query = GetDefaultQuery(Query);
+
+            var resultados = await this.repo.ObtenerAsync(x => ((x.name ?? "") + (x.nickname ?? "") + (x.email ?? "") + 
+            (x.family_name ?? "") + (x.given_name ?? "") + (x.username ?? "")).Contains(nombre));
+
+
+            List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.UsuarioId,
+                Indice = 0,
+                Texto = x.email + $" [{(x.username?? "")}] {(x.name??"")} {(x.given_name ?? "")} {(x.family_name ?? "")}" 
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
+        }
+
+
+        public async Task<List<ValorListaOrdenada>> ObtenerParesPorId(List<string> Lista)
+        {
+            var resultados = await this.repo.ObtenerAsync(x => Lista.Contains(x.UsuarioId));
+            List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.UsuarioId,
+                Indice = 0,
+                Texto = x.email + $" [{(x.username ?? "")}] {(x.name ?? "")} {(x.given_name ?? "")} {(x.family_name ?? "")}"
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
+        }
 
         #region sin implementar
 

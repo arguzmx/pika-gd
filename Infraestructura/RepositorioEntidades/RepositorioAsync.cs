@@ -41,7 +41,35 @@ namespace RepositorioEntidades
         }
 
 
+        public Task<IPaginado<T>> ObtenerPaginadoAsync(Expression<Func<T, bool>> predicado, Consulta consulta,
+               Func<IQueryable<T>, IIncludableQueryable<T, object>> incluir = null,
+               bool inhabilitarSeguimiento = true,
+               CancellationToken tokenCancelacion = default(CancellationToken))
+        {
+            try
+            {
 
+
+                IQueryable<T> query = _dbSet;
+
+
+                if (inhabilitarSeguimiento) query = query.AsNoTracking();
+
+                if (incluir != null) query = incluir(query);
+
+                if (predicado != null) query = query.Where(predicado);
+
+                query = query.OrdenarPor(consulta.ord_columna, consulta.ord_direccion.ToLower() == "desc" ? false : true);
+
+                return query.PaginadoAsync(consulta.indice, consulta.tamano, tokenCancelacion);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw ex;
+            }
+        }
 
         public Task<IPaginado<T>> ObtenerPaginadoAsync(Consulta consulta,
            Func<IQueryable<T>, IIncludableQueryable<T, object>> incluir = null,

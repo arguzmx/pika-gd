@@ -11,10 +11,16 @@ using System.Xml.Serialization;
 namespace PIKA.Modelo.Organizacion
 {
 
+    //[EntidadMiembro(ObjetoMiembro: "propiedadesusuario", ObjetoMembresia: "usuariosrol",
+    //   ColumnaIdMiembro: "ApplicationUserId", ColumnaIdMembresia: "RolId",
+    //   PropiedadPadre: "Id")]
     /// <summary>
     /// Rol laboral en la organización
     /// </summary>
     [Entidad(EliminarLogico: false)]
+    [EntidadVinculada(EntidadHijo: "usuariosrol", Cardinalidad: TipoCardinalidad.UnoVarios,
+        PropiedadPadre: "Id", PropiedadHijo: "RolId", PropiedadIdMiembro: "ApplicationUserId",
+        TipoDespliegueVinculo: TipoDespliegueVinculo.Membresia)]
     public class Rol : Entidad<string>, IEntidadNombrada, IEntidadRelacionada
     {
 

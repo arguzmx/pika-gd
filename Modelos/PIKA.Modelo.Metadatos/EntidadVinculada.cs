@@ -13,6 +13,7 @@ namespace PIKA.Modelo.Metadatos
     {
         public  TipoCardinalidad Cardinalidad { get; set; }
         public string EntidadHijo { get; set; }
+        public string PropiedadIdMiembro{ get; set; }
         public string PropiedadPadre { get; set; }
         public string PropiedadHijo { get; set; }
         public bool HijoDinamico { get; set; }

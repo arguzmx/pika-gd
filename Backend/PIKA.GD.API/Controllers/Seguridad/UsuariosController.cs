@@ -114,6 +114,31 @@ namespace PIKA.GD.API.Controllers.Seguridad
 
 
         /// <summary>
+        /// Obtiene una página de datos de usaurios
+        /// </summary>
+        /// <param name="query">Consulta para el paginado</param>
+        /// <returns></returns>
+        [HttpGet("page/{ids}", Name = "GetPageUsuariosPorIds")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<Paginado<PropiedadesUsuario>>> GetPageUsuariosPorIds(string ids, [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        {
+            string IdsTrim = "";
+            foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+            {
+                IdsTrim += item.Trim() + ",";
+            }
+            List<string> lids = IdsTrim.Split(',').ToList();
+
+            var data = await servicioEntidad.ObtenerPaginadoIdsAsync(lids,
+                    Query: query,
+                    include: null)
+                    .ConfigureAwait(false);
+
+            return Ok(data);
+        }
+
+        /// <summary>
         /// Obtiene un usuario en base al Id único
         /// </summary>
         /// <param name="id">Id único del usuario</param>
@@ -205,6 +230,48 @@ namespace PIKA.GD.API.Controllers.Seguridad
             .Where(x => !string.IsNullOrEmpty(x)).ToArray();
 
             return Ok(await servicioEntidad.Inactivar(lids).ConfigureAwait(false));
+        }
+
+
+        /// <summary>
+        /// Obtiene una lista de usuarios  en base a los parámetros de consulta
+        /// </summary>
+        /// <param name="query">Query de busqueda a la base de datos</param>
+        /// <returns></returns>
+
+        [HttpGet("pares", Name = "GetParesPropiedadUsuario")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ValorListaOrdenada>>> GetPares(
+        [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        {
+
+            var data = await servicioEntidad.ObtenerParesAsync(query)
+                .ConfigureAwait(false);
+
+            return Ok(data);
+        }
+
+
+        /// <summary>
+        /// Obtiene una lista de usuarios en base a con el parámetro ID de consulta
+        /// </summary>
+        /// <param name="ids">parametro Id para consulta a la base de datos</param>
+        /// <returns></returns>
+
+        [HttpGet("pares/{ids}", Name = "GetParesPropiedadUsuriosporId")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ValorListaOrdenada>>> GetParesporId(
+              string ids)
+        {
+
+            List<string> lids = ids.Split(',').ToList()
+               .Where(x => !string.IsNullOrEmpty(x)).ToList();
+            var data = await servicioEntidad.ObtenerParesPorId(lids)
+                .ConfigureAwait(false);
+
+            return Ok(data);
         }
 
     }

@@ -234,6 +234,81 @@
 					"response": []
 				},
 				{
+					"name": "GET PAGE Usuario desde Ids",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/page/c177b4a1-6eb8-4542-875b-ce339dbfeaa8,a,b,c,?i=0&t=10&ordc=username&ordd=asc&f[0][p]=email&f[0][o]=contains&f[0][v]=@",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"usuarios",
+								"page",
+								"c177b4a1-6eb8-4542-875b-ce339dbfeaa8,a,b,c,"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "10"
+								},
+								{
+									"key": "ordc",
+									"value": "username"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "email"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "contains"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "@"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "DELETE Usuario",
 					"request": {
 						"method": "DELETE",
@@ -395,6 +470,117 @@
 								"usuarios",
 								"reactivar",
 								"00f89b8b-9f9a-4dfe-b97f-d5c26e4701a1,1,2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Pares UsuariosTypeahead",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/pares?i=0&t=5&f[0][p]=Texto&f[0][o]=starts&f[0][v]=os",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"usuarios",
+								"pares"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "5"
+								},
+								{
+									"key": "f[0][p]",
+									"value": "Texto"
+								},
+								{
+									"key": "f[0][o]",
+									"value": "starts"
+								},
+								{
+									"key": "f[0][v]",
+									"value": "os"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAGE Pares por ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/seguridad/usuarios/pares/M,c177b4a1-6eb8-4542-875b-ce339dbfeaa8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"seguridad",
+								"usuarios",
+								"pares",
+								"M,c177b4a1-6eb8-4542-875b-ce339dbfeaa8"
 							]
 						}
 					},
