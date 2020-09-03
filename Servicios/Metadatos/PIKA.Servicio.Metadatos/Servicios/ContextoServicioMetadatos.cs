@@ -10,19 +10,15 @@ namespace PIKA.Servicio.Metadatos.Servicios
 {
   public  class ContextoServicioMetadatos
     {
-        private IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones;
-        protected IServicioCache cache;
         protected ILogger logger;
 
         protected DbContextMetadatos contexto;
         public ContextoServicioMetadatos(
             IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
-            ILogger Logger,
-            IServicioCache servicioCache)
+            ILogger Logger)
         {
             DbContextMetadatosFactory cf = new DbContextMetadatosFactory(proveedorOpciones);
             this.contexto = cf.Crear();
-            this.cache = servicioCache;
             this.logger = Logger;
         }
     }

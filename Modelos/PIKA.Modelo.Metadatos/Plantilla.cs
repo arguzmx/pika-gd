@@ -3,6 +3,8 @@ using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Metadatos
 {
@@ -46,9 +48,14 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public string AlmacenDatosId { get; set; }
 
-
+        [XmlIgnore]
+        [JsonIgnore]
         public AlmacenDatos Almacen { get; set; }
+        [XmlIgnore]
+        [JsonIgnore]
         public ICollection<PropiedadPlantilla> Propiedades { get; set; }
+        [XmlIgnore]
+        [JsonIgnore]
         public ICollection<AsociacionPlantilla> Asociaciones { get; set; }
        
     }

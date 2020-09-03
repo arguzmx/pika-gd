@@ -29,8 +29,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
         public ServicioValidadorNumero(
          IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
          ICompositorConsulta<ValidadorNumero> compositorConsulta,
-         ILogger<ServicioValidadorNumero> Logger,
-         IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+         ILogger<ServicioValidadorNumero> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
             this.compositor = compositorConsulta;
@@ -56,7 +55,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
-            return entity;
+            return entity.Copia();
         }
 
         public async Task ActualizarAsync(ValidadorNumero entity)
@@ -173,7 +172,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
             ValidadorNumero d = await this.repo.UnicoAsync(predicado);
 
-            return d.CopiaValidadorNumero();
+            return d.Copia();
         }
     }
 

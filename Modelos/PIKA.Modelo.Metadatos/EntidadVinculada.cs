@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Metadatos
 {
@@ -15,6 +17,8 @@ namespace PIKA.Modelo.Metadatos
         public string PropiedadHijo { get; set; }
         public bool HijoDinamico { get; set; }
         public TipoDespliegueVinculo TipoDespliegue { get; set; }
+        [XmlIgnore]
+        [JsonIgnore]
         public  List<DiccionarioEntidadVinculada> DiccionarioEntidadesVinculadas { get; set; }
     }
 }

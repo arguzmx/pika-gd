@@ -10,9 +10,7 @@ using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Interfaces;
-using PIKA.Servicio.Metadatos.Servicios;
 using RepositorioEntidades;
-
 
 namespace PIKA.GD.API.Controllers.Metadatos
 {
@@ -20,15 +18,14 @@ namespace PIKA.GD.API.Controllers.Metadatos
     [ApiVersion("1.0")]
     [ApiController]
     [Route("api/v{version:apiVersion}/metadatos/[controller]")]
-    public class PlantillaController : ACLController
-
+    public class ValorListaPlantillaController : ACLController
     {
-        private ILogger<PlantillaController> logger;
-        private IServicioPlantilla servicioEntidad;
-        private IProveedorMetadatos<Plantilla> metadataProvider;
-        public PlantillaController(ILogger<PlantillaController> logger,
-            IProveedorMetadatos<Plantilla> metadataProvider,
-            IServicioPlantilla servicioEntidad)
+        private readonly ILogger<ValorListaPlantillaController> logger;
+        private IServicioValorListaPlantilla servicioEntidad;
+        private IProveedorMetadatos<ValorListaPlantilla> metadataProvider;
+        public ValorListaPlantillaController(ILogger<ValorListaPlantillaController> logger,
+            IProveedorMetadatos<ValorListaPlantilla> metadataProvider,
+            IServicioValorListaPlantilla servicioEntidad)
         {
             this.logger = logger;
             this.servicioEntidad = servicioEntidad;
@@ -36,46 +33,45 @@ namespace PIKA.GD.API.Controllers.Metadatos
         }
 
         /// <summary>
-        /// Obtiene los metadatos relacionados con la entidad Pantilla
+        /// Obtiene los metadatos relacionados con la entidad  Valor Lista Plantilla
         /// </summary>
         /// <returns></returns>
-        [HttpGet("metadata", Name = "MetadataPlantilla")]
+        [HttpGet("metadata", Name = "MetadataValorListaPlantilla")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery] Consulta query = null)
         {
             return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
         }
+
+
         /// <summary>
-        /// Añade una nueva entidad Plantilla
+        /// Añade una nueva entidad del tipo   Valor Lista Plantilla
         /// </summary>
         /// <param name="entidad"></param>
         /// <returns></returns>
-
-
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Plantilla>> Post([FromBody] Plantilla entidad)
+        public async Task<ActionResult<ValorListaPlantilla>> Post([FromBody] ValorListaPlantilla entidad)
         {
             entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
-            return Ok(CreatedAtAction("GetPlantilla", new { id = entidad.Id.Trim() }, entidad).Value);
+            return Ok(CreatedAtAction("GetValorListaPlantilla", new { id = entidad.Id }, entidad).Value);
         }
-
-
         /// <summary>
-        /// Actualiza una entidad Plantilla, el Id debe incluirse en el Querystring así como en 
+        /// Actualiza unq entidad   Valor Lista Plantilla, el Id debe incluirse en el Querystring así como en 
         /// el serializado para la petición PUT
         /// </summary>
         /// <param name="id">Identificador único del dominio</param>
         /// <param name="entidad">Datos serialziados de la OU</param>
         /// <returns></returns>
+
         [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Put(string id, [FromBody] Plantilla entidad)
+        public async Task<IActionResult> Put(string id, [FromBody] ValorListaPlantilla entidad)
         {
             var x = ObtieneFiltrosIdentidad();
 
@@ -90,15 +86,16 @@ namespace PIKA.GD.API.Controllers.Metadatos
 
         }
         /// <summary>
-        /// Devulve un alista de Plantilla asociadas al objeto del tipo especificado
+        /// Devulve un alista de  Valor Lista Plantilla asociadas al objeto del tipo especificado
         /// </summary>
         /// <param name="query">Consulta para la paginación y búsqueda</param>
         /// <returns></returns>
 
-        [HttpGet("page", Name = "GetPagePlantilla")]
+        [HttpGet("page", Name = "GetPageValorListaPlantilla")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Paginado<Plantilla>>> GetPage(
+
+        public async Task<ActionResult<Paginado<ValorListaPlantilla>>> GetPage(
             [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
             var data = await servicioEntidad.ObtenerPaginadoAsync(
@@ -108,25 +105,27 @@ namespace PIKA.GD.API.Controllers.Metadatos
 
             return Ok(data);
         }
-        /// <summary>
-        /// Obtiene un Plantilla en base al Id único
-        /// </summary>
-        /// <param name="id">Id único del Plantilla</param>
-        /// <returns></returns>
 
+        /// <summary>
+        /// Obtiene un  Valor Lista Plantilla en base al Id único
+        /// </summary>
+        /// <param name="id">Id único del país</param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Plantilla>> Get(string id)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+        public async Task<ActionResult<ValorListaPlantilla>> Get(string id)
         {
+
             var o = await servicioEntidad.UnicoAsync(x => x.Id == id.Trim()).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }
 
-
         /// <summary>
-        /// Elimina de manera permanente un Plantilla en base al arreglo de identificadores recibidos
+        /// Elimina de manera permanente un  Valor Lista Plantilla en base al arreglo de identificadores recibidos
         /// </summary>
         /// <param name="ids">Arreglo de identificadores string</param>
         /// <returns></returns>
@@ -145,19 +144,16 @@ namespace PIKA.GD.API.Controllers.Metadatos
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return Ok(await servicioEntidad.Eliminar(lids).ConfigureAwait(false));
         }
-
-
         /// <summary>
-        /// Restaura una lista dede Plantilla eliminados en base al arreglo de identificadores recibidos
+        /// Restaura una lista dede Elemento eliminados en base al arreglo de identificadores recibidos
         /// </summary>
         /// <param name="ids">Arreglo de identificadores string</param>
         /// <returns></returns>
-        [HttpPatch("restaurar/{ids}", Name = "restaurarPlantilla")]
+        [HttpPatch("restaurar/{ids}", Name = "restaurarValorListaPlantilla")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Undelete(string ids)
         {
-
             string IdsTrim = "";
             foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
             {
@@ -165,9 +161,10 @@ namespace PIKA.GD.API.Controllers.Metadatos
             }
             string[] lids = IdsTrim.Split(',').ToList()
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
-
             return Ok(await servicioEntidad.Restaurar(lids).ConfigureAwait(false));
         }
+
+       
 
     }
 }

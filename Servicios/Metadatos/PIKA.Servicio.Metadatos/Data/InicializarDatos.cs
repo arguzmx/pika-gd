@@ -19,10 +19,10 @@ namespace PIKA.Servicio.Metadatos.Data
         }
 
         private static void GeneraTiposAlmacenDefault(DbContextMetadatos dbContext) {
-            
-            TipoAlmacenMetadatos t = new TipoAlmacenMetadatos();
-            List<TipoAlmacenMetadatos> tipos = t.Seed();
-            
+
+            TipoAlmacenMetadatos te = new TipoAlmacenMetadatos();
+            List<TipoAlmacenMetadatos> tipos = te.Seed();
+
 
             foreach (TipoAlmacenMetadatos tipo in tipos)
             {

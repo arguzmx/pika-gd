@@ -12,9 +12,7 @@ namespace PIKA.Modelo.Metadatos.Validadores
         public ValidadorNumeroValidador(IStringLocalizer<ValidadorNumero> localizer)
         {
                   
-            RuleFor(x => x.valordefault)
-                    .NotNull().WithMessage(x => localizer["El valor default es obligatoria"])
-                    .NotEmpty().WithMessage(x => localizer["El valor default es obligatorio"]);
+            RuleFor(x => x.valordefault).NotEmpty();
 
 
         }
