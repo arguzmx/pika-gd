@@ -36,7 +36,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private readonly ConfiguracionServidor ConfiguracionServidor;
         private ILogger<ServicioCuadroClasificacion> LoggerCuadro;
         private IOCuadroClasificacion ioCuadroClasificacion;
-
         public ServicioElementoClasificacion(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
            ILogger<ServicioElementoClasificacion> Logger, IOptions<ConfiguracionServidor> Config) : base(proveedorOpciones, Logger)
         {
@@ -51,7 +50,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             this.ioCuadroClasificacion = new IOCuadroClasificacion(LoggerCuadro, proveedorOpciones);
 
         }
-
         public async Task<bool> Existe(Expression<Func<ElementoClasificacion, bool>> predicado)
         {
             List<ElementoClasificacion> l = await this.repo.ObtenerAsync(predicado);
@@ -357,7 +355,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
          && x.EsRaiz == true && x.Eliminada == false);
          
           return l.ToList().OrderBy(x=>x.NombreJerarquico).ToList();
- 
          
         }
         private async Task<string> RestaurarNombre(string Clave, string CuadroClasificacionId,string id,string Nombre)
@@ -370,10 +367,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                     Nombre = Nombre + " restaurado " + DateTime.Now.Ticks;
              }
-
-                
-                      
-           
 
             return Nombre;
 

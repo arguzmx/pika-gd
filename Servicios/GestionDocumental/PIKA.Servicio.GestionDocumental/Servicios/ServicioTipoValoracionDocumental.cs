@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.GestorDocumental;
@@ -23,16 +25,20 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
        
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
-        
+         
         private IRepositorioAsync<TipoValoracionDocumental> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
         private IRepositorioAsync<ValoracionEntradaClasificacion> repoVC;
+        private readonly ConfiguracionServidor ConfiguracionServidor;
+        
 
         public ServicioTipoValoracionDocumental(
          IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-         ILogger<ServicioTipoValoracionDocumental> Logger) :
+         ILogger<ServicioTipoValoracionDocumental> Logger,
+         IOptions<ConfiguracionServidor> Config) :
             base(proveedorOpciones, Logger)
         {
+            this.ConfiguracionServidor = Config.Value;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<TipoValoracionDocumental>(new QueryComposer<TipoValoracionDocumental>());
             this.repoVC= UDT.ObtenerRepositoryAsync<ValoracionEntradaClasificacion>(new QueryComposer<ValoracionEntradaClasificacion>());
@@ -59,9 +65,19 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             entity.Nombre = entity.Nombre.Trim();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
+            EliminarArchivo();
             return entity.Copia();
         }
-
+        public void EliminarArchivo() 
+        {
+            try
+            {
+                System.IO.Directory.Delete($"{ConfiguracionServidor.ruta_cache_fisico}", true);
+            }
+            catch (Exception)
+            {
+            }        
+        }
         public async Task ActualizarAsync(TipoValoracionDocumental entity)
         {
             if (await Existe(x => x.Id != entity.Id &&
@@ -78,15 +94,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             tmp.Nombre = entity.Nombre;
             UDT.Context.Entry(tmp).State = EntityState.Modified;
             UDT.SaveChanges();
+            EliminarArchivo();
+
         }
-        public async Task<bool> ValidateRelacion(TipoValoracionDocumental tvd)
-        {
-            ValoracionEntradaClasificacion cc = await this.repoVC.UnicoAsync(x => x.TipoValoracionDocumentalId == tvd.Id);
-            if (cc != null)
-                return true;
-            else
-                return false;
-        }
+
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
             TipoValoracionDocumental o;
@@ -105,6 +116,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                         }
                         this.UDT.SaveChanges();
                         listaEliminados.Add(o.Id);
+                        EliminarArchivo();
+
                     }
                     catch (DbUpdateException)
                     {
