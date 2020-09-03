@@ -59,6 +59,7 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
                     throw new ExElementoExistente(entity.Nombre);
                 }
                 entity.Id = System.Guid.NewGuid().ToString();
+                Console.WriteLine($"{entity.Gratuito}");
                 entity.versionPlugins.FirstOrDefault().Id = System.Guid.NewGuid().ToString();
                 await this.repo.CrearAsync(entity);
                 UDT.SaveChanges();

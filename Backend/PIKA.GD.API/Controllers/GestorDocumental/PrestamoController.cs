@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -49,8 +50,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
         }
 
-
-
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<Prestamo>> Post([FromBody]Prestamo entidad)
@@ -58,7 +57,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             entidad = await servicioPrestamo.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetPrestamo", new { id = entidad.Id }, entidad).Value);
         }
-
 
         [HttpPut("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
@@ -102,14 +100,18 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             return NotFound(id);
         }
 
-
-
-
-        [HttpDelete]
+        [HttpDelete("delete",Name ="DeletePrestamo")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult> Delete([FromBody]string[] id)
+        public async Task<ActionResult> Delete(string ids)
         {
-            return Ok(await servicioPrestamo.Eliminar(id).ConfigureAwait(false));
+            string IdsTrim = "";
+            foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+            {
+                IdsTrim += item.Trim() + ",";
+            }
+            string[] Ids = IdsTrim.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray();
+
+            return Ok(await servicioPrestamo.Eliminar(Ids).ConfigureAwait(false));
         }
         #endregion
 
@@ -122,8 +124,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         {
             return Ok(await metadataProviderActivo.Obtener().ConfigureAwait(false));
         }
-
-
 
         [HttpPost]
         [Route("{PrestamoId}/Activo")]
@@ -186,12 +186,19 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         }
 
 
-        [HttpDelete]
+        [HttpDelete("{ids}", Name ="DeleteActivo")]
         [Route("{PrestamoId}/Activo")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult> DeleteActivo([FromBody]string[] id)
+        public async Task<ActionResult> DeleteActivo(string ids)
         {
-            return Ok(await servicioActivoPrestamo.Eliminar(id).ConfigureAwait(false));
+            string IdsTrim = "";
+            foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+            {
+                IdsTrim += item.Trim() + ",";
+            }
+            string[] lids = IdsTrim.Split(',').ToList()
+           .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            return Ok(await servicioActivoPrestamo.Eliminar(lids).ConfigureAwait(false));
         }
         #endregion
     }
