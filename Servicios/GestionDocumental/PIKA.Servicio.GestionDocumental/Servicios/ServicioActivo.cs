@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.GestionDocumental.Interfaces;
+using PIKA.Servicio.GestionDocumental.Servicios.Reporte;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
@@ -27,18 +29,21 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<Activo> repo;
         private IRepositorioAsync<EntradaClasificacion> repoEC;
         private IRepositorioAsync<Archivo> repoA;
-        
+        private IoImportarActivos importador;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
-        
+        private readonly ConfiguracionServidor configuracion;
+
         public ServicioActivo(
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioActivo> Logger
+           ILogger<ServicioActivo> Logger, IOptions<ConfiguracionServidor> Config
            ) : base(proveedorOpciones, Logger)
         {
+            this.configuracion = Config.Value;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Activo>(new QueryComposer<Activo>());
             this.repoA = UDT.ObtenerRepositoryAsync<Archivo>(new QueryComposer<Archivo>());
             this.repoEC = UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>());
+            this.importador = new IoImportarActivos(this, Logger,proveedorOpciones, Config);
         }
 
         public async Task<bool> Existe(Expression<Func<Activo, bool>> predicado)
@@ -70,58 +75,30 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             //    throw new ExElementoExistente(entity.Nombre);
             //}
 
-            if (!await ExisteElemento(x => x.Id.Equals(entity.EntradaClasificacionId.Trim(), StringComparison.InvariantCultureIgnoreCase)
-           && x.Eliminada != true))
-                throw new ExErrorRelacional(entity.EntradaClasificacionId);
-            if (!await ExisteArchivo(x => x.Id.Equals(entity.ArchivoOrigenId.Trim(), StringComparison.InvariantCultureIgnoreCase)
-            && x.Eliminada != true))
-                throw new ExErrorRelacional(entity.ArchivoId);
-           
-            
-            entity.Id = System.Guid.NewGuid().ToString();
-            entity.ArchivoId = entity.ArchivoOrigenId;
-            entity.IDunico = entity.IDunico;
-            await this.repo.CrearAsync(entity);
-            UDT.SaveChanges();
+            if (entity != null)
+            {
+                entity = await ValidarActivos(entity, false);
+                entity.Id = System.Guid.NewGuid().ToString();
+                entity.ArchivoId = entity.ArchivoOrigenId;
+                entity.IDunico = entity.IDunico;
+                await this.repo.CrearAsync(entity);
+                UDT.SaveChanges();
+            }
             return entity.Copia();
         }
 
         public async Task ActualizarAsync(Activo entity)
         {
-            Activo o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
-
-            if (o == null)
-            {
-                throw new EXNoEncontrado(entity.Id);
-            }
-            if (!await ExisteElemento(x => x.Id.Equals(entity.EntradaClasificacionId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
-                throw new ExErrorRelacional(entity.EntradaClasificacionId);
-
-            
-            //if (await Existe(x =>
-            //x.Id != entity.Id & x.TipoOrigenId == entity.TipoOrigenId && x.OrigenId == entity.OrigenId
-            //&& x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase) 
-            //&& x.Eliminada != true))
-            //{
-            //    throw new ExElementoExistente(entity.Nombre);
-            //}
 
 
-         
+
+            Activo o = await ValidarActivos(entity,true);
+                                 
             o.Nombre = entity.Nombre;
             o.Asunto = entity.Asunto;
             o.FechaApertura = entity.FechaApertura;
             o.FechaCierre = entity.FechaCierre;
-            if (o.FechaCierre.HasValue)
-            {
-                EntradaClasificacion ec = await repoEC.UnicoAsync(x => x.Id == entity.EntradaClasificacionId);
-                o.FechaRetencionAT = ((DateTime)o.FechaCierre).AddYears(ec.VigenciaTramite);
-                o.FechaRetencionAC = ((DateTime)o.FechaCierre).AddYears(ec.VigenciaTramite + ec.VigenciaConcentracion);
-            } else
-            {
-                o.FechaRetencionAT = null;
-                o.FechaRetencionAC = null;
-            }
+          
             o.EsElectronico = entity.EsElectronico;
             o.CodigoOptico = entity.CodigoOptico;
             o.CodigoElectronico = entity.CodigoElectronico;
@@ -150,7 +127,69 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
             return query;
         }
+        private async Task<Activo> ValidarActivos(Activo a, bool operacion) 
+        {
+            if (operacion == false)
+            {
+                if (!await ExisteElemento(x => x.Id.Equals(a.EntradaClasificacionId.Trim(), StringComparison.InvariantCultureIgnoreCase)
+          && x.Eliminada != true))
+                    throw new ExErrorRelacional(a.EntradaClasificacionId);
+                if (!await ExisteArchivo(x => x.Id.Equals(a.ArchivoOrigenId.Trim(), StringComparison.InvariantCultureIgnoreCase)
+                && x.Eliminada != true))
+                    throw new ExErrorRelacional(a.ArchivoId);
+                if (await Existe(x => x.IDunico.Equals(a.IDunico, StringComparison.InvariantCultureIgnoreCase)))
+                    throw new ExElementoExistente(a.IDunico);
+            }
+            else {
+                Activo o = await this.repo.UnicoAsync(x => x.Id == a.Id);
 
+                if (o == null)
+                {
+                    throw new EXNoEncontrado(a.Id);
+                }
+                if (!await ExisteElemento(x => x.Id.Equals(a.EntradaClasificacionId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
+                    throw new ExErrorRelacional(a.EntradaClasificacionId);
+                if (await Existe(x => x.IDunico.Equals(a.IDunico, StringComparison.InvariantCultureIgnoreCase)))
+                    throw new ExElementoExistente(a.IDunico);
+            }
+
+     
+
+            if (a.FechaCierre.HasValue)
+            {
+                EntradaClasificacion ec = await repoEC.UnicoAsync(x => x.Id == a.EntradaClasificacionId);
+                a.FechaRetencionAT = ((DateTime)a.FechaCierre).AddYears(ec.VigenciaTramite);
+                a.FechaRetencionAC = ((DateTime)a.FechaCierre).AddYears(ec.VigenciaTramite + ec.VigenciaConcentracion);
+            }
+            else
+            {
+                a.FechaRetencionAT = null;
+                a.FechaRetencionAC = null;
+            }
+            return a;
+        }
+        public async Task<Activo> ValidadorImportador(Activo a) 
+        {
+            if (!await ExisteElemento(x => x.Id.Equals(a.EntradaClasificacionId.Trim(), StringComparison.InvariantCultureIgnoreCase)
+       || x.Eliminada != true) 
+       || !await ExisteArchivo(x => x.Id.Equals(a.ArchivoOrigenId.Trim(), StringComparison.InvariantCultureIgnoreCase)
+                  && x.Eliminada != true)
+       || await Existe(x=>x.IDunico.Equals(a.IDunico,StringComparison.InvariantCultureIgnoreCase)))
+            {
+                a = new Activo();
+            }
+            else 
+            {
+                await CrearAsync(a);
+            }
+
+            return a;
+        }
+        public async Task<byte[]> ImportarActivos(byte[] file, string ArchivId, string TipoId, string OrigenId,string formatoFecha)
+        {
+         byte[] archivo= await  importador.ImportandoDatos(file,ArchivId,TipoId,OrigenId, formatoFecha);
+            return archivo;
+        }
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
             Activo c;
@@ -269,8 +308,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
+       
 
-    
+
+
 
         #endregion
 

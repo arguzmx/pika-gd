@@ -11,6 +11,7 @@ using PIKA.GD.API.Model;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.GestionDocumental.Interfaces;
+using PIKA.Servicio.GestionDocumental.Servicios.Reporte;
 using RepositorioEntidades;
 
 
@@ -133,6 +134,26 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             return NotFound(id);
         }
 
+        [HttpGet("Importar", Name = "GetImportarActivo")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<FileResult> GetReporteCuadroClasificacion([FromBody] PropiedadesImportadorActivos p)
+        {
+            logger.LogInformation(p.ArchivoId);
+
+            byte[] bytes = await servicioActivo.ImportarActivos(p.archivo,p.ArchivoId,p.TipoOrigenId,p.OrigenId,p.FormatoFecha).ConfigureAwait(false);
+            var cuadro = await servicioActivo.UnicoAsync(x => x.ArchivoId == p.ArchivoId).ConfigureAwait(false);
+
+            const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            HttpContext.Response.ContentType = contentType;
+            HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+
+            var fileContentResult = new FileContentResult(bytes, contentType)
+            {
+                FileDownloadName = cuadro.Nombre
+            };
+            return fileContentResult;
+        }
 
 
         /// <summary>
