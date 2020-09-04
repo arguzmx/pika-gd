@@ -99,11 +99,18 @@ namespace PIKA.GD.API.Controllers.AplicacionPlugin
             return NotFound(id);
         }
 
-        [HttpDelete]
+        [HttpDelete("{ids}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult> Delete([FromBody]string[] id)
+        public async Task<ActionResult> Delete(string id)
         {
-            return Ok(await servicioPluginInstalado.Eliminar(id).ConfigureAwait(false));
+            string IdsTrim = "";
+            foreach (string item in id.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+            {
+                IdsTrim += item.Trim() + ",";
+            }
+            string[] lids = IdsTrim.Split(',').ToList()
+           .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            return Ok(await servicioPluginInstalado.Eliminar(lids).ConfigureAwait(false));
         }
 
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
@@ -36,6 +37,8 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpGet("metadata", Name = "MetadataEstante")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
         {
             return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
@@ -45,6 +48,8 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
         public async Task<ActionResult<Estante>> Post([FromBody]Estante entidad)
         {
             entidad = await servicioEstante.CrearAsync(entidad).ConfigureAwait(false);
@@ -86,6 +91,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpGet("{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
+
         public async Task<ActionResult<Estante>> Get(string id)
         {
             var o = await servicioEstante.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
@@ -96,11 +102,20 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
 
-        [HttpDelete]
+        [HttpDelete("{ids}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult> Delete([FromBody]string[] id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
+        public async Task<ActionResult> Delete(string ids)
         {
-            return Ok(await servicioEstante.Eliminar(id).ConfigureAwait(false));
+            string IdsTrim = "";
+            foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+            {
+                IdsTrim += item.Trim() + ",";
+            }
+            string[] Ids = IdsTrim.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray();
+
+            return Ok(await servicioEstante.Eliminar(Ids).ConfigureAwait(false));
         }
     }
 }

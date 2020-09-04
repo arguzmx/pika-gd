@@ -96,9 +96,9 @@ namespace PIKA.GD.API.Controllers.AplicacionPlugin
             return NotFound(id);
         }
 
-        [HttpDelete]
+        [HttpDelete("{ids}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult> Delete([FromBody]string id)
+        public async Task<ActionResult> Delete(string id)
         {
             string IdsTrim = "";
             foreach (string item in id.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())

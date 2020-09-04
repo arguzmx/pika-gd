@@ -33,7 +33,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
         private readonly ConfiguracionServidor ConfiguracionServidor;
         private IOTransferencia ioT;
-        public ServicioTransferencia(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, ILogger<ServicioCuadroClasificacion> Logger, IOptions<ConfiguracionServidor> Config) : base(proveedorOpciones,Logger)
+        public ServicioTransferencia(
+            IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
+            ILogger<ServicioCuadroClasificacion> Logger, 
+            IOptions<ConfiguracionServidor> Config) : base(proveedorOpciones,Logger)
         {
             this.ConfiguracionServidor = Config.Value;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);

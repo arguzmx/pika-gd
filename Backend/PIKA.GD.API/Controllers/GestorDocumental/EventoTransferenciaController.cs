@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
@@ -95,11 +96,20 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
 
-        [HttpDelete]
+        [HttpDelete("{ids}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult> Delete([FromBody]string[] id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
+        public async Task<ActionResult> Delete(string ids)
         {
-            return Ok(await servicioEventoTransferencia.Eliminar(id).ConfigureAwait(false));
+            string IdsTrim = "";
+            foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+            {
+                IdsTrim += item.Trim() + ",";
+            }
+            string[] lids = IdsTrim.Split(',').ToList()
+           .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            return Ok(await servicioEventoTransferencia.Eliminar(lids).ConfigureAwait(false));
         }
     }
 }

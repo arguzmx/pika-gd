@@ -113,14 +113,14 @@ namespace PIKA.GD.API.Controllers.Seguridad
 
 
 
-        [HttpDelete]
+        [HttpDelete("{ids}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
 
-        public async Task<ActionResult> Delete([FromBody]string id)
+        public async Task<ActionResult> Delete(string ids)
         {
             string IdsTrim = "";
-            foreach (string item in id.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+            foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
             {
                 IdsTrim += item.Trim() + ",";
             }
