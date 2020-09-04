@@ -50,7 +50,6 @@ namespace PIKA.GD.API.Filters
                 this.AppId = AppId;
                 this.ModuleId = ModuleId;
             }
-
         }
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)

@@ -14,7 +14,6 @@ namespace PIKA.Modelo.Metadatos
         public MetadataInfo()
         {
             Reportes = new HashSet<IProveedorReporte>();
-            EntidadesMiembro = new List<EntidadMiembro>();
             Propiedades = new List<Propiedad>();
             EntidadesVinculadas = new List<EntidadVinculada>();
             CatalogosVinculados = new List<CatalogoVinculado>();
@@ -65,7 +64,6 @@ namespace PIKA.Modelo.Metadatos
         [JsonIgnore]
         public virtual List<CatalogoVinculado> CatalogosVinculados { get; set; }
 
-        public virtual List<EntidadMiembro> EntidadesMiembro { get; set; }
 
         public ICollection<IProveedorReporte> Reportes { get; set; }
     }
