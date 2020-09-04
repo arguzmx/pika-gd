@@ -9,21 +9,23 @@ using Version = PIKA.Modelo.Contenido.Version;
 
 namespace PIKA.Servicio.Contenido
 {
-    public class AplicacionContenido : IInformacionAplicacion
+    public class AplicacionContenido : InformacionAplicacionBase, IInformacionAplicacion
     {
         public const string MODULO_BASE = "PIKA-GD-COTENIDO-";
-        public const string APP_ID = "PIKA-GD-COTENIDO";
 
-        public Aplicacion Info()
+        public override Aplicacion Info()
         {
-            Aplicacion a = ConstantesAplicacion.AplicacionPikaGD();
+            Aplicacion a = AplicacionRaiz.ObtieneAplicacionRaiz();
             a.Modulos = this.ModulosAplicacion();
             return a;
         }
 
+        public List<ModuloAplicacion> ModulosAplicacion()
+        {
+            return this.ModulosAplicacionLocales(AplicacionRaiz.APP_ID, MODULO_BASE);
+        }
 
-     
-        public List<ElementoAplicacion> GetModulos()
+        public override List<ElementoAplicacion> GetModulos()
         {
             List<ElementoAplicacion> m = new List<ElementoAplicacion>()
             {
@@ -100,53 +102,7 @@ namespace PIKA.Servicio.Contenido
             return m;
         }
 
-
-        public List<ModuloAplicacion> ModulosAplicacion()
-        {
-            List<ModuloAplicacion> l = new List<ModuloAplicacion>();
-
-            /// Modulo Raíz 
-            //------------------------------------------------------------
-            ModuloAplicacion mAdministracion = new ModuloAplicacion(
-                ConstantesAplicacion.Id,
-                MODULO_BASE, true,
-                "Administración de contenido",
-                "Agrupa las funciones para la administración de repositorios de contenido",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(),
-                "",
-                "");
-
-            l.Add(mAdministracion);
-
-            foreach (var item in GetModulos())
-            {
-                Console.WriteLine( item.Descripcion );
-                l.Add(ElementoAplicacion.CreaModuloTipico(APP_ID, MODULO_BASE,
-                    item.IdModulo, item.Titulo, item.Descripcion, item.Tipos));
-            }
-
-            return l;
-        }
-
-        public List<TipoAdministradorModulo> TiposAdministrados()
-        {
-
-            List<TipoAdministradorModulo> tipos = new List<TipoAdministradorModulo>();
-            Aplicacion a = this.Info();
-
-            foreach (var m in a.Modulos)
-            {
-
-                foreach (var t in m.TiposAdministrados)
-                {
-                    tipos.Add(t);
-                }
-            }
-
-            return tipos;
-        }
+      
     }
 
 }

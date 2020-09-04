@@ -28,6 +28,8 @@ using Serilog.Events;
 using PIKA.Servicio.Contacto;
 using PIKA.Servicio.Usuarios;
 using PIKA.GD.API.JsonConverters;
+using PIKA.Servicio.AplicacionPlugin.Interfaces;
+using PIKA.Servicio.AplicacionPlugin.Servicios;
 
 namespace PIKA.GD.API
 {
@@ -104,6 +106,7 @@ namespace PIKA.GD.API
             services.AddTransient<IServicioPerfilUsuario, ServicioPerfilUsuario>();
             services.AddTransient(typeof(IProveedorMetadatos<>), typeof(ReflectionMetadataExtractor<>));
 
+            services.AddTransient<IServicioAplicacion, ServicioAplicacionReflectivo>();
             services.AddTransient<ILocalizadorFiltroACL, LocalizadorFiltroACLReflectivo>();
             services.AddScoped<AsyncACLActionFilter>();
 

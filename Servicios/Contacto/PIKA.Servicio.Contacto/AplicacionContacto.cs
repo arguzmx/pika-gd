@@ -8,212 +8,66 @@ using System.Text;
 
 namespace PIKA.Servicio.Contacto
 {
-    public class AplicacionContacto : IInformacionAplicacion
+    public class AplicacionContacto : InformacionAplicacionBase, IInformacionAplicacion
     {
-        public const string MODULO_BASE_CONTACTO = "PIKA-GD-CONTACTO";
-        public const string MODULO_CONTACTO_ADMIN = "PIKA-GD-ADMIN";
-        public const string MODULO_ESTADO = "PIKA-GD-CONTACTO-ESTADO";
-        public const string MODULO_PAIS = "PIKA-GD-CONTACTO-PAIS";
-        public const string MODULO_TIPO_MEDIOS = "PIKA-GD-CONTACTO-TMEDIOS";
-        public const string MODULO_FUENTES = "PIKA-GD-CONTACTO-FUENTE";
-        public const string MODULO_DIRECCION_POSTAL = "PIKA-GD-CONTACTO-POSTAL";
-        public const string MODULO_MEDIO_CONTACTO = "PIKA-GD-CONTACTO-MEDIOCONTACTO";
-        public const string MODULO_MEDIO_CONTACTO_HORARIO = "PIKA-GD-CONTACTO-MEDIOCONTACTO-HORARIO";
+        public const string MODULO_BASE = "PIKA-GD-CONTACTO";
 
-        public static string ID_APLICAICON { get { return ConstantesAplicacion.Id; } }
-
-        public List<TipoAdministradorModulo> TiposAdministrados()
+        public override Aplicacion Info()
         {
-
-            List<TipoAdministradorModulo> tipos = new List<TipoAdministradorModulo>();
-            Aplicacion a = this.Info();
-
-            foreach (var m in a.Modulos)
-            {
-
-                foreach (var t in m.TiposAdministrados)
-                {
-                    tipos.Add(t);
-                }
-            }
-
-            return tipos;
-        }
-
-        public Aplicacion Info()
-        {
-            Aplicacion a = ConstantesAplicacion.AplicacionPikaGD();
+            Aplicacion a = AplicacionRaiz.ObtieneAplicacionRaiz();
             a.Modulos = this.ModulosAplicacion();
             return a;
         }
 
+
         public List<ModuloAplicacion> ModulosAplicacion()
         {
-            List<ModuloAplicacion> l = new List<ModuloAplicacion>();
-
-            ModuloAplicacion m;
-
-            
-            /// Modulo raiz administarción 
-            //------------------------------------------------------------
-            ModuloAplicacion mAdministracion = new ModuloAplicacion(
-                ConstantesAplicacion.Id,
-                MODULO_CONTACTO_ADMIN, true,
-                "Administrador contacto",
-                "Permite arministrar los recuros relacionados con el contacto",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(),
-                "",
-                "");
-            l.Add(mAdministracion);
-
-
-            /// Modulo administarcion de paises
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_PAIS , true,
-                "Paises",
-                "Administrador de paises",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), MODULO_CONTACTO_ADMIN,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(Pais) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-
-
-            /// Modulo administarcion de estados
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_ESTADO, true,
-                "Estados",
-                "Administrador de estados",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), MODULO_CONTACTO_ADMIN,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(Estado) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-
-
-
-
-            /// Modulo administarcion de medios de conatcto
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_TIPO_MEDIOS, true,
-                "Tipos medio",
-                "Administrador de medios de contacto",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), MODULO_CONTACTO_ADMIN,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(TipoMedio) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-
-
-
-            /// Modulo administarcion de medios de fuenes de contacto
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_FUENTES, true,
-                "Fuentes",
-                "Administrador de fuentes de contacto",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), MODULO_CONTACTO_ADMIN,
-                ConstantesAplicacion.Id);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(TipoFuenteContacto) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-
-
-            /// Modulo administarcion de direcciones postales
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_DIRECCION_POSTAL, true,
-                "Direcciones",
-                "Gestión de direcciones postales",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), MODULO_CONTACTO_ADMIN,
-                ConstantesAplicacion.Id, ModuloAplicacion.TipoModulo.UsuarioFinal);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(DireccionPostal) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-
-
-            /// Modulo administarcion de medios de contacto
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_MEDIO_CONTACTO, true,
-                "Medios contacto",
-                "Gestión de medios de contacto",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), MODULO_CONTACTO_ADMIN,
-                ConstantesAplicacion.Id, ModuloAplicacion.TipoModulo.UsuarioFinal);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(MedioContacto) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-
-
-            /// Modulo administarcion de horarios medios de contacto
-            //------------------------------------------------------------
-
-            m = new ModuloAplicacion(ConstantesAplicacion.Id, MODULO_MEDIO_CONTACTO_HORARIO, true,
-                "Horarios Contacto",
-                "Gestión Horario de medios de contacto",
-                "",
-                "es-MX",
-                PermisoAplicacion.PermisosAdministrables(), MODULO_CONTACTO_ADMIN,
-                ConstantesAplicacion.Id, ModuloAplicacion.TipoModulo.UsuarioFinal);
-            m.TiposAdministrados.Add(new TipoAdministradorModulo()
-            {
-                AplicacionId = ConstantesAplicacion.Id,
-                ModuloId = m.Id,
-                TiposAdministrados = new List<Type>() { typeof(HorarioMedioContacto) }
-            });
-            l.Add(m);
-            //------------------------------------------------------------
-
-
-            return l;
+            return this.ModulosAplicacionLocales(AplicacionRaiz.APP_ID, MODULO_BASE);
         }
+
+        public override List<ElementoAplicacion> GetModulos()
+        {
+            List<ElementoAplicacion> m = new List<ElementoAplicacion>()
+            {
+                new ElementoAplicacion(MODULO_BASE, "PAISES" ) {
+                    Titulo = "Catálogo de paises",
+                    Descripcion = "Permite administrar el catálogo de paises del sistema",
+                    Tipos = new List<Type> { typeof(Pais) }
+                },
+                new ElementoAplicacion(MODULO_BASE, "ESTADOS" ) {
+                    Titulo = "Catálogo de estados",
+                    Descripcion = "Permite administrar el catálogo de estados de los paises del sistema",
+                    Tipos = new List<Type> { typeof(Estado) }
+                },
+                new ElementoAplicacion(MODULO_BASE, "TIPO-MEDIOS" ) {
+                    Titulo = "Catálogo de medios de contacto",
+                    Descripcion = "Permite administrar el catálogo de tipos de medios de contacto del sistema",
+                    Tipos = new List<Type> { typeof(TipoMedio) }
+                },
+                new ElementoAplicacion(MODULO_BASE, "TIPO-FUENTE" ) {
+                    Titulo = "Catálogo de fuentes de contacto",
+                    Descripcion = "Permite administrar el catálogo de fuentes de contacto del sistema",
+                    Tipos = new List<Type> { typeof(TipoFuenteContacto) }
+                },
+                new ElementoAplicacion(MODULO_BASE, "DIR-POSTAL" ) {
+                    Titulo = "Direcciones postales",
+                    Descripcion = "Permite la gestión de direcciones postales de las entidades del sistema",
+                    Tipos = new List<Type> { typeof(DireccionPostal) }
+                },
+                new ElementoAplicacion(MODULO_BASE, "MEDIO-CONTACO" ) {
+                    Titulo = "Medios de contatco",
+                    Descripcion = "Permite la gestión de medios de contacto de las entidades del sistema",
+                    Tipos = new List<Type> { typeof(MedioContacto) }
+                },
+                new ElementoAplicacion(MODULO_BASE, "MEDIO-CONTACO" ) {
+                    Titulo = "Horarios sedios de contatco",
+                    Descripcion = "Permite la gestión de los horarios de los medios de contacto de las entidades del sistema",
+                    Tipos = new List<Type> { typeof(HorarioMedioContacto) }
+                }
+            };
+            return m;
+        }
+ 
 
     }
 }

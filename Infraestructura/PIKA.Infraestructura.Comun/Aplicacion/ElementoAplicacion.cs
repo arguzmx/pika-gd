@@ -31,7 +31,7 @@ namespace PIKA.Infraestructura.Comun
               "",
               "es-MX",
               PermisoAplicacion.PermisosAdministrables(), IdModuloRaiz,
-              ConstantesAplicacion.Id);
+              AppId);
 
             m.TiposAdministrados.Add(new TipoAdministradorModulo()
             {
