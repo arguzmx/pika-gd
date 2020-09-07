@@ -562,6 +562,55 @@
 					"response": []
 				},
 				{
+					"name": "GET Roles todos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "did",
+								"value": "principal",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/org/rol/todos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"org",
+								"rol",
+								"todos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "DELETE Rol",
 					"request": {
 						"method": "DELETE",
@@ -947,7 +996,8 @@
 							{
 								"key": "uid",
 								"type": "text",
-								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+								"disabled": true
 							},
 							{
 								"key": "Content-Type",
@@ -957,13 +1007,13 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "\n\t[\n\t\"b9352cf2-dee0-4258-b9c8-93e1bc837182\",\n\t\"a\",\n\t\"b\"\n\t]\n",
+							"raw": "",
 							"options": {
 								"raw": {}
 							}
 						},
 						"url": {
-							"raw": "https://localhost:5001/api/v1.0/org/usuariosrol/4d192c25-44c1-4fac-9695-6f927d6062b6/a,b,123",
+							"raw": "https://localhost:5001/api/v1.0/org/unidadorganizacional/b9352cf2-dee0-4258-b9c8-93e1bc837182,a",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -973,9 +1023,8 @@
 								"api",
 								"v1.0",
 								"org",
-								"usuariosrol",
-								"4d192c25-44c1-4fac-9695-6f927d6062b6",
-								"a,b,123"
+								"unidadorganizacional",
+								"b9352cf2-dee0-4258-b9c8-93e1bc837182,a"
 							]
 						}
 					},
@@ -1323,7 +1372,7 @@
 							}
 						},
 						"url": {
-							"raw": "https://localhost:5001/api/v1.0/org/unidadorganizacional/",
+							"raw": "https://localhost:5001/api/v1.0/org/usuariosrol/4d192c25-44c1-4fac-9695-6f927d6062b6/a,b,123",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -1333,8 +1382,9 @@
 								"api",
 								"v1.0",
 								"org",
-								"unidadorganizacional",
-								""
+								"usuariosrol",
+								"4d192c25-44c1-4fac-9695-6f927d6062b6",
+								"a,b,123"
 							]
 						}
 					},
