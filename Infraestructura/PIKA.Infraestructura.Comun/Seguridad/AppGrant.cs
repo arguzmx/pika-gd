@@ -23,7 +23,8 @@ namespace PIKA.Infraestructura.Comun.Seguridad
 
 
         /// <summary>
-        /// Tipo de objeto asicoado al permiso
+        /// Tipo de objeto asicoado al permiso por ejemplo rol o usuario 
+        /// en base a las contasntes de ConstantesSeguridad
         /// </summary>
         public string GrantedType { get; set; }
 

@@ -55,7 +55,6 @@
     <ProjectReference Include="..\..\Servicios\Contacto\PIKA.Servicio.Contacto\PIKA.Servicio.Contacto.csproj" />
     <ProjectReference Include="..\..\Servicios\Contenido\PIKA.Servicio.Contenido\PIKA.Servicio.Contenido.csproj" />
     <ProjectReference Include="..\..\Servicios\GestionDocumental\PIKA.Servicio.GestionDocumental\PIKA.Servicio.GestionDocumental.csproj" />
-    <ProjectReference Include="..\..\Servicios\Infraestructura\PIKA.Servicio.UI\PIKA.Servicio.Infraestructura.UI.csproj" />
     <ProjectReference Include="..\..\Servicios\Metadatos\PIKA.Servicio.Metadatos.ElasticSearch\PIKA.Servicio.Metadatos.ElasticSearch.csproj" />
     <ProjectReference Include="..\..\Servicios\Metadatos\PIKA.Servicio.Metadatos\PIKA.Servicio.Metadatos.csproj" />
     <ProjectReference Include="..\..\Servicios\Organizacion\PIKA.Servicio.Organizacion\PIKA.Servicio.Organizacion.csproj" />

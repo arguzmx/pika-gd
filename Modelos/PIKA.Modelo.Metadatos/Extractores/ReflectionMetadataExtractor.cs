@@ -101,19 +101,6 @@ namespace PIKA.Modelo.Metadatos
 
                 }
 
-                if( attr is EntidadMiembroAttribute)
-                {
-                    var em = ((EntidadMiembroAttribute)attr);
-                    info.EntidadesMiembro.Add(new EntidadMiembro()
-                    {
-                        ColumnaIdMembresia = em.ColumnaIdMembresia,
-                        ColumnaIdMiembro = em.ColumnaIdMiembro,
-                        ObjetoMembresia = em.ObjetoMembresia,
-                        ObjetoMiembro = em.ObjetoMiembro,  
-                        PropiedadPadre = em.PropiedadPadre
-                    });
-                }
-
                 if (attr is LinkCatalogoAttribute)
                 {
                     

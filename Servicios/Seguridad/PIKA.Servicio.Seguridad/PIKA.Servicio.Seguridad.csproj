@@ -13,6 +13,10 @@
     <Compile Remove="Data\Migrations\20200730174119_ActualizacionCataloogGenero.Designer.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="LazyCache.AspNetCore" Version="2.0.4" />
+  </ItemGroup>
+
 
 
   <ItemGroup>
