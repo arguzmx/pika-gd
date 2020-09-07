@@ -1,7 +1,7 @@
 ﻿using LazyCache;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
-using PIKA.Servicio.AplicacionPlugin.Interfaces;
+using PIKA.Servicio.Seguridad.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,20 +9,21 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PIKA.Servicio.AplicacionPlugin.Servicios
+namespace PIKA.Servicio.Seguridad.Servicios
 {
-    public class ServicioAplicacionReflectivo: IServicioAplicacion
+    public class ServicioInfoAplicacionReflectivo: IServicioInfoAplicacion
     {
-        private readonly ILogger<ServicioAplicacionReflectivo> logger;
+        private readonly ILogger<ServicioInfoAplicacionReflectivo> logger;
         private readonly IAppCache cache;
         private static TimeSpan cacheExpiry = new TimeSpan(0, 30, 0);
         private const string APP_CACHE_KEYS = "cache-aplicaciones";
 
 
-        public ServicioAplicacionReflectivo(ILogger<ServicioAplicacionReflectivo> logger,
+        public ServicioInfoAplicacionReflectivo(ILogger<ServicioInfoAplicacionReflectivo> logger,
               IAppCache cache)
         {
             this.logger = logger;
@@ -60,8 +61,29 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
                         logger.LogInformation(t.FullName);
                        TipoAdministradorModulo s = new TipoAdministradorModulo();
                         var instancia = assembly.CreateInstance(t.FullName);
-                        Aplicacion tmp = ((IInformacionAplicacion)instancia).Info();
-                        l.Add(tmp.Copia());
+                        Aplicacion tmp = ((IInformacionAplicacion)instancia).Info().Copia();
+                        Aplicacion existente = l.Where(x => x.Id == tmp.Id).SingleOrDefault();
+                        if(existente == null)
+                        {
+                            l.Add(tmp.Copia());
+                        } else
+                        {
+                            foreach(var m in tmp.Modulos)
+                            {
+                                if ( existente.Modulos.Where(x=>x.Id == m.Id).Count() == 0)
+                                {
+                                    existente.Modulos.Add(m);
+                                }
+                            }
+
+                            foreach (var trad in tmp.Traducciones)
+                            {
+                                if (existente.Traducciones.Where(x => x.Id == trad.Id).Count() == 0)
+                                {
+                                    existente.Traducciones.Add(trad);
+                                }
+                            }
+                        }
                     }
                 }
                 catch (Exception)

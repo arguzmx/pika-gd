@@ -9,6 +9,7 @@ using PIKA.Servicio.Seguridad.Data;
 using PIKA.Servicio.Seguridad.Data.Configuracion;
 using PIKA.Modelo.Seguridad;
 using PIKA.Modelo.Seguridad.Base;
+using PIKA.Infraestructura.Comun.Seguridad;
 
 namespace PIKA.Servicio.Seguridad
 {
@@ -37,38 +38,44 @@ namespace PIKA.Servicio.Seguridad
 
         #region Contantes de configutación
 
+        public static string TablaSeguridad= "seguridad$";
+
         public static string TablaApplicationUser { get => "aspnetusers"; }
 
         public static string TablaApplicationUserClaims { get => "aspnetuserclaims"; }
 
-        public static string TablaUsuariosOominio { get => "seguridad$usuariosdominio"; }
+        public static string TablaUsuariosOominio { get => $"{TablaSeguridad}usuariosdominio"; }
 
-        public static string TablaPropiedadesUsuario { get => "seguridad$usuarioprops"; }
+        public static string TablaPropiedadesUsuario { get => $"{TablaSeguridad}usuarioprops"; }
 
-        public static string TablaGeneros{ get => "seguridad$generousuario"; }
+        public static string TablaGeneros{ get => $"{TablaSeguridad}generousuario"; }
+
+        public static string TablaPermisosApp { get => $"{TablaSeguridad}permisosapl"; }
+
+
 
         /// <summary>
         /// Nombre de la tabla para las entidades de Aplicaciones
         /// </summary>
-        public static string TablaAplicacion { get => "seguridad$aplicacion"; }
+        public static string TablaAplicacion { get => $"{TablaSeguridad}aplicacion"; }
 
 
         /// <summary>
         /// Nombre de la tabla para las entidades del Modulo de Aplicaciones
         /// </summary>
-        public static string TablaModuloAplicacion { get => "seguridad$moduloaplicacion"; }
+        public static string TablaModuloAplicacion { get => $"{TablaSeguridad}moduloaplicacion"; }
 
 
         /// <summary>
         /// Nombre de la tabla para las entidades del Tipo de Administrador de Modulo
         /// </summary>
-        public static string TablaTipoAdministradorModulo { get => "seguridad$tipoadministradormodulo"; }
+        public static string TablaTipoAdministradorModulo { get => $"{TablaSeguridad}tipoadministradormodulo"; }
 
 
         /// <summary>
         /// Nombre de la tabla para las entidades del Traduccion Aplicacion Modulo
         /// </summary>
-        public static string TablaTraduccionAplicacionModulo { get => "seguridad$traduccionaplicacionmodulo"; }
+        public static string TablaTraduccionAplicacionModulo { get => $"{TablaSeguridad}traduccionaplicacionmodulo"; }
 
 
 
@@ -127,6 +134,9 @@ namespace PIKA.Servicio.Seguridad
         /// </summary>
         public DbSet<TipoAdministradorModulo> TipoAdministradorModulo { get; set; }
 
+        public DbSet<PermisoAplicacion> PermisosAplicacion { get; set; }
+
+
         public void AplicarMigraciones()
         {
             this.Database.Migrate();
@@ -141,6 +151,7 @@ namespace PIKA.Servicio.Seguridad
         {
             base.OnModelCreating(builder);
             builder.ApplyConfiguration<Aplicacion>(new DbConfAplicacion());
+            builder.ApplyConfiguration<PermisoAplicacion>(new DbConfPermisosAplicacion());
             builder.ApplyConfiguration<ApplicationUser>(new DBConfigApplicationUser());
             builder.ApplyConfiguration<UsuarioDominio>(new DbConfigUsuariosDominio());
             builder.ApplyConfiguration<UserClaim>(new DbConfigUserClaims());

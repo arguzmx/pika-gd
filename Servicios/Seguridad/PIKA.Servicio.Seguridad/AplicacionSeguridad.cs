@@ -37,8 +37,13 @@ namespace PIKA.Servicio.Seguridad
                     Descripcion = "Permite administrar los catálogos relacionados con los usuario del sistema",
                     Tipos = new List<Type> { typeof(Genero) }
                 },
+                new ElementoAplicacion(MODULO_BASE, "ACL" ) {
+                    Titulo = "Control de acceso",
+                    Descripcion = "Permite gestionar el control de acceso a las aplicaciones del sistema",
+                    Tipos = new List<Type> { typeof(Aplicacion), typeof(PermisoAplicacion)}
+                },
                 new ElementoAplicacion(MODULO_BASE, "APLICACIONES" ) {
-                    Titulo = "Gestor de aplciaciones",
+                    Titulo = "Gestor de aplicaciones",
                     Descripcion = "Permite gestionar las aplicaciones del sistema",
                     Tipos = new List<Type> { typeof(Aplicacion), 
                         typeof(ModuloAplicacion),

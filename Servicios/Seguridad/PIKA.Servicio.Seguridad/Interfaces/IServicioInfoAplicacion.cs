@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PIKA.Servicio.AplicacionPlugin.Interfaces
+namespace PIKA.Servicio.Seguridad.Interfaces
 {
-    public interface IServicioAplicacion
+    public interface IServicioInfoAplicacion
     {
         Task<List<Aplicacion>> OntieneAplicaciones(string AppPath);
     }

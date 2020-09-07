@@ -30,7 +30,7 @@ namespace PIKA.Infraestructura.Comun
               Descripcion,
               "",
               "es-MX",
-              PermisoAplicacion.PermisosAdministrables(), IdModuloRaiz,
+              MascaraPermisos.PermisosAdministrables(), IdModuloRaiz,
               AppId);
 
             m.TiposAdministrados.Add(new TipoAdministradorModulo()
