@@ -54,14 +54,11 @@ namespace PIKA.Modelo.Metadatos
         /// Identifica la columna utilizada para determinar la eliminación lógica
         /// </summary>
         public string ColumaEliminarLogico { get; set; }
-        [XmlIgnore]
-        [JsonIgnore]
+        
         public virtual List<Propiedad> Propiedades { get; set; }
-        [XmlIgnore]
-        [JsonIgnore]
+        
         public virtual List<EntidadVinculada> EntidadesVinculadas { get; set; }
-        [XmlIgnore]
-        [JsonIgnore]
+        
         public virtual List<CatalogoVinculado> CatalogosVinculados { get; set; }
 
 
