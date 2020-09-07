@@ -1085,6 +1085,46 @@
 				}
 			],
 			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Aplicaciones",
+			"item": [
+				{
+					"name": "GET Aplicaciones",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/Sistema/seguridad/aplicaciones",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"Sistema",
+								"seguridad",
+								"aplicaciones"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"auth": {
