@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Razor.Language;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
@@ -179,6 +180,18 @@ namespace PIKA.Servicio.Organizacion.Servicios
             }
             UDT.SaveChanges();
             return lista;
+        }
+
+        /// <summary>
+        ///  Obtiene los roles disponibles en el dominio
+        /// </summary>
+        /// <param name="idDominio"></param>
+        /// <returns></returns>
+        public async Task<ICollection<Rol>> ObtieneRoles(string idDominio)
+        {
+            return (await this.repo.ObtenerAsync(x => x.TipoOrigenId == ConstantesModelo.IDORIGEN_DOMINIO 
+                 && x.OrigenId == idDominio))
+                .OrderBy(x => x.Nombre).ToList();
         }
 
         public Task<List<Rol>> ObtenerAsync(Expression<Func<Rol, bool>> predicado)

@@ -115,6 +115,16 @@ namespace PIKA.GD.API.Controllers.Organizacion
         }
 
 
+        [HttpGet("todos")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<Rol>> GetRoles()
+        {
+            logger.LogError(this.DominioId);
+            var o = await servicioRol.ObtieneRoles(this.DominioId).ConfigureAwait(false);
+            return Ok(o);
+        }
+
         // <summary>
         /// Obtiene un Rol en base al Id único
         /// </summary>
