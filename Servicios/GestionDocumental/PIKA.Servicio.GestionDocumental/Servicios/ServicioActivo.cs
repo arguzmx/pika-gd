@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -68,50 +69,23 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
         public async Task<Activo> CrearAsync(Activo entity, CancellationToken cancellationToken = default)
         {
-
-            //if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)
-            //&& x.Eliminada!=true))
-            //{
-            //    throw new ExElementoExistente(entity.Nombre);
-            //}
-
-            if (entity != null)
-            {
+            
                 entity = await ValidarActivos(entity, false);
                 entity.Id = System.Guid.NewGuid().ToString();
-                entity.ArchivoId = entity.ArchivoOrigenId;
-                entity.IDunico = entity.IDunico;
                 await this.repo.CrearAsync(entity);
                 UDT.SaveChanges();
-            }
-            return entity.Copia();
+
+                return entity.Copia();
+          
         }
 
         public async Task ActualizarAsync(Activo entity)
         {
-
-
-
-            Activo o = await ValidarActivos(entity,true);
-                                 
-            o.Nombre = entity.Nombre;
-            o.Asunto = entity.Asunto;
-            o.FechaApertura = entity.FechaApertura;
-            o.FechaCierre = entity.FechaCierre;
-          
-            o.EsElectronico = entity.EsElectronico;
-            o.CodigoOptico = entity.CodigoOptico;
-            o.CodigoElectronico = entity.CodigoElectronico;
-            o.IDunico = entity.IDunico;
-
-            o.Reservado = entity.Reservado;
-            o.Confidencial = entity.Confidencial;
-
-
-            UDT.Context.Entry(o).State = EntityState.Modified;
-            UDT.SaveChanges();
-
+                entity = await ValidarActivos(entity, true);
+                UDT.Context.Entry(entity).State = EntityState.Modified;
+                UDT.SaveChanges();
         }
+
         private Consulta GetDefaultQuery(Consulta query)
         {
             if (query != null)
@@ -127,37 +101,40 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
             return query;
         }
-        private async Task<Activo> ValidarActivos(Activo a, bool operacion) 
+        private async Task<Activo> ValidarActivos(Activo a, bool actualizar) 
         {
-            if (operacion == false)
-            {
-                if (!await ExisteElemento(x => x.Id.Equals(a.EntradaClasificacionId.Trim(), StringComparison.InvariantCultureIgnoreCase)
-          && x.Eliminada != true))
-                    throw new ExErrorRelacional(a.EntradaClasificacionId);
-                if (!await ExisteArchivo(x => x.Id.Equals(a.ArchivoOrigenId.Trim(), StringComparison.InvariantCultureIgnoreCase)
-                && x.Eliminada != true))
-                    throw new ExErrorRelacional(a.ArchivoId);
-                if (await Existe(x => x.IDunico.Equals(a.IDunico, StringComparison.InvariantCultureIgnoreCase)))
-                    throw new ExElementoExistente(a.IDunico);
-            }
-            else {
-                Activo o = await this.repo.UnicoAsync(x => x.Id == a.Id);
 
-                if (o == null)
+            EntradaClasificacion ec = await repoEC.UnicoAsync(x => x.Id == a.EntradaClasificacionId); 
+            
+            if (ec == null || ec.Eliminada == true) throw new ExErrorRelacional(a.EntradaClasificacionId);
+
+                if (!await ExisteArchivo(x => x.Id.Equals(a.ArchivoId.Trim(), StringComparison.InvariantCultureIgnoreCase)
+                     && x.Eliminada == false))
+                    throw new ExErrorRelacional(a.ArchivoId);
+
+            if (actualizar)
+            {
+                if (await Existe(x => x.Id != a.Id && x.Eliminada == false &&
+                    x.IDunico.Equals(a.IDunico, StringComparison.InvariantCultureIgnoreCase)))
+                    throw new ExElementoExistente(a.IDunico);
+                var tmp = await this.repo.UnicoAsync(x => x.Id == a.Id);
+                if ( tmp == null)
                 {
                     throw new EXNoEncontrado(a.Id);
                 }
-                if (!await ExisteElemento(x => x.Id.Equals(a.EntradaClasificacionId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
-                    throw new ExErrorRelacional(a.EntradaClasificacionId);
-                if (await Existe(x => x.IDunico.Equals(a.IDunico, StringComparison.InvariantCultureIgnoreCase)))
-                    throw new ExElementoExistente(a.IDunico);
-            }
 
-     
+                a.ArchivoOrigenId = tmp.ArchivoOrigenId;
+            }
+            else {
+           
+                if (await Existe(x => x.Eliminada == false && 
+                    x.IDunico.Equals(a.IDunico, StringComparison.InvariantCultureIgnoreCase)))
+                    throw new ExElementoExistente(a.IDunico);
+                a.ArchivoOrigenId = a.ArchivoId;
+            }
 
             if (a.FechaCierre.HasValue)
             {
-                EntradaClasificacion ec = await repoEC.UnicoAsync(x => x.Id == a.EntradaClasificacionId);
                 a.FechaRetencionAT = ((DateTime)a.FechaCierre).AddYears(ec.VigenciaTramite);
                 a.FechaRetencionAC = ((DateTime)a.FechaCierre).AddYears(ec.VigenciaTramite + ec.VigenciaConcentracion);
             }
@@ -166,8 +143,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 a.FechaRetencionAT = null;
                 a.FechaRetencionAC = null;
             }
+
             return a;
         }
+     
+        
         public async Task<Activo> ValidadorImportador(Activo a) 
         {
             if (!await ExisteElemento(x => x.Id.Equals(a.EntradaClasificacionId.Trim(), StringComparison.InvariantCultureIgnoreCase)
@@ -199,14 +179,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 c = await this.repo.UnicoAsync(x => x.Id == Id);
                 if (c != null)
                 {
-                    try
-                    {
+              
                         c.Eliminada = true;
                         UDT.Context.Entry(c).State = EntityState.Modified;
                         listaEliminados.Add(c.Id);
-                    }
-                    catch (Exception)
-                    { }
+  
                 }
             }
             UDT.SaveChanges();
@@ -217,10 +194,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<IPaginado<Activo>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Activo>, IIncludableQueryable<Activo, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
-            Query = GetDefaultQuery(Query);
-            var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
+                 Query = GetDefaultQuery(Query);
+                var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
 
-            return respuesta;
+                return respuesta;
         }
         public async Task<Activo> UnicoAsync(Expression<Func<Activo, bool>> predicado = null, Func<IQueryable<Activo>, IOrderedQueryable<Activo>> ordenarPor = null, Func<IQueryable<Activo>, IIncludableQueryable<Activo, object>> incluir = null, bool inhabilitarSegumiento = true)
         {

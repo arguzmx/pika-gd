@@ -115,7 +115,6 @@ namespace PIKA.Modelo.Metadatos
 
             foreach (PropertyInfo prop in props)
             {
-
                 Propiedad foundProp = null;
                 object[] attrs = prop.GetCustomAttributes(true);
                 foreach (object attr in attrs)

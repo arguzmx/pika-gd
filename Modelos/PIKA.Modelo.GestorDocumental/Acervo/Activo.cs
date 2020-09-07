@@ -31,13 +31,6 @@ namespace PIKA.Modelo.GestorDocumental
         public override string Id { get => base.Id; set => base.Id = value; }
 
 
-        /// <summary>
-        /// Establece el archivo en el que fue originado el activo
-        /// </summary>
-        [Prop(Required: true, OrderIndex: 4, Visible: false)]
-        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
-        [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false)]
-        public string ArchivoOrigenId { get; set; }
 
         /// <summary>
         /// Identificador único de la etraada de clasificación
@@ -54,10 +47,11 @@ namespace PIKA.Modelo.GestorDocumental
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
         [ValidString(minlen: 2, maxlen: 200)]
         public string Nombre { get; set; }
+       
         /// <summary>
         /// ID Unico de la entrada de inventario por ejemplo el número de expediente
         /// </summary>
-        [Prop(Required: true, OrderIndex: 10)]
+        [Prop(Required: false, OrderIndex: 12)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
         [ValidString(minlen: 2, maxlen: 250)]
         public string IDunico { get; set; }
@@ -65,15 +59,15 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Fecha de apertura UTC del activo
         /// </summary>
-        [Prop(Required: true, OrderIndex: 10)]
+        [Prop(Required: true, OrderIndex: 15)]
         [VistaUI(ControlUI: ControlUI.HTML_DATE, Accion: Acciones.addupdate)]
         public DateTime FechaApertura { get; set; }
 
         /// <summary>
         /// Fecha opcional de ciere del activo
         /// </summary>
-        [Prop(Required: false, OrderIndex: 20)]
-        [VistaUI(ControlUI: ControlUI.HTML_DATE, Accion: Acciones.update)]
+        [Prop(Required: false, OrderIndex: 16)]
+        [VistaUI(ControlUI: ControlUI.HTML_DATE, Accion: Acciones.addupdate)]
         public DateTime? FechaCierre { get; set; }
 
         /// <summary>
@@ -131,14 +125,21 @@ namespace PIKA.Modelo.GestorDocumental
         public bool Eliminada { get; set; }
 
 
+        /// <summary>
+        /// Establece el archivo en el que fue originado el activo
+        /// </summary>
+        [Prop(Required: false, OrderIndex: 6 , Visible:false)]
+        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.none)]
+        [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false)]
+        public string ArchivoOrigenId { get; set; }
 
 
         /// <summary>
         /// Identificador único del archivo actual del activo
         /// ESTOS VALORES SE CALCULAR POR SISTEMA  EN BASE AL LOS PROCESOS DE TRASNFENRENCIA
         /// </summary>
-        [Prop(Required: false, OrderIndex: 6)]
-        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.none)]
+        [Prop(Required: true, OrderIndex: 4, Visible: true)]
+        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
         [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false)]
         public string ArchivoId { get; set; }
         //# la relacion del actuivo con archovo es de 1 a 1, un activo puede estar en un sólo archivo al mismo tiempo
@@ -187,7 +188,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// En este ID 
         /// </summary>
-        [Prop(Required: true, OrderIndex: 1000, Contextual: true, ShowInTable: false, Searchable: false, DefaultValue: ConstantesModelo.IDORIGEN_UNIDAD_ORGANIZACIONAL)]
+        [Prop(Required: true, OrderIndex: 1000, Contextual: false, ShowInTable: false, Searchable: false, DefaultValue: ConstantesModelo.IDORIGEN_UNIDAD_ORGANIZACIONAL)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string TipoOrigenId { get; set; }
 

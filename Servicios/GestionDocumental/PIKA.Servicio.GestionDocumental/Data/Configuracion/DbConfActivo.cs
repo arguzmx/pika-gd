@@ -22,10 +22,10 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.OrigenId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
 
             //¿Requerida?
-            builder.Property(x => x.EntradaClasificacionId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.EntradaClasificacionId).IsRequired().ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
 
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
-            builder.Property(x => x.IDunico).HasMaxLength(LongitudDatos.IDunico).IsRequired();
+            builder.Property(x => x.IDunico).HasMaxLength(LongitudDatos.IDunico);
             builder.Property(x => x.Asunto).HasMaxLength(2048).IsRequired(false);
             builder.Property(x => x.FechaApertura).IsRequired();
             builder.Property(x => x.FechaCierre).IsRequired(false);
