@@ -90,6 +90,12 @@ namespace PIKA.Servicio.GestionDocumental
                     Descripcion = "Permite realizar la gestión de catálogos relacionados con las transferencia",
                     Tipos = new List<Type> { typeof(EstadoTransferencia) }
                 },
+                new ElementoAplicacion(MODULO_BASE,"RESUMEN-ACTIVOS")
+                {
+                    Titulo="Resumen de activos por cuadro clasificación y Archivo",
+                    Descripcion="Permite realizar un resumen de todos los activos que se encuentren almacenados en la estadística",
+                    Tipos=new List<Type>{ typeof(EstadisticaClasificacionAcervo)}
+                }
               };
             return m;
         }

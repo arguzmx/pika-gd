@@ -77,15 +77,13 @@ namespace PIKA.Servicio.GestionDocumental
         public async Task EliminarCuadroCalsificacionExcel(string CuadroClasificacionId, string ruta, string separador) 
         {
             CuadroClasificacion cc = await this.repo.UnicoAsync(x=>x.Id.Equals(CuadroClasificacionId,StringComparison.InvariantCultureIgnoreCase));
-            string Directory= $"{ ruta }{ CuadroClasificacionId}";
             try
             {
-                    System.IO.Directory.Delete($"{ruta}{CuadroClasificacionId}", true);
+                Directory.Delete($"{ruta}{CuadroClasificacionId}", true);
                
             }
             catch (Exception ex)
             {
-                //Do something
             }
             
 

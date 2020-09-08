@@ -175,6 +175,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// Nombre del tipo de Valoracion Entrada de clasificacion
         /// </summary>
         public static string TablaTipoValoracionDocumental { get => "gd$tipovaloraciondocumental"; }
+        public static string TablaEstadisticaClasificacionAcervo { get => "gd$estadisticaclasificacionacervo"; }
 
 
         #endregion
@@ -306,7 +307,10 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// Variable de Tipo de Valoracion Documental
         /// </summary>
         public DbSet<TipoValoracionDocumental> TipoValoracionDocumental { get; set; }
-
+        /// <summary>
+        /// Variable Estadistica Clasificacion Acervo
+        /// </summary>
+        public DbSet<EstadisticaClasificacionAcervo> EstadisticaClasificacionAcervo { get; set; }
         public void AplicarMigraciones()
         {
             this.Database.Migrate();
@@ -358,6 +362,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
             builder.ApplyConfiguration<TipoDisposicionDocumental>(new DbConfTipoDisposicionDocumental());
             builder.ApplyConfiguration<ValoracionEntradaClasificacion>(new DbConfValoracionEntradaClasificacion());
             builder.ApplyConfiguration<TipoValoracionDocumental>(new DbConfTipoValoracionDocumental());
+            builder.ApplyConfiguration<EstadisticaClasificacionAcervo>(new DbConfEstadisticaClasificacionAcervo());
 
         }
 

@@ -40,10 +40,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios.Reporte
         private readonly ConfiguracionServidor configuracion;
         private ServicioActivo servicioActivos;
 
-        // Esto lo voy a deja rporqu eno se para que lo usas pero lo que no sirva despue slo quitas
         public IoImportarActivos(
             ServicioActivo servicioActivos,
-            ILogger<ServicioActivo> Logger, //<- qu etengas este generico quiere decir qu eno has estudiado como funcionan los loggers 
+            ILogger<ServicioActivo> Logger, 
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
             IOptions<ConfiguracionServidor> Confi)
           : base(proveedorOpciones, Logger)
@@ -51,25 +50,18 @@ namespace PIKA.Servicio.GestionDocumental.Servicios.Reporte
 
             this.servicioActivos = servicioActivos;
 
-            // No m egustan los try en los constructires es una prueba de que el programador pues ...
-            try
-            {
+           
                 this.configuracion = Confi.Value;
                 this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
                 this.repo = UDT.ObtenerRepositoryAsync<Activo>(new QueryComposer<Activo>());
                 this.RepoEntrada = UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>());
-            }
-            catch (Exception ex)
-            {
-
-                Console.WriteLine(ex.ToString());
-            }
+           
            
             
         }
 
 
-        private async Task ReadExcelFileDOM(string RutaArchivo,int col, int fila,int indice,string ArchivoId, string TipoId, string origenId,string formatofecha,string Rutacompleta)
+        private async Task LeerArchivo(string RutaArchivo,int col, int fila,int indice,string ArchivoId, string TipoId, string origenId,string formatofecha,string Rutacompleta)
         {
             
             string Columnas = "A,B,C,D,E,F,G,H,I,J,K,L,M";
@@ -105,7 +97,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios.Reporte
                                     Error = "";
                                 }
                                 fila++;
-                                await ReadExcelFileDOM(RutaArchivo, 0, fila, indice, ArchivoId, TipoId, origenId, formatofecha, Rutacompleta);
+                                await LeerArchivo(RutaArchivo, 0, fila, indice, ArchivoId, TipoId, origenId, formatofecha, Rutacompleta);
                             }
                         }
                     }
@@ -165,15 +157,15 @@ namespace PIKA.Servicio.GestionDocumental.Servicios.Reporte
                 
                     break;
                 case "D":
-                    if(IsDate(GetFecha(valorColumna, formatofecha, fila,1)))
-                        a.FechaApertura= Convert.ToDateTime(GetFecha(valorColumna, formatofecha,fila,1)); 
+                    if(FechaValida(ObtenerFecha(valorColumna, formatofecha, fila,1)))
+                        a.FechaApertura= Convert.ToDateTime(ObtenerFecha(valorColumna, formatofecha,fila,1)); 
                         valorColumna = a.FechaApertura.ToString();
                     break;
                 case "E":
                     if (!string.IsNullOrEmpty(valorColumna))
                     {
-                        if (IsDate(GetFecha(valorColumna, formatofecha, fila, 2)))
-                            a.FechaCierre = Convert.ToDateTime(GetFecha(valorColumna, formatofecha, fila, 2));
+                        if (FechaValida(ObtenerFecha(valorColumna, formatofecha, fila, 2)))
+                            a.FechaCierre = Convert.ToDateTime(ObtenerFecha(valorColumna, formatofecha, fila, 2));
                         valorColumna = a.FechaCierre.ToString();
                     }
                     else
@@ -282,7 +274,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios.Reporte
             else
                 return false;
         }
-        public static bool IsDate(string fecha)
+        public static bool FechaValida(string fecha)
         {
             DateTime fromDateValue;
 
@@ -301,7 +293,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios.Reporte
                 return false;
             }
         }
-        private string GetFecha(string valor,string formatofecha,int fila,int indice) 
+        private string ObtenerFecha(string valor,string formatofecha,int fila,int indice) 
         {
             String date="";
             try
@@ -320,7 +312,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios.Reporte
             }
             return date;
         }
-       
         public static string ObtenerValorCelda(string fileName,
             string addressName)
         {
@@ -393,7 +384,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios.Reporte
             return value; 
 
         }
-
         public async Task<byte[]> ImportandoDatos(byte[] file , string IdArchivo, string TipoId, string origenId,string formatofecha)
         {
             string ruta = configuracion.ruta_cache_fisico;
@@ -404,18 +394,15 @@ namespace PIKA.Servicio.GestionDocumental.Servicios.Reporte
 
             ListaEntradas = await this.RepoEntrada.ObtenerAsync(x => x.Eliminada != true);
             LlenadoEstructuraExcel(listaExcel, 0, 1, "Estado", "N");
-            await ReadExcelFileDOM(ruta, 0, 1, 1, IdArchivo, TipoId, origenId, formatofecha, Rutacompleta);
+            await LeerArchivo(ruta, 0, 1, 1, IdArchivo, TipoId, origenId, formatofecha, Rutacompleta);
             string archivo = c.CrearArchivoExcel(listaExcel, IdArchivo, ruta, null, $"{System.Guid.NewGuid().ToString()}");
             byte[] b = File.ReadAllBytes(archivo);
-            Console.WriteLine("TErmino el proceso ");
-            //EliminarCache(ruta);
+            EliminarCache(ruta);
             return b;
         }
         private void crearruta(string ruta)
         {
-            Console.WriteLine(ruta);
             System.IO.Directory.CreateDirectory(ruta);
-            Console.WriteLine(ruta);
         }
         private void  EliminarCache(string ruta)
         {
