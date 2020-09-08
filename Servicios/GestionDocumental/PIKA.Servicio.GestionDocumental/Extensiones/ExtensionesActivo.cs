@@ -30,7 +30,8 @@ namespace PIKA.Servicio.GestionDocumental
                 Eliminada = a.Eliminada,
                 ArchivoOrigenId = a.ArchivoOrigenId,
                 FechaRetencionAC = a.FechaRetencionAC,
-                FechaRetencionAT = a.FechaRetencionAT
+                FechaRetencionAT = a.FechaRetencionAT,
+                IDunico = a.IDunico
             };
         }
     }

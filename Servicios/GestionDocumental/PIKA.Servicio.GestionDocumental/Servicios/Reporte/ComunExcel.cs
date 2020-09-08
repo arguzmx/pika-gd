@@ -19,7 +19,7 @@ namespace PIKA.Servicio.GestionDocumental
                 return true;
             else
             {
-                System.IO.Directory.CreateDirectory(ruta);
+               Directory.CreateDirectory(ruta);
                 return false;
             }
         }
@@ -67,8 +67,8 @@ namespace PIKA.Servicio.GestionDocumental
                     shareStringPart = spreadsheetDocument.WorkbookPart.AddNewPart<SharedStringTablePart>();
                 }
 
-                int index = 0;
-                Cell cell = new Cell();
+                int index;
+                Cell cell;
               
                 foreach (Estructuraexcel m in ListaFile)
                 {
@@ -90,7 +90,8 @@ namespace PIKA.Servicio.GestionDocumental
         }
         public string CrearArchivoExcel(List<Estructuraexcel> ListaFile,string id, string ruta, string? separador, string nombre)
         {
-            string fileName = "";
+            string fileName;
+
             if (!String.IsNullOrEmpty(separador))
              fileName = $@"{ruta}{separador}{id}{separador}{nombre}.xlsx";
             else
@@ -102,6 +103,7 @@ namespace PIKA.Servicio.GestionDocumental
             }
             else
             {
+
                 // Crea un spreadsheet del documento con la ruta establecida.
                 // lo autoguarda y edita con el tipo de extensión Xlsx.
                 SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Create(fileName, SpreadsheetDocumentType.Workbook);

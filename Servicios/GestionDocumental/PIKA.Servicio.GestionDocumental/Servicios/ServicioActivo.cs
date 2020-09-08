@@ -29,6 +29,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<Activo> repo;
+        private IRepositorioAsync<CuadroClasificacion> repoCC;
+        private IRepositorioAsync<ElementoClasificacion> repoEL;
         private IRepositorioAsync<EntradaClasificacion> repoEC;
         private IRepositorioAsync<Archivo> repoA;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
@@ -71,21 +73,21 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
         public async Task<Activo> CrearAsync(Activo entity, CancellationToken cancellationToken = default)
         {
-            
-                entity = await ValidarActivos(entity, false);
-                entity.Id = Guid.NewGuid().ToString();
-                await this.repo.CrearAsync(entity);
-                UDT.SaveChanges();
 
-                return entity.Copia();
-          
+            entity = await ValidarActivos(entity, false);
+            entity.Id = Guid.NewGuid().ToString();
+            await this.repo.CrearAsync(entity);
+            UDT.SaveChanges();
+            await this.RegistrarEstadisticas(entity.ArchivoId, entity.EntradaClasificacionId);
+            return entity.Copia();
+
         }
 
         public async Task ActualizarAsync(Activo entity)
         {
-                entity = await ValidarActivos(entity, true);
-                UDT.Context.Entry(entity).State = EntityState.Modified;
-                UDT.SaveChanges();
+            entity = await ValidarActivos(entity, true);
+            UDT.Context.Entry(entity).State = EntityState.Modified;
+            UDT.SaveChanges();
         }
 
         private Consulta GetDefaultQuery(Consulta query)
@@ -107,8 +109,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private async Task<Activo> ValidarActivos(Activo a, bool actualizar) 
         {
 
-            EntradaClasificacion ec = await repoEC.UnicoAsync(x => x.Id == a.EntradaClasificacionId); 
-            
+            EntradaClasificacion ec = await repoEC.UnicoAsync(x => x.Id == a.EntradaClasificacionId);
+
             if (ec == null || ec.Eliminada == true) throw new ExErrorRelacional(a.EntradaClasificacionId);
 
             Archivo archivo = await this.repoA.UnicoAsync(x => x.Id.Equals(a.ArchivoId.Trim(), StringComparison.InvariantCultureIgnoreCase));
@@ -120,7 +122,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                     x.IDunico.Equals(a.IDunico, StringComparison.InvariantCultureIgnoreCase)))
                     throw new ExElementoExistente(a.IDunico);
                 var tmp = await this.repo.UnicoAsync(x => x.Id == a.Id);
-                if ( tmp == null)
+                if (tmp == null)
                 {
                     throw new EXNoEncontrado(a.Id);
                 }
@@ -151,26 +153,25 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             return a;
         }
-     
-        
-        public async Task<Activo> ValidadorImportador(Activo a) 
+
+        public async Task<Activo> ValidadorImportador(Activo a)
         {
             if (!await ExisteElemento(x => x.Id.Equals(a.EntradaClasificacionId.Trim(), StringComparison.InvariantCultureIgnoreCase)
-       || x.Eliminada != true) 
+       || x.Eliminada != true)
        || !await ExisteArchivo(x => x.Id.Equals(a.ArchivoOrigenId.Trim(), StringComparison.InvariantCultureIgnoreCase)
                   && x.Eliminada != true)
-       || await Existe(x=>x.IDunico.Equals(a.IDunico,StringComparison.InvariantCultureIgnoreCase)))
+       || await Existe(x => x.IDunico.Equals(a.IDunico, StringComparison.InvariantCultureIgnoreCase)))
             {
                 a = new Activo();
             }
-            else 
+            else
             {
                 await CrearAsync(a);
             }
 
             return a;
         }
-        public async Task<byte[]> ImportarActivos(byte[] file, string ArchivId, string TipoId, string OrigenId,string formatoFecha)
+        public async Task<byte[]> ImportarActivos(byte[] file, string ArchivId, string TipoId, string OrigenId, string formatoFecha)
         {
             IoImportarActivos importador = new IoImportarActivos(this, this.logger,
                 proveedorOpciones, Config);
@@ -186,14 +187,16 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 c = await this.repo.UnicoAsync(x => x.Id == Id);
                 if (c != null)
                 {
-              
+                   
                         c.Eliminada = true;
-                        UDT.Context.Entry(c).State = EntityState.Modified;
-                        listaEliminados.Add(c.Id);
-  
+                    UDT.Context.Entry(c).State = EntityState.Modified;
+                    
+                    listaEliminados.Add(c.Id);
                 }
             }
             UDT.SaveChanges();
+
+            await this.ListaActivosEliminados(ids,true);
 
             return listaEliminados;
 
@@ -305,14 +308,14 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return this.repo.ObtenerAsync(predicado);
         }
 
-        private async Task<string> RestaurarNombre(string nombre, string ArchivoId, string id,string IdElemento)
+        private async Task<string> RestaurarNombre(string nombre, string ArchivoId, string id, string IdElemento)
         {
 
             if (await Existe(x =>
         x.Id != id && x.Nombre.Equals(nombre, StringComparison.InvariantCultureIgnoreCase)
         && x.Eliminada == false
-         && x.ArchivoId.Equals( ArchivoId,StringComparison.InvariantCultureIgnoreCase)
-         && x.EntradaClasificacionId.Equals( IdElemento,StringComparison.InvariantCultureIgnoreCase)))
+         && x.ArchivoId.Equals(ArchivoId, StringComparison.InvariantCultureIgnoreCase)
+         && x.EntradaClasificacionId.Equals(IdElemento, StringComparison.InvariantCultureIgnoreCase)))
             {
 
                 nombre = nombre + " restaurado " + DateTime.Now.Ticks;
@@ -341,14 +344,71 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                     c.Eliminada = false;
                     UDT.Context.Entry(c).State = EntityState.Modified;
                     listaEliminados.Add(c.Id);
+                    
                 }
             }
             UDT.SaveChanges();
+            await this.ListaActivosEliminados(ids, false);
+
             return listaEliminados;
         }
         public Task<List<Activo>> ObtenerAsync(string SqlCommand)
         {
             return this.repo.ObtenerAsync(SqlCommand);
+        }
+        public async Task RegistrarEstadisticas(string ArchivoId, string EntradaClasificacionId)
+        {
+            EntradaClasificacion ec = await this.repoEC.UnicoAsync(x => x.Id.Equals(EntradaClasificacionId, StringComparison.InvariantCultureIgnoreCase));
+
+            ElementoClasificacion elemento = await this.repoEL.UnicoAsync(x => x.Id.Equals(ec.ElementoClasificacionId, StringComparison.InvariantCultureIgnoreCase));
+            CuadroClasificacion cc = await this.repoCC.UnicoAsync(x => x.Id.Equals(elemento.CuadroClasifiacionId, StringComparison.InvariantCultureIgnoreCase));
+            List<Activo> lisActivo = await this.repo.ObtenerAsync(x => x.EntradaClasificacionId.Equals(EntradaClasificacionId, StringComparison.InvariantCultureIgnoreCase)
+                                     && x.ArchivoId.Equals(ArchivoId, StringComparison.InvariantCultureIgnoreCase)
+                                     && x.Eliminada == false);
+            //await sevEstadisticas.RegistroAñadido(ArchivoId, cc.Id, EntradaClasificacionId, lisActivo.Count);
+
+        }
+        private async Task ListaActivosEliminados(string[] ids, bool eliminado) 
+        {
+            List<Activo> listaActivos = await this.repo.ObtenerAsync(x => x.Id!=null);
+            List<Activo> ActivosAgrupados = new List<Activo>();
+            foreach (Activo activos in listaActivos)
+            {
+                foreach (string id in ids)
+                {
+                    if (activos.Id.Equals(id, StringComparison.InvariantCultureIgnoreCase)) 
+                    {
+                        ActivosAgrupados.Add(activos);
+                    }
+                }
+            }
+
+            foreach (var a in ActivosAgrupados.GroupBy
+                (x=>new { x.ArchivoId,x.EntradaClasificacionId})
+                .Select(y=>new {ARchivoID=y.Key.ArchivoId,EntradaID=y.Key.EntradaClasificacionId, TotalActivos=y.ToList().Count() }).ToList())
+            {
+                if (eliminado)
+                    await EliminarEstadisticas(a.ARchivoID, a.EntradaID, Convert.ToInt32(a.TotalActivos));
+                else
+                    await RestaurarEstadisticas(a.ARchivoID, a.EntradaID, Convert.ToInt32(a.TotalActivos));
+            }
+        }
+
+        public async Task EliminarEstadisticas(string ArchivoId, string EntradaClasificacionId,int cantidad)
+        {
+            EntradaClasificacion ec = await this.repoEC.UnicoAsync(x => x.Id.Equals(EntradaClasificacionId, StringComparison.InvariantCultureIgnoreCase));
+            ElementoClasificacion elemento = await this.repoEL.UnicoAsync(x => x.Id.Equals(ec.ElementoClasificacionId, StringComparison.InvariantCultureIgnoreCase));
+            CuadroClasificacion cc = await this.repoCC.UnicoAsync(x => x.Id.Equals(elemento.CuadroClasifiacionId, StringComparison.InvariantCultureIgnoreCase));
+            
+            //await sevEstadisticas.RegistroEliminado(ArchivoId, cc.Id, EntradaClasificacionId, cantidad);
+        }
+        public async Task RestaurarEstadisticas(string ArchivoId, string EntradaClasificacionId,int cantidad)
+        {
+            EntradaClasificacion ec = await this.repoEC.UnicoAsync(x => x.Id.Equals(EntradaClasificacionId, StringComparison.InvariantCultureIgnoreCase));
+            ElementoClasificacion elemento = await this.repoEL.UnicoAsync(x => x.Id.Equals(ec.ElementoClasificacionId, StringComparison.InvariantCultureIgnoreCase));
+            CuadroClasificacion cc = await this.repoCC.UnicoAsync(x => x.Id.Equals(elemento.CuadroClasifiacionId, StringComparison.InvariantCultureIgnoreCase));
+            
+            //await sevEstadisticas.RegistroRestaurado(ArchivoId, cc.Id, EntradaClasificacionId, cantidad);
         }
         #region Sin Implementar
 
@@ -378,7 +438,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-       
+
 
 
 
