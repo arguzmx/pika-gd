@@ -193,10 +193,7 @@ namespace RepositorioEntidades
         private  Expression GetNumExpression(ParameterExpression x, PropertyInfo p, string Operador, string Value, bool negar)
         {
 
-            try
-            {
-
-           
+          
 
             Expression pe = Expression.Property(x, p.Name);
             
@@ -396,13 +393,7 @@ namespace RepositorioEntidades
             {
                 return Expression.Not(final);
             }
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                throw;
-            }
+ 
         }
 
         private  Expression GetStringExpression(ParameterExpression x, PropertyInfo p, string Operador, string Value, bool negar)

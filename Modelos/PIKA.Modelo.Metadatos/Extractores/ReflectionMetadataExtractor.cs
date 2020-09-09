@@ -215,7 +215,10 @@ namespace PIKA.Modelo.Metadatos
                 PropiedadId = Id,
                 Entidad = source.Entidad,
                 DatosRemotos = source.DatosRemotos,
-                TypeAhead = source.TypeAhead, Default = source.Default, OrdenarAlfabetico = source.OrdenarAlfabetico
+                TypeAhead = source.TypeAhead,
+                Default = source.Default,
+                OrdenarAlfabetico = source.OrdenarAlfabetico,
+                ValoresCSV = source.ValoresCSV
             };
         }
 

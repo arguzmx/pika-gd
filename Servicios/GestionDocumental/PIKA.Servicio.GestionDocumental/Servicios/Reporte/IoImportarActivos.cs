@@ -43,7 +43,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios.Reporte
         // Esto lo voy a deja rporqu eno se para que lo usas pero lo que no sirva despue slo quitas
         public IoImportarActivos(
             ServicioActivo servicioActivos,
-            ILogger<ServicioActivo> Logger, //<- qu etengas este generico quiere decir qu eno has estudiado como funcionan los loggers 
+            ILogger Logger, //<- qu etengas este generico quiere decir qu eno has estudiado como funcionan los loggers 
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
             IOptions<ConfiguracionServidor> Confi)
           : base(proveedorOpciones, Logger)
