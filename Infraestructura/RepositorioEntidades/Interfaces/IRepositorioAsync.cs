@@ -35,6 +35,7 @@ namespace RepositorioEntidades
 
         Task<IPaginado<T>> ObtenerPaginadoAsync(Consulta Query,
            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+           List<Expression<Func<T, bool>>> filtros = null,
            bool disableTracking = true,
            CancellationToken cancellationToken = default(CancellationToken));
 

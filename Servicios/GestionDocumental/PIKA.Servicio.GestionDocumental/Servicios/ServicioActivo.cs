@@ -108,9 +108,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             
             if (ec == null || ec.Eliminada == true) throw new ExErrorRelacional(a.EntradaClasificacionId);
 
-                if (!await ExisteArchivo(x => x.Id.Equals(a.ArchivoId.Trim(), StringComparison.InvariantCultureIgnoreCase)
-                     && x.Eliminada == false))
-                    throw new ExErrorRelacional(a.ArchivoId);
+            Archivo archivo = await this.repoA.UnicoAsync(x => x.Id.Equals(a.ArchivoId.Trim(), StringComparison.InvariantCultureIgnoreCase));
+            if (archivo==null || archivo.Eliminada ) throw new ExErrorRelacional(a.ArchivoId);
 
             if (actualizar)
             {
@@ -122,7 +121,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 {
                     throw new EXNoEncontrado(a.Id);
                 }
-
+               
                 a.ArchivoOrigenId = tmp.ArchivoOrigenId;
             }
             else {
@@ -132,6 +131,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                     throw new ExElementoExistente(a.IDunico);
                 a.ArchivoOrigenId = a.ArchivoId;
             }
+
+            a.TipoArchivoId = archivo.TipoArchivoId;
 
             if (a.FechaCierre.HasValue)
             {
@@ -195,6 +196,29 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<IPaginado<Activo>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Activo>, IIncludableQueryable<Activo, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
                  Query = GetDefaultQuery(Query);
+
+            List<string> especiales = new List<string>() { "Vencidos" };
+            List<FiltroConsulta> filtrosespeciales = new List<FiltroConsulta>();
+            List<Expression<Func<Activo, bool>>> filtros = new List<Expression<Func<Activo, bool>>>();
+
+            foreach(var f in Query.Filtros)
+            {
+                if (especiales.IndexOf(f.Propiedad) >= 0)
+                {
+                    filtrosespeciales.Add(f);
+                }
+            }
+            
+            foreach(var f in filtrosespeciales)
+            {
+                Query.Filtros.Remove(f);
+                switch (f.Propiedad)
+                {
+                    case "Vencidos":
+                        break;
+                }
+            }
+
                 var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
 
                 return respuesta;
