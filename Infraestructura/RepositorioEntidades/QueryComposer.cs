@@ -193,9 +193,15 @@ namespace RepositorioEntidades
         private  Expression GetNumExpression(ParameterExpression x, PropertyInfo p, string Operador, string Value, bool negar)
         {
 
+            try
+            {
+
+           
+
             Expression pe = Expression.Property(x, p.Name);
-            BinaryExpression isNotNull = Expression.NotEqual(pe, Expression.Constant(null, typeof(object)));
-            BinaryExpression IsNUll = Expression.Equal(pe, Expression.Constant(null, typeof(object)));
+            
+            //BinaryExpression IsNUll = Expression.Equal(pe, Expression.Constant(null, typeof(int)));
+            //Expression isNotNull = Expression.Not(IsNUll);
             Expression constantExpression = null;
             Expression constantExpression2 = null;
             Expression final = null;
@@ -259,13 +265,13 @@ namespace RepositorioEntidades
 
                 switch (Operador)
                 {
-                    case FiltroConsulta.OP_ISNULL:
-                        final = IsNUll;
-                        break;
+                    //case FiltroConsulta.OP_ISNULL:
+                    //    final = IsNUll;
+                    //    break;
 
-                    case FiltroConsulta.OP_ISNOTNULL:
-                        final = isNotNull;
-                        break;
+                    //case FiltroConsulta.OP_ISNOTNULL:
+                    //    final = isNotNull;
+                    //    break;
 
                     case FiltroConsulta.OP_BETWEN:
                         Expression despuesE = Expression.GreaterThanOrEqual(pe, constantExpression);
@@ -273,29 +279,34 @@ namespace RepositorioEntidades
                         final = Expression.AndAlso(despuesE, anteE);
                         break;
 
-                    case FiltroConsulta.OP_NEQ:
-                        final = Expression.AndAlso(isNotNull, Expression.NotEqual(pe, constantExpression));
-                        break;
+                    //case FiltroConsulta.OP_NEQ:
+                    //    final = Expression.AndAlso(isNotNull, Expression.NotEqual(pe, constantExpression));
+                    //    break;
 
                     case FiltroConsulta.OP_EQ:
-                        final = Expression.AndAlso(isNotNull, Expression.Equal(pe, constantExpression));
-                        break;
+                        //final = Expression.AndAlso(isNotNull, Expression.Equal(pe, constantExpression));
+                            final = Expression.Equal(pe, constantExpression);
+                            break;
 
                     case FiltroConsulta.OP_GT:
-                        final = Expression.AndAlso(isNotNull, Expression.GreaterThan(pe, constantExpression));
-                        break;
+                        //final = Expression.AndAlso(isNotNull, Expression.GreaterThan(pe, constantExpression));
+                            final = Expression.GreaterThan(pe, constantExpression);
+                            break;
 
                     case FiltroConsulta.OP_GTE:
-                        final = Expression.AndAlso(isNotNull, Expression.GreaterThanOrEqual(pe, constantExpression));
-                        break;
+                        //final = Expression.AndAlso(isNotNull, Expression.GreaterThanOrEqual(pe, constantExpression));
+                            final = Expression.GreaterThanOrEqual(pe, constantExpression);
+                            break;
 
                     case FiltroConsulta.OP_LT:
-                        final = Expression.AndAlso(isNotNull, Expression.LessThan(pe, constantExpression));
-                        break;
+                        //final = Expression.AndAlso(isNotNull, Expression.LessThan(pe, constantExpression));
+                            final = Expression.LessThan(pe, constantExpression);
+                            break;
 
                     case FiltroConsulta.OP_LTE:
-                        final = Expression.AndAlso(isNotNull, Expression.LessThanOrEqual(pe, constantExpression));
-                        break;
+                        //final = Expression.AndAlso(isNotNull, Expression.LessThanOrEqual(pe, constantExpression));
+                            final = Expression.LessThanOrEqual(pe, constantExpression);
+                            break;
 
                     case FiltroConsulta.OP_EXIST:
 
@@ -314,8 +325,9 @@ namespace RepositorioEntidades
                                 Expression<Func<ICollection<int>>> valsrefint = () => lint;
                                 var valsint = valsrefint.Body;
                                 var miContainsint = valsrefint.Body.Type.GetMethod("Contains", new[] { typeof(string) });
-                                final = Expression.AndAlso(isNotNull, Expression.Call(valsint, miContainsint, pe));
-                                break;
+                                //final = Expression.AndAlso(isNotNull, Expression.Call(valsint, miContainsint, pe));
+                                    final = Expression.Call(valsint, miContainsint, pe);
+                                    break;
 
                             case Type longype when longype == typeof(long):
                                 List<long> llong = new List<long>();
@@ -329,8 +341,9 @@ namespace RepositorioEntidades
                                 Expression<Func<ICollection<long>>> valsreflong = () => llong;
                                 var valslong = valsreflong.Body;
                                 var miContainslong = valsreflong.Body.Type.GetMethod("Contains", new[] { typeof(string) });
-                                final = Expression.AndAlso(isNotNull, Expression.Call(valslong, miContainslong, pe));
-                                break;
+                                //final = Expression.AndAlso(isNotNull, Expression.Call(valslong, miContainslong, pe));
+                                    final = Expression.Call(valslong, miContainslong, pe);
+                                    break;
 
 
                             case Type floatype when floatype == typeof(float):
@@ -345,8 +358,9 @@ namespace RepositorioEntidades
                                 Expression<Func<ICollection<float>>> valsreffloat = () => lfloat;
                                 var valsfloat = valsreffloat.Body;
                                 var miContainsfloat = valsreffloat.Body.Type.GetMethod("Contains", new[] { typeof(string) });
-                                final = Expression.AndAlso(isNotNull, Expression.Call(valsfloat, miContainsfloat, pe));
-                                break;
+                                //final = Expression.AndAlso(isNotNull, Expression.Call(valsfloat, miContainsfloat, pe));
+                                    final = Expression.Call(valsfloat, miContainsfloat, pe);
+                                    break;
 
                             case Type decimalType when decimalType == typeof(decimal):
                                 List<decimal> ldecimal = new List<decimal>();
@@ -360,8 +374,9 @@ namespace RepositorioEntidades
                                 Expression<Func<ICollection<decimal>>> valsrefdecimal = () => ldecimal;
                                 var valsdecimal = valsrefdecimal.Body;
                                 var miContainsdecimal = valsrefdecimal.Body.Type.GetMethod("Contains", new[] { typeof(string) });
-                                final = Expression.AndAlso(isNotNull, Expression.Call(valsdecimal, miContainsdecimal, pe));
-                                break;
+                                //final = Expression.AndAlso(isNotNull, Expression.Call(valsdecimal, miContainsdecimal, pe));
+                                    final = Expression.Call(valsdecimal, miContainsdecimal, pe);
+                                    break;
                         }
 
                         break;
@@ -380,6 +395,13 @@ namespace RepositorioEntidades
             else
             {
                 return Expression.Not(final);
+            }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
             }
         }
 

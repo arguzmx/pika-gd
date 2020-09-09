@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PIKA.Modelo.GestorDocumental;
 using RepositorioEntidades;
@@ -18,7 +19,8 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
 
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
 
-            
+            builder.HasMany(x => x.Archivos).WithOne(y => y.Tipo).HasForeignKey(z => z.TipoArchivoId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(x => x.Activos).WithOne(y => y.TipoArchivo).HasForeignKey(z => z.TipoArchivoId).OnDelete(DeleteBehavior.Restrict);
 
         }
     }

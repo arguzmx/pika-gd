@@ -44,6 +44,7 @@ namespace PIKA.Modelo.GestorDocumental
         [XmlIgnore]
         [JsonIgnore]
         public IEnumerable<Archivo> Archivos { get; set; }
+        public IEnumerable<Activo> Activos { get; set; }
 
     }
 }

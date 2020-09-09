@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -200,6 +201,19 @@ namespace PIKA.Modelo.GestorDocumental
         public string OrigenId { get; set; }
 
 
+        /// <summary>
+        /// Propiedad para detrminar el tipo de archivo en el que se encuenra el activo
+        /// </summary>
+        [Prop(Required: true, Visible: false, OrderIndex: 1020, Contextual: false, ShowInTable: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.none)]
+        public string TipoArchivoId { get; set; }
+
+
+        [NotMapped]
+        [Prop(Required: false, OrderIndex: 1500, Visible: false, ShowInTable: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+        public int Vencidos { get; set; }
+
         [XmlIgnore]
         [JsonIgnore]
         public EntradaClasificacion EntradaClasificacion { get; set; }
@@ -223,6 +237,11 @@ namespace PIKA.Modelo.GestorDocumental
         [XmlIgnore]
         [JsonIgnore]
         public virtual ICollection<HistorialArchivoActivo> HistorialArchivosActivo { get; set; }
+
+        [XmlIgnore]
+        [JsonIgnore]
+        public virtual TipoArchivo TipoArchivo { get; set; }
+
 
         [XmlIgnore]
         [JsonIgnore]
