@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using LazyCache;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
@@ -30,21 +31,22 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<Activo> repo;
         private IRepositorioAsync<EntradaClasificacion> repoEC;
         private IRepositorioAsync<Archivo> repoA;
-        private IoImportarActivos importador;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
-        private readonly ConfiguracionServidor configuracion;
-
+        private readonly IAppCache cache;
+        IOptions<ConfiguracionServidor> Config;
         public ServicioActivo(
+            IAppCache cache,
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioActivo> Logger, IOptions<ConfiguracionServidor> Config
+            ILogger<ServicioActivo> Logger, IOptions<ConfiguracionServidor> Config
            ) : base(proveedorOpciones, Logger)
         {
-            this.configuracion = Config.Value;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Activo>(new QueryComposer<Activo>());
             this.repoA = UDT.ObtenerRepositoryAsync<Archivo>(new QueryComposer<Archivo>());
             this.repoEC = UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>());
-            this.importador = new IoImportarActivos(this, Logger,proveedorOpciones, Config);
+            this.cache = cache;
+            this.Config = Config;
+            
         }
 
         public async Task<bool> Existe(Expression<Func<Activo, bool>> predicado)
@@ -71,7 +73,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             
                 entity = await ValidarActivos(entity, false);
-                entity.Id = System.Guid.NewGuid().ToString();
+                entity.Id = Guid.NewGuid().ToString();
                 await this.repo.CrearAsync(entity);
                 UDT.SaveChanges();
 
@@ -101,6 +103,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
             return query;
         }
+
         private async Task<Activo> ValidarActivos(Activo a, bool actualizar) 
         {
 
@@ -113,7 +116,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             if (actualizar)
             {
-                if (await Existe(x => x.Id != a.Id && x.Eliminada == false &&
+                if (!string.IsNullOrEmpty(a.IDunico) && await Existe(x => x.Id != a.Id && x.Eliminada == false &&
                     x.IDunico.Equals(a.IDunico, StringComparison.InvariantCultureIgnoreCase)))
                     throw new ExElementoExistente(a.IDunico);
                 var tmp = await this.repo.UnicoAsync(x => x.Id == a.Id);
@@ -126,7 +129,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
             else {
            
-                if (await Existe(x => x.Eliminada == false && 
+
+                if (!string.IsNullOrEmpty(a.IDunico) && await Existe(x => x.Eliminada == false && 
                     x.IDunico.Equals(a.IDunico, StringComparison.InvariantCultureIgnoreCase)))
                     throw new ExElementoExistente(a.IDunico);
                 a.ArchivoOrigenId = a.ArchivoId;
@@ -168,7 +172,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
         public async Task<byte[]> ImportarActivos(byte[] file, string ArchivId, string TipoId, string OrigenId,string formatoFecha)
         {
-         byte[] archivo= await  importador.ImportandoDatos(file,ArchivId,TipoId,OrigenId, formatoFecha);
+            IoImportarActivos importador = new IoImportarActivos(this, this.logger,
+                proveedorOpciones, Config);
+            byte[] archivo= await  importador.ImportandoDatos(file,ArchivId,TipoId,OrigenId, formatoFecha);
             return archivo;
         }
         public async Task<ICollection<string>> Eliminar(string[] ids)
@@ -215,14 +221,80 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 switch (f.Propiedad)
                 {
                     case "Vencidos":
+                        filtros.Add(ObtieneFiltroVencimientos(f));
                         break;
                 }
             }
 
-                var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
+            
+            var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null, filtros);
+            await ObtieneVencimientos(respuesta);
 
-                return respuesta;
+            return respuesta;
         }
+
+
+        private async Task ObtieneVencimientos(IPaginado<Activo> respuesta)
+        {
+            // Busca las entradas de cuaddro qu eno esten en caché para el calculo de vencimientos
+            List<string> idsEntrada = new List<string>();
+            respuesta.Elementos.GroupBy(x => x.EntradaClasificacionId)
+                .Select(x => new { id = x.Key }).ToList().ForEach(e =>
+                {
+                    EntradaClasificacion ec = this.cache.Get<EntradaClasificacion>($"ec-{e.id}");
+                    if (ec == null)
+                    {
+                        idsEntrada.Add(e.id);
+                    }
+                });
+
+
+            if (idsEntrada.Count > 0)
+            {
+                List<EntradaClasificacion> l = await this.repoEC.ObtenerAsync(x => idsEntrada.Contains(x.Id.Trim()));
+                foreach (var ec in l)
+                {
+                    cache.Add<EntradaClasificacion>($"ec-{ec.Id}", ec, TimeSpan.FromMinutes(5));
+                }
+            }
+
+            for (int i = 0; i < respuesta.Elementos.Count; i++)
+            {
+                EntradaClasificacion ec = this.cache.Get<EntradaClasificacion>($"ec-{respuesta.Elementos[i].EntradaClasificacionId}");
+                if (ec != null)
+                {
+                    if (respuesta.Elementos[i].FechaCierre.HasValue)
+                    {
+                        switch (respuesta.Elementos[i].TipoArchivoId)
+                        {
+                            case TipoArchivo.IDARCHIVO_CONSERVACION:
+                                var lapsoc = ((DateTime)respuesta.Elementos[i].FechaRetencionAC) - DateTime.UtcNow;
+                                if (lapsoc.TotalDays >= 0) respuesta.Elementos[i].Vencidos = (int)lapsoc.TotalDays;
+                                break;
+
+                            case TipoArchivo.IDARCHIVO_TRAMITE:
+                                var lapsoa = ((DateTime)respuesta.Elementos[i].FechaRetencionAC) - DateTime.UtcNow;
+                                if (lapsoa.TotalDays >= 0) respuesta.Elementos[i].Vencidos = (int)lapsoa.TotalDays;
+                                break;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        private Expression<Func<Activo, bool>> ObtieneFiltroVencimientos(FiltroConsulta f)
+        {
+            DateTime fechaLimite = DateTime.Now.AddDays(int.Parse(f.Valor));
+            return x => (x.TipoArchivoId == TipoArchivo.IDARCHIVO_TRAMITE
+                           && x.FechaRetencionAT < fechaLimite)
+                           ||
+                           (x.TipoArchivoId == TipoArchivo.IDARCHIVO_CONSERVACION
+                           && x.FechaRetencionAC < fechaLimite
+                           );
+        }
+
+
         public async Task<Activo> UnicoAsync(Expression<Func<Activo, bool>> predicado = null, Func<IQueryable<Activo>, IOrderedQueryable<Activo>> ordenarPor = null, Func<IQueryable<Activo>, IIncludableQueryable<Activo, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             Activo a = await this.repo.UnicoAsync(predicado);

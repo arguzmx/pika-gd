@@ -18,5 +18,7 @@ namespace PIKA.Modelo.Metadatos
         public bool TypeAhead { get; set; }
 
         public string Default { get; set; }
+
+        public string ValoresCSV { get; set; }
     }
 }

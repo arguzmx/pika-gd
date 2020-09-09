@@ -210,9 +210,10 @@ namespace PIKA.Modelo.GestorDocumental
 
 
         [NotMapped]
-        [Prop(Required: false, OrderIndex: 1500, Visible: false, ShowInTable: false)]
+        [Prop(Required: false, OrderIndex: 1500, Visible: true)]
         [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
-        public int Vencidos { get; set; }
+        [List("", false, false, false, "0", "0,7,15,30,60,90,120,150,180")]
+        public int? Vencidos { get; set; }
 
         [XmlIgnore]
         [JsonIgnore]

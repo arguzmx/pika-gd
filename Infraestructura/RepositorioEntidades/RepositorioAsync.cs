@@ -46,8 +46,6 @@ namespace RepositorioEntidades
                bool inhabilitarSeguimiento = true,
                CancellationToken tokenCancelacion = default(CancellationToken))
         {
-            try
-            {
 
 
                 IQueryable<T> query = _dbSet;
@@ -63,13 +61,9 @@ namespace RepositorioEntidades
 
                 return query.PaginadoAsync(consulta.indice, consulta.tamano, tokenCancelacion);
 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                throw ex;
-            }
         }
+
+      
 
         public Task<IPaginado<T>> ObtenerPaginadoAsync(Consulta consulta,
            Func<IQueryable<T>, IIncludableQueryable<T, object>> incluir = null,
@@ -77,9 +71,8 @@ namespace RepositorioEntidades
            bool inhabilitarSeguimiento = true,
            CancellationToken tokenCancelacion = default(CancellationToken))
         {
-            try
-            {
 
+                if (filtros == null) filtros = new List<Expression<Func<T, bool>>>();
 
                 IQueryable<T> query = _dbSet;
 
@@ -88,23 +81,35 @@ namespace RepositorioEntidades
 
                 if (incluir != null) query = incluir(query);
        
-                if (consulta.Filtros.Count > 0)
+                if (consulta.Filtros.Count > 0 || filtros.Count > 0)
                 {
+
                     var type = typeof(T);
                     ParameterExpression pe = Expression.Parameter(type, "search");
 
 
                     Expression predicateBody = _compositor.Componer(pe, consulta);
+                    Expression<Func<T, bool>> lambdaPredicado = null;
+                    if (predicateBody != null) {
+                        lambdaPredicado = Expression.Lambda<Func<T, bool>>(predicateBody, pe);
+                        filtros.Insert(0, lambdaPredicado);
+                    };
 
-                    
-                    if (predicateBody != null)
+    
+                    if (filtros.Count > 0)
                     {
+                        var filtro = filtros[0];
+                       for(int i = 1; i < filtros.Count; i++)
+                       {
+                            filtro = filtro.AndAlso(filtros[i]);
+                       }
+
                         MethodCallExpression whereCallExpression = Expression.Call(
                         typeof(Queryable),
                         "Where",
                         new Type[] { query.ElementType },
                         query.Expression,
-                        Expression.Lambda<Func<T, bool>>(predicateBody, pe));
+                        filtro);
 
                         query = query.Provider.CreateQuery<T>(whereCallExpression);
                     }
@@ -114,13 +119,7 @@ namespace RepositorioEntidades
 
                 return query.PaginadoAsync(consulta.indice, consulta.tamano,  tokenCancelacion);
 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                throw ex;
-            }
-
+          
         }
 
 

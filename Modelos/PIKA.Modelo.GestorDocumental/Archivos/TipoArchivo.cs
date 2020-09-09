@@ -15,7 +15,10 @@ namespace PIKA.Modelo.GestorDocumental
     [Entidad(PaginadoRelacional: false, EliminarLogico: false)]
     public class TipoArchivo : EntidadCatalogo<string, TipoArchivo> 
     {
-        
+        public const string IDARCHIVO_TRAMITE = "a-tra";
+        public const string IDARCHIVO_CONSERVACION = "a-con";
+        public const string IDARCHIVO_HISTORICO = "a-his";
+        public const string IDARCHIVO_CORRESPONDENCIA = "a-cor";
         public TipoArchivo()
         {
             Archivos = new HashSet<Archivo>();
@@ -32,10 +35,10 @@ namespace PIKA.Modelo.GestorDocumental
         public override List<TipoArchivo> Seed()
         {
             List<TipoArchivo> l = new List<TipoArchivo>();
-            l.Add(new TipoArchivo() { Id = ConstantesArchivo.IDARCHIVO_CORRESPONDENCIA, Nombre = "Correspondencoia"});
-            l.Add(new TipoArchivo() { Id = ConstantesArchivo.IDARCHIVO_TRAMITE, Nombre = "Trámite" });
-            l.Add(new TipoArchivo() { Id = ConstantesArchivo.IDARCHIVO_HISTORICO  , Nombre = "Histórico"});
-            l.Add(new TipoArchivo() { Id = ConstantesArchivo.IDARCHIVO_CONSERVACION , Nombre = "Conservación"});
+            l.Add(new TipoArchivo() { Id = IDARCHIVO_CORRESPONDENCIA, Nombre = "Correspondencoia"});
+            l.Add(new TipoArchivo() { Id = IDARCHIVO_TRAMITE, Nombre = "Trámite" });
+            l.Add(new TipoArchivo() { Id = IDARCHIVO_HISTORICO  , Nombre = "Histórico"});
+            l.Add(new TipoArchivo() { Id = IDARCHIVO_CONSERVACION , Nombre = "Conservación"});
             return l;
         }
 

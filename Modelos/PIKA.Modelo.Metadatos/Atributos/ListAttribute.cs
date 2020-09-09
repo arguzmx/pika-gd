@@ -8,18 +8,33 @@ namespace PIKA.Modelo.Metadatos
     public class ListAttribute : Attribute
     {
 
-
+        /// <summary>
+        /// Otiene el atributo de lista
+        /// </summary>
+        /// <param name="Entidad"></param>
+        /// <param name="DatosRemotos"></param>
+        /// <param name="TypeAhead"></param>
+        /// <param name="OrdenarAlfabetico"></param>
+        /// <param name="Default">Valor por default de la lista</param>
+        /// <param name="ValoresCSV">Lista de valores separados por comas</param>
         public ListAttribute(string Entidad, bool DatosRemotos = false, 
-            bool TypeAhead=false, bool OrdenarAlfabetico = false, string Default = "") {
+            bool TypeAhead=false, bool OrdenarAlfabetico = false, string Default = "", string ValoresCSV="") {
             
             this._Entidad = Entidad;
             this._DatosRemotos = DatosRemotos;
             this._OrdenarAlfabetico = OrdenarAlfabetico;
             this._TypeAhead = TypeAhead;
             this._Default = Default;
+            this._ValoresCSV = ValoresCSV;
         }
 
         private string _Default;
+        private string _ValoresCSV;
+
+        public virtual string ValoresCSV
+        {
+            get { return _ValoresCSV; }
+        }
 
         /// <summary>
         /// Nombre el valor default para la list
