@@ -42,7 +42,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios.Reporte
 
         public IoImportarActivos(
             ServicioActivo servicioActivos,
-            ILogger<ServicioActivo> Logger, 
+            ILogger Logger, 
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
             IOptions<ConfiguracionServidor> Confi)
           : base(proveedorOpciones, Logger)

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Office2010.PowerPoint;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -25,9 +27,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<ElementoClasificacion> repoElementoClasificacion;
         private IRepositorioAsync<EntradaClasificacion> repoEntradaClasificacion;
         private IRepositorioAsync<CuadroClasificacion> repoCuadroClasificacion;
-        private List<Estructuraexcel> ListResumenAcervo;
+        private List<EntradaClasificacion> ListaEntradas;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
+        private ComunExcel CE;
         private readonly ConfiguracionServidor configuracion;
+        private List<ReporteActivos> ListResumen;
         public ServicioEstadisticaClasificacionAcervo
             (IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, IOptions<ConfiguracionServidor> Confi,
            ILogger l)
@@ -41,37 +45,34 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             this.repoElementoClasificacion = UDT.ObtenerRepositoryAsync<ElementoClasificacion>(new QueryComposer<ElementoClasificacion>());
             this.repoEntradaClasificacion = UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>());
             this.repoCuadroClasificacion = UDT.ObtenerRepositoryAsync<CuadroClasificacion>(new QueryComposer<CuadroClasificacion>());
+            this.CE = new ComunExcel();
         }
         public async Task<int> RegistroAñadido(string ArchivoId, string CuadroClasificacionId, string EntradaCuadroId, int Cantidad)
         {
+           
             int TotalActivos;
-            EstadisticaClasificacionAcervo e = new EstadisticaClasificacionAcervo();
-            var Estadistica = await this.repo.UnicoAsync(x => x.ArchivoId.Equals(ArchivoId, StringComparison.InvariantCultureIgnoreCase)
+            EstadisticaClasificacionAcervo Estadistica = await this.repo.UnicoAsync(x => x.ArchivoId.Equals(ArchivoId, StringComparison.InvariantCultureIgnoreCase)
             && x.CuadroClasificacionId.Equals(CuadroClasificacionId, StringComparison.InvariantCultureIgnoreCase)
             && x.EntradaClasificacionId.Equals(EntradaCuadroId, StringComparison.InvariantCultureIgnoreCase)
             );
 
             if (Estadistica == null)
             {
-                e.CuadroClasificacionId = CuadroClasificacionId;
-                e.EntradaClasificacionId = EntradaCuadroId;
-                e.ArchivoId = ArchivoId;
-                e.ConteoActivos = Cantidad;
-                await this.repo.CrearAsync(e);
+                Estadistica = new EstadisticaClasificacionAcervo();
+                Estadistica.CuadroClasificacionId = CuadroClasificacionId;
+                Estadistica.EntradaClasificacionId = EntradaCuadroId;
+                Estadistica.ArchivoId = ArchivoId;
+                Estadistica.ConteoActivos = Cantidad;
+                await this.repo.CrearAsync(Estadistica);
             }
             else
             {
-                e = await this.repo.UnicoAsync(x => x.ArchivoId.Equals(ArchivoId, StringComparison.InvariantCultureIgnoreCase)
-            && x.CuadroClasificacionId.Equals(CuadroClasificacionId, StringComparison.InvariantCultureIgnoreCase)
-            && x.EntradaClasificacionId.Equals(EntradaCuadroId, StringComparison.InvariantCultureIgnoreCase)
-            );
-                TotalActivos = Cantidad;
-                e.ConteoActivos = TotalActivos;
-                UDT.Context.Entry(e).State = EntityState.Modified;
+                TotalActivos = Estadistica.ConteoActivos+Cantidad;
+                Estadistica.ConteoActivos = TotalActivos;
+                UDT.Context.Entry(Estadistica).State = EntityState.Modified;
             }
             UDT.SaveChanges();
-            this.EliminarDirectorio(configuracion.ruta_cache_fisico);
-            return e.ConteoActivos;
+            return Estadistica.ConteoActivos;
         }
         public async Task<int> RegistroEliminado(string ArchivoId, string CuadroClasificacionId, string EntradaCuadroId, int Cantidad)
         {
@@ -92,7 +93,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             UDT.Context.Entry(eca).State = EntityState.Modified;
             UDT.SaveChanges();
-            this.EliminarDirectorio(configuracion.ruta_cache_fisico);
 
             return eca.ConteoActivosEliminados;
         }
@@ -117,50 +117,56 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             UDT.Context.Entry(eca).State = EntityState.Modified;
             UDT.SaveChanges();
-            this.EliminarDirectorio(configuracion.ruta_cache_fisico);
 
             return eca.ConteoActivos;
         }
         public async Task ActualizarConteo(string ArchivoId)
         {
-            EstadisticaClasificacionAcervo eca = new EstadisticaClasificacionAcervo();
-
             Activo a = await this.repoActivo.UnicoAsync(x => x.ArchivoId.Equals(ArchivoId));
-
-            EntradaClasificacion ec = await this.repoEntradaClasificacion.UnicoAsync(x => x.Id.Equals(a.EntradaClasificacionId, StringComparison.InvariantCultureIgnoreCase));
-            ElementoClasificacion el = await this.repoElementoClasificacion.UnicoAsync(x => x.Id.Equals(ec.ElementoClasificacionId, StringComparison.InvariantCultureIgnoreCase));
-            CuadroClasificacion cc = await this.repoCuadroClasificacion.UnicoAsync(x => x.Id.Equals(el.CuadroClasifiacionId, StringComparison.InvariantCultureIgnoreCase));
-
-            List<Activo> lisActivosEliminados = await this.repoActivo.ObtenerAsync(x => x.ArchivoId.Equals(ArchivoId, StringComparison.InvariantCultureIgnoreCase)
-                         && x.EntradaClasificacionId.Equals(ec.Id, StringComparison.InvariantCultureIgnoreCase)
-                         && x.Eliminada == true);
-
-            List<Activo> lisActivos = await this.repoActivo.ObtenerAsync(x => x.ArchivoId.Equals(ArchivoId, StringComparison.InvariantCultureIgnoreCase)
-                         && x.EntradaClasificacionId.Equals(ec.Id, StringComparison.InvariantCultureIgnoreCase)
-                         && x.Eliminada == false);
-
-            eca = await this.repo.UnicoAsync(x => x.ArchivoId.Equals(ArchivoId, StringComparison.OrdinalIgnoreCase)
-                  && x.CuadroClasificacionId.Equals(cc.Id, StringComparison.InvariantCultureIgnoreCase)
-                  && x.EntradaClasificacionId.Equals(ec.Id, StringComparison.InvariantCultureIgnoreCase));
-
-            eca.ArchivoId = ArchivoId;
-            eca.EntradaClasificacionId = ec.Id;
-            eca.CuadroClasificacionId = cc.Id;
-            eca.ConteoActivos = lisActivos.Count;
-            eca.ConteoActivosEliminados = lisActivosEliminados.Count;
-
+            int TotalActivos=0,TotalActivosEliminados=0;
+            string EntradaClasificacionId="";
+            var listaActivos =  this.UDT.Context.Activos.GroupBy
+                (x => new { x.ArchivoId, x.EntradaClasificacionId,x.Eliminada })
+                .Select(y => new { ARchivoID = y.Key.ArchivoId, EntradaID = y.Key.EntradaClasificacionId,
+                    estatus=y.Key.Eliminada,TotalActivos = y.ToList().Count() }).ToList();
+            
+            foreach (var m in listaActivos)
+            {
+                EntradaClasificacionId = m.EntradaID;
+                if (m.estatus)
+                    TotalActivosEliminados = Convert.ToInt32(m.TotalActivos);
+                else
+                    TotalActivos = Convert.ToInt32(m.TotalActivos);
+            }
+            EntradaClasificacion ec = await this.repoEntradaClasificacion.UnicoAsync(x=>x.Id.Equals(EntradaClasificacionId,StringComparison.InvariantCultureIgnoreCase));
+            EstadisticaClasificacionAcervo eca = await this.repo.UnicoAsync(x=>x.CuadroClasificacionId.Equals(ec.CuadroClasifiacionId,StringComparison.InvariantCultureIgnoreCase)
+            && x.ArchivoId.Equals(ArchivoId,StringComparison.InvariantCultureIgnoreCase) && x.EntradaClasificacionId.Equals(EntradaClasificacionId,StringComparison.InvariantCultureIgnoreCase));
             if (eca == null)
-                await this.repo.CrearAsync(eca);
+            {
+                EstadisticaClasificacionAcervo e = new EstadisticaClasificacionAcervo();
+
+                e.ArchivoId = ArchivoId;
+                e.EntradaClasificacionId = ec.Id;
+                e.CuadroClasificacionId = ec.CuadroClasifiacionId;
+                e.ConteoActivos = TotalActivos;
+                e.ConteoActivosEliminados = TotalActivosEliminados;
+                await this.repo.CrearAsync(e);
+            }
             else
+            {
+                eca.ConteoActivos = TotalActivos;
+                eca.ConteoActivosEliminados = TotalActivosEliminados;
                 UDT.Context.Entry(eca).State = EntityState.Modified;
-
+            }
+            
+            await this.ReporteEstadisticaArchivoCuadro(ArchivoId,ec.CuadroClasifiacionId,true);
             UDT.SaveChanges();
-            this.EliminarDirectorio(configuracion.ruta_cache_fisico);
-
         }
         public async Task<byte[]> ReporteEstadisticaArchivoCuadro(string ArchivoId, string CuadroClasificacionId, bool IncluirCeros)
         {
-            ListResumenAcervo = new List<Estructuraexcel>();
+            CE.ListEstructuraExcel = new List<Estructuraexcel>();
+            this.ListaEntradas = await this.repoEntradaClasificacion.ObtenerAsync(x=>x.Id!=null);
+
             string Rutacompleta = await CrearRepote(ArchivoId, CuadroClasificacionId, IncluirCeros);
 
             byte[] b = File.ReadAllBytes(Rutacompleta);
@@ -178,21 +184,20 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
         private async Task<string> CrearRepote(string ArchivoId, string CuadroClasificacionId, bool IncluirCeros)
         {
-            ComunExcel c = new ComunExcel();
             string ruta = ValidarRuta();
             string NombreArchivo = $"{Guid.NewGuid()}";
 
             await NombreArchivoCuadro(ArchivoId, CuadroClasificacionId);
             await CrearCuadroDetalleResumen(ArchivoId, CuadroClasificacionId, IncluirCeros);
-            NombreArchivo = c.CrearArchivoExcel(ListResumenAcervo, ArchivoId, ruta, null, NombreArchivo);
-
+            NombreArchivo = CE.CrearArchivoExcel(CE.ListEstructuraExcel, ArchivoId, ruta, null, NombreArchivo);
+            
             return NombreArchivo;
         }
         private async Task CrearCuadroDetalleResumen(string ArchivoId, string CuadroClasificacionId, bool IncluirCeros)
         {
             List<EstadisticaClasificacionAcervo> listaAcervo = new List<EstadisticaClasificacionAcervo>();
-            List<ReporteActivos> ListResumen = new List<ReporteActivos>();
-         
+             ListResumen = new List<ReporteActivos>();
+
             if (IncluirCeros)
                 listaAcervo = await this.repo.ObtenerAsync(x => x.CuadroClasificacionId.Equals(CuadroClasificacionId, StringComparison.InvariantCultureIgnoreCase)
            && x.ArchivoId.Equals(ArchivoId, StringComparison.InvariantCultureIgnoreCase));
@@ -201,107 +206,81 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 && x.ArchivoId.Equals(ArchivoId, StringComparison.InvariantCultureIgnoreCase)
                 && x.ConteoActivos > 0);
 
-           await LlenadoRenumenActivos(ListResumen, listaAcervo);
+            LlenadoRenumenActivos(ListResumen, listaAcervo);
             CrearreporteActivoLista(ListResumen, listaAcervo);
 
         }
-        private async Task LlenadoRenumenActivos(List<ReporteActivos> ListResumen, List<EstadisticaClasificacionAcervo> listaAcervo) 
+        private  void LlenadoRenumenActivos(List<ReporteActivos> ListResumen, List<EstadisticaClasificacionAcervo> listaAcervo) 
         {
+
             foreach (EstadisticaClasificacionAcervo eca in listaAcervo)
             {
-                EntradaClasificacion e = await ObtieneEntrada(eca.EntradaClasificacionId);
+                EntradaClasificacion e = ListaEntradas.Find(x=>x.Id==eca.EntradaClasificacionId.Trim());
+
                 ListResumen.Add(new ReporteActivos
-                {
-                    Cantidad = eca.ConteoActivos,
-                    Nombre = e.Nombre,
-                    Clave = e.Clave,
-                    NombreCompleto = e.Clave + e.Nombre
-                });
+                    {
+                        Cantidad = eca.ConteoActivos,
+                        Nombre = e.Nombre,
+                        Clave = e.Clave,
+                        NombreCompleto = e.Clave + e.Nombre
+                    });
             }
+
         }
         private void CrearreporteActivoLista(List<ReporteActivos>ListResumen, List<EstadisticaClasificacionAcervo> listaAcervo)
         {
             int renglon = 6;
             int col = 1;
             int Cossecutivo = 0;
+
             foreach (ReporteActivos reporte in ListResumen.OrderBy(x => x.NombreCompleto))
             {
-                CrearCeldas(col, renglon, GetAbecedario(1), $"{ Cossecutivo + 1}");
-                CrearCeldas(col, renglon, GetAbecedario(2), reporte.Clave);
-                CrearCeldas(col, renglon, GetAbecedario(3), reporte.Nombre);
-                CrearCeldas(col, renglon, GetAbecedario(4), reporte.Cantidad.ToString());
+                CE.CrearCeldas(col, renglon, CE.GetAbecedario(1), $"{ Cossecutivo + 1}");
+                CE.CrearCeldas(col, renglon, CE.GetAbecedario(2), reporte.Clave);
+                CE.CrearCeldas(col, renglon, CE.GetAbecedario(3), reporte.Nombre);
+                CE.CrearCeldas(col, renglon, CE.GetAbecedario(4), reporte.Cantidad.ToString());
                 col++;
                 renglon++;
             }
 
-            CrearCeldas(4, renglon + 1, GetAbecedario(3), "Total");
-            CrearCeldas(4, renglon + 1, GetAbecedario(4), $"{listaAcervo.Sum(x => x.ConteoActivos)}");
+            CE.CrearCeldas(4, renglon + 1, CE.GetAbecedario(3), "Total");
+            CE.CrearCeldas(4, renglon + 1, CE.GetAbecedario(4), $"{listaAcervo.Sum(x => x.ConteoActivos)}");
+            CE.CrearCeldas(4, 2, CE.GetAbecedario(4), "Fecha");
+            CE.CrearCeldas(4, 3, CE.GetAbecedario(4), $"{DateTime.Now.ToString("dd/MM/yyyy")}");
         }
         private async Task NombreArchivoCuadro(string ArchivoId, string CuadroClasificacionId)
         {
-            EncabezadosReporteo();
-
-            Archivo a = await this.repoArchivo.UnicoAsync(x => x.Id.Equals(ArchivoId, StringComparison.InvariantCultureIgnoreCase));
-            CrearCeldas(1,2,GetAbecedario(2),a.Nombre);
-            CuadroClasificacion cc = await this.repoCuadroClasificacion.UnicoAsync(x => x.Id.Equals(CuadroClasificacionId, StringComparison.InvariantCultureIgnoreCase));
-            CrearCeldas(1,3,GetAbecedario(2),cc.Nombre);
-
-        }
-        private void EncabezadosReporteo()
-        {
-            string[] encabezados1 = { "Archivo", "Cuadro Clasificaicón"};
-            string[] encabezados2 = { "Consecutivo", "Clave", "Nombre", "Cantidad"};
             int renglon = 2;
             int Col = 1;
-            foreach (string encabezado in encabezados1)
-            {
-                CrearCeldas(Col,renglon, GetAbecedario(1), encabezados1[Col-1]);
-                Col++;
-                renglon++;
-            }
-            Col = 1;
-            renglon++;
-            foreach (string encabezado in encabezados2)
-            {
-                CrearCeldas(Col, renglon, GetAbecedario(Col), encabezados2[Col - 1]);
-                Col++;
-            }
-            CrearCeldas(4, 2, GetAbecedario(4), "Fecha");
-            CrearCeldas(4, 3, GetAbecedario(4), $"{DateTime.Now.ToString("dd/MM/yyyy")}");
+            string[] encabezados1 = { "Archivo", "Cuadro Clasificaicón" };
+            string[] encabezados2 = { "Consecutivo", "Clave", "Nombre", "Cantidad" };
+          renglon= EncabezadosReporteo(encabezados1,renglon,Col,true);
+            EncabezadosReporteo(encabezados2,renglon+1,Col,false);
+            Archivo a = await this.repoArchivo.UnicoAsync(x => x.Id.Equals(ArchivoId, StringComparison.InvariantCultureIgnoreCase));
+           CE.CrearCeldas(1,2,CE.GetAbecedario(2),a.Nombre);
+            CuadroClasificacion cc = await this.repoCuadroClasificacion.UnicoAsync(x => x.Id.Equals(CuadroClasificacionId, StringComparison.InvariantCultureIgnoreCase));
+           CE.CrearCeldas(1,3,CE.GetAbecedario(2),cc.Nombre);
 
         }
-        private string GetAbecedario(int indice)
+        private int EncabezadosReporteo(string[] encabezado, int renglon, int Col, bool TypEcabezado)
         {
-            indice--;
-            String col = Convert.ToString((char)('A' + (indice % 26)));
-            while (indice >= 26)
+            string LetraColumna;
+            foreach (string en in encabezado)
             {
-                indice = (indice / 26) - 1;
-                col = Convert.ToString((char)('A' + (indice % 26))) + col;
+                if (TypEcabezado)
+                { LetraColumna = CE.GetAbecedario(1);  }
+                else
+                { LetraColumna = CE.GetAbecedario(Col);  renglon--; }
+
+                CE.CrearCeldas(Col,renglon, LetraColumna, encabezado[Col-1]);
+                Col++;
+                renglon++;
+
             }
-            return col;
+            renglon++;
+            return renglon;
         }
-        private void CrearCeldas(int columna, int renglon, string NombreColumna, string texto)
-        {
-            ListResumenAcervo.Add(new Estructuraexcel
-            {
-                NumeroCulumna = columna,
-                NumeroRenglon = renglon,
-                PosicionColumna = NombreColumna,
-                ValorCelda = texto
-            });
-        }
-        private async Task<EntradaClasificacion> ObtieneEntrada(string Entrada) 
-        {
-            EntradaClasificacion ec =new  EntradaClasificacion();
-            ec = await this.repoEntradaClasificacion.UnicoAsync(x=>x.Id.Equals(Entrada,StringComparison.InvariantCultureIgnoreCase));
-            return ec;
-        }
-        private void EliminarDirectorio(string ruta) {
-            DirectoryInfo DirecotrioResumen = new DirectoryInfo(ruta);
-            foreach (DirectoryInfo dir in DirecotrioResumen.GetDirectories())
-                if (Directory.Exists(dir.FullName))
-                    Directory.Delete(ruta, true);
-        }
+        
+      
     }
 }

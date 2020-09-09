@@ -498,6 +498,11 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
+                    b.Property<string>("CuadroClasifiacionId")
+                        .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
                     b.Property<string>("ElementoClasificacionId")
                         .IsRequired()
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
@@ -555,10 +560,6 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("ArchivoId", "CuadroClasificacionId", "EntradaClasificacionId");
-
-                    b.HasIndex("ArchivoId");
-
-                    b.HasIndex("ConteoActivos");
 
                     b.HasIndex("CuadroClasificacionId");
 

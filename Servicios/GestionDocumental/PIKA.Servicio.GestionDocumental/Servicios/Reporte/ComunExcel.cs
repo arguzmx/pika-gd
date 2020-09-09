@@ -11,8 +11,11 @@ namespace PIKA.Servicio.GestionDocumental
 {
     public class ComunExcel
     {
-
-        public ComunExcel() { }
+        public List<Estructuraexcel> ListEstructuraExcel;
+        public ComunExcel() 
+        {
+             ListEstructuraExcel = new List<Estructuraexcel>();
+        }
         public bool ValidarRuta(string ruta)
         {
             if (File.Exists(ruta))
@@ -320,7 +323,27 @@ namespace PIKA.Servicio.GestionDocumental
                 return newCell;
             }
         }
-        
 
+        public string GetAbecedario(int indice)
+        {
+            indice--;
+            String col = Convert.ToString((char)('A' + (indice % 26)));
+            while (indice >= 26)
+            {
+                indice = (indice / 26) - 1;
+                col = Convert.ToString((char)('A' + (indice % 26))) + col;
+            }
+            return col;
+        }
+        public void CrearCeldas(int columna, int renglon, string NombreColumna, string texto)
+        {
+            ListEstructuraExcel.Add(new Estructuraexcel
+            {
+                NumeroCulumna = columna,
+                NumeroRenglon = renglon,
+                PosicionColumna = NombreColumna,
+                ValorCelda = texto
+            });
+        }
     }
 }

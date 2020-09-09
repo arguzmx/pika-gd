@@ -18,14 +18,8 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.ArchivoId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.CuadroClasificacionId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.EntradaClasificacionId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
-
-
             builder.Property(x => x.ConteoActivos).IsRequired();
-
-            builder.HasIndex(i => new { i.ArchivoId });
-            builder.HasIndex(i => new { i.CuadroClasificacionId });
-            builder.HasIndex(i => new { i.EntradaClasificacionId });
-            builder.HasIndex(i => new { i.ConteoActivos });
+            builder.Property(x => x.ConteoActivosEliminados).IsRequired();
 
 
         }
