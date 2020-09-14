@@ -11,15 +11,18 @@ namespace PIKA.Servicio.GestionDocumental
 {
     public class ComunExcel
     {
-
-        public ComunExcel() { }
+        public List<Estructuraexcel> ListEstructuraExcel;
+        public ComunExcel() 
+        {
+             ListEstructuraExcel = new List<Estructuraexcel>();
+        }
         public bool ValidarRuta(string ruta)
         {
             if (File.Exists(ruta))
                 return true;
             else
             {
-                System.IO.Directory.CreateDirectory(ruta);
+               Directory.CreateDirectory(ruta);
                 return false;
             }
         }
@@ -67,8 +70,8 @@ namespace PIKA.Servicio.GestionDocumental
                     shareStringPart = spreadsheetDocument.WorkbookPart.AddNewPart<SharedStringTablePart>();
                 }
 
-                int index = 0;
-                Cell cell = new Cell();
+                int index;
+                Cell cell;
               
                 foreach (Estructuraexcel m in ListaFile)
                 {
@@ -90,7 +93,8 @@ namespace PIKA.Servicio.GestionDocumental
         }
         public string CrearArchivoExcel(List<Estructuraexcel> ListaFile,string id, string ruta, string? separador, string nombre)
         {
-            string fileName = "";
+            string fileName;
+
             if (!String.IsNullOrEmpty(separador))
              fileName = $@"{ruta}{separador}{id}{separador}{nombre}.xlsx";
             else
@@ -102,6 +106,7 @@ namespace PIKA.Servicio.GestionDocumental
             }
             else
             {
+
                 // Crea un spreadsheet del documento con la ruta establecida.
                 // lo autoguarda y edita con el tipo de extensión Xlsx.
                 SpreadsheetDocument spreadsheetDocument = SpreadsheetDocument.Create(fileName, SpreadsheetDocumentType.Workbook);
@@ -318,7 +323,27 @@ namespace PIKA.Servicio.GestionDocumental
                 return newCell;
             }
         }
-        
 
+        public string GetAbecedario(int indice)
+        {
+            indice--;
+            String col = Convert.ToString((char)('A' + (indice % 26)));
+            while (indice >= 26)
+            {
+                indice = (indice / 26) - 1;
+                col = Convert.ToString((char)('A' + (indice % 26))) + col;
+            }
+            return col;
+        }
+        public void CrearCeldas(int columna, int renglon, string NombreColumna, string texto)
+        {
+            ListEstructuraExcel.Add(new Estructuraexcel
+            {
+                NumeroCulumna = columna,
+                NumeroRenglon = renglon,
+                PosicionColumna = NombreColumna,
+                ValorCelda = texto
+            });
+        }
     }
 }

@@ -16,6 +16,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.ElementoClasificacionId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
+            builder.Property(x => x.CuadroClasifiacionId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
 
             builder.Ignore(x => x.TipoValoracionDocumentalId);
 

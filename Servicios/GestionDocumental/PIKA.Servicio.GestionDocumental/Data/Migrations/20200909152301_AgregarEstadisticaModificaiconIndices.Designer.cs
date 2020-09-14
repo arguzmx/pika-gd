@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PIKA.Servicio.GestionDocumental.Data;
 
 namespace PIKA.Servicio.GestionDocumental.Data.Migrations
 {
     [DbContext(typeof(DBContextGestionDocumental))]
-    partial class DBContextGestionDocumentalModelSnapshot : ModelSnapshot
+    [Migration("20200909152301_AgregarEstadisticaModificaiconIndices")]
+    partial class AgregarEstadisticaModificaiconIndices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,11 +98,6 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.Property<bool>("Reservado")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("TipoArchivoId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
                     b.Property<string>("TipoOrigenId")
                         .IsRequired()
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
@@ -129,8 +126,6 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.HasIndex("FechaRetencionAT");
 
                     b.HasIndex("Nombre");
-
-                    b.HasIndex("TipoArchivoId");
 
                     b.ToTable("gd$activo");
                 });
@@ -494,11 +489,6 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasMaxLength(128);
 
                     b.Property<string>("Clave")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("CuadroClasifiacionId")
                         .IsRequired()
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
@@ -913,12 +903,6 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.HasOne("PIKA.Modelo.GestorDocumental.EntradaClasificacion", "EntradaClasificacion")
                         .WithMany("Activos")
                         .HasForeignKey("EntradaClasificacionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("PIKA.Modelo.GestorDocumental.TipoArchivo", "TipoArchivo")
-                        .WithMany("Activos")
-                        .HasForeignKey("TipoArchivoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

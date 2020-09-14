@@ -19,7 +19,6 @@ namespace PIKA.Servicio.GestionDocumental
                 return true;
             else
             {
-                Console.WriteLine("Ruta creada" + ruta);
 
                 System.IO.Directory.CreateDirectory(ruta);
                 return false;
@@ -30,7 +29,6 @@ namespace PIKA.Servicio.GestionDocumental
         {
 
             string fileName = $@"{ruta}{separador}{CuadroClasificacionId}{separador}{nombre}.xlsx";
-            Console.WriteLine("Metodo create reporte"+ruta);
            
             if (ValidarRuta($"{ruta}{separador}{CuadroClasificacionId}"))
             {

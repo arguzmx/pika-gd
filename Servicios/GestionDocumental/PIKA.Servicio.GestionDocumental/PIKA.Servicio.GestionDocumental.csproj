@@ -37,6 +37,8 @@
     <Compile Remove="Data\Migrations\20200820152950_ModificacionActivo.Designer.cs" />
     <Compile Remove="Data\Migrations\20200820153233_ModificacionActivo.cs" />
     <Compile Remove="Data\Migrations\20200820153233_ModificacionActivo.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200909151514_AgregarEstadisticaModificaiconIndices.cs" />
+    <Compile Remove="Data\Migrations\20200909151514_AgregarEstadisticaModificaiconIndices.Designer.cs" />
   </ItemGroup>
 
 
@@ -55,7 +57,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Configuracion\Acervo\" />
     <Folder Include="Data\Configuracion\Archivo\" />
   </ItemGroup>
 

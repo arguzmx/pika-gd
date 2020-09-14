@@ -32,6 +32,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<ValoracionEntradaClasificacion> repoEC;
         private IRepositorioAsync<TipoValoracionDocumental> repoTEC;
         private IRepositorioAsync<ElementoClasificacion> repoEL;
+        private IRepositorioAsync<CuadroClasificacion> repoCC;
         private IRepositorioAsync<TipoDisposicionDocumental> repoTD;
         private ILogger<ServicioCuadroClasificacion> LoggerCuadro;
         private IOCuadroClasificacion ioCuadroClasificacion;
@@ -50,6 +51,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             this.repoEL = UDT.ObtenerRepositoryAsync<ElementoClasificacion>(new QueryComposer<ElementoClasificacion>());
             this.repoTD = UDT.ObtenerRepositoryAsync<TipoDisposicionDocumental>(new QueryComposer<TipoDisposicionDocumental>());
             this.repoTEC = UDT.ObtenerRepositoryAsync<TipoValoracionDocumental>(new QueryComposer<TipoValoracionDocumental>());
+            this.repoCC = UDT.ObtenerRepositoryAsync<CuadroClasificacion>(new QueryComposer<CuadroClasificacion>());
             this.ioCuadroClasificacion = new IOCuadroClasificacion(LoggerCuadro, proveedorOpciones);
         }
         public async Task<bool> Existe(Expression<Func<EntradaClasificacion, bool>> predicado)
@@ -58,7 +60,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             if (l.Count() == 0) return false;
             return true;
         }
-
+        public async Task<bool> ExisteCC(Expression<Func<CuadroClasificacion, bool>> predicado)
+        {
+            List<CuadroClasificacion> l = await this.repoCC.ObtenerAsync(predicado);
+            if (l.Count() == 0) return false;
+            return true;
+        }
 
         public async Task<EntradaClasificacion> CrearAsync(EntradaClasificacion entity, CancellationToken cancellationToken = default)
         {
@@ -68,8 +75,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new EXNoEncontrado(entity.ElementoClasificacionId);
             if(!String.IsNullOrEmpty( entity.TipoDisposicionDocumentalId))
             if (!await ExisteTipoDisposicionDocumental(x => x.Id == entity.TipoDisposicionDocumentalId))
-                throw new ExDatosNoValidos(entity.TipoDisposicionDocumentalId);
-
+                throw new ExErrorRelacional(entity.TipoDisposicionDocumentalId);
+            if (!await ExisteCC(x => x.Id == entity.CuadroClasifiacionId))
+                throw new ExErrorRelacional(entity.CuadroClasifiacionId);
             if (await Existe(x => x.Clave.Equals(entity.Clave.Trim(),
                 StringComparison.InvariantCultureIgnoreCase) && x.Eliminada != true
                 && x.ElementoClasificacionId == entity.ElementoClasificacionId
@@ -78,11 +86,13 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new ExElementoExistente(entity.Clave.Trim());
             }
             
-            entity.Id = System.Guid.NewGuid().ToString();
+            entity.Id = Guid.NewGuid().ToString();
            entity.Nombre= entity.Nombre.Trim();
             entity.Clave=entity.Clave.Trim();
             if(!String.IsNullOrEmpty(entity.ElementoClasificacionId))
                 entity.ElementoClasificacionId =entity.ElementoClasificacionId.Trim();
+            if (!String.IsNullOrEmpty(entity.CuadroClasifiacionId))
+                entity.CuadroClasifiacionId = entity.CuadroClasifiacionId.Trim();
             if (!String.IsNullOrEmpty(entity.TipoDisposicionDocumentalId))
                 entity.TipoDisposicionDocumentalId = entity.TipoDisposicionDocumentalId.Trim();
             await this.repo.CrearAsync(entity);
@@ -149,9 +159,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new EXNoEncontrado(entity.ElementoClasificacionId);
             if (!String.IsNullOrEmpty(entity.TipoDisposicionDocumentalId))
             if (!await ExisteTipoDisposicionDocumental(x => x.Id == entity.TipoDisposicionDocumentalId))
-                throw new ExDatosNoValidos(entity.TipoDisposicionDocumentalId);
-
-          if (await Existe(x =>x.Id != entity.Id 
+                throw new ExErrorRelacional(entity.TipoDisposicionDocumentalId);
+            if (!await ExisteCC(x => x.Id == entity.CuadroClasifiacionId))
+                throw new ExErrorRelacional(entity.CuadroClasifiacionId);
+            if (await Existe(x =>x.Id != entity.Id 
           && x.Clave.Equals(entity.Clave.Trim(),StringComparison.InvariantCultureIgnoreCase)
           && x.Eliminada != true
           && x.ElementoClasificacionId == entity.ElementoClasificacionId

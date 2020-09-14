@@ -92,6 +92,8 @@ namespace PIKA.Modelo.GestorDocumental
         public string ElementoClasificacionId { get; set; }
 
 
+        
+       
         /// <summary>
         /// Determina si la entrada del cuadro ha sido eliminada
         /// </summary>
@@ -104,6 +106,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         public int Posicion { get; set; }
 
+        public string CuadroClasifiacionId { get; set; }
 
         [NotMapped]
         public string NombreCompleto { get { return $"{Clave} {Nombre}"; } }
