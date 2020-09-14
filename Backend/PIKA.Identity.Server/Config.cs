@@ -88,7 +88,6 @@ new Client {
         $"http://localhost:4200/acceso/callback",
         $"http://localhost:4200/acceso/login",
          "http://localhost:4200/silent-refresh.html"
-
     },
     PostLogoutRedirectUris = new List<string>
     {

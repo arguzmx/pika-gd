@@ -55,11 +55,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios.Reporte
                 this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
                 this.repo = UDT.ObtenerRepositoryAsync<Activo>(new QueryComposer<Activo>());
                 this.RepoEntrada = UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>());
-           
-           
-            
         }
-
 
         private async Task LeerArchivo(string RutaArchivo,int col, int fila,int indice,string ArchivoId, string TipoId, string origenId,string formatofecha,string Rutacompleta)
         {
