@@ -345,5 +345,35 @@ namespace PIKA.Servicio.GestionDocumental
                 ValorCelda = texto
             });
         }
+
+        private void crearruta(string ruta)
+        {
+            System.IO.Directory.CreateDirectory(ruta);
+        }
+        public byte[] UnirDocumentos(List<byte[]> ListaArchivos)
+        {
+            return CombinarDocumentos(ListaArchivos);
+        }
+        public byte[] UnirDocumentos(List<string> ListaRutas)
+        {
+            List<byte[]> listafile = new List<byte[]>();
+            foreach (string namefile in ListaRutas)
+            {
+                byte[] f = File.ReadAllBytes(namefile);
+                listafile.Add(f);
+
+            }
+            return CombinarDocumentos(listafile);
+        }
+        public byte[] CombinarDocumentos(List<byte[]> DocumentoFusionado)
+        {
+            List<OpenXmlPowerTools.Source> documentBuilderSources = new List<OpenXmlPowerTools.Source>();
+            foreach (byte[] documentByteArray in DocumentoFusionado)
+            {
+                documentBuilderSources.Add(new OpenXmlPowerTools.Source(new OpenXmlPowerTools.WmlDocument(string.Empty, documentByteArray), false));
+            }
+            OpenXmlPowerTools.WmlDocument mergedDocument = OpenXmlPowerTools.DocumentBuilder.BuildDocument(documentBuilderSources);
+            return mergedDocument.DocumentByteArray;
+        }
     }
 }
