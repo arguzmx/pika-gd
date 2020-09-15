@@ -8,7 +8,8 @@ using RepositorioEntidades;
 namespace PIKA.Servicio.Contenido.Interfaces
 {
    public interface IServicioCarpeta : IServicioRepositorioAsync<Carpeta, string>,
-        IServicioJerarquia<string>
+        IServicioJerarquia<string>,
+        IRepositorioJerarquia<Carpeta, string, string>
     {
        
     }

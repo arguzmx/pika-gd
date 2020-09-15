@@ -116,7 +116,7 @@ namespace PIKA.GD.API
             services.AddSingleton<ICacheMetadatosAplicacion, CacheMetadatosAplicacion>();
             services.AddSingleton<ICacheAplicacion, CacheAplicacion>();
 
-   
+#if DEBUG
             services.AddDbContext<DbContextAplicacionPlugin>(options =>
                   options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
@@ -128,20 +128,22 @@ namespace PIKA.GD.API
             services.AddDbContext<DbContextContacto>(options =>
                     options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
-            services.AddDbContext<DbContextContenido>(options =>
-                options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-          
+
             
             services.AddDbContext<DbContextSeguridad>(options =>
             options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-
-
            
             services.AddDbContext<DbContextMetadatos>(options =>
-          options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-            services.AddDbContext<DBContextGestionDocumental>(options =>
- options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
+            services.AddDbContext<DBContextGestionDocumental>(options =>
+            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
+
+            services.AddDbContext<DbContextContenido>(options =>
+    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
+#endif
 
             //registra los ensamblados validables
             services.RegistraValidables();

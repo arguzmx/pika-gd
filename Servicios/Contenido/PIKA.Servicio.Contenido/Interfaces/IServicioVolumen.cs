@@ -7,7 +7,8 @@ using RepositorioEntidades;
 
 namespace PIKA.Servicio.Contenido.Interfaces
 {
-   public interface IServicioVolumen : IServicioRepositorioAsync<Volumen, string>
+   public interface IServicioVolumen : IServicioRepositorioAsync<Volumen, string>,
+         IServicioValorTextoAsync<Volumen>
     {
        
     }

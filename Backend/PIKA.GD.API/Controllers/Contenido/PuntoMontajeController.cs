@@ -59,6 +59,8 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PuntoMontaje>> Post([FromBody]PuntoMontaje entidad)
         {
+            logger.LogInformation(this.UsuarioId);
+            entidad.CreadorId = this.UsuarioId;
             entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetPuntoMontaje", new { id = entidad.Id }, entidad).Value);
         }

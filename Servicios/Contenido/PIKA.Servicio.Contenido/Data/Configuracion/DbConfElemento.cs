@@ -20,8 +20,7 @@ namespace PIKA.Servicio.Contenido.Data.Configuracion
             builder.Property(x => x.Id).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x=>x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.Eliminada).HasDefaultValue(false).IsRequired();
-            builder.Property(x => x.TipoOrigenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
-            builder.Property(x => x.OrigenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
+            builder.Property(x => x.PuntoMontajeId).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.CreadorId).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.FechaCreacion).IsRequired();
             builder.Property(x => x.VolumenId).HasMaxLength(LongitudDatos.GUID).IsRequired();

@@ -17,8 +17,6 @@ namespace PIKA.Modelo.Contenido
 
             RuleFor(x => x.TipoOrigenId).NotNull().NotEmpty().MaximumLength(LongitudDatos.GUID);
             RuleFor(x => x.OrigenId).NotNull().NotEmpty().MaximumLength(LongitudDatos.GUID);
-            RuleFor(x => x.CreadorId).NotNull().NotEmpty().MaximumLength(LongitudDatos.GUID)
-                .When(x => string.IsNullOrEmpty(x.Id));
  
         }
     }

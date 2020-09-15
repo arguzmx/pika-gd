@@ -13,7 +13,6 @@ namespace PIKA.Modelo.Contenido
         public CarpetaValidador()
         {
             RuleFor(x => x.PuntoMontajeId).NotEmpty().MaximumLength(LongitudDatos.GUID);
-            RuleFor(x => x.CreadorId).NotEmpty().MaximumLength(LongitudDatos.GUID);
             RuleFor(x => x.Nombre).NotEmpty().MaximumLength(LongitudDatos.Nombre );
             RuleFor(x => x.CarpetaPadreId).NotEmpty().When(x => x.EsRaiz == false);
             RuleFor(x => x.EsRaiz).NotNull();

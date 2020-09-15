@@ -35,6 +35,55 @@ namespace PIKA.Servicio.Contenido.Servicios
             this.repo = UDT.ObtenerRepositoryAsync<Volumen>(new QueryComposer<Volumen>());
         }
 
+
+
+        public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
+        {
+            for (int i = 0; i < Query.Filtros.Count; i++)
+            {
+                if (Query.Filtros[i].Propiedad.ToLower() == "texto")
+                {
+                    Query.Filtros[i].Propiedad = "Nombre";
+                }
+            }
+            if (Query.Filtros.Where(x => x.Propiedad.ToLower() == "eliminada").Count() == 0)
+            {
+                Query.Filtros.Add(new FiltroConsulta()
+                {
+                    Propiedad = "Eliminada",
+                    Negacion = true,
+                    Operador = "eq",
+                    Valor = "true"
+                });
+            }
+            Query = GetDefaultQuery(Query);
+            var resultados = await this.repo.ObtenerPaginadoAsync(Query);
+            List<ValorListaOrdenada> l = resultados.Elementos.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
+        }
+
+
+        public async Task<List<ValorListaOrdenada>> ObtenerParesPorId(List<string> Lista)
+        {
+            var resultados = await this.repo.ObtenerAsync(x => Lista.Contains(x.Id));
+            List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
+        }
+
+
+
         public async Task<bool> Existe(Expression<Func<Volumen, bool>> predicado)
         {
             List<Volumen> l = await this.repo.ObtenerAsync(predicado);
