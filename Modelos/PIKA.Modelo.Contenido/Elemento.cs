@@ -1,5 +1,6 @@
 ﻿using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Metadatos;
+using PIKA.Modelo.Metadatos.Atributos;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
@@ -9,50 +10,53 @@ using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Contenido
 {
-    public class Elemento : Entidad<string>, IEntidadRegistroCreacion, IEntidadEliminada, IEntidadRelacionada, IEntidadNombrada
+    [Entidad(PaginadoRelacional: false, EliminarLogico: true)]
+    public class Elemento : Entidad<string>, IEntidadRegistroCreacion, 
+        IEntidadEliminada, IEntidadNombrada
     {
-        [XmlIgnore]
-        [JsonIgnore]
-        public string TipoOrigenDefault => ConstantesModelo.IDORIGEN_PUNTO_MONTAJE;
-
+       
         public Elemento() {
-            this.TipoOrigenId = TipoOrigenDefault;
             this.Versiones = new HashSet<Version>();
         }
 
         /// <summary>
         /// Indetificador único del elemento de contenido
         /// </summary>
+        [Prop(Required: false, isId: true, Visible: false, OrderIndex: 0)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.update)]
         public override string Id { get => base.Id; set => base.Id = value; }
 
-      
+
         /// <summary>
         /// Sombre común dado al elemento de contenido
         /// </summary>
+        [Prop(Required: true, OrderIndex: 10)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
+        [ValidString(minlen: 2, maxlen: 200)]
         public string Nombre { get; set; }
         //#Requerido, longitud nombre
 
         /// <summary>
         /// Indica si el elemento ha sido eliminado de manera lógica
         /// </summary>
+        [Prop(OrderIndex: 50, DefaultValue: "true")]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
         public bool Eliminada { get; set; }
         //#Requerido default=false
 
         /// <summary>
-        /// Tipo de origen del contenido, por defecto el contenido será propiedad del punto de montaje
+        /// Identificador del punto de montaje asociado a la carpeta
         /// </summary>
-        public string TipoOrigenId { get; set; }
-        //#Requerido, GUID
-
-        /// <summary>
-        /// Identificador único del origen por ejemplo el ID del punto de montaje
-        /// </summary>
-        public string OrigenId { get; set; }
-        //#Requerido, GUID
+        [Prop(Required: true, Visible: false, HieRoot: true, OrderIndex: 1010, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "PuntoMontaje")]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
+        public string PuntoMontajeId { get; set; }
 
         /// <summary>
         /// Identificador único del usuario que creó la entidad
         /// </summary>
+        [Prop(Required: false, isId: true, Visible: false, OrderIndex: 1000)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.none)]
+        [List(Entidad: "PropiedadesUsuario", DatosRemotos: true, TypeAhead: false)]
         public string CreadorId { get; set; }
         //#Requerido, GUID
 
@@ -60,23 +64,32 @@ namespace PIKA.Modelo.Contenido
         /// <summary>
         /// Fecah de creación de la entidad en formato UTC
         /// </summary>
+        [Prop(Required: false, isId: true, Visible: false, OrderIndex: 1010)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.update)]
         public DateTime FechaCreacion { get; set; }
         //#Requerido
 
         ///// <summary>
         ///// Identificador único del volúmen para el contenido
         ///// </summary>
+        [Prop(Required: false, OrderIndex: 70)]
+        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.add)]
+        [List(Entidad: "Volumen", DatosRemotos: true, TypeAhead: false)]
         public string VolumenId { get; set; }
 
         /// <summary>
         /// Identificador único de la carpeta donde se creó el contenido
         /// </summary>
+        [Prop(Required: false, Visible: false, OrderIndex: 1000, ShowInTable: false, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "PadreId")]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string CarpetaId { get; set; }
         // Es opcional
 
         /// <summary>
         /// Identificador únido del permiso asociado al elemeento
         /// </summary>
+        [Prop(Required: false, isId: false, Visible: false, ShowInTable: false, OrderIndex: 1010)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.none)]
         public string PermisoId { get; set; }
         // Es opcional
 
@@ -86,6 +99,8 @@ namespace PIKA.Modelo.Contenido
         /// Todos los elementos tiene una versión inicial, 
         /// cuando se añaden nuevas versiones este campo toma el valor true
         /// </summary>
+        [Prop(Required: false, isId: false, Visible: false, ShowInTable: false, OrderIndex: 1010, DefaultValue: "true" )]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public bool Versionado { get; set; }
 
         [XmlIgnore]
@@ -101,5 +116,8 @@ namespace PIKA.Modelo.Contenido
         [JsonIgnore]
         public virtual ICollection<Parte> Partes { get; set; }
 
+        [XmlIgnore]
+        [JsonIgnore]
+        public PuntoMontaje PuntoMontaje { get; set; }
     }
 }

@@ -59,6 +59,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Carpeta>> Post([FromBody]Carpeta entidad)
         {
+            entidad.CreadorId = this.UsuarioId;
             entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetCarpeta", new { id = entidad.Id }, entidad).Value);
         }
@@ -197,6 +198,27 @@ namespace PIKA.GD.API.Controllers.Contenido
             return Ok(await  servicioEntidad.ObtenerDescendientes(puntoontaje, id, n).ConfigureAwait(false));
         }
 
+
+        [HttpGet("jerarquia/{jerarquiaid}/{padreid}", Name = "ObtenerHijosAsyncCarpeta")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<Carpeta>>> ObtenerHijosAsync(string padreid, string jerarquiaid)
+        {
+            var l = await servicioEntidad.ObtenerHijosAsync(padreid, jerarquiaid).ConfigureAwait(false);
+            return Ok(l.ToList());
+        }
+
+
+        [HttpGet("jerarquia/{jerarquiaid}", Name = "ObtenerRaicesAsyncCarpeta")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<Carpeta>>> ObtenerRaicesAsync(string jerarquiaid)
+        {
+            var l = await servicioEntidad.ObtenerRaicesAsync(jerarquiaid).ConfigureAwait(false);
+            return Ok(l.ToList());
+        }
 
 
 

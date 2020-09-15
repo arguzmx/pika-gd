@@ -323,6 +323,22 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         }
 
+
+        public async Task<List<Carpeta>> ObtenerHijosAsync(string PadreId, string JerquiaId)
+        {
+            var l = await this.repo.ObtenerAsync(x => x.PuntoMontajeId == JerquiaId
+           && x.CarpetaPadreId == PadreId && x.Eliminada == false);
+
+            return l.ToList().OrderBy(x => x.NombreJerarquico).ToList();
+        }
+        public async Task<List<Carpeta>> ObtenerRaicesAsync(string JerquiaId)
+        {
+
+            var l = await this.repo.ObtenerAsync(x => x.PuntoMontajeId == JerquiaId
+            && x.EsRaiz == true && x.Eliminada == false);
+            return l.ToList().OrderBy(x => x.NombreJerarquico).ToList();
+
+        }
         #region No Implemenatdaos
 
         public Task<IEnumerable<Carpeta>> CrearAsync(params Carpeta[] entities)
@@ -359,6 +375,7 @@ namespace PIKA.Servicio.Contenido.Servicios
         {
             throw new NotImplementedException();
         }
+
 
         #endregion
     }

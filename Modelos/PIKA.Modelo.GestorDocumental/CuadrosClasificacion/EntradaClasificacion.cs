@@ -106,6 +106,8 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         public int Posicion { get; set; }
 
+        [Prop(Required: true, Visible: false, HieRoot: true, OrderIndex: 1010, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "CuadroClasificacion")]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string CuadroClasifiacionId { get; set; }
 
         [NotMapped]

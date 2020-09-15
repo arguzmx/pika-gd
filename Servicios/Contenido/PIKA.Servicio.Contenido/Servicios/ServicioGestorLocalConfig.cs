@@ -15,6 +15,7 @@ using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.Contenido;
+using PIKA.Servicio.Contenido.data.Migrations;
 using PIKA.Servicio.Contenido.Gestores;
 using PIKA.Servicio.Contenido.Helpers;
 using PIKA.Servicio.Contenido.Interfaces;
@@ -82,7 +83,7 @@ namespace PIKA.Servicio.Contenido.Servicios
                     await ValidaEntidad(entity);
                     await this.repo.CrearAsync(entity);
                     UDT.SaveChanges();
-
+                    await ActualizaEstadoVolumen(entity.VolumenId, true);
                 } else
                 {
                     await ActualizarAsync(entity);
@@ -102,7 +103,16 @@ namespace PIKA.Servicio.Contenido.Servicios
             }
         }
 
-   
+        private async Task ActualizaEstadoVolumen(string Id, bool configuracionValida)
+        {
+            var v = await this.repoVol.UnicoAsync(x => x.Id == Id);
+            if (v != null)
+            {
+                v.ConfiguracionValida = configuracionValida;
+                UDT.Context.Entry(v).State = EntityState.Modified;
+                UDT.SaveChanges();
+            }
+        }
 
         public async Task ActualizarAsync(GestorLocalConfig entity)
         {
@@ -119,9 +129,12 @@ namespace PIKA.Servicio.Contenido.Servicios
 
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
-
+            await ActualizaEstadoVolumen(entity.VolumenId, true);
 
         }
+
+        
+
         private Consulta GetDefaultQuery(Consulta query)
         {
             if (query != null)

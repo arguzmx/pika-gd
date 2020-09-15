@@ -25,12 +25,11 @@ namespace PIKA.Servicio.Contenido.Data.Configuracion
             builder.Property(x => x.Id).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x=>x.Nombre).HasMaxLength(LongitudDatos.NombreLargo).IsRequired();
             builder.Property(x => x.Eliminada).HasDefaultValue(false).IsRequired();
-            
+
+            builder.HasMany(x => x.Elementos).WithOne(y => y.PuntoMontaje).HasForeignKey(z => z.PuntoMontajeId).OnDelete(DeleteBehavior.Restrict);
             builder.HasMany(x => x.Carpetas).WithOne(y => y.PuntoMontaje).HasForeignKey(z => z.PuntoMontajeId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(x => x.VolumenDefault).WithMany(y => y.PuntosMontaje).HasForeignKey(z => z.VolumenDefaultId);
             builder.HasMany(x => x.VolumenesPuntoMontaje).WithOne(y => y.PuntoMontaje).HasForeignKey(z => z.VolumenId).OnDelete(DeleteBehavior.Restrict);
-
-
             builder.Ignore(x => x.TipoOrigenDefault);
         }
 

@@ -59,7 +59,8 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Elemento>> Post([FromBody]Elemento entidad)
         {
-            entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
+            entidad.CreadorId = this.UsuarioId;
+               entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetElemento", new { id = entidad.Id }, entidad).Value);
         }
 

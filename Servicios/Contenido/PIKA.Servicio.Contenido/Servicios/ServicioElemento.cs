@@ -27,6 +27,7 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         private IRepositorioAsync<Elemento> repo;
         private IRepositorioAsync<Volumen> repoVol;
+        private IRepositorioAsync<PuntoMontaje> repoPM;
         private IRepositorioAsync<VolumenPuntoMontaje> repoVPM;
         private IRepositorioAsync<PIKA.Modelo.Contenido.Version> repoVer;
         private IRepositorioAsync<Permiso> repoPerm;
@@ -45,6 +46,7 @@ namespace PIKA.Servicio.Contenido.Servicios
             this.repoVol = UDT.ObtenerRepositoryAsync<Volumen>(new QueryComposer<Volumen>());
             this.repoVPM = UDT.ObtenerRepositoryAsync<VolumenPuntoMontaje>(new QueryComposer<VolumenPuntoMontaje>());
             this.repoPerm = UDT.ObtenerRepositoryAsync<Permiso>(new QueryComposer<Permiso>());
+            this.repoPM = UDT.ObtenerRepositoryAsync<PuntoMontaje>(new QueryComposer<PuntoMontaje>());
             this.repoCarpetas = UDT.ObtenerRepositoryAsync<Carpeta>(new QueryComposer<Carpeta>());
             this.helperCarpetas = new HelperCarpetas(this.repoCarpetas);
         }
@@ -58,6 +60,7 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         private async Task ValidaEntidad(Elemento entity, Elemento instancia,  bool esActualizacion)
         {
+            if (!string.IsNullOrEmpty(entity.Nombre)) entity.Nombre = entity.Nombre.Trim();
 
             if (esActualizacion) {
 
@@ -66,32 +69,23 @@ namespace PIKA.Servicio.Contenido.Servicios
                     throw new EXNoEncontrado(entity.Id);
                 }
 
-                if (await Existe(x => x.Nombre == entity.Nombre && x.TipoOrigenId == entity.TipoOrigenId
-                   && x.OrigenId == entity.OrigenId && x.Eliminada == false && x.Id != entity.Id))
-                {
-                    throw new ExElementoExistente(entity.Nombre);
-                }
                 if (entity.VolumenId != instancia.VolumenId)
                 {
                     throw new ExDatosNoValidos($"No es posible modificar el volumen de un elemento");
                 }
             }
-            else
+      
+            if((await repoPM.UnicoAsync(x=>x.Id == entity.PuntoMontajeId)) == null)
             {
-                if (await Existe(x => x.Nombre == entity.Nombre && x.TipoOrigenId == entity.TipoOrigenId
-                && x.OrigenId == entity.OrigenId && x.Eliminada == false))
-                {
-                    throw new ExElementoExistente(entity.Nombre);
-                }
+                throw new ExDatosNoValidos($"Punto de montaje no válido");
             }
-
-
 
             var vol = await repoVol.UnicoAsync(x => x.Id == entity.VolumenId);
             if (vol == null)
             {
                 throw new ExDatosNoValidos($"Volumen {entity.VolumenId} inexistente");
-            } else
+            }
+            else
             {
                 if (vol.Eliminada || (!vol.ConfiguracionValida))
                 {
@@ -99,6 +93,12 @@ namespace PIKA.Servicio.Contenido.Servicios
                 }
             }
 
+            if (await Existe(x => x.Nombre == entity.Nombre
+                  && x.PuntoMontajeId == entity.PuntoMontajeId
+                 && x.CarpetaId == entity.CarpetaId && x.Eliminada == false && x.Id != entity.Id))
+            {
+                throw new ExElementoExistente(entity.Nombre);
+            }
 
             if (!string.IsNullOrEmpty(entity.CarpetaId))
             {
