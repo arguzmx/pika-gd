@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+
 using System.IO;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace PIKA.Infraestrctura.Reportes
 {
@@ -28,11 +28,12 @@ namespace PIKA.Infraestrctura.Reportes
         {
             if (!File.Exists(rutaPlantilla)) throw new Exception("Plantilla inexistente");
 
-            dynamic objeto = JsonSerializer.Deserialize<dynamic>(propiedesJson);
+            dynamic objeto = JsonConvert.DeserializeObject(propiedesJson);
             string nombreArchivo = System.Guid.NewGuid().ToString() + ".docx";
             string rutaArchivo = Path.Combine(rutaTemporales, nombreArchivo);
 
-            Console.WriteLine("Documento valido");
+            string n = objeto.nombre;
+            Console.WriteLine($"Documento valido {n}");
             using (WordprocessingDocument doc =
                     WordprocessingDocument.Open(rutaPlantilla, false))
             {
