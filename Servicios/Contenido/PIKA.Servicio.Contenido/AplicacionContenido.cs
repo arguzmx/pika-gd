@@ -69,27 +69,27 @@ namespace PIKA.Servicio.Contenido
                     Descripcion = "Permite administrar los valomenes asociados a los puntos de montaje para los repositorios de contenidos",
                     Tipos = new List<Type> { typeof(VolumenPuntoMontaje) }
                 },
-                new ElementoAplicacion(MODULO_BASE, "PMS" ) {
+                new ElementoAplicacion(MODULO_BASE, "PMS-1" ) {
                     Titulo = "Puntos de montaje de contenido",
                     Descripcion =  "Permite administrar los puntos de montaje para los repositorios de contenidos",
                     Tipos = new List<Type> { typeof(PuntoMontaje) }
                 },
-                new ElementoAplicacion(MODULO_BASE, "PMS" ) {
+                new ElementoAplicacion(MODULO_BASE, "PMS-2" ) {
                     Titulo = "Gestores de entrada/salida",
                     Descripcion =  "Catálogo de gestores de entrada salida para los volumenes de contenido",
                     Tipos = new List<Type> { typeof(TipoGestorES) }
                 },
-                new ElementoAplicacion(MODULO_BASE, "PMS" ) {
+                new ElementoAplicacion(MODULO_BASE, "PMS-3" ) {
                     Titulo = "Permisos sobre el contenido",
                     Descripcion =  "Permite administrar los permisos sobre el contenido",
                     Tipos = new List<Type> { typeof(Permiso) }
                 },
-                new ElementoAplicacion(MODULO_BASE, "PMS" ) {
+                new ElementoAplicacion(MODULO_BASE, "PMS-4" ) {
                     Titulo = "Destinatarios de los permisos",
                     Descripcion =  "Permite administrar los destinatarios para un permiso de acceso",
                     Tipos = new List<Type> { typeof(DestinatarioPermiso) }
                 },
-                new ElementoAplicacion(MODULO_BASE, "PMS" ) {
+                new ElementoAplicacion(MODULO_BASE, "PMS-5" ) {
                     Titulo =  "Volumenes de contenido",
                     Descripcion =  "Permite administrar los volumenes para los repositorios de contenidos",
                     Tipos = new List<Type> { typeof(Volumen) }

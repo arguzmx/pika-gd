@@ -8,6 +8,6 @@ namespace PIKA.Servicio.Seguridad.Interfaces
 {
     public interface IServicioInfoAplicacion
     {
-        Task<List<Aplicacion>> OntieneAplicaciones(string AppPath);
+        Task<List<Aplicacion>> ObtieneAplicaciones(string AppPath);
     }
 }

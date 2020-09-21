@@ -28,12 +28,15 @@ namespace PIKA.GD.API.Controllers.Sistema
         private ILogger<SeguridadController> logger;
         private IServicioInfoAplicacion servicioAplicacion;
         private IServicioSeguridadAplicaciones servicioSeguridad;
+        private IServicioUsuarios servicioUsuarios;
         public SeguridadController(
             IServicioSeguridadAplicaciones servicioSeguridad,
+            IServicioUsuarios servicioUsuarios,
             ILogger<SeguridadController> logger,
             IServicioInfoAplicacion servicioAplicacion)
         {
             this.servicioSeguridad = servicioSeguridad;
+            this.servicioUsuarios = servicioUsuarios;
             this.logger = logger;
             this.servicioAplicacion = servicioAplicacion;
         }
@@ -44,14 +47,16 @@ namespace PIKA.GD.API.Controllers.Sistema
         public async Task<ActionResult<IEnumerable<Aplicacion>>> GetPage()
         {
             logger.LogError(LocalizadorEnsamblados.ObtieneRutaBin());
-            var data = await servicioAplicacion.OntieneAplicaciones(LocalizadorEnsamblados.ObtieneRutaBin())
+            var data = await servicioAplicacion.ObtieneAplicaciones(LocalizadorEnsamblados.ObtieneRutaBin())
                 .ConfigureAwait(false);
 
             return Ok(data);
         }
 
+
         [HttpPost("permisos/aplicar", Name = "PostPermisosCrear")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [TypeFilter(typeof(AsyncACLActionFilter),
+            Arguments = new object[] { Servicio.Seguridad.AplicacionRaiz.APP_ID, Servicio.Seguridad.AplicacionSeguridad.MODULO_BASE })]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<int>> PostPermisosCrear([FromBody] List<PermisoAplicacion> permisos)
         {
@@ -60,17 +65,19 @@ namespace PIKA.GD.API.Controllers.Sistema
         }
 
         [HttpPost("permisos/eliminar", Name = "PostPermisosEliminar")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [TypeFilter(typeof(AsyncACLActionFilter),
+            Arguments = new object[] { Servicio.Seguridad.AplicacionRaiz.APP_ID, Servicio.Seguridad.AplicacionSeguridad.MODULO_BASE })]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<int>> PostPermisosEliminar([FromBody] List<PermisoAplicacion> permisos)
         {
-            await servicioSeguridad.CrearActualizarAsync(permisos.ToArray()).ConfigureAwait(false);
+            await servicioSeguridad.EliminarAsync(permisos.ToArray()).ConfigureAwait(false);
             return Ok();
         }
 
 
         [HttpGet("permisos/{tipo}/{id}", Name = "GetPermisosPorTipo")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [TypeFilter(typeof(AsyncACLActionFilter),
+            Arguments = new object[] { Servicio.Seguridad.AplicacionRaiz.APP_ID, Servicio.Seguridad.AplicacionSeguridad.MODULO_BASE })]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ICollection<PermisoAplicacion>>> GetPermisosPorTipo(string  tipo, string id)
         {
@@ -78,7 +85,17 @@ namespace PIKA.GD.API.Controllers.Sistema
             return Ok(data);
         }
 
+        [HttpGet("usuarios/pares", Name = "GetUsuarios")]
+        [TypeFilter(typeof(AsyncACLActionFilter),
+           Arguments = new object[] { Servicio.Seguridad.AplicacionRaiz.APP_ID, Servicio.Seguridad.AplicacionSeguridad.MODULO_BASE })]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ICollection<PermisoAplicacion>>> GetUsuarios(Consulta query)
+        {
+            var data = await this.servicioUsuarios.ObtenerParesAsync(query).ConfigureAwait(false);
+            return Ok(data);
+        }
 
-       
+
+
     }
 }
