@@ -30,7 +30,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             this.cache = cache;
         }
 
-        public async Task<List<Aplicacion>> OntieneAplicaciones(string AppPath)
+        public async Task<List<Aplicacion>> ObtieneAplicaciones(string AppPath)
         {
 
             return await cache.GetOrAddAsync(APP_CACHE_KEYS, async () =>
@@ -44,7 +44,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
         {
             List<Aplicacion> l = new List<Aplicacion>();
             var assemblies = Directory.GetFiles(AppPath, "*.dll", new EnumerationOptions() { RecurseSubdirectories = true });
-            logger.LogInformation("Obteniendo aplicaciones desde ensamblados");
+            logger.LogWarning(AppPath);
             foreach (var item in assemblies)
             {
                 try

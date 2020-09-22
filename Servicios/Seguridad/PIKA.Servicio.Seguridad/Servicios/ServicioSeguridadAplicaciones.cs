@@ -61,6 +61,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
                     if (permisoExistente==null)
                     {
+                        if(p.Leer || p.Escribir || p.Ejecutar || p.Eliminar || p.Admin || p.NegarAcceso)
                         await repo.CrearAsync(p);
                     } else
                     {
@@ -104,10 +105,11 @@ namespace PIKA.Servicio.Seguridad.Servicios
                 if(entidad!=null)
                 {
                     this.UDT.Context.Entry(entidad).State = EntityState.Deleted;
+                    cantidad++;
                 }
 
             }
-
+            UDT.SaveChanges();
             return cantidad;
         }
         

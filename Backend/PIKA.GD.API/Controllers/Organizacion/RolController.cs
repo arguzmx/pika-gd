@@ -120,8 +120,7 @@ namespace PIKA.GD.API.Controllers.Organizacion
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Rol>> GetRoles()
         {
-            logger.LogError(this.DominioId);
-            var o = await servicioRol.ObtieneRoles(this.DominioId).ConfigureAwait(false);
+            var o = await servicioRol.ObtieneRoles("principal").ConfigureAwait(false);
             return Ok(o);
         }
 

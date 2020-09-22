@@ -54,13 +54,13 @@ namespace PIKA.Servicio.Contacto
                     Descripcion = "Permite la gestión de direcciones postales de las entidades del sistema",
                     Tipos = new List<Type> { typeof(DireccionPostal) }
                 },
-                new ElementoAplicacion(MODULO_BASE, "MEDIO-CONTACO" ) {
+                new ElementoAplicacion(MODULO_BASE, "MEDIO-CONTACTO" ) {
                     Titulo = "Medios de contatco",
                     Descripcion = "Permite la gestión de medios de contacto de las entidades del sistema",
                     Tipos = new List<Type> { typeof(MedioContacto) }
                 },
-                new ElementoAplicacion(MODULO_BASE, "MEDIO-CONTACO" ) {
-                    Titulo = "Horarios sedios de contatco",
+                new ElementoAplicacion(MODULO_BASE, "HOR-MEDIO-CONTACTO" ) {
+                    Titulo = "Horarios medios de contatco",
                     Descripcion = "Permite la gestión de los horarios de los medios de contacto de las entidades del sistema",
                     Tipos = new List<Type> { typeof(HorarioMedioContacto) }
                 }
