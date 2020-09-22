@@ -53,7 +53,7 @@ namespace PIKA.Modelo.Contenido
         /// <summary>
         /// Longidut en bytes de la parte
         /// </summary>
-        public int LongitudBytes { get; set; }
+        public long LongitudBytes { get; set; }
 
         /// <summary>
         /// Nombre original de la parte, corresponde con el nombre del archivo electrónico
