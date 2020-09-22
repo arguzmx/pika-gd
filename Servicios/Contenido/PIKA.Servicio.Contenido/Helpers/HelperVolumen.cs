@@ -20,7 +20,7 @@ namespace PIKA.Servicio.Contenido.Helpers
         }
 
 
-        public async Task<long> ActualizaTamanoVolumen(string volumenId, int bytesantes, int bytesdespues)
+        public async Task<long> ActualizaTamanoVolumen(string volumenId, long bytesantes, long bytesdespues)
         {
             var v = await this.repo.UnicoAsync(x => x.Id == volumenId);
 
@@ -33,7 +33,7 @@ namespace PIKA.Servicio.Contenido.Helpers
             return v.ConsecutivoVolumen;
         }
 
-        public async Task<long> GetConsecutivoVolumen(string volumenId, int bytes)
+        public async Task<long> GetConsecutivoVolumen(string volumenId, long bytes)
         {
 
             var v  = await this.repo.UnicoAsync(x => x.Id == volumenId);
