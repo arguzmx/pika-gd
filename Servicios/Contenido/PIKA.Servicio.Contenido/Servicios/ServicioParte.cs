@@ -34,7 +34,7 @@ namespace PIKA.Servicio.Contenido.Servicios
         private HelperVersion helperVersion;
         public ServicioParte(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-        ILogger<ServicioParte> Logger) : base(proveedorOpciones, Logger)
+        ILogger Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Parte>( new QueryComposer<Parte>());
@@ -82,6 +82,7 @@ namespace PIKA.Servicio.Contenido.Servicios
                 entity.Id = System.Guid.NewGuid().ToString();
                 entity.Indice = v.MaxIndicePartes + 1;
                 entity.ConsecutivoVolumen = await helperVolumen.GetConsecutivoVolumen(volid, entity.LongitudBytes)  ;
+                logger.LogWarning(entity.ConsecutivoVolumen.ToString());
                 entity.Eliminada = false;
 
                 await helperVersion.CreaParte(entity);
@@ -91,8 +92,9 @@ namespace PIKA.Servicio.Contenido.Servicios
 
                 return entity.Copia();
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ee)
             {
+                logger.LogError(ee.ToString());
                 throw new ExErrorRelacional("Alguno de los identificadores no es válido");
             }
             catch (Exception ex)

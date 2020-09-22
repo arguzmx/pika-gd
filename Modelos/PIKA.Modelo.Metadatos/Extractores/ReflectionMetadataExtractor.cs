@@ -107,6 +107,11 @@ namespace PIKA.Modelo.Metadatos
                     info.CatalogosVinculados.Add( ((LinkCatalogoAttribute)attr).Copia());
 
                 }
+
+                if (attr is LinkViewAttribute)
+                {
+                    info.VistasVinculadas.Add(((LinkViewAttribute)attr).Copia());
+                }
             }
 
             List<Propiedad> properties = new List<Propiedad>();
@@ -162,6 +167,11 @@ namespace PIKA.Modelo.Metadatos
                         {
                             ValidNumericAttribute a = (ValidNumericAttribute)attr;
                             foundProp.ValidadorNumero = a.GetAttribute(prop.Name);
+                        }
+
+                        if (attr is LinkViewParameterAttribute)
+                        {
+                            foundProp.ParametroLinkVista = ((LinkViewParameterAttribute)attr).Copia();
                         }
                     }
 

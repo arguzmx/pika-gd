@@ -15,10 +15,11 @@ namespace PIKA.Servicio.Contenido.Data.Configuracion
         public void Configure(EntityTypeBuilder<Parte> builder)
         {
             builder.ToTable(DbContextContenido.TablaParte);
-            builder.HasKey(x =>new { x.ElementoId,x.VersionId});
+            builder.HasKey(x =>x.Id);
 
-            builder.Property(x => x.ElementoId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
-            builder.Property(x => x.VersionId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.ElementoId).IsRequired().ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.VersionId).IsRequired().ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.Id).IsRequired().ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
 
             builder.Property(x => x.Indice).IsRequired();
             builder.Property(x => x.ConsecutivoVolumen).IsRequired();
@@ -28,9 +29,8 @@ namespace PIKA.Servicio.Contenido.Data.Configuracion
             builder.Property(x => x.Eliminada).HasDefaultValue(false).IsRequired();
 
 
-
             builder.HasOne(x => x.Elemento).WithMany(y => y.Partes).HasForeignKey(z => z.ElementoId);
-            builder.HasOne(x=>x.Version).WithMany(y=>y.Partes).HasForeignKey(z=>z.VersionId);
+            builder.HasOne(x => x.Version).WithMany(y => y.Partes).HasForeignKey(z => z.VersionId);
 
         }
     }

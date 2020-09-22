@@ -43,9 +43,13 @@ namespace PIKA.Servicio.Contenido.Helpers
                 throw new ExDatosNoValidos($"El volumen {volumenId} no esta disponible");
             }
 
-            if( (v.Tamano + bytes) > v.TamanoMaximo)
+            if (v.TamanoMaximo > 0)
             {
-                throw new ExDatosNoValidos($"Tamaño maximo excedido volumen {volumenId}");
+                if ((v.Tamano + bytes) > v.TamanoMaximo)
+                {
+                    throw new ExDatosNoValidos($"Tamaño maximo excedido volumen {volumenId}");
+                }
+
             }
 
 

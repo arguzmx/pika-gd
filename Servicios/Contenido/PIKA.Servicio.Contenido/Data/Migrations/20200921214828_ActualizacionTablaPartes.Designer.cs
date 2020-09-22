@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PIKA.Servicio.Contenido;
 
 namespace PIKA.Servicio.Contenido.data.Migrations
 {
     [DbContext(typeof(DbContextContenido))]
-    partial class DbContextContenidoModelSnapshot : ModelSnapshot
+    [Migration("20200921214828_ActualizacionTablaPartes")]
+    partial class ActualizacionTablaPartes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -568,13 +570,13 @@ namespace PIKA.Servicio.Contenido.data.Migrations
                     b.HasOne("PIKA.Modelo.Contenido.Elemento", "Elemento")
                         .WithMany("Partes")
                         .HasForeignKey("ElementoId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PIKA.Modelo.Contenido.Version", "Version")
                         .WithMany("Partes")
                         .HasForeignKey("VersionId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

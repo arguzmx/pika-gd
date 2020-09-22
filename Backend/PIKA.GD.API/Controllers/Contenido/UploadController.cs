@@ -7,7 +7,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using PIKA.GD.API.Model;
+using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Contenido;
+using PIKA.Servicio.Contenido.Interfaces;
 
 namespace PIKA.GD.API.Controllers.Contenido
 {
@@ -17,13 +21,16 @@ namespace PIKA.GD.API.Controllers.Contenido
     public class UploadController : ControllerBase
     {
         private ILogger<UploadController> logger;
-        private IConfiguration Config;
+        private IServicioVolumen servicioVol;
+        private ConfiguracionServidor configuracionServidor;
 
-
-        public UploadController(ILogger<UploadController> logger, IConfiguration Config)
+        public UploadController(ILogger<UploadController> logger,
+            IServicioVolumen servicioVol, 
+            IOptions<ConfiguracionServidor> opciones)
         {
+            this.servicioVol = servicioVol;
             this.logger = logger;
-            this.Config = Config;
+            this.configuracionServidor = opciones.Value;
             FiltroArchivos.minimo = 1024; //1 KB
             FiltroArchivos.maximo = 1048576; //1 MB
             FiltroArchivos.addExt(".jpg");
@@ -32,42 +39,63 @@ namespace PIKA.GD.API.Controllers.Contenido
             FiltroArchivos.addExt(".docx");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Post(IFormFile file)
-        {
-            long size = file.Length;
-            var filePath = "";
-            if (size > 0)
-            {
-                var path = Config["FILE_PATH"];
-                filePath = Path.Combine(path, Path.GetRandomFileName() + Path.GetExtension(file.FileName));
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream).ConfigureAwait(false);
-                }
-            }
-            return Ok(new { size, filePath });
-        }
+
 
         [HttpPost("ContenidoFiltrado")]
-        public async Task<IActionResult> PostContenidoFiltrado(IFormFile file)
+        public async Task<IActionResult> PostContenidoFiltrado([FromForm] ElementoContenido model)
         {
-            if (tamanoValido(file.Length, FiltroArchivos.minimo, FiltroArchivos.maximo))
+
+
+   
+            logger.LogWarning(model.VolumenId);
+            logger.LogWarning(model.ElementoId);
+            logger.LogWarning(model.PuntoMontajeId);
+
+
+            if (tamanoValido(model.file.Length, FiltroArchivos.minimo, FiltroArchivos.maximo))
             {
-                if (extensionValida(file, FiltroArchivos.extensionesValidas))
+                if (extensionValida(model.file, FiltroArchivos.extensionesValidas))
                 {
-                    var filePath = Path.Combine(Config["FILE_PATH"], Path.GetRandomFileName() + Path.GetExtension(file.FileName));
+
+                    IGestorES gestor = await servicioVol.ObtienInstanciaGestor(model.VolumenId).ConfigureAwait(false);
+                   
+
+                    var filePath = Path.Combine(configuracionServidor.ruta_cache_fisico, 
+                        Path.GetRandomFileName() + 
+                        Path.GetExtension(model.file.FileName));
+
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        await file.CopyToAsync(stream).ConfigureAwait(false);
-                        return Ok(new { file.Length, filePath });
+                        logger.LogWarning($"copiando {filePath}");
+                        await model.file.CopyToAsync(stream).ConfigureAwait(false);
                     }
+
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        long resultado = await
+                        gestor.EscribeBytes(model.ElementoId,
+                        System.IO.File.ReadAllBytes(filePath),
+                        new FileInfo(filePath), true).ConfigureAwait(false);
+
+                        logger.LogWarning($"r {resultado}");
+                        if (resultado > 0)
+                        {
+                            logger.LogWarning($"eliminando {filePath}");
+                            System.IO.File.Delete(filePath);
+                        }
+                        return Ok(new { resultado });
+                    } else
+                    {
+                        throw new Exception("Error al escribir en cache");
+                    }
+                 
+
                 }
                 else
-                    ModelState.AddModelError(file.Name, "extensión inválida");
+                    ModelState.AddModelError(model.file.Name, "extensión inválida");
             }
             else
-                ModelState.AddModelError(file.Name, "tamaño inválido");
+                ModelState.AddModelError(model.file.Name, "tamaño inválido");
             return BadRequest(ModelState);
         }
 

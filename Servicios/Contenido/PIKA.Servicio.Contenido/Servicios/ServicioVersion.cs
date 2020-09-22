@@ -29,7 +29,7 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public ServicioVersion(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-        ILogger<ServicioVersion> Logger) : base(proveedorOpciones, Logger)
+        ILogger Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Version>( new QueryComposer<Version>());

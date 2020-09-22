@@ -158,7 +158,6 @@ namespace PIKA.Modelo.Metadatos
         [NotMapped]
         public bool AlternarEnTabla { get; set; }
 
-
         public virtual TipoDato TipoDato { get; set; }
 
         public virtual AtributoLista AtributoLista { get; set; }
@@ -170,7 +169,11 @@ namespace PIKA.Modelo.Metadatos
         public virtual List<AtributoVistaUI> AtributosVistaUI { get; set; }
 
         public virtual ValidadorTexto ValidadorTexto { get; set; }
+        
         public virtual ValidadorNumero ValidadorNumero { get; set; }
+        
+        public virtual ParametroLinkVista ParametroLinkVista { get; set; }
+
         public ICollection<ValorLista> ValoresLista { get; set; }
     }
 }

@@ -11,6 +11,7 @@ using System.Xml.Serialization;
 namespace PIKA.Modelo.Contenido
 {
     [Entidad(PaginadoRelacional: false, EliminarLogico: true)]
+    [LinkView(Titulo: "visor", Icono: "preview", Vista: "visorcontenido")]
     public class Elemento : Entidad<string>, IEntidadRegistroCreacion, 
         IEntidadEliminada, IEntidadNombrada
     {
@@ -24,6 +25,7 @@ namespace PIKA.Modelo.Contenido
         /// </summary>
         [Prop(Required: false, isId: true, Visible: false, OrderIndex: 0)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.update)]
+        [LinkViewParameter(Vista: "visorcontenido")]
         public override string Id { get => base.Id; set => base.Id = value; }
 
 
@@ -33,6 +35,7 @@ namespace PIKA.Modelo.Contenido
         [Prop(Required: true, OrderIndex: 10)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
         [ValidString(minlen: 2, maxlen: 200)]
+        [LinkViewParameter(Vista: "visorcontenido")]
         public string Nombre { get; set; }
         //#Requerido, longitud nombre
 
@@ -49,6 +52,7 @@ namespace PIKA.Modelo.Contenido
         /// </summary>
         [Prop(Required: true, Visible: false, HieRoot: true, OrderIndex: 1010, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "PuntoMontaje")]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
+        [LinkViewParameter(Vista: "visorcontenido")]
         public string PuntoMontajeId { get; set; }
 
         /// <summary>
@@ -75,6 +79,7 @@ namespace PIKA.Modelo.Contenido
         [Prop(Required: false, OrderIndex: 70)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.add)]
         [List(Entidad: "Volumen", DatosRemotos: true, TypeAhead: false)]
+        [LinkViewParameter(Vista: "visorcontenido")]
         public string VolumenId { get; set; }
 
         /// <summary>

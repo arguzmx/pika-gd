@@ -9,6 +9,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Contenido.Gestores
 {
@@ -53,9 +54,9 @@ namespace PIKA.Servicio.Contenido.Gestores
             return valido;
         }
 
-        public long EscribeBytes(string Id, byte[] contenido, FileInfo informacion, bool sobreescribir)
+        public async Task<long> EscribeBytes(string Id, byte[] contenido, FileInfo informacion, bool sobreescribir)
         {
-
+            await Task.Delay(1);
             ValidaEscritura(Id, contenido, informacion);
             if (ConexionValida())
             {
