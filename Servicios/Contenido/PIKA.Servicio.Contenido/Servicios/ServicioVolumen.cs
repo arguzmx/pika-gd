@@ -5,13 +5,17 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.Contenido;
+using PIKA.Servicio.Contenido.Gestores;
 using PIKA.Servicio.Contenido.Interfaces;
 using RepositorioEntidades;
 
@@ -25,16 +29,89 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         private IRepositorioAsync<Volumen> repo;
         private UnidadDeTrabajo<DbContextContenido> UDT;
+        private static TimeSpan volCacheExpiry = new TimeSpan(0, 10, 0); 
+        private readonly IAppCache lazycache;
+        private IOptions<ConfiguracionServidor> opciones;
 
         public ServicioVolumen(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-            ILogger<ServicioVolumen> Logger
+            ILogger<ServicioVolumen> Logger,
+            IAppCache lazycache,
+            IOptions<ConfiguracionServidor> opciones
         ) : base(proveedorOpciones, Logger)
         {
+            this.opciones = opciones;
+            this.lazycache = lazycache;
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Volumen>(new QueryComposer<Volumen>());
         }
 
+        private string GetCacheVolKey(string VolumenId)
+        {
+            return $"cache-vol-{VolumenId}";
+        }
+
+        private string GetCacheGestorESKey(string VolumenId)
+        {
+            return $"cache-gestor-{VolumenId}";
+        }
+
+        public async Task<IGestorES> ObtienInstanciaGestor(string VolumenId)
+        {
+            Volumen vol = null;
+            IGestorES gestor = null;
+            if (!string.IsNullOrEmpty(VolumenId))
+            {
+                string key = GetCacheVolKey(VolumenId);
+                vol = lazycache.Get<Volumen>(key);
+                if (vol == null)
+                {
+                    vol = await repo.UnicoAsync(x => x.Id.Equals(VolumenId.Trim(), StringComparison.InvariantCultureIgnoreCase));
+                    if (vol != null)
+                    {
+                        this.lazycache.Add<Volumen>(key, vol, volCacheExpiry);
+                    }
+                }
+            }
+
+            if( vol!=null)
+            {
+                string key = GetCacheGestorESKey(vol.Id);
+                switch (vol.TipoGestorESId)
+                {
+                    case TipoGestorES.LOCAL_FOLDER:
+                        GestorLocalConfig config = lazycache.Get<GestorLocalConfig>(key);
+                        if (config == null)
+                        {
+                            IRepositorioAsync<GestorLocalConfig> repoconfig = UDT.ObtenerRepositoryAsync<GestorLocalConfig>(new QueryComposer<GestorLocalConfig>()); ;
+                            config = await repoconfig.UnicoAsync(x => x.VolumenId.Equals(VolumenId.Trim(), StringComparison.InvariantCultureIgnoreCase));
+                            if (config != null)
+                            {
+                                this.lazycache.Add<GestorLocalConfig>(key, config, volCacheExpiry);
+                            }
+                        }
+
+                        if (config != null)
+                        {
+                            IServicioElemento servElemento = new ServicioElemento(this.proveedorOpciones, this.logger);
+                            IServicioVersion servVersion = new ServicioVersion(this.proveedorOpciones, this.logger);
+                            IServicioParte servicioParte = new ServicioParte(this.proveedorOpciones, this.logger);
+                            gestor = new GestorLocal(logger, servElemento, servVersion, servicioParte, config, vol, opciones);
+                        }
+                        break;
+
+                    case TipoGestorES.SMB:
+                        break;
+
+                    case TipoGestorES.AzureBlob:
+                        break;
+
+                }
+            }
+            
+
+            return gestor;
+        }
 
 
         public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
@@ -303,8 +380,6 @@ namespace PIKA.Servicio.Contenido.Servicios
         }
 
 
-
- 
         #endregion
     }
 

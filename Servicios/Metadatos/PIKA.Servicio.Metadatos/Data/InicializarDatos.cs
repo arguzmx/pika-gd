@@ -15,7 +15,7 @@ namespace PIKA.Servicio.Metadatos.Data
             InicializarTipoDato(dbContext, contentPath);
             GeneraTiposAlmacenDefault(dbContext);
 
-            GeneraDatosDemo(dbContext);
+            // GeneraDatosDemo(dbContext);
         }
 
         private static void GeneraTiposAlmacenDefault(DbContextMetadatos dbContext) {

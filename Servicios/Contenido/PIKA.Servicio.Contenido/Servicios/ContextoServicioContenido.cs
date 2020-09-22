@@ -11,7 +11,7 @@ namespace PIKA.Servicio.Contenido.Servicios
     {
         protected IServicioCache cache;
         protected ILogger logger;
-
+        protected IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones;
         protected DbContextContenido contexto;
         public ContextoServicioContenido(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
@@ -20,6 +20,7 @@ namespace PIKA.Servicio.Contenido.Servicios
             DbContextContenidoFactory cf = new DbContextContenidoFactory(proveedorOpciones);
             this.contexto = cf.Crear();
             this.logger = Logger;
+            this.proveedorOpciones = proveedorOpciones;
         }
 
     }

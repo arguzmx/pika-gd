@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace PIKA.Modelo.Contenido
 {
@@ -20,7 +21,7 @@ namespace PIKA.Modelo.Contenido
         /// <param name="Id">Identificador único del contenido</param>
         /// <param name="informacion">Información del archivo original</param>
         /// <returns>El número total de bytes escritos</returns>
-        long EscribeBytes(string Id, byte[] contenido, FileInfo informacion, bool sobreescribir); 
+        Task<long> EscribeBytes(string Id, byte[] contenido, FileInfo informacion, bool sobreescribir); 
 
 
 

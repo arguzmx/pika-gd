@@ -34,5 +34,24 @@ namespace PIKA.Modelo.Metadatos
                 PropiedadReceptora = link.PropiedadReceptora
             };
         }
+
+        public static LinkVista Copia(this LinkViewAttribute link)
+        {
+            return new LinkVista()
+            {
+                 Icono = link.Icono,
+                  Titulo = link.Titulo,
+                   Vista = link.Vista
+            };
+        }
+
+
+        public static ParametroLinkVista Copia(this LinkViewParameterAttribute link)
+        {
+            return new ParametroLinkVista()
+            {
+                 Vista = link.Vista
+            };
+        }
     }
 }
