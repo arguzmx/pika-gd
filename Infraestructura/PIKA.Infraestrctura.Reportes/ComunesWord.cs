@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PIKA.Infraestrctura.Reportes
 {
-    class ComunesWord
+    public static class ComunesWord
     {
     }
 }
