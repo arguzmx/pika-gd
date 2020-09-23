@@ -172,6 +172,7 @@ namespace PIKA.Modelo.Metadatos
         
         public virtual ValidadorNumero ValidadorNumero { get; set; }
         
+        [NotMapped]
         public virtual ParametroLinkVista ParametroLinkVista { get; set; }
 
         public ICollection<ValorLista> ValoresLista { get; set; }
