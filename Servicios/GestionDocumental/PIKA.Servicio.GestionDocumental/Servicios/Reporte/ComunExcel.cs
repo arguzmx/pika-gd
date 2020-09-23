@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿
+
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-
+using DocumentFormat.OpenXml.Wordprocessing;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace PIKA.Servicio.GestionDocumental
 {
@@ -350,11 +352,11 @@ namespace PIKA.Servicio.GestionDocumental
         {
             System.IO.Directory.CreateDirectory(ruta);
         }
-        public byte[] UnirDocumentos(List<byte[]> ListaArchivos)
+        public static byte[] UnirDocumentos(List<byte[]> ListaArchivos)
         {
-            return CombinarDocumentos(ListaArchivos);
+            return CombinarDocumentos(ListaArchivos, "");
         }
-        public byte[] UnirDocumentos(List<string> ListaRutas)
+        public static byte[] UnirDocumentos(List<string> ListaRutas)
         {
             List<byte[]> listafile = new List<byte[]>();
             foreach (string namefile in ListaRutas)
@@ -363,17 +365,46 @@ namespace PIKA.Servicio.GestionDocumental
                 listafile.Add(f);
 
             }
-            return CombinarDocumentos(listafile);
+            return CombinarDocumentos(listafile, ListaRutas.FirstOrDefault());
         }
-        public byte[] CombinarDocumentos(List<byte[]> DocumentoFusionado)
+        public static byte[] CombinarDocumentos(List<byte[]> DocumentoFusionado, string ruta)
         {
-            List<OpenXmlPowerTools.Source> documentBuilderSources = new List<OpenXmlPowerTools.Source>();
+            int x = 0;
+            byte[] fileOld = { };
+            ruta = @"C:\\Arguz\\Excel\\ejemplo.docx";
             foreach (byte[] documentByteArray in DocumentoFusionado)
             {
-                documentBuilderSources.Add(new OpenXmlPowerTools.Source(new OpenXmlPowerTools.WmlDocument(string.Empty, documentByteArray), false));
+                if (x == 0)
+                    fileOld = documentByteArray;
+                else
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        stream.Write(documentByteArray, 0, (int)documentByteArray.Length);
+                        using (WordprocessingDocument myDoc =
+                    WordprocessingDocument.Open(stream, true))
+                        {
+                            string altChunkId = "AltChunkId1";
+                            MainDocumentPart mainPart = myDoc.MainDocumentPart;
+                            AlternativeFormatImportPart chunk =
+                                mainPart.AddAlternativeFormatImportPart(
+                                AlternativeFormatImportPartType.WordprocessingML, altChunkId);
+                            using (FileStream fileStream = File.Open(ruta, FileMode.Open))
+                                chunk.FeedData(fileStream);
+                            AltChunk altChunk = new AltChunk();
+                            altChunk.Id = altChunkId;
+                            mainPart.Document
+                                .Body
+                                .InsertBefore(altChunk, mainPart.Document.Body
+                                .Elements<Paragraph>().First());
+                            mainPart.Document.Save();
+                        }
+                        File.WriteAllBytes(ruta, stream.ToArray());
+                    }
+                x++;
             }
-            OpenXmlPowerTools.WmlDocument mergedDocument = OpenXmlPowerTools.DocumentBuilder.BuildDocument(documentBuilderSources);
-            return mergedDocument.DocumentByteArray;
+            byte[] doc = File.ReadAllBytes(ruta);
+            return doc;
         }
+
     }
 }

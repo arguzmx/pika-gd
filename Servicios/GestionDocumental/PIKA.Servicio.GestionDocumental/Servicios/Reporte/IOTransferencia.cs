@@ -136,7 +136,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
                     EntradaClasificacion ec = await this.RepoEntrda.UnicoAsync(x=>x.Id.Equals(ac.EntradaClasificacionId,StringComparison.InvariantCultureIgnoreCase));
                      LlenadoExcel(li, ec.Clave, GetAbecedario(2), 2, renglon);
                      LlenadoExcel(li, ec.Nombre, GetAbecedario(3), 2, renglon);
-                     ColumnasDetalle(li, col, renglon, ec.Id,ac1);
+                   await  ColumnasDetalle(li, col, renglon, ec.Id,ac1);
 
                     break;
                 default:
