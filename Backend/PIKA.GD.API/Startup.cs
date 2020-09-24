@@ -30,6 +30,7 @@ using PIKA.Servicio.Usuarios;
 using PIKA.GD.API.JsonConverters;
 using PIKA.Servicio.Seguridad.Servicios;
 using PIKA.Servicio.Seguridad.Interfaces;
+using PIKA.Servicio.Reportes.Data;
 
 namespace PIKA.GD.API
 {
@@ -142,6 +143,8 @@ namespace PIKA.GD.API
 
             services.AddDbContext<DbContextContenido>(options =>
     options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+            services.AddDbContext<DbContextReportes>(options =>
+   options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
 #endif
 
