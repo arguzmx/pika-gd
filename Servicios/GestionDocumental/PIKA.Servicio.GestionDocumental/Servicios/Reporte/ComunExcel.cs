@@ -354,7 +354,7 @@ namespace PIKA.Servicio.GestionDocumental
         }
         public static byte[] UnirDocumentos(List<byte[]> ListaArchivos)
         {
-            return CombinarDocumentos(ListaArchivos, "");
+            return CombinarDocumentos(ListaArchivos);
         }
         public static byte[] UnirDocumentos(List<string> ListaRutas)
         {
@@ -365,17 +365,17 @@ namespace PIKA.Servicio.GestionDocumental
                 listafile.Add(f);
 
             }
-            return CombinarDocumentos(listafile, ListaRutas.FirstOrDefault());
+            return CombinarDocumentos(listafile);
         }
-        public static byte[] CombinarDocumentos(List<byte[]> DocumentoFusionado, string ruta)
+        public static byte[] CombinarDocumentos(List<byte[]> DocumentoFusionado)
         {
             int x = 0;
             byte[] fileOld = { };
-            ruta = @"C:\\Arguz\\Excel\\ejemplo.docx";
+            byte[] resultado = { };
             foreach (byte[] documentByteArray in DocumentoFusionado)
             {
                 if (x == 0)
-                    fileOld = documentByteArray;
+                { fileOld = documentByteArray; }
                 else
                     using (MemoryStream stream = new MemoryStream())
                     {
@@ -388,8 +388,8 @@ namespace PIKA.Servicio.GestionDocumental
                             AlternativeFormatImportPart chunk =
                                 mainPart.AddAlternativeFormatImportPart(
                                 AlternativeFormatImportPartType.WordprocessingML, altChunkId);
-                            using (FileStream fileStream = File.Open(ruta, FileMode.Open))
-                                chunk.FeedData(fileStream);
+                            using (MemoryStream file = new MemoryStream(fileOld))
+                                chunk.FeedData(file);
                             AltChunk altChunk = new AltChunk();
                             altChunk.Id = altChunkId;
                             mainPart.Document
@@ -398,13 +398,15 @@ namespace PIKA.Servicio.GestionDocumental
                                 .Elements<Paragraph>().First());
                             mainPart.Document.Save();
                         }
-                        File.WriteAllBytes(ruta, stream.ToArray());
+
+                        fileOld = stream.ToArray();
+                        resultado = stream.ToArray();
+
                     }
                 x++;
-            }
-            byte[] doc = File.ReadAllBytes(ruta);
-            return doc;
-        }
 
+            }
+            return resultado;
+        }
     }
 }
