@@ -100,7 +100,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         public async Task<ActionResult> Delete(string ids)
         {
-            Console.WriteLine($"eliminados::: {ids}");
             string IdsTrim = "";
             foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
             {
