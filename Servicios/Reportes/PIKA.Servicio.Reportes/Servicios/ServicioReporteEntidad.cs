@@ -147,14 +147,11 @@ namespace PIKA.Servicio.Reportes.Servicios
 
         public Task<IEnumerable<ReporteEntidad>> CrearAsync(params ReporteEntidad[] entities)
         {
-            Console.WriteLine("algo hay mal");
             throw new NotImplementedException();
         }
 
         public Task<IEnumerable<ReporteEntidad>> CrearAsync(IEnumerable<ReporteEntidad> entities, CancellationToken cancellationToken = default)
         {
-            Console.WriteLine("algo hay mal aquiii");
-
             throw new NotImplementedException();
         }
 

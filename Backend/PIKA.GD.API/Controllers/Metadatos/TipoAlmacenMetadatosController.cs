@@ -43,7 +43,6 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery] Consulta query = null)
         {
-            Console.WriteLine("\n Ingreso.... \n");
             return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
         }
 

@@ -52,7 +52,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             {
                 return BadRequest();
             }
-            Console.WriteLine(TransferenciaId);
             entidad = await servicioActivoDeclinado.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetActivoDeclinado", new { ActivoId = entidad.ActivoId }, entidad).Value);
         }
