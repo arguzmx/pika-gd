@@ -51,6 +51,11 @@ namespace PIKA.Modelo.Contenido
         //Longutidud  =  crear longiutd MIME con tamanaño 50
 
         /// <summary>
+        /// Extensión del archivo recibido
+        /// </summary>
+        public string Extension { get; set; }
+
+        /// <summary>
         /// Longidut en bytes de la parte
         /// </summary>
         public long LongitudBytes { get; set; }
@@ -69,6 +74,41 @@ namespace PIKA.Modelo.Contenido
         public bool Eliminada { get; set; }
         //Default=false
 
+        /// <summary>
+        /// Indica si la parte es del tipo imagen
+        /// </summary>
+        public bool EsImagen { get; set; }
+
+        /// <summary>
+        /// Indica si la parte es del tipo audio
+        /// </summary>
+        public bool EsAudio { get; set; }
+
+        /// <summary>
+        /// Indica si la parte es del tipo video
+        /// </summary>
+        public bool EsVideo { get; set; }
+
+        /// <summary>
+        /// Indica si la parte es del tipo video
+        /// </summary>
+        public bool EsPDF { get; set; }
+
+        /// <summary>
+        /// Indica si la parte tiene una miniatura generada
+        /// </summary>
+        public bool TieneMiniatura { get; set; }
+
+        /// <summary>
+        /// Determina si el contenido ha sido indexado
+        /// </summary>
+        public bool Indexada { get; set; }
+
+        /// <summary>
+        /// Identificador único del volumen para la parte
+        /// </summary>
+        public string VolumenId { get; set; }
+
         [JsonIgnore]
         [XmlIgnore]
         public virtual Elemento Elemento { get; set; }
@@ -76,6 +116,10 @@ namespace PIKA.Modelo.Contenido
         [JsonIgnore]
         [XmlIgnore]
         public virtual Version Version { get; set; }
+
+        [JsonIgnore]
+        [XmlIgnore]
+        public virtual Volumen Volumen { get; set; }
 
     }
 }

@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Contenido.Helpers
 {
-    public class  HelperCarpetas
+    public class  ComunesCarpetas
     {
         private IRepositorioAsync<Carpeta> repo;
-        public HelperCarpetas(IRepositorioAsync<Carpeta> repo)
+        public ComunesCarpetas(IRepositorioAsync<Carpeta> repo)
         {
             this.repo = repo;
         }

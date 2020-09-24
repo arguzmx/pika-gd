@@ -30,17 +30,17 @@ namespace PIKA.Servicio.Contenido.Servicios
         private IRepositorioAsync<Parte> repo;
         private IRepositorioAsync<Version> repoVer;
         private UnidadDeTrabajo<DbContextContenido> UDT;
-        private HelperVolumen helperVolumen;
-        private HelperVersion helperVersion;
+        private ComunesVolumen helperVolumen;
+        private ComunesVersion helperVersion;
         public ServicioParte(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-        ILogger Logger) : base(proveedorOpciones, Logger)
+        ILogger<ServicioLog> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Parte>( new QueryComposer<Parte>());
             this.repoVer = UDT.ObtenerRepositoryAsync<Version>(new QueryComposer<Version>());
-            helperVolumen = new HelperVolumen(UDT);
-            helperVersion = new HelperVersion(UDT);
+            helperVolumen = new ComunesVolumen(UDT);
+            helperVersion = new ComunesVersion(UDT);
         }
 
         public async Task<bool> Existe(Expression<Func<Parte, bool>> predicado)
@@ -82,6 +82,7 @@ namespace PIKA.Servicio.Contenido.Servicios
                 entity.Id = System.Guid.NewGuid().ToString();
                 entity.Indice = v.MaxIndicePartes + 1;
                 entity.ConsecutivoVolumen = await helperVolumen.GetConsecutivoVolumen(volid, entity.LongitudBytes)  ;
+                entity.Indexada = false;
                 logger.LogWarning(entity.ConsecutivoVolumen.ToString());
                 entity.Eliminada = false;
 

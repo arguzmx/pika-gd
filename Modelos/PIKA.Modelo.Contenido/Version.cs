@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Contenido
 {
@@ -52,12 +54,26 @@ namespace PIKA.Modelo.Contenido
 
 
         /// <summary>
+        /// Identificador único del volumen para la version
+        /// </summary>
+        public string VolumenId { get; set; }
+
+
+        /// <summary>
         /// Mantiene el indice del número de partes de la versión
         /// </summary>
         public int MaxIndicePartes { get; set; }
 
+        [JsonIgnore]
+        [XmlIgnore]
         public virtual Elemento Elemento { get; set; }
+
+        [JsonIgnore]
+        [XmlIgnore]
         public virtual ICollection<Parte> Partes { get; set; }
-        
+
+        [JsonIgnore]
+        [XmlIgnore]
+        public virtual Volumen Volumen { get; set; }
     }
 }

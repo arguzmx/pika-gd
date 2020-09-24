@@ -54,13 +54,13 @@ namespace PIKA.Servicio.Contenido.Gestores
             return valido;
         }
 
-        public async Task<long> EscribeBytes(string Id, byte[] contenido, FileInfo informacion, bool sobreescribir)
+        public async Task<long> EscribeBytes(string ParteId, string ElementoId, string VersionId, byte[] contenido, FileInfo informacion, bool sobreescribir)
         {
             await Task.Delay(1);
-            ValidaEscritura(Id, contenido, informacion);
+            ValidaEscritura(ElementoId, contenido, informacion);
             if (ConexionValida())
             {
-                string ruta = Path.Combine(configGestor.Ruta, volumen.Id, $"{Id},{informacion.Extension}");
+                string ruta = Path.Combine(configGestor.Ruta, volumen.Id, $"{ElementoId},{informacion.Extension}");
                 if (File.Exists(ruta) )
                 {
                     if(!sobreescribir)
@@ -75,6 +75,23 @@ namespace PIKA.Servicio.Contenido.Gestores
                 return contenido.Length;
             }
             return -1;
+        }
+
+       
+
+        public Task<long> EscribeBytes(string ParteId, string ElementoId, string VersionId, string archivoFuente, FileInfo informacion, bool sobreescribir)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<byte[]> LeeBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<byte[]> LeeThumbnailBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension)
+        {
+            throw new NotImplementedException();
         }
 
         private void ValidaEscritura(string Id, byte[] contenido, FileInfo informacion)

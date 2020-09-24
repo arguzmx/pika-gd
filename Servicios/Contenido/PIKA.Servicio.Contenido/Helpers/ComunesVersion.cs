@@ -11,16 +11,21 @@ using Version = PIKA.Modelo.Contenido.Version;
 
 namespace PIKA.Servicio.Contenido.Helpers
 {
-    public class  HelperVersion
+    public class  ComunesVersion
     {
         private IRepositorioAsync<Version> repo;
         private UnidadDeTrabajo<DbContextContenido> UDT;
-        public HelperVersion( UnidadDeTrabajo<DbContextContenido> UDT)
+        public ComunesVersion( UnidadDeTrabajo<DbContextContenido> UDT)
         {
             this.UDT = UDT;
             this.repo = this.UDT.ObtenerRepositoryAsync<Version>(new QueryComposer<Version>());
         }
 
+        public async Task<Version> Unica(string Id)
+        {
+            return await repo.UnicoAsync(x => x.Id == Id);
+        } 
+ 
 
         public async Task CreaParte(Parte entity)
         {
@@ -57,7 +62,11 @@ namespace PIKA.Servicio.Contenido.Helpers
             UDT.Context.Entry(v).State = EntityState.Modified;
         }
 
-
+        /// <summary>
+        /// Actualiza las estad´siticas de la version
+        /// </summary>
+        /// <param name="versionId"></param>
+        /// <returns></returns>
         public async Task RecalcularContenido(string versionId)
         {
 

@@ -14,15 +14,12 @@ namespace PIKA.Modelo.Contenido
         /// <returns></returns>
         bool ConexionValida();
 
-        /// <summary>
-        /// Escribe un arreglo de bytes en el medio de almacenamiento
-        /// </summary>
-        /// <param name="contenido">Contenido en forma de un arreglo de bytes</param>
-        /// <param name="Id">Identificador único del contenido</param>
-        /// <param name="informacion">Información del archivo original</param>
-        /// <returns>El número total de bytes escritos</returns>
-        Task<long> EscribeBytes(string Id, byte[] contenido, FileInfo informacion, bool sobreescribir); 
 
+        Task<long> EscribeBytes(string ParteId, string ElementoId, string VersionId, byte[] contenido, FileInfo informacion, bool sobreescribir);
+        Task<long> EscribeBytes(string ParteId, string ElementoId, string VersionId, string archivoFuente, FileInfo informacion, bool sobreescribir);
+
+        Task<byte[]> LeeBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension );
+        Task<byte[]> LeeThumbnailBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension);
 
 
     }

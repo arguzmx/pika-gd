@@ -15,6 +15,10 @@
     <Compile Remove="Data\Migrations\20200921213558_ActualizacionTablaPartes.Designer.cs" />
     <Compile Remove="Data\Migrations\20200921214052_ActualizacionTablaPartes.cs" />
     <Compile Remove="Data\Migrations\20200921214052_ActualizacionTablaPartes.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200923183355_ModificacionParteContenido.cs" />
+    <Compile Remove="Data\Migrations\20200923183355_ModificacionParteContenido.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200923203320_AdicionVolumenIdParteVersion.cs" />
+    <Compile Remove="Data\Migrations\20200923203320_AdicionVolumenIdParteVersion.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

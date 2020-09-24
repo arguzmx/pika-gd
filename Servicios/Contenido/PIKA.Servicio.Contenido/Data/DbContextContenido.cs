@@ -62,6 +62,7 @@ namespace PIKA.Servicio.Contenido
 
         public static string TablaVolumenPuntoMontaje { get => $"{esquema}puntomontajevolumen"; }
 
+        public static string TablaElementoTransaccionContenido { get => $"{esquema}ElementoTransaccionContenido"; }
 
         #endregion
 
@@ -131,6 +132,9 @@ namespace PIKA.Servicio.Contenido
         public DbSet<GestorSMBConfig> GestorSMBConfig { get; set; }
 
 
+        public DbSet<ElementoTransaccionCarga> ElementosTransaccionCarga { get; set; }
+
+
         public void AplicarMigraciones()
         {
             this.Database.Migrate();
@@ -157,6 +161,7 @@ namespace PIKA.Servicio.Contenido
             builder.ApplyConfiguration<GestorLocalConfig>(new DbConfigGestorLocal());
             builder.ApplyConfiguration<GestorSMBConfig>(new DbConfigGestorSMB());
             builder.ApplyConfiguration<GestorAzureConfig>(new DbConfigGestorAzure());
+            builder.ApplyConfiguration<ElementoTransaccionCarga>(new DbConfElementoTransaccionCarga());
 
         }
 
