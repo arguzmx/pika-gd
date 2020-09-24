@@ -33,22 +33,32 @@ namespace PIKA.Servicio.Contenido.Servicios
         private IRepositorioAsync<Permiso> repoPerm;
         private IRepositorioAsync<Carpeta> repoCarpetas;
         private UnidadDeTrabajo<DbContextContenido> UDT;
-        private HelperCarpetas helperCarpetas;
+        private ComunesCarpetas helperCarpetas;
 
         public ServicioElemento(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-            ILogger Logger
+            ILogger<ServicioLog> Logger
         ) : base(proveedorOpciones, Logger)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
-            this.repo = UDT.ObtenerRepositoryAsync<Elemento>(new QueryComposer<Elemento>());
-            this.repoVer = UDT.ObtenerRepositoryAsync<PIKA.Modelo.Contenido.Version>(new QueryComposer<PIKA.Modelo.Contenido.Version>());
-            this.repoVol = UDT.ObtenerRepositoryAsync<Volumen>(new QueryComposer<Volumen>());
-            this.repoVPM = UDT.ObtenerRepositoryAsync<VolumenPuntoMontaje>(new QueryComposer<VolumenPuntoMontaje>());
-            this.repoPerm = UDT.ObtenerRepositoryAsync<Permiso>(new QueryComposer<Permiso>());
-            this.repoPM = UDT.ObtenerRepositoryAsync<PuntoMontaje>(new QueryComposer<PuntoMontaje>());
-            this.repoCarpetas = UDT.ObtenerRepositoryAsync<Carpeta>(new QueryComposer<Carpeta>());
-            this.helperCarpetas = new HelperCarpetas(this.repoCarpetas);
+            try
+            {
+                this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
+                this.repo = UDT.ObtenerRepositoryAsync<Elemento>(new QueryComposer<Elemento>());
+                this.repoVer = UDT.ObtenerRepositoryAsync<PIKA.Modelo.Contenido.Version>(new QueryComposer<PIKA.Modelo.Contenido.Version>());
+                this.repoVol = UDT.ObtenerRepositoryAsync<Volumen>(new QueryComposer<Volumen>());
+                this.repoVPM = UDT.ObtenerRepositoryAsync<VolumenPuntoMontaje>(new QueryComposer<VolumenPuntoMontaje>());
+                this.repoPerm = UDT.ObtenerRepositoryAsync<Permiso>(new QueryComposer<Permiso>());
+                this.repoPM = UDT.ObtenerRepositoryAsync<PuntoMontaje>(new QueryComposer<PuntoMontaje>());
+                this.repoCarpetas = UDT.ObtenerRepositoryAsync<Carpeta>(new QueryComposer<Carpeta>());
+                this.helperCarpetas = new ComunesCarpetas(this.repoCarpetas);
+            }
+            catch (Exception ex)
+            {
+
+                logger.LogError(ex.ToString());
+                throw ex;
+            }
+            
         }
 
         public async Task<bool> Existe(Expression<Func<Elemento, bool>> predicado)
@@ -156,7 +166,11 @@ namespace PIKA.Servicio.Contenido.Servicios
                     CreadorId = entity.CreadorId,
                     ElementoId = entity.Id,
                     Eliminada = false,
-                    FechaCreacion = entity.FechaCreacion
+                    FechaCreacion = entity.FechaCreacion,
+                    VolumenId = entity.VolumenId,
+                    ConteoPartes = 0,
+                    MaxIndicePartes = 0,
+                    TamanoBytes = 0
                 };
 
                 await this.repoVer.CrearAsync(v);
@@ -231,6 +245,10 @@ namespace PIKA.Servicio.Contenido.Servicios
         {
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
+            foreach(var e in respuesta.Elementos)
+            {
+                e.VersionId = e.Versiones.Where(x => x.Activa == true).SingleOrDefault()?.Id;
+            }
             return respuesta;
         }
         public async Task<ICollection<string>> Eliminar(string[] ids)

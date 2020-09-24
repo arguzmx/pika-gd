@@ -30,7 +30,7 @@ namespace PIKA.Servicio.Contenido.Servicios
         private UnidadDeTrabajo<DbContextContenido> UDT;
         public ServicioGestorSMBConfig(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-        ILogger<ServicioGestorSMBConfig> Logger) : base(proveedorOpciones, Logger)
+        ILogger<ServicioLog> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<GestorSMBConfig>( new QueryComposer<GestorSMBConfig>());

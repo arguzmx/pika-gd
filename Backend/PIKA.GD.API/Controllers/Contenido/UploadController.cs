@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using PIKA.GD.API.Model;
+using OpenXmlPowerTools;
 using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Contenido;
+using PIKA.Modelo.Contenido.ui;
 using PIKA.Servicio.Contenido.Interfaces;
 
 namespace PIKA.GD.API.Controllers.Contenido
@@ -18,16 +21,21 @@ namespace PIKA.GD.API.Controllers.Contenido
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class UploadController : ControllerBase
+    [Authorize]
+    public class UploadController : ACLController
     {
         private ILogger<UploadController> logger;
         private IServicioVolumen servicioVol;
         private ConfiguracionServidor configuracionServidor;
+        private IServicioElementoTransaccionCarga servicioTransaccionCarga;
 
-        public UploadController(ILogger<UploadController> logger,
+        public UploadController(
+            IServicioElementoTransaccionCarga servicioTransaccionCarga,
+            ILogger<UploadController> logger,
             IServicioVolumen servicioVol, 
             IOptions<ConfiguracionServidor> opciones)
         {
+            this.servicioTransaccionCarga = servicioTransaccionCarga;
             this.servicioVol = servicioVol;
             this.logger = logger;
             this.configuracionServidor = opciones.Value;
@@ -39,63 +47,73 @@ namespace PIKA.GD.API.Controllers.Contenido
             FiltroArchivos.addExt(".docx");
         }
 
+        [HttpPost("completar/{TransaccionId}")]
+        public async Task<IActionResult> FinalizarLote(string TransaccionId)
+        {
+            string VolId = await servicioTransaccionCarga.ObtieneVolumenIdTransaccion(TransaccionId)
+                .ConfigureAwait(false); 
+
+            if(VolId!=null)
+            {
+                IGestorES gestor = await servicioVol.ObtienInstanciaGestor(VolId)
+                               .ConfigureAwait(false);
+                if (gestor != null)
+                {
+                    await this.servicioTransaccionCarga.ProcesaTransaccion(TransaccionId, VolId, gestor)
+                        .ConfigureAwait(false);
+
+                    return Ok();
+
+                }
+
+            }
+
+            return BadRequest($"{TransaccionId}");
+        }
 
 
-        [HttpPost("ContenidoFiltrado")]
-        public async Task<IActionResult> PostContenidoFiltrado([FromForm] ElementoContenido model)
+        [HttpPost()]
+        public async Task<IActionResult> PostContenido([FromForm] ElementoCargaContenido model)
         {
 
-
-   
             logger.LogWarning(model.VolumenId);
             logger.LogWarning(model.ElementoId);
             logger.LogWarning(model.PuntoMontajeId);
-
 
             if (tamanoValido(model.file.Length, FiltroArchivos.minimo, FiltroArchivos.maximo))
             {
                 if (extensionValida(model.file, FiltroArchivos.extensionesValidas))
                 {
 
-                    IGestorES gestor = await servicioVol.ObtienInstanciaGestor(model.VolumenId).ConfigureAwait(false);
-                   
+                    var entrada = await servicioTransaccionCarga.CrearAsync(model.ConvierteETC()).ConfigureAwait(false);
 
-                    var filePath = Path.Combine(configuracionServidor.ruta_cache_fisico, 
-                        Path.GetRandomFileName() + 
-                        Path.GetExtension(model.file.FileName));
+                    string ruta = Path.Combine(configuracionServidor.ruta_cache_fisico, model.TransaccionId);
+                    if (!Directory.Exists(ruta)) Directory.CreateDirectory(ruta);
+                    string filePath = Path.Combine(ruta, entrada.Id + Path.GetExtension(model.file.FileName));
 
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        logger.LogWarning($"copiando {filePath}");
                         await model.file.CopyToAsync(stream).ConfigureAwait(false);
                     }
 
                     if (System.IO.File.Exists(filePath))
                     {
-                        long resultado = await
-                        gestor.EscribeBytes(model.ElementoId,
-                        System.IO.File.ReadAllBytes(filePath),
-                        new FileInfo(filePath), true).ConfigureAwait(false);
+                        return Ok();
 
-                        logger.LogWarning($"r {resultado}");
-                        if (resultado > 0)
-                        {
-                            logger.LogWarning($"eliminando {filePath}");
-                            System.IO.File.Delete(filePath);
-                        }
-                        return Ok(new { resultado });
                     } else
                     {
-                        throw new Exception("Error al escribir en cache");
+                        return StatusCode((int)HttpStatusCode.InternalServerError, "Error de escritura");
                     }
                  
-
                 }
                 else
                     ModelState.AddModelError(model.file.Name, "extensión inválida");
             }
             else
+            {
                 ModelState.AddModelError(model.file.Name, "tamaño inválido");
+            }
+
             return BadRequest(ModelState);
         }
 

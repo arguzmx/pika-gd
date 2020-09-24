@@ -35,7 +35,7 @@ namespace PIKA.Servicio.Contenido.Servicios
         private IOptions<ConfiguracionServidor> configServer;
         public ServicioGestorLocalConfig(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-        ILogger<ServicioGestorLocalConfig> Logger, 
+        ILogger<ServicioLog> Logger, 
         IOptions<ConfiguracionServidor> opciones) : base(proveedorOpciones, Logger)
         {
             this.configServer = opciones;
@@ -65,7 +65,7 @@ namespace PIKA.Servicio.Contenido.Servicios
                 throw new ExDatosNoValidos($"Ruta: {entity.Ruta}");
             }
 
-            GestorLocal g = new GestorLocal(entity, v, configServer);
+            GestorLocal g = new GestorLocal(this.logger, entity,  configServer);
             if (!g.ConexionValida() )
             {
                 throw new ExDatosNoValidos($"Sin acceso a ruta: {entity.Ruta}");

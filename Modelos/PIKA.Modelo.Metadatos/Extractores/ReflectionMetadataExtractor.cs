@@ -66,7 +66,6 @@ namespace PIKA.Modelo.Metadatos
                 T instance = Activator.CreateInstance<T>();
                 ((IEntidadReportes)instance).Reportes.ForEach(r =>
                 {
-                    Console.WriteLine($"{r.Nombre}");
                     info.Reportes.Add(r);
                 });
 

@@ -26,15 +26,15 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         private IRepositorioAsync<Carpeta> repo;
         private UnidadDeTrabajo<DbContextContenido> UDT;
-        private HelperCarpetas helperCarpetas;
+        private ComunesCarpetas helperCarpetas;
         public ServicioCarpeta(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-            ILogger<ServicioCarpeta> Logger
+            ILogger<ServicioLog> Logger
         ) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Carpeta>(new QueryComposer<Carpeta>());
-            this.helperCarpetas = new HelperCarpetas(this.repo);
+            this.helperCarpetas = new ComunesCarpetas(this.repo);
         }
 
         public async Task<bool> Existe(Expression<Func<Carpeta, bool>> predicado)

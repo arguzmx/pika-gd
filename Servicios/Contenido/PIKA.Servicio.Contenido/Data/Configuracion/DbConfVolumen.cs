@@ -33,6 +33,9 @@ namespace PIKA.Servicio.Contenido.Data.Configuracion
             builder.Property(x => x.Tamano).HasDefaultValue(0).IsRequired();
             builder.Property(x => x.TamanoMaximo).HasDefaultValue(0).IsRequired();
 
+            builder.HasMany(x => x.Partes).WithOne(y => y.Volumen).HasForeignKey(z => z.VolumenId).OnDelete(DeleteBehavior.Restrict).OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(x => x.Versiones).WithOne(y => y.Volumen).HasForeignKey(z => z.VolumenId).OnDelete(DeleteBehavior.Restrict).OnDelete(DeleteBehavior.Restrict);
+            
             builder.HasMany(x => x.PuntosMontajeVolumen).WithOne(y => y.Volumen).HasForeignKey(z => z.VolumenId).OnDelete(DeleteBehavior.Restrict).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(x => x.TipoGestorES).WithMany(y => y.Volumenes).HasForeignKey(z => z.TipoGestorESId).OnDelete(DeleteBehavior.Restrict).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(x => x.SMBConfig).WithOne(y => y.Volumen).HasForeignKey<GestorSMBConfig>(z => z.VolumenId).OnDelete(DeleteBehavior.Cascade);

@@ -28,7 +28,7 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public ServicioDestinatarioPermiso(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-            ILogger<ServicioPermiso> Logger
+            ILogger<ServicioLog> Logger
         ) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
