@@ -29,7 +29,7 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public ServicioPuntoMontaje(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-            ILogger<ServicioPuntoMontaje> Logger
+            ILogger<ServicioLog> Logger
         ) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);

@@ -4,6 +4,7 @@ using PIKA.Modelo.Metadatos.Atributos;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
@@ -98,7 +99,6 @@ namespace PIKA.Modelo.Contenido
         public string PermisoId { get; set; }
         // Es opcional
 
-
         /// <summary>
         /// Identifica si el elemento es administrado por versiones
         /// Todos los elementos tiene una versión inicial, 
@@ -107,6 +107,13 @@ namespace PIKA.Modelo.Contenido
         [Prop(Required: false, isId: false, Visible: false, ShowInTable: false, OrderIndex: 1010, DefaultValue: "true" )]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public bool Versionado { get; set; }
+
+        [NotMapped]
+        [Prop(Required: false, isId: false, Visible: false, ShowInTable: false, OrderIndex: 1010)]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+        [LinkViewParameter(Vista: "visorcontenido")]
+        public string VersionId { get; set; }
+
 
         [XmlIgnore]
         [JsonIgnore]

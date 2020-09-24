@@ -28,7 +28,7 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public ServicioTipoGestorES(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-            ILogger<ServicioTipoGestorES> Logger
+            ILogger<ServicioLog> Logger
         ) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);

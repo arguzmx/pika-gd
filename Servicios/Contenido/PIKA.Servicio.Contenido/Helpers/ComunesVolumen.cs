@@ -9,23 +9,51 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Contenido.Helpers
 {
-    public class  HelperVolumen
+    public class  ComunesVolumen
     {
         private IRepositorioAsync<Volumen> repo;
         private UnidadDeTrabajo<DbContextContenido> UDT;
-        public HelperVolumen( UnidadDeTrabajo<DbContextContenido> UDT)
+        public ComunesVolumen( UnidadDeTrabajo<DbContextContenido> UDT)
         {
             this.UDT = UDT;
             this.repo = this.UDT.ObtenerRepositoryAsync<Volumen>(new QueryComposer<Volumen>());
         }
 
+        public async Task<bool> PermitirInsercion(string volumenId, long byteCount)
+        {
+            var v = await this.repo.UnicoAsync(x => x.Id == volumenId);
+
+            if (!v.Activo || !v.EscrituraHabilitada || v.Eliminada) return false;
+
+            if (v.TamanoMaximo != 0 && (v.Tamano + byteCount) > v.TamanoMaximo) return false;
+
+            return true;
+        }
+
+        public bool PermitirInsercion(Volumen v, long byteCount)
+        {
+            
+            if (!v.Activo || !v.EscrituraHabilitada || v.Eliminada) return false;
+
+            if (v.TamanoMaximo != 0 && (v.Tamano + byteCount) > v.TamanoMaximo) return false;
+
+            return true;
+        }
+
+        public async Task<long> IncrementaTamanoVolumen(string volumenId, long byteCount)
+        {
+            var v = await this.repo.UnicoAsync(x => x.Id == volumenId);
+            v.Tamano = v.Tamano + byteCount;
+            UDT.Context.Entry(v).State = EntityState.Modified;
+            UDT.SaveChanges();
+            return v.Tamano;
+        }
+        
 
         public async Task<long> ActualizaTamanoVolumen(string volumenId, long bytesantes, long bytesdespues)
         {
             var v = await this.repo.UnicoAsync(x => x.Id == volumenId);
 
-  
-        
             v.Tamano = (v.Tamano - bytesantes) + bytesdespues;
 
             UDT.Context.Entry(v).State = EntityState.Modified;
@@ -62,8 +90,13 @@ namespace PIKA.Servicio.Contenido.Helpers
             return v.ConsecutivoVolumen;
         }
 
-      
-        
-        
+
+
+        public async Task<Volumen> Unico(string Id)
+        {
+            return await repo.UnicoAsync(x => x.Id == Id);
+        }
+
+
     }
 }

@@ -35,7 +35,7 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public ServicioVolumen(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-            ILogger<ServicioVolumen> Logger,
+            ILogger<ServicioLog> Logger,
             IAppCache lazycache,
             IOptions<ConfiguracionServidor> opciones
         ) : base(proveedorOpciones, Logger)
@@ -93,10 +93,7 @@ namespace PIKA.Servicio.Contenido.Servicios
 
                         if (config != null)
                         {
-                            IServicioElemento servElemento = new ServicioElemento(this.proveedorOpciones, this.logger);
-                            IServicioVersion servVersion = new ServicioVersion(this.proveedorOpciones, this.logger);
-                            IServicioParte servicioParte = new ServicioParte(this.proveedorOpciones, this.logger);
-                            gestor = new GestorLocal(logger, servElemento, servVersion, servicioParte, config, vol, opciones);
+                            gestor = new GestorLocal(logger, config, opciones);
                         }
                         break;
 

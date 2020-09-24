@@ -158,6 +158,15 @@ namespace PIKA.Modelo.Contenido
 
         [XmlIgnore]
         [JsonIgnore]
+        public ICollection<Parte> Partes { get; set; }
+
+        [XmlIgnore]
+        [JsonIgnore]
+        public ICollection<Version> Versiones { get; set; }
+
+
+        [XmlIgnore]
+        [JsonIgnore]
         public ICollection<Elemento> Elementos { get; set; }
 
         [XmlIgnore]

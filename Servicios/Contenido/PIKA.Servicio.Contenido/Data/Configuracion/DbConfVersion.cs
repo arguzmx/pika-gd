@@ -18,6 +18,7 @@ namespace PIKA.Servicio.Contenido.Data.Configuracion
 
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.ElementoId).HasMaxLength(LongitudDatos.GUID).IsRequired();
+            builder.Property(x => x.VolumenId).IsRequired().ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
 
             builder.Property(x => x.FechaCreacion).IsRequired();
             builder.Property(x => x.CreadorId).HasMaxLength(LongitudDatos.GUID).IsRequired();

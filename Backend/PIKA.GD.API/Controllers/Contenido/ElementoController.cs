@@ -104,7 +104,7 @@ namespace PIKA.GD.API.Controllers.Contenido
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             var data = await servicioEntidad.ObtenerPaginadoAsync(
                  Query: query,
-                 include: null)
+                 include:  x=>x.Include(y=>y.Versiones) )
                  .ConfigureAwait(false);
 
             return Ok(data);

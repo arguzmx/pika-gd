@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PIKA.Servicio.Contenido;
 
 namespace PIKA.Servicio.Contenido.data.Migrations
 {
     [DbContext(typeof(DbContextContenido))]
-    partial class DbContextContenidoModelSnapshot : ModelSnapshot
+    [Migration("20200923183620_ModificacionParteContenido")]
+    partial class ModificacionParteContenido
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -196,11 +198,6 @@ namespace PIKA.Servicio.Contenido.data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
-                    b.Property<string>("VersionId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
                     b.Property<string>("VolumenId")
                         .IsRequired()
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
@@ -305,22 +302,8 @@ namespace PIKA.Servicio.Contenido.data.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false);
 
-                    b.Property<bool>("EsAudio")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<bool>("EsImagen")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("EsPDF")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("EsVideo")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Extension")
-                        .IsRequired()
-                        .HasColumnType("varchar(50) CHARACTER SET utf8mb4")
-                        .HasMaxLength(50);
 
                     b.Property<bool>("Indexada")
                         .HasColumnType("tinyint(1)");
@@ -340,15 +323,11 @@ namespace PIKA.Servicio.Contenido.data.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("TipoMime")
+                        .IsRequired()
                         .HasColumnType("varchar(50) CHARACTER SET utf8mb4")
                         .HasMaxLength(50);
 
                     b.Property<string>("VersionId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("VolumenId")
                         .IsRequired()
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
@@ -360,8 +339,6 @@ namespace PIKA.Servicio.Contenido.data.Migrations
                     b.HasIndex("Indexada");
 
                     b.HasIndex("VersionId");
-
-                    b.HasIndex("VolumenId");
 
                     b.ToTable("contenido$versionpartes");
                 });
@@ -493,16 +470,9 @@ namespace PIKA.Servicio.Contenido.data.Migrations
                     b.Property<long>("TamanoBytes")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("VolumenId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
                     b.HasKey("Id");
 
                     b.HasIndex("ElementoId");
-
-                    b.HasIndex("VolumenId");
 
                     b.ToTable("contenido$versionelemento");
                 });
@@ -683,12 +653,6 @@ namespace PIKA.Servicio.Contenido.data.Migrations
                         .HasForeignKey("VersionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("PIKA.Modelo.Contenido.Volumen", "Volumen")
-                        .WithMany("Partes")
-                        .HasForeignKey("VolumenId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("PIKA.Modelo.Contenido.PuntoMontaje", b =>
@@ -705,12 +669,6 @@ namespace PIKA.Servicio.Contenido.data.Migrations
                     b.HasOne("PIKA.Modelo.Contenido.Elemento", "Elemento")
                         .WithMany("Versiones")
                         .HasForeignKey("ElementoId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("PIKA.Modelo.Contenido.Volumen", "Volumen")
-                        .WithMany("Versiones")
-                        .HasForeignKey("VolumenId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
