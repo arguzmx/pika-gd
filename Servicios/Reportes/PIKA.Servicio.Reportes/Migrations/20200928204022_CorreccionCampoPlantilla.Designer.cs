@@ -8,7 +8,7 @@ using PIKA.Servicio.Reportes.Data;
 namespace PIKA.Servicio.Reportes.Migrations
 {
     [DbContext(typeof(DbContextReportes))]
-    [Migration("20200928202816_CorreccionCampoPlantilla")]
+    [Migration("20200928204022_CorreccionCampoPlantilla")]
     partial class CorreccionCampoPlantilla
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
