@@ -15,6 +15,8 @@ using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.Contenido;
+using PIKA.Modelo.Contenido.Extensiones;
+using PIKA.Modelo.Contenido.ui;
 using PIKA.Servicio.Contenido.Helpers;
 using PIKA.Servicio.Contenido.Interfaces;
 using RepositorioEntidades;
@@ -42,31 +44,6 @@ namespace PIKA.Servicio.Contenido.Servicios
             this.repo = UDT.ObtenerRepositoryAsync<ElementoTransaccionCarga>(new QueryComposer<ElementoTransaccionCarga>());
         }
 
-
-        private void validaEntidad(ElementoTransaccionCarga entity)
-        {
-            if (string.IsNullOrEmpty(entity.ElementoId))
-                throw new ExDatosNoValidos($"Id elemento inválido");
-
-            if (string.IsNullOrEmpty(entity.PuntoMontajeId))
-                throw new ExDatosNoValidos($"Id punto de montaje inválido");
-
-            if (string.IsNullOrEmpty(entity.TransaccionId))
-                throw new ExDatosNoValidos($"Id transaccióm inválido");
-
-            if (string.IsNullOrEmpty(entity.VolumenId))
-                throw new ExDatosNoValidos($"Id volumen inválido");
-
-            if (string.IsNullOrEmpty(entity.NombreOriginal))
-                throw new ExDatosNoValidos($"Nombre origina inválido");
-
-            if (entity.TamanoBytes<=0)
-                throw new ExDatosNoValidos($"Tamaño inválido");
-
-            if (entity.Indice <= 0)
-                throw new ExDatosNoValidos($"Indice inválido");
-
-        }
 
         public async Task<ElementoTransaccionCarga> CrearAsync(ElementoTransaccionCarga entity, CancellationToken cancellationToken = default)
         {
@@ -111,7 +88,7 @@ namespace PIKA.Servicio.Contenido.Servicios
             return l.OrderBy(x => x.Indice).ToList();
         }
 
-        public async Task ProcesaTransaccion(string TransaccionId, string VolumenId, IGestorES gestor)
+        public async Task<List<Pagina>> ProcesaTransaccion(string TransaccionId, string VolumenId, IGestorES gestor)
         {
             List<ElementoTransaccionCarga> l = await OtieneElementosTransaccion(TransaccionId).ConfigureAwait(false);
 
@@ -129,11 +106,12 @@ namespace PIKA.Servicio.Contenido.Servicios
 
             ComunesPartes hpartes = new ComunesPartes(this.UDT);
             List<Parte> resultados = await hpartes.CrearAsync(partes);
-
+            List<Pagina> paginas= new List<Pagina>();
             foreach(Parte p in resultados)
             {
                 string filePath = Path.Combine(ruta, p.Id + Path.GetExtension(p.NombreOriginal));
                 await gestor.EscribeBytes(p.Id, p.ElementoId, p.VersionId, filePath, new FileInfo(p.NombreOriginal), false).ConfigureAwait(false);
+                paginas.Add(p.APagina());
             }
 
             await this.EliminarTransaccion(TransaccionId);
@@ -143,6 +121,7 @@ namespace PIKA.Servicio.Contenido.Servicios
             }
             catch (Exception) { }
 
+            return paginas;
         }
 
 

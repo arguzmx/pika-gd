@@ -58,10 +58,10 @@ namespace PIKA.GD.API.Controllers.Contenido
                                .ConfigureAwait(false);
                 if (gestor != null)
                 {
-                    await this.servicioTransaccionCarga.ProcesaTransaccion(TransaccionId, VolId, gestor)
+                    List<Pagina> paginas = await this.servicioTransaccionCarga.ProcesaTransaccion(TransaccionId, VolId, gestor)
                         .ConfigureAwait(false);
 
-                    return Ok();
+                    return Ok(paginas);
 
                 }
 
