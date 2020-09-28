@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using OpenXmlPowerTools;
 using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Contenido;
 using PIKA.Modelo.Contenido.ui;
