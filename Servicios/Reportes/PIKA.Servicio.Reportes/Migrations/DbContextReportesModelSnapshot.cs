@@ -44,8 +44,8 @@ namespace PIKA.Servicio.Reportes.Migrations
 
                     b.Property<string>("Plantilla")
                         .IsRequired()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4")
-                        .HasMaxLength(429496729);
+                        .HasColumnType("varchar(512) CHARACTER SET utf8mb4")
+                        .HasMaxLength(512);
 
                     b.Property<string>("TipoOrigenId")
                         .IsRequired()
