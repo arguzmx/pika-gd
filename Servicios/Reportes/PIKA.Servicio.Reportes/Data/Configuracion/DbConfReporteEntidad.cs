@@ -20,7 +20,7 @@ namespace PIKA.Servicio.Reportes.Data.Configuracion
             builder.Property(x => x.TipoOrigenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.Descripcion).HasMaxLength(LongitudDatos.Descripcion).IsRequired();
-            builder.Property(x=>x.Plantilla).HasMaxLength(429496729).IsRequired();
+            builder.Property(x=>x.Plantilla).HasColumnType("LONGTEXT").IsRequired();
             builder.HasIndex(x => x.Entidad);
             builder.HasIndex(x => x.OrigenId);
             builder.HasIndex(x => x.TipoOrigenId);

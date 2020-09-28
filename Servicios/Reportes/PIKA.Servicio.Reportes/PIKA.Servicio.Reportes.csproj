@@ -5,11 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20200924152607_CreacionEntidadReportes.cs" />
-    <Compile Remove="Migrations\20200924152607_CreacionEntidadReportes.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Data\" />
   </ItemGroup>
 

@@ -8,8 +8,8 @@ using PIKA.Servicio.Reportes.Data;
 namespace PIKA.Servicio.Reportes.Migrations
 {
     [DbContext(typeof(DbContextReportes))]
-    [Migration("20200924152740_CreacionEntidadReportes")]
-    partial class CreacionEntidadReportes
+    [Migration("20200928212457_CorreccionPlantilla")]
+    partial class CorreccionPlantilla
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -46,8 +46,7 @@ namespace PIKA.Servicio.Reportes.Migrations
 
                     b.Property<string>("Plantilla")
                         .IsRequired()
-                        .HasColumnType("varchar(512) CHARACTER SET utf8mb4")
-                        .HasMaxLength(512);
+                        .HasColumnType("LONGTEXT");
 
                     b.Property<string>("TipoOrigenId")
                         .IsRequired()

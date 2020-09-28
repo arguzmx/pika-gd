@@ -2,7 +2,7 @@
 
 namespace PIKA.Servicio.Reportes.Migrations
 {
-    public partial class CreacionEntidadReportes : Migration
+    public partial class CorreccionPlantilla : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,7 +14,7 @@ namespace PIKA.Servicio.Reportes.Migrations
                     Entidad = table.Column<string>(maxLength: 500, nullable: false),
                     Nombre = table.Column<string>(maxLength: 200, nullable: false),
                     Descripcion = table.Column<string>(maxLength: 500, nullable: false),
-                    Plantilla = table.Column<string>(maxLength: 512, nullable: false),
+                    Plantilla = table.Column<string>(type: "LONGTEXT", nullable: false),
                     TipoOrigenId = table.Column<string>(maxLength: 128, nullable: false),
                     OrigenId = table.Column<string>(maxLength: 128, nullable: false)
                 },
