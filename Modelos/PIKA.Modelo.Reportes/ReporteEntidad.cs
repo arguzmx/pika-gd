@@ -50,13 +50,13 @@ namespace PIKA.Modelo.Reportes
         /// <summary>
         /// Identificador único del origen por defecto el dominio
         /// </summary>
-        public string TipoOrigenId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string TipoOrigenId { get; set; }
         // # tamaño GUID requerido INDEXAR con OrigenId
 
         /// <summary>
         /// Identificador único del objeto contenedor del reporte por default el Id del dominio en sesión
         /// </summary>
-        public string OrigenId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string OrigenId { get ; set ; }
         // # tamaño GUID requerido INDEXAR con TipoOrigenId
 
     }

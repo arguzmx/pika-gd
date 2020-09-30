@@ -6,9 +6,15 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
-    <Folder Include="Extensiones\" />
-    <Folder Include="Interfaces\" />
-    <Folder Include="Servicios\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LazyCache.AspNetCore" Version="2.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Infraestructura\RepositorioEntidades\RepositorioEntidades.csproj" />
+    <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.Reportes\PIKA.Modelo.Reportes.csproj" />
   </ItemGroup>
 
 </Project>
