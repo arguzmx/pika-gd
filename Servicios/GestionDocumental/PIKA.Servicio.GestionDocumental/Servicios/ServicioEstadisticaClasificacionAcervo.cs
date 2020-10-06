@@ -262,6 +262,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
            CE.CrearCeldas(1,3,CE.GetAbecedario(2),cc.Nombre);
 
         }
+
         private int EncabezadosReporteo(string[] encabezado, int renglon, int Col, bool TypEcabezado)
         {
             string LetraColumna;
@@ -280,7 +281,33 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             renglon++;
             return renglon;
         }
-        
-      
+
+        public async Task<ICollection<string>> EliminarEstadisticos(int id,string[]ids) 
+        {
+            EstadisticaClasificacionAcervo es=new EstadisticaClasificacionAcervo();
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                switch (id)
+                {
+                    case 1:
+                        es = await this.repo.UnicoAsync(x => x.ArchivoId == Id);
+                        break;
+                    case 2:
+                        es = await this.repo.UnicoAsync(x => x.CuadroClasificacionId == Id);
+                        break;
+                    case 3:
+                        es = await this.repo.UnicoAsync(x => x.EntradaClasificacionId == Id);
+                        break;
+                }
+                if (es != null)
+                {
+                    await this.repo.Eliminar(es);
+                    listaEliminados.Add(es.CuadroClasificacionId);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
+        }      
     }
 }

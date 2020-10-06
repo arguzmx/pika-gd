@@ -172,5 +172,17 @@ namespace PIKA.GD.API.Controllers.Organizacion
 
         }
 
+        /// <summary>
+        /// Este metodo  puerga todos los elementos
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete("purgar", Name = "DeletePurgarDominio")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Dominio>> DeletePurgar()
+        {
+            return Ok(await servicioEntidad.Purgar().ConfigureAwait(false));
+        }
     }
 }

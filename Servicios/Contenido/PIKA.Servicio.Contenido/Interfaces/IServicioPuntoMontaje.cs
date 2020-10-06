@@ -9,6 +9,6 @@ namespace PIKA.Servicio.Contenido.Interfaces
 {
    public interface IServicioPuntoMontaje : IServicioRepositorioAsync<PuntoMontaje, string>
     {
-       
+        Task<List<string>> Purgar();
     }
 }

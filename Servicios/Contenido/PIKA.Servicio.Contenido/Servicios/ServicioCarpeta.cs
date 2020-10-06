@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Mail;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ using PIKA.Modelo.Contenido;
 using PIKA.Servicio.Contenido.Helpers;
 using PIKA.Servicio.Contenido.Interfaces;
 using RepositorioEntidades;
+using SixLabors.ImageSharp.ColorSpaces;
 
 namespace PIKA.Servicio.Contenido.Servicios
 {
@@ -374,6 +376,23 @@ namespace PIKA.Servicio.Contenido.Servicios
         public Task<IPaginado<Carpeta>> ObtenerPaginadoAsync(Expression<Func<Carpeta, bool>> predicate = null, Func<IQueryable<Carpeta>, IOrderedQueryable<Carpeta>> orderBy = null, Func<IQueryable<Carpeta>, IIncludableQueryable<Carpeta, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<List<string>> Purgar()
+        {
+            ServicioElemento se = new ServicioElemento(proveedorOpciones,this.logger);
+            ServicioPuntoMontaje spm = new ServicioPuntoMontaje(proveedorOpciones,this.logger);
+            List<Carpeta> ListaCarpeta = await this.ObtenerAsync(x=>x.Eliminada==true).ConfigureAwait(false);
+            List<Elemento>ListaElemento= await se.ObtenerAsync(x => x.CarpetaId.Contains(ListaCarpeta.Select(x => x.Id).FirstOrDefault()));
+            string[] ElementosEliminados = ListaElemento.Select(x=>x.Id).ToArray();
+            string[] PuntajeEliminado = ListaCarpeta.Select(x=>x.PuntoMontajeId).ToArray();
+            se = new ServicioElemento(proveedorOpciones, this.logger);
+            await spm.Eliminar(PuntajeEliminado);
+            await se.Eliminar(ElementosEliminados);
+            await  se.Purgar();
+            await  spm.Purgar();
+
+            return ListaCarpeta.Select(x => x.Id).ToList();
         }
 
 

@@ -1,8 +1,10 @@
 ﻿using Bogus.Extensions;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using OpenXmlPowerTools;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
@@ -35,7 +37,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<TipoValoracionDocumental> repoTVD;
         private readonly ConfiguracionServidor ConfiguracionServidor;
         private ILogger<ServicioCuadroClasificacion> LoggerCuadro;
+        private ILogger<ServicioEntradaClasificacion> LoggerentradaCuadro;
         private IOCuadroClasificacion ioCuadroClasificacion;
+        IOptions<ConfiguracionServidor> Config;
+
         public ServicioElementoClasificacion(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
            ILogger<ServicioElementoClasificacion> Logger, IOptions<ConfiguracionServidor> Config) : base(proveedorOpciones, Logger)
         {
@@ -48,7 +53,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             this.repoTD = UDT.ObtenerRepositoryAsync<TipoDisposicionDocumental>(new QueryComposer<TipoDisposicionDocumental>());
             this.repoTVD = UDT.ObtenerRepositoryAsync<TipoValoracionDocumental>(new QueryComposer<TipoValoracionDocumental>());
             this.ioCuadroClasificacion = new IOCuadroClasificacion(LoggerCuadro, proveedorOpciones);
-
+            this.Config = Config;
         }
         public async Task<bool> Existe(Expression<Func<ElementoClasificacion, bool>> predicado)
         {
@@ -301,19 +306,20 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
+            int x = 0;
             ElementoClasificacion e;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
             {
-                logger.LogError(Id);
-                e = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
+                e = await this.repo.UnicoAsync(x => x.Id == Id.Trim()).ConfigureAwait(false);
                 if (e != null)
                 {
-                    logger.LogError(Id + " OK");
+                    x++;
+
                     e.Eliminada = true;
                     UDT.Context.Entry(e).State = EntityState.Modified;
                     listaEliminados.Add(e.Id);
-                    await ioCuadroClasificacion.EliminarCuadroCalsificacionExcel(e.CuadroClasifiacionId, ConfiguracionServidor.ruta_cache_fisico, ConfiguracionServidor.separador_ruta);
+                    await ioCuadroClasificacion.EliminarCuadroCalsificacionExcel(e.CuadroClasifiacionId, ConfiguracionServidor.ruta_cache_fisico, ConfiguracionServidor.separador_ruta).ConfigureAwait(false);
 
                 }
             }
@@ -384,6 +390,52 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public Task<List<ElementoClasificacion>> ObtenerAsync(string SqlCommand)
         {
             return this.repo.ObtenerAsync(SqlCommand);
+        }
+
+
+       public async Task<string[]> Purgar()
+        {
+
+            List<ElementoClasificacion> elemento = await this.repo.ObtenerAsync(x=>x.Eliminada==true).ConfigureAwait(false);
+
+            if (elemento.Count>0) 
+            {
+
+                ServicioEntradaClasificacion servicioEntrada = new ServicioEntradaClasificacion(this.proveedorOpciones,LoggerentradaCuadro,Config);
+
+                List<EntradaClasificacion> ListaEntradas = await servicioEntrada.ObtenerAsync(x=>x.ElementoClasificacionId.Contains(elemento.Select(x=>x.Id).FirstOrDefault())).ConfigureAwait(false);
+                List<ElementoClasificacion> ListaHijos = await this.repo.ObtenerAsync(x=>x.ElementoClasificacionId.Contains(elemento.Select(x=>x.ElementoClasificacionId).FirstOrDefault())).ConfigureAwait(false);
+              
+                await servicioEntrada.Eliminar(IdsELiminar(ListaEntradas.Select(x=>x.Id).ToArray())).ConfigureAwait(false);
+                await servicioEntrada.Purgar().ConfigureAwait(false);
+                await this.EliminarElementos(IdsELiminar(ListaHijos.Select(x=>x.Id).ToArray())).ConfigureAwait(false);
+                if(await Existe(x=>x.Eliminada==true).ConfigureAwait(false))
+                await this.EliminarElementos(IdsELiminar(elemento.Select(x=>x.Id).ToArray())).ConfigureAwait(false);
+            }
+
+            return IdsELiminar(elemento.Select(x=>x.Id).ToArray());
+        }
+        private async Task<ICollection<string>> EliminarElementos(string[] ids) 
+        {
+            ElementoClasificacion e;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                e = await this.repo.UnicoAsync(x => x.Id == Id).ConfigureAwait(false);
+                if (e != null)
+                {
+                    await this.repo.Eliminar(e).ConfigureAwait(false);
+                    listaEliminados.Add(e.Id);
+                }
+
+            Console.WriteLine($"\n Eliminar elementos {Id}");
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
+        }
+        private string[] IdsELiminar(string[] ids) 
+        {
+            return ids;
         }
 
         #region Sin implementar

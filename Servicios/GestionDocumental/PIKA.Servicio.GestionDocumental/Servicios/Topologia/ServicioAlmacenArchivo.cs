@@ -1,10 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.GestorDocumental;
+using PIKA.Modelo.GestorDocumental.Topologia;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.GestionDocumental.Interfaces;
 using RepositorioEntidades;
@@ -26,7 +29,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         private IRepositorioAsync<AlmacenArchivo> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
-
+        private ILogger<ServicioCuadroClasificacion> LoggerCC;
         public ServicioAlmacenArchivo(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, ILogger<ServicioCuadroClasificacion> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
@@ -182,6 +185,24 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             AlmacenArchivo a = await this.repo.UnicoAsync(predicado);
             return a.Copia();
+        }
+
+        public async Task EliminarRelaciones(List<AlmacenArchivo> ids)
+        {
+            if (ids.Count > 0)
+            {
+                ServicioEstante se = new ServicioEstante(this.proveedorOpciones, LoggerCC);
+                ServicioEspacioEstante see = new ServicioEspacioEstante(this.proveedorOpciones, LoggerCC);
+                List<Estante> ListaEstante = await se.ObtenerAsync(x => x.AlmacenArchivoId.Contains(ids.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
+                List<EspacioEstante> ListaEspacioEstante = await see.ObtenerAsync(x => x.EstanteId.Contains(ListaEstante.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
+                await see.Eliminar(ListaIdEliminar(ListaEspacioEstante.Select(x=>x.Id).ToArray())).ConfigureAwait(false);
+                await se.Eliminar(ListaIdEliminar(ListaEstante.Select(x=>x.Id).ToArray()));
+
+            }
+        }
+        private string[] ListaIdEliminar(string[] ids) 
+        {
+            return ids;
         }
     }
 }

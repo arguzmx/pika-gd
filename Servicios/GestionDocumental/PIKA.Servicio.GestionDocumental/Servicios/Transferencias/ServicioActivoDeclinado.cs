@@ -48,18 +48,21 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
         private async Task<bool> ValidarReglas(ActivoDeclinado activoD) 
         {
+            bool status = false;
           Transferencia t = await this.repoT.UnicoAsync(x => x.Id.Equals(activoD.TransferenciaId, StringComparison.InvariantCultureIgnoreCase));
                 if (t != null)
                 {
-                    Activo a = await this.repoAct.UnicoAsync(x => x.ArchivoId.Equals(t.ArchivoOrigenId, StringComparison.InvariantCultureIgnoreCase)
+
+                Activo a = await this.repoAct.UnicoAsync(x => x.ArchivoId.Equals(t.ArchivoOrigenId, StringComparison.InvariantCultureIgnoreCase)
                     && x.EnPrestamo != false
                     && x.Ampliado != false
                     && x.Id.Equals(activoD.ActivoId, StringComparison.InvariantCultureIgnoreCase));
                     if (a != null)
                     {
-                        return true;
+                        status= true;
                     }
-                    a = await this.repoAct.UnicoAsync(x => x.Id.Equals(activoD.ActivoId, StringComparison.InvariantCultureIgnoreCase));
+
+                a = await this.repoAct.UnicoAsync(x => x.Id.Equals(activoD.ActivoId, StringComparison.InvariantCultureIgnoreCase));
                     if (a != null)
                     {
 
@@ -71,13 +74,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                         );
                         if (t != null)
                         {
-
-                        return true;
+                        status= true;
                         }
                     }
                 }
 
-            return false;
+            return status;
         }
 
         public async Task<ActivoDeclinado> CrearAsync(ActivoDeclinado entity, CancellationToken cancellationToken = default)
@@ -151,6 +153,22 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 a = await this.repo.UnicoAsync(x => x.ActivoId == Id);
                 if (a != null)
                 {
+                    await this.repo.Eliminar(a);
+                    listaEliminados.Add(a.ActivoId);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
+        }
+        public async Task<ICollection<string>> EliminarTranferencia(string[] ids)
+        {
+            ActivoDeclinado a;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                a = await this.repo.UnicoAsync(x => x.TransferenciaId == Id);
+                if (a != null)
+                {
                     UDT.Context.Entry(a).State = EntityState.Deleted;
                     listaEliminados.Add(a.ActivoId);
                 }
@@ -158,7 +176,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.SaveChanges();
             return listaEliminados;
         }
-
 
         public Task<List<ActivoDeclinado>> ObtenerAsync(Expression<Func<ActivoDeclinado, bool>> predicado)
         {

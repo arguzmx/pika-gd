@@ -32,7 +32,6 @@ namespace PIKA.Servicio.Contenido.Servicios
         private static TimeSpan volCacheExpiry = new TimeSpan(0, 10, 0); 
         private readonly IAppCache lazycache;
         private IOptions<ConfiguracionServidor> opciones;
-
         public ServicioVolumen(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
             ILogger<ServicioLog> Logger,
@@ -248,7 +247,6 @@ namespace PIKA.Servicio.Contenido.Servicios
 
                 o.Nombre = entity.Nombre;
                o.EscrituraHabilitada = entity.EscrituraHabilitada;
-               o.Eliminada = entity.Eliminada;
                o.TamanoMaximo = entity.TamanoMaximo;
 
                UDT.Context.Entry(o).State = EntityState.Modified;
@@ -336,7 +334,25 @@ namespace PIKA.Servicio.Contenido.Servicios
 
             return d.Copia();
         }
+        public async Task<List<string>> Purgar()
+        {
+            List<Volumen> ListaVolumenEli = await this.repo.ObtenerAsync(x=>x.Eliminada==true).ConfigureAwait(false);
+            string[] IdsEliminar = ListaVolumenEli.Select(x=>x.Id).ToArray();
+            ServicioElemento se = new ServicioElemento(this.proveedorOpciones,this.logger);
+            ServicioVolumenPuntoMontaje svpm = new ServicioVolumenPuntoMontaje(this.proveedorOpciones, this.logger);
+            ServicioTipoGestorES sTes = new ServicioTipoGestorES(this.proveedorOpciones, this.logger);
+            ServicioParte sp = new ServicioParte(this.proveedorOpciones, this.logger);
+            ServicioVersion sv = new ServicioVersion(this.proveedorOpciones, this.logger);
+            ServicioGestorAzureConfig sgvc = new ServicioGestorAzureConfig(this.proveedorOpciones, this.logger);
+            ServicioGestorLocalConfig sglc = new ServicioGestorLocalConfig(this.proveedorOpciones, this.logger,opciones);
+            ServicioGestorSMBConfig sgsmb = new ServicioGestorSMBConfig(this.proveedorOpciones, this.logger);
+            await sgvc.Eliminar(IdsEliminar);
+            await sglc.Eliminar(IdsEliminar);
+            await sgsmb.Eliminar(IdsEliminar);
+            await se.Purgar();
 
+            throw new NotImplementedException();
+        }
 
 
         #region No Implemenatdaos
@@ -375,6 +391,8 @@ namespace PIKA.Servicio.Contenido.Servicios
         {
             throw new NotImplementedException();
         }
+
+      
 
 
         #endregion
