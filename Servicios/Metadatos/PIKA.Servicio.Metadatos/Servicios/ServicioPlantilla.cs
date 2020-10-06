@@ -212,7 +212,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
             throw new NotImplementedException();
         }
 
-        
+        public Task Purgar()
+        {
+            throw new NotImplementedException();
+        }
+
+
         #endregion
 
 

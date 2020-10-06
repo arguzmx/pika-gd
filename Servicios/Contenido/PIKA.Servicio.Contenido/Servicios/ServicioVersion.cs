@@ -94,7 +94,6 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         
             o.Activa = entity.Activa;
-            o.Eliminada = entity.Eliminada;
 
             if (entity.Activa)
             {
@@ -220,6 +219,13 @@ namespace PIKA.Servicio.Contenido.Servicios
             return d.Copia();
         }
 
+        
+        public async Task<List<string>> Purgar()
+        {
+            List<Version> ListaVersiones = await this.repo.ObtenerAsync(x=>x.Eliminada==true).ConfigureAwait(false);
+
+            throw new NotImplementedException();
+        }
 
         #region No Implementado
 

@@ -27,9 +27,13 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
 
         private IRepositorioAsync<Plugin> repo;
         private ICompositorConsulta<Plugin> compositor;
+        private ICompositorConsulta<PluginInstalado> compositorPI;
+        private ICompositorConsulta<VersionPlugin> compositorVP;
         private UnidadDeTrabajo<DbContextAplicacionPlugin> UDT;
         public IServicioVersionPlugin ServicioVersionPlugin;
-
+        private IProveedorOpcionesContexto<DbContextAplicacionPlugin> DB;
+        private IServicioCache servicioCacheData;
+        private ILogger<ServicioPluginInstalado> Logger;
         public ServicioPlugin(
          IProveedorOpcionesContexto<DbContextAplicacionPlugin> proveedorOpciones,
          ICompositorConsulta<Plugin> compositorConsulta,
@@ -215,6 +219,13 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
             return d.CopiaPlugin();
         }
 
-
+        public async Task<List<string>> Purgar()
+        {
+            ServicioPluginInstalado spi = new ServicioPluginInstalado(DB,compositorPI,Logger,servicioCacheData);
+            List<Plugin>listap = await this.repo.ObtenerAsync(x=>x.Eliminada==true).ConfigureAwait(false);
+            string[] IDsELiminar = listap.Select(x=>x.Id).ToArray();
+            await spi.Eliminar(IDsELiminar).ConfigureAwait(false);
+            return IDsELiminar.ToList();
+        }
     }
 }

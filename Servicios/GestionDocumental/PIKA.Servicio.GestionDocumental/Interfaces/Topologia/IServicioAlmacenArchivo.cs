@@ -3,10 +3,12 @@ using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace PIKA.Servicio.GestionDocumental.Interfaces
 {
     public interface IServicioAlmacenArchivo : IServicioRepositorioAsync<AlmacenArchivo, string>
     {
+        Task EliminarRelaciones(List<AlmacenArchivo> ids);
     }
 }

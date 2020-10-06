@@ -147,6 +147,18 @@ namespace PIKA.GD.API.Controllers.Contenido
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return Ok(await servicioEntidad.Eliminar(lids).ConfigureAwait(false));
         }
+        /// <summary>
+        /// Este metodo  puerga todos los elementos
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete("purgar", Name = "DeletePurgarElemento")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Carpeta>> DeletePurgar()
+        {
+            return Ok(await servicioEntidad.Purgar().ConfigureAwait(false));
+        }
 
         /// <summary>
         /// Restaura una lista de Elementoes eliminados en base al arreglo de identificadores recibidos

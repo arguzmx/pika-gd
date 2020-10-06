@@ -32,6 +32,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
         private readonly ConfiguracionServidor ConfiguracionServidor;
         private IOCuadroClasificacion ioCuadroClasificacion;
+        private ILogger<ServicioElementoClasificacion> LoggerElemento;
+        private ILogger<ServicioEntradaClasificacion> LoggerEntrada;
+        IOptions<ConfiguracionServidor> Config;
+
         public ServicioCuadroClasificacion(
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
            ILogger<ServicioCuadroClasificacion> Logger,
@@ -43,6 +47,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             this.repo = UDT.ObtenerRepositoryAsync<CuadroClasificacion>(new QueryComposer<CuadroClasificacion>());
             this.repoec = UDT.ObtenerRepositoryAsync<EstadoCuadroClasificacion>(new QueryComposer<EstadoCuadroClasificacion>());
             this.ioCuadroClasificacion = new IOCuadroClasificacion(Logger, proveedorOpciones);
+            this.Config = Config;
         }
 
         public async Task<bool> Existe(Expression<Func<CuadroClasificacion, bool>> predicado)
@@ -204,6 +209,32 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return await iocuadro.ExportarCuadroCalsificacionExcel(CuadroClasificacionId, ConfiguracionServidor.ruta_cache_fisico, ConfiguracionServidor.separador_ruta);
         }
 
+        public async Task<string[]> Purgar()
+        {
+            Console.WriteLine($"Metodo Purgar del Elemento");
+
+            ServicioElementoClasificacion sec = new ServicioElementoClasificacion(this.proveedorOpciones, LoggerElemento, Config);
+
+            ServicioEntradaClasificacion se = new ServicioEntradaClasificacion(this.proveedorOpciones, LoggerEntrada, Config);
+
+            ServicioEstadisticaClasificacionAcervo seca = new ServicioEstadisticaClasificacionAcervo(this.proveedorOpciones,Config,LoggerEntrada);
+
+            List<CuadroClasificacion> ListaCuadroClasificacions = await this.repo.ObtenerAsync(x => x.Eliminada == true).ConfigureAwait(false);
+            if (ListaCuadroClasificacions.Count > 0)
+            {
+                var  cuadros = ListaCuadroClasificacions.Select(x=>x.Id).ToList();
+                List<ElementoClasificacion> ListaElementoClasisficacion = await sec.ObtenerAsync(o => o.CuadroClasifiacionId.Contains(ListaCuadroClasificacions.Select(x=>x.Id).FirstOrDefault())).ConfigureAwait(false);
+                List<EntradaClasificacion> ListaEntradaClasificacion = await se.ObtenerAsync(x => x.ElementoClasificacionId.Contains(ListaElementoClasisficacion.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
+                await seca.EliminarEstadisticos(2,ListaCuadroClasificacions.Select(x=>x.Id).ToArray()).ConfigureAwait(false);
+                await se.Eliminar(IdsEliminados(ListaEntradaClasificacion.Select(x => x.Id).ToArray())).ConfigureAwait(false);
+                await se.Purgar().ConfigureAwait(false);
+                await sec.Eliminar(IdsEliminados(ListaElementoClasisficacion.Select(x => x.Id).ToArray())).ConfigureAwait(false);
+                await sec.Purgar().ConfigureAwait(false);
+              
+            }
+            throw new NotImplementedException();
+        }
+
         #region No implmentados
 
         public Task<IEnumerable<CuadroClasificacion>> CrearAsync(params CuadroClasificacion[] entities)
@@ -230,7 +261,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             throw new NotImplementedException();
         }
- 
+
+
+        private string[] IdsEliminados(string[] ids) 
+        {
+            return ids;
+        }
         #endregion
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
@@ -112,6 +113,18 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             string[] Ids = IdsTrim.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray();
 
             return Ok(await servicioPrestamo.Eliminar(Ids).ConfigureAwait(false));
+        }
+        /// <summary>
+        /// Este metodo  puerga todos los elementos
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete("purgar", Name = "DeletePurgarPrestamo")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Prestamo>> DeletePurgar()
+        {
+            return Ok(await servicioPrestamo.Purgar().ConfigureAwait(false));
         }
         #endregion
 

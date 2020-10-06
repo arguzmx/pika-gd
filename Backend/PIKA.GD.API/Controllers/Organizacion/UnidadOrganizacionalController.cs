@@ -192,6 +192,17 @@ namespace PIKA.GD.API.Controllers.Organizacion
             return Ok(await servicioUO.Restaurar(lids).ConfigureAwait(false));
 
         }
-
+        /// <summary>
+        /// Este metodo  puerga todos los elementos
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete("purgar", Name = "DeletePurgarUnidad")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Dominio>> DeletePurgar()
+        {
+            return Ok(await servicioUO.Purgar().ConfigureAwait(false));
+        }
     }
 }

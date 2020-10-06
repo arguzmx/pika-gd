@@ -186,7 +186,10 @@ namespace PIKA.Servicio.Organizacion.Servicios
             UDT.SaveChanges();
             return lista;
         }
-
+        public Task<string[]> Purgar()
+        {
+            throw new NotImplementedException();
+        }
 
         #region Sin implemntar
         public Task<IEnumerable<UnidadOrganizacional>> CrearAsync(params UnidadOrganizacional[] entities)
@@ -204,6 +207,7 @@ namespace PIKA.Servicio.Organizacion.Servicios
             throw new NotImplementedException();
         }
 
+        
         #endregion
 
     }

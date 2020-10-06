@@ -148,7 +148,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 a = await this.repo.UnicoAsync(x => x.ActivoId == Id);
                 if (a != null)
                 {
-                    UDT.Context.Entry(a).State = EntityState.Deleted;
+                    await this.repo.Eliminar(a);
                     listaEliminados.Add(a.ActivoId);
                 }
             }
@@ -180,6 +180,22 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             foreach (var Id in ids)
             {
                 a = await this.repo.UnicoAsync(x => x.ActivoId == Id && x.TransferenciaId == TransferenciaId);
+                if (a != null)
+                {
+                    UDT.Context.Entry(a).State = EntityState.Deleted;
+                    listaEliminados.Add(a.ActivoId);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
+        }
+        public async Task<ICollection<string>> EliminarTransferencia( string[] ids)
+        {
+            ActivoTransferencia a;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                a = await this.repo.UnicoAsync(x =>  x.TransferenciaId == Id);
                 if (a != null)
                 {
                     UDT.Context.Entry(a).State = EntityState.Deleted;

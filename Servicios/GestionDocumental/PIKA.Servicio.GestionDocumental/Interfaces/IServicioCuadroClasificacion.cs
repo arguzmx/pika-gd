@@ -10,5 +10,7 @@ namespace PIKA.Servicio.GestionDocumental.Interfaces
     public interface IServicioCuadroClasificacion: IServicioRepositorioAsync<CuadroClasificacion, string>
     {
         Task<byte[]> ExportarCuadroCalsificacionExcel(string CuadroClasificacionId);
+        Task<string[]> Purgar();
+
     }
 }

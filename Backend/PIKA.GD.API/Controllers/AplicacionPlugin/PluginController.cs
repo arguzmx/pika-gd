@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
@@ -111,5 +112,17 @@ namespace PIKA.GD.API.Controllers.AplicacionPlugin
 
         }
 
+        /// <summary>
+        /// Este metodo  puerga todos los elementos
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete("purgar", Name = "PurgarPlugin")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Plugin>> DeletePurgar()
+        {
+            return Ok(await servicioPlugin.Purgar().ConfigureAwait(false));
+        }
     }
 }
