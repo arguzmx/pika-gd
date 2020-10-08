@@ -218,12 +218,16 @@ namespace PIKA.Servicio.Contenido.Servicios
 
             PuntoMontaje d = await this.repo.UnicoAsync(predicado, ordenarPor, incluir);
 
-
             return d.Copia();
         }
 
 
+        public async Task<List<string>> Purgar()
+        {
+            List<PuntoMontaje> ListaCarpeta = await this.repo.ObtenerAsync(x=>x.Eliminada==true);
 
+            throw new NotImplementedException();
+        }
         #region No Implemenatdaos
 
         public Task<IEnumerable<PuntoMontaje>> CrearAsync(params PuntoMontaje[] entities)
@@ -261,9 +265,11 @@ namespace PIKA.Servicio.Contenido.Servicios
             throw new NotImplementedException();
         }
 
+       
 
 
- 
+
+
         #endregion
     }
 

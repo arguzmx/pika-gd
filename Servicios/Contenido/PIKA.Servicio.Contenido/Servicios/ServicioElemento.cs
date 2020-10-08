@@ -5,9 +5,11 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
@@ -29,12 +31,11 @@ namespace PIKA.Servicio.Contenido.Servicios
         private IRepositorioAsync<Volumen> repoVol;
         private IRepositorioAsync<PuntoMontaje> repoPM;
         private IRepositorioAsync<VolumenPuntoMontaje> repoVPM;
-        private IRepositorioAsync<PIKA.Modelo.Contenido.Version> repoVer;
+        private IRepositorioAsync<Version> repoVer;
         private IRepositorioAsync<Permiso> repoPerm;
         private IRepositorioAsync<Carpeta> repoCarpetas;
         private UnidadDeTrabajo<DbContextContenido> UDT;
         private ComunesCarpetas helperCarpetas;
-
         public ServicioElemento(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
             ILogger<ServicioLog> Logger
@@ -44,7 +45,7 @@ namespace PIKA.Servicio.Contenido.Servicios
             {
                 this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
                 this.repo = UDT.ObtenerRepositoryAsync<Elemento>(new QueryComposer<Elemento>());
-                this.repoVer = UDT.ObtenerRepositoryAsync<PIKA.Modelo.Contenido.Version>(new QueryComposer<PIKA.Modelo.Contenido.Version>());
+                this.repoVer = UDT.ObtenerRepositoryAsync<Version>(new QueryComposer<Version>());
                 this.repoVol = UDT.ObtenerRepositoryAsync<Volumen>(new QueryComposer<Volumen>());
                 this.repoVPM = UDT.ObtenerRepositoryAsync<VolumenPuntoMontaje>(new QueryComposer<VolumenPuntoMontaje>());
                 this.repoPerm = UDT.ObtenerRepositoryAsync<Permiso>(new QueryComposer<Permiso>());
@@ -269,7 +270,24 @@ namespace PIKA.Servicio.Contenido.Servicios
             UDT.SaveChanges();
             return listaEliminados;
         }
+        public async Task<ICollection<string>> Eliminar(List<Elemento> ListaElemento)
+        {
+            Elemento o;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var elemento in ListaElemento)
+            {
+                o = await this.repo.UnicoAsync(x => x.Id == elemento.Id.Trim());
+                if (o != null)
+                {
+                    o.Eliminada = true;
+                    UDT.Context.Entry(o).State = EntityState.Deleted;
+                    listaEliminados.Add(o.Id);
 
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
+        }
         public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
             Elemento o;
@@ -334,8 +352,44 @@ namespace PIKA.Servicio.Contenido.Servicios
         {
             throw new NotImplementedException();
         }
+       
+        public async Task<List<string>> Purgar()
+        {
+            List<Elemento> ListaElementos = await this.ObtenerAsync(x=>x.Eliminada==true);
+            if (ListaElementos.Count > 0)
+            {
+                List<Carpeta> ListaCarpeta = await this.repoCarpetas.ObtenerAsync(x => x.Id.Contains(ListaElementos.Select(x => x.CarpetaId).FirstOrDefault()));
+                List<Volumen> ListaVolumen = await this.repoVol.ObtenerAsync(x => x.Id.Contains(ListaElementos.Select(x => x.VolumenId).FirstOrDefault()));
+                List<PuntoMontaje> ListaPuntaje = await this.repoPM.ObtenerAsync(x => x.Id.Contains(ListaElementos.Select(x => x.PuntoMontajeId).FirstOrDefault()));
+                List<Version> ListaVersion = await this.repoVer.ObtenerAsync(x => x.Id.Contains(ListaElementos.Select(x => x.VersionId).FirstOrDefault()));
+                List<VolumenPuntoMontaje> ListaVolumenPuntoMontaje = await this.repoVPM.ObtenerAsync(x => x.VolumenId.Contains(ListaVolumen.Select(x => x.Id).FirstOrDefault()));
+                ServicioParte sp = new ServicioParte(this.proveedorOpciones, this.logger);
+                List<Parte> ListaPartes = await sp.ObtenerAsync(x => x.ElementoId.Contains(ListaElementos.Select(x => x.Id).FirstOrDefault()));
+                string[] PartesEliminadas = ListaPartes.Select(x => x.Id).ToArray();
+                ServicioPuntoMontaje spm = new ServicioPuntoMontaje(this.proveedorOpciones,this.logger);
+                ServicioVolumenPuntoMontaje vem = new ServicioVolumenPuntoMontaje(this.proveedorOpciones,this.logger);
+                string[] Idvol = ListaVolumen.Select(x=>x.Id).ToArray();
+                foreach (PuntoMontaje puntaje in ListaPuntaje)
+                {
+                    PuntoMontaje p = await repoPM.UnicoAsync(x=>x.Id.Equals(puntaje.Id,StringComparison.InvariantCultureIgnoreCase));
+                    p.Eliminada = true;
+                    await spm.ActualizarAsync(p);
+                    await vem.Eliminar(puntaje.Id,Idvol);
+
+                }
+                Console.WriteLine($"Ingreso al metodos de la funcion Purgar {Idvol.Count()}");
+            }
+            //await repoVol.EliminarRango(ListaVolumen);
+            //await repoVer.EliminarRango(ListaVersion);
+            //await repoPM.EliminarRango(ListaPuntaje);
+            //await this.Eliminar(ListaElementos);
 
 
+            return ListaElementos.Select(x=>x.Id).ToList();
+        }
+
+
+        
 
 
         #endregion

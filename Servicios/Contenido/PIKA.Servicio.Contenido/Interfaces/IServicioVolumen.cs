@@ -11,5 +11,6 @@ namespace PIKA.Servicio.Contenido.Interfaces
          IServicioValorTextoAsync<Volumen>
     {
         Task<IGestorES> ObtienInstanciaGestor(string VolumenId);
+        Task<List<string>> Purgar();
     }
 }

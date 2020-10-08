@@ -54,7 +54,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return true;
         }
 
-        public void EliminarArchivo()
+        private void EliminarArchivo()
         {
             try
             {
@@ -206,6 +206,22 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return listaEliminados;
         }
 
+        public async Task<ICollection<string>> EliminarEntradas(string[]ids) 
+        {
+            ValoracionEntradaClasificacion c;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                c = await this.repo.UnicoAsync(x => x.EntradaClasificacionId == Id);
+                if (c != null)
+                {
+                    await repo.Eliminar(c);
+                    listaEliminados.Add(c.EntradaClasificacionId);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
+        }
         public async Task<ValoracionEntradaClasificacion> UnicoAsync(Expression<Func<ValoracionEntradaClasificacion, bool>> predicado = null, Func<IQueryable<ValoracionEntradaClasificacion>, IOrderedQueryable<ValoracionEntradaClasificacion>> ordenarPor = null, Func<IQueryable<ValoracionEntradaClasificacion>, IIncludableQueryable<ValoracionEntradaClasificacion, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             ValoracionEntradaClasificacion c = await this.repo.UnicoAsync(predicado);

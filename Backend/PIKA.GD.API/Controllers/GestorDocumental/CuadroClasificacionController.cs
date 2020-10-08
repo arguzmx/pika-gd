@@ -194,6 +194,17 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             };
             return fileContentResult;
         }
-
+        /// <summary>
+        /// Este metodo  puerga todos los elementos
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete("purgar", Name = "DeletePurgarCuadroClasificacion")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Prestamo>> DeletePurgar()
+        {
+            return Ok(await servicioCuadro.Purgar().ConfigureAwait(false));
+        }
     }
 }

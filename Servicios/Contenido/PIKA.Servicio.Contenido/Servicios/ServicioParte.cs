@@ -105,7 +105,14 @@ namespace PIKA.Servicio.Contenido.Servicios
             }
         }
 
-   
+
+        public async Task<List<string>> Purgar()
+        {
+            List<Parte> ListaPartes = await this.ObtenerAsync(x=>x.Eliminada==true);
+
+            throw new NotImplementedException();
+        }
+
 
         public async Task ActualizarAsync(Parte entity)
         {
@@ -231,13 +238,13 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public Task<List<Parte>> ObtenerAsync(Expression<Func<Parte, bool>> predicado)
         {
-            throw new NotImplementedException();
+            return this.repo.ObtenerAsync(predicado);
         }
 
 
         public Task<List<Parte>> ObtenerAsync(string SqlCommand)
         {
-            throw new NotImplementedException();
+            return this.repo.ObtenerAsync(SqlCommand);
         }
 
 
@@ -266,6 +273,9 @@ namespace PIKA.Servicio.Contenido.Servicios
         {
             throw new NotImplementedException();
         }
+
+       
+        
 
 
         #endregion

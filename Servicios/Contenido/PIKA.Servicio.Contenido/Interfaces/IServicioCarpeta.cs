@@ -11,6 +11,6 @@ namespace PIKA.Servicio.Contenido.Interfaces
         IServicioJerarquia<string>,
         IRepositorioJerarquia<Carpeta, string, string>
     {
-       
+        Task<List<string>> Purgar();
     }
 }

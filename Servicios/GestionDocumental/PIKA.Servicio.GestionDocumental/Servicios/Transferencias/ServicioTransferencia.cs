@@ -33,10 +33,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
         private readonly ConfiguracionServidor ConfiguracionServidor;
         private IOTransferencia ioT;
+        private ILogger<ServicioCuadroClasificacion> LoggerCC;
         public ServicioTransferencia(
-            IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
-            ILogger<ServicioCuadroClasificacion> Logger, 
-            IOptions<ConfiguracionServidor> Config) : base(proveedorOpciones,Logger)
+            IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
+            ILogger<ServicioCuadroClasificacion> Logger,
+            IOptions<ConfiguracionServidor> Config) : base(proveedorOpciones, Logger)
         {
             this.ConfiguracionServidor = Config.Value;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
@@ -67,14 +68,14 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<Transferencia> CrearAsync(Transferencia entity, CancellationToken cancellationToken = default)
         {
             if (!await ExisteET(x => x.Id.Equals(entity.EstadoTransferenciaId, StringComparison.InvariantCultureIgnoreCase)))
-            { throw new ExErrorRelacional( entity.EstadoTransferenciaId); }
+            { throw new ExErrorRelacional(entity.EstadoTransferenciaId); }
             if (!await ExisteA(x => x.Id.Equals(entity.ArchivoOrigenId, StringComparison.InvariantCultureIgnoreCase)))
             { throw new ExErrorRelacional(entity.ArchivoOrigenId); }
             if (!await ExisteA(x => x.Id.Equals(entity.ArchivoDestinoId, StringComparison.InvariantCultureIgnoreCase)))
-            { throw new ExErrorRelacional( entity.ArchivoDestinoId); }
+            { throw new ExErrorRelacional(entity.ArchivoDestinoId); }
             if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             { throw new ExElementoExistente(entity.Nombre); }
-            
+
             entity.Nombre = entity.Nombre.Trim();
             entity.Id = System.Guid.NewGuid().ToString();
             entity.FechaCreacion = DateTime.UtcNow;
@@ -91,7 +92,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new EXNoEncontrado(entity.Id);
             }
             if (!await ExisteA(x => x.Id.Equals(entity.ArchivoOrigenId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
-            { throw new ExErrorRelacional( entity.ArchivoOrigenId.Trim()); }
+            { throw new ExErrorRelacional(entity.ArchivoOrigenId.Trim()); }
             if (!await ExisteA(x => x.Id.Equals(entity.ArchivoDestinoId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
             { throw new ExErrorRelacional(entity.ArchivoDestinoId.Trim()); }
             if (!await ExisteET(x => x.Id.Equals(entity.EstadoTransferenciaId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
@@ -102,7 +103,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
-            
+
             entity.Id = entity.Id.Trim();
             o.Nombre = entity.Nombre.Trim();
             o.FechaCreacion = DateTime.UtcNow;
@@ -166,10 +167,39 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             if (Columnas.Count() < 0)
                 Columnas = "EntradaClasificacion.Clave,EntradaClasificacion.Nombre,Nombre,Asunto,FechaApertura,FechaCierre,CodigoOptico,CodigoElectronico,Reservado,Confidencial,Ampliado".Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray();
 
-            string f= await ioT.Obtenetdatos(TransferenciaId, Columnas,ConfiguracionServidor.ruta_cache_fisico,ConfiguracionServidor.separador_ruta);
+            string f = await ioT.Obtenetdatos(TransferenciaId, Columnas, ConfiguracionServidor.ruta_cache_fisico, ConfiguracionServidor.separador_ruta);
             byte[] b = File.ReadAllBytes(f);
             return b;
         }
+
+
+        public async Task<string[]> EliminarRelaciones(List<Archivo> listaArchivos)
+        {
+            ServicioEventoTransferencia set = new ServicioEventoTransferencia(this.proveedorOpciones, LoggerCC);
+            ServicioComentarioTransferencia cct = new ServicioComentarioTransferencia(this.proveedorOpciones,LoggerCC);
+            ServicioActivoDeclinado sad = new ServicioActivoDeclinado(this.proveedorOpciones,LoggerCC);
+            ServicioActivoTransferencia sat = new ServicioActivoTransferencia(this.proveedorOpciones,LoggerCC);
+            
+            List<Transferencia> ListaTranferencia = await repo.ObtenerAsync(x => x.ArchivoOrigenId.Contains(listaArchivos.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
+            List<Transferencia> listaT =await repo.ObtenerAsync(x => x.ArchivoDestinoId.Contains(listaArchivos.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
+            ListaTranferencia.AddRange(listaT);
+            List<EventoTransferencia> ListaEvento = await set.ObtenerAsync(x=>x.TransferenciaId.Contains(ListaTranferencia.Select(x=>x.Id).FirstOrDefault())).ConfigureAwait(false);
+            List<ComentarioTransferencia> ListaComentarioTransferencia = await cct.ObtenerAsync(x=>x.TransferenciaId.Contains(ListaTranferencia.Select(x=>x.Id).FirstOrDefault())).ConfigureAwait(false);
+
+            await set.Eliminar(IdsEliminados(ListaEvento.Select(x=>x.Id).ToArray())).ConfigureAwait(false);
+            await cct.Eliminar(IdsEliminados(ListaComentarioTransferencia.Select(x=>x.Id).ToArray())).ConfigureAwait(false);
+            await sad.EliminarTranferencia(IdsEliminados(ListaTranferencia.Select(x=>x.Id).ToArray())).ConfigureAwait(false);
+            await sat.EliminarTransferencia(IdsEliminados(ListaTranferencia.Select(x => x.Id).ToArray())).ConfigureAwait(false);
+
+
+            return ListaTranferencia.Select(x=>x.Id).ToArray();
+        }
+
+        private string[] IdsEliminados(string[] ids)
+        {
+            return ids;
+        }
+
         #region Sin Implementar
 
 
@@ -205,7 +235,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-       
+        
+
 
         #endregion
 

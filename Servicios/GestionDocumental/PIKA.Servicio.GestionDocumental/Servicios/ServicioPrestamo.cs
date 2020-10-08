@@ -26,7 +26,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         private IRepositorioAsync<Prestamo> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
-
+        private ILogger<ServicioActivoPrestamo> lap;
+        private ILogger<ServicioComentarioPrestamo> lp;
+        
         public ServicioPrestamo(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
            ILogger<ServicioPrestamo> Logger) : base(proveedorOpciones, Logger)
         {
@@ -144,7 +146,23 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.SaveChanges();
             return listaEliminados;
         }
-
+        public async Task<ICollection<string>> EliminarPrestamo(string[] ids)
+        {
+            Prestamo p;
+            ICollection<string> listaEliminados = new HashSet<string>();
+            foreach (var Id in ids)
+            {
+                p = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (p != null)
+                {
+                    p.Eliminada = true;
+                    UDT.Context.Entry(p).State = EntityState.Deleted;
+                    listaEliminados.Add(p.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
+        }
         public Task<List<Prestamo>> ObtenerAsync(Expression<Func<Prestamo, bool>> predicado)
         {
             return this.repo.ObtenerAsync(predicado);
@@ -170,6 +188,23 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             Prestamo p = await this.repo.UnicoAsync(predicado);
             return p.Copia();
+        }
+
+        public async Task<List<string>> Purgar()
+        {
+            List<Prestamo> ListaPrestamo = await this.repo.ObtenerAsync(x=>x.Eliminada==true);
+            if (ListaPrestamo.Count > 0)
+            {
+                ServicioActivoPrestamo sap = new ServicioActivoPrestamo(this.proveedorOpciones, lap);
+                ServicioComentarioPrestamo scp = new ServicioComentarioPrestamo(this.proveedorOpciones, lp);
+                string[] IdPrestamoeliminados = ListaPrestamo.Select(x => x.Id).ToArray();
+                await sap.EliminarActivosPrestamos(1, IdPrestamoeliminados);
+                List<ComentarioPrestamo> cp = await scp.ObtenerAsync(x => x.PrestamoId.Contains(ListaPrestamo.Select(x => x.Id).FirstOrDefault()));
+                string[] ComentariosPrestamosId = cp.Select(x => x.Id).ToArray();
+                scp = new ServicioComentarioPrestamo(this.proveedorOpciones,lp);
+                await scp.Eliminar(ComentariosPrestamosId);
+            }
+            return ListaPrestamo.Select(x=>x.Id).ToList();
         }
     }
 }

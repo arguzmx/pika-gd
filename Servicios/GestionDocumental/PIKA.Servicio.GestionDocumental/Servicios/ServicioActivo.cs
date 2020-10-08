@@ -37,6 +37,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private ServicioEstadisticaClasificacionAcervo sevEstadisticas;
         private readonly IAppCache cache;
         IOptions<ConfiguracionServidor> Config;
+        private ILogger<ServicioHistorialArchivoActivo> logHAA;
+        private ILogger<ServicioAmpliacion> logerA;
+        private ILogger<ServicioActivoPrestamo> logerSAP;
+        private ILogger<ServicioCuadroClasificacion> LoggerCC;
+
         public ServicioActivo(
             IAppCache cache,
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
@@ -330,7 +335,22 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return nombre;
 
         }
-
+        public async Task<List<string>> EliminarActivos(string[] ids)
+        {
+            Activo ap;
+            List<string> listaEliminados = new List<string>();
+            foreach (var Id in ids)
+            {
+                ap = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (ap != null)
+                {
+                    UDT.Context.Entry(ap).State = EntityState.Deleted;
+                    listaEliminados.Add(ap.Id);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
+        }
         public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
             Activo c;
@@ -391,7 +411,38 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
 
         }
+        public async Task<List<string>> Purgar()
+        {
+            List<Activo> ListaActivosEliminados = await this.ObtenerAsync(x => x.Eliminada == true);
+            if (ListaActivosEliminados.Count > 0) 
+            {
+                ServicioHistorialArchivoActivo SHAA = new ServicioHistorialArchivoActivo(this.proveedorOpciones, logHAA);
+                ServicioActivoPrestamo sap = new ServicioActivoPrestamo(this.proveedorOpciones, logerSAP);
+                ServicioActivoTransferencia sat = new ServicioActivoTransferencia(this.proveedorOpciones, LoggerCC);
+                ServicioActivoDeclinado sad = new ServicioActivoDeclinado(this.proveedorOpciones, LoggerCC);
+                ServicioAmpliacion sa = new ServicioAmpliacion(this.proveedorOpciones, logerA);
+                ServicioEstadisticaClasificacionAcervo servicioEstadistica = new ServicioEstadisticaClasificacionAcervo(this.proveedorOpciones,Config,logger);
+                List<HistorialArchivoActivo> ListHAA = await SHAA.ObtenerAsync(x => x.ActivoId.Contains(ListaActivosEliminados.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
+                List<Ampliacion> listaAmpliacion = await sa.ObtenerAsync(x=>x.ActivoId.Contains(ListaActivosEliminados.Select(x=>x.Id).FirstOrDefault())).ConfigureAwait(false);
 
+                await SHAA.Eliminar(ListaIDsEliminar(ListHAA.Select(x => x.Id).ToArray())).ConfigureAwait(false);
+                await sa.Eliminar(ListaIDsEliminar(listaAmpliacion.Select(x => x.Id).ToArray())).ConfigureAwait(false);
+                await sap.EliminarActivosPrestamos(2, ListaIDsEliminar(ListaActivosEliminados.Select(x => x.Id).ToArray())).ConfigureAwait(false);
+                await sat.Eliminar(ListaIDsEliminar(ListaActivosEliminados.Select(x => x.Id).ToArray())).ConfigureAwait(false);
+                await sad.Eliminar(ListaIDsEliminar(ListaActivosEliminados.Select(x => x.Id).ToArray())).ConfigureAwait(false);
+                foreach (Activo a in ListaActivosEliminados)
+                {
+                    await servicioEstadistica.EliminarEstadisticos(1, ListaActivosEliminados.Select(x=>x.ArchivoId).ToArray());
+                }
+
+            }
+
+            return ListaIDsEliminar(ListaActivosEliminados.Select(x => x.Id).ToArray()).ToList();
+        }
+        private string[] ListaIDsEliminar(string[]ids) 
+        {
+            return ids;
+        }
 
         #region Sin Implementar
 
@@ -420,6 +471,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             throw new NotImplementedException();
         }
+
+      
+
 
 
 

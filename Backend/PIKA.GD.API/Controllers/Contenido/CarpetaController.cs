@@ -144,6 +144,18 @@ namespace PIKA.GD.API.Controllers.Contenido
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return Ok(await servicioEntidad.Eliminar(lids).ConfigureAwait(false));
         }
+        /// <summary>
+        /// Este metodo  puerga todos los elementos
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete("purgar", Name = "DeletePurgarCarpeta")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Carpeta>> DeletePurgar()
+        {
+            return Ok(await servicioEntidad.Purgar().ConfigureAwait(false));
+        }
 
         /// <summary>
         /// Restaura una lista de carpetaes eliminadas en base al arreglo de identificadores recibidos
@@ -220,7 +232,7 @@ namespace PIKA.GD.API.Controllers.Contenido
             return Ok(l.ToList());
         }
 
-
+       
 
     }
 }

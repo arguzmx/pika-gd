@@ -37,6 +37,7 @@ namespace PIKA.Servicio.Organizacion.Servicios
                 new QueryComposer<Dominio>());
             this.repoOU = UDT.ObtenerRepositoryAsync<UnidadOrganizacional>(
                 new QueryComposer<UnidadOrganizacional>());
+
         }
 
 
@@ -231,7 +232,21 @@ namespace PIKA.Servicio.Organizacion.Servicios
         }
 
 
+        public async Task<string[]> Purgar()
+        {
+            List<Dominio> ListaDominio = await this.repo.ObtenerAsync(x=>x.Eliminada==true).ConfigureAwait(false);
+            if (ListaDominio.Count() > 0)
+            {
+                List<UnidadOrganizacional> ListaUnidad = await this.repoOU.ObtenerAsync(x=>x.DominioId.Contains(ListaDominio.Select(x=>x.Id).FirstOrDefault())).ConfigureAwait(false);
+                await this.repoOU.EliminarRango(ListaUnidad).ConfigureAwait(false);
+                 this.UDT.SaveChanges();
+                await this.repo.EliminarRango(ListaDominio).ConfigureAwait(false);
+                this.UDT.SaveChanges();
 
+
+            }
+            throw new NotImplementedException();
+        }
 
         #region Sin implementar
 
@@ -249,6 +264,8 @@ namespace PIKA.Servicio.Organizacion.Servicios
         {
             throw new NotImplementedException();
         }
+
+       
         #endregion
 
 

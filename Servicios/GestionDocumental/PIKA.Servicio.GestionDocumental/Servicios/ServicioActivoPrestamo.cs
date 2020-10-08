@@ -159,5 +159,47 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             ActivoPrestamo a = await this.repo.UnicoAsync(predicado);
             return a.Copia();
         }
+        public Task<List<string>> EliminarActivosPrestamos(int entidad, string[] ids) 
+        {
+            if (entidad == 1)
+                return EliminarPrestamos(ids);
+            else
+                return EliminarActivos(ids);
+        }
+        private async Task<List<string>> EliminarPrestamos(string[] ids)
+        {
+            ActivoPrestamo ap;
+            List<string> listaEliminados = new List<string>();
+            foreach (var Id in ids)
+            {
+                ap = await this.repo.UnicoAsync(x => x.PrestamoId == Id);
+                if (ap != null)
+                {
+                    await this.repo.Eliminar(ap);
+                    listaEliminados.Add(ap.ActivoId);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
+        }
+
+        private async Task<List<string>> EliminarActivos(string[] ids)
+        {
+            ActivoPrestamo ap;
+            List<string> listaEliminados = new List<string>();
+            foreach (var Id in ids)
+            {
+                ap = await this.repo.UnicoAsync(x => x.ActivoId == Id);
+                if (ap != null)
+                {
+                    UDT.Context.Entry(ap).State = EntityState.Deleted;
+                    listaEliminados.Add(ap.ActivoId);
+                }
+            }
+            UDT.SaveChanges();
+            return listaEliminados;
+        }
+
+        
     }
 }

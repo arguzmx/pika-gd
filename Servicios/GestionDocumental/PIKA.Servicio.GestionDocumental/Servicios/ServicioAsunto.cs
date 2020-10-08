@@ -125,7 +125,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 asunto = await this.repo.UnicoAsync(x => x.Id == Id);
                 if (asunto != null)
                 {
-                    UDT.Context.Entry(asunto).State = EntityState.Deleted;
+                    await this.repo.Eliminar(asunto);
                     listaEliminados.Add(asunto.Id);
                 }
             }

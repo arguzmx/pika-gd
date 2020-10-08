@@ -12,6 +12,7 @@ namespace PIKA.Servicio.Organizacion
 
     public interface IServicioDominio : IServicioRepositorioAsync<Dominio, string>
     {
+        Task<string[]> Purgar();
 
 
 
