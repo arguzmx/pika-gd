@@ -64,6 +64,7 @@
     <ProjectReference Include="..\..\Servicios\Metadatos\PIKA.Servicio.Metadatos\PIKA.Servicio.Metadatos.csproj" />
     <ProjectReference Include="..\..\Servicios\Organizacion\PIKA.Servicio.Organizacion\PIKA.Servicio.Organizacion.csproj" />
     <ProjectReference Include="..\..\Servicios\PIKA.Servicio.Usuarios\PIKA.Servicio.Usuarios.csproj" />
+    <ProjectReference Include="..\..\Servicios\Reportes\PIKA.Servicio.Reportes\PIKA.Servicio.Reportes.csproj" />
     <ProjectReference Include="..\..\Servicios\Seguridad\PIKA.Servicio.Seguridad\PIKA.Servicio.Seguridad.csproj" />
       </ItemGroup>
 

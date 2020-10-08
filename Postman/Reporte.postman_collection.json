@@ -1,0 +1,320 @@
+{
+	"info": {
+		"_postman_id": "cdf65d8d-8c69-4490-8484-1ed8505fe8e0",
+		"name": "Reporte",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Reporte Entidad",
+			"item": [
+				{
+					"name": "GET Metadata Reporte",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/repo/reporteentidad/metadata",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"repo",
+								"reporteentidad",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Reporte",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"nombre\": \"segundo  cuadro c:w\",\r\n  \"Entidad\": \"segundo  cuadro c:\",\r\n  \"OrigenId\": \"segundo  cuadro c:\",\r\n  \"Plantilla\": \"segundo  cuadro c:\",\r\n  \"Descripcion\": \"segundo  cuadro c:\",\r\n  \"TipoOrigenId\": \"segundo  cuadro c:\"\r\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/repo/reporteentidad",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"repo",
+								"reporteentidad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Reporte",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Id\": \"9bbac48f-2d3a-4713-9ea2-338b65f8631c\",\r\n    \"Entidad\": \"segundo  cuadro c:\",\r\n    \"Nombre\": \"actualiadow\",\r\n    \"Descripcion\": \"segundo  cuadro c:\",\r\n    \"Plantilla\": \"segundo  cuadro c:\",\r\n    \"TipoOrigenDefault\": \"Global.IdDominio\",\r\n    \"TipoOrigenId\": \"segundo  cuadro c:\",\r\n    \"OrigenId\": \"segundo  cuadro c:\"\r\n}",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/repo/reporteentidad/9bbac48f-2d3a-4713-9ea2-338b65f8631c",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"repo",
+								"reporteentidad",
+								"9bbac48f-2d3a-4713-9ea2-338b65f8631c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Reporte",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/repo/reporteentidad/0001",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"repo",
+								"reporteentidad",
+								"0001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Page Reporte",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/repo/reporteentidad/page?i=0&t=100&ordc=Nombre&ordd=asc",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"repo",
+								"reporteentidad",
+								"page"
+							],
+							"query": [
+								{
+									"key": "i",
+									"value": "0"
+								},
+								{
+									"key": "t",
+									"value": "100"
+								},
+								{
+									"key": "ordc",
+									"value": "Nombre"
+								},
+								{
+									"key": "ordd",
+									"value": "asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Reporte",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/v1.0/repo/reporteentidad/0001",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"v1.0",
+								"repo",
+								"reporteentidad",
+								"0001"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "7cfa4ed4-eeee-4e1b-8fa8-1e80be5b2505",
+				"type": "text/javascript",
+				"exec": [
+					"const echoPostRequest = {",
+					"  url: 'http://localhost:4000/connect/token',",
+					"  method: 'POST',",
+					"  header: 'Content-Type:application/x-www-form-urlencoded',",
+					"  body: {",
+					"    mode: 'raw',",
+					"    raw: 'grant_type=password&username=bob&password=Pass123%24&scope=openid%20pika-gd&client_id=api-pika-gd-pass&client_secret=secret'",
+					"  }",
+					"};",
+					"",
+					"var getToken = true;",
+					"",
+					"if (!pm.environment.get('accessTokenExpiry') || ",
+					"    !pm.environment.get('accessToken')) {",
+					"    console.log('Token or expiry date are missing')",
+					"} else if (pm.environment.get('accessTokenExpiry') <= (new Date()).getTime()) {",
+					"    console.log('Token is expired')",
+					"} else {",
+					"    getToken = false;",
+					"    console.log('Token and expiry date are all good');",
+					"}",
+					"",
+					"if (getToken === true) {",
+					"    pm.sendRequest(echoPostRequest, function (err, res) {",
+					"    console.log(err ? err : res.json());",
+					"        if (err === null) {",
+					"            console.log('Saving the token and expiry date')",
+					"            var responseJson = res.json();",
+					"            pm.environment.set('accessToken', responseJson.access_token)",
+					"    ",
+					"            var expiryDate = new Date();",
+					"            expiryDate.setSeconds(expiryDate.getSeconds() + responseJson.expires_in);",
+					"            pm.environment.set('accessTokenExpiry', expiryDate.getTime());",
+					"        }",
+					"    });",
+					"}",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "37e2d2e3-4ebc-4b0d-bc92-191ec9b60177",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d3613383-4d15-4ec9-bd27-9690f20cb1f9",
+			"key": "accessTokenExpiry",
+			"value": ""
+		},
+		{
+			"id": "3aa91915-4c03-41e7-8b97-87d4423458e8",
+			"key": "accessToken",
+			"value": ""
+		}
+	],
+	"protocolProfileBehavior": {}
+}
