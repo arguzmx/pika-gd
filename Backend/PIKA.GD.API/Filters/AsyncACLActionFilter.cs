@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace PIKA.GD.API.Filters
 {
@@ -35,8 +36,8 @@ namespace PIKA.GD.API.Filters
         private  string ModuleId;
         private  string AppId;
 
-
-        public AsyncACLActionFilter(ILogger<AsyncACLActionFilter> Logger,
+        public AsyncACLActionFilter(
+            ILogger<AsyncACLActionFilter> Logger,
             ICacheSeguridad SecurityCache, IOptions<ConfiguracionServidor> Config, 
             string AppId="", string ModuleId="", string[] ids = null )
         {
@@ -58,10 +59,23 @@ namespace PIKA.GD.API.Filters
             StringValues values;
             string DomainId = "";
             string UserId = "";
-            string OwnerId = "";
+            string UOid = "";
             bool IsAPIController = false;
             bool ExcludeACL = false;
-                        
+
+
+            var identity = context.HttpContext.User.Identity as ClaimsIdentity;
+            var valor = identity.Claims.Where(x => x.Type == JwtRegisteredClaimNames.Sub).FirstOrDefault();
+            if (valor != null) UserId = valor.Value;
+
+
+            if (string.IsNullOrEmpty(UserId))
+            {
+                context.Result = new UnauthorizedResult();
+                return;
+            }
+
+
             IsAPIController =
             (ApiControllerAttribute)Attribute.GetCustomAttribute(context.Controller.GetType(),
             typeof(ApiControllerAttribute)) != null ? true : false;
@@ -111,11 +125,9 @@ namespace PIKA.GD.API.Filters
 
              
                 if (context.HttpContext.Request.Headers.TryGetValue(Config.header_dominio, out values)) DomainId = values[0];
-                if (context.HttpContext.Request.Headers.TryGetValue(Config.header_tenantid, out values)) OwnerId = values[0];
+                if (context.HttpContext.Request.Headers.TryGetValue(Config.header_tenantid, out values)) UOid = values[0];
 
-                var claimid = context.HttpContext.User.Claims.Where(x => x.Type == JwtRegisteredClaimNames.Sub).FirstOrDefault();
-                UserId = claimid != null ? claimid.Value : ""; 
-
+              
                 if (string.IsNullOrEmpty(UserId)  || string.IsNullOrEmpty(AppId))
                 {
                     
@@ -124,21 +136,15 @@ namespace PIKA.GD.API.Filters
                 }
 
                 bool allow = false;
-                if (UserId == OwnerId)
-                {
-                    allow = true;
-                }
-                else
-                {
-                    string Method = context.HttpContext.Request.Method;
-                    allow = await SecurityCache.AllowMethod(UserId, DomainId, AppId, ModuleId, Method).ConfigureAwait(false);
-                }
+
+                string Method = context.HttpContext.Request.Method;
+                allow = await SecurityCache.AllowMethod(UserId, DomainId, AppId, ModuleId, Method).ConfigureAwait(false);
 
                 if (allow)
                 {
 
                     ((ACLController)context.Controller).UsuarioId = UserId;
-                    ((ACLController)context.Controller).TenatId = OwnerId;
+                    ((ACLController)context.Controller).TenatId = UOid;
                     ((ACLController)context.Controller).DominioId = DomainId;
 
                     var result = await next().ConfigureAwait(false);

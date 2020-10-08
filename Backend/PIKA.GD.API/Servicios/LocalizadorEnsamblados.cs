@@ -1,10 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PIKA.GD.API.Model;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infrastructure.EventBus.Abstractions;
 using PIKA.Modelo.Metadatos;
 using RepositorioEntidades;
 using Serilog;
+using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -86,6 +89,74 @@ namespace PIKA.GD.API
             }
 
             return l;
+        }
+
+
+        public static List<RutaTipo> ObtieneControladoresACL()
+        {
+            List<RutaTipo> rutas = new List<RutaTipo>();
+            string Ruta = ObtieneRutaBin();
+
+            var assemblies = Directory.GetFiles(Ruta, "*.dll", new EnumerationOptions() { RecurseSubdirectories = true });
+            foreach (var item in assemblies)
+            {
+                try
+                {
+                    var assembly = Assembly.LoadFile(item);
+                    var Tipos = assembly.GetTypes()
+                            .Where(t =>
+                            t.IsSubclassOf(typeof(ControllerBase)) &&
+                            !t.IsAbstract)
+                            .ToArray();
+
+                    foreach (var t in Tipos)
+                    {
+
+                        
+
+                        object[] TypeAttrs = t.GetCustomAttributes(true);
+                        string TemplateRuteo = "";
+                        foreach (object attr in TypeAttrs)
+                        {
+                            if (attr is RouteAttribute)
+                            {
+                                TemplateRuteo = ((RouteAttribute)attr).Template.Replace("[controller]", t.Name.Replace("Controller","") );
+                                break;
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(TemplateRuteo))
+                        {
+                            foreach (var c in t.GetConstructors())
+                            {
+                                foreach (var p in c.GetParameters())
+                                {
+                                    if (p.ParameterType.FullName.Contains("IProveedorMetadatos", StringComparison.InvariantCultureIgnoreCase))
+                                    {
+                                        foreach (var a in p.ParameterType.GenericTypeArguments)
+                                        {
+                                            rutas.Add(new RutaTipo()
+                                            {
+                                                Ruta = TemplateRuteo,
+                                                Tipo = a.Name,
+                                                Version = ""
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                   }
+
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            return rutas;
         }
 
         public static List<TipoAdministradorModulo> ObtieneTiposAdministrados()

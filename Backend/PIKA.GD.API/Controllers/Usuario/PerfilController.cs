@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.Infraestructura.Comun;
+using PIKA.Infraestructura.Comun.Menus;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Servicio.Seguridad.Interfaces;
 using PIKA.Servicio.Usuarios;
 
 namespace PIKA.GD.API.Controllers
@@ -23,12 +26,22 @@ namespace PIKA.GD.API.Controllers
 
         private ILogger<PerfilController> logger;
         private IServicioPerfilUsuario servicioEntidad;
+        private ICacheSeguridad CacheSeguridad;
+        private IServicioMenuAplicacion ServicioMenuAplicacion;
+        private IServicioTokenSeguridad ServicioTokenSeguridad;
 
-        public PerfilController(ILogger<PerfilController> logger,
+        public PerfilController(
+            IServicioTokenSeguridad ServicioTokenSeguridad,
+            IServicioMenuAplicacion ServicioMenuAplicacion,
+            ICacheSeguridad CacheSeguridad,
+            ILogger<PerfilController> logger,
             IServicioPerfilUsuario servicioEntidad)
         {
             this.logger = logger;
+            this.ServicioTokenSeguridad = ServicioTokenSeguridad;
+            this.CacheSeguridad = CacheSeguridad;
             this.servicioEntidad = servicioEntidad;
+            this.ServicioMenuAplicacion = ServicioMenuAplicacion;
         }
 
     
@@ -40,6 +53,30 @@ namespace PIKA.GD.API.Controllers
             var dominios = await this.servicioEntidad.Dominios(GetUserId()).ConfigureAwait(false);
             return Ok(dominios);
         }
+
+
+
+        [HttpGet("acl", Name = "ACLAplicacion")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [TypeFilter(typeof(AsyncIdentityFilter))]
+        public async Task<ActionResult<DefinicionSeguridadUsuario>> ObtieneACLAplicacion()
+        {
+            var acl = await ServicioTokenSeguridad.ObtenerSeguridadUsuario(this.UsuarioId, this.DominioId)
+                .ConfigureAwait(false);
+            return Ok(acl);
+
+        }
+
+        [HttpGet("menu/{id}", Name = "MenuAplicacion")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [TypeFilter(typeof(AsyncIdentityFilter))]
+        public async Task<ActionResult<MenuAplicacion>> ObtieneMenuAplicacion(string id)
+        {
+            var menu = await ServicioMenuAplicacion.ObtieneMenuApp(id).ConfigureAwait(false);
+            return Ok(menu);
+
+        }
+
 
     }
 

@@ -72,8 +72,8 @@ namespace PIKA.GD.API
             }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
 
+            LocalizadorEnsamblados.ObtieneControladoresACL();
 
-      
 
             //registra los ensamblados con módulos administrables para  ACL 
             services.RegistraMódulosAdministrados();
@@ -107,8 +107,8 @@ namespace PIKA.GD.API
             services.AddTransient(typeof(IProveedorMetadatos<>), typeof(ReflectionMetadataExtractor<>));
 
             services.AddTransient<IServicioInfoAplicacion, ServicioInfoAplicacionReflectivo>();
-            services.AddTransient<ILocalizadorFiltroACL, LocalizadorFiltroACLReflectivo>();
             services.AddScoped<AsyncACLActionFilter>();
+            services.AddScoped<AsyncIdentityFilter>();
 
             services.AddTransient(typeof(IProveedorOpcionesContexto<>),typeof(ProveedorOpcionesContexto<>));
 

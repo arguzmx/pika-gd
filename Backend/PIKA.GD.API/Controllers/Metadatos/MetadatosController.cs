@@ -101,7 +101,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [HttpGet("unico/{plantillaid}/{id}", Name = "GetMetadatosUnico")]
         public async Task<ActionResult<ValoresPlantilla>> Unico(string plantillaid, string id)
         {
-            Plantilla plantilla = await appCache.Metadatos.ObtenerPlantilla(plantillaid, ContantesCache.CONTROLADORMETADATOS).ConfigureAwait(false);
+            Plantilla plantilla = await appCache.Metadatos.ObtenerPlantilla(plantillaid, ConstantesCache.CONTROLADORMETADATOS).ConfigureAwait(false);
             if (plantilla != null)
             {
                 
