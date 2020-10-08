@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Infraestructura.Comun.Seguridad
 {
     public class PermisoAplicacion: MascaraPermisos
     {
+
+        public const string TIPO_USUARIO = "U";
+        public const string TIPO_ROL = "R";
+
         /// <summary>
         /// Identificador unico del dominio para el conjunto de permisos
         /// </summary>

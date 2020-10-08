@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Infraestructura.Comun.Seguridad
 {
@@ -27,10 +29,15 @@ namespace PIKA.Infraestructura.Comun.Seguridad
         }
 
         public bool NegarAcceso { get; set; }
+
         public bool Leer { get; set; }
+
         public bool Escribir { get; set; }
+
         public bool Eliminar { get; set; }
+
         public bool Admin { get; set; }
+
         public bool Ejecutar { get; set; }
 
 

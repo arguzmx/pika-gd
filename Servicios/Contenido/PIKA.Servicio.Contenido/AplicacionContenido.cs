@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using PIKA.Infraestructura.Comun;
-using PIKA.Infraestructura.Comun.Constantes;
-using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Contenido;
 using Version = PIKA.Modelo.Contenido.Version;
+using PIKA.Constantes.Aplicaciones.Contenido;
 
 namespace PIKA.Servicio.Contenido
 {
     public class AplicacionContenido : InformacionAplicacionBase, IInformacionAplicacion
     {
-        public const string MODULO_BASE = "PIKA-GD-COTENIDO-";
 
         public override Aplicacion Info()
         {
@@ -22,14 +19,14 @@ namespace PIKA.Servicio.Contenido
 
         public List<ModuloAplicacion> ModulosAplicacion()
         {
-            return this.ModulosAplicacionLocales(AplicacionRaiz.APP_ID, MODULO_BASE);
+            return this.ModulosAplicacionLocales(ConstantesAppContenido.APP_ID, ConstantesAppContenido.APP_ID);
         }
 
         public override List<ElementoAplicacion> GetModulos()
         {
             List<ElementoAplicacion> m = new List<ElementoAplicacion>()
             {
-                new ElementoAplicacion(MODULO_BASE, "ADMIN-CONFIGURACION" ) {
+                new ElementoAplicacion(ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_ADMIN_CONFIGURACION ) {
                     Titulo = "Configuración de almacenamiento de los repositorios",
                     Descripcion = "Permite administrar la configuración de los almacenamientos del repositorio",
                     Tipos = new List<Type> {
@@ -42,7 +39,7 @@ namespace PIKA.Servicio.Contenido
                         typeof(GestorLocalConfig)
                     }
                 },
-                 new ElementoAplicacion(MODULO_BASE, "ESTRUCTURA-CONTENIDO" ) {
+                 new ElementoAplicacion(ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO ) {
                     Titulo = "Gestión de elementos de contenido",
                     Descripcion = "Permite realizar la gestión de contenido del repositorio, por ejemplo carpetas y documentos",
                     Tipos = new List<Type> {
@@ -54,7 +51,7 @@ namespace PIKA.Servicio.Contenido
                         typeof(Elemento)
                     }
                 },
-                     new ElementoAplicacion(MODULO_BASE, "VISOR-CONTENIDO" ) {
+                     new ElementoAplicacion(ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_VISOR_CONTENIDO ) {
                     Titulo = "Acceso al visor de contenido",
                     Descripcion = "Permite acceder al visor de cotenids para su visualización y edición",
                     Tipos = new List<Type> {}

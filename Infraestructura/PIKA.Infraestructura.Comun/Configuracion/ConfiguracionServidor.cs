@@ -26,9 +26,20 @@ namespace PIKA.Infraestructura.Comun
         public string header_idusuario { get; set; }
         public string header_tenantid { get; set; }
 
-        public int cache_seguridad_segundos { get; set; }
+        /// <summary>
+        /// Determina la duración del cacché de seguridad, el cache es delizante
+        /// </summary>
+        public int seguridad_cache_segundos { get; set; }
 
-        public bool alamacenar_cache_seguridad { get; set; }
+        /// <summary>
+        /// Determina si los permisos efectivos son los mínimos del conjunto
+        /// </summary>
+        public bool seguridad_minimo_permisos { get; set; }
+
+        /// <summary>
+        /// Determina si almacena la seguridad en el cache o si debe evalaurse en cada llamada
+        /// </summary>
+        public bool seguridad_almacenar_cache { get; set; }
 
         public string jwtclient { get; set; }
 
@@ -37,6 +48,5 @@ namespace PIKA.Infraestructura.Comun
         public string ruta_cache_fisico { get; set; }
 
         public string separador_ruta { get; set; }
-
     }
 }

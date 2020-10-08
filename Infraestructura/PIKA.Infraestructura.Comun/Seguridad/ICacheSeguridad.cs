@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PIKA.Infraestructura.Comun.Menus;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,14 +22,6 @@ namespace PIKA.Infraestructura.Comun.Seguridad
         /// <returns></returns>
         Task<bool> AllowMethod(string UserId, string DomainId, string AppId, string ModuleId, string Method);
 
-        /// <summary>
-        /// Otiene los permisos de acceso para una aplicación en un dominio
-        /// </summary>
-        /// <param name="UserId"></param>
-        /// <param name="DomainId"></param>
-        /// <param name="AppId"></param>
-        /// <returns></returns>
-        Task<SecurityToken> GetSecurityToken(string UserId, string DomainId, string AppId);
 
     }
 }

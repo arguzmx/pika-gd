@@ -11,5 +11,7 @@ namespace PIKA.Servicio.Organizacion.Interfaces
     {
         Task<int> PostIds(string rolid, string[] ids);
         Task<ICollection<string>> DeleteIds(string rolid, string[] ids);
+        Task<List<string>> IdentificadoresRolesUsuario(string uid);
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using PIKA.Constantes.Aplicaciones.Aplicaciones;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Constantes;
 using PIKA.Infraestructura.Comun.Seguridad;
@@ -10,9 +11,7 @@ namespace PIKA.Servicio.AplicacionPlugin
 {
     public class AplicacionAplicacionPlugin : InformacionAplicacionBase, IInformacionAplicacion
     {
-        public const string MODULO_BASE = "PIKA-GD_PLUGIN-";
-
-
+        
         public override Aplicacion Info()
         {
             Aplicacion a = AplicacionRaiz.ObtieneAplicacionRaiz();
@@ -22,27 +21,23 @@ namespace PIKA.Servicio.AplicacionPlugin
 
         public List<ModuloAplicacion> ModulosAplicacion()
         {
-            return this.ModulosAplicacionLocales(AplicacionRaiz.APP_ID, MODULO_BASE);
+            return this.ModulosAplicacionLocales(ConstantesAppAplicacionPlugin.APP_ID, ConstantesAppAplicacionPlugin.APP_ID);
         }
 
         public override List<ElementoAplicacion> GetModulos()
         {
             List<ElementoAplicacion> m = new List<ElementoAplicacion>()
             {
-                new ElementoAplicacion(MODULO_BASE, "PLUGINS" ) {
+
+                new ElementoAplicacion(ConstantesAppAplicacionPlugin.APP_ID, ConstantesAppAplicacionPlugin.MODULO_APLICACIONES ) {
+                    Titulo = "Aplicaciones del sistema",
+                    Descripcion = "Permite administrar la configuración de las aplicaciones del sistema",
+                    Tipos = new List<Type> { typeof(Aplicacion) }
+                },
+                new ElementoAplicacion(ConstantesAppAplicacionPlugin.APP_ID, ConstantesAppAplicacionPlugin.MODULO_PLUGINS ) {
                     Titulo = "Plugins del sistema",
                     Descripcion = "Permite administrar la configuración de los pluigns del sistema",
-                    Tipos = new List<Type> { typeof(Plugin) }
-                },
-                  new ElementoAplicacion(MODULO_BASE, "VERSIONES" ) {
-                    Titulo = "Versions de Plugins del sistema",
-                    Descripcion = "Permite administrar las versiones de los plugins del sistema",
-                    Tipos = new List<Type> { typeof(VersionPlugin) }
-                },
-                  new ElementoAplicacion(MODULO_BASE, "VERSIONES" ) {
-                    Titulo = "Plugins instalados",
-                    Descripcion = "Permite administrar los plugins instalados del sistema",
-                    Tipos = new List<Type> { typeof(PluginInstalado) }
+                    Tipos = new List<Type> { typeof(Plugin), typeof(VersionPlugin), typeof(PluginInstalado) }
                 }
             };
             return m;

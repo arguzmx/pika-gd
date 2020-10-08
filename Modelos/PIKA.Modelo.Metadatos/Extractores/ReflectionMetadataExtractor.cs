@@ -95,7 +95,8 @@ namespace PIKA.Modelo.Metadatos
                         TipoDespliegue = ev.TipoDespliegue,
                         HijoDinamico = ev.HijoDinamico, 
                         DiccionarioEntidadesVinculadas = ev.DiccionarioEntidadesVinculadas,
-                        PropiedadIdMiembro = ev.PropiedadIdMiembro
+                        PropiedadIdMiembro = ev.PropiedadIdMiembro,
+                        TokenSeguridad = ev.TokenSeguridad
                     });
 
                 }

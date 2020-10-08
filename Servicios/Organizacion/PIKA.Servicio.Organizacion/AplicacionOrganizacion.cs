@@ -1,18 +1,14 @@
-﻿using PIKA.Infraestructura.Comun;
-using PIKA.Infraestructura.Comun.Constantes;
-using PIKA.Infraestructura.Comun.Seguridad;
+﻿using PIKA.Constantes.Aplicaciones.Organizacion;
+using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Organizacion;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace PIKA.Servicio.Organizacion
 {
     public class AplicacionOrganizacion : InformacionAplicacionBase, IInformacionAplicacion
     {
-        public const  string MODULO_BASE = "PIKA-GD-ORG";
-
-
+    
 
         public override Aplicacion Info()
         {
@@ -23,24 +19,24 @@ namespace PIKA.Servicio.Organizacion
 
         public List<ModuloAplicacion> ModulosAplicacion()
         {
-            return this.ModulosAplicacionLocales(AplicacionRaiz.APP_ID, MODULO_BASE);
+            return this.ModulosAplicacionLocales(ConstantesAppOrganizacion.APP_ID, ConstantesAppOrganizacion.APP_ID);
         }
 
         public override List<ElementoAplicacion> GetModulos()
         {
             List<ElementoAplicacion> m = new List<ElementoAplicacion>()
             {
-                new ElementoAplicacion(MODULO_BASE, "DOMINIO" ) {
+                new ElementoAplicacion(ConstantesAppOrganizacion.APP_ID, ConstantesAppOrganizacion.MODULO_DOMINIO ) {
                     Titulo = "Dominios",
                     Descripcion = "Permite administrar los dominios para la conformación de organizaciones",
                     Tipos = new List<Type> { typeof(Dominio) }
                 },
-                new ElementoAplicacion(MODULO_BASE, "UNIDADORGANIZACIONAL" ) {
+                new ElementoAplicacion(ConstantesAppOrganizacion.APP_ID, ConstantesAppOrganizacion.MODULO_UNIDADORGANIZACIONAL ) {
                     Titulo = "Unidades organizacionales",
                     Descripcion = "Permite administrar las unidades organizacionales de un dominio",
                     Tipos = new List<Type> { typeof(UnidadOrganizacional) }
                 },
-                new ElementoAplicacion(MODULO_BASE, "ROL" ) {
+                new ElementoAplicacion(ConstantesAppOrganizacion.APP_ID, ConstantesAppOrganizacion.MODULO_ROL ) {
                     Titulo = "Roles",
                     Descripcion = "Permite administrar los roles de usuario de un dominio",
                     Tipos = new List<Type> { typeof(Rol), typeof(UsuariosRol) }

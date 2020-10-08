@@ -1,4 +1,5 @@
-﻿using PIKA.Infraestructura.Comun;
+﻿using PIKA.Constantes.Aplicaciones.GestorDocumental;
+using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.GestorDocumental.Reportes;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
@@ -14,7 +15,8 @@ using System.Xml.Serialization;
 namespace PIKA.Modelo.GestorDocumental
 {
     [Entidad(PaginadoRelacional:false, EliminarLogico: true)]
-    [EntidadVinculada(EntidadHijo: "ElementoClasificacion,EntradaClasificacion", 
+    [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_CUADROCLASIF, 
+        EntidadHijo: "ElementoClasificacion,EntradaClasificacion", 
         Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id", 
         PropiedadHijo: "CuadroClasifiacionId", TipoDespliegueVinculo: TipoDespliegueVinculo.Jerarquico) ]
     public class CuadroClasificacion : Entidad<string>, IEntidadNombrada, IEntidadEliminada, 

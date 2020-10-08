@@ -10,9 +10,7 @@ namespace PIKA.Infraestructura.Comun.Seguridad
     public interface IServicioTokenSeguridad 
     {
 
-        Task<SecurityToken> ObtenerToken(string UserId, string DomainId, string AppId);
-
-        Task<List<AppDomainGrant>> ObtenerGrants(string UserId, string DomainId, string AppId);
+        Task<DefinicionSeguridadUsuario> ObtenerSeguridadUsuario(string UserId, string DomainId);
 
     }
 }

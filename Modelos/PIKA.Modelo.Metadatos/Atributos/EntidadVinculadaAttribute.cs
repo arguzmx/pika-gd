@@ -22,6 +22,7 @@ namespace PIKA.Modelo.Metadatos
         private string _Padre;
         private string _Hijo;
         private string _PropiedadIdMiembro;
+        private string _TokenSeguridad;
         private bool _HijoDinamico;
         private TipoDespliegueVinculo _TipoDespliegueVinculo;
         private List<DiccionarioEntidadVinculada> _DiccionarioEntidadVinculada;
@@ -30,6 +31,7 @@ namespace PIKA.Modelo.Metadatos
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="TokenSeguridad">Token para validar acceso</param>
         /// <param name="EntidadHijo"></param>
         /// <param name="Cardinalidad"></param>
         /// <param name="PropiedadPadre"></param>
@@ -38,7 +40,7 @@ namespace PIKA.Modelo.Metadatos
         /// <param name="TipoDespliegueVinculo">Tipo de despliegue</param>
         /// <param name="HijoDinamico">Determina si el hijo de vinculación es dinámico en base a la propeieda del objecto definida por EntidadHijo</param>
         /// <param name="Diccionario">El diccionario se forma de pres seprardos por , separados por |</param>
-        public EntidadVinculadaAttribute(string EntidadHijo = ""
+        public EntidadVinculadaAttribute(string TokenSeguridad, string EntidadHijo = ""
         , TipoCardinalidad Cardinalidad = TipoCardinalidad.UnoVarios
         , string PropiedadPadre = "", string PropiedadHijo = ""
         , TipoDespliegueVinculo TipoDespliegueVinculo = TipoDespliegueVinculo.Tabular, 
@@ -65,6 +67,7 @@ namespace PIKA.Modelo.Metadatos
                     
                 }
             }
+            this._TokenSeguridad = TokenSeguridad;
             this._PropiedadIdMiembro = PropiedadIdMiembro;
             this._Cardinalidad = Cardinalidad;
             this._Entidad = EntidadHijo;
@@ -94,6 +97,14 @@ namespace PIKA.Modelo.Metadatos
         /// NOm,bre de la propiedad de relación en el padre
         /// </summary>
         public virtual string PropiedadPadre
+        {
+            get { return _Padre; }
+        }
+
+        /// <summary>
+        /// Token de validación para acceso  a la vista
+        /// </summary>
+        public virtual string TokenSeguridad
         {
             get { return _Padre; }
         }

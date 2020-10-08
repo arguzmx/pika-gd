@@ -1,4 +1,5 @@
-﻿using PIKA.Infraestructura.Comun;
+﻿using PIKA.Constantes.Aplicaciones.Organizacion;
+using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
 using RepositorioEntidades;
@@ -18,7 +19,7 @@ namespace PIKA.Modelo.Organizacion
     /// Rol laboral en la organización
     /// </summary>
     [Entidad(EliminarLogico: false)]
-    [EntidadVinculada(EntidadHijo: "usuariosrol", Cardinalidad: TipoCardinalidad.UnoVarios,
+    [EntidadVinculada(TokenSeguridad: ConstantesAppOrganizacion.MODULO_ROL, EntidadHijo: "usuariosrol", Cardinalidad: TipoCardinalidad.UnoVarios,
         PropiedadPadre: "Id", PropiedadHijo: "RolId", PropiedadIdMiembro: "ApplicationUserId",
         TipoDespliegueVinculo: TipoDespliegueVinculo.Membresia)]
     public class Rol : Entidad<string>, IEntidadNombrada, IEntidadRelacionada

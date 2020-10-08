@@ -17,7 +17,7 @@ namespace PIKA.Infraestructura.Comun
             _IdModulo = IdModulo;
         }
 
-        public string IdModulo { get { return $"{_IdPadre}{_IdModulo}"; }  }
+        public string IdModulo { get { return $"{_IdPadre}-{_IdModulo}"; }  }
         public string Titulo { get; set; }
         public string Descripcion { get; set; }
         public List<Type> Tipos { get; set; }
@@ -35,7 +35,7 @@ namespace PIKA.Infraestructura.Comun
 
             m.TiposAdministrados.Add(new TipoAdministradorModulo()
             {
-                AplicacionId = ConstantesAplicacion.Id,
+                AplicacionId = AppId,
                 ModuloId = m.Id,
                 TiposAdministrados = Tipos
             });

@@ -9,7 +9,7 @@ namespace PIKA.Infraestructura.Comun.Constantes
         /// <summary>
         /// Identificador único de la aplciacción
         /// </summary>
-        public const string Id = "PIKA-GD";
+        public const string IdAppGlobal = "PIKA-GD";
         /// <summary>
         /// Version actual de la aplciación
         /// </summary>
@@ -22,7 +22,7 @@ namespace PIKA.Infraestructura.Comun.Constantes
         /// <returns></returns>
         public static Aplicacion AplicacionPikaGD()
         {
-            Aplicacion a = new Aplicacion() { Id = ConstantesAplicacion.Id, 
+            Aplicacion a = new Aplicacion() { Id = ConstantesAplicacion.IdAppGlobal, 
                 Descripcion="Pika Gestión documental ofrece las funciones necesarias para el cotnrol del ciclo de vida documental", 
                 Nombre ="PIKA Gestión documental", 
                 UICulture = "es-MX", 

@@ -143,6 +143,20 @@ namespace PIKA.Servicio.Organizacion.Servicios
             return l;
         }
 
+
+
+        public async Task<List<string>> IdentificadoresRolesUsuario(string uid)
+        {
+
+            var roles = await repo.ObtenerAsync(x =>
+            x.ApplicationUserId.Equals(uid, StringComparison.InvariantCultureIgnoreCase));
+            return roles.ToList().Select(x=> x.RolId ).ToList();
+        }
+
+
+
+        #region sin implemetar
+
         public Task<List<UsuariosRol>> ObtenerAsync(Expression<Func<UsuariosRol, bool>> predicado)
         {
             throw new NotImplementedException();
@@ -168,10 +182,6 @@ namespace PIKA.Servicio.Organizacion.Servicios
         {
             throw new NotImplementedException();
         }
-
-
-
-        #region sin implemetar
 
         public Task<IEnumerable<string>> Restaurar(string[] ids)
         {

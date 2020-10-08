@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Infraestructura\PIKA.Infraestructura.Comun\PIKA.Infraestructura.Comun.csproj" />
     <ProjectReference Include="..\..\Infraestructura\RepositorioEntidades\RepositorioEntidades.csproj" />
+    <ProjectReference Include="..\PIKA.Constantes.Aplicaciones\PIKA.Constantes.Aplicaciones.csproj" />
     <ProjectReference Include="..\PIKA.Modelo.Metadatos\PIKA.Modelo.Metadatos.csproj" />
   </ItemGroup>
 

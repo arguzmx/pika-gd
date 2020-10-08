@@ -1,12 +1,9 @@
-﻿    using PIKA.Infraestructura.Comun;
+﻿using PIKA.Constantes.Aplicaciones.Organizacion;
+using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
 using RepositorioEntidades;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using static PIKA.Modelo.Metadatos.PropAttribute;
 
 namespace PIKA.Modelo.Organizacion
 {
@@ -15,7 +12,7 @@ namespace PIKA.Modelo.Organizacion
     /// El dominio es el contenedor todos los recursos asociados a una organización
     /// </summary>
     [Entidad(EliminarLogico: true)]
-    [EntidadVinculada(EntidadHijo: "UnidadOrganizacional", Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id", PropiedadHijo: "DominioId")]
+    [EntidadVinculada(TokenSeguridad: ConstantesAppOrganizacion.MODULO_UNIDADORGANIZACIONAL, EntidadHijo: "UnidadOrganizacional", Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id", PropiedadHijo: "DominioId")]
     public class Dominio : Entidad<string>, IEntidadNombrada, IEntidadRelacionada, IEntidadEliminada
     {
         

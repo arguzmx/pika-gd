@@ -1,9 +1,12 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using LazyCache;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PIKA.Infraestructura.Comun.Menus;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,20 +15,20 @@ namespace PIKA.Infraestructura.Comun.Seguridad
     public class CacheSeguridadMemoria : ICacheSeguridad
     {
         private readonly ConfiguracionServidor Config;
-        private readonly IServicioCache Cache;
         private readonly IServicioTokenSeguridad SecurityTokenService;
         private readonly ILogger<CacheSeguridadMemoria> Logger;
+        
 
-        public CacheSeguridadMemoria(IServicioCache Cache,
+        public CacheSeguridadMemoria(
             IServicioTokenSeguridad SecurityTokenService, 
             IOptions<ConfiguracionServidor> Config,
             ILogger<CacheSeguridadMemoria> Logger)
         {
-            this.Cache = Cache;
             this.SecurityTokenService = SecurityTokenService;
             this.Config = Config.Value;
             this.Logger = Logger;
         }
+
 
 
         /// <summary>
@@ -39,107 +42,80 @@ namespace PIKA.Infraestructura.Comun.Seguridad
         /// <returns></returns>
         public async Task<bool> AllowMethod(string UserId, string DomainId, string AppId, string ModuleId, string Method)
         {
-
-            return true;
-
-            SecurityToken Token = await GetSecurityToken(UserId, DomainId, AppId);
-
-            if (Token == null)
-            {
-                return false;
-            }
-
             bool allow = false;
+            ulong Mask = 0;
 
-            List<AppDomainGrant> Grants = SecurityToken.DeserializeGrants(Token.Content);
+            DefinicionSeguridadUsuario usuario = await SecurityTokenService.ObtenerSeguridadUsuario(UserId, DomainId); 
 
-            if (Grants != null)
+            if ( (usuario == null) || (usuario.Permisos == null)  || (usuario.Permisos.Where(x => x.NegarAcceso).Count() > 0)) return false;
+
+            Mask = (usuario.EsAdmin) ? ulong.MaxValue : this.ObtienePermisos(usuario.Permisos, Config.seguridad_minimo_permisos, AppId, ModuleId);
+
+            if (Mask > 0)
             {
+                PermisoAplicacion p = new PermisoAplicacion() { Mascara = Mask };
 
-                // calcula los permisos totales para el módulo
-                ulong Mask = 0;
-                foreach (var item in Grants.Where(x => x.ModuleId == ModuleId).ToList())
+                //verifica que el permiso de negado explícito no exista
+                switch (Method.ToUpper())
                 {
-                    Mask = Mask | item.GrantMask;
-                }
+                    case "DELETE":
+                        allow = p.Eliminar;
+                        break;
 
-                ///Verifica que haya un amáscara válida
-                if (Mask > 0)
-                {
-                    PermisoAplicacion p = new PermisoAplicacion() { Mascara = Mask };
+                    case "GET":
+                        allow = p.Leer;
+                        break;
 
-                    //verifica que el permiso de negado explícito no exista
-                    if (!p.NegarAcceso)
-                    {
-                        switch (Method.ToUpper())
-                        {
-                            case "DELETE":
-                                allow = p.Eliminar;
-                                break;
+                    case "PUT":
+                        allow = p.Escribir;
+                        break;
 
-                            case "GET":
-                                allow = p.Leer;
-                                break;
+                    case "POST":
+                        allow = p.Escribir;
+                        break;
 
-                            case "PUT":
-                                allow = p.Escribir;
-                                break;
+                    case "HEAD":
+                        allow = p.Leer;
+                        break;
 
-                            case "POST":
-                                allow = p.Escribir;
-                                break;
-
-                            case "HEAD":
-                                allow = p.Leer;
-                                break;
-
-                            default:
-                                throw new Exception("Invalid HTTP Verb");
-                        }
-                    }
-
+                    default:
+                        return false;
                 }
 
             }
-
-
 
             return allow;
-
         }
 
 
 
-        /// <summary>
-        /// Otiene los permisos de acceso para una aplicación en un dominio
-        /// </summary>
-        /// <param name="UserId"></param>
-        /// <param name="DomainId"></param>
-        /// <param name="AppId"></param>
-        /// <returns></returns>
-        public async Task<SecurityToken> GetSecurityToken(string UserId, string DomainId, string AppId)
+        private ulong ObtienePermisos(List<PermisoAplicacion> Permisos, bool Minimos, string ApppId, string ModuleId)
         {
-            string CacheId = $"{UserId }.{DomainId}.{AppId}";
+            ulong p = 0;
 
+            List<PermisoAplicacion> efectivos = Permisos.Where(x => x.AplicacionId.Equals(ApppId, StringComparison.InvariantCultureIgnoreCase)
+            && x.ModuloId.Equals(ModuleId, StringComparison.InvariantCultureIgnoreCase)).ToList();
 
+            if (Minimos && (efectivos.Where(x => x.NegarAcceso == true).Count() > 0)) return 0;
 
-            SecurityToken Token = null;
-
-            if (!Cache.Cache.TryGetValue<SecurityToken>(CacheId, out Token))
+            if (Minimos)
             {
-
-                Token = await SecurityTokenService.ObtenerToken(UserId, DomainId, AppId);
-
-                if (Token != null)
+                p = ulong.MaxValue;
+                foreach (var permiso in efectivos)
                 {
-                    var cacheEntryOptions = new MemoryCacheEntryOptions().SetSize(1)
-                    .SetSlidingExpiration(TimeSpan.FromSeconds(Config.cache_seguridad_segundos));
-                    Cache.Cache.Set(CacheId, Token, cacheEntryOptions);
+                    p &= permiso.Mascara;
                 }
 
+            } else
+            {
+                foreach(var permiso in efectivos)
+                {
+                    p |= permiso.Mascara;
+                }
             }
 
-            return Token;
+            return p;
         }
+
     }
 }

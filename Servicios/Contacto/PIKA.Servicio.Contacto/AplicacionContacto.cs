@@ -1,16 +1,14 @@
 ﻿using PIKA.Infraestructura.Comun;
-using PIKA.Infraestructura.Comun.Constantes;
-using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Contacto;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using PIKA.Constantes.Aplicaciones.Contacto;
 
 namespace PIKA.Servicio.Contacto
 {
     public class AplicacionContacto : InformacionAplicacionBase, IInformacionAplicacion
     {
-        public const string MODULO_BASE = "PIKA-GD-CONTACTO";
+      
 
         public override Aplicacion Info()
         {
@@ -22,44 +20,44 @@ namespace PIKA.Servicio.Contacto
 
         public List<ModuloAplicacion> ModulosAplicacion()
         {
-            return this.ModulosAplicacionLocales(AplicacionRaiz.APP_ID, MODULO_BASE);
+            return this.ModulosAplicacionLocales(ConstantesAppContacto.MODULO_BASE, ConstantesAppContacto.MODULO_BASE);
         }
 
         public override List<ElementoAplicacion> GetModulos()
         {
             List<ElementoAplicacion> m = new List<ElementoAplicacion>()
             {
-                new ElementoAplicacion(MODULO_BASE, "PAISES" ) {
+                new ElementoAplicacion(ConstantesAppContacto.MODULO_BASE, ConstantesAppContacto.MODULO_PAISES ) {
                     Titulo = "Catálogo de paises",
                     Descripcion = "Permite administrar el catálogo de paises del sistema",
                     Tipos = new List<Type> { typeof(Pais) }
                 },
-                new ElementoAplicacion(MODULO_BASE, "ESTADOS" ) {
+                new ElementoAplicacion(ConstantesAppContacto.MODULO_BASE, ConstantesAppContacto.MODULO_ESTADOS ) {
                     Titulo = "Catálogo de estados",
                     Descripcion = "Permite administrar el catálogo de estados de los paises del sistema",
                     Tipos = new List<Type> { typeof(Estado) }
                 },
-                new ElementoAplicacion(MODULO_BASE, "TIPO-MEDIOS" ) {
+                new ElementoAplicacion(ConstantesAppContacto.MODULO_BASE, ConstantesAppContacto.MODULO_TIPO_MEDIOS ) {
                     Titulo = "Catálogo de medios de contacto",
                     Descripcion = "Permite administrar el catálogo de tipos de medios de contacto del sistema",
                     Tipos = new List<Type> { typeof(TipoMedio) }
                 },
-                new ElementoAplicacion(MODULO_BASE, "TIPO-FUENTE" ) {
+                new ElementoAplicacion(ConstantesAppContacto.MODULO_BASE, ConstantesAppContacto.MODULO_TIPO_FUENTE ) {
                     Titulo = "Catálogo de fuentes de contacto",
                     Descripcion = "Permite administrar el catálogo de fuentes de contacto del sistema",
                     Tipos = new List<Type> { typeof(TipoFuenteContacto) }
                 },
-                new ElementoAplicacion(MODULO_BASE, "DIR-POSTAL" ) {
+                new ElementoAplicacion(ConstantesAppContacto.MODULO_BASE, ConstantesAppContacto.MODULO_DIR_POSTAL ) {
                     Titulo = "Direcciones postales",
                     Descripcion = "Permite la gestión de direcciones postales de las entidades del sistema",
                     Tipos = new List<Type> { typeof(DireccionPostal) }
                 },
-                new ElementoAplicacion(MODULO_BASE, "MEDIO-CONTACTO" ) {
+                new ElementoAplicacion(ConstantesAppContacto.MODULO_BASE, ConstantesAppContacto.MODULO_MEDIO_CONTACTO ) {
                     Titulo = "Medios de contatco",
                     Descripcion = "Permite la gestión de medios de contacto de las entidades del sistema",
                     Tipos = new List<Type> { typeof(MedioContacto) }
                 },
-                new ElementoAplicacion(MODULO_BASE, "HOR-MEDIO-CONTACTO" ) {
+                new ElementoAplicacion(ConstantesAppContacto.MODULO_BASE, ConstantesAppContacto.MODULO_HOR_MEDIO_CONTACTO ) {
                     Titulo = "Horarios medios de contatco",
                     Descripcion = "Permite la gestión de los horarios de los medios de contacto de las entidades del sistema",
                     Tipos = new List<Type> { typeof(HorarioMedioContacto) }

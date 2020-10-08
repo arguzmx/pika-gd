@@ -1,18 +1,16 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using PIKA.Modelo.Metadatos;
+﻿using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
 using RepositorioEntidades;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using PIKA.Infraestructura.Comun;
+using PIKA.Constantes.Aplicaciones.Contacto;
 
 namespace PIKA.Modelo.Organizacion
 {
     [Entidad(EliminarLogico: true)]
-    [EntidadVinculada( EntidadHijo: "direccionpostal", Cardinalidad: TipoCardinalidad.UnoUno, 
+    [EntidadVinculada(TokenSeguridad: ConstantesAppContacto.MODULO_DIR_POSTAL, 
+        EntidadHijo: "direccionpostal", Cardinalidad: TipoCardinalidad.UnoUno, 
         PropiedadPadre: "Id", PropiedadHijo: "OrigenId") ]
     /// <summary>
     /// Las unidades organizacionales agrupan recursos para la organización del trabajo

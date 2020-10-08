@@ -2,17 +2,18 @@
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
 using System.ComponentModel.DataAnnotations.Schema;
+using PIKA.Constantes.Aplicaciones.GestorDocumental;
 
 namespace PIKA.Modelo.GestorDocumental
 {
     [Entidad(PaginadoRelacional: false, EliminarLogico: true)]
-    [EntidadVinculada(EntidadHijo: "ampliacion", Cardinalidad: TipoCardinalidad.UnoVarios,
+    [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ACTIVOS, 
+        EntidadHijo: "ampliacion", Cardinalidad: TipoCardinalidad.UnoVarios,
         PropiedadPadre: "Id", PropiedadHijo: "ActivoId")]
     public class Activo: Entidad<string>, IEntidadRelacionada, IEntidadIdElectronico, IEntidadEliminada
     {

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PIKA.Constantes.Aplicaciones.Contenido;
 using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
@@ -14,7 +15,8 @@ namespace PIKA.Modelo.Contenido
     ///  Esta clase permite defiir puntos de montaje para una estructira jerarquica de carpetas
     /// </summary>
     [Entidad(PaginadoRelacional: false, EliminarLogico: true)]
-    [EntidadVinculada(EntidadHijo: "Carpeta,Elemento",
+    [EntidadVinculada(TokenSeguridad: ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO, 
+        EntidadHijo: "Carpeta,Elemento",
         Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id",
         PropiedadHijo: "PuntoMontajeId", TipoDespliegueVinculo: TipoDespliegueVinculo.Jerarquico)]
     public class PuntoMontaje : Entidad<string>, IEntidadRelacionada, 

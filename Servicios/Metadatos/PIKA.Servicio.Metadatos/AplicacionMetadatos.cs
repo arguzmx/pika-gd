@@ -1,17 +1,15 @@
-﻿using PIKA.Infraestructura.Comun;
-using PIKA.Infraestructura.Comun.Constantes;
-using PIKA.Infraestructura.Comun.Seguridad;
+﻿using PIKA.Constantes.Aplicaciones.Metadatos;
+using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Metadatos;
 using System;
 using System.Collections.Generic;
-using System.Text;
+
 
 namespace PIKA.Servicio.Metadatos
 {
    public class AplicacionMetadatos : InformacionAplicacionBase, IInformacionAplicacion
     {
                   
-        public const string MODULO_BASE = "PIKA-GD-MET";
  
         public override Aplicacion Info()
         {
@@ -22,14 +20,14 @@ namespace PIKA.Servicio.Metadatos
 
         public List<ModuloAplicacion> ModulosAplicacion()
         {
-            return this.ModulosAplicacionLocales(AplicacionRaiz.APP_ID, MODULO_BASE);
+            return this.ModulosAplicacionLocales(ConstantesAppMetadatos.APP_ID, ConstantesAppMetadatos.APP_ID);
         }
 
         public override List<ElementoAplicacion> GetModulos()
         {
             List<ElementoAplicacion> m = new List<ElementoAplicacion>()
             {
-                new ElementoAplicacion(MODULO_BASE, "PLANTILLAS" ) {
+                new ElementoAplicacion(ConstantesAppMetadatos.APP_ID, ConstantesAppMetadatos.MODULO_PLANTILLAS ) {
                     Titulo = "Plantillas de metadatos",
                     Descripcion = "Permite gestionar plantillas de metadatos para los objetos del sistema",
                     Tipos = new List<Type> { typeof(Plantilla), 

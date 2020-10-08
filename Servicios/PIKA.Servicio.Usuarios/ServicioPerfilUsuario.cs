@@ -95,5 +95,10 @@ namespace PIKA.Servicio.Usuarios
             return l;
         }
 
+        public async Task<bool> EsAdmin(string UsuarioId, string DomainId)
+        {
+            var usr = await repoAppUser.UnicoAsync(x => x.Id == UsuarioId);
+            return usr != null ? usr.GlobalAdmin : false;
+        }
     }
 }

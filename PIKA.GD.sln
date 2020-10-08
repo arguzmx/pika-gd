@@ -37,6 +37,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Refit", "Refit", "{4599E796-E8E6-481D-94BF-7D3951712F31}"
+	ProjectSection(SolutionItems) = preProject
+		Servicios\Organizacion\PIKA.Servicio.Organizacion\AplicacionOrganizacion.cs = Servicios\Organizacion\PIKA.Servicio.Organizacion\AplicacionOrganizacion.cs
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Refit.PIKA.GD", "Servicios\Refit\Refit.PIKA.GD\Refit.PIKA.GD.csproj", "{967DA730-8D35-4557-BF37-AC573601666D}"
 EndProject
@@ -92,11 +95,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reportes", "Reportes", "{80
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIKA.Infraestrctura.Reportes", "Infraestructura\PIKA.Infraestrctura.Reportes\PIKA.Infraestrctura.Reportes.csproj", "{1A7BADCE-1E41-43DF-9A1F-80071747B015}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIKA.Modelo.Reportes", "Modelos\PIKA.Modelo.Reportes\PIKA.Modelo.Reportes.csproj", "{E5F802CC-5A0F-4C3F-A466-20E0B6D1D472}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIKA.Modelo.Reportes", "Modelos\PIKA.Modelo.Reportes\PIKA.Modelo.Reportes.csproj", "{E5F802CC-5A0F-4C3F-A466-20E0B6D1D472}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reportes", "Reportes", "{DBD775EB-B125-4A4F-9DEA-9EABD05C85F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIKA.Servicio.Reportes", "Servicios\Reportes\PIKA.Servicio.Reportes\PIKA.Servicio.Reportes.csproj", "{99380B6B-EA32-48F2-815F-23CF742FEBA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIKA.Servicio.Reportes", "Servicios\Reportes\PIKA.Servicio.Reportes\PIKA.Servicio.Reportes.csproj", "{99380B6B-EA32-48F2-815F-23CF742FEBA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIKA.Worker.Service", "Backend\PIKA.Worker.Service\PIKA.Worker.Service.csproj", "{246306A1-6BE8-4771-93A1-5F5CAEC812E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIKA.Constantes.Aplicaciones", "Modelos\PIKA.Constantes.Aplicaciones\PIKA.Constantes.Aplicaciones.csproj", "{BB8BA101-F0F2-46A5-8CC6-86CFF00BA0FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -216,6 +223,14 @@ Global
 		{99380B6B-EA32-48F2-815F-23CF742FEBA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99380B6B-EA32-48F2-815F-23CF742FEBA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99380B6B-EA32-48F2-815F-23CF742FEBA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{246306A1-6BE8-4771-93A1-5F5CAEC812E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{246306A1-6BE8-4771-93A1-5F5CAEC812E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{246306A1-6BE8-4771-93A1-5F5CAEC812E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{246306A1-6BE8-4771-93A1-5F5CAEC812E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB8BA101-F0F2-46A5-8CC6-86CFF00BA0FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB8BA101-F0F2-46A5-8CC6-86CFF00BA0FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB8BA101-F0F2-46A5-8CC6-86CFF00BA0FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB8BA101-F0F2-46A5-8CC6-86CFF00BA0FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -262,6 +277,8 @@ Global
 		{E5F802CC-5A0F-4C3F-A466-20E0B6D1D472} = {9DAE2F36-5E04-47D1-B3CF-5B26511A5A9A}
 		{DBD775EB-B125-4A4F-9DEA-9EABD05C85F0} = {4781D904-DF6E-4F9F-9D11-7CD64988B40B}
 		{99380B6B-EA32-48F2-815F-23CF742FEBA6} = {DBD775EB-B125-4A4F-9DEA-9EABD05C85F0}
+		{246306A1-6BE8-4771-93A1-5F5CAEC812E2} = {69654053-84D3-4D80-BADB-DF81D4F77AE2}
+		{BB8BA101-F0F2-46A5-8CC6-86CFF00BA0FB} = {9DAE2F36-5E04-47D1-B3CF-5B26511A5A9A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {023A9CA1-A6E7-47B1-A283-AF2339B09C1C}

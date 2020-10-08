@@ -183,8 +183,8 @@ namespace PIKA.Servicio.Contenido.Servicios
 
                 entity.Id = System.Guid.NewGuid().ToString();
                 // Se actualizará a activo cuando se configure la conexión del tipo de gestor
-                entity.Activo = false; 
-                entity.EscrituraHabilitada = false;
+                entity.Activo = true; 
+                entity.EscrituraHabilitada = true;
                 entity.Eliminada = false;
                 entity.ConsecutivoVolumen = 0;
                 entity.CanidadPartes = 0;

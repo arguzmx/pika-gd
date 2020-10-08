@@ -6,6 +6,7 @@ using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
 using System.Reflection.Emit;
+using PIKA.Constantes.Aplicaciones.Contenido;
 
 namespace PIKA.Modelo.Contenido
 {
@@ -13,13 +14,13 @@ namespace PIKA.Modelo.Contenido
     /// Define el espacio físico al que serán anexados las partes de un contenido
     /// </summary>
     [Entidad(EliminarLogico: true)]
-    [EntidadVinculada(EntidadHijo: "TipoGestorESId", Cardinalidad: TipoCardinalidad.UnoUno, 
+    [EntidadVinculada(TokenSeguridad: ConstantesAppContenido.MODULO_ADMIN_CONFIGURACION,
+        EntidadHijo: "TipoGestorESId", Cardinalidad: TipoCardinalidad.UnoUno, 
         HijoDinamico: true, TipoDespliegueVinculo: TipoDespliegueVinculo.EntidadUnica,
         PropiedadPadre: "Id", PropiedadHijo: "VolumenId",
         Diccionario: "azure-blob,GestorAzureConfig|folder,GestorLocalConfig|smb,GestorSMBConfig")]
     public class Volumen : Entidad<string>, IEntidadNombrada, IEntidadEliminada, IEntidadRelacionada
     {
-
         public string TipoOrigenDefault => ConstantesModelo.IDORIGEN_DOMINIO;
 
         public Volumen() {
