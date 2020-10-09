@@ -76,7 +76,7 @@ namespace PIKA.Servicio.Organizacion.Servicios
             }
             catch (Exception ex)
             {
-                logger.LogInformation(ex.ToString());
+
                 throw ex;
             }
 

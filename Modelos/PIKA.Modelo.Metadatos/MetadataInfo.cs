@@ -20,10 +20,18 @@ namespace PIKA.Modelo.Metadatos
             VistasVinculadas = new List<LinkVista>();
         }
 
+
+        /// <summary>
+        /// Identificador del token de seguridad asociadao a la enteidad
+        /// </summary>
+        public string TokenApp { get; set; }
+        public string TokenMod { get; set; }
+
+
         /// <summary>
         /// Tipo de elemento basado en el nombre del ensamblado
         /// </summary>
-       public string Tipo { get; set; }
+        public string Tipo { get; set; }
 
         /// <summary>
         /// Fullname del tipo desde el ensamblado

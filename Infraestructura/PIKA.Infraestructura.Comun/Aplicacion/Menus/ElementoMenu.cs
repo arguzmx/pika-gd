@@ -50,11 +50,13 @@ namespace PIKA.Infraestructura.Comun.Menus
         /// </summary>
         public List<ParametroMenu> Parametros { get; set; }
 
-        
+
         /// <summary>
         /// Token de acceso o permisos para el acceso
         /// </summary>
-        public string TokenSeguridad { get; set; }
+        public string TokenApp { get; set; }
+
+        public string TokenMod { get; set; }
 
     }
 }

@@ -17,15 +17,29 @@ namespace PIKA.Modelo.Metadatos
         private bool _PaginadoRelacional;
         private string _ColumnaActivar;
         private bool _OpcionActivar;
+        private string _TokenMod;
+        private string _TokenApp;
 
-        public EntidadAttribute(bool PaginadoRelacional=false, bool EliminarLogico = false, bool OpcionActivar = false,
-           string ColumnaActivar = "", string Columna = "Eliminada")
+        public EntidadAttribute( bool PaginadoRelacional=false, bool EliminarLogico = false, bool OpcionActivar = false,
+           string ColumnaActivar = "", string Columna = "Eliminada", string TokenMod = "", string TokenApp = "")
         {
             this._Columna = EliminarLogico ? Columna :"";
             this._EliminarLogico = EliminarLogico;
             this._PaginadoRelacional = PaginadoRelacional;
             this._ColumnaActivar = ColumnaActivar;
             this._OpcionActivar = OpcionActivar;
+            _TokenApp = TokenApp;
+            _TokenMod = TokenMod;
+        }
+
+        public virtual string TokenMod
+        {
+            get { return _TokenMod; }
+        }
+
+        public virtual string TokenApp
+        {
+            get { return _TokenApp; }
         }
 
         /// <summary>

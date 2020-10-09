@@ -72,7 +72,6 @@ namespace PIKA.Servicio.Contenido.Servicios
             }
             catch (Exception ex)
             {
-                logger.LogError("Error al crear Unidad Organizacional {0}", ex.Message);
                 throw ex;
             }
             

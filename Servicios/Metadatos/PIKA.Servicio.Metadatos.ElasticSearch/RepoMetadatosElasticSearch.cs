@@ -76,11 +76,9 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         {
             string json = valores.ObtieneJSONValores(plantilla);
             var body = ES.PostData.String(json);
-            logger.LogInformation(json);
 
             var response = await cliente.CreateAsync<CreateResponse>(plantilla.Id, valores.Id, body);
 
-            logger.LogInformation("+ {0} {1}", response.Result, response.Id);
 
             if (response.Result == Result.Created) return valores.Id;
             return null;

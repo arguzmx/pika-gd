@@ -6,16 +6,10 @@ namespace PIKA.Constantes.Aplicaciones.Aplicaciones
 {
     public class ConstantesAppAplicacionPlugin
     {
-        public const string APP_ID = "PIKA-GD_PLUGIN";
-         public const string MODULO_PLUGINS = "PLUGINS";
-public const string MODULO_APLICACIONES = "APLICACIONES";
-
-
+        public const string APP_ID = "PIKA-GD-PLUGIN";
+        public const string MODULO_PLUGINS = "PLUGINS";
+        public const string MODULO_APLICACIONES = "APLICACIONES";
 
         public const string MODULO_ = "";
-        
-        
-        
-
     }
 }

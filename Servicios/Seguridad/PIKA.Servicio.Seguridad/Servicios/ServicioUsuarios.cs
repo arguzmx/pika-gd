@@ -122,7 +122,6 @@ namespace PIKA.Servicio.Seguridad.Servicios
             catch (Exception ex)
             {
 
-                this.logger.LogError(ex.ToString());
                 throw ex;
             }
         }
@@ -304,8 +303,6 @@ namespace PIKA.Servicio.Seguridad.Servicios
                 }
                 catch (Exception ex)
                 {
-
-                    this.logger.LogError(ex.ToString());
                     gmt = null;
                     gmt_offset = -1;
                 }

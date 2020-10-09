@@ -44,7 +44,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
         {
             List<Aplicacion> l = new List<Aplicacion>();
             var assemblies = Directory.GetFiles(AppPath, "*.dll", new EnumerationOptions() { RecurseSubdirectories = true });
-            logger.LogWarning(AppPath);
+
             foreach (var item in assemblies)
             {
                 try
@@ -58,7 +58,6 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
                     foreach (var t in Tipos)
                     {
-                        logger.LogInformation(t.FullName);
                        TipoAdministradorModulo s = new TipoAdministradorModulo();
                         var instancia = assembly.CreateInstance(t.FullName);
                         Aplicacion tmp = ((IInformacionAplicacion)instancia).Info().Copia();
@@ -94,10 +93,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
             await Task.Delay(1);
 
-            foreach(var a in l)
-            {
-                logger.LogInformation(a.Nombre);
-            }
+         
             return l;
         }
 
