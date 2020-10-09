@@ -31,16 +31,9 @@ namespace PIKA.Servicio.Metadatos.Servicios
         public ServicioAlmacenDatos(IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
            ILogger<ServicioAlmacenDatos> Logger) : base(proveedorOpciones, Logger)
         {
-            try
-            {
+           
                 this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
                 this.repo = UDT.ObtenerRepositoryAsync<AlmacenDatos>(new QueryComposer<AlmacenDatos>());
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex.ToString());
-                throw;
-            }
             
         }
         public async Task<bool> Existe(Expression<Func<AlmacenDatos, bool>> predicado)

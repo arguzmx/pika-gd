@@ -65,7 +65,7 @@ namespace PIKA.GD.API.Servicios
         public async Task<DefinicionSeguridadUsuario> ObtenerSeguridadUsuario(string UserId, string DomainId)
         {
 
-            Logger.LogError(UserId + "---------");
+            // Logger.LogError(UserId + "---------");
             string key = ObtieneClaveCachePermisosUsuario(UserId);
             // Obtiene la entrada en cache de los permisos del usuario
 
@@ -101,18 +101,21 @@ namespace PIKA.GD.API.Servicios
 
                 if (roles != null)
                 {
+                    
                     // Revisa los permisos para cada rol
                     foreach (var r in roles)
                     {
-                       // Verifica si está en cache
-                       string rolkey = this.ObtieneClaveCachePermisosRol(r);
+
+                         // Logger.LogError(r + " RRR-------");
+                        // Verifica si está en cache
+                        string rolkey = this.ObtieneClaveCachePermisosRol(r);
                         List<PermisoAplicacion> prol = null;
                         if (Config.seguridad_almacenar_cache) prol = await cache.GetAsync<List<PermisoAplicacion>>(rolkey).ConfigureAwait(false);
                         
                         if (prol == null)
                         {
                             prol = await ObtienePermisosRol(DomainId, r).ConfigureAwait(false);
-                            Logger.LogError($"{r}, {prol.Count}");
+                            // Logger.LogError($"{r}, {prol.Count}");
                             if (Config.seguridad_almacenar_cache && (prol != null ))
                             {
                                 cache.Add<List<PermisoAplicacion>>(rolkey, prol, TimeSpan.FromMinutes(Config.seguridad_cache_segundos));
@@ -139,7 +142,6 @@ namespace PIKA.GD.API.Servicios
                 }
             }
 
-            Logger.LogError($"{cacheUcuario.Permisos.Count}");
             return cacheUcuario;
 
         }

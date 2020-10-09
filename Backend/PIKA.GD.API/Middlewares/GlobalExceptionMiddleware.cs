@@ -32,7 +32,6 @@ namespace PIKA.GD.API.Middlewares
             }
             catch (Exception ex)
             {
-                _logger.LogCritical($"{ex.Message}");
                 await HandleExceptionAsync(httpContext, ex);
             }
 

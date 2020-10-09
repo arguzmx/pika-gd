@@ -179,7 +179,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<FileResult> GetReporteCuadroClasificacion(string id)
         {
-            logger.LogInformation(id);
 
             byte[] bytes = await  servicioCuadro.ExportarCuadroCalsificacionExcel(id).ConfigureAwait(false);
             var cuadro = await servicioCuadro.UnicoAsync(x => x.Id == id).ConfigureAwait(false);

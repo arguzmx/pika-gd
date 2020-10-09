@@ -139,7 +139,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<FileResult> GetReporteCuadroClasificacion([FromBody] PropiedadesImportadorActivos p)
         {
-            logger.LogInformation(p.ArchivoId);
 
             byte[] bytes = await servicioActivo.ImportarActivos(p.archivo,p.ArchivoId,p.TipoOrigenId,p.OrigenId,p.FormatoFecha).ConfigureAwait(false);
             var cuadro = await servicioActivo.UnicoAsync(x => x.ArchivoId == p.ArchivoId).ConfigureAwait(false);

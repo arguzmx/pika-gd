@@ -13,7 +13,9 @@ namespace PIKA.Modelo.Contenido
     /// <summary>
     /// Define el espacio físico al que serán anexados las partes de un contenido
     /// </summary>
-    [Entidad(EliminarLogico: true)]
+    [Entidad(EliminarLogico: true,
+        TokenApp: ConstantesAppContenido.APP_ID,
+        TokenMod: ConstantesAppContenido.MODULO_ADMIN_CONFIGURACION)]
     [EntidadVinculada(TokenSeguridad: ConstantesAppContenido.MODULO_ADMIN_CONFIGURACION,
         EntidadHijo: "TipoGestorESId", Cardinalidad: TipoCardinalidad.UnoUno, 
         HijoDinamico: true, TipoDespliegueVinculo: TipoDespliegueVinculo.EntidadUnica,

@@ -83,7 +83,7 @@ namespace PIKA.Servicio.Contenido.Servicios
                 entity.Indice = v.MaxIndicePartes + 1;
                 entity.ConsecutivoVolumen = await helperVolumen.GetConsecutivoVolumen(volid, entity.LongitudBytes)  ;
                 entity.Indexada = false;
-                logger.LogWarning(entity.ConsecutivoVolumen.ToString());
+                
                 entity.Eliminada = false;
 
                 await helperVersion.CreaParte(entity);
@@ -95,12 +95,12 @@ namespace PIKA.Servicio.Contenido.Servicios
             }
             catch (DbUpdateException ee)
             {
-                logger.LogError(ee.ToString());
+                
                 throw new ExErrorRelacional("Alguno de los identificadores no es válido");
             }
             catch (Exception ex)
             {
-                logger.LogError("Error al crear Unidad Organizacional {0}", ex.Message);
+                
                 throw ex;
             }
         }

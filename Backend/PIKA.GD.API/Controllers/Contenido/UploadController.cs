@@ -75,10 +75,6 @@ namespace PIKA.GD.API.Controllers.Contenido
         public async Task<IActionResult> PostContenido([FromForm] ElementoCargaContenido model)
         {
 
-            logger.LogWarning(model.VolumenId);
-            logger.LogWarning(model.ElementoId);
-            logger.LogWarning(model.PuntoMontajeId);
-
             if (tamanoValido(model.file.Length, FiltroArchivos.minimo, FiltroArchivos.maximo))
             {
                 if (extensionValida(model.file, FiltroArchivos.extensionesValidas))

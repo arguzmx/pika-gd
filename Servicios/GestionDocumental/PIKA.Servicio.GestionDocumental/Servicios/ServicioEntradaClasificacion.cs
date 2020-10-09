@@ -232,7 +232,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                 if (elementos.IndexOf(item.TipoValoracionDocumentalId) < 0)
                 {
-                    logger.LogError($"- {item.TipoValoracionDocumentalId}");
+
                     UDT.Context.Entry(item).State = EntityState.Deleted;
                 }
             }
