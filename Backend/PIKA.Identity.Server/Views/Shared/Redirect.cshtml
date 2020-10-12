@@ -1,7 +1,14 @@
 @model RedirectViewModel
+    <div class="container">
+    </div>
 
-<h1>You are now being returned to the application.</h1>
-<p>Once complete, you may close this tab</p>
-
+    <div class="form">
+        <div class="thumbnail"><img src="~/PIKA_PARROT.svg" /></div>
+        <div >
+                <h1>Redigiendo a la aplicación.</h1>
+            <br />
+        </div>
+        
+    </div>
 <meta http-equiv="refresh" content="0;url=@Model.RedirectUrl" data-url="@Model.RedirectUrl">
 <script src="~/js/signin-redirect.js?v1.0.1"></script>
