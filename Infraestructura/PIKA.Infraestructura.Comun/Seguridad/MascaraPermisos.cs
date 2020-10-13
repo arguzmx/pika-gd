@@ -28,9 +28,10 @@ namespace PIKA.Infraestructura.Comun.Seguridad
             NegarAcceso = false;
         }
 
-        public bool NegarAcceso { get; set; }
 
         public bool Leer { get; set; }
+
+        public bool NegarAcceso { get; set; }
 
         public bool Escribir { get; set; }
 
@@ -50,10 +51,10 @@ namespace PIKA.Infraestructura.Comun.Seguridad
             return PLeer + PEscribir + PEliminar +  PAdministrar + PEjecutar; 
         }
 
-        public ulong Mascara { get { return ObtenerMascara(); } set { EstablacerMascara(value); } }
+        public ulong Mascara { get { return ObtenerMascara(); } }
 
 
-        private void EstablacerMascara(ulong Mask)
+        public void EstablacerMascara(ulong Mask)
         {
             NegarAcceso = (Mask & PDenegarAcceso) > 0 ? true : false;
             Leer = (Mask & PLeer) > 0 ? true : false;
@@ -63,7 +64,7 @@ namespace PIKA.Infraestructura.Comun.Seguridad
             Ejecutar = (Mask & PEjecutar) > 0 ? true : false;
         }
 
-        private ulong ObtenerMascara()
+        public ulong ObtenerMascara()
         {
             ulong mask = 0;
 

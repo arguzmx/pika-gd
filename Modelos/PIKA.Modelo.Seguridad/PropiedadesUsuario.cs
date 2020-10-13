@@ -1,4 +1,5 @@
-﻿using PIKA.Modelo.Contacto;
+﻿using PIKA.Constantes.Aplicaciones.Seguridad;
+using PIKA.Modelo.Contacto;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
 using System;
@@ -10,7 +11,9 @@ using static PIKA.Modelo.Metadatos.PropAttribute;
 namespace PIKA.Modelo.Seguridad
 {
     // [EntidadVinculada(Entidad: "UnidadOrganizacional", Cardinalidad: TipoCardinalidad.UnoVarios, Padre: "Id", Hijo: "DominioId")]
-    [Entidad(EliminarLogico: true)]
+    [Entidad(EliminarLogico: true, 
+        TokenApp: ConstantesAppSeguridad.APP_ID, 
+        TokenMod: ConstantesAppSeguridad.MODULO_USUARIOS)]
     public class PropiedadesUsuario
     {
 

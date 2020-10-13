@@ -7,6 +7,7 @@ namespace PIKA.Modelo.Seguridad.Validadores
 
     public static class ValidadorUsuario
     {
+        public const string CaracteresPermitidosNombre = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
 
         public static bool IsValidEmail(string email)
         {
@@ -22,23 +23,15 @@ namespace PIKA.Modelo.Seguridad.Validadores
         }
 
         public static bool UsernameValido(string username) {
-            bool r = false;
-            bool hasNoneAlpha = false;
-            int minlen = 2;
 
-            if (username.Length >= minlen)
+            if (string.IsNullOrEmpty(username)) return false;
+
+            foreach (char c in username)
             {
-                foreach (char c in username)
-                {
-                    if (char.IsWhiteSpace(c)) hasNoneAlpha = true;
-                    if (char.IsPunctuation(c) && (c != '-')) hasNoneAlpha = true;
+                if (CaracteresPermitidosNombre.IndexOf(c) < 0) return false;
 
-
-                }
-                if (!hasNoneAlpha ) r = true;
             }
-
-            return r;
+            return true;
         }
 
 

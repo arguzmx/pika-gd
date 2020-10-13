@@ -17,6 +17,8 @@ namespace PIKA.Servicio.Seguridad.Interfaces
         Task<ICollection<string>> Inactivar(string[] ids);
         Task<ICollection<string>> Activar(string[] ids);
 
+        Task<PropiedadesUsuario> CrearAsync(string dominioId, string UnidadOrgId, PropiedadesUsuario entity, CancellationToken cancellationToken = default);
+
         Task<IPaginado<PropiedadesUsuario>> ObtenerPaginadoIdsAsync(List<string> ids, Consulta Query,
             Func<IQueryable<PropiedadesUsuario>,
                 IIncludableQueryable<PropiedadesUsuario, object>> include = null,

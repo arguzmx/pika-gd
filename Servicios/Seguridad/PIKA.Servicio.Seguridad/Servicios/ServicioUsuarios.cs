@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
@@ -13,6 +14,7 @@ using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.Seguridad;
+using PIKA.Modelo.Seguridad.Base;
 using PIKA.Modelo.Seguridad.Validadores;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
@@ -52,26 +54,32 @@ namespace PIKA.Servicio.Seguridad.Servicios
         }
 
 
-        public async Task<PropiedadesUsuario> CrearAsync(PropiedadesUsuario entity, CancellationToken cancellationToken = default)
+        public async Task<PropiedadesUsuario> CrearAsync(string dominioId, string UnidadOrgId, PropiedadesUsuario entity, CancellationToken cancellationToken = default)
         {
             try
             {
 
-            
-            if (!ValidadorUsuario.ContrasenaValida(entity.password, this.logger))
-            {
-                throw new ExLoginInfoInvalida($"p:{entity.password}");
-            }
+                
 
-            if (!ValidadorUsuario.IsValidEmail(entity.email))
-            {
-                throw new ExLoginInfoInvalida($"e:{entity.email}");
-            }
+                if (string.IsNullOrEmpty(dominioId) || string.IsNullOrEmpty(UnidadOrgId))
+                {
+                    throw new ExDatosNoValidos("Dominio/OU");
+                }
 
-            if (!ValidadorUsuario.UsernameValido(entity.username))
-            {
-                throw new ExLoginInfoInvalida($"n:{entity.username}");
-            }
+                if (!ValidadorUsuario.ContrasenaValida(entity.password, this.logger))
+                {
+                    throw new ExLoginInfoInvalida($"p:{entity.password}");
+                }
+
+                if (!ValidadorUsuario.IsValidEmail(entity.email))
+                {
+                    throw new ExLoginInfoInvalida($"e:{entity.email}");
+                }
+
+                if (!ValidadorUsuario.UsernameValido(entity.username))
+                {
+                    throw new ExLoginInfoInvalida($"n:{entity.username}");
+                }
 
                 ApplicationUser tmp = await repoAppUser.UnicoAsync(
                     x => x.NormalizedUserName == entity.username.ToUpper() ||
@@ -81,42 +89,53 @@ namespace PIKA.Servicio.Seguridad.Servicios
                     throw new ExElementoExistente(entity.username);
                 }
 
+                IRepositorioAsync<UsuarioDominio> repoud = UDT.ObtenerRepositoryAsync<UsuarioDominio>(new QueryComposer<UsuarioDominio>());
                 PasswordHasher<ApplicationUser> hasher = new PasswordHasher<ApplicationUser>();
                 tmp = new ApplicationUser()
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserName = entity.username,
-                Email = entity.email,
-                AccessFailedCount = 0,
-                ConcurrencyStamp = Guid.NewGuid().ToString(),
-                EmailConfirmed = false,
-                LockoutEnabled = true,
-                SecurityStamp = Guid.NewGuid().ToString("D"),
-                PhoneNumberConfirmed = false,
-                TwoFactorEnabled = false,
-                NormalizedUserName = entity.username.ToUpper(),
-                NormalizedEmail = entity.email.ToUpper(),
-                Inactiva = false,
-                Eliminada = false
-            };
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    UserName = entity.username,
+                    Email = entity.email,
+                    AccessFailedCount = 0,
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+                    EmailConfirmed = false,
+                    LockoutEnabled = true,
+                    SecurityStamp = Guid.NewGuid().ToString("D"),
+                    PhoneNumberConfirmed = false,
+                    TwoFactorEnabled = false,
+                    NormalizedUserName = entity.username.ToUpper(),
+                    NormalizedEmail = entity.email.ToUpper(),
+                    Inactiva = false,
+                    Eliminada = false
+                };
 
                 tmp.PasswordHash = hasher.HashPassword(tmp, entity.password);
 
                 // Añade el suaurio
                 await this.repoAppUser.CrearAsync(tmp);
-            UDT.SaveChanges();
+                UDT.SaveChanges();
 
                 // Añade sus propiedades
                 entity.UsuarioId = tmp.Id;
-            entity.Inactiva = false;
-            entity.Eliminada = false;
-            await repo.CrearAsync(entity);
-            UDT.SaveChanges();
+                entity.Inactiva = false;
+                entity.Eliminada = false;
+                await repo.CrearAsync(entity);
+                UDT.SaveChanges();
+
+                UsuarioDominio ud = new UsuarioDominio()
+                {
+                    ApplicationUserId = tmp.Id,
+                    DominioId = dominioId,
+                    UnidadOrganizacionalId = UnidadOrgId,
+                    EsAdmin = false
+                };
+                await repoud.CrearAsync(ud);
+                UDT.SaveChanges();
 
                 // actualiza los claims
                 await UpdateClaims(entity);
 
-                return  entity.Copia();
+                return entity.Copia();
 
             }
             catch (Exception ex)
@@ -261,7 +280,8 @@ namespace PIKA.Servicio.Seguridad.Servicios
                 throw new EXNoEncontrado(entity.UsuarioId);
             }
 
-                if (!string.IsNullOrEmpty(entity.email)) {
+            if (!string.IsNullOrEmpty(entity.email))
+            {
 
                 if (!ValidadorUsuario.IsValidEmail(entity.email))
                 {
@@ -271,17 +291,18 @@ namespace PIKA.Servicio.Seguridad.Servicios
                 ApplicationUser m = await this.repoAppUser.UnicoAsync(x => x.Id != entity.UsuarioId
                     && x.NormalizedEmail == entity.email.ToUpper());
 
-                    if (m != null) {
-                        throw new ExElementoExistente(entity.email);
-                    }
-
-                    if (entity.email != o.Email)
-                    {
-                        o.Email = entity.email;
-                        o.NormalizedEmail = entity.email.ToUpper();
-                        UDT.Context.Entry(o).State = EntityState.Modified;
-                    }
+                if (m != null)
+                {
+                    throw new ExElementoExistente(entity.email);
                 }
+
+                if (entity.email != o.Email)
+                {
+                    o.Email = entity.email;
+                    o.NormalizedEmail = entity.email.ToUpper();
+                    UDT.Context.Entry(o).State = EntityState.Modified;
+                }
+            }
 
 
 
@@ -306,7 +327,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
                     gmt = null;
                     gmt_offset = -1;
                 }
-                
+
 
             }
 
@@ -328,21 +349,23 @@ namespace PIKA.Servicio.Seguridad.Servicios
                 {
                     p.gmt_offset = (float)gmt_offset;
                 }
-                else {
+                else
+                {
                     p.gmt_offset = null;
                 }
 
-                
+
                 UDT.Context.Entry(p).State = EntityState.Modified;
             }
-            else {
+            else
+            {
 
                 PropiedadesUsuario prop = new PropiedadesUsuario()
                 {
-                    nickname= entity.nickname,
-                    middle_name =entity.middle_name,
+                    nickname = entity.nickname,
+                    middle_name = entity.middle_name,
                     given_name = entity.given_name,
-                    family_name =entity.family_name,
+                    family_name = entity.family_name,
                     UsuarioId = entity.UsuarioId,
                     generoid = entity.generoid,
                     paisid = entity.password,
@@ -362,16 +385,16 @@ namespace PIKA.Servicio.Seguridad.Servicios
                 }
                 // Añade sus propiedades
                 await repo.CrearAsync(prop);
-                
+
             }
 
             UDT.SaveChanges();
             await UpdateClaims(entity);
 
         }
-        
-        
-        
+
+
+
         private Consulta GetDefaultQuery(Consulta query)
         {
             if (query != null)
@@ -550,7 +573,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
             Query = GetDefaultQuery(Query);
 
-            var resultados = await this.repo.ObtenerAsync(x => ((x.name ?? "") + (x.nickname ?? "") + (x.email ?? "") + 
+            var resultados = await this.repo.ObtenerAsync(x => ((x.name ?? "") + (x.nickname ?? "") + (x.email ?? "") +
             (x.family_name ?? "") + (x.given_name ?? "") + (x.username ?? "")).Contains(nombre));
 
 
@@ -558,7 +581,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             {
                 Id = x.UsuarioId,
                 Indice = 0,
-                Texto = x.email + $" [{(x.username?? "")}] {(x.name??"")} {(x.given_name ?? "")} {(x.family_name ?? "")}" 
+                Texto = x.email + $" [{(x.username ?? "")}] {(x.name ?? "")} {(x.given_name ?? "")} {(x.family_name ?? "")}"
             }).ToList();
 
             return l.OrderBy(x => x.Texto).ToList();
@@ -580,6 +603,11 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
         #region sin implementar
 
+
+        public async Task<PropiedadesUsuario> CrearAsync(PropiedadesUsuario entity, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
         public Task<IEnumerable<PropiedadesUsuario>> CrearAsync(params PropiedadesUsuario[] entities)
         {
             throw new NotImplementedException();

@@ -11,6 +11,8 @@
     <Compile Remove="Data\Migrations\20200730173749_ActualizacionCataloogGenero.Designer.cs" />
     <Compile Remove="Data\Migrations\20200730174119_ActualizacionCataloogGenero.cs" />
     <Compile Remove="Data\Migrations\20200730174119_ActualizacionCataloogGenero.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201013184602_CambioUsuarioDominioUO.cs" />
+    <Compile Remove="Data\Migrations\20201013184602_CambioUsuarioDominioUO.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,5 @@
-﻿using PIKA.Infraestructura.Comun;
+﻿using PIKA.Constantes.Aplicaciones.GestorDocumental;
+using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
 using RepositorioEntidades;
@@ -12,7 +13,10 @@ namespace PIKA.Modelo.GestorDocumental
 {
 
 
-    [Entidad(PaginadoRelacional: false, EliminarLogico: false)]
+    [Entidad(PaginadoRelacional: false, EliminarLogico: false,
+        TokenMod: ConstantesAppGestionDocumental.MODULO_CAT_ARCHIVO,
+        TokenApp: ConstantesAppGestionDocumental.APP_ID
+        )]
     public class TipoArchivo : EntidadCatalogo<string, TipoArchivo> 
     {
         public const string IDARCHIVO_TRAMITE = "a-tra";
@@ -47,6 +51,9 @@ namespace PIKA.Modelo.GestorDocumental
         [XmlIgnore]
         [JsonIgnore]
         public IEnumerable<Archivo> Archivos { get; set; }
+
+        [XmlIgnore]
+        [JsonIgnore]
         public IEnumerable<Activo> Activos { get; set; }
 
     }

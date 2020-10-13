@@ -11,7 +11,9 @@ using PIKA.Constantes.Aplicaciones.GestorDocumental;
 
 namespace PIKA.Modelo.GestorDocumental
 {
-    [Entidad(PaginadoRelacional: false, EliminarLogico: true)]
+    [Entidad(PaginadoRelacional: false, EliminarLogico: true,
+        TokenMod: ConstantesAppGestionDocumental.MODULO_ACTIVOS,
+        TokenApp: ConstantesAppGestionDocumental.APP_ID)]
     [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ACTIVOS, 
         EntidadHijo: "ampliacion", Cardinalidad: TipoCardinalidad.UnoVarios,
         PropiedadPadre: "Id", PropiedadHijo: "ActivoId")]

@@ -53,7 +53,8 @@ namespace PIKA.Infraestructura.Comun.Seguridad
 
             if (Mask > 0)
             {
-                PermisoAplicacion p = new PermisoAplicacion() { Mascara = Mask };
+                PermisoAplicacion p = new PermisoAplicacion();
+                p.EstablacerMascara(Mask);
 
                 //verifica que el permiso de negado explícito no exista
                 switch (Method.ToUpper())

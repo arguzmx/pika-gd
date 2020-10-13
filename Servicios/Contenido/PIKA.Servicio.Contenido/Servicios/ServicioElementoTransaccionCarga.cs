@@ -112,6 +112,8 @@ namespace PIKA.Servicio.Contenido.Servicios
                 string filePath = Path.Combine(ruta, p.Id + Path.GetExtension(p.NombreOriginal));
                 await gestor.EscribeBytes(p.Id, p.ElementoId, p.VersionId, filePath, new FileInfo(p.NombreOriginal), false).ConfigureAwait(false);
                 paginas.Add(p.APagina());
+ 
+
             }
 
             await this.EliminarTransaccion(TransaccionId);

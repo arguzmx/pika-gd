@@ -57,37 +57,55 @@ namespace PIKA.Servicio.Usuarios
                 new DominioActivo() { EsAdmin = true, Id = x.Id, Nombre = x.Nombre })
                     .ToList();
 
+                foreach(var d in dominios)
+                {
+                    DominioActivo da = l.Where(x => x.Id == d.Id).First();
+                    foreach(var ud in d.UnidadesOrganizacionales)
+                    {
+                        da.UnidadesOrganizacionales.Add(new UnidadOrganizacionalActiva()
+                        {
+                            DominioId = da.Id,
+                            EsAdmin = da.EsAdmin,
+                            Id = ud.Id,
+                            Nombre = ud.Nombre
+                        });
+                    }
+                }
+
             }
             else {
                 var suscripciones = await repoUsuariosDominio.ObtenerAsync(x => x.ApplicationUserId == UsuarioId);
                 foreach (var s in suscripciones) {
-                    Dominio d = dominios.Where(x => x.Id == s.OrigenId).SingleOrDefault();
+                    Dominio d = dominios.Where(x => x.Id == s.DominioId).SingleOrDefault();
                     if (d != null)
                     {
-                        l.Add(new DominioActivo()
-                        {
-                            EsAdmin = s.EsAdmin,
-                            Id = s.OrigenId,
-                            Nombre = d.Nombre
-                        });
-                    }
-                }
-            }
 
-            foreach(DominioActivo d in l)
-            {
-                Dominio tmp = dominios.Where(x => x.Id == d.Id).Single();
-                if (tmp.UnidadesOrganizacionales != null)
-                {
-                    foreach(UnidadOrganizacional u in tmp.UnidadesOrganizacionales)
-                    {
-                        d.UnidadesOrganizacionales.Add(new UnidadOrganizacionalActiva()
+                        // Añade el dominio si no ha sido incluido
+                        if (l.Where(x=>x.Id == d.Id).Count() == 0)
                         {
-                            DominioId = u.DominioId,
-                            EsAdmin = d.EsAdmin,
-                            Id = u.Id,
-                            Nombre = u.Nombre
-                        });
+                            l.Add(new DominioActivo()
+                            {
+                                EsAdmin = s.EsAdmin,
+                                Id = s.DominioId,
+                                Nombre = d.Nombre
+                            });
+                        }
+
+                        // verifica si la unidad organizacion ya esta incluida en el dominuio para ls multitenant
+                        DominioActivo da = l.Where(x => x.Id == d.Id).First();
+                        if (da.UnidadesOrganizacionales.Where(x => x.Id == s.UnidadOrganizacionalId).Count() == 0) {
+                            UnidadOrganizacional ud = d.UnidadesOrganizacionales.Where(x => x.Id == s.UnidadOrganizacionalId).SingleOrDefault();
+                            if (ud != null)
+                            {
+                                da.UnidadesOrganizacionales.Add(new UnidadOrganizacionalActiva()
+                                {
+                                    DominioId = da.Id,
+                                    EsAdmin = da.EsAdmin,
+                                    Id = ud.Id,
+                                    Nombre = ud.Nombre
+                                });
+                            }
+                        }
                     }
                 }
             }

@@ -12,6 +12,7 @@ namespace PIKA.Infraestructura.Comun.Menus
             Parametros = new List<ParametroMenu>();
             Hijos = new List<ElementoMenu>();
             Indice = 0;
+            EsHome = false;
         }
 
 
@@ -19,6 +20,11 @@ namespace PIKA.Infraestructura.Comun.Menus
         /// POsicion relativa de los elementos
         /// </summary>
         public int Indice { get; set; }
+
+        /// <summary>
+        /// Indica si el elemento del menú es la ruta HOME
+        /// </summary>
+        public bool EsHome { get; set; }
 
         /// <summary>
         /// Tísulo del menú

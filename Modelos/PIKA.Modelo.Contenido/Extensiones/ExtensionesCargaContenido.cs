@@ -57,7 +57,7 @@ namespace PIKA.Modelo.Contenido
                 Indice = 0,
                 LongitudBytes = e.TamanoBytes,
                 NombreOriginal = e.NombreOriginal,
-                TieneMiniatura = false,
+                TieneMiniatura = esImagen,
                 Extension = Path.GetExtension(e.NombreOriginal),
                 TipoMime = mimeTyoe,
                 VersionId = e.VersionId,

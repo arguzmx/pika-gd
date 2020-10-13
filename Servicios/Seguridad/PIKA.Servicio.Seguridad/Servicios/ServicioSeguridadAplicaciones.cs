@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,14 +47,19 @@ namespace PIKA.Servicio.Seguridad.Servicios
         {
 
             int cantidad = 0;
-            foreach(var tipo in  entities.ToList()
-                .GroupBy(x =>  x.AplicacionId )
+
+            foreach (var tipo in entities.ToList()
+                .GroupBy(x => x.AplicacionId)
                 .Select(g => new { cantidad = g.Count(), key = g.Key }).ToList())
             {
+
+
                 var lista = await repo.ObtenerAsync(x => x.DominioId == DominioId
                                 && x.AplicacionId == tipo.key);
-                
-                foreach (var p in entities.Where(x => x.AplicacionId == tipo.key))
+
+                var grupo = entities.Where(x => x.AplicacionId == tipo.key);
+
+                foreach (var p in grupo)
                 {
                     cantidad++;
                     PermisoAplicacion permisoExistente = lista.Where(x => x.DominioId == DominioId
@@ -61,7 +67,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
                     && x.ModuloId == p.ModuloId
                     && x.TipoEntidadAcceso == p.TipoEntidadAcceso
                     && x.EntidadAccesoId == p.EntidadAccesoId).SingleOrDefault();
-                    
+
                     p.DominioId = DominioId;
                     if (p.NegarAcceso)
                     {
@@ -72,23 +78,29 @@ namespace PIKA.Servicio.Seguridad.Servicios
                         p.Leer = false;
                     }
 
-                    if (permisoExistente==null)
+                    if (permisoExistente == null)
                     {
+
+
                         if (p.Leer || p.Escribir || p.Ejecutar || p.Eliminar || p.Admin || p.NegarAcceso)
-                        await repo.CrearAsync(p);
-                    } else
+                            await repo.CrearAsync(new PermisoAplicacion() { 
+                             Admin = p.Admin, AplicacionId = p.AplicacionId, DominioId = p.DominioId , Ejecutar = p.Ejecutar ,
+                             Eliminar = p.Eliminar, EntidadAccesoId = p.EntidadAccesoId, Escribir =p.Escribir, Leer = p.Leer, ModuloId = p.ModuloId,
+                             NegarAcceso = p.NegarAcceso, TipoEntidadAcceso = p.TipoEntidadAcceso});
+                    }
+                    else
                     {
                         permisoExistente.Admin = p.Admin;
-                        permisoExistente.Ejecutar  = p.Ejecutar;
+                        permisoExistente.Ejecutar = p.Ejecutar;
                         permisoExistente.Eliminar = p.Eliminar;
-                        permisoExistente.Escribir  = p.Escribir;
-                        permisoExistente.Leer  = p.Leer;
+                        permisoExistente.Escribir = p.Escribir;
+                        permisoExistente.Leer = p.Leer;
                         permisoExistente.NegarAcceso = p.NegarAcceso;
                         this.UDT.Context.Entry(permisoExistente).State = EntityState.Modified;
                     }
                 }
-            
-                
+
+
             }
 
             UDT.SaveChanges();
