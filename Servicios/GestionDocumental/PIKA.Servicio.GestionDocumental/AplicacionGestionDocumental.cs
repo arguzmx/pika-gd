@@ -43,11 +43,12 @@ namespace PIKA.Servicio.GestionDocumental
                     Tipos = new List<Type> { typeof(Activo), typeof(Asunto), typeof(Ampliacion) }
                 },
                 new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_CATALOGOSCC ) {
-                    Titulo = "Catálogos cuadro de clasificación",
+                    Titulo = "Catálogos gestión documental",
                     Descripcion = "Permite administrar los catálogos relacionado con los cuadros de clasifiación",
                     Tipos = new List<Type> { typeof(EstadoCuadroClasificacion),
                             typeof(TipoDisposicionDocumental),
                             typeof(TipoValoracionDocumental),
+                            typeof(TipoAmpliacion),
                     }
                 },
                 new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_ARCHIVOS ) {
@@ -60,11 +61,6 @@ namespace PIKA.Servicio.GestionDocumental
                     Titulo = "Catálogos archivo",
                     Descripcion = "Permite administrar los catálogos relacionados con los archivos",
                     Tipos = new List<Type> { typeof(TipoArchivo) }
-                },
-                new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_CAT_ACTIVOS ) {
-                    Titulo = "Catalogos activos",
-                    Descripcion = "Permite administrar los catálogos relacionados con los activos del acervo",
-                    Tipos = new List<Type> { typeof(TipoAmpliacion) }
                 },
                 new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_PRESTAMO ) {
                     Titulo = "Gestión de préstamo",

@@ -8,6 +8,7 @@ using PIKA.Modelo.Metadatos.Atributos;
 using System.Xml.Serialization;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using PIKA.Constantes.Aplicaciones.GestorDocumental;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -15,7 +16,9 @@ namespace PIKA.Modelo.GestorDocumental
     /// <summary>
     /// Los elementos de clasificación consituyen la estructura jerárquca para acaomodar las entradas del cuadro
     /// </summary>
-    [Entidad( EliminarLogico: true)]
+    [Entidad( EliminarLogico: true,
+        TokenMod: ConstantesAppGestionDocumental.MODULO_CUADROCLASIF,
+        TokenApp: ConstantesAppGestionDocumental.APP_ID)]
     public class ElementoClasificacion : Entidad<string>, IEntidadNombrada, 
         IEntidadEliminada, IEntidadJerarquica
     {

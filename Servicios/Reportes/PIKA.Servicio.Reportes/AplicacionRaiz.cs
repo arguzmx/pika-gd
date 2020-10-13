@@ -15,7 +15,7 @@ namespace PIKA.Servicio.Reportes
             {
                 Id = APP_ID,
                 Descripcion = "Permite la gestión modelos de metadatos de la aplicación",
-                Nombre = "Administrador de repoertes",
+                Nombre = "Administrador de reportes",
                 UICulture = "es-MX",
                 Version = Version,
                 ReleaseIndex = 0

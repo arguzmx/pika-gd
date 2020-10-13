@@ -8,6 +8,7 @@ using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
 using PIKA.Infraestructura.Comun;
 using System.ComponentModel.DataAnnotations.Schema;
+using PIKA.Constantes.Aplicaciones.GestorDocumental;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -15,7 +16,9 @@ namespace PIKA.Modelo.GestorDocumental
     /// <summary>
     /// Corresponde a una instacia que permite la clasificación documental
     /// </summary>
-    [Entidad(EliminarLogico: true)]
+    [Entidad(EliminarLogico: true,
+        TokenMod: ConstantesAppGestionDocumental.MODULO_CUADROCLASIF,
+        TokenApp: ConstantesAppGestionDocumental.APP_ID)]
     [LinkCatalogo(EntidadCatalogo: "TipoValoracionDocumental",
         IdCatalogo: "Id", IdEntidad: "Id",
         IdCatalogoMap: "TipoValoracionDocumentalId", IdEntidadMap: "EntradaClasificacionId",

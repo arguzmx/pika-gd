@@ -7,11 +7,14 @@ using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
+using PIKA.Constantes.Aplicaciones.GestorDocumental;
 
 namespace PIKA.Modelo.GestorDocumental
 {
 
-    [Entidad(PaginadoRelacional: false, EliminarLogico: true)]
+    [Entidad(PaginadoRelacional: false, EliminarLogico: true , 
+        TokenMod: ConstantesAppGestionDocumental.MODULO_ARCHIVOS,
+        TokenApp: ConstantesAppGestionDocumental.APP_ID)]
     public class Archivo : Entidad<string>, IEntidadNombrada, IEntidadEliminada, IEntidadRelacionada
     {
 

@@ -36,11 +36,11 @@ namespace PIKA.GD.API
 {
     public class Startup
     {
-        
+
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
 
-       
+
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
@@ -60,7 +60,7 @@ namespace PIKA.GD.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public virtual IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            
+
             services.AddCors();
             services.AddMvc(setupAction =>
             {
@@ -111,7 +111,7 @@ namespace PIKA.GD.API
             services.AddScoped<AsyncACLActionFilter>();
             services.AddScoped<AsyncIdentityFilter>();
 
-            services.AddTransient(typeof(IProveedorOpcionesContexto<>),typeof(ProveedorOpcionesContexto<>));
+            services.AddTransient(typeof(IProveedorOpcionesContexto<>), typeof(ProveedorOpcionesContexto<>));
 
 
             services.AddSingleton<ICacheMetadatosAplicacion, CacheMetadatosAplicacion>();
@@ -119,33 +119,28 @@ namespace PIKA.GD.API
 
 #if DEBUG
             services.AddDbContext<DbContextAplicacionPlugin>(options =>
-                  options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-
+            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
             services.AddDbContext<DbContextOrganizacion>(options =>
-               options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-
+            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
             services.AddDbContext<DbContextContacto>(options =>
-                    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-
-
-            
-            services.AddDbContext<DbContextSeguridad>(options =>
             options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-           
+
             services.AddDbContext<DbContextMetadatos>(options =>
             options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
             services.AddDbContext<DBContextGestionDocumental>(options =>
             options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
-
             services.AddDbContext<DbContextContenido>(options =>
-    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-            services.AddDbContext<DbContextReportes>(options =>
-   options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
+            services.AddDbContext<DbContextReportes>(options =>
+            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+
+            services.AddDbContext<DbContextSeguridad>(options =>
+            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 #endif
 
             //registra los ensamblados validables
@@ -167,7 +162,7 @@ namespace PIKA.GD.API
 
             // Configura la autenticación con el servidor de identidad
             services.ConfiguraAutenticaciónJWT(this.Configuration);
-                        
+
 
             // Registro de servicios vía Autofac, es necesario para Rabbit MQ
             var container = new ContainerBuilder();
@@ -176,7 +171,7 @@ namespace PIKA.GD.API
 
         }
 
-     
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

@@ -4,9 +4,18 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
+using PIKA.Modelo.Metadatos;
+using PIKA.Modelo.Metadatos.Atributos;
+using PIKA.Constantes.Aplicaciones.GestorDocumental;
+
 
 namespace PIKA.Modelo.GestorDocumental
 {
+
+    [Entidad(PaginadoRelacional: false, EliminarLogico: false,
+     TokenMod: ConstantesAppGestionDocumental.MODULO_CATALOGOSCC,
+     TokenApp: ConstantesAppGestionDocumental.APP_ID
+     )]
     public class TipoValoracionDocumental: EntidadCatalogo<string, TipoValoracionDocumental>
     {
         public const string ADMINISTRATIVA = "admin";
@@ -21,6 +30,14 @@ namespace PIKA.Modelo.GestorDocumental
         {
             ValoracionEntradas = new HashSet<ValoracionEntradaClasificacion>();
         }
+
+        [Prop(Required: true, isId: true, Visible: true, OrderIndex: 0)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
+        public override string Id { get => base.Id; set => base.Id = value; }
+
+        [Prop(Required: true, isId: true, Visible: true, OrderIndex: 10)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
+        public override string Nombre { get => base.Nombre; set => base.Nombre = value; }
 
         public override List<TipoValoracionDocumental> Seed()
         {

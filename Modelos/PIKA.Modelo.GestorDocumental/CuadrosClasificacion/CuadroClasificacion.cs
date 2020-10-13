@@ -14,7 +14,9 @@ using System.Xml.Serialization;
 
 namespace PIKA.Modelo.GestorDocumental
 {
-    [Entidad(PaginadoRelacional:false, EliminarLogico: true)]
+    [Entidad(PaginadoRelacional:false, EliminarLogico: true,
+        TokenMod: ConstantesAppGestionDocumental.MODULO_CUADROCLASIF,
+        TokenApp: ConstantesAppGestionDocumental.APP_ID)]
     [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_CUADROCLASIF, 
         EntidadHijo: "ElementoClasificacion,EntradaClasificacion", 
         Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id", 

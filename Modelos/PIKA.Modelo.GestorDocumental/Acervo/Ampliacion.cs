@@ -6,10 +6,13 @@ using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
+using PIKA.Constantes.Aplicaciones.GestorDocumental;
 
 namespace PIKA.Modelo.GestorDocumental
 {
-    [Entidad(PaginadoRelacional: false, EliminarLogico: false)]
+    [Entidad(PaginadoRelacional: false, EliminarLogico: false,
+        TokenMod: ConstantesAppGestionDocumental.MODULO_ACTIVOS,
+        TokenApp: ConstantesAppGestionDocumental.APP_ID)]
     public class Ampliacion: Entidad<string>
     {
         public Ampliacion()

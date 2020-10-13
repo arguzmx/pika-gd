@@ -28,7 +28,7 @@ namespace PIKA.Servicio.Reportes
             List<ElementoAplicacion> m = new List<ElementoAplicacion>()
             {
                 new ElementoAplicacion(MODULO_BASE, "REPORTE" ) {
-                    Titulo = "Repoertes por entidad",
+                    Titulo = "Reportes por entidad",
                     Descripcion = "Permite administrar los Reportes",
                     Tipos = new List<Type> { typeof(ReporteEntidad)
                         
