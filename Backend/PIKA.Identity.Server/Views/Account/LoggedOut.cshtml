@@ -10,45 +10,42 @@
     {
         nameUser = Context.User?.GetDisplayName();
     } }
-<div class="container">
-    <br />
-    <br />
-</div>
-<div class="form">
-    <h1>
-        Salir de la Aplicación
 
-    </h1>
-    <div class="thumbnail"><img src="~/PIKA_PARROT.svg" /></div>
-    @if (!string.IsNullOrWhiteSpace(nameUser))
-    {
-        <div class="nombre"> <b>  @nameUser</b></div>
-    }
+<div class="formPermisos">
+    <div class="informacion">
 
-    <div class="container">
-        Click <a href="~/">aqui</a> Regresar a la aplicación
-    </div>
-    @if (Model.PostLogoutRedirectUri != null)
-    {
-        <form>
-            <div class="container">
+
+        <h2>
+            Salir de la Aplicación
+
+        </h2>
+        <div class="thumbnail"><img src="~/PIKA_PARROT.svg" /></div>
+        @if (!string.IsNullOrWhiteSpace(nameUser))
+        {
+            <div class="nombre"> <b>  @nameUser</b></div>
+        }
+
+    <div class="links"> Click <a href="~/">aqui</a> regresar a la aplicación</div>
+        @if (Model.PostLogoutRedirectUri != null)
+        {
+            <form  class="links">
                 Click <a class="PostLogoutRedirectUri" href="@Model.PostLogoutRedirectUri">here</a>para regresar a la aplicación
                 <span>@Model.ClientName</span> aplicación.
-            </div>
-        </form>
+            </form>
 
-    }
+        }
 
-    @if (Model.SignOutIframeUrl != null)
-    {
-        <div width="0" height="0" class="signout" src="@Model.SignOutIframeUrl"></div>
-    }
-</div>
+        @if (Model.SignOutIframeUrl != null)
+        {
+            <div width="0" height="0" class="signout" src="@Model.SignOutIframeUrl"></div>
+        }
+    </div>
 
-@section scripts
+    @section scripts
 {
-    @if (Model.AutomaticRedirectAfterSignOut)
-    {
-        <script src="~/js/signout-redirect.js"></script>
-    }
+        @if (Model.AutomaticRedirectAfterSignOut)
+        {
+            <script src="~/js/signout-redirect.js"></script>
+        }
+    </div>
 }

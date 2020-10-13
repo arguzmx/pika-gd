@@ -18,7 +18,6 @@
     {
         <div class="nombre"> <b>  @nameUser</b></div>
     }
-    <div class="info">
         <p>Esta seguro que desea salir?</p>
         <form asp-action="Logout">
             <input type="hidden" name="logoutId" value="@Model.LogoutId" />
@@ -26,5 +25,4 @@
                 <button name="button" href="~/">Sí</button>
             </div>
         </form>
-    </div>
 </div>

@@ -1,56 +1,53 @@
 @model LoginViewModel
 <div class="container">
-    <div class="info">
-        <h1>Inicio de sesión</h1>
-    </div>
+    
 </div>
 <partial name="_ValidationSummary" />
 
 <div class="formlogin">
 
+
     @if (Model.EnableLocalLogin)
     {
         <div class="thumbnail"><img src="~/PIKA_PARROT.svg" /></div>
-
-        <form class="form" asp-route="Login">
+        <h2>Inicio de sesión</h2>
+        <form asp-route="Login">
             <input type="text" placeholder="Usuario" asp-for="Username" />
             <input type="password" placeholder="Contraseña" asp-for="Password" autocomplete="off" />
             @if (Model.AllowRememberLogin)
             {
-        <div class="contenidoChecked">
-            <label>
-                <input asp-for="RememberLogin" type="checkbox"
-                       name="ScopesConsented"
-                       id="check"
-                       checked="checked" />
-                <b>Recordar sesión</b>
+                <div class="contenidoChecked">
+                    <label>
+                        <input asp-for="RememberLogin" type="checkbox"
+                               name="ScopesConsented"
+                               id="check"
+                               checked="checked" />
+                        <b>Recordar sesión</b>
 
-            </label>
-        </div>
+                    </label>
+                </div>
             }
             <br />
             <button name="button" value="login">Iniciar sesión</button>
-           
+
             <input type="hidden" asp-for="ReturnUrl" />
         </form>
 
 
     }
-
     @if (Model.VisibleExternalProviders.Any())
     {
-        <div class="col-md-6 col-sm-6 external-providers">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">External Login</h3>
+        <div>
+            <div>
+                <div>
+                    <h3>External Login</h3>
                 </div>
-                <div class="panel-body">
-                    <ul class="list-inline">
+                <div>
+                    <ul>
                         @foreach (var provider in Model.VisibleExternalProviders)
                         {
                             <li>
-                                <a class="btn btn-default"
-                                   asp-controller="External"
+                                <a asp-controller="External"
                                    asp-action="Challenge"
                                    asp-route-provider="@provider.AuthenticationScheme"
                                    asp-route-returnUrl="@Model.ReturnUrl">
@@ -66,9 +63,9 @@
 
     @if (!Model.EnableLocalLogin && !Model.VisibleExternalProviders.Any())
     {
-<div class="alert alert-warning">
-    <strong>Solicitud de inicio de sesión no válida</strong>
-    No esta configurado el inicio de sesión para este cliente.
-</div>
+        <div>
+            <strong>Solicitud de inicio de sesión no válida</strong>
+            No esta configurado el inicio de sesión para este cliente.
+        </div>
     }
 </div>

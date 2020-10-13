@@ -5,18 +5,18 @@
         nameUser = Context.User?.GetDisplayName();
     } }
 
-<div class="container">
 
-</div>
-<div class="form">
-    <div class="thumbnail"><img src="~/PIKA_PARROT.svg" /></div>
-    @if (!string.IsNullOrWhiteSpace(nameUser))
-    {
-        <div class="nombre"> <b>  @nameUser</b></div>
-    }
+<div class="formulario">
     <div class="info">
-        <h1>Acceso denegado</h1>
-    </div>
+        <div class="thumbnail"><img src="~/PIKA_PARROT.svg" /></div>
+        @if (!string.IsNullOrWhiteSpace(nameUser))
+        {
+            <div class="nombre"> <b>  @nameUser</b></div>
+        }
 
-    <p>No tienes acceso a esta aplicación.</p>
+        <h1>Acceso denegado</h1>
+
+
+        <p>No tienes acceso a esta aplicación.</p>
+    </div>
 </div>

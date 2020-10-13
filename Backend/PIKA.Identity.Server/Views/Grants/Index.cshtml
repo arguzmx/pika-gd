@@ -7,71 +7,67 @@
         nameUser = Context.User?.GetDisplayName();
     } }
 
-<div class="container">
-
-</div>
-@if (Model.Grants.Any() == true)
-{
-    <div class="container">
-
-        <div class="info">
-            <h1>
-                Acceso a la aplicación
-            </h1>
-
-            <small>A continuación se muestra la lista de aplicaciones a las que ha dado acceso y los nombres de los recursos a los que tienen acceso.</small>
-        </div>
-    </div>
-}
-
-<a asp-action="Logout" asp-controller="Account">Logout</a>
-
-<div class="form">
-
-    <div class="thumbnail"><img src="~/PIKA_PARROT.svg" /></div>
-    @if (!string.IsNullOrWhiteSpace(nameUser))
-    {
-        <div class="nombre"> <b>  @nameUser</b></div>
-    }
-    @if (Model.Grants.Any() == false)
-    {
-        <div class="container">
-
-            <div class="info">
-                No tienes permiso para acceder a la aplicación
-            </div>
-        </div>
-    }
-    else
-    {
-        foreach (var grant in Model.Grants)
+<div class="formPermisos">
+    <div class="informacion">
+        @if (Model.Grants.Any() == false)
         {
-            <div class="info">
-                <div>
-                    @if (grant.ClientLogoUrl != null)
-                    {
-                        <img src="@grant.ClientLogoUrl">
-                    }
-                </div>
-                <div class="Contenido">
-                    <div class="titulo">Nombre del Acceso: @grant.ClientName</div>
+            <div class="thumbnail"><img src="~/PIKA_PARROT.svg" /></div>
+
+            <div>  No tienes permiso para acceder a la aplicación</div>
+        }
+        @if (Model.Grants.Any() == true)
+        {
+            <a asp-action="Logout" asp-controller="Account">Logout</a>
+
+
+            <h2>
+                Acceso a la aplicación
+            </h2>
+            <small>A continuación se muestra la lista de aplicaciones a las que ha dado acceso y los nombres de los recursos a los que tienen acceso.</small>
+            <div class="thumbnail"><img src="~/PIKA_PARROT.svg" /></div>
+            @if (!string.IsNullOrWhiteSpace(nameUser))
+            {
+                <div class="nombre"> <b>  @nameUser</b></div>
+            }
+            @if (Model.Grants.Any() == false)
+            {
+
+                <div>  No tienes permiso para acceder a la aplicación</div>
+            }
+            else
+            {
+                foreach (var grant in Model.Grants)
+                {
+
                     <div>
-                        <span>Fecha de Creación : @grant.Created.ToString("yyyy-MM-dd")</span>
+                        @if (grant.ClientLogoUrl != null)
+                        {
+                            <img src="@grant.ClientLogoUrl">
+                        }
                     </div>
+                    <div class="titulo">
+                        <b> Nombre del Acceso:</b>
+
+                    </div>
+                    <div class="NombreAcceso"> @grant.ClientName</div>
+                    <div class="titulo">
+                        Fecha de Creación :
+                    </div>
+                    <div class="NombreAcceso"> @grant.Created.ToString("yyyy-MM-dd")</div>
                     @if (grant.Expires.HasValue)
                     {
                         <div>
-                            <span>Fecha de expiración: @grant.Expires.Value.ToString("yyyy-MM-dd")</span>
+                            <b>Fecha de expiración: @grant.Expires.Value.ToString("yyyy-MM-dd")</b>
                         </div>
                     }
                     @if (grant.IdentityGrantNames.Any())
                     {
-                        <div>Identidad del usuario: </div>
+                        <div class="titulo"><b>Identidad del usuario: </b></div>
                         <div class="lista">
                             <ul>
                                 @foreach (var name in grant.IdentityGrantNames)
                                 {
-                                    <li>@name</li>
+                                    <li>- @name</li>
                                 }
                             </ul>
                         </div>
@@ -79,23 +75,25 @@
                     @if (grant.ApiGrantNames.Any())
                     {
                         <div class="lista">
-                            <div>Permisos de API</div>
+                            <div class="titulo">Permisos de API</div>
                             <ul>
                                 @foreach (var name in grant.ApiGrantNames)
                                 {
-                                    <li>@name</li>
+                                    <li>- @name</li>
                                 }
                             </ul>
                         </div>
                     }
-                </div>
-                <div class="col-sm-2">
-                    <form asp-action="Revoke">
-                        <input type="hidden" name="clientId" value="@grant.ClientId">
-                        <button class="btn btn-danger">Remover los permisos</button>
-                    </form>
-                </div>
-            </div>
+                    <div>
+                        <form asp-action="Revoke">
+                            <input type="hidden" name="clientId" value="@grant.ClientId">
+                            <button>Remover los permisos</button>
+                        </form>
+                    </div>
+                }
+            }
+
         }
-    }
+
+    </div>
 </div>
