@@ -1,14 +1,14 @@
 @model string
 
-<div class="page-header">
+<div class="formulario">
     <h1>
-        User Code
+        El código de usuario
     </h1>
     <p>
-        Please enter the code displayed on your device
+        Ingrese el código que se muestra en su dispositivo
     </p>
-    <form asp-action="UserCodeCapture" method="post">
+    <form asp-action="UserCodeCapture" method="post" class="info">
         <input for="userCode" name="userCode" />
-        <button class="btn btn-primary">Submit</button>
+        <button >Aceptar</button>
     </form>
 </div>

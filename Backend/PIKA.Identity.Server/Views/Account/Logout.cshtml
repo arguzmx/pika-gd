@@ -18,13 +18,11 @@
     {
         <div class="nombre"> <b>  @nameUser</b></div>
     }
-    <div class="info">
-        <p>Esta seguro que desea salir?</p>
+        <p>Desea salir de la aplicación?</p>
         <form asp-action="Logout">
             <input type="hidden" name="logoutId" value="@Model.LogoutId" />
             <div class="container">
                 <button name="button" href="~/">Sí</button>
             </div>
         </form>
-    </div>
 </div>

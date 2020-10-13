@@ -1,25 +1,24 @@
-﻿/* Form */
-.form {
+﻿
+.formPermisos {
     position: relative;
     z-index: 1;
     background: #FFFFFF;
     max-width: 100%;
-    margin: 0 auto 100px;
-    padding: 50px 7px 0px 8px;
+    padding: 1px 2px 1px 2px;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
+    border-bottom-left-radius:3px;
+    border-bottom-right-radius:3px;
     text-align: center;
     font-family: Roboto, sans-serif;
 }
 
-    .form .thumbnail {
+    .formPermisos .thumbnail {
         background: #EF3B3A;
-        width: 200px;
-        height: 200px;
-        margin: 0 auto 40px;
-        padding:35px 45px;
+        width: 150px;
+        height: 150px;
+        margin: 10px auto 10px;
+        padding: 15px 30px 35px 35px;
         border-top-left-radius: 100%;
         border-top-right-radius: 100%;
         border-bottom-left-radius: 100%;
@@ -27,36 +26,36 @@
         box-sizing: border-box;
         font-family: Roboto, sans-serif;
     }
+    .formPermisos .informacion {
+        font-family: Roboto, sans-serif;
+        text-align: center;
+        width: 90%;
+        margin: 24px 24px 24px 24px;
+    }
 
-        .form .thumbnail img {
+    .formPermisos .info {
+        font-family: Roboto, sans-serif;
+        text-align: justify;
+        width: 80%;
+        margin: 15px 24px 15px 24px;
+    }
+    
+    .formpermisos .informacion titulo {
+        color: red;
+        text-align: justify;
+    }
+        .formPermisos .thumbnail img {
             display: block;
             width: 100%;
             font-family: Roboto, sans-serif;
-            padding:0px 5px 2px 2px;
         }
 
-    .form input {
+    .formPermisos input {
         outline: 0;
         background: #f2f2f2;
-        width: 100%;
-        border: 0;
-        margin: 0 0 15px;
-        padding: 15px;
-        border-top-left-radius: 3px;
-        border-top-right-radius: 3px;
-        border-bottom-left-radius: 3px;
-        border-bottom-right-radius: 3px;
-        box-sizing: border-box;
-        font-size: 14px;
-        font-family: Roboto, sans-serif;
-        text-align:justify;
-    }
-    .form .contenidoChecked input {
-        outline: 0;
-        background: #EF3B3A;
         width: 10%;
         border: 0;
-        margin: 0 0 15px;
+        margin: 10px 0 15px;
         padding: 15px;
         border-top-left-radius: 3px;
         border-top-right-radius: 3px;
@@ -65,23 +64,39 @@
         box-sizing: border-box;
         font-size: 14px;
         font-family: Roboto, sans-serif;
-        text-align: center;
+        text-align: justify;
     }
-/* On mouse-over, add a grey background color */
-.form .contenidoChecked:hover input ~ .check {
-    background-color: #ccc;
-}
 
-/* When the checkbox is checked, add a blue background */
-.form .contenidoChecked input:checked ~ .check {
-    background-color: #ff0000;
-}
-    .form button {
+    .formPermisos .contenidoChecked input {
+        outline: 0;
+        background: #EF3B3A;
+        margin: 15px auto 25px;
+        padding: 25px 15px 25px 15px; 
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        box-sizing: border-box;
+        font-size: 14px;
+        font-family: Roboto, sans-serif;
+        text-align: justify;
+    }
+    /* On mouse-over, add a grey background color */
+    .formPermisos .info  .contenidoChecked:hover input ~ .check {
+        background-color: #ccc;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .formPermisos .info  .contenidoChecked input:checked ~ .check {
+        background-color: #ff0000;
+    }
+
+    .formPermisos button {
         outline: 0;
         background: #EF3B3A;
         width: 100%;
         border: 0;
-        padding: 15px;
+        padding: 10px 15px 10px 15px;
         border-top-left-radius: 3px;
         border-top-right-radius: 3px;
         border-bottom-left-radius: 3px;
@@ -93,160 +108,238 @@
         cursor: pointer;
         font-family: Roboto, sans-serif;
     }
+    .formPermisos .lista ul li {
+        color: #000000;
+        font-family: Roboto, sans-serif;
+        text-align: justify;
+        list-style-type: none;
+        margin:9px 9px 9px 8px;
+    }
 
-    .form .message {
-        margin: 15px 0 0;
+    .formPermisos .lista ul {
+        color: #000000;
+        font-family: Roboto, sans-serif;
+        text-align: justify;
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        padding: 10px 2px 10px 2px;
+    }
+
+        .formPermisos .listaConsent ul li {
+            color: #000000;
+            font-family: Roboto, sans-serif;
+            text-align: justify;
+            list-style-type: none;
+            margin: 9px 9px 5px 8px;
+        }
+
+    .formPermisos .listaConsent ul {
+        color: #000000;
+        font-family: Roboto, sans-serif;
+        text-align: justify;
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        padding: 10px 2px 5px 2px;
+    }
+    .formPermisos .Permisosdenegados a {
+        color: #EF3B3A;
+        text-decoration: none;
+        font-family: Roboto, sans-serif;
+    }
+
+    .formPermisos .Permisosdenegados {
+        color: #EF3B3A;
+        text-decoration: none;
+        font-family: Roboto, sans-serif;
+        text-align:justify;
+    }
+    .formPermisos .Items {
+        font-family: Roboto, sans-serif;
+        text-align: justify;
+    }
+
+    .formPermisos .container a {
+        color: #ff0000;
+        text-decoration: none;
+        font-family: Roboto, sans-serif;
+    }
+    .formPermisos .informacion .nombre {
+        color: #6ebd44;
+        font-size: 2.5em;
+        font-family: Roboto, sans-serif;
+        font-weight: bold;
+        padding: 1px 1px 1px 1px
+    }
+    .formPermisos .informacion .nombre {
+        color: #6ebd44;
+        font-size: 2.5em;
+        font-family: Roboto, sans-serif;
+        font-weight: bold;
+        padding: 1px 1px 15px 1px
+    }
+    .formPermisos .informacion .nombreConsent {
+        color: #6ebd44;
+        font-size: 2.5em;
+        font-family: Roboto, sans-serif;
+        font-weight: bold;
+        padding: 1px 1px 0px 1px
+    }
+    .formPermisos .informacion .titulo {
+        text-align: justify;
+        font-weight: bold;
+        padding: 5px 1px 5px 1px
+    }
+    .formPermisos .recuerdamidesicion {
+        color: #6ebd44;
+        text-align: center;
+        padding-top:0px;
+        padding-bottom:2px;
+    }
+    .formPermisos .informacion .links {
+        color: #000000;
+        font-family: Roboto, sans-serif;
+    }
+    .formPermisos .informacion .fechacreacion {
+        font-family: Roboto, sans-serif;
+        text-align: justify;
+        font-size:12px;
+        padding-bottom:2px;
+        padding-top:2px;
+    }
+    .formPermisos .informacion .NombreAcceso {
+        font-family: Roboto, sans-serif;
+        text-align: justify;
+        padding-bottom: 2px;
+        padding-top: 2px;
+
+    }
+    /* Form login
+*/
+    .formlogin {
+        position: relative;
+        z-index: 1;
+        background: #FFFFFF;
+        max-width: 80%;
+        margin: 0 auto 100px;
+        padding: 20px 2px 20px 8px;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        text-align: center;
+        font-family: Roboto, sans-serif;
+    }
+    .formlogin .thumbnail {
+        background: #EF3B3A;
+        width: 150px;
+        height: 150px;
+        margin: 0 auto 10px;
+        padding: 15px 30px 35px 35px;
+        border-top-left-radius: 100%;
+        border-top-right-radius: 100%;
+        border-bottom-left-radius: 100%;
+        border-bottom-right-radius: 100%;
+        box-sizing: border-box;
+        font-family: Roboto, sans-serif;
+    }
+
+        .formlogin .thumbnail img {
+            display: block;
+            width: 100%;
+            font-family: Roboto, sans-serif;
+        }
+
+    .formlogin input {
+        outline: 0;
+        background: #f2f2f2;
+        width: 90%;
+        border: 0;
+        margin: 5px 25px 5px 15px;
+        padding: 15px;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        box-sizing: border-box;
+        font-size: 14px;
+        font-family: Roboto, sans-serif;
+        text-align: justify;
+    }
+
+    .formlogin .contenidoChecked input {
+        outline: 0;
+        background: #EF3B3A;
+        width: 10%;
+        border: 0;
+        margin: 10px auto 0px;
+        padding: 15px;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        box-sizing: border-box;
+        font-size: 14px;
+        font-family: Roboto, sans-serif;
+        text-align: center;
+    }
+/* On mouse-over, add a grey background color */
+    .formlogin .contenidoChecked:hover input ~ .check {
+        background-color: #ccc;
+    }
+
+/* When the checkbox is checked, add a blue background */
+    .formlogin .contenidoChecked input:checked ~ .check {
+        background-color: #ff0000;
+    }
+
+    .formlogin button {
+        outline: 0;
+        background: #EF3B3A;
+        width: 90%;
+        border: 0;
+        padding: 10px 15px 10px 15px;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border-bottom-left-radius: 3px;
+        border-bottom-right-radius: 3px;
+        color: #FFFFFF;
+        font-size: 14px;
+        -webkit-transition: all 0.3 ease;
+        transition: all 0.3 ease;
+        cursor: pointer;
+        font-family: Roboto, sans-serif;
+        text-align:center;
+    }
+
+    .formlogin .message {
+        margin: 10px 0 0;
         color: #b3b3b3;
         font-size: 12px;
         font-family: Roboto, sans-serif;
     }
 
-        .form .message a {
+        .formlogin .message a {
             color: #EF3B3A;
             text-decoration: none;
             font-family: Roboto, sans-serif;
         }
 
-    .form .register-form {
-        display: none;
-        font-family: Roboto, sans-serif;
-    }
-    .form .container a {
-        color: #ff0000;
-        text-decoration: none;
-        font-family: Roboto, sans-serif;
-    }
-/* Form */
-.formlogin {
-    position: relative;
-    z-index: 1;
-    background: #FFFFFF;
-    max-width: 80%;
-    margin: 0 auto 100px;
-    padding: 50px 7px 0px 8px;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
-    text-align: center;
-    font-family: Roboto, sans-serif;
-}
-
-.formlogin .thumbnail {
-    background: #EF3B3A;
-    width: 200px;
-    height: 200px;
-    margin: 0 auto 40px;
-    padding: 35px 45px;
-    border-top-left-radius: 100%;
-    border-top-right-radius: 100%;
-    border-bottom-left-radius: 100%;
-    border-bottom-right-radius: 100%;
-    box-sizing: border-box;
-    font-family: Roboto, sans-serif;
-}
-
-.formlogin .thumbnail img {
-    display: block;
-    width: 100%;
-    font-family: Roboto, sans-serif;
-    padding: 0px 5px 2px 2px;
-}
-
-.formlogin input {
-    outline: 0;
-    background: #f2f2f2;
-    width: 100%;
-    border: 0;
-    margin: 0 0 15px;
-    padding: 15px;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
-    box-sizing: border-box;
-    font-size: 14px;
-    font-family: Roboto, sans-serif;
-    text-align: justify;
-}
-
-.formlogin .contenidoChecked input {
-    outline: 0;
-    background: #EF3B3A;
-    width: 10%;
-    border: 0;
-    margin: 0 0 15px;
-    padding: 15px;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
-    box-sizing: border-box;
-    font-size: 14px;
-    font-family: Roboto, sans-serif;
-    text-align: center;
-}
-    /* On mouse-over, add a grey background color */
-.formlogin .contenidoChecked:hover input ~ .check {
-    background-color: #ccc;
-}
-
-    /* When the checkbox is checked, add a blue background */
-.formlogin .contenidoChecked input:checked ~ .check {
-    background-color: #ff0000;
-}
-
-.formlogin button {
-    outline: 0;
-    background: #EF3B3A;
-    width: 100%;
-    border: 0;
-    padding: 15px;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
-    color: #FFFFFF;
-    font-size: 14px;
-    -webkit-transition: all 0.3 ease;
-    transition: all 0.3 ease;
-    cursor: pointer;
-    font-family: Roboto, sans-serif;
-}
-
-.formlogin .message {
-    margin: 15px 0 0;
-    color: #b3b3b3;
-    font-size: 12px;
-    font-family: Roboto, sans-serif;
-}
-
-.formlogin .message a {
-    color: #EF3B3A;
-    text-decoration: none;
-    font-family: Roboto, sans-serif;
-}
-
-.formlogin .register-form {
-    display: none;
-    font-family: Roboto, sans-serif;
-}
+  
 
     .formlogin .container a {
         color: #ff0000;
         text-decoration: none;
         font-family: Roboto, sans-serif;
     }
-
-   
-    
-.container {
+    .container {
     position: relative;
     z-index: 1;
-    max-width: 500px;
+    max-width: 450px;
     margin: 0 auto;
     font-family: Roboto, sans-serif;
-    padding:30px 5px 20px 2px;
+    padding:5px 5px 5px 2px;
 }
 
     .container:before, .container:after {
@@ -350,15 +443,15 @@
     background: #FFFFFF;
     max-width: 100%;
     margin: 0 auto 2%;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
     text-align: justify;
     font-family: Roboto, sans-serif;
     width: 100%;
-    padding: 20px 10px 1px 10px;
-    border: 1px solid #4CAF50;
+    padding: 20px 10px 5px 10px;
+    /*border: 1px solid #4CAF50;*/
 }
     .formulario h2 {
         text-align:center;
@@ -396,9 +489,9 @@
         outline: 0;
         background: #f2f2f2;
         width: 10%;
-        border: 0;
+        border: 2px;
         margin: 0 0 15px;
-        padding: 15px;
+        padding: 25px 20px 25px 20px;
         border-top-left-radius: 3px;
         border-top-right-radius: 3px;
         border-bottom-left-radius: 3px;
@@ -407,13 +500,13 @@
         font-size: 14px;
         font-family: Roboto, sans-serif;
     }
-
+ 
     .formulario button {
         outline: 0;
         background: #EF3B3A;
         width: 100%;
         border: 0;
-        padding: 15px;
+        padding: 15px 15px 15px 15px;
         border-top-left-radius: 3px;
         border-top-right-radius: 3px;
         border-bottom-left-radius: 3px;
@@ -432,30 +525,11 @@
         font-weight: bold;
         padding:1px 1px 1px 1px
     }
-.form .nombre {
-    color: #6ebd44;
-    font-size: 2.5em;
-    font-family: Roboto, sans-serif;
-    font-weight: bold;
-}
-.formulario .message {
-    margin: 15px 0 0;
-    color: #b3b3b3;
-    font-size: 12px;
-    font-family: Roboto, sans-serif;
+
+
+
+
     
-}
-
-        .formulario .message a {
-            color: #EF3B3A;
-            text-decoration: none;
-            font-family: Roboto, sans-serif;
-        }
-
-    .formulario .register-form {
-        display: none;
-        font-family: Roboto, sans-serif;
-    }
 body {
     background: #ccc;
     font-family: Roboto, sans-serif;
@@ -502,77 +576,8 @@ label {
 }
 
 a {
-    color: #000000;
+    color: #ff0000;
     text-decoration: none;
     font-family: Roboto, sans-serif;
 }
-.menu {
-    float: right;
-    width: 20%;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    background-color: #ccc;
-    margin-right: 10%;
-}
 
-    .menu .slider {
-        width: 100%;
-        height: 300px;
-        background-color: #F03861;
-    }
-
-    
-    .menu ul {
-        font-size: 0;
-        list-style-type: none;
-    }
-
-        .menu ul li {
-            font-family: Roboto, sans-serif;
-            font-size: 1rem;
-            font-weight: 400;
-            color: #333;
-            display: inline-block;
-            padding: 15px;
-            position: relative;
-        }
-
-            .menu ul li ul {
-                display: none;
-            }
-
-            .menu ul li:hover {
-                cursor: pointer;
-                background-color: #f2f2f2;
-            }
-
-                .menu ul li:hover ul {
-                    display: block;
-                    margin-top: 15px;
-                    width: 200px;
-                    left: 0;
-                    position: absolute;
-                }
-
-                    .menu ul li:hover ul li {
-                        display: block;
-                        background-color: #e7e7e7;
-                    }
-
- .menu ul li:hover ul li span {
-float: right;
-color: #f9f9f9;
-background-color: #F03861;
-menupadding: 2px 5px;
-menutext-align: center;
-font-size: .8rem;
-border-radius: 3px;
-}
-
-.menu ul li:hover ul li:hover {
- background-color: #e0e0e0;
-}
-
-.menu ul li:hover ul li:hover span {
-background-color: #ee204e;
-
-}

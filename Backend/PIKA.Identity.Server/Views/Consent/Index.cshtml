@@ -5,13 +5,13 @@
     {
         nameUser = Context.User?.GetDisplayName();
     } }
-<div class="formulario">
-    <h2>Permisos solicitados</h2>
-    <div class="info">
+<div class="formPermisos">
+    <div class="informacion">
         <div class="thumbnail"><img src="~/PIKA_PARROT.svg" /></div>
+        <h1>Permisos solicitados</h1>
         @if (!string.IsNullOrWhiteSpace(nameUser))
         {
-            <div class="nombre"> <b>  @nameUser</b></div>
+            <div class="nombreConsent"> <b>  @nameUser</b></div>
         }
         @if (Model.ClientLogoUrl != null)
         {
@@ -20,70 +20,61 @@
         <h2>
             @Model.ClientName
         </h2>
-    </div>
-    <div class="info">
-        <div>
-            <partial name="_ValidationSummary" />
 
-            <form asp-action="Index" class="consent-form">
-                <input type="hidden" asp-for="ReturnUrl" />
+        <partial name="_ValidationSummary" />
 
-                <div class="Permisosdenegados">Desmarque los permisos que no desea otorgar.</div>
-                <br />
-                @if (Model.IdentityScopes.Any())
-                {
-                    <div class="Contenido">
-                        <div> Información personal</div>
-                        <div class="lista">
-                            <ul>
-                                @foreach (var scope in Model.IdentityScopes)
-                                {
-                                    <partial name="_ScopeListItem" model="@scope" />
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                }
+        <form asp-action="Index">
+            <input type="hidden" asp-for="ReturnUrl" />
 
-                @if (Model.ResourceScopes.Any())
-                {
-                    <div class="Contenido">
-                        <div>  Acceso a las aplicaciones</div>
-                        <div class="lista">
-
-                            <ul>
-                                @foreach (var scope in Model.ResourceScopes)
-                                {
-                                    <partial name="_ScopeListItem" model="scope" />
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                }
-
-                @if (Model.AllowRememberConsent)
-                {
-                        <label class="recuerdamidesicion">
-                            <input asp-for="RememberConsent" />
-                            <b>Recuerda mi decisión</b>
-                        </label>
-                }
-
-                <div>
-                    <button name="button" value="yes" class="btn btn-primary" autofocus>Acceso total </button>
-                    <br />
-                    <br />
-                    <button name="button" value="no" class="btn">No permitir</button>
-                    @if (Model.ClientUrl != null)
-                    {
-                        <a target="_blank" href="@Model.ClientUrl">
-                            <span></span>
-                            <strong>@Model.ClientName</strong>
-                        </a>
-                    }
+            <div class="Permisosdenegados">Desmarque los permisos que no desea otorgar en la aplicación.</div>
+            <br />
+            @if (Model.IdentityScopes.Any())
+            {
+                <div class="Items">Detalle de la información personal</div>
+                <div class="listaConsent">
+                    <ul>
+                        @foreach (var scope in Model.IdentityScopes)
+                        {
+                            <partial name="_ScopeListItem" model="@scope" />
+                        }
+                    </ul>
                 </div>
+            }
 
-            </form>
-        </div>
+            @if (Model.ResourceScopes.Any())
+            {
+                <div class="Items">  Acceso a las aplicaciones</div>
+                <div class="listaConsent">
+
+                    <ul>
+                        @foreach (var scope in Model.ResourceScopes)
+                        {
+                            <partial name="_ScopeListItem" model="scope" />
+                        }
+                    </ul>
+                </div>
+            }
+
+            @if (Model.AllowRememberConsent)
+            {
+                <label class="recuerdamidesicion">
+                    <input asp-for="RememberConsent" />
+                    <b>Recordar la decisión</b>
+                </label>
+            }
+
+            <button name="button" value="yes" autofocus>Acceso total a la aplicación</button>
+            <br />
+            <br />
+            <button name="button" value="no">No permitir el acceso a la aplicación</button>
+            @if (Model.ClientUrl != null)
+            {
+                <a target="_blank" href="@Model.ClientUrl">
+                    <span></span>
+                    <strong>@Model.ClientName</strong>
+                </a>
+            }
+
+        </form>
     </div>
 </div>
