@@ -13,7 +13,7 @@
         {
             <div class="thumbnail"><img src="~/PIKA_PARROT.svg" /></div>
 
-            <div>  No tienes permiso para acceder a la aplicación</div>
+            <div>  No se tiene permiso para acceder a la aplicación</div>
         }
         @if (Model.Grants.Any() == true)
         {
@@ -23,7 +23,7 @@
             <h2>
                 Acceso a la aplicación
             </h2>
-            <small>A continuación se muestra la lista de aplicaciones a las que ha dado acceso y los nombres de los recursos a los que tienen acceso.</small>
+            <small>A continuación se muestra la lista de aplicaciones y recursos a los que tienen acceso.</small>
             <div class="thumbnail"><img src="~/PIKA_PARROT.svg" /></div>
             @if (!string.IsNullOrWhiteSpace(nameUser))
             {
@@ -32,7 +32,7 @@
             @if (Model.Grants.Any() == false)
             {
 
-                <div>  No tienes permiso para acceder a la aplicación</div>
+                <div>  No se tiene permiso para acceder a la aplicación</div>
             }
             else
             {
@@ -46,7 +46,7 @@
                         }
                     </div>
                     <div class="titulo">
-                        <b> Nombre del Acceso:</b>
+                        <b> Lista de Accesos :</b>
 
                     </div>
                     <div class="NombreAcceso"> @grant.ClientName</div>
@@ -62,7 +62,7 @@
                     }
                     @if (grant.IdentityGrantNames.Any())
                     {
-                        <div class="titulo"><b>Identidad del usuario: </b></div>
+                        <div class="titulo"><b>La identidad del usuario: </b></div>
                         <div class="lista">
                             <ul>
                                 @foreach (var name in grant.IdentityGrantNames)
@@ -75,7 +75,7 @@
                     @if (grant.ApiGrantNames.Any())
                     {
                         <div class="lista">
-                            <div class="titulo">Permisos de API</div>
+                            <div class="titulo">Los permisos de API</div>
                             <ul>
                                 @foreach (var name in grant.ApiGrantNames)
                                 {
@@ -87,7 +87,7 @@
                     <div>
                         <form asp-action="Revoke">
                             <input type="hidden" name="clientId" value="@grant.ClientId">
-                            <button>Remover los permisos</button>
+                            <button>Remover los permisos otorgados</button>
                         </form>
                     </div>
                 }

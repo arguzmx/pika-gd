@@ -16,7 +16,7 @@
 
 
         <h2>
-            Salir de la Aplicaci贸n
+            Salir
 
         </h2>
         <div class="thumbnail"><img src="~/PIKA_PARROT.svg" /></div>
@@ -25,12 +25,12 @@
             <div class="nombre"> <b>  @nameUser</b></div>
         }
 
-    <div class="links"> Click <a href="~/">aqui</a> regresar a la aplicaci贸n</div>
+    <div class="links">  <a href="~/">Regresar a la aplicaci髇</a> </div>
         @if (Model.PostLogoutRedirectUri != null)
         {
             <form  class="links">
-                Click <a class="PostLogoutRedirectUri" href="@Model.PostLogoutRedirectUri">here</a>para regresar a la aplicaci贸n
-                <span>@Model.ClientName</span> aplicaci贸n.
+                <a class="PostLogoutRedirectUri" href="@Model.PostLogoutRedirectUri">Regresar a la aplicaci髇</a>
+                <span>@Model.ClientName</span>.
             </form>
 
         }

@@ -7,7 +7,7 @@
     } }
 <div class="formPermisos">
     <div class="informacion">
-        <h2>Permisos solicitados</h2>
+        <h2>Los permisos solicitados de la aplicación</h2>
         <div class="thumbnail"><img src="~/PIKA_PARROT.svg" /></div>
         @if (!string.IsNullOrWhiteSpace(nameUser))
         {
@@ -26,11 +26,11 @@
         <form asp-action="Index">
             <input type="hidden" asp-for="ReturnUrl" />
 
-            <div class="Permisosdenegados">Desmarque los permisos que no desea otorgar.</div>
+            <div class="Permisosdenegados">Desmarque los permisos que no desea otorgar en la aplicación.</div>
             <br />
             @if (Model.IdentityScopes.Any())
             {
-                <div class="Items"> Información personal</div>
+                <div class="Items">Detalle de la información personal</div>
                 <div class="listaConsent">
                     <ul>
                         @foreach (var scope in Model.IdentityScopes)
@@ -59,14 +59,14 @@
             {
                 <label class="recuerdamidesicion">
                     <input asp-for="RememberConsent" />
-                    <b>Recuerda mi decisión</b>
+                    <b>Recuerda la decisión</b>
                 </label>
             }
 
-            <button name="button" value="yes" autofocus>Acceso total </button>
+            <button name="button" value="yes" autofocus>Acceso total a la aplicación</button>
             <br />
             <br />
-            <button name="button" value="no">No permitir</button>
+            <button name="button" value="no">No permitir el acceso a la aplicación</button>
             @if (Model.ClientUrl != null)
             {
                 <a target="_blank" href="@Model.ClientUrl">
