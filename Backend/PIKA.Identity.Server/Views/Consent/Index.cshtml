@@ -7,8 +7,8 @@
     } }
 <div class="formPermisos">
     <div class="informacion">
-        <h2>Los permisos solicitados de la aplicación</h2>
         <div class="thumbnail"><img src="~/PIKA_PARROT.svg" /></div>
+        <h1>Permisos solicitados</h1>
         @if (!string.IsNullOrWhiteSpace(nameUser))
         {
             <div class="nombreConsent"> <b>  @nameUser</b></div>
@@ -59,7 +59,7 @@
             {
                 <label class="recuerdamidesicion">
                     <input asp-for="RememberConsent" />
-                    <b>Recuerda la decisión</b>
+                    <b>Recordar la decisión</b>
                 </label>
             }
 

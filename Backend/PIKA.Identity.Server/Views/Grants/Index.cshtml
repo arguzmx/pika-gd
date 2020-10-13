@@ -6,6 +6,10 @@
     {
         nameUser = Context.User?.GetDisplayName();
     } }
+<div class="container">
+    <a asp-action="Logout" asp-controller="Account">Logout</a>
+    <br />
+</div>
 
 <div class="formPermisos">
     <div class="informacion">
@@ -17,14 +21,13 @@
         }
         @if (Model.Grants.Any() == true)
         {
-            <a asp-action="Logout" asp-controller="Account">Logout</a>
 
+            <div class="thumbnail"><img src="~/PIKA_PARROT.svg" /></div>
 
             <h2>
                 Acceso a la aplicación
             </h2>
             <small>A continuación se muestra la lista de aplicaciones y recursos a los que tienen acceso.</small>
-            <div class="thumbnail"><img src="~/PIKA_PARROT.svg" /></div>
             @if (!string.IsNullOrWhiteSpace(nameUser))
             {
                 <div class="nombre"> <b>  @nameUser</b></div>
