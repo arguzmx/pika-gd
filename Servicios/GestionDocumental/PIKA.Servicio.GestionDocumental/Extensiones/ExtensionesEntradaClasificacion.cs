@@ -23,7 +23,8 @@ namespace PIKA.Servicio.GestionDocumental
                 Posicion = d.Posicion,
                 TipoDisposicionDocumentalId = d.TipoDisposicionDocumentalId,
                 TipoValoracionDocumentalId = d.TipoValoracionDocumentalId,
-                 CuadroClasifiacionId=d.CuadroClasifiacionId
+                CuadroClasifiacionId = d.CuadroClasifiacionId,
+                Descripcion = d.Descripcion
             };
 
           

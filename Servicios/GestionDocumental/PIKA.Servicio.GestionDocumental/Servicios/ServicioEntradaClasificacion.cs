@@ -97,6 +97,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             entity.Id = Guid.NewGuid().ToString();
             entity.Nombre = entity.Nombre.Trim();
             entity.Clave = entity.Clave.Trim();
+            entity.Descripcion = entity.Descripcion.Trim();
             if (!String.IsNullOrEmpty(entity.ElementoClasificacionId))
                 entity.ElementoClasificacionId = entity.ElementoClasificacionId.Trim();
             if (!String.IsNullOrEmpty(entity.CuadroClasifiacionId))
@@ -174,7 +175,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 o.VigenciaTramite = entity.VigenciaTramite;
                 o.Posicion = entity.Posicion;
                 o.TipoDisposicionDocumentalId = entity.TipoDisposicionDocumentalId;
-
+                o.Descripcion = entity.Descripcion.Trim();
                 List<ValoracionEntradaClasificacion> lista = await repoEC.ObtenerAsync(x => x.EntradaClasificacionId.Equals(entity.Id.Trim(), StringComparison.InvariantCultureIgnoreCase));
                 if (entity.TipoValoracionDocumentalId == null) entity.TipoValoracionDocumentalId = new string[0];
 

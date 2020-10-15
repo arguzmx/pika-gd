@@ -95,8 +95,14 @@ namespace PIKA.Modelo.GestorDocumental
         public string ElementoClasificacionId { get; set; }
 
 
-        
-       
+        /// <summary>
+        /// La Descripcion para la entrada del cuandro, generalmente es el contenido de la entrada
+        /// </summary>
+        [Prop(Required: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
+        [ValidString(minlen: 2, maxlen: 1000)]
+        public string Descripcion { get; set; }
+
         /// <summary>
         /// Determina si la entrada del cuadro ha sido eliminada
         /// </summary>
