@@ -11,6 +11,7 @@ namespace PIKA.Modelo.Metadatos
 
         public const string PDF = "pdf";
         public const string EXCEL = "xlsx";
+        public const string WORD = "docx";
         public const string CSV = "csv";
 
         public override string Id { get => base.Id; set => base.Id = value; }
@@ -21,6 +22,7 @@ namespace PIKA.Modelo.Metadatos
 
             lista.Add(new FormatoReporte() { Id = PDF, Nombre = "PDF" });
             lista.Add(new FormatoReporte() { Id = EXCEL, Nombre = "Excel" });
+            lista.Add(new FormatoReporte() { Id = WORD, Nombre = "Word" });
             lista.Add(new FormatoReporte() { Id = CSV, Nombre = "Valores separados por comas" });
 
             return lista;

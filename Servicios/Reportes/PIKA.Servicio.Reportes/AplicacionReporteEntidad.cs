@@ -19,7 +19,12 @@ namespace PIKA.Servicio.Reportes
 
         public List<ModuloAplicacion> ModulosAplicacion()
         {
-            return this.ModulosAplicacionLocales(AplicacionRaiz.APP_ID, MODULO_BASE);
+            return new List<ModuloAplicacion>();
+
+           
+            // ESTE MODULO TAL VEZ NO SEA PUBLICO REVISAR CON AQRUITECTO
+            
+            // this.ModulosAplicacionLocales(AplicacionRaiz.APP_ID, MODULO_BASE);
         }
 
 

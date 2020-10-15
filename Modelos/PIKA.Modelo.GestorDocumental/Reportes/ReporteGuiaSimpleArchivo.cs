@@ -6,16 +6,15 @@ using System.Text;
 
 namespace PIKA.Modelo.GestorDocumental.Reportes
 {
-    public class ReporteCuadroClasificacion : IProveedorReporte
+    public class ReporteGuiaSimpleArchivo : IProveedorReporte
     {
-        private const string nombre = "Cuadro de clasificación";
-        private const string url = "reporte/cuadro/{id}";
-        private const string id = "cuadrodeclasificacion";
-
+        private const string nombre = "Guía simple de archivo";
+        private const string url = "reporte/guiasimple/{id}";
+        private const string id = "guiasimplearchivo";
         private List<ParametroReporte> parametroes ;
         private List<FormatoReporte> formatos;
         
-        public ReporteCuadroClasificacion()
+        public ReporteGuiaSimpleArchivo()
         {
             parametroes = new List<ParametroReporte>();
             formatos = new List<FormatoReporte>();
@@ -27,8 +26,7 @@ namespace PIKA.Modelo.GestorDocumental.Reportes
                 IdContextual = ConstantesModelo.PREFIJO_CONEXTO + "Id"
             });
 
-            
-            formatos.Add(new FormatoReporte() { Id = FormatoReporte.EXCEL, Nombre = "Excel" });
+            formatos.Add(new FormatoReporte() { Id = FormatoReporte.WORD, Nombre = "Word" });
 
             this.Nombre = nombre;
             this.Url = url;
@@ -44,7 +42,7 @@ namespace PIKA.Modelo.GestorDocumental.Reportes
         public string Id { get; set; }
 
         public string Nombre { get; set; }
-        public string Url { get ; set; }
+        public string Url { get; set; }
 
         public List<ParametroReporte> Parametros { get; set; }
 

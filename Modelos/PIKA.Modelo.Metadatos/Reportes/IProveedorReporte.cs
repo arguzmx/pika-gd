@@ -6,6 +6,12 @@ namespace PIKA.Modelo.Metadatos
 {
     public interface IProveedorReporte
     {
+
+        /// <summary>
+        /// Identiicador unico del reporte
+        /// </summary>
+        string Id { get; set; }
+
         /// <summary>
         /// Nombre del reporte
         /// </summary>
@@ -26,6 +32,10 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         List<FormatoReporte> FormatosDisponibles { get; set; }
 
+        /// <summary>
+        /// Identifica si el reporte es de un archivo de JSON
+        /// </summary>
+        bool DatosJson { get; set; }
 
     }
 }
