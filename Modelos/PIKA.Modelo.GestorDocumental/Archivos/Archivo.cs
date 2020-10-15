@@ -8,6 +8,8 @@ using System.Xml.Serialization;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
 using PIKA.Constantes.Aplicaciones.GestorDocumental;
+using System.ComponentModel.DataAnnotations.Schema;
+using PIKA.Modelo.GestorDocumental.Reportes;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -15,7 +17,8 @@ namespace PIKA.Modelo.GestorDocumental
     [Entidad(PaginadoRelacional: false, EliminarLogico: true , 
         TokenMod: ConstantesAppGestionDocumental.MODULO_ARCHIVOS,
         TokenApp: ConstantesAppGestionDocumental.APP_ID)]
-    public class Archivo : Entidad<string>, IEntidadNombrada, IEntidadEliminada, IEntidadRelacionada
+    public class Archivo : Entidad<string>, IEntidadNombrada, IEntidadEliminada, 
+        IEntidadRelacionada, IEntidadReportes
     {
 
         [XmlIgnore]
@@ -35,6 +38,8 @@ namespace PIKA.Modelo.GestorDocumental
             Prestamos = new HashSet<Prestamo>();
             TransferenciasOrigen = new HashSet<Transferencia>();
             TransferenciasDestino = new HashSet<Transferencia>();
+            this.Reportes = new List<IProveedorReporte>();
+            this.Reportes.Add(new ReporteGuiaSimpleArchivo());
         }
 
 
@@ -137,6 +142,11 @@ namespace PIKA.Modelo.GestorDocumental
         [XmlIgnore]
         [JsonIgnore]
         public virtual ICollection<Transferencia> TransferenciasDestino { get; set; }
+
+        [NotMapped]
+        [JsonIgnore]
+        [XmlIgnore]
+        public List<IProveedorReporte> Reportes { get; set; }
 
     }
 }

@@ -174,7 +174,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         /// Obtiene los metadatos relacionados con la entidad Cuadro Clasificacion
         /// </summary>
         /// <returns></returns>
-        [HttpGet("reporte/cc/{id}", Name = "GetReporteCuadroClasificacion")]
+        [HttpGet("reporte/cuadro/{id}", Name = "GetReporteCuadroClasificacion")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<FileResult> GetReporteCuadroClasificacion(string id)
@@ -193,6 +193,8 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             };
             return fileContentResult;
         }
+
+
         /// <summary>
         /// Este metodo  puerga todos los elementos
         /// </summary>

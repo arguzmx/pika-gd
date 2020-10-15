@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Bogus;
+using DocumentFormat.OpenXml.Office.CustomUI;
 using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
@@ -23,8 +24,8 @@ using RepositorioEntidades;
 
 namespace PIKA.Servicio.GestionDocumental.Servicios
 {
-  public  class ServicioEntradaClasificacion : ContextoServicioGestionDocumental,
-        IServicioInyectable, IServicioEntradaClasificacion
+    public class ServicioEntradaClasificacion : ContextoServicioGestionDocumental,
+          IServicioInyectable, IServicioEntradaClasificacion
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
@@ -80,9 +81,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new EXNoEncontrado(entity.ElementoClasificacionId);
             if (!await Existelemento(x => x.Id == entity.ElementoClasificacionId))
                 throw new EXNoEncontrado(entity.ElementoClasificacionId);
-            if(!String.IsNullOrEmpty( entity.TipoDisposicionDocumentalId))
-            if (!await ExisteTipoDisposicionDocumental(x => x.Id == entity.TipoDisposicionDocumentalId))
-                throw new ExErrorRelacional(entity.TipoDisposicionDocumentalId);
+            if (!String.IsNullOrEmpty(entity.TipoDisposicionDocumentalId))
+                if (!await ExisteTipoDisposicionDocumental(x => x.Id == entity.TipoDisposicionDocumentalId))
+                    throw new ExErrorRelacional(entity.TipoDisposicionDocumentalId);
             if (!await ExisteCC(x => x.Id == entity.CuadroClasifiacionId))
                 throw new ExErrorRelacional(entity.CuadroClasifiacionId);
             if (await Existe(x => x.Clave.Equals(entity.Clave.Trim(),
@@ -92,12 +93,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                 throw new ExElementoExistente(entity.Clave.Trim());
             }
-            
+
             entity.Id = Guid.NewGuid().ToString();
-           entity.Nombre= entity.Nombre.Trim();
-            entity.Clave=entity.Clave.Trim();
-            if(!String.IsNullOrEmpty(entity.ElementoClasificacionId))
-                entity.ElementoClasificacionId =entity.ElementoClasificacionId.Trim();
+            entity.Nombre = entity.Nombre.Trim();
+            entity.Clave = entity.Clave.Trim();
+            if (!String.IsNullOrEmpty(entity.ElementoClasificacionId))
+                entity.ElementoClasificacionId = entity.ElementoClasificacionId.Trim();
             if (!String.IsNullOrEmpty(entity.CuadroClasifiacionId))
                 entity.CuadroClasifiacionId = entity.CuadroClasifiacionId.Trim();
             if (!String.IsNullOrEmpty(entity.TipoDisposicionDocumentalId))
@@ -105,15 +106,15 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             await this.repo.CrearAsync(entity);
 
 
-            if(entity.TipoValoracionDocumentalId != null 
+            if (entity.TipoValoracionDocumentalId != null
                 && entity.TipoValoracionDocumentalId.Length > 0)
             {
 
 
-                foreach(string id in entity.TipoValoracionDocumentalId)
+                foreach (string id in entity.TipoValoracionDocumentalId)
                 {
-                    var tipo = repoTEC.UnicoAsync(x => x.Id.Equals(id.Trim(), StringComparison.InvariantCultureIgnoreCase) );
-                    if( tipo != null)
+                    var tipo = repoTEC.UnicoAsync(x => x.Id.Equals(id.Trim(), StringComparison.InvariantCultureIgnoreCase));
+                    if (tipo != null)
                     {
                         ValoracionEntradaClasificacion vec = new ValoracionEntradaClasificacion()
                         {
@@ -132,114 +133,85 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<bool> Existelemento(Expression<Func<ElementoClasificacion, bool>> predicadoelemento)
         {
-            List<ElementoClasificacion> l = await this.repoEL.ObtenerAsync(predicadoelemento);
-
-            if (l.Count() == 0) { return false; }
-            foreach (ElementoClasificacion item in l)
-            {
-                await ioCuadroClasificacion.EliminarCuadroCalsificacionExcel(item.CuadroClasifiacionId, ConfiguracionServidor.ruta_cache_fisico, ConfiguracionServidor.separador_ruta);
-
-            }
-           
-
-            return true;
+            return (await this.repoEL.UnicoAsync(predicadoelemento)) == null ? false : true ;
         }
+
+
         public async Task<bool> ExisteTipoDisposicionDocumental(Expression<Func<TipoDisposicionDocumental, bool>> predicadoelemento)
         {
-            List<TipoDisposicionDocumental> l = await this.repoTD.ObtenerAsync(predicadoelemento);
-            if (l.Count() == 0) return false;
-            return true;
+            return (await this.repoTD.UnicoAsync(predicadoelemento)) == null ? false : true;
         }
-        
+
 
         public async Task ActualizarAsync(EntradaClasificacion entity)
         {
-            EntradaClasificacion o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
-
-            if (o == null)
+            try
             {
-                throw new EXNoEncontrado(entity.Id);
-            }
-            if (await Existelemento(x=>x.Id==entity.ElementoClasificacionId && x.Eliminada==true))
+
+                EntradaClasificacion o = await this.repo.UnicoAsync(x => x.Id == entity.Id && x.Eliminada == false);
+
+                if (!(await Existelemento(x => x.Id == entity.ElementoClasificacionId && 
+                        x.Eliminada == false)))
                     throw new EXNoEncontrado(entity.ElementoClasificacionId);
-           if(!await Existelemento(x => x.Id == entity.ElementoClasificacionId))
-                throw new EXNoEncontrado(entity.ElementoClasificacionId);
-            if (!String.IsNullOrEmpty(entity.TipoDisposicionDocumentalId))
-            if (!await ExisteTipoDisposicionDocumental(x => x.Id == entity.TipoDisposicionDocumentalId))
-                throw new ExErrorRelacional(entity.TipoDisposicionDocumentalId);
-            if (!await ExisteCC(x => x.Id == entity.CuadroClasifiacionId))
-                throw new ExErrorRelacional(entity.CuadroClasifiacionId);
-            if (await Existe(x =>x.Id != entity.Id 
-          && x.Clave.Equals(entity.Clave.Trim(),StringComparison.InvariantCultureIgnoreCase)
-          && x.Eliminada != true
-          && x.ElementoClasificacionId == entity.ElementoClasificacionId
-                ))
-            {
-                throw new ExElementoExistente(entity.Clave);
-            }
-            
-            o.Nombre = entity.Nombre.Trim();
-            o.Eliminada = entity.Eliminada;
-            o.Clave = entity.Clave.Trim();
-            o.DisposicionEntrada = entity.DisposicionEntrada;
-            o.VigenciaConcentracion = entity.VigenciaConcentracion;
-            o.VigenciaTramite = entity.VigenciaTramite;
-            o.Posicion = entity.Posicion;
-            
-            if(!String.IsNullOrEmpty(entity.TipoDisposicionDocumentalId))
-                o.TipoDisposicionDocumentalId = entity.TipoDisposicionDocumentalId.Trim();
 
-            UDT.Context.Entry(o).State = EntityState.Modified;
-            UDT.SaveChanges();
+                if (!(await ExisteTipoDisposicionDocumental(x => x.Id == entity.TipoDisposicionDocumentalId)))
+                        throw new ExErrorRelacional(entity.TipoDisposicionDocumentalId);
 
-            List<ValoracionEntradaClasificacion> lista = await repoEC.ObtenerAsync(x => x.EntradaClasificacionId.Equals( entity.Id.Trim() , StringComparison.InvariantCultureIgnoreCase));
+        
+                if (await Existe(x => x.Id != entity.Id
+                    && x.Clave.Equals(entity.Clave.Trim(), StringComparison.InvariantCultureIgnoreCase)
+                    && x.Eliminada == false
+                    && x.ElementoClasificacionId == entity.ElementoClasificacionId
+                    ))
+                {
+                    throw new ExElementoExistente(entity.Clave);
+                }
 
-            if (entity.TipoValoracionDocumentalId != null
-                && entity.TipoValoracionDocumentalId.Length > 0)
-            {
+                o.Nombre = entity.Nombre.Trim();
+                o.Clave = entity.Clave.Trim();
+                o.DisposicionEntrada = entity.DisposicionEntrada;
+                o.VigenciaConcentracion = entity.VigenciaConcentracion;
+                o.VigenciaTramite = entity.VigenciaTramite;
+                o.Posicion = entity.Posicion;
+                o.TipoDisposicionDocumentalId = entity.TipoDisposicionDocumentalId;
+
+                List<ValoracionEntradaClasificacion> lista = await repoEC.ObtenerAsync(x => x.EntradaClasificacionId.Equals(entity.Id.Trim(), StringComparison.InvariantCultureIgnoreCase));
+                if (entity.TipoValoracionDocumentalId == null) entity.TipoValoracionDocumentalId = new string[0];
 
                 // Añade las faltantes
                 foreach (string id in entity.TipoValoracionDocumentalId)
                 {
-                    var tipo = repoTEC.UnicoAsync(x => x.Id.Equals(id.Trim(), StringComparison.InvariantCultureIgnoreCase));
-                    if (tipo != null)
+                    if (!(lista.Where(x => x.TipoValoracionDocumentalId == id).Any()))
                     {
-
-                    }
-                    
-                    if ((await repoEC.ObtenerAsync(x=>
-                        x.TipoValoracionDocumentalId.Equals(id.Trim(), StringComparison.InvariantCultureIgnoreCase)
-                        && x.EntradaClasificacionId.Equals(entity.Id.Trim(), StringComparison.InvariantCultureIgnoreCase)))
-                        .Count() == 0)
-                    {
-
-                            ValoracionEntradaClasificacion vec = new ValoracionEntradaClasificacion()
-                            {
-                                EntradaClasificacionId = entity.Id,
-                                TipoValoracionDocumentalId = id.Trim()
-                            };
-                            await repoEC.CrearAsync(vec);
-                        UDT.SaveChanges();
+                        ValoracionEntradaClasificacion vec = new ValoracionEntradaClasificacion()
+                        {
+                            EntradaClasificacionId = entity.Id,
+                            TipoValoracionDocumentalId = id.Trim()
+                        };
+                        await repoEC.CrearAsync(vec);
                     }
                 }
-            } else
-            {
-                entity.TipoValoracionDocumentalId = new string [0];
-            }
 
-            List<string> elementos = entity.TipoValoracionDocumentalId.ToList();
-            foreach (var item in lista)
-            {
-                if (elementos.IndexOf(item.TipoValoracionDocumentalId) < 0)
+                // remueve los sobrantes
+                foreach (var item in lista)
                 {
-
-                    UDT.Context.Entry(item).State = EntityState.Deleted;
+                    if (entity.TipoValoracionDocumentalId.IndexOf(item.TipoValoracionDocumentalId) < 0)
+                    {
+                        UDT.Context.Entry(item).State = EntityState.Deleted;
+                    }
                 }
-            }
-            UDT.SaveChanges();
 
+                UDT.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.ToString());
+                throw;
+            }
 
         }
+
         private Consulta GetDefaultQuery(Consulta query)
         {
             if (query != null)
@@ -282,9 +254,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
-            foreach(var item in respuesta.Elementos)
+            foreach (var item in respuesta.Elementos)
             {
-                item.TipoValoracionDocumentalId = await ObtieneValoracionDocumental(item); 
+                item.TipoValoracionDocumentalId = await ObtieneValoracionDocumental(item);
             }
             return respuesta;
         }
@@ -293,7 +265,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             var l = await repoEC.ObtenerAsync(x => x.EntradaClasificacionId.Equals(item.Id, StringComparison.InvariantCultureIgnoreCase));
             item.TipoValoracionDocumentalId = new string[l.Count];
-            for(int i=0; i < l.Count; i++)
+            for (int i = 0; i < l.Count; i++)
             {
                 item.TipoValoracionDocumentalId[i] = l[i].TipoValoracionDocumentalId;
             }
@@ -337,7 +309,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
                 Nombre = Nombre + " restaurado " + DateTime.Now.Ticks;
             }
-            else {
+            else
+            {
             }
             await Existelemento(x => x.Id == ElementoCuadroClasificacionId && x.Eliminada == true);
 
@@ -374,8 +347,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return c.Copia();
         }
 
-      
-        
+
+
         public Task<List<EntradaClasificacion>> ObtenerAsync(Expression<Func<EntradaClasificacion, bool>> predicado)
         {
             return this.repo.ObtenerAsync(predicado);
@@ -398,7 +371,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
 
 
-            var resultados =  await this.repo.ObtenerAsync(x => x.Eliminada == false  && ( x.Nombre.Contains(buscado) || x.Clave.Contains(buscado)));
+            var resultados = await this.repo.ObtenerAsync(x => x.Eliminada == false && (x.Nombre.Contains(buscado) || x.Clave.Contains(buscado)));
 
             List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
             {
@@ -426,18 +399,18 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<ICollection<string>> Purgar()
         {
-            List<EntradaClasificacion> ListaEntrada = await this.repo.ObtenerAsync(x=>x.Eliminada==true).ConfigureAwait(false);
+            List<EntradaClasificacion> ListaEntrada = await this.repo.ObtenerAsync(x => x.Eliminada == true).ConfigureAwait(false);
 
-            if (ListaEntrada.Count > 0) 
+            if (ListaEntrada.Count > 0)
             {
-                 ServicioValoracionEntradaClasificacion servaloracion = new ServicioValoracionEntradaClasificacion(this.proveedorOpciones,LoggerValorarion,Config);
+                ServicioValoracionEntradaClasificacion servaloracion = new ServicioValoracionEntradaClasificacion(this.proveedorOpciones, LoggerValorarion, Config);
 
-                ServicioActivo sa = new ServicioActivo(cache,this.proveedorOpciones,loggerServicioActivo,Config);
+                ServicioActivo sa = new ServicioActivo(cache, this.proveedorOpciones, loggerServicioActivo, Config);
 
-                ServicioEstadisticaClasificacionAcervo servicioEstadistica = new ServicioEstadisticaClasificacionAcervo(this.proveedorOpciones,Config,logger);
+                ServicioEstadisticaClasificacionAcervo servicioEstadistica = new ServicioEstadisticaClasificacionAcervo(this.proveedorOpciones, Config, logger);
 
                 List<Activo> l = await sa.ObtenerAsync(x => x.EntradaClasificacionId.Contains(ListaEntrada.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
-                await sa.Eliminar(l.Select(x=>x.Id).ToArray()).ConfigureAwait(false);
+                await sa.Eliminar(l.Select(x => x.Id).ToArray()).ConfigureAwait(false);
                 await sa.EliminarActivos((await sa.Purgar().ConfigureAwait(false)).ToArray());
                 await servaloracion.EliminarEntradas(IdsEliminar(ListaEntrada.Select(x => x.Id).ToArray())).ConfigureAwait(false);
                 await servicioEstadistica.EliminarEstadisticos(3, ListaEntrada.Select(x => x.Id).ToArray()).ConfigureAwait(false);
@@ -447,7 +420,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
             return await EliminarEntrada(ListaEntrada.Select(x => x.Id).ToArray()).ConfigureAwait(false);
         }
-        private async Task<ICollection<string>> EliminarEntrada(string [] ids) 
+        private async Task<ICollection<string>> EliminarEntrada(string[] ids)
         {
             EntradaClasificacion c;
             ICollection<string> listaEliminados = new HashSet<string>();
@@ -463,7 +436,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.SaveChanges();
             return listaEliminados;
         }
-        private string[] IdsEliminar(string[]ids) 
+        private string[] IdsEliminar(string[] ids)
         {
             return ids;
         }
@@ -494,9 +467,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
 
 
-        
 
-     
+
+
 
         public Task<IPaginado<EntradaClasificacion>> ObtenerPaginadoAsync(Expression<Func<EntradaClasificacion, bool>> predicate = null, Func<IQueryable<EntradaClasificacion>, IOrderedQueryable<EntradaClasificacion>> orderBy = null, Func<IQueryable<EntradaClasificacion>, IIncludableQueryable<EntradaClasificacion, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
         {

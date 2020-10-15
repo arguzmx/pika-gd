@@ -6,7 +6,8 @@ using System.Linq;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
-
+using System.Drawing.Text;
+using System.Runtime.CompilerServices;
 
 namespace PIKA.Infraestrctura.Reportes
 {
@@ -38,14 +39,51 @@ namespace PIKA.Infraestrctura.Reportes
 
             if (total > 0)
             {
+
+                // Elimina el identificador de la tabla en la celda cero
+                var r0 = t.OfType<TableRow>().ElementAt(1);
+                List<TableCell> celdas = r0.Descendants<TableCell>().ToList();
+                for (int i = 0; i < celdas.Count; i++)
+                {
+                    List<Paragraph> parrafos = celdas[i].OfType<Paragraph>().ToList();
+                    if (i == 0)
+                    {
+                        int pindex = parrafos.Count - 1;
+                        int rindex = 0;
+                        int tindex = 0;
+                        string texto0 = celdas[i].InnerText.Replace($"*{TablaId}", "");
+
+                        parrafos.ForEach(pp =>
+                        {
+                            List<Run> runs = pp.OfType<Run>().ToList();
+                            rindex = runs.Count - 1;
+                            runs.ForEach(u => {
+                                List<Text> textos = u.OfType<Text>().ToList();
+                                textos.ForEach(t =>
+                                {
+                                    tindex = textos.Count - 1;
+                                    t.Text = "";
+                                });
+                            });
+
+                        });
+
+                        var runs = parrafos[pindex].OfType<Run>().ToList();
+                        var text = runs[rindex].OfType<Text>().ToList();
+                        text[tindex].Text = texto0;
+
+                    }
+                }
+
+
                 var clon = (TableRow)t.OfType<TableRow>().ElementAt(1).Clone();
-                // ontiene los tokens de cada renglon
-                List<TableCell> celdas = clon.Descendants<TableCell>().ToList();
+                // ontiene los tokens de cada  celda en el renglon
+                celdas = clon.Descendants<TableCell>().ToList();
                 List<TokensCelda> alltokens = new List<TokensCelda>();
                 for (int i = 0; i < celdas.Count; i++)
                 {
                     List<Paragraph> parrafos = celdas[i].OfType<Paragraph>().ToList();
-                    for (int j = 0; j < parrafos.Count; j++)
+                    for (int j = 0; j < parrafos.Count; j++) 
                     {
                         string texto = parrafos[j].InnerText;
                         if (!string.IsNullOrEmpty(texto))
@@ -58,7 +96,7 @@ namespace PIKA.Infraestrctura.Reportes
                         }
                     }
                 }
-
+                
 
                 // Inserta los renglones restantes
                 for (int i = 0; i < (total - 1); i++)
@@ -489,6 +527,37 @@ namespace PIKA.Infraestrctura.Reportes
 
         #endregion
 
+
+        /// <summary>
+        /// Devuelve el documento .docx medificdo en base a los parámetros recibidos
+        /// </summary>
+        /// <param name="plantilla">arreglo de bytes con el contenido worsx</param>
+        /// <param name="propiedesJson">texto json para el llenado del reporte</param>
+        /// <param name="rutaTemporales">ruta al directorio de temporales</param>
+        /// <param name="eliminarTemporal">elimina el archivo tempral automa´ticamente</param>
+        /// <returns></returns>
+        public static byte[] ReportePlantilla(byte[] plantilla,
+            string propiedesJson, string rutaTemporales, bool eliminarTemporal = true)
+        {
+
+            string ArchivoTemporal = Path.Combine(rutaTemporales, $"{System.Guid.NewGuid().ToString()}.docx");
+            File.WriteAllBytes(ArchivoTemporal, plantilla);
+            var result = ReportePlantilla(ArchivoTemporal, propiedesJson, rutaTemporales, eliminarTemporal);
+
+            if (eliminarTemporal)
+            {
+                if (File.Exists(ArchivoTemporal))
+                {
+                    File.Delete(ArchivoTemporal);
+                }
+            }
+
+            return result;
+
+            
+        }
+
+
         /// <summary>
         /// Devuelve el documento .docx medificdo en base a los parámetros recibidos
         /// </summary>
@@ -500,6 +569,7 @@ namespace PIKA.Infraestrctura.Reportes
         public static byte[] ReportePlantilla(string rutaPlantilla,
             string propiedesJson, string rutaTemporales, bool eliminarTemporal = true)
         {
+
             if (!File.Exists(rutaPlantilla)) throw new Exception("Plantilla inexistente");
 
             dynamic objeto = JsonConvert.DeserializeObject(propiedesJson);
@@ -551,21 +621,71 @@ namespace PIKA.Infraestrctura.Reportes
 
                 b.OfType<Table>().ToList().ForEach(t =>
                 {
-                    t.OfType<TableProperties>().ToList().ForEach(tp =>
+                    bool tablaEntidades = false;
+                    // VErifica si l atabla tiene 2 renglones
+                    if (t.OfType<TableRow>().Count() == 2)
                     {
-                        tp.OfType<TableCaption>().ToList().ForEach(tc =>
+                        var clon = (TableRow)t.OfType<TableRow>().ElementAt(1).Clone();
+                        List<TableCell> celdas = clon.Descendants<TableCell>().ToList();
+                        // y si la primera celda tiene com oinicio el caracters especial *
+                        if (celdas[0].InnerText.StartsWith("*"))
                         {
-                            if (objeto[tc.Val] != null)
+                            string clave = celdas[0].InnerText.TrimStart('*').Split('#')[0];
+                            
+                            if (objeto[clave] != null)
                             {
-                                if (objeto[tc.Val] is JArray)
+                                if (objeto[clave] is JArray)
                                 {
-                                    t = ProcesaTabla(t, tc.Val, objeto);
+                                    tablaEntidades = true;
+                                    t = ProcesaTabla(t, clave, objeto);
                                 }
 
                             }
-                        });
+                            
+                        }
                     }
-                        );
+
+                    // Si no es una tabla de entidades
+                    if (!tablaEntidades)
+                    {
+                        t.OfType<TableRow>().ToList().ForEach(r =>
+                       {
+                           r.OfType<TableCell>().ToList().ForEach(c=>
+                           {
+                               List<Paragraph> parrafos = c.OfType<Paragraph>().ToList();
+                               for (int i = 0; i < parrafos.Count; i++)
+                               {
+                                   string texto = parrafos[i].InnerText;
+                                   if (!string.IsNullOrEmpty(texto))
+                                   {
+                                       List<string> l = ObtieneTokens(texto);
+                                       if (l.Count > 0)
+                                       {
+                                           foreach (string s in l)
+                                           {
+
+                                               if (s.EsTokenTexto())
+                                               {
+                                                   var x = ReemplazaToken(parrafos[i], s, objeto);
+                                                   parrafos[i].InnerXml = x.InnerXml;
+                                               }
+
+                                               if (s.EsCodigo1D())
+                                               {
+                                                   procesaCodigoLineal(s, objeto, rutaTemporales, doc, parrafos[i]);
+                                               }
+
+                                               if (s.EsCodigo2D())
+                                               {
+                                                   procesaCodigoQR(s, objeto, rutaTemporales, doc, parrafos[i]);
+                                               }
+                                           }
+                                       }
+                                   }
+                               }
+                           });
+                       });
+                    }
                 });
 
                 doc.Save();

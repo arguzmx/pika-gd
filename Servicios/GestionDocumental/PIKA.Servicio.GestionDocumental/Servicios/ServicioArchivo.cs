@@ -1,21 +1,26 @@
 ﻿using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using LazyCache;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PIKA.Infraestrctura.Reportes;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.GestorDocumental;
+using PIKA.Modelo.GestorDocumental.Reportes.JSON;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.GestionDocumental.Interfaces;
+using PIKA.Servicio.Reportes.Interfaces;
+using PIKA.Servicio.Reportes.Servicios;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,16 +36,22 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<TipoArchivo> repoTA;
         private ILogger<ServicioHistorialArchivoActivo> loggerHistorial;
         private ILogger<ServicioActivo> loggerActivo;
-        IOptions<ConfiguracionServidor> Config;
+        private IOptions<ConfiguracionServidor> Config;
         private readonly IAppCache cache;
         private ILogger<ServicioPrestamo> loggerPrestamo;
         private ILogger<ServicioCuadroClasificacion> loggerCC;
+        private IServicioReporteEntidad ServicioReporteEntidad;
 
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
-        public ServicioArchivo(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioArchivo> Logger) : base(proveedorOpciones, Logger)
+        public ServicioArchivo(
+            IServicioReporteEntidad ServicioReporteEntidad,
+            IOptions<ConfiguracionServidor> Config,
+            IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
+            ILogger<ServicioArchivo> Logger) : base(proveedorOpciones, Logger)
         {
+            this.ServicioReporteEntidad = ServicioReporteEntidad;
+            this.Config = Config;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Archivo>(new QueryComposer<Archivo>());
             this.repoTA = UDT.ObtenerRepositoryAsync<TipoArchivo>(new QueryComposer<TipoArchivo>());
@@ -323,6 +334,68 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return listaEliminados;
 
         }
+
+
+        /// <summary>
+        /// Crea el reporte de guía simple de archivo
+        /// </summary>
+        /// <param name="ArchivoId">Identificador del archivo para el reporte</param>
+        /// <returns></returns>
+        public async Task<byte[]> ReporteGuiaSimpleArchivo(string ArchivoId)
+        {
+
+            GuiaSimpleArchivo g = new GuiaSimpleArchivo
+            {
+                Archivo = await repo.UnicoAsync(x => x.Id == ArchivoId)
+            };
+
+            if (g.Archivo == null) throw new EXNoEncontrado(ArchivoId);
+
+            var r = await ServicioReporteEntidad.UnicoAsync(x => x.Id == "guiasimplearchivo");
+            if (r == null) throw new EXNoEncontrado("reporte: guiasimplearchivo");
+
+            IRepositorioAsync<EstadisticaClasificacionAcervo> repoestadistica 
+                = UDT.ObtenerRepositoryAsync<EstadisticaClasificacionAcervo>(new QueryComposer<EstadisticaClasificacionAcervo>()); ;
+            
+            IRepositorioAsync<EntradaClasificacion> repoentradas
+                = UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>()); ;
+
+            //Lista de estadistica
+            var estadistica = await repoestadistica.ObtenerAsync(x => x.ArchivoId == ArchivoId);
+
+            // Ontiene las entradas para llenar el reporte
+            var cuadros = estadistica.Select(x => x.CuadroClasificacionId).Distinct();
+            List<EntradaClasificacion> entradas = new List<EntradaClasificacion>();
+            foreach (string id in cuadros)
+            {
+                entradas.AddRange(
+                    await repoentradas.ObtenerAsync(x => x.CuadroClasifiacionId == id 
+                    && x.Eliminada == false));
+            }
+
+            // Añade las entradas al reporte con la cantidad adecuada
+            entradas = entradas.OrderBy(x => x.CuadroClasifiacionId).ThenBy(x => x.Posicion).ToList();
+            entradas.ForEach(e =>
+            {
+                var entrada = estadistica.Where(x => x.EntradaClasificacionId == e.Id).SingleOrDefault();
+                int cantidad = entrada == null? 0: entrada.ConteoActivos;
+                g.Elementos.Add(new ElementoGuiaSimpleArchivo()
+                {
+                    Cantidad = cantidad,
+                    Clave = e.Clave,
+                    Nombre = e.Nombre,
+                    Descripcion = "",
+                    FechaMaximaCierre = "",
+                    FechaMinimaApertura = ""
+                });
+            });
+
+            string jsonString = JsonSerializer.Serialize(g);
+
+            byte[] data = Convert.FromBase64String(r.Plantilla);
+
+            return ReporteEntidades.ReportePlantilla( data , jsonString, Config.Value.ruta_cache_fisico, true);
+        } 
 
         #region Sin Implementación
         public Task<IPaginado<Archivo>> ObtenerPaginadoAsync(Expression<Func<Archivo, bool>> predicate = null, Func<IQueryable<Archivo>, IOrderedQueryable<Archivo>> orderBy = null, Func<IQueryable<Archivo>, IIncludableQueryable<Archivo, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)

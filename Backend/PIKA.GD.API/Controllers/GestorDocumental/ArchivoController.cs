@@ -226,5 +226,25 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         }
 
 
+        [HttpGet("reporte/guiasimple/{id}", Name = "GetReporteguiasimple")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<FileResult> GetReporteguiasimple(string id)
+        {
+
+            byte[] bytes = await servicioArchivo.ReporteGuiaSimpleArchivo(id).ConfigureAwait(false);
+            var archivo = await servicioArchivo.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+
+            const string contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            HttpContext.Response.ContentType = contentType;
+            HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+
+            var fileContentResult = new FileContentResult(bytes, contentType)
+            {
+                FileDownloadName = $"Guia simplie archivo {archivo.Nombre}.docx"
+            };
+            return fileContentResult;
+        }
+
     }
 }

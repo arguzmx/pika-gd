@@ -12,5 +12,7 @@ namespace PIKA.Servicio.GestionDocumental.Interfaces
     {
         Task<ICollection<string>> Purgar();
 
+        Task<byte[]> ReporteGuiaSimpleArchivo(string ArchivoId);
+
     }
 }
