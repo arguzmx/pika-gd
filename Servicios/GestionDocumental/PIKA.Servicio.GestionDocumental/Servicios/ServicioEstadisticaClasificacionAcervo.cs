@@ -63,6 +63,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 Estadistica.EntradaClasificacionId = EntradaCuadroId;
                 Estadistica.ArchivoId = ArchivoId;
                 Estadistica.ConteoActivos = Cantidad;
+                Estadistica.FechaMinApertura = await ObtenerFechasMinMax(ArchivoId, true);
+                if (await ObtenerFechasMinMax(ArchivoId, false) > DateTime.MinValue)
+                    Estadistica.FechaMaxCierre = await ObtenerFechasMinMax(ArchivoId, false);
                 await this.repo.CrearAsync(Estadistica);
             }
             else
@@ -89,6 +92,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 eca.ConteoActivos = TotalActivos;
                 TotalActivos= eca.ConteoActivosEliminados + Cantidad;
                 eca.ConteoActivosEliminados = TotalActivos;
+                eca.FechaMinApertura = await ObtenerFechasMinMax(ArchivoId, true);
+                if (await ObtenerFechasMinMax(ArchivoId, false) > DateTime.MinValue)
+                    eca.FechaMaxCierre = await ObtenerFechasMinMax(ArchivoId, false);
             }
 
             UDT.Context.Entry(eca).State = EntityState.Modified;
@@ -113,12 +119,25 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                     TotalActivos = 0;
 
               eca.ConteoActivosEliminados =TotalActivos;
+                eca.FechaMinApertura = await ObtenerFechasMinMax(ArchivoId, true);
+                if (await ObtenerFechasMinMax(ArchivoId, false) > DateTime.MinValue)
+                    eca.FechaMaxCierre = await ObtenerFechasMinMax(ArchivoId, false);
             }
 
             UDT.Context.Entry(eca).State = EntityState.Modified;
             UDT.SaveChanges();
 
             return eca.ConteoActivos;
+        }
+        private async Task<DateTime> ObtenerFechasMinMax(string ArchivoId,bool FechaInicio) 
+        {
+            DateTime fecha;
+            List<Activo> ListaActivosArchivoID = await this.repoActivo.ObtenerAsync(x=>x.ArchivoId.Equals(ArchivoId,StringComparison.InvariantCultureIgnoreCase)&& x.Eliminada==false);
+            if (FechaInicio)
+                fecha = ListaActivosArchivoID.Min(x => x.FechaApertura);
+            else
+                fecha = ListaActivosArchivoID.Max(x => x.FechaCierre).GetValueOrDefault();
+            return fecha;
         }
         public async Task ActualizarConteo(string ArchivoId)
         {
@@ -129,7 +148,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 (x => new { x.ArchivoId, x.EntradaClasificacionId,x.Eliminada })
                 .Select(y => new { ARchivoID = y.Key.ArchivoId, EntradaID = y.Key.EntradaClasificacionId,
                     estatus=y.Key.Eliminada,TotalActivos = y.ToList().Count() }).ToList();
-            
             foreach (var m in listaActivos)
             {
                 EntradaClasificacionId = m.EntradaID;
@@ -138,6 +156,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 else
                     TotalActivos = Convert.ToInt32(m.TotalActivos);
             }
+           
+               
+
             EntradaClasificacion ec = await this.repoEntradaClasificacion.UnicoAsync(x=>x.Id.Equals(EntradaClasificacionId,StringComparison.InvariantCultureIgnoreCase));
             EstadisticaClasificacionAcervo eca = await this.repo.UnicoAsync(x=>x.CuadroClasificacionId.Equals(ec.CuadroClasifiacionId,StringComparison.InvariantCultureIgnoreCase)
             && x.ArchivoId.Equals(ArchivoId,StringComparison.InvariantCultureIgnoreCase) && x.EntradaClasificacionId.Equals(EntradaClasificacionId,StringComparison.InvariantCultureIgnoreCase));
@@ -150,12 +171,18 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 e.CuadroClasificacionId = ec.CuadroClasifiacionId;
                 e.ConteoActivos = TotalActivos;
                 e.ConteoActivosEliminados = TotalActivosEliminados;
+                e.FechaMinApertura =await ObtenerFechasMinMax(ArchivoId,true);
+                if(await ObtenerFechasMinMax(ArchivoId, false)>DateTime.MinValue)
+                e.FechaMaxCierre = await ObtenerFechasMinMax(ArchivoId, false);
                 await this.repo.CrearAsync(e);
             }
             else
             {
                 eca.ConteoActivos = TotalActivos;
                 eca.ConteoActivosEliminados = TotalActivosEliminados;
+                eca.FechaMinApertura = await ObtenerFechasMinMax(ArchivoId, true);
+                if (await ObtenerFechasMinMax(ArchivoId, false) > DateTime.MinValue)
+                    eca.FechaMaxCierre = await ObtenerFechasMinMax(ArchivoId, false);
                 UDT.Context.Entry(eca).State = EntityState.Modified;
             }
             

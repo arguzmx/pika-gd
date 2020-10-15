@@ -96,6 +96,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             entity = await ValidarActivos(entity, true);
             UDT.Context.Entry(entity).State = EntityState.Modified;
             UDT.SaveChanges();
+            await this.AdministracionEstadisticas(entity.ArchivoId, entity.EntradaClasificacionId, 1, 4);
+
         }
 
         private Consulta GetDefaultQuery(Consulta query)
@@ -394,6 +396,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 await sevEstadisticas.RegistroEliminado(ArchivoId, ec.CuadroClasifiacionId, EntradaClasificacionId, cantidad);
             if(metodo==3)
                 await sevEstadisticas.RegistroRestaurado(ArchivoId, ec.CuadroClasifiacionId, EntradaClasificacionId, cantidad);
+            if(metodo==4)
+                await sevEstadisticas.ActualizarConteo(ArchivoId);
+
 
         }
         private async Task ActualizarConteo(string[] ids, bool eliminado) 

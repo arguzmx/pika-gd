@@ -38,7 +38,14 @@ namespace PIKA.Modelo.GestorDocumental
         /// Cantidad de activos marcados como eliminados que pertenecen al archivo
         /// </summary>
         public int ConteoActivosEliminados { get; set; }
-
+        /// <summary>
+        /// Fecha de minima de apertura del activo del archivo
+        /// </summary>
+        public DateTime? FechaMinApertura { get; set; }
+        /// <summary>
+        /// Fecha de máxima de cierre del activo del archivo
+        /// </summary>
+        public DateTime? FechaMaxCierre { get; set; }
         [XmlIgnore]
         [JsonIgnore]
         public Archivo Archivo { get; set; }

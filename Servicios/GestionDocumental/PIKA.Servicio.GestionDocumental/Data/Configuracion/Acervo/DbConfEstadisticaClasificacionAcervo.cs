@@ -20,6 +20,8 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.EntradaClasificacionId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.ConteoActivos).IsRequired();
             builder.Property(x => x.ConteoActivosEliminados).IsRequired();
+            builder.Property(x => x.FechaMinApertura).IsRequired(false);
+            builder.Property(x => x.FechaMaxCierre).IsRequired(false);
 
 
         }
