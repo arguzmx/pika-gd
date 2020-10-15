@@ -26,6 +26,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.VigenciaTramite).IsRequired();
             builder.Property(x => x.Eliminada).HasDefaultValue(false).IsRequired();
             builder.Property(x => x.VigenciaConcentracion).IsRequired();
+            builder.Property(x=>x.Descripcion).IsRequired(false);
 
             builder.Ignore(x => x.NombreCompleto);
 

@@ -19,6 +19,7 @@ namespace PIKA.Modelo.GestorDocumental.Validadores
             RuleFor(x=>x.Posicion).GreaterThanOrEqualTo(0);
             RuleFor(x=>x.VigenciaTramite).GreaterThanOrEqualTo(0);
             RuleFor(x=>x.VigenciaConcentracion).GreaterThanOrEqualTo(0);
+            RuleFor(x=>x.Descripcion).MaximumLength(1000);
         }
     }
 }
