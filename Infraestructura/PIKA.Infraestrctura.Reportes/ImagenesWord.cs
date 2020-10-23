@@ -23,7 +23,7 @@ namespace PIKA.Infraestrctura.Reportes
 
         public static void InsertaImagen(WordprocessingDocument wpd,
             OpenXmlElement parent,
-            string ruta, int ancho, int alto)
+            string ruta, int ancho, int alto, bool delete)
         {
             string relationId = AddGraph(wpd, ruta);
             if (!string.IsNullOrEmpty(relationId))
@@ -87,6 +87,17 @@ namespace PIKA.Infraestrctura.Reportes
                     });
 
                 parent.Append(draw);
+
+                if(delete)
+                {
+                    try
+                    {
+                        File.Delete(ruta);
+                    }
+                    catch (System.Exception)
+                    {
+                    }
+                }
             }
         }
 

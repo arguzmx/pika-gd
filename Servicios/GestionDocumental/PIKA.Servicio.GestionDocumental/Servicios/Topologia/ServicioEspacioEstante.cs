@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.GestorDocumental.Topologia;
 using PIKA.Servicio.GestionDocumental.Data;
@@ -28,7 +29,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<EspacioEstante> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
-        public ServicioEspacioEstante(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, ILogger<ServicioCuadroClasificacion> Logger) : base(proveedorOpciones,Logger)
+        public ServicioEspacioEstante(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
+            ILogger<ServicioLog> Logger) : base(proveedorOpciones,Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<EspacioEstante>(new QueryComposer<EspacioEstante>());

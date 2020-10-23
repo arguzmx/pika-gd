@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.GestionDocumental.Interfaces;
@@ -31,7 +32,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<Archivo> repoAr;
         private IRepositorioAsync<Activo> repoAct;
 
-        public ServicioActivoDeclinado(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, ILogger<ServicioCuadroClasificacion> Logger) : base(proveedorOpciones,Logger)
+        public ServicioActivoDeclinado(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
+            ILogger<ServicioLog> Logger) : base(proveedorOpciones,Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<ActivoDeclinado>(new QueryComposer<ActivoDeclinado>());

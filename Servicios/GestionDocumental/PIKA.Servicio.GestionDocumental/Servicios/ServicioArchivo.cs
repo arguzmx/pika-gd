@@ -9,6 +9,7 @@ using PIKA.Infraestrctura.Reportes;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.GestorDocumental.Reportes.JSON;
 using PIKA.Servicio.GestionDocumental.Data;
@@ -34,12 +35,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         private IRepositorioAsync<Archivo> repo;
         private IRepositorioAsync<TipoArchivo> repoTA;
-        private ILogger<ServicioHistorialArchivoActivo> loggerHistorial;
-        private ILogger<ServicioActivo> loggerActivo;
         private IOptions<ConfiguracionServidor> Config;
-        private readonly IAppCache cache;
-        private ILogger<ServicioPrestamo> loggerPrestamo;
-        private ILogger<ServicioCuadroClasificacion> loggerCC;
         private IServicioReporteEntidad ServicioReporteEntidad;
 
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
@@ -48,7 +44,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             IServicioReporteEntidad ServicioReporteEntidad,
             IOptions<ConfiguracionServidor> Config,
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-            ILogger<ServicioArchivo> Logger) : base(proveedorOpciones, Logger)
+            ILogger<ServicioLog> Logger) : base(proveedorOpciones, Logger)
         {
             this.ServicioReporteEntidad = ServicioReporteEntidad;
             this.Config = Config;
@@ -268,36 +264,38 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<ICollection<string>> Purgar()
         {
-            
-            ServicioHistorialArchivoActivo shaa = new ServicioHistorialArchivoActivo(this.proveedorOpciones,loggerHistorial);
-            ServicioActivo sa = new ServicioActivo(cache,this.proveedorOpciones, loggerActivo,Config);
-            ServicioPrestamo sp = new ServicioPrestamo(this.proveedorOpciones, loggerPrestamo);
-            ServicioAlmacenArchivo saa = new ServicioAlmacenArchivo(this.proveedorOpciones,loggerCC);
-            ServicioTransferencia st = new ServicioTransferencia(this.proveedorOpciones,loggerCC,Config);
-            ServicioEstadisticaClasificacionAcervo servicioEstadistica = new ServicioEstadisticaClasificacionAcervo(this.proveedorOpciones,Config,logger);
-            List<Archivo> ListaArchivos = await this.repo.ObtenerAsync(x=>x.Eliminada==true).ConfigureAwait(false);
-            string[] IdArchivosEliminar = ListaArchivos.Select(x=>x.Id).ToArray();
-                if (ListaArchivos.Count > 0) 
-            {
-                List<HistorialArchivoActivo> listaHitorialArchivos =await  shaa.ObtenerAsync(x=>x.ArchivoId.Contains(ListaArchivos.Select(x=>x.Id).FirstOrDefault())).ConfigureAwait(false);
-                List<Activo> ListaActivos = await sa.ObtenerAsync(x=>x.ArchivoId.Contains(ListaArchivos.Select(x=>x.Id).FirstOrDefault())).ConfigureAwait(false);
-                List<Prestamo> ListaPrestamo = await sp.ObtenerAsync(x=>x.ArchivoId.Contains(ListaArchivos.Select(x=>x.Id).FirstOrDefault())).ConfigureAwait(false);
-                List<AlmacenArchivo> ListaAlmacen = await saa.ObtenerAsync(x=>x.ArchivoId.Contains(ListaArchivos.Select(x=>x.Id).FirstOrDefault())).ConfigureAwait(false);
+            await Task.Delay(1);
 
-                await shaa.Eliminar(ListaIdEliminar(listaHitorialArchivos.Select(x => x.Id).ToArray())).ConfigureAwait(false);
-                await sa.Eliminar(ListaIdEliminar(ListaActivos.Select(x => x.Id).ToArray())).ConfigureAwait(false);
-                await sa.Purgar().ConfigureAwait(false);
-                await sa.EliminarActivos(ListaIdEliminar(ListaActivos.Select(x => x.Id).ToArray())).ConfigureAwait(false);
-                await sp.Eliminar(ListaIdEliminar(ListaPrestamo.Select(x=>x.Id).ToArray())).ConfigureAwait(false);
-                await sp.Purgar().ConfigureAwait(false);
-                await sp.EliminarPrestamo(ListaIdEliminar(ListaPrestamo.Select(x => x.Id).ToArray())).ConfigureAwait(false);
-                await saa.EliminarRelaciones(ListaAlmacen);
-                await saa.Eliminar(ListaIdEliminar(ListaAlmacen.Select(x=>x.Id).ToArray())).ConfigureAwait(false);
-                await st.Eliminar(await st.EliminarRelaciones(ListaArchivos).ConfigureAwait(false));
-                await servicioEstadistica.EliminarEstadisticos(1,ListaArchivos.Select(x=>x.Id).ToArray()).ConfigureAwait(false);
-            }
+            return null;
+            //ServicioHistorialArchivoActivo shaa = new ServicioHistorialArchivoActivo(this.proveedorOpciones,this.logger);
+            //ServicioActivo sa = new ServicioActivo(cache,this.proveedorOpciones, this.logger, Config);
+            //ServicioPrestamo sp = new ServicioPrestamo(this.proveedorOpciones, this.logger);
+            //ServicioAlmacenArchivo saa = new ServicioAlmacenArchivo(this.proveedorOpciones, this.logger);
+            //ServicioTransferencia st = new ServicioTransferencia(this.proveedorOpciones, this.logger, Config);
+            //ServicioEstadisticaClasificacionAcervo servicioEstadistica = new ServicioEstadisticaClasificacionAcervo(this.proveedorOpciones,Config,logger);
+            //List<Archivo> ListaArchivos = await this.repo.ObtenerAsync(x=>x.Eliminada==true).ConfigureAwait(false);
+            //string[] IdArchivosEliminar = ListaArchivos.Select(x=>x.Id).ToArray();
+            //    if (ListaArchivos.Count > 0) 
+            //{
+            //    List<HistorialArchivoActivo> listaHitorialArchivos =await  shaa.ObtenerAsync(x=>x.ArchivoId.Contains(ListaArchivos.Select(x=>x.Id).FirstOrDefault())).ConfigureAwait(false);
+            //    List<Activo> ListaActivos = await sa.ObtenerAsync(x=>x.ArchivoId.Contains(ListaArchivos.Select(x=>x.Id).FirstOrDefault())).ConfigureAwait(false);
+            //    List<Prestamo> ListaPrestamo = await sp.ObtenerAsync(x=>x.ArchivoId.Contains(ListaArchivos.Select(x=>x.Id).FirstOrDefault())).ConfigureAwait(false);
+            //    List<AlmacenArchivo> ListaAlmacen = await saa.ObtenerAsync(x=>x.ArchivoId.Contains(ListaArchivos.Select(x=>x.Id).FirstOrDefault())).ConfigureAwait(false);
 
-            return  await EliminarArchivo(ListaIdEliminar(ListaArchivos.Select(x => x.Id).ToArray())).ConfigureAwait(false);
+            //    await shaa.Eliminar(ListaIdEliminar(listaHitorialArchivos.Select(x => x.Id).ToArray())).ConfigureAwait(false);
+            //    await sa.Eliminar(ListaIdEliminar(ListaActivos.Select(x => x.Id).ToArray())).ConfigureAwait(false);
+            //    await sa.Purgar().ConfigureAwait(false);
+            //    //await sa.EliminarActivos(ListaIdEliminar(ListaActivos.Select(x => x.Id).ToArray())).ConfigureAwait(false);
+            //    await sp.Eliminar(ListaIdEliminar(ListaPrestamo.Select(x=>x.Id).ToArray())).ConfigureAwait(false);
+            //    await sp.Purgar().ConfigureAwait(false);
+            //    await sp.EliminarPrestamo(ListaIdEliminar(ListaPrestamo.Select(x => x.Id).ToArray())).ConfigureAwait(false);
+            //    await saa.EliminarRelaciones(ListaAlmacen);
+            //    await saa.Eliminar(ListaIdEliminar(ListaAlmacen.Select(x=>x.Id).ToArray())).ConfigureAwait(false);
+            //    await st.Eliminar(await st.EliminarRelaciones(ListaArchivos).ConfigureAwait(false));
+            //    await servicioEstadistica.EliminarEstadisticos(1,ListaArchivos.Select(x=>x.Id).ToArray()).ConfigureAwait(false);
+            //}
+
+            //return  await EliminarArchivo(ListaIdEliminar(ListaArchivos.Select(x => x.Id).ToArray())).ConfigureAwait(false);
         }
         private string[] ListaIdEliminar(string[]ids) 
         {
@@ -379,14 +377,17 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                 var entrada = estadistica.Where(x => x.EntradaClasificacionId == e.Id).SingleOrDefault();
                 int cantidad = entrada == null? 0: entrada.ConteoActivos;
+                string fMinima = entrada == null ? "-" : entrada.FechaMinApertura.HasValue ? entrada.FechaMinApertura.Value.ToString("dd/MM/yyyy") : "";
+                string fMaxima = entrada == null ? "-" : entrada.FechaMinApertura.HasValue ? entrada.FechaMinApertura.Value.ToString("dd/MM/yyyy") : "";
+
                 g.Elementos.Add(new ElementoGuiaSimpleArchivo()
                 {
                     Cantidad = cantidad,
                     Clave = e.Clave,
                     Nombre = e.Nombre,
-                    Descripcion = "",
-                    FechaMaximaCierre = "",
-                    FechaMinimaApertura = ""
+                    Descripcion = e.Descripcion ?? "" ,
+                    FechaMaximaCierre = fMaxima,
+                    FechaMinimaApertura = fMinima
                 });
             });
 

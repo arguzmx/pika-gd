@@ -10,6 +10,7 @@ namespace PIKA.Infraestrctura.Reportes
         public float Alto { get; set; }
         public string Dato { get; set; }
         public string Tipo { get; set; }
+        public string  Texto { get; set; }
     }
 
 }

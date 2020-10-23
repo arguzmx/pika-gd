@@ -51,6 +51,11 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.Property<bool>("Confidencial")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<string>("CuadroClasificacionId")
+                        .IsRequired()
+                        .HasColumnType("varchar(250) CHARACTER SET utf8mb4")
+                        .HasMaxLength(250);
+
                     b.Property<bool>("Eliminada")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
@@ -118,9 +123,15 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
 
                     b.HasIndex("CodigoOptico");
 
+                    b.HasIndex("CuadroClasificacionId");
+
+                    b.HasIndex("Eliminada");
+
                     b.HasIndex("EnPrestamo");
 
                     b.HasIndex("EntradaClasificacionId");
+
+                    b.HasIndex("FechaApertura");
 
                     b.HasIndex("FechaCierre");
 
@@ -916,6 +927,12 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.HasOne("PIKA.Modelo.GestorDocumental.Archivo", "ArchivoOrigen")
                         .WithMany("ActivosOrigen")
                         .HasForeignKey("ArchivoOrigenId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("PIKA.Modelo.GestorDocumental.CuadroClasificacion", "CuadroClasificacion")
+                        .WithMany("Activos")
+                        .HasForeignKey("CuadroClasificacionId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

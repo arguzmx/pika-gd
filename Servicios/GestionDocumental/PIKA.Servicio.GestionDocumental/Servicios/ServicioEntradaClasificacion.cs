@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.GestionDocumental.Interfaces;
@@ -48,7 +49,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public ServicioEntradaClasificacion(
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioEntradaClasificacion> Logger, IOptions<ConfiguracionServidor> Config
+           ILogger<ServicioLog> Logger, IOptions<ConfiguracionServidor> Config
            ) : base(proveedorOpciones, Logger)
         {
             this.ConfiguracionServidor = Config.Value;
@@ -59,7 +60,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             this.repoTD = UDT.ObtenerRepositoryAsync<TipoDisposicionDocumental>(new QueryComposer<TipoDisposicionDocumental>());
             this.repoTEC = UDT.ObtenerRepositoryAsync<TipoValoracionDocumental>(new QueryComposer<TipoValoracionDocumental>());
             this.repoCC = UDT.ObtenerRepositoryAsync<CuadroClasificacion>(new QueryComposer<CuadroClasificacion>());
-            this.ioCuadroClasificacion = new IOCuadroClasificacion(LoggerCuadro, proveedorOpciones);
+            this.ioCuadroClasificacion = new IOCuadroClasificacion(this.logger, proveedorOpciones);
             this.Config = Config;
         }
         public async Task<bool> Existe(Expression<Func<EntradaClasificacion, bool>> predicado)
@@ -167,7 +168,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 {
                     throw new ExElementoExistente(entity.Clave);
                 }
-
+                logger.LogError(entity.Descripcion);
                 o.Nombre = entity.Nombre.Trim();
                 o.Clave = entity.Clave.Trim();
                 o.DisposicionEntrada = entity.DisposicionEntrada;
@@ -176,6 +177,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 o.Posicion = entity.Posicion;
                 o.TipoDisposicionDocumentalId = entity.TipoDisposicionDocumentalId;
                 o.Descripcion = entity.Descripcion.Trim();
+
+                UDT.Context.Entry(o).State = EntityState.Modified;
+
                 List<ValoracionEntradaClasificacion> lista = await repoEC.ObtenerAsync(x => x.EntradaClasificacionId.Equals(entity.Id.Trim(), StringComparison.InvariantCultureIgnoreCase));
                 if (entity.TipoValoracionDocumentalId == null) entity.TipoValoracionDocumentalId = new string[0];
 
@@ -400,26 +404,30 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<ICollection<string>> Purgar()
         {
-            List<EntradaClasificacion> ListaEntrada = await this.repo.ObtenerAsync(x => x.Eliminada == true).ConfigureAwait(false);
+            await Task.Delay(1);
 
-            if (ListaEntrada.Count > 0)
-            {
-                ServicioValoracionEntradaClasificacion servaloracion = new ServicioValoracionEntradaClasificacion(this.proveedorOpciones, LoggerValorarion, Config);
+            return null;
 
-                ServicioActivo sa = new ServicioActivo(cache, this.proveedorOpciones, loggerServicioActivo, Config);
+            //List<EntradaClasificacion> ListaEntrada = await this.repo.ObtenerAsync(x => x.Eliminada == true).ConfigureAwait(false);
 
-                ServicioEstadisticaClasificacionAcervo servicioEstadistica = new ServicioEstadisticaClasificacionAcervo(this.proveedorOpciones, Config, logger);
+            //if (ListaEntrada.Count > 0)
+            //{
+            //    ServicioValoracionEntradaClasificacion servaloracion = new ServicioValoracionEntradaClasificacion(this.proveedorOpciones, this.logger, Config);
 
-                List<Activo> l = await sa.ObtenerAsync(x => x.EntradaClasificacionId.Contains(ListaEntrada.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
-                await sa.Eliminar(l.Select(x => x.Id).ToArray()).ConfigureAwait(false);
-                await sa.EliminarActivos((await sa.Purgar().ConfigureAwait(false)).ToArray());
-                await servaloracion.EliminarEntradas(IdsEliminar(ListaEntrada.Select(x => x.Id).ToArray())).ConfigureAwait(false);
-                await servicioEstadistica.EliminarEstadisticos(3, ListaEntrada.Select(x => x.Id).ToArray()).ConfigureAwait(false);
-                await servicioEstadistica.EliminarEstadisticos(2, ListaEntrada.Select(x => x.CuadroClasifiacionId).ToArray()).ConfigureAwait(false);
+            //    ServicioActivo sa = new ServicioActivo(cache, this.proveedorOpciones, this.logger, Config);
+
+            //    ServicioEstadisticaClasificacionAcervo servicioEstadistica = new ServicioEstadisticaClasificacionAcervo(this.proveedorOpciones, Config, logger);
+
+            //    List<Activo> l = await sa.ObtenerAsync(x => x.EntradaClasificacionId.Contains(ListaEntrada.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
+            //    await sa.Eliminar(l.Select(x => x.Id).ToArray()).ConfigureAwait(false);
+            //    //await sa.EliminarActivos((await sa.Purgar().ConfigureAwait(false)).ToArray());
+            //    await servaloracion.EliminarEntradas(IdsEliminar(ListaEntrada.Select(x => x.Id).ToArray())).ConfigureAwait(false);
+            //    await servicioEstadistica.EliminarEstadisticos(3, ListaEntrada.Select(x => x.Id).ToArray()).ConfigureAwait(false);
+            //    await servicioEstadistica.EliminarEstadisticos(2, ListaEntrada.Select(x => x.CuadroClasifiacionId).ToArray()).ConfigureAwait(false);
 
 
-            }
-            return await EliminarEntrada(ListaEntrada.Select(x => x.Id).ToArray()).ConfigureAwait(false);
+            //}
+            //return await EliminarEntrada(ListaEntrada.Select(x => x.Id).ToArray()).ConfigureAwait(false);
         }
         private async Task<ICollection<string>> EliminarEntrada(string[] ids)
         {

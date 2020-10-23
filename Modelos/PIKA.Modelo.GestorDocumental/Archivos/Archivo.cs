@@ -17,6 +17,11 @@ namespace PIKA.Modelo.GestorDocumental
     [Entidad(PaginadoRelacional: false, EliminarLogico: true , 
         TokenMod: ConstantesAppGestionDocumental.MODULO_ARCHIVOS,
         TokenApp: ConstantesAppGestionDocumental.APP_ID)]
+    [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ACTIVOS,
+        EntidadHijo: "Activo",
+        Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id",
+        PropiedadHijo: "ArchivoId")]
+
     public class Archivo : Entidad<string>, IEntidadNombrada, IEntidadEliminada, 
         IEntidadRelacionada, IEntidadReportes
     {

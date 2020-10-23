@@ -77,7 +77,15 @@ namespace PIKA.Modelo.GestorDocumental
         [ValidNumeric(min: 0, max: 60, defaulvalue: 0)]
         public int VigenciaConcentracion { get; set; }
 
-        
+
+
+        /// <summary>
+        /// La Descripcion para la entrada del cuandro, generalmente es el contenido de la entrada
+        /// </summary>
+        [Prop(Required: false, Visible: true, OrderIndex: 65)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXTAREA, Accion: Acciones.addupdate)]
+        [ValidString(minlen: 2, maxlen: 1000)]
+        public string Descripcion { get; set; }
 
         /// <summary>
         /// Identificador único del tipo de disposición documental para la entrada
@@ -95,13 +103,6 @@ namespace PIKA.Modelo.GestorDocumental
         public string ElementoClasificacionId { get; set; }
 
 
-        /// <summary>
-        /// La Descripcion para la entrada del cuandro, generalmente es el contenido de la entrada
-        /// </summary>
-        [Prop(Required: false)]
-        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
-        [ValidString(minlen: 2, maxlen: 1000)]
-        public string Descripcion { get; set; }
 
         /// <summary>
         /// Determina si la entrada del cuadro ha sido eliminada

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Servicio.GestionDocumental.Data;
 using RepositorioEntidades;
 using System;
@@ -10,13 +11,13 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 {
     public class ContextoServicioGestionDocumental
     {
-        protected ILogger logger;
+        protected ILogger<ServicioLog> logger;
         protected IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones;
 
         protected DBContextGestionDocumental contexto;
         public ContextoServicioGestionDocumental(
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-            ILogger Logger)
+            ILogger<ServicioLog> Logger)
         {
             DbContextGestionDocumentalFactory cf = new DbContextGestionDocumentalFactory(proveedorOpciones);
             this.contexto = cf.Crear();

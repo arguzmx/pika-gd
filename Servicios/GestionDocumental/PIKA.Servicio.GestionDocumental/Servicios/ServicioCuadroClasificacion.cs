@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.GestionDocumental.Interfaces;
@@ -38,7 +39,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public ServicioCuadroClasificacion(
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioCuadroClasificacion> Logger,
+           ILogger<ServicioLog> Logger,
            IOptions<ConfiguracionServidor> Config
            ) : base(proveedorOpciones, Logger)
         {
@@ -213,11 +214,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             Console.WriteLine($"Metodo Purgar del Elemento");
 
-            ServicioElementoClasificacion sec = new ServicioElementoClasificacion(this.proveedorOpciones, LoggerElemento, Config);
+            ServicioElementoClasificacion sec = new ServicioElementoClasificacion(this.proveedorOpciones, this.logger, Config);
 
-            ServicioEntradaClasificacion se = new ServicioEntradaClasificacion(this.proveedorOpciones, LoggerEntrada, Config);
+            ServicioEntradaClasificacion se = new ServicioEntradaClasificacion(this.proveedorOpciones, this.logger, Config);
 
-            ServicioEstadisticaClasificacionAcervo seca = new ServicioEstadisticaClasificacionAcervo(this.proveedorOpciones,Config,LoggerEntrada);
+            ServicioEstadisticaClasificacionAcervo seca = new ServicioEstadisticaClasificacionAcervo(this.proveedorOpciones,Config, this.logger);
 
             List<CuadroClasificacion> ListaCuadroClasificacions = await this.repo.ObtenerAsync(x => x.Eliminada == true).ConfigureAwait(false);
             if (ListaCuadroClasificacions.Count > 0)

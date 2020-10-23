@@ -99,6 +99,10 @@ namespace PIKA.Modelo.GestorDocumental
         public virtual ICollection<ElementoClasificacion> Elementos { get; set; }
 
 
+        [NotMapped]
+        [JsonIgnore]
+        [XmlIgnore]
+        public List<Activo> Activos { get; set; }
 
         [NotMapped]
         [JsonIgnore]

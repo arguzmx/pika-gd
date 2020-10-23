@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.GestorDocumental.Topologia;
 using PIKA.Servicio.GestionDocumental.Data;
@@ -30,7 +31,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<AlmacenArchivo> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
         private ILogger<ServicioCuadroClasificacion> LoggerCC;
-        public ServicioAlmacenArchivo(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, ILogger<ServicioCuadroClasificacion> Logger) : base(proveedorOpciones, Logger)
+        public ServicioAlmacenArchivo(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
+            ILogger<ServicioLog> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<AlmacenArchivo>(new QueryComposer<AlmacenArchivo>());
@@ -191,8 +193,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             if (ids.Count > 0)
             {
-                ServicioEstante se = new ServicioEstante(this.proveedorOpciones, LoggerCC);
-                ServicioEspacioEstante see = new ServicioEspacioEstante(this.proveedorOpciones, LoggerCC);
+                ServicioEstante se = new ServicioEstante(this.proveedorOpciones, this.logger);
+                ServicioEspacioEstante see = new ServicioEspacioEstante(this.proveedorOpciones, this.logger);
                 List<Estante> ListaEstante = await se.ObtenerAsync(x => x.AlmacenArchivoId.Contains(ids.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
                 List<EspacioEstante> ListaEspacioEstante = await see.ObtenerAsync(x => x.EstanteId.Contains(ListaEstante.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
                 await see.Eliminar(ListaIdEliminar(ListaEspacioEstante.Select(x=>x.Id).ToArray())).ConfigureAwait(false);
