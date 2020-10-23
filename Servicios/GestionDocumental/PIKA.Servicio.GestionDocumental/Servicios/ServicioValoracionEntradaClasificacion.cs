@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.GestionDocumental.Interfaces;
@@ -36,7 +37,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public ServicioValoracionEntradaClasificacion(
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioValoracionEntradaClasificacion> Logger,
+           ILogger<ServicioLog> Logger,
            IOptions<ConfiguracionServidor> Config
            ) : base(proveedorOpciones, Logger)
         {

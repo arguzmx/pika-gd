@@ -22,8 +22,21 @@ namespace PIKA.Servicio.Reportes.Data
                 TipoOrigenId = "*",
                 Plantilla = ""
             };
-        } 
+        }
 
+        private static ReporteEntidad CaratulaActivoAcervo()
+        {
+            return new ReporteEntidad()
+            {
+                Descripcion = "Reporte caratula acervo",
+                Entidad = "Activo",
+                Id = "caratulaactivo",
+                Nombre = "Reporte caratula acervo",
+                OrigenId = "*",
+                TipoOrigenId = "*",
+                Plantilla = ""
+            };
+        }
 
         private static void InsertaRreporte(DbContextReportes dbContext, ReporteEntidad r, FileInfo fi)
         {
@@ -51,6 +64,10 @@ namespace PIKA.Servicio.Reportes.Data
                     {
                         case "guiasimplearchivo":
                             InsertaRreporte(dbContext, GuiaSimpleArchivo(), fi);
+                            break;
+
+                        case "caratulaactivo":
+                            InsertaRreporte(dbContext, CaratulaActivoAcervo(), fi);
                             break;
                     }
                 }

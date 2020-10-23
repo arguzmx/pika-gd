@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
+using PIKA.Infraestructura.Comun.Servicios;
 using RepositorioEntidades;
 
 namespace PIKA.Servicio.Contenido.Servicios

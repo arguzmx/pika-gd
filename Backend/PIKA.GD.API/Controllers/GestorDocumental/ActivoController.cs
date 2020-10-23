@@ -46,7 +46,8 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
         {
-            return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
+                return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
+            
         }
 
 
@@ -112,6 +113,25 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             return Ok(data);
         }
 
+
+        [HttpGet("page/archivo/{Id}", Name = "GetPageActivoArchivo")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        public async Task<ActionResult<IEnumerable<Activo>>> GetPageActivoArchivo(string Id, [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        {
+            query.Filtros.Add(new FiltroConsulta()
+            {
+                Operador = FiltroConsulta.OP_EQ,
+                Propiedad = "ArchivoId",
+                Valor = Id
+            });
+
+            var data = await servicioActivo.ObtenerPaginadoAsync(
+                Query: query,
+                include: null)
+                .ConfigureAwait(false);
+
+            return Ok(data);
+        }
 
         //----------------------------------------------------------------------------------------------------------
         //----------------------------------------------------------------------------------------------------------
@@ -199,5 +219,27 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             return Ok(await servicioActivo.Restaurar(lids).ConfigureAwait(false));
         }
 
+
+
+        [HttpGet("reporte/caractula/{id}", Name = "GetReporteCaratuaActivo")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<FileResult> GetReporteCaratuaActivo(string id)
+        {
+            logger.LogInformation("API");
+            byte[] bytes = await servicioActivo.ReporteCaratulaActivo("Ejmeplo","Dominio", id).ConfigureAwait(false);
+            
+            const string contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            HttpContext.Response.ContentType = contentType;
+            HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+
+            var fileContentResult = new FileContentResult(bytes, contentType)
+            {
+                FileDownloadName = $"Caratula.docx"
+            };
+            return fileContentResult;
+        }
+
+        
     }
 }

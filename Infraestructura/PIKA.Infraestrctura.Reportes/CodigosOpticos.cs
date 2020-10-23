@@ -61,7 +61,7 @@ namespace PIKA.Infraestrctura.Reportes
                 }
                 try
                 {
-                    var barcode = new Barcode(config.Dato, tipo, true, Cm2Pixeles(config.Ancho), Cm2Pixeles(config.Alto));
+                    var barcode = new Barcode(config.Texto, tipo, true, Cm2Pixeles(config.Ancho), Cm2Pixeles(config.Alto));
                     barcode.SaveImageFile(rutaArchivo, ImageFormat.Png);
                 }
                 catch (Exception) { }
@@ -78,11 +78,10 @@ namespace PIKA.Infraestrctura.Reportes
 
             if (config != null)
             {
-                
                 try
                 {
                     QRCodeGenerator qrGenerator = new QRCodeGenerator();
-                    QRCodeData qrCodeData = qrGenerator.CreateQrCode(config.Dato, QRCodeGenerator.ECCLevel.Q);
+                    QRCodeData qrCodeData = qrGenerator.CreateQrCode(config.Texto, QRCodeGenerator.ECCLevel.Q);
                     QRCode qrCode = new QRCode(qrCodeData);
                     Bitmap qrCodeImage = qrCode.GetGraphic(20);
                     qrCodeImage.Save(rutaArchivo);

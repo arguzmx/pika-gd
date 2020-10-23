@@ -26,6 +26,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
 
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.IDunico).HasMaxLength(LongitudDatos.IDunico);
+            builder.Property(x => x.CuadroClasificacionId).HasMaxLength(LongitudDatos.IDunico).IsRequired();
             builder.Property(x => x.Asunto).HasMaxLength(2048).IsRequired(false);
             builder.Property(x => x.FechaApertura).IsRequired();
             builder.Property(x => x.FechaCierre).IsRequired(false);
@@ -51,6 +52,10 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.HasIndex(i => new { i.FechaRetencionAC });
             builder.HasIndex(i => new { i.FechaRetencionAT });
             builder.HasIndex(i => new { i.FechaCierre });
+            builder.HasIndex(i => new { i.FechaApertura });
+            builder.HasIndex(i => new { i.EntradaClasificacionId });
+            builder.HasIndex(i => new { i.CuadroClasificacionId });
+            builder.HasIndex(i => new { i.Eliminada });
             builder.HasIndex(i => new { i.Nombre });
             builder.HasIndex(i => new { i.CodigoElectronico });
             builder.HasIndex(i => new { i.CodigoOptico });

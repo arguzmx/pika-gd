@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PIKA.Servicio.Contenido.Servicios
+namespace PIKA.Infraestructura.Comun.Servicios
 {
     public class ServicioLog
     {

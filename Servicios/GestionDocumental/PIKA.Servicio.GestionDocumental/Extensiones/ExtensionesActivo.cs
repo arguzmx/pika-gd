@@ -31,7 +31,9 @@ namespace PIKA.Servicio.GestionDocumental
                 ArchivoOrigenId = a.ArchivoOrigenId,
                 FechaRetencionAC = a.FechaRetencionAC,
                 FechaRetencionAT = a.FechaRetencionAT,
-                IDunico = a.IDunico
+                IDunico = a.IDunico,
+                CuadroClasificacionId = a.CuadroClasificacionId,
+                TipoArchivoId = a.TipoArchivoId,
             };
         }
     }

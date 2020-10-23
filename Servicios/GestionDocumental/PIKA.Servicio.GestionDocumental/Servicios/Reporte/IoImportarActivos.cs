@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 using MySqlConnector.Logging;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
 using RepositorioEntidades;
@@ -42,7 +43,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios.Reporte
 
         public IoImportarActivos(
             ServicioActivo servicioActivos,
-            ILogger Logger, 
+            ILogger<ServicioLog> Logger, 
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
             IOptions<ConfiguracionServidor> Confi)
           : base(proveedorOpciones, Logger)

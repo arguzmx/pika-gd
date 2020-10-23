@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.GestionDocumental.Interfaces;
@@ -29,7 +30,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
         public ServicioAsunto(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioAsunto> Logger) : base(proveedorOpciones, Logger)
+           ILogger<ServicioLog> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Asunto>(new QueryComposer<Asunto>());

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.GestionDocumental.Interfaces;
@@ -36,7 +37,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private ILogger<ServicioCuadroClasificacion> LoggerCC;
         public ServicioTransferencia(
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-            ILogger<ServicioCuadroClasificacion> Logger,
+            ILogger<ServicioLog> Logger,
             IOptions<ConfiguracionServidor> Config) : base(proveedorOpciones, Logger)
         {
             this.ConfiguracionServidor = Config.Value;
@@ -175,10 +176,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<string[]> EliminarRelaciones(List<Archivo> listaArchivos)
         {
-            ServicioEventoTransferencia set = new ServicioEventoTransferencia(this.proveedorOpciones, LoggerCC);
-            ServicioComentarioTransferencia cct = new ServicioComentarioTransferencia(this.proveedorOpciones,LoggerCC);
-            ServicioActivoDeclinado sad = new ServicioActivoDeclinado(this.proveedorOpciones,LoggerCC);
-            ServicioActivoTransferencia sat = new ServicioActivoTransferencia(this.proveedorOpciones,LoggerCC);
+            ServicioEventoTransferencia set = new ServicioEventoTransferencia(this.proveedorOpciones, this.logger);
+            ServicioComentarioTransferencia cct = new ServicioComentarioTransferencia(this.proveedorOpciones,this.logger);
+            ServicioActivoDeclinado sad = new ServicioActivoDeclinado(this.proveedorOpciones,this.logger);
+            ServicioActivoTransferencia sat = new ServicioActivoTransferencia(this.proveedorOpciones, this.logger);
             
             List<Transferencia> ListaTranferencia = await repo.ObtenerAsync(x => x.ArchivoOrigenId.Contains(listaArchivos.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
             List<Transferencia> listaT =await repo.ObtenerAsync(x => x.ArchivoDestinoId.Contains(listaArchivos.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);

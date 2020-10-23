@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Servicios;
 using RepositorioEntidades;
@@ -24,7 +25,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
         private IRepositorioAsync<ValoracionEntradaClasificacion> repoTV;
         private IRepositorioAsync<ElementoClasificacion> RepoElemento;
 
-        public IOTransferencia(ILogger<ServicioCuadroClasificacion> Logger, IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones)
+        public IOTransferencia(ILogger<ServicioLog> Logger, IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones)
             : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);

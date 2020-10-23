@@ -9,8 +9,7 @@ namespace PIKA.Servicio.GestionDocumental.Interfaces
     {
         Task<byte[]> ImportarActivos(byte[]file,string ArchivId,string TipoId, string OrigenId,string formatoFecha);
         Task<List<string>> Purgar();
-
-        Task<List<string>> EliminarActivos(string[] ids);
+        Task<byte[]> ReporteCaratulaActivo(string Dominio, string UnidadOrganizacinal, string ActivoId);
 
     }
 }

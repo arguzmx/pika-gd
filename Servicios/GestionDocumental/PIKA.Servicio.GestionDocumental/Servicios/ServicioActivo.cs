@@ -1,104 +1,67 @@
 ﻿using LazyCache;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PIKA.Infraestrctura.Reportes;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
+using PIKA.Modelo.GestorDocumental.Reportes.JSON;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.GestionDocumental.Interfaces;
-using PIKA.Servicio.GestionDocumental.Servicios.Reporte;
+using PIKA.Servicio.Reportes.Interfaces;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace PIKA.Servicio.GestionDocumental.Servicios
 {
-    public class ServicioActivo : ContextoServicioGestionDocumental,
+    public partial class ServicioActivo : ContextoServicioGestionDocumental,
         IServicioInyectable, IServicioActivo
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
+
+        //private IRepositorioAsync<CuadroClasificacion> repoCC;
+        //private IRepositorioAsync<ElementoClasificacion> repoEL;
+        //private IRepositorioAsync<EntradaClasificacion> repoEC;
+        //private IRepositorioAsync<Archivo> repoA;
+
+
         private IRepositorioAsync<Activo> repo;
-        private IRepositorioAsync<CuadroClasificacion> repoCC;
-        private IRepositorioAsync<ElementoClasificacion> repoEL;
-        private IRepositorioAsync<EntradaClasificacion> repoEC;
-        private IRepositorioAsync<Archivo> repoA;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
-        private ServicioEstadisticaClasificacionAcervo sevEstadisticas;
+        private IServicioEstadisticaClasificacionAcervo servEstadisticas;
         private readonly IAppCache cache;
-        IOptions<ConfiguracionServidor> Config;
-        private ILogger<ServicioHistorialArchivoActivo> logHAA;
-        private ILogger<ServicioAmpliacion> logerA;
-        private ILogger<ServicioActivoPrestamo> logerSAP;
-        private ILogger<ServicioCuadroClasificacion> LoggerCC;
+        private IOptions<ConfiguracionServidor> Config;
+        private IServicioReporteEntidad ServicioReporteEntidad;
 
         public ServicioActivo(
             IAppCache cache,
+            IServicioReporteEntidad ServicioReporteEntidad,
+            IServicioEstadisticaClasificacionAcervo servEstadisticas,
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-            ILogger<ServicioActivo> Logger, IOptions<ConfiguracionServidor> Config
+            ILogger<ServicioLog> Logger, IOptions<ConfiguracionServidor> Config
            ) : base(proveedorOpciones, Logger)
         {
+            this.ServicioReporteEntidad = ServicioReporteEntidad;
+            this.servEstadisticas = servEstadisticas;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Activo>(new QueryComposer<Activo>());
-            this.repoA = UDT.ObtenerRepositoryAsync<Archivo>(new QueryComposer<Archivo>());
-            this.repoEC = UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>());
             this.cache = cache;
             this.Config = Config;
-            
         }
 
-        public async Task<bool> Existe(Expression<Func<Activo, bool>> predicado)
-        {
-            List<Activo> l = await this.repo.ObtenerAsync(predicado);
-            if (l.Count() == 0) return false;
-            return true;
-        }
-
-        public async Task<bool> ExisteArchivo(Expression<Func<Archivo, bool>> predicado)
-        {
-            List<Archivo> l = await this.repoA.ObtenerAsync(predicado);
-            if (l.Count() == 0) return false;
-            return true;
-        }
-
-        public async Task<bool> ExisteElemento(Expression<Func<EntradaClasificacion, bool>> predicado)
-        {
-            List<EntradaClasificacion> l = await this.repoEC.ObtenerAsync(predicado);
-            if (l.Count() == 0) return false;
-            return true;
-        }
-        public async Task<Activo> CrearAsync(Activo entity, CancellationToken cancellationToken = default)
-        {
-
-            entity = await ValidarActivos(entity, false);
-            entity.Id = Guid.NewGuid().ToString();
-            await this.repo.CrearAsync(entity);
-            UDT.SaveChanges();
-            await this.AdministracionEstadisticas(entity.ArchivoId, entity.EntradaClasificacionId, 1, 1);
-            //await this.sevEstadisticas.ActualizarConteo(entity.ArchivoId);
-
-            return entity.Copia();
-
-        }
-
-        public async Task ActualizarAsync(Activo entity)
-        {
-            entity = await ValidarActivos(entity, true);
-            UDT.Context.Entry(entity).State = EntityState.Modified;
-            UDT.SaveChanges();
-            await this.AdministracionEstadisticas(entity.ArchivoId, entity.EntradaClasificacionId, 1, 4);
-
-        }
 
         private Consulta GetDefaultQuery(Consulta query)
         {
@@ -116,15 +79,217 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return query;
         }
 
-        private async Task<Activo> ValidarActivos(Activo a, bool actualizar) 
+        public async Task<bool> Existe(Expression<Func<Activo, bool>> predicado)
         {
+            return await repo.UnicoAsync(predicado) != null; ;
+        }
+
+        public async Task<Activo> UnicoAsync(Expression<Func<Activo, bool>> predicado = null, Func<IQueryable<Activo>, IOrderedQueryable<Activo>> ordenarPor = null, Func<IQueryable<Activo>, IIncludableQueryable<Activo, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+            Activo a = await this.repo.UnicoAsync(predicado);
+            return a.Copia();
+        }
+
+        public Task<List<Activo>> ObtenerAsync(Expression<Func<Activo, bool>> predicado)
+        {
+            return this.repo.ObtenerAsync(predicado);
+        }
+
+      
+
+
+        public async Task<Activo> CrearAsync(Activo entity, CancellationToken cancellationToken = default)
+        {
+            Activo valido = await ActivoValidado(entity, false);
+            
+            await this.repo.CrearAsync(valido);
+            UDT.SaveChanges();
+            
+            await servEstadisticas.ActualizaConteoEstadistica(valido.CuadroClasificacionId,
+                valido.EntradaClasificacionId, valido.ArchivoId, 1,
+                valido.FechaApertura, valido.FechaCierre);
+
+            return valido.Copia();
+
+        }
+
+        public async Task ActualizarAsync(Activo entity)
+        {
+            Activo valido = await ActivoValidado(entity, true);
+            UDT.Context.Entry(valido).State = EntityState.Modified;
+            UDT.SaveChanges();
+
+            if(entity.EntradaClasificacionId != valido.EntradaClasificacionId)
+            {
+                // Actualiza la entarda previa
+                await servEstadisticas.ActualizaConteoEstadistica(entity.CuadroClasificacionId,
+                entity.EntradaClasificacionId, entity.ArchivoId, -1, null, null);
+
+                // Actualiza la entrada nueva
+                await servEstadisticas.ActualizaConteoEstadistica(valido.CuadroClasificacionId,
+                valido.EntradaClasificacionId, entity.ArchivoId, 1,
+                valido.FechaApertura, valido.FechaCierre);
+            } 
+            else
+            {
+                // Solo actualiz a las fechas extremas
+                await servEstadisticas.ActualizaConteoEstadistica(valido.CuadroClasificacionId,
+                valido.EntradaClasificacionId, entity.ArchivoId, 0,
+                valido.FechaApertura, valido.FechaCierre);
+            }
+        }
+
+
+        public async Task<IPaginado<Activo>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Activo>, IIncludableQueryable<Activo, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
+        {
+            Query = GetDefaultQuery(Query);
+
+            List<string> especiales = new List<string>() { "Vencidos" };
+            List<FiltroConsulta> filtrosespeciales = new List<FiltroConsulta>();
+            List<Expression<Func<Activo, bool>>> filtros = new List<Expression<Func<Activo, bool>>>();
+
+            foreach (var f in Query.Filtros)
+            {
+                if (especiales.IndexOf(f.Propiedad) >= 0)
+                {
+                    filtrosespeciales.Add(f);
+                }
+            }
+
+            foreach (var f in filtrosespeciales)
+            {
+                Query.Filtros.Remove(f);
+                switch (f.Propiedad)
+                {
+                    case "Vencidos":
+                        filtros.Add(ObtieneFiltroVencimientos(f));
+                        break;
+                }
+            }
+
+
+            var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null, filtros);
+            await ObtieneVencimientos(respuesta);
+
+            return respuesta;
+        }
+
+
+      
+     
+        public async Task<ICollection<string>> Eliminar(string[] ids)
+        {
+            List<Activo> eliminados = new List<Activo>();
+            Activo c;
+            
+            foreach (var Id in ids)
+            {
+                c = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (c != null)
+                {
+
+                    c.Eliminada = true;
+                    UDT.Context.Entry(c).State = EntityState.Modified;
+                    eliminados.Add(c.Copia());
+
+                }
+            }
+            UDT.SaveChanges();
+
+            var actualizables = eliminados.GroupBy(x => new { x.CuadroClasificacionId, x.EntradaClasificacionId, x.ArchivoId })
+                .Select(y => new {
+                    CCId = y.Key.CuadroClasificacionId,
+                    ECId= y.Key.EntradaClasificacionId,
+                    AId= y.Key.ArchivoId,
+                    Conteo = (y.Count() * -1)
+             });
+
+
+            foreach( var item  in actualizables)
+            {
+                await servEstadisticas.ActualizaConteoEstadistica(item.CCId, item.ECId, item.AId, item.Conteo, null, null);
+            }
+
+            return eliminados.Select(x=>x.Id).ToList();
+
+        }
+
+        public async Task<IEnumerable<string>> Restaurar(string[] ids)
+        {
+            List<Activo> restaurados = new List<Activo>();
+            Activo c;
+            
+            foreach (var Id in ids)
+            {
+
+                c = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
+                if (c != null)
+                {
+                    c.Nombre = await RestaurarNombre(c.Nombre, c.ArchivoId, c.Id, c.EntradaClasificacionId);
+                    c.Eliminada = false;
+                    UDT.Context.Entry(c).State = EntityState.Modified;
+
+                    restaurados.Add(c.Copia());
+
+                }
+            }
+            UDT.SaveChanges();
+
+            var actualizables = restaurados.GroupBy(x => new { x.CuadroClasificacionId, x.EntradaClasificacionId, x.ArchivoId })
+                       .Select(y => new {
+                           CCId = y.Key.CuadroClasificacionId,
+                           ECId = y.Key.EntradaClasificacionId,
+                           AId = y.Key.ArchivoId,
+                           Conteo = y.Count() 
+                       });
+
+            foreach (var item in actualizables)
+            {
+                await servEstadisticas.ActualizaConteoEstadistica(item.CCId, item.ECId, item.AId, item.Conteo, null, null);
+            }
+
+            return restaurados.Select(x=>x.Id).ToList();
+        }
+
+        #region métodos soporte CRUD
+
+
+        private async Task<string> RestaurarNombre(string nombre, string ArchivoId, string id, string IdElemento)
+        {
+
+            if (await Existe(x =>
+                    x.Nombre.Equals(nombre, StringComparison.InvariantCultureIgnoreCase)
+                    && x.ArchivoId.Equals(ArchivoId, StringComparison.InvariantCultureIgnoreCase)
+                    && x.EntradaClasificacionId.Equals(IdElemento, StringComparison.InvariantCultureIgnoreCase)
+                    && x.Id != id
+                    && x.Eliminada == false
+                    ))
+            {
+
+                nombre = $"{nombre} {DateTime.Now.Ticks}";
+            }
+            else
+            {
+            }
+
+            return nombre;
+        }
+
+
+
+        private async Task<Activo> ActivoValidado(Activo activo, bool actualizar)
+        {
+            Activo a = activo.Copia();
+
+            IRepositorioAsync<EntradaClasificacion> repoEC = UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>());
+            IRepositorioAsync<Archivo> repoA = UDT.ObtenerRepositoryAsync<Archivo>(new QueryComposer<Archivo>());
 
             EntradaClasificacion ec = await repoEC.UnicoAsync(x => x.Id == a.EntradaClasificacionId);
 
             if (ec == null || ec.Eliminada == true) throw new ExErrorRelacional(a.EntradaClasificacionId);
 
-            Archivo archivo = await this.repoA.UnicoAsync(x => x.Id.Equals(a.ArchivoId.Trim(), StringComparison.InvariantCultureIgnoreCase));
-            if (archivo==null || archivo.Eliminada ) throw new ExErrorRelacional(a.ArchivoId);
+            Archivo archivo = await repoA.UnicoAsync(x => x.Id.Equals(a.ArchivoId.Trim(), StringComparison.InvariantCultureIgnoreCase));
+            if (archivo == null || archivo.Eliminada) throw new ExErrorRelacional(a.ArchivoId);
 
             if (actualizar)
             {
@@ -136,18 +301,22 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 {
                     throw new EXNoEncontrado(a.Id);
                 }
-               
+
+                
                 a.ArchivoOrigenId = tmp.ArchivoOrigenId;
             }
-            else {
-
-                if (!string.IsNullOrEmpty(a.IDunico) && await Existe(x => x.Eliminada == false && 
+            else
+            {
+                if (!string.IsNullOrEmpty(a.IDunico) && await Existe(x => x.Eliminada == false &&
                     x.IDunico.Equals(a.IDunico, StringComparison.InvariantCultureIgnoreCase)))
                     throw new ExElementoExistente(a.IDunico);
                 a.ArchivoOrigenId = a.ArchivoId;
+                a.Id = Guid.NewGuid().ToString();
             }
 
             a.TipoArchivoId = archivo.TipoArchivoId;
+            a.EntradaClasificacionId = ec.Id;
+            a.CuadroClasificacionId = ec.CuadroClasifiacionId;
 
             if (a.FechaCierre.HasValue)
             {
@@ -159,95 +328,15 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 a.FechaRetencionAT = null;
                 a.FechaRetencionAC = null;
             }
-
             return a;
-        }
-
-        public async Task<Activo> ValidadorImportador(Activo a)
-        {
-            if (!await ExisteElemento(x => x.Id.Equals(a.EntradaClasificacionId.Trim(), StringComparison.InvariantCultureIgnoreCase)
-       || x.Eliminada != true)
-       || !await ExisteArchivo(x => x.Id.Equals(a.ArchivoOrigenId.Trim(), StringComparison.InvariantCultureIgnoreCase)
-                  && x.Eliminada != true)
-       || await Existe(x => x.IDunico.Equals(a.IDunico, StringComparison.InvariantCultureIgnoreCase)))
-            {
-                a = new Activo();
-            }
-            else
-            {
-                await CrearAsync(a);
-            }
-
-            return a;
-        }
-        public async Task<byte[]> ImportarActivos(byte[] file, string ArchivId, string TipoId, string OrigenId, string formatoFecha)
-        {
-            IoImportarActivos importador = new IoImportarActivos(this, this.logger,
-                proveedorOpciones, Config);
-            byte[] archivo= await  importador.ImportandoDatos(file,ArchivId,TipoId,OrigenId, formatoFecha);
-            return archivo;
-        }
-        public async Task<ICollection<string>> Eliminar(string[] ids)
-        {
-            Activo c;
-            ICollection<string> listaEliminados = new HashSet<string>();
-            foreach (var Id in ids)
-            {
-                c = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (c != null)
-                {
-                   
-                        c.Eliminada = true;
-                    UDT.Context.Entry(c).State = EntityState.Modified;
-                    
-                    listaEliminados.Add(c.Id);
-                }
-            }
-            UDT.SaveChanges();
-
-            await this.ActualizarConteo(ids,true);
-
-            return listaEliminados;
-
-        }
-
-        public async Task<IPaginado<Activo>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Activo>, IIncludableQueryable<Activo, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
-        {
-                 Query = GetDefaultQuery(Query);
-
-            List<string> especiales = new List<string>() { "Vencidos" };
-            List<FiltroConsulta> filtrosespeciales = new List<FiltroConsulta>();
-            List<Expression<Func<Activo, bool>>> filtros = new List<Expression<Func<Activo, bool>>>();
-
-            foreach(var f in Query.Filtros)
-            {
-                if (especiales.IndexOf(f.Propiedad) >= 0)
-                {
-                    filtrosespeciales.Add(f);
-                }
-            }
-            
-            foreach(var f in filtrosespeciales)
-            {
-                Query.Filtros.Remove(f);
-                switch (f.Propiedad)
-                {
-                    case "Vencidos":
-                        filtros.Add(ObtieneFiltroVencimientos(f));
-                        break;
-                }
-            }
-
-            
-            var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null, filtros);
-            await ObtieneVencimientos(respuesta);
-
-            return respuesta;
         }
 
 
         private async Task ObtieneVencimientos(IPaginado<Activo> respuesta)
         {
+
+            IRepositorioAsync<EntradaClasificacion> repoEC = UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>());
+
             // Busca las entradas de cuaddro qu eno esten en caché para el calculo de vencimientos
             List<string> idsEntrada = new List<string>();
             respuesta.Elementos.GroupBy(x => x.EntradaClasificacionId)
@@ -263,7 +352,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             if (idsEntrada.Count > 0)
             {
-                List<EntradaClasificacion> l = await this.repoEC.ObtenerAsync(x => idsEntrada.Contains(x.Id.Trim()));
+                List<EntradaClasificacion> l = await repoEC.ObtenerAsync(x => idsEntrada.Contains(x.Id.Trim()));
                 foreach (var ec in l)
                 {
                     cache.Add<EntradaClasificacion>($"ec-{ec.Id}", ec, TimeSpan.FromMinutes(5));
@@ -306,148 +395,96 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                            );
         }
 
+        #endregion
 
-        public async Task<Activo> UnicoAsync(Expression<Func<Activo, bool>> predicado = null, Func<IQueryable<Activo>, IOrderedQueryable<Activo>> ordenarPor = null, Func<IQueryable<Activo>, IIncludableQueryable<Activo, object>> incluir = null, bool inhabilitarSegumiento = true)
-        {
-            Activo a = await this.repo.UnicoAsync(predicado);
-            return a.Copia();
-        }
-        public Task<List<Activo>> ObtenerAsync(Expression<Func<Activo, bool>> predicado)
-        {
-            return this.repo.ObtenerAsync(predicado);
-        }
 
-        private async Task<string> RestaurarNombre(string nombre, string ArchivoId, string id, string IdElemento)
-        {
+        #region reportes
 
-            if (await Existe(x =>
-        x.Id != id && x.Nombre.Equals(nombre, StringComparison.InvariantCultureIgnoreCase)
-        && x.Eliminada == false
-         && x.ArchivoId.Equals(ArchivoId, StringComparison.InvariantCultureIgnoreCase)
-         && x.EntradaClasificacionId.Equals(IdElemento, StringComparison.InvariantCultureIgnoreCase)))
+        /// <summary>
+        /// Crea el reporte de guía simple de archivo
+        /// </summary>
+        /// <param name="ArchivoId">Identificador del archivo para el reporte</param>
+        /// <returns></returns>
+        public async Task<byte[]> ReporteCaratulaActivo(string Dominio, string UnidadOrganizacinal, string ActivoId)
+        {
+            try
             {
-
-                nombre = nombre + " restaurado " + DateTime.Now.Ticks;
-            }
-            else
-            {
-            }
-
-
-            return nombre;
-
-        }
-        public async Task<List<string>> EliminarActivos(string[] ids)
-        {
-            Activo ap;
-            List<string> listaEliminados = new List<string>();
-            foreach (var Id in ids)
-            {
-                ap = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (ap != null)
+                logger.LogInformation("Reporte");
+                ActivoAcervo g = new ActivoAcervo
                 {
-                    UDT.Context.Entry(ap).State = EntityState.Deleted;
-                    listaEliminados.Add(ap.Id);
-                }
-            }
-            UDT.SaveChanges();
-            return listaEliminados;
-        }
-        public async Task<IEnumerable<string>> Restaurar(string[] ids)
-        {
-            Activo c;
-            ICollection<string> listaEliminados = new HashSet<string>();
+                    Activo = await repo.UnicoAsync(x => x.Id == ActivoId, null,
+                    y => y.Include(z => z.EntradaClasificacion)
+                    .ThenInclude(a => a.DisposicionEntrada)),
+                    Dominio = Dominio,
+                    FechaApertura = "",
+                    FechaCierre = "",
+                    FechaRetencionAC = "",
+                    FechaRetencionAT = "",
+                    TecnicaSeleccion = "",
+                    UnidadOrganizacional = UnidadOrganizacinal,
+                    Valoraciones = new List<TipoValoracionDocumental>()
+                };
 
-            foreach (var Id in ids)
-            {
+                if (g.Activo == null) throw new EXNoEncontrado(ActivoId);
 
-                c = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
-                if (c != null)
+                var r = await ServicioReporteEntidad.UnicoAsync(x => x.Id == "caratulaactivo");
+                if (r == null) throw new EXNoEncontrado("reporte: caratulaactivo");
+
+                g.FechaApertura = g.Activo.FechaApertura.ToString("dd/MM/yyyy");
+                g.FechaCierre = g.Activo.FechaCierre.HasValue ? g.Activo.FechaCierre.Value.ToString("dd/MM/yyyy") : "";
+                g.FechaRetencionAC = g.Activo.FechaRetencionAC.HasValue ? g.Activo.FechaRetencionAC.Value.ToString("dd/MM/yyyy") : "";
+                g.FechaRetencionAT = g.Activo.FechaRetencionAT.HasValue ? g.Activo.FechaRetencionAT.Value.ToString("dd/MM/yyyy") : "";
+                g.TecnicaSeleccion = g.Activo.EntradaClasificacion.DisposicionEntrada.Nombre;
+                g.EntradaClasificacion = g.Activo.EntradaClasificacion;
+                foreach (var item in UDT.Context.ValoracionEntradaClasificacion.Where(x => x.EntradaClasificacionId == g.Activo.EntradaClasificacionId).ToList())
                 {
-                    c.Nombre = await RestaurarNombre(c.Nombre, c.ArchivoId, c.Id, c.EntradaClasificacionId);
-                    c.Eliminada = false;
-                    UDT.Context.Entry(c).State = EntityState.Modified;
-                    listaEliminados.Add(c.Id);
-                    
+                    g.Valoraciones.Add(UDT.Context.TipoValoracionDocumental.Find(item.TipoValoracionDocumentalId));
                 }
-            }
-            UDT.SaveChanges();
-            await this.ActualizarConteo(ids, false);
 
-            return listaEliminados;
+                string jsonString = JsonSerializer.Serialize(g);
+
+                logger.LogInformation(jsonString);
+
+                byte[] data = Convert.FromBase64String(r.Plantilla);
+
+                return ReporteEntidades.ReportePlantilla(data, jsonString, Config.Value.ruta_cache_fisico, true);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.ToString());
+                throw;
+            }
+
+          
         }
+
+        #endregion
+
+        // ---------------------------------------------------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
         public Task<List<Activo>> ObtenerAsync(string SqlCommand)
         {
             return this.repo.ObtenerAsync(SqlCommand);
         }
       
-        private async Task AdministracionEstadisticas(string ArchivoId, string EntradaClasificacionId, int cantidad, int metodo) 
-        {
-            sevEstadisticas = new ServicioEstadisticaClasificacionAcervo(proveedorOpciones, Config, this.logger);
 
 
-            List<Activo> lisActivo  = await this.repo.ObtenerAsync(x => x.EntradaClasificacionId.Equals(EntradaClasificacionId, StringComparison.InvariantCultureIgnoreCase)
-                                                     && x.ArchivoId.Equals(ArchivoId, StringComparison.InvariantCultureIgnoreCase));
-            EntradaClasificacion ec = await this.repoEC.UnicoAsync(x => x.Id.Equals(EntradaClasificacionId, StringComparison.InvariantCultureIgnoreCase));
-            
-            if (metodo== 1) 
-                await sevEstadisticas.RegistroAñadido(ArchivoId, ec.CuadroClasifiacionId, EntradaClasificacionId, cantidad);
-            if (metodo==2) 
-                await sevEstadisticas.RegistroEliminado(ArchivoId, ec.CuadroClasifiacionId, EntradaClasificacionId, cantidad);
-            if(metodo==3)
-                await sevEstadisticas.RegistroRestaurado(ArchivoId, ec.CuadroClasifiacionId, EntradaClasificacionId, cantidad);
-            if(metodo==4)
-                await sevEstadisticas.ActualizarConteo(ArchivoId);
 
-
-        }
-        private async Task ActualizarConteo(string[] ids, bool eliminado) 
-        {
-            List<Activo> listaActivos = await this.repo.ObtenerAsync(x => ids.Contains(x.Id));
-            foreach (var a in listaActivos.GroupBy
-                (x=>new { x.ArchivoId,x.EntradaClasificacionId})
-                .Select(y=>new {ARchivoID=y.Key.ArchivoId,EntradaID=y.Key.EntradaClasificacionId, TotalActivos=y.ToList().Count() }).ToList())
-            {
-                if (eliminado)
-                    await AdministracionEstadisticas(a.ARchivoID, a.EntradaID, Convert.ToInt32(a.TotalActivos),2);
-                else
-                    await AdministracionEstadisticas(a.ARchivoID, a.EntradaID, Convert.ToInt32(a.TotalActivos),3);
-            }
-
-
-        }
         public async Task<List<string>> Purgar()
         {
-            List<Activo> ListaActivosEliminados = await this.ObtenerAsync(x => x.Eliminada == true);
-            if (ListaActivosEliminados.Count > 0) 
-            {
-                ServicioHistorialArchivoActivo SHAA = new ServicioHistorialArchivoActivo(this.proveedorOpciones, logHAA);
-                ServicioActivoPrestamo sap = new ServicioActivoPrestamo(this.proveedorOpciones, logerSAP);
-                ServicioActivoTransferencia sat = new ServicioActivoTransferencia(this.proveedorOpciones, LoggerCC);
-                ServicioActivoDeclinado sad = new ServicioActivoDeclinado(this.proveedorOpciones, LoggerCC);
-                ServicioAmpliacion sa = new ServicioAmpliacion(this.proveedorOpciones, logerA);
-                ServicioEstadisticaClasificacionAcervo servicioEstadistica = new ServicioEstadisticaClasificacionAcervo(this.proveedorOpciones,Config,logger);
-                List<HistorialArchivoActivo> ListHAA = await SHAA.ObtenerAsync(x => x.ActivoId.Contains(ListaActivosEliminados.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
-                List<Ampliacion> listaAmpliacion = await sa.ObtenerAsync(x=>x.ActivoId.Contains(ListaActivosEliminados.Select(x=>x.Id).FirstOrDefault())).ConfigureAwait(false);
 
-                await SHAA.Eliminar(ListaIDsEliminar(ListHAA.Select(x => x.Id).ToArray())).ConfigureAwait(false);
-                await sa.Eliminar(ListaIDsEliminar(listaAmpliacion.Select(x => x.Id).ToArray())).ConfigureAwait(false);
-                await sap.EliminarActivosPrestamos(2, ListaIDsEliminar(ListaActivosEliminados.Select(x => x.Id).ToArray())).ConfigureAwait(false);
-                await sat.Eliminar(ListaIDsEliminar(ListaActivosEliminados.Select(x => x.Id).ToArray())).ConfigureAwait(false);
-                await sad.Eliminar(ListaIDsEliminar(ListaActivosEliminados.Select(x => x.Id).ToArray())).ConfigureAwait(false);
-                foreach (Activo a in ListaActivosEliminados)
-                {
-                    await servicioEstadistica.EliminarEstadisticos(1, ListaActivosEliminados.Select(x=>x.ArchivoId).ToArray());
-                }
+            await Task.Delay(1);
+            return null;
 
-            }
-
-            return ListaIDsEliminar(ListaActivosEliminados.Select(x => x.Id).ToArray()).ToList();
         }
-        private string[] ListaIDsEliminar(string[]ids) 
-        {
-            return ids;
-        }
+
 
         #region Sin Implementar
 

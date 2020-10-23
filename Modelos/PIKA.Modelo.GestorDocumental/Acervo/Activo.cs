@@ -8,6 +8,7 @@ using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
 using System.ComponentModel.DataAnnotations.Schema;
 using PIKA.Constantes.Aplicaciones.GestorDocumental;
+using PIKA.Modelo.GestorDocumental.Reportes;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -17,7 +18,8 @@ namespace PIKA.Modelo.GestorDocumental
     [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ACTIVOS, 
         EntidadHijo: "ampliacion", Cardinalidad: TipoCardinalidad.UnoVarios,
         PropiedadPadre: "Id", PropiedadHijo: "ActivoId")]
-    public class Activo: Entidad<string>, IEntidadRelacionada, IEntidadIdElectronico, IEntidadEliminada
+    public class Activo: Entidad<string>, IEntidadRelacionada, IEntidadIdElectronico, 
+        IEntidadEliminada, IEntidadReportes
     {
 
         public Activo()
@@ -28,12 +30,23 @@ namespace PIKA.Modelo.GestorDocumental
             PrestamosRelacionados = new HashSet<ActivoPrestamo>();
             TransferenciasRelacionados = new HashSet<ActivoTransferencia>();
             DeclinadosTransferenciaRelacionados = new HashSet<ActivoDeclinado>();
+
+            this.Reportes = new List<IProveedorReporte>();
+            this.Reportes.Add(new ReporteCaratulaActivo());
         }
 
         [Prop(Required: false, isId: true, Visible: false, OrderIndex: 0)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.update)]
         public override string Id { get => base.Id; set => base.Id = value; }
 
+
+        /// <summary>
+        /// Identificador único del cuadro de clasificación, 
+        /// Este se llena del lado del servidor
+        /// </summary>
+        [Prop(Required: false, OrderIndex: 0, Visible: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+        public string CuadroClasificacionId { get; set; }
 
 
         /// <summary>
@@ -134,7 +147,6 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         [Prop(Required: false, OrderIndex: 6 , Visible:false)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.none)]
-        [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false)]
         public string ArchivoOrigenId { get; set; }
 
 
@@ -142,9 +154,8 @@ namespace PIKA.Modelo.GestorDocumental
         /// Identificador único del archivo actual del activo
         /// ESTOS VALORES SE CALCULAR POR SISTEMA  EN BASE AL LOS PROCESOS DE TRASNFENRENCIA
         /// </summary>
-        [Prop(Required: true, OrderIndex: 4, Visible: true)]
-        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
-        [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false)]
+        [Prop(Required: true, OrderIndex: 600, Visible: false, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "ArchivoId")]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string ArchivoId { get; set; }
         //# la relacion del actuivo con archovo es de 1 a 1, un activo puede estar en un sólo archivo al mismo tiempo
 
@@ -218,6 +229,11 @@ namespace PIKA.Modelo.GestorDocumental
         [List("", false, false, false, "0", "0,7,15,30,60,90,120,150,180")]
         public int? Vencidos { get; set; }
 
+
+        [XmlIgnore]
+        [JsonIgnore]
+        public CuadroClasificacion CuadroClasificacion { get; set; }
+
         [XmlIgnore]
         [JsonIgnore]
         public EntradaClasificacion EntradaClasificacion { get; set; }
@@ -262,6 +278,12 @@ namespace PIKA.Modelo.GestorDocumental
         [XmlIgnore]
         [JsonIgnore]
         public virtual ICollection<ActivoDeclinado> DeclinadosTransferenciaRelacionados { get; set; }
+
+
+        [NotMapped]
+        [JsonIgnore]
+        [XmlIgnore]
+        public List<IProveedorReporte> Reportes { get; set; }
 
     }
 }

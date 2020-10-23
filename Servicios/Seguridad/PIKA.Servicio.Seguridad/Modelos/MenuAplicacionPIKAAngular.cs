@@ -56,12 +56,6 @@ namespace PIKA.Servicio.Seguridad.Modelos
             el.TokenMod = ConstantesAppGestionDocumental.MODULO_CUADROCLASIF;
             gd.Hijos.Add(el);
 
-            el = CreaElemento(10, "", "Inventario de expedientes", "/pages/tabular/");
-            el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "activo" });
-            el.TokenApp = ConstantesAppGestionDocumental.APP_ID;
-            el.TokenMod = ConstantesAppGestionDocumental.MODULO_ACTIVOS;
-            gd.Hijos.Add(el);
-
             el = CreaElemento(20, "", "Unidades de Archivo", "/pages/tabular/");
             el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "archivo" });
             el.TokenApp = ConstantesAppGestionDocumental.APP_ID;
@@ -72,8 +66,6 @@ namespace PIKA.Servicio.Seguridad.Modelos
             catalogos.Hijos.AddRange(CatalogosGestionDocumental());
 
             gd.Hijos.Add(catalogos);
-
-            
 
             return gd;
         }
@@ -117,10 +109,7 @@ namespace PIKA.Servicio.Seguridad.Modelos
         {
             ElementoMenu gd = CreaElemento(index, "settings-2-outline", "Configuración sistema", "");
 
-            ElementoMenu el = CreaElemento(5, "", "Permisos", "/pages/permisos");
-            el.TokenApp = ConstantesAppSeguridad.APP_ID;
-            el.TokenMod = ConstantesAppSeguridad.MODULO_ACL;
-            gd.Hijos.Add(el);
+           
 
             return gd;
         }
@@ -134,17 +123,25 @@ namespace PIKA.Servicio.Seguridad.Modelos
 
             ElementoMenu gd = CreaElemento(index, "map-outline", "Configuración organización", "");
 
-            ElementoMenu el = CreaElemento(5, "", "Dominios", "/pages/tabular/");
-            el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "dominio" });
-            el.TokenApp = ConstantesAppOrganizacion.APP_ID;
-            el.TokenMod = ConstantesAppOrganizacion.MODULO_DOMINIO;
-            gd.Hijos.Add(el);
+            //ElementoMenu el = CreaElemento(5, "", "Dominios", "/pages/tabular/");
+            //el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "dominio" });
+            //el.TokenApp = ConstantesAppOrganizacion.APP_ID;
+            //el.TokenMod = ConstantesAppOrganizacion.MODULO_DOMINIO;
+            //gd.Hijos.Add(el);
 
-            el = CreaElemento(10, "", "Unidades organizacionales", "/pages/tabular/");
-            el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "unidadorganizacional" });
-            el.TokenApp = ConstantesAppOrganizacion.APP_ID;
-            el.TokenMod = ConstantesAppOrganizacion.MODULO_UNIDADORGANIZACIONAL;
+            //el = CreaElemento(10, "", "Unidades organizacionales", "/pages/tabular/");
+            //el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "unidadorganizacional" });
+            //el.TokenApp = ConstantesAppOrganizacion.APP_ID;
+            //el.TokenMod = ConstantesAppOrganizacion.MODULO_UNIDADORGANIZACIONAL;
 
+            //gd.Hijos.Add(el);
+
+
+
+            ElementoMenu  el = CreaElemento(5, "", "Usuarios", "/pages/tabular/");
+            el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "propiedadesusuario" });
+            el.TokenApp = ConstantesAppSeguridad.APP_ID;
+            el.TokenMod = ConstantesAppSeguridad.MODULO_USUARIOS;
             gd.Hijos.Add(el);
 
             el = CreaElemento(15, "", "Roles", "/pages/tabular/");
@@ -154,19 +151,9 @@ namespace PIKA.Servicio.Seguridad.Modelos
             gd.Hijos.Add(el);
 
 
-
-            el = CreaElemento(20, "", "Usuarios", "/pages/tabular/");
-            el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "propiedadesusuario" });
+            el = CreaElemento(25, "", "Permisos", "/pages/permisos");
             el.TokenApp = ConstantesAppSeguridad.APP_ID;
-            el.TokenMod = ConstantesAppSeguridad.MODULO_USUARIOS;
-            gd.Hijos.Add(el);
-
-           
-
-            el = CreaElemento(5, "", "Volumenes", "/pages/tabular/");
-            el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "volumen" });
-            el.TokenApp = ConstantesAppContenido.APP_ID;
-            el.TokenMod = ConstantesAppContenido.MODULO_ADMIN_CONFIGURACION;
+            el.TokenMod = ConstantesAppSeguridad.MODULO_ACL;
             gd.Hijos.Add(el);
 
             return gd;
@@ -185,6 +172,12 @@ namespace PIKA.Servicio.Seguridad.Modelos
             el.TokenMod = ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO;
             gd.Hijos.Add(el);
 
+
+            el = CreaElemento(5, "", "Volumenes", "/pages/tabular/");
+            el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "volumen" });
+            el.TokenApp = ConstantesAppContenido.APP_ID;
+            el.TokenMod = ConstantesAppContenido.MODULO_ADMIN_CONFIGURACION;
+            gd.Hijos.Add(el);
 
             return gd;
         }

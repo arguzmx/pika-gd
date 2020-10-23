@@ -62,7 +62,6 @@
 
   <ItemGroup>
     <Folder Include="Data\Configuracion\Archivo\" />
-    <Folder Include="Servicios\Reporte\Modelos\" />
   </ItemGroup>
 
 

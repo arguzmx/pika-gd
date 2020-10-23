@@ -8,19 +8,30 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using System.Drawing.Text;
 using System.Runtime.CompilerServices;
+using DocumentFormat.OpenXml.ExtendedProperties;
+using System.Threading;
 
 namespace PIKA.Infraestrctura.Reportes
 {
 
-    public class TokensCelda {
-        public TokensCelda(int col, List<string> tokens)
+    public class ParteToken
+    {
+        public ParteToken()
         {
-            this.Columna = col;
-            this.Tokens = tokens;
+            Tokens = new List<string>();
         }
-        public int Columna { get; set; }
+
+        public int Parrafo { get; set; }
+        public int Run { get; set; }
+
+        public int Text { get; set; }
+        public string Texto { get; set; }
+        public string TextoNuevo { get; set; }
+
         public List<string> Tokens { get; set; }
+
     }
+
 
 
     public static class ReporteEntidades
@@ -29,369 +40,11 @@ namespace PIKA.Infraestrctura.Reportes
         public const string PREFIJO_BARCODE1D = "CB:1D:";
         public const string PREFIJO_BARCODE2D = "CB:2D:";
 
-        #region gestion de tablas
-
-
-        private static Table ProcesaTabla(Table t, string TablaId, dynamic objeto)
-        {
-
-            int total = ((JArray)objeto[TablaId]).Count;
-
-            if (total > 0)
-            {
-
-                // Elimina el identificador de la tabla en la celda cero
-                var r0 = t.OfType<TableRow>().ElementAt(1);
-                List<TableCell> celdas = r0.Descendants<TableCell>().ToList();
-                for (int i = 0; i < celdas.Count; i++)
-                {
-                    List<Paragraph> parrafos = celdas[i].OfType<Paragraph>().ToList();
-                    if (i == 0)
-                    {
-                        int pindex = parrafos.Count - 1;
-                        int rindex = 0;
-                        int tindex = 0;
-                        string texto0 = celdas[i].InnerText.Replace($"*{TablaId}", "");
-
-                        parrafos.ForEach(pp =>
-                        {
-                            List<Run> runs = pp.OfType<Run>().ToList();
-                            rindex = runs.Count - 1;
-                            runs.ForEach(u => {
-                                List<Text> textos = u.OfType<Text>().ToList();
-                                textos.ForEach(t =>
-                                {
-                                    tindex = textos.Count - 1;
-                                    t.Text = "";
-                                });
-                            });
-
-                        });
-
-                        var runs = parrafos[pindex].OfType<Run>().ToList();
-                        var text = runs[rindex].OfType<Text>().ToList();
-                        text[tindex].Text = texto0;
-
-                    }
-                }
-
-
-                var clon = (TableRow)t.OfType<TableRow>().ElementAt(1).Clone();
-                // ontiene los tokens de cada  celda en el renglon
-                celdas = clon.Descendants<TableCell>().ToList();
-                List<TokensCelda> alltokens = new List<TokensCelda>();
-                for (int i = 0; i < celdas.Count; i++)
-                {
-                    List<Paragraph> parrafos = celdas[i].OfType<Paragraph>().ToList();
-                    for (int j = 0; j < parrafos.Count; j++) 
-                    {
-                        string texto = parrafos[j].InnerText;
-                        if (!string.IsNullOrEmpty(texto))
-                        {
-                            List<string> l = ObtieneTokens(texto);
-                            if (l.Count > 0)
-                            {
-                                alltokens.Add(new TokensCelda(i, l));
-                            }
-                        }
-                    }
-                }
-                
-
-                // Inserta los renglones restantes
-                for (int i = 0; i < (total - 1); i++)
-                {
-                    var insertar = (TableRow)clon.Clone();
-                    t.Descendants<TableRow>().Last().InsertAfterSelf(insertar);
-                }
-
-                List<TableRow> renglones = t.OfType<TableRow>().ToList();
-                for (int i = 1; i < renglones.Count; i++)
-                {
-                    // Itera sobre la cerdas del renglon
-                    celdas = renglones[i].Descendants<TableCell>().ToList();
-                    for (int c = 0; c < celdas.Count; c++)
-                    {
-                        // Reemplaza para cad token localizado en la columna
-                        alltokens.Where(x => x.Columna == c).ToList().ForEach(columna =>
-                        {
-                            columna.Tokens.ForEach(token =>
-                            {
-                                List<Paragraph> parrafos = celdas[c].OfType<Paragraph>().ToList();
-                                for (int p = 0; p < parrafos.Count; p++)
-                                {
-                                    string texto = parrafos[p].InnerText;
-                                    if (!string.IsNullOrEmpty(texto))
-                                    {
-                                        if(token.EsTokenTexto())
-                                        {
-                                            var x = ReemplazaTokenTabla(parrafos[p], TablaId, token, objeto, i - 1);
-                                            parrafos[p].InnerXml = x.InnerXml;
-                                        }
-                                    }
-                                }
-                            });
-                        });
-                    }
-                }
-
-            }
-            else
-            {
-                t.Descendants<TableRow>().Last().Remove();
-            }
-
-
-            return t;
-        }
-
-
-        private static Paragraph ReemplazaTokenTabla(Paragraph p, string TablaId, string Token, dynamic Objeto, int Indice)
-        {
-            string valor = ObtieneValorTokenTabla(TablaId, Token, Objeto, Indice);
-            string comparador = "#" + Token + "#";
-
-            if (p.InnerText.Contains(comparador))
-            {
-
-                int ultimorunindex = 0;
-                string texto = "";
-
-                List<Run> r = p.OfType<Run>().ToList();
-                for (int i = 0; i < r.Count; i++)
-                {
-                    List<Text> t = r[i].OfType<Text>().ToList();
-                    for (int j = 0; j < t.Count; j++)
-                    {
-                        texto = texto + t[j].Text;
-                        if (texto.Contains(comparador))
-                        {
-
-                            for (int k = i; k >= ultimorunindex; k--)
-                            {
-                                string demo = "";
-                                for (int l = k; l <= i; l++)
-                                {
-                                    demo = demo + r[l].InnerText;
-                                    if (demo.Contains(comparador))
-                                    {
-                                        if (demo == comparador)
-                                        {
-                                            bool primero = true;
-                                            for (int h = k; h <= i; h++)
-                                            {
-                                                List<Text> fixers = r[h].OfType<Text>().ToList();
-                                                for (int f = 0; f < fixers.Count; f++)
-                                                {
-                                                    if (primero)
-                                                    {
-                                                        fixers[f].Text = valor;
-                                                        primero = false;
-                                                    }
-                                                    else
-                                                    {
-                                                        fixers[f].Text = "";
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            throw new Exception("Caso no controlado ReemplazaTokenTabla");
-                                        }
-
-                                        texto = "";
-                                        ultimorunindex = i;
-                                        break;
-                                    }
-
-                                }
-                            }
-
-
-
-
-                        }
-                    }
-                }
-
-
-            }
-
-            return p;
-        }
-
-        private static string ObtieneValorTokenTabla(string TablaId, string Token, dynamic Objeto, int Indice)
-        {
-            dynamic renglon = Objeto[TablaId][Indice];
-            return (string)renglon[Token];
-        }
-
-        #endregion
-
-
-        #region gestion parrafos
 
  
-        private static Paragraph ReemplazaToken(Paragraph p, string Token, dynamic Objeto)
-        {
-            string valor = ObtieneValorToken(Token, Objeto);
-            string comparador = "#" + Token + "#";
-
-            if (p.InnerText.Contains(comparador))
-            {
-
-                int ultimorunindex = 0;
-                string texto = "";
-
-                List<Run> r = p.OfType<Run>().ToList();
-                for (int i = 0; i < r.Count; i++)
-                {
-                    List<Text> t = r[i].OfType<Text>().ToList();
-                    for (int j = 0; j < t.Count; j++)
-                    {
-                        texto = texto + t[j].Text;
-                        if (texto.Contains(comparador))
-                        {
-
-                            for (int k = i; k >= ultimorunindex; k--)
-                            {
-                                string demo = "";
-                                for (int l = k; l <= i; l++)
-                                {
-                                    demo = demo + r[l].InnerText;
-                                    if (demo.Contains(comparador))
-                                    {
-                                        if (demo == comparador)
-                                        {
-                                            bool primero = true;
-                                            for (int h = k; h <= i; h++)
-                                            {
-                                                List<Text> fixers = r[h].OfType<Text>().ToList();
-                                                for (int f = 0; f < fixers.Count; f++)
-                                                {
-                                                    if (primero)
-                                                    {
-                                                        fixers[f].Text = valor;
-                                                        primero = false;
-                                                    }
-                                                    else
-                                                    {
-                                                        fixers[f].Text = "";
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            throw new Exception("Caso no controlado ReemplazaToken");
-                                        }
-
-                                        texto = "";
-                                        ultimorunindex = i;
-                                        break;
-                                    }
-
-                                }
-                            }
-
-
-
-
-                        }
-                    }
-                }
-
-
-            }
-            return p;
-        }
-
-        private static string ObtieneValorToken(string Token, dynamic Objeto)
-        {
-            string[] lista = Token.Split('.');
-            int index = 1;
-            dynamic d = null;
-            string valor = "";
-            try
-            {
-                foreach (string s in lista)
-                {
-                    if (index == 1)
-                    {
-                        d = Objeto[s];
-                    }
-                    else
-                    {
-                        d = d[s];
-                    }
-                    if (index == lista.Length)
-                    {
-                        valor = (string)d;
-                    }
-                    index++;
-                }
-                return valor;
-            }
-            catch (Exception)
-            {
-
-                return "";
-            }
-            
-        }
-
-
-        #endregion
 
 
         #region comunes
-
-        private static List<string> ObtieneTokens(string texto)
-        {
-            List<string> lista = new List<string>();
-            int posicion = 0;
-            int inicio;
-            int fin;
-            bool terminado = false;
-
-            do
-            {
-                inicio = texto.IndexOf("#", posicion);
-                if (inicio >= 0)
-                {
-                    if (texto.Length > inicio + 1)
-                    {
-                        fin = texto.IndexOf("#", inicio + 1);
-                        if (fin >= 0)
-                        {
-                            string item = texto.Substring(inicio + 1, (fin - (inicio + 1)));
-                            lista.Add(item);
-                            posicion = fin + 1;
-                        }
-                        else
-                        {
-                            terminado = true;
-                        }
-
-                    }
-                    else
-                    {
-                        terminado = true;
-                    }
-                }
-                else
-                {
-                    terminado = true;
-                }
-
-            } while (!terminado);
-
-
-
-            return lista;
-        }
-
 
         public static bool EsCodigo1D(this string token)
         {
@@ -452,80 +105,7 @@ namespace PIKA.Infraestrctura.Reportes
 
         #endregion region
 
-
-        #region Codigos opticos
-
-
-        private static void procesaCodigoLineal(string token, dynamic objeto, string rutaTemporales,
-            WordprocessingDocument doc, Paragraph p)
-        {
-            TokenCB1D config = ObtieneToken1D(token);
-            if (config != null)
-            {
-
-                config.Dato = ObtieneValorToken(config.Dato, objeto);
-
-                string ruta = CodigosOpticos.GeneraBarcodeLineal(config, rutaTemporales);
-                if (File.Exists(ruta))
-                {
-                    bool primero = true;
-                    p.OfType<Run>().ToList().ForEach(p =>
-                    {
-
-                        p.OfType<Text>().ToList().ForEach(t =>
-                        {
-                            t.Text = "";
-                        });
-
-                        if (primero)
-                        {
-                            ImagenesWord.InsertaImagen(doc, p, ruta,
-                                CodigosOpticos.Cm2Pixeles(config.Ancho),
-                                CodigosOpticos.Cm2Pixeles(config.Alto));
-                            primero = false;
-                        }
-                    });
-
-                }
-            }
-        }
-
-        private static void procesaCodigoQR(string token, dynamic objeto, string rutaTemporales,
-            WordprocessingDocument doc, Paragraph p)
-        {
-            TokenCB2D config = ObtieneToken2D(token);
-            if (config != null)
-            {
-
-                config.Dato = ObtieneValorToken(config.Dato, objeto);
-
-                string ruta = CodigosOpticos.GeneraBarcodeQR(config, rutaTemporales);
-                if (File.Exists(ruta))
-                {
-                    bool primero = true;
-                    p.OfType<Run>().ToList().ForEach(p =>
-                    {
-
-                        p.OfType<Text>().ToList().ForEach(t =>
-                        {
-                            t.Text = "";
-                        });
-
-                        if (primero)
-                        {
-                            ImagenesWord.InsertaImagen(doc, p, ruta,
-                                CodigosOpticos.Cm2Pixeles(config.Ancho),
-                                CodigosOpticos.Cm2Pixeles(config.Ancho));
-                            primero = false;
-                        }
-                    });
-
-                }
-            }
-        }
-
-
-        #endregion
+ 
 
 
         /// <summary>
@@ -558,6 +138,281 @@ namespace PIKA.Infraestrctura.Reportes
         }
 
 
+
+        private static void ProcesadorParrafos(List<Paragraph> parrafos, dynamic data, string rutaTemporales, WordprocessingDocument wpd, bool eliminar,
+            bool useIndex = false, int index = 0, string TablaId = "")
+        {
+
+            
+            List<ParteToken> tokens = new List<ParteToken>();
+            for(int p=0; p < parrafos.Count; p++)
+            {
+                if(!string.IsNullOrEmpty(parrafos[p].InnerText))
+                {
+                    string innert = parrafos[p].InnerText;
+                    if (innert.IndexOf('#') >= 0)
+                    {
+                        var runs = parrafos[p].OfType<Run>().ToList();
+                        for (int r = 0; r < runs.Count; r++)
+                        {
+                            var ts = runs[r].OfType<Text>().ToList();
+                            for (int t = 0; t < ts.Count; t++)
+                            {
+                                tokens.Add(new ParteToken() { Parrafo = p, Run = r, 
+                                    Text = t, Texto = ts[t].Text, TextoNuevo = ts[t].Text
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            var grupos =  tokens.GroupBy(x => x.Parrafo).Select(x => new { p = x.Key, c = x.Count() });
+
+            foreach(var g in grupos)
+            {
+
+                var renglon = tokens.Where(x => x.Parrafo == g.p).ToList();
+                
+                for (int i = 0; i < renglon.Count(); i++)
+                {
+
+                    if (!renglon[i].Texto.ConteoParChar('#'))
+                    {
+                        string temporal = renglon[i].TextoNuevo;
+                        for (int j = i + 1; j < renglon.Count(); j++)
+                        {
+                            temporal = temporal + renglon[j].TextoNuevo;
+                            if (temporal.ConteoParChar('#'))
+                            {
+                                for (int k = i; k <= j; k++)
+                                {
+                                    renglon[k].TextoNuevo = (k == j) ? temporal : "";
+                                }
+                                break;
+                            }
+
+                        }
+                    }
+ 
+                }
+            }
+
+            foreach (var item in tokens)
+            {
+               var runs  = parrafos[item.Parrafo].OfType<Run>().ToList();
+               var textos = runs[item.Run].OfType<Text>().ToList();
+               textos[item.Text].Text = item.TextoNuevo;
+
+                if (item.TextoNuevo.IndexOf('#') >= 0)
+                {
+                    bool inicio = false;
+                    string token = "";
+                    foreach (char c in item.TextoNuevo)
+                    {
+                        
+                        if(c=='#')
+                        {
+                            if (inicio)
+                            {
+                                inicio = false;
+                                item.Tokens.Add(token);
+                                token = "";
+                            } else
+                            {
+                                inicio = true;
+                            }
+                        } else
+                        {
+                            if (inicio)
+                            {
+                                token += c; 
+                            }
+                        }
+                    };
+                }
+
+                foreach (var t in item.Tokens)
+                {
+
+                    if (t.EsTokenTexto())
+                    {
+                        if (useIndex)
+                        {
+                            textos[item.Text].Text = ObtieneValorIndizado(TablaId, t, data, index);
+                        } else
+                        {
+                            textos[item.Text].Text = ObtieneValorDato(t, data);
+                        }
+                        
+                    }
+
+                    if (t.EsCodigo1D())
+                    {
+                        textos[item.Text].Text = "";
+
+                        TokenCB1D config = ObtieneToken1D(t);
+                        if (config != null)
+                        {
+                            config.Texto = ObtieneValorDato(config.Dato, data);
+                            if (!string.IsNullOrEmpty(config.Texto))
+                            {
+                                string ruta = CodigosOpticos.GeneraBarcodeLineal(config, rutaTemporales);
+                                if (File.Exists(ruta))
+                                {
+                                    ImagenesWord.InsertaImagen(wpd, runs[item.Run], ruta,
+                                     CodigosOpticos.Cm2Pixeles(config.Ancho),
+                                     CodigosOpticos.Cm2Pixeles(config.Alto), eliminar);
+                                }
+                            }
+                            
+                        }
+                        
+                    }
+
+                    if (t.EsCodigo2D())
+                    {
+                        textos[item.Text].Text = "";
+                        TokenCB2D config = ObtieneToken2D(t);
+                        if (config != null)
+                        {
+                            config.Texto = ObtieneValorDato(config.Dato, data);
+                            if (!string.IsNullOrEmpty(config.Texto))
+                            {
+                                string ruta = CodigosOpticos.GeneraBarcodeQR(config, rutaTemporales);
+                                if (File.Exists(ruta))
+                                {
+                                    ImagenesWord.InsertaImagen(wpd, runs[item.Run], ruta,
+                                       CodigosOpticos.Cm2Pixeles(config.Ancho),
+                                       CodigosOpticos.Cm2Pixeles(config.Ancho), eliminar);
+                                }
+                            }
+                        }
+                    }
+
+
+                }
+
+            }
+
+        }
+
+        private static string ObtieneValorDato(string cadena, dynamic data)
+        {
+            List<string> partes = cadena.Split('.').ToList();
+
+            if(partes.Count == 1)
+            {
+
+                return data[partes[0]] ?? "";
+
+            } else
+            {
+                if(data[partes[0]] != null)
+                {
+                    string t = cadena.Replace($"{partes[0]}.", "");
+                    return ObtieneValorDato(t, data[partes[0]]);
+
+                } else
+                {
+                    return "";
+                }
+                
+                
+            }
+        }
+
+        private static string ObtieneValorIndizado(string TablaId, string propiedad, dynamic data, int index)
+        {
+            try
+            {
+                dynamic renglon = data[TablaId][index];
+                return (string)renglon[propiedad];
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+        }
+
+        private static Table ProcesaTablaV2(Table t, string TablaId, dynamic objeto, string rutaTemporales, dynamic data, WordprocessingDocument wpd, bool eliminarTemporal)
+        {
+
+            int total = ((JArray)objeto[TablaId]).Count;
+
+            if (total > 0)
+            {
+
+                // Elimina el identificador de la tabla en la celda cero
+                var r0 = t.OfType<TableRow>().ElementAt(1);
+                List<TableCell> celdas = r0.Descendants<TableCell>().ToList();
+                for (int i = 0; i < celdas.Count; i++)
+                {
+                    List<Paragraph> parrafos = celdas[i].OfType<Paragraph>().ToList();
+                    if (i == 0)
+                    {
+                        int pindex = parrafos.Count - 1;
+                        int rindex = 0;
+                        int tindex = 0;
+                        string texto0 = celdas[i].InnerText.Replace($"*{TablaId}", "");
+
+                        parrafos.ForEach(pp =>
+                        {
+                            List<Run> runs = pp.OfType<Run>().ToList();
+                            rindex = runs.Count - 1;
+                            runs.ForEach(u => {
+                                List<Text> textos = u.OfType<Text>().ToList();
+                                textos.ForEach(t =>
+                                {
+                                    tindex = textos.Count - 1;
+                                    t.Text = "";
+                                });
+                            });
+
+                        });
+
+                        var runs = parrafos[pindex].OfType<Run>().ToList();
+                        var text = runs[rindex].OfType<Text>().ToList();
+                        text[tindex].Text = texto0;
+
+                    }
+                }
+
+
+                var clon = (TableRow)t.OfType<TableRow>().ElementAt(1).Clone();
+
+
+                // Inserta los renglones restantes
+                for (int i = 0; i < (total - 1); i++)
+                {
+                    var insertar = (TableRow)clon.Clone();
+                    t.Descendants<TableRow>().Last().InsertAfterSelf(insertar);
+                }
+
+                List<TableRow> renglones = t.OfType<TableRow>().ToList();
+                for (int i = 1; i < renglones.Count; i++)
+                {
+                    // Itera sobre la cerdas del renglon
+                    celdas = renglones[i].Descendants<TableCell>().ToList();
+                    for (int c = 0; c < celdas.Count; c++)
+                    {
+                        List<Paragraph> parrafos = celdas[c].OfType<Paragraph>().ToList();
+                        ProcesadorParrafos(parrafos, data, rutaTemporales, wpd, eliminarTemporal,  true, c, TablaId);
+                    }
+                }
+
+            }
+            else
+            {
+                t.Descendants<TableRow>().Last().Remove();
+            }
+
+
+            return t;
+        }
+
+
         /// <summary>
         /// Devuelve el documento .docx medificdo en base a los parámetros recibidos
         /// </summary>
@@ -569,7 +424,7 @@ namespace PIKA.Infraestrctura.Reportes
         public static byte[] ReportePlantilla(string rutaPlantilla,
             string propiedesJson, string rutaTemporales, bool eliminarTemporal = true)
         {
-
+            
             if (!File.Exists(rutaPlantilla)) throw new Exception("Plantilla inexistente");
 
             dynamic objeto = JsonConvert.DeserializeObject(propiedesJson);
@@ -585,42 +440,15 @@ namespace PIKA.Infraestrctura.Reportes
 
                 Body b = doc.MainDocumentPart.Document.Body;
 
+
                 List<Paragraph> parrafos = b.OfType<Paragraph>().ToList();
-                for (int i = 0; i < parrafos.Count; i++)
-                {
-                    string texto = parrafos[i].InnerText;
-                    if (!string.IsNullOrEmpty(texto))
-                    {
-                        List<string> l = ObtieneTokens(texto);
-                        if (l.Count > 0)
-                        {
-                            foreach (string s in l)
-                            {
-                                
-                                if(s.EsTokenTexto())
-                                {
-                                    var x = ReemplazaToken(parrafos[i], s, objeto);
-                                    parrafos[i].InnerXml = x.InnerXml;
-                                }
+                //ProcesaParrafos(parrafos, objeto, rutaTemporales, doc);
+                ProcesadorParrafos(parrafos, objeto, rutaTemporales, doc, eliminarTemporal);
 
-                                if (s.EsCodigo1D())
-                                {
-                                    procesaCodigoLineal(s, objeto, rutaTemporales, doc, parrafos[i]);
-                                }
-
-                                if (s.EsCodigo2D())
-                                {
-                                    procesaCodigoQR(s, objeto, rutaTemporales, doc, parrafos[i]);
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-
+                
                 b.OfType<Table>().ToList().ForEach(t =>
                 {
+                    
                     bool tablaEntidades = false;
                     // VErifica si l atabla tiene 2 renglones
                     if (t.OfType<TableRow>().Count() == 2)
@@ -628,16 +456,16 @@ namespace PIKA.Infraestrctura.Reportes
                         var clon = (TableRow)t.OfType<TableRow>().ElementAt(1).Clone();
                         List<TableCell> celdas = clon.Descendants<TableCell>().ToList();
                         // y si la primera celda tiene com oinicio el caracters especial *
+                        
                         if (celdas[0].InnerText.StartsWith("*"))
                         {
                             string clave = celdas[0].InnerText.TrimStart('*').Split('#')[0];
-                            
                             if (objeto[clave] != null)
                             {
                                 if (objeto[clave] is JArray)
                                 {
                                     tablaEntidades = true;
-                                    t = ProcesaTabla(t, clave, objeto);
+                                    t = ProcesaTablaV2(t, clave, objeto, rutaTemporales, objeto, doc, eliminarTemporal);
                                 }
 
                             }
@@ -650,44 +478,15 @@ namespace PIKA.Infraestrctura.Reportes
                     {
                         t.OfType<TableRow>().ToList().ForEach(r =>
                        {
-                           r.OfType<TableCell>().ToList().ForEach(c=>
+                           r.OfType<TableCell>().ToList().ForEach(c =>
                            {
                                List<Paragraph> parrafos = c.OfType<Paragraph>().ToList();
-                               for (int i = 0; i < parrafos.Count; i++)
-                               {
-                                   string texto = parrafos[i].InnerText;
-                                   if (!string.IsNullOrEmpty(texto))
-                                   {
-                                       List<string> l = ObtieneTokens(texto);
-                                       if (l.Count > 0)
-                                       {
-                                           foreach (string s in l)
-                                           {
-
-                                               if (s.EsTokenTexto())
-                                               {
-                                                   var x = ReemplazaToken(parrafos[i], s, objeto);
-                                                   parrafos[i].InnerXml = x.InnerXml;
-                                               }
-
-                                               if (s.EsCodigo1D())
-                                               {
-                                                   procesaCodigoLineal(s, objeto, rutaTemporales, doc, parrafos[i]);
-                                               }
-
-                                               if (s.EsCodigo2D())
-                                               {
-                                                   procesaCodigoQR(s, objeto, rutaTemporales, doc, parrafos[i]);
-                                               }
-                                           }
-                                       }
-                                   }
-                               }
+                               ProcesadorParrafos(parrafos, objeto, rutaTemporales, doc, eliminarTemporal);
                            });
                        });
                     }
                 });
-
+                
                 doc.Save();
             }
 
