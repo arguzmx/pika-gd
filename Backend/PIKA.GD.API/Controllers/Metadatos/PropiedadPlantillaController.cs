@@ -95,18 +95,19 @@ namespace PIKA.GD.API.Controllers.Metadatos
         /// <param name="query">Consulta para la paginación y búsqueda</param>
         /// <returns></returns>
 
-        [HttpGet("page", Name = "GetPagePropiedadPlantilla")]
+        [HttpGet("page/plantilla/{plantillaid}", Name = "GetPagePropiedadPlantilla")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Paginado<PropiedadPlantilla>>> GetPage(
+        public async Task<ActionResult<Paginado<PropiedadPlantilla>>> GetPage(string plantillaid,
             [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
-            var data = await servicioEntidad.ObtenerPaginadoAsync(
-                Query: query,
-                include: null)
-                .ConfigureAwait(false);
+                query.Filtros.Add(new FiltroConsulta() { Propiedad = "PlantillaId", Operador = FiltroConsulta.OP_EQ, Valor = plantillaid });
+                var data = await servicioEntidad.ObtenerPaginadoAsync(
+                    Query: query,
+                    include: null)
+                    .ConfigureAwait(false);
 
-            return Ok(data);
+                return Ok(data);
         }
         /// <summary>
         /// Obtiene un Propiedad Plantilla en base al Id único

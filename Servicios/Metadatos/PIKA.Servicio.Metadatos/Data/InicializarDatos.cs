@@ -14,8 +14,30 @@ namespace PIKA.Servicio.Metadatos.Data
 
             InicializarTipoDato(dbContext, contentPath);
             GeneraTiposAlmacenDefault(dbContext);
-
+            GeneraAlmcenDatosDefault(dbContext);
             // GeneraDatosDemo(dbContext);
+        }
+
+        private static void GeneraAlmcenDatosDefault(DbContextMetadatos dbContext)
+        {
+            AlmacenDatos am = new AlmacenDatos()
+            {
+                Contrasena = "",
+                Direccion = "localhost",
+                Id = "default",
+                Nombre = "DefaultElasticsearch",
+                Protocolo = "",
+                Puerto = "",
+                TipoAlmacenMetadatosId = "esearch",
+                Usuario = ""
+            };
+
+            AlmacenDatos instancia = dbContext.AlmacenesDatos.Find(am.Id);
+            if (instancia == null)
+            {
+                dbContext.AlmacenesDatos.Add(am);
+            }
+            dbContext.SaveChanges();
         }
 
         private static void GeneraTiposAlmacenDefault(DbContextMetadatos dbContext) {
@@ -47,60 +69,6 @@ namespace PIKA.Servicio.Metadatos.Data
 
         }
 
-        private static void GeneraDatosDemo(DbContextMetadatos dbContext)
-        {
-
-
-            AlmacenDatos al = new AlmacenDatos()
-            {
-                Contrasena = null,
-                Direccion = "localhost",
-                Id = "almdemo",
-                Nombre = "Default Elasticsearch",
-                Protocolo = "http://",
-                Puerto = "9200",
-                TipoAlmacenMetadatosId = TipoAlmacenMetadatos.tElasticSearch,
-                Usuario = null
-            };
-
-            dbContext.AlmacenesDatos.Add(al);
-
-            Plantilla plantilla = new Plantilla()
-            {
-                Id = "demo",
-                Eliminada = false,
-                Nombre = "Plantilla demo",
-                OrigenId = "dominio",
-                TipoOrigenId = "dominio",
-                AlmacenDatosId = al.Id
-            };
-
-            Plantilla temp = dbContext.Plantilla.Where(x => x.Id == plantilla.Id).Take(1).SingleOrDefault();
-            if (temp!=null)
-            {
-                temp.Eliminada = plantilla.Eliminada;
-                temp.Nombre = plantilla.Nombre;
-                temp.OrigenId = plantilla.OrigenId;
-                temp.TipoOrigenId = plantilla.TipoOrigenId;
-                temp.AlmacenDatosId = plantilla.AlmacenDatosId;
-                dbContext.Plantilla.Update(temp);
-
-            } else
-            {
-                dbContext.Plantilla.Add(plantilla);
-            }
-
-            PropiedadPlantilla prop;
-            ValidadorNumero vnum;
-            ValidadorTexto vtext;
-
-           
-            
-
-        dbContext.SaveChanges();
-
-
-        }
 
         private static void InicializarTipoDato(DbContextMetadatos dbContext, string contentPath)
         {
