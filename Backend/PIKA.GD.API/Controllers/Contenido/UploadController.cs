@@ -39,20 +39,31 @@ namespace PIKA.GD.API.Controllers.Contenido
             this.logger = logger;
             this.configuracionServidor = opciones.Value;
             FiltroArchivos.minimo = 1024; //1 KB
-            FiltroArchivos.maximo = 1048576; //1 MB
+            FiltroArchivos.maximo = 10485760; //10 MB
             FiltroArchivos.addExt(".jpg");
             FiltroArchivos.addExt(".pdf");
             FiltroArchivos.addExt(".doc");
             FiltroArchivos.addExt(".docx");
+            FiltroArchivos.addExt(".xls");
+            FiltroArchivos.addExt(".xlsx");
+            FiltroArchivos.addExt(".ppt");
+            FiltroArchivos.addExt(".pptx");
+            FiltroArchivos.addExt(".mp4");
+            FiltroArchivos.addExt(".mp3");
+            FiltroArchivos.addExt(".mov");
+            FiltroArchivos.addExt(".avi");
+            FiltroArchivos.addExt(".wmv");
+            FiltroArchivos.addExt(".wav");
+            FiltroArchivos.addExt(".ogg");
+
         }
 
         [HttpPost("completar/{TransaccionId}")]
-        public async Task<IActionResult> FinalizarLote(string TransaccionId)
+        public async Task<ActionResult<List<Pagina>>> FinalizarLote(string TransaccionId)
         {
             string VolId = await servicioTransaccionCarga.ObtieneVolumenIdTransaccion(TransaccionId)
-                .ConfigureAwait(false); 
-
-            if(VolId!=null)
+                .ConfigureAwait(false);
+            if (VolId!=null)
             {
                 IGestorES gestor = await servicioVol.ObtienInstanciaGestor(VolId)
                                .ConfigureAwait(false);
