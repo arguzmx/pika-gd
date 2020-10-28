@@ -58,6 +58,8 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Plantilla>> Post([FromBody] Plantilla entidad)
         {
+            entidad.OrigenId = this.DominioId;
+            entidad.TipoOrigenId = "DOMINIO";
             entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetPlantilla", new { id = entidad.Id.Trim() }, entidad).Value);
         }

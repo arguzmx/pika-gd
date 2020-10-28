@@ -1,5 +1,6 @@
 ﻿using PIKA.Constantes.Aplicaciones.Contenido;
 using PIKA.Constantes.Aplicaciones.GestorDocumental;
+using PIKA.Constantes.Aplicaciones.Metadatos;
 using PIKA.Constantes.Aplicaciones.Organizacion;
 using PIKA.Constantes.Aplicaciones.Seguridad;
 using PIKA.Infraestructura.Comun.Menus;
@@ -172,6 +173,11 @@ namespace PIKA.Servicio.Seguridad.Modelos
             el.TokenMod = ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO;
             gd.Hijos.Add(el);
 
+            el = CreaElemento(5, "", "Plantillas", "/pages/tabular/");
+            el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "plantilla" });
+            el.TokenApp = ConstantesAppMetadatos.APP_ID;
+            el.TokenMod = ConstantesAppMetadatos.MODULO_PLANTILLAS;
+            gd.Hijos.Add(el);
 
             el = CreaElemento(5, "", "Volumenes", "/pages/tabular/");
             el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "volumen" });

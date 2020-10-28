@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using PIKA.Infraestructura.Comun;
+using PIKA.Modelo.Metadatos.Atributos;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,6 +13,7 @@ namespace PIKA.Modelo.Metadatos
     /// <summary>
     /// Define las una propiedad asocida a una plantilla del repositoprio
     /// </summary>
+    [Entidad(PaginadoRelacional: false, EliminarLogico: false)]
     public class PropiedadPlantilla : Propiedad
     {
 
@@ -22,6 +25,8 @@ namespace PIKA.Modelo.Metadatos
         /// <summary>
         /// Identificador de la plantilla a la que pertenece la propiedad
         /// </summary>
+        [Prop(Required: true, Visible: false, OrderIndex: 1000, Contextual: true, IdContextual: ConstantesModelo.IDORIGEN_GLOBAL)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string PlantillaId { get; set; }
 
 

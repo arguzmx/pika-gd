@@ -26,22 +26,14 @@ namespace PIKA.Servicio.Metadatos.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<PropiedadPlantilla> repo;
-        private IRepositorioAsync<TipoDato> repoTP;
-        private IRepositorioAsync<Plantilla> repoP;
-        private ICompositorConsulta<PropiedadPlantilla> compositor;
         private UnidadDeTrabajo<DbContextMetadatos> UDT;
 
         public ServicioPropiedadPlantilla(
            IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
-           ICompositorConsulta<PropiedadPlantilla> compositorConsulta,
            ILogger<ServicioPropiedadPlantilla> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
-            this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<PropiedadPlantilla>(new QueryComposer<PropiedadPlantilla>());
-            this.repoP = UDT.ObtenerRepositoryAsync<Plantilla>(new QueryComposer<Plantilla>());
-            this.repoTP = UDT.ObtenerRepositoryAsync<TipoDato>(new QueryComposer<TipoDato>());
-
         }
 
         public async Task<bool> Existe(Expression<Func<PropiedadPlantilla, bool>> predicado)
@@ -50,87 +42,68 @@ namespace PIKA.Servicio.Metadatos.Servicios
             if (l.Count() == 0) return false;
             return true;
         }
-        public async Task<bool> ExisteP(Expression<Func<Plantilla, bool>> predicado)
+
+        private PropiedadPlantilla ValidaPropiedadPlantilla(PropiedadPlantilla p , bool esActualizar)
         {
-            List<Plantilla> l = await this.repoP.ObtenerAsync(predicado);
-            if (l.Count() == 0) return false;
-            return true;
-        }
-        public async Task<bool> ExisteTP(Expression<Func<TipoDato, bool>> predicado)
-        {
-            List<TipoDato> l = await this.repoTP.ObtenerAsync(predicado);
-            if (l.Count() == 0) return false;
-            return true;
+            if (!this.contexto.Plantilla.Where(x => x.Id.Equals(p.PlantillaId)).Any())
+                throw new ExErrorRelacional(p.PlantillaId);
+
+            if (!this.contexto.TipoDato.Where(x => x.Id.Equals(p.TipoDatoId)).Any())
+                throw new ExErrorRelacional(p.TipoDatoId);
+
+            if (esActualizar)
+            {
+                if (this.contexto.PropiedadPlantilla.Where(x => 
+                x.PlantillaId == p.PlantillaId && x.Id!=p.Id
+                && x.Nombre.Equals(p.Nombre.Trim())).Any())
+                {
+                    throw new ExElementoExistente(p.Nombre);
+                }
+            } else
+            {
+                if (this.contexto.PropiedadPlantilla.Where(x =>
+                x.PlantillaId == p.PlantillaId
+                && x.Nombre.Equals(p.Nombre.Trim())).Any())
+                {
+                    throw new ExElementoExistente(p.Nombre);
+                }
+                try
+                {
+                    p.IndiceOrdenamiento = this.contexto.PropiedadPlantilla
+                        .Where(x=>x.PlantillaId==p.PlantillaId)
+                        .Max(x=>x.IndiceOrdenamiento);
+                }
+                catch (Exception ex)
+                {
+                    p.IndiceOrdenamiento = 1;
+                }
+
+                p.ControlHTML = string.IsNullOrEmpty(p.ControlHTML) ? "NONE" : p.ControlHTML;
+                p.IndiceOrdenamiento++;
+                p.Id = Guid.NewGuid().ToString();
+            }
+
+            return p;
+
         }
 
         public async Task<PropiedadPlantilla> CrearAsync(PropiedadPlantilla entity, CancellationToken cancellationToken = default)
         {
-            if (!await ExisteP(x=>x.Id.Equals(entity.PlantillaId.Trim(),StringComparison.InvariantCultureIgnoreCase)&& x.Eliminada!=true)) 
-                throw new ExErrorRelacional(entity.PlantillaId);
-            if (!await ExisteTP(x => x.Id.Equals(entity.TipoDatoId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
-                throw new ExErrorRelacional(entity.TipoDatoId);
-            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
-            {
-                throw new ExElementoExistente(entity.Nombre);
-            }
-                        entity.Id = System.Guid.NewGuid().ToString();
-                await this.repo.CrearAsync(entity);
-                entity.PlantillaId = entity.PlantillaId.Trim();
-                
-                UDT.SaveChanges();
-            
-
-
             try
             {
-                return ClonaPropiedadPlantilla(entity);
+                entity = ValidaPropiedadPlantilla(entity, false);
+
+                await this.repo.CrearAsync(entity);
+
+                UDT.SaveChanges();
+                return entity;
             }
             catch (Exception ex)
             {
-                await this.repo.Eliminar(entity);
-                UDT.SaveChanges();
-                throw (ex);
+                logger.LogError($"{ex}");
+                throw;
             }
             
-        }
-
-        private PropiedadPlantilla ClonaPropiedadPlantilla(PropiedadPlantilla entidad)
-        {
-            PropiedadPlantilla resuldtado = new PropiedadPlantilla()
-            {
-                Id = entidad.Id,
-                PlantillaId = entidad.PlantillaId,
-                Nombre = entidad.Nombre,
-                TipoDatoId=entidad.TipoDatoId,
-                IndiceOrdenamiento=entidad.IndiceOrdenamiento,
-                Buscable=entidad.Buscable,
-                Ordenable=entidad.Ordenable,
-                Visible=entidad.Visible,
-                EsIdClaveExterna=entidad.EsIdClaveExterna,
-                EsIdRegistro=entidad.EsIdRegistro,
-                EsIdJerarquia=entidad.EsIdJerarquia,
-                EsTextoJerarquia=entidad.EsTextoJerarquia,
-                EsFiltroJerarquia=entidad.EsFiltroJerarquia,
-                EsIdRaizJerarquia = entidad.EsIdRaizJerarquia,
-                EsIndice=entidad.EsIndice,
-                Requerido=entidad.Requerido,
-                Autogenerado=entidad.Autogenerado,
-                ControlHTML=entidad.ControlHTML
-            };
-
-            return resuldtado;
-        }
-
-        private List<PropiedadPlantilla> ClonaPropiedadListaPlantilla(List<PropiedadPlantilla> entidades)
-        {
-            List<PropiedadPlantilla> resuldtado = new List<PropiedadPlantilla>();
-             
-            foreach(var elemento in entidades)
-            {
-                resuldtado.Add(ClonaPropiedadPlantilla(elemento));
-            }
-
-            return resuldtado;
         }
 
 
@@ -143,16 +116,8 @@ namespace PIKA.Servicio.Metadatos.Servicios
             {
                 throw new EXNoEncontrado(entity.Id);
             }
-            if (!await ExisteP(x => x.Id.Equals(entity.PlantillaId, StringComparison.InvariantCultureIgnoreCase) && x.Eliminada!=true))
-                throw new ExErrorRelacional(entity.PlantillaId);
-            if (!await ExisteTP(x => x.Id.Equals(entity.TipoDatoId, StringComparison.InvariantCultureIgnoreCase)))
-                throw new ExErrorRelacional(entity.TipoDatoId);
-            if (await Existe(x =>
-            x.Id != entity.Id
-            && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
-            {
-                throw new ExElementoExistente(entity.Nombre);
-            }
+
+            entity = ValidaPropiedadPlantilla(entity, true);
 
             o.Nombre = entity.Nombre;
             o.AtributoTabla = entity.AtributoTabla;
@@ -183,28 +148,14 @@ namespace PIKA.Servicio.Metadatos.Servicios
             }
             return query;
         }
+
         public async Task<IPaginado<PropiedadPlantilla>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<PropiedadPlantilla>, IIncludableQueryable<PropiedadPlantilla, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
-
             return respuesta;
         }
 
-        public Task<IEnumerable<PropiedadPlantilla>> CrearAsync(params PropiedadPlantilla[] entities)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<PropiedadPlantilla>> CrearAsync(IEnumerable<PropiedadPlantilla> entities, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task EjecutarSql(string sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
 
         public Task EjecutarSqlBatch(List<string> sqlCommand)
         {
@@ -225,6 +176,31 @@ namespace PIKA.Servicio.Metadatos.Servicios
             }
             UDT.SaveChanges();
             return listaEliminados;
+        }
+
+        public async Task<PropiedadPlantilla> UnicoAsync(Expression<Func<PropiedadPlantilla, bool>> predicado = null, Func<IQueryable<PropiedadPlantilla>, IOrderedQueryable<PropiedadPlantilla>> ordenarPor = null, Func<IQueryable<PropiedadPlantilla>, IIncludableQueryable<PropiedadPlantilla, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+
+            PropiedadPlantilla d = await this.repo.UnicoAsync(predicado);
+
+            return d.Copia();
+        }
+
+        #region Sin Implementar
+
+        public Task<IEnumerable<PropiedadPlantilla>> CrearAsync(params PropiedadPlantilla[] entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<PropiedadPlantilla>> CrearAsync(IEnumerable<PropiedadPlantilla> entities, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task EjecutarSql(string sqlCommand)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<List<PropiedadPlantilla>> ObtenerAsync(Expression<Func<PropiedadPlantilla, bool>> predicado)
@@ -250,12 +226,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
             throw new NotImplementedException();
         }
 
-        public async Task<PropiedadPlantilla> UnicoAsync(Expression<Func<PropiedadPlantilla, bool>> predicado = null, Func<IQueryable<PropiedadPlantilla>, IOrderedQueryable<PropiedadPlantilla>> ordenarPor = null, Func<IQueryable<PropiedadPlantilla>, IIncludableQueryable<PropiedadPlantilla, object>> incluir = null, bool inhabilitarSegumiento = true)
-        {
-
-            PropiedadPlantilla d = await this.repo.UnicoAsync(predicado);
-
-            return d.Copia();
-        }
+        #endregion
+        
     }
 }
