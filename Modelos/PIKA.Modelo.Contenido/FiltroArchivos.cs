@@ -121,6 +121,35 @@ namespace PIKA.Modelo.Contenido
                         new byte[] { 0x66, 0x4C, 0x61, 0x43, 0x00, 0x00, 0x00, 0x22 }
                     }
                 },
+                {".ogg", new List<byte[]>
+                    {
+                        new byte[] { 0x4F, 0x67, 0x67, 0x53, 0x00, 0x02, 0x00, 0x00 }
+                    }
+                },
+            #endregion
+
+                #region Video
+                {".avi", new List<byte[]>
+                    {
+                        new byte[] { 0x52, 0x49, 0x46, 0x46 },
+                    }
+                },
+                {".wmv", new List<byte[]>
+                    {
+                        new byte[] { 0x30, 0x26, 0xB2, 0x75, 0x8E, 0x66, 0xCF, 0x11 }
+                    }
+                },
+                //{".mov", new List<byte[]>
+                //    {
+                //        new byte[] { 0x6D, 0x6F, 0x6F, 0x76},
+                //    }
+                //},  
+                // ********** NO FUNCIONA ***************
+                {".jar", new List<byte[]>
+                    {
+                        new byte[] { 0x50, 0x4B, 0x03, 0x04},
+                    }
+                },
             #endregion
 
                 #region Archivos comprimidos

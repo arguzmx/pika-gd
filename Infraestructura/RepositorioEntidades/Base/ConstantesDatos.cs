@@ -19,7 +19,7 @@ namespace RepositorioEntidades
         public static int Version { get => 10; }
         public static int Icono { get => 100; }
         public static int ControlHTML { get => 128; }
-        public static int MIME { get => 50; }
+        public static int MIME { get => 100; }
 
         public static int TEXTO_INDEXABLE_LARGO { get => 512; }
 
