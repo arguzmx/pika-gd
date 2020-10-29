@@ -261,6 +261,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
             if (sb.Length > 0)
             {
+                sb.Append(baseProp.Replace("%N%", "Unico").Replace("%T%", "boolean"));
                 sb.Append(baseProp.Replace("%N%", "OrigenId").Replace("%T%", "text"));
                 sb.Append(baseProp.Replace("%N%", "TipoOrigenId").Replace("%T%", "text"));
             }

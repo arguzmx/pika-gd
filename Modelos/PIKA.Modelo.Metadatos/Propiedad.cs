@@ -65,7 +65,7 @@ namespace PIKA.Modelo.Metadatos
         /// <summary>
         /// DEtermina si es requerido
         /// </summary>
-        [Prop(Required: true, OrderIndex: 30)]
+        [Prop(Required: true, OrderIndex: 30, DefaultValue: "true")]
         [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
         public bool Requerido { get; set; }
 
@@ -93,8 +93,8 @@ namespace PIKA.Modelo.Metadatos
         /// <summary>
         /// Determina si la propieda es vivisble
         /// </summary>
-        [Prop(Required: false, OrderIndex: 70)]
-        [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
+        [Prop(Required: true, OrderIndex: 70, DefaultValue: "false")]
+        [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.update)]
         public bool Visible { get; set; }
 
 

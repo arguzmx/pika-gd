@@ -35,12 +35,12 @@ namespace PIKA.Modelo.Metadatos
             l.Add(new TipoDato() { Id = tDouble, Nombre = "Número decimal" });
             l.Add(new TipoDato() { Id = tBoolean, Nombre = "Booleano" });
             l.Add(new TipoDato() { Id = tInt32, Nombre = "Entero" });
-            l.Add(new TipoDato() { Id = tInt64, Nombre = "Entero largo" });
+            //l.Add(new TipoDato() { Id = tInt64, Nombre = "Entero largo" });
             l.Add(new TipoDato() { Id = tDateTime, Nombre = "Fecha y hora" });
             l.Add(new TipoDato() { Id = tDate, Nombre = "Fecha" });
             l.Add(new TipoDato() { Id = tTime, Nombre = "Hora" });
             l.Add(new TipoDato() { Id = tList, Nombre = "Lista valores" });
-            l.Add(new TipoDato() { Id = tBinaryData, Nombre = "Datos binarios" });
+            //l.Add(new TipoDato() { Id = tBinaryData, Nombre = "Datos binarios" });
 
             return l.OrderBy(x=>x.Nombre).ToList();
 

@@ -61,24 +61,18 @@ namespace PIKA.Servicio.Metadatos.Servicios
         public async Task ActualizarAsync(ValidadorNumero entity)
         {
 
-            ValidadorNumero o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+            ValidadorNumero o = await this.repo.UnicoAsync(x => x.PropiedadId == entity.PropiedadId);
 
             if (o == null)
             {
                 throw new EXNoEncontrado(entity.Id);
             }
 
-            if (await Existe(x =>
-            x.Id != entity.Id
-            && x.PropiedadId.Equals(entity.PropiedadId, StringComparison.InvariantCultureIgnoreCase)))
-            {
-                throw new ExElementoExistente(entity.PropiedadId);
-            }
-
             o.max = entity.max;
             o.min = entity.min;
             o.PropiedadId = entity.PropiedadId;
             o.valordefault = entity.valordefault;
+            o.valordefault = 0;
 
 
             UDT.Context.Entry(o).State = EntityState.Modified;

@@ -12,7 +12,7 @@ namespace PIKA.Modelo.Metadatos.Validadores
         public ValidadorNumeroValidador(IStringLocalizer<ValidadorNumero> localizer)
         {
                   
-            RuleFor(x => x.valordefault).NotEmpty();
+            RuleFor(x => x.PropiedadId).NotEmpty();
 
 
         }

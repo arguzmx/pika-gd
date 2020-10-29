@@ -70,9 +70,9 @@ namespace PIKA.Modelo.Metadatos
         [XmlIgnore]
         [JsonIgnore]
         public AlmacenDatos Almacen { get; set; }
-        [XmlIgnore]
-        [JsonIgnore]
+        
         public ICollection<PropiedadPlantilla> Propiedades { get; set; }
+        
         [XmlIgnore]
         [JsonIgnore]
         public ICollection<AsociacionPlantilla> Asociaciones { get; set; }

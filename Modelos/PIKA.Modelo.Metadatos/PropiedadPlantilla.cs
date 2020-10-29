@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PIKA.Constantes.Aplicaciones.Metadatos;
 using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Metadatos.Atributos;
 using System;
@@ -14,6 +15,12 @@ namespace PIKA.Modelo.Metadatos
     /// Define las una propiedad asocida a una plantilla del repositoprio
     /// </summary>
     [Entidad(PaginadoRelacional: false, EliminarLogico: false)]
+
+    [EntidadVinculada(TokenSeguridad: ConstantesAppMetadatos.MODULO_PLANTILLAS,
+        EntidadHijo: "TipoDatoId", Cardinalidad: TipoCardinalidad.UnoUno,
+        HijoDinamico: true, TipoDespliegueVinculo: TipoDespliegueVinculo.EntidadUnica,
+        PropiedadPadre: "Id", PropiedadHijo: "PropiedadId",
+        Diccionario: "string,ValidadorTexto|double,ValidadorNumero|int,ValidadorNumero|long,ValidadorNumero")]
     public class PropiedadPlantilla : Propiedad
     {
 

@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Nest;
 using PIKA.Infraestructura.Comun;
 using Microsoft.Extensions.Logging;
+using Elasticsearch.Net;
+using Microsoft.AspNetCore.Mvc.Formatters.Internal;
 
 namespace PIKA.Servicio.Metadatos.ElasticSearch
 {
@@ -16,7 +18,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         public static DateTime FechaBaseHora => new DateTime(2000, 1, 1, 0, 0, 0);
 
         private readonly IConfiguration Configuration;
-        private ES.ElasticLowLevelClient cliente;
+        private ElasticClient cliente;
         private ILogger<RepoMetadatosElasticSearch> logger;
         public RepoMetadatosElasticSearch(IConfiguration configuration, ILogger<RepoMetadatosElasticSearch> logger)
         {
@@ -24,8 +26,12 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             Configuration = configuration;
             ConfiguracionRepoMetadatos options = new ConfiguracionRepoMetadatos();
             Configuration.GetSection("Metadatos").Bind(options);
-            var settings = new ES.ConnectionConfiguration(new Uri(options.CadenaConexion()));
-            cliente = new ES.ElasticLowLevelClient(settings);
+            //var settings = new ES.ConnectionConfiguration(new Uri(options.CadenaConexion()));
+            var settings = new ConnectionSettings(new Uri(options.CadenaConexion()));
+                        
+        
+
+            cliente = new ElasticClient(settings);
         }
 
         public Task<bool> Actualiza(Plantilla plantilla, ValoresPlantilla valores)
@@ -59,7 +65,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         {
             string consulta = plantilla.CreaConsulta(query);
             var body = ES.PostData.String(consulta);
-            var response = await cliente.SearchAsync<SearchResponse<dynamic>>(body);
+            var response = await cliente.LowLevel.SearchAsync<SearchResponse<dynamic>>(body);
 
 
             return null;
@@ -68,7 +74,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         public async Task<string> CrearIndice(Plantilla plantilla)
         {
             var body = ES.PostData.String(plantilla.ObtieneJSONPlantilla());
-            var response = await cliente.Indices.CreateAsync<CreateIndexResponse>(plantilla.Id, body);
+            var response = await cliente.LowLevel.Indices.CreateAsync<CreateIndexResponse>(plantilla.Id, body);
             return response.Index;
         }
 
@@ -77,7 +83,8 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             string json = valores.ObtieneJSONValores(plantilla);
             var body = ES.PostData.String(json);
 
-            var response = await cliente.CreateAsync<CreateResponse>(plantilla.Id, valores.Id, body);
+            
+            var response = await cliente.LowLevel.CreateAsync<CreateResponse>(plantilla.Id, valores.Id, body);
 
 
             if (response.Result == Result.Created) return valores.Id;
@@ -86,9 +93,53 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         }
 
 
+        private async Task  ExiteUnico(string indice, string tipo, string id )
+        {
+            var r = await cliente.LowLevel.SearchAsync<StringResponse>(indice, PostData.Serializable(new
+            {
+                from = 0,
+                size = 1,
+                query = new
+                {
+                    @bool = new 
+                    {
+                        must = new object[]
+                        {
+                            new {
+                                term = new
+                                {
+                                    TipoOrigenId = new
+                                    {
+                                        query = tipo
+                                    }
+                                }
+                            },
+                            new {
+                                term = new
+                                {
+                                    OrigenId = new
+                                    {
+                                        query = id
+                                    }
+                                }
+                            }
+                        }
+                        
+                    }
+                    
+                }
+            }));
+
+            if (r.Success)
+            {
+                
+            }
+
+        }
+
         public async Task<bool> ExisteIndice(string id)
         {
-            var response = await cliente.Indices.ExistsAsync<ExistsResponse>(id);
+            var response = await cliente.LowLevel.Indices.ExistsAsync<ExistsResponse>(id);
             return (response.Exists);
         }
 

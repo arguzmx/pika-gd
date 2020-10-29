@@ -19,9 +19,9 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Metadatos.Servicios
 {
-   public class ServicioPropiedadPlantilla : ContextoServicioMetadatos, IServicioInyectable, IServicioPropiedadPlantilla
+    public class ServicioPropiedadPlantilla : ContextoServicioMetadatos, IServicioInyectable, IServicioPropiedadPlantilla
     {
-        
+
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
@@ -43,8 +43,16 @@ namespace PIKA.Servicio.Metadatos.Servicios
             return true;
         }
 
+        private void debug(string algo)
+        {
+            logger.LogDebug($">>>>>>>>>>>>>>{algo}");
+        }
+
         private PropiedadPlantilla ValidaPropiedadPlantilla(PropiedadPlantilla p , bool esActualizar)
         {
+            debug(p.Requerido.ToString() );
+
+
             if (!this.contexto.Plantilla.Where(x => x.Id.Equals(p.PlantillaId)).Any())
                 throw new ExErrorRelacional(p.PlantillaId);
 
@@ -78,11 +86,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
                     p.IndiceOrdenamiento = 1;
                 }
 
-                p.ControlHTML = string.IsNullOrEmpty(p.ControlHTML) ? "NONE" : p.ControlHTML;
+                
                 p.IndiceOrdenamiento++;
                 p.Id = Guid.NewGuid().ToString();
             }
 
+            p.ControlHTML = string.IsNullOrEmpty(p.ControlHTML) ? "NONE" : p.ControlHTML;
             return p;
 
         }
@@ -119,7 +128,9 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
             entity = ValidaPropiedadPlantilla(entity, true);
 
+            o.IndiceOrdenamiento = entity.IndiceOrdenamiento;
             o.Nombre = entity.Nombre;
+            o.Requerido = entity.Requerido;
             o.AtributoTabla = entity.AtributoTabla;
             o.Autogenerado = entity.Autogenerado;
             o.Buscable = entity.Buscable;

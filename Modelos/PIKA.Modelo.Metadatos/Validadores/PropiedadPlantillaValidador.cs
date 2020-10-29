@@ -13,7 +13,7 @@ namespace PIKA.Modelo.Metadatos.Validadores
         {
             RuleFor(x => x.Nombre).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.Nombre);
             RuleFor(x => x.TipoDatoId).NotEmpty().MinimumLength(1).MaximumLength(LongitudDatos.Nombre);
-            RuleFor(x => x.Requerido).NotEmpty();
+            //RuleFor(x => x.Requerido).NotEmpty();
             //RuleFor(x => x.Buscable).NotEmpty();
             //RuleFor(x => x.Ordenable).NotEmpty();
             //RuleFor(x => x.Visible).NotEmpty();
