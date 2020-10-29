@@ -145,9 +145,9 @@ namespace PIKA.Modelo.Contenido
                 //    }
                 //},  
                 // ********** NO FUNCIONA ***************
-                {".jar", new List<byte[]>
+                {".mov", new List<byte[]>
                     {
-                        new byte[] { 0x50, 0x4B, 0x03, 0x04},
+                        new byte[] { 0x73, 0x6B, 0x69, 0x70},
                     }
                 },
             #endregion

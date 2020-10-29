@@ -21,7 +21,7 @@ namespace PIKA.Modelo.Contenido.Extensiones
                 Nombre = parte.NombreOriginal,
                 Rotacion = 0,
                 TamanoBytes = parte.LongitudBytes,
-                Url = "",
+                Url = "", // Son generadas en el cliente.
                 UrlThumbnail = "",
                 EsAudio = parte.EsAudio,
                 EsPDF = parte.EsPDF,
