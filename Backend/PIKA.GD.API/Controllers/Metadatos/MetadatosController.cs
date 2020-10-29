@@ -9,13 +9,14 @@ using PIKA.Servicio.Metadatos.ElasticSearch;
 using System;
 using System.Text.Json;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace PIKA.GD.API.Controllers.Metadatos
 {
     //[Authorize]
     [ApiVersion("1.0")]
     [ApiController]
-    [Route("api/v{version:apiVersion}/metadatos")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class MetadatosController : ControllerBase
     {
         private ILogger<MetadatosController> logger;
@@ -91,6 +92,23 @@ namespace PIKA.GD.API.Controllers.Metadatos
         }
 
 
+        [HttpPut("{plantillaid}/{tipo}/{if}")]
+        public async Task<ActionResult<ValoresPlantilla>> Unico(string plantillaid,
+            string tipo, string id, [FromBody] ValoresPlantilla valores)
+        {
+            Plantilla plantilla = await appCache.Metadatos.ObtenerPlantilla(plantillaid,
+                ConstantesCache.CONTROLADORMETADATOS).ConfigureAwait(false);
+
+            bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
+            if (existe)
+            {
+                await repositorio.Inserta(plantilla, valores).ConfigureAwait(false);
+                return Ok();
+            }
+
+            return NotFound();
+        }
+
 
         /// <summary>
         /// Obtiene un elemento de metatdaos para el Id recibido
@@ -98,51 +116,57 @@ namespace PIKA.GD.API.Controllers.Metadatos
         /// <param name="plantillaId"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("unico/{plantillaid}/{id}", Name = "GetMetadatosUnico")]
+        [HttpGet("{plantillaid}/{tipo}/{id}", Name = "GetMetadatosUnico")]
         public async Task<ActionResult<ValoresPlantilla>> Unico(string plantillaid, string id)
         {
-            Plantilla plantilla = await appCache.Metadatos.ObtenerPlantilla(plantillaid, ConstantesCache.CONTROLADORMETADATOS).ConfigureAwait(false);
-            if (plantilla != null)
-            {
+            Plantilla plantilla = await appCache.Metadatos.ObtenerPlantilla(plantillaid, 
+                ConstantesCache.CONTROLADORMETADATOS).ConfigureAwait(false);
+
+            bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
+            logger.LogDebug($"{existe}");
+
+            return Ok(plantilla);
+            //if (plantilla != null)
+            //{
                 
-                bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
-                if (existe)
-                {
-                    Consulta q = new Consulta()
-                    {
-                        consecutivo = 0,
-                        indice = 0,
-                        tamano = 5,
-                        ord_columna = "pin64",
-                        ord_direccion = "asc",
-                        recalcular_totales = false
-                    };
+            //    bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
+            //    if (existe)
+            //    {
+            //        Consulta q = new Consulta()
+            //        {
+            //            consecutivo = 0,
+            //            indice = 0,
+            //            tamano = 5,
+            //            ord_columna = "pin64",
+            //            ord_direccion = "asc",
+            //            recalcular_totales = false
+            //        };
 
-                    List<FiltroConsulta> tmp = new List<FiltroConsulta>();
+            //        List<FiltroConsulta> tmp = new List<FiltroConsulta>();
 
-                    q.Filtros .Add(new FiltroConsulta() { Propiedad = "TipOrigenId", Operador = "eq", Valor="demo" });
-                    q.Filtros.Add(new FiltroConsulta() { Propiedad = "pbooleano", Operador = "eq", Valor = "true" });
+            //        q.Filtros .Add(new FiltroConsulta() { Propiedad = "TipOrigenId", Operador = "eq", Valor="demo" });
+            //        q.Filtros.Add(new FiltroConsulta() { Propiedad = "pbooleano", Operador = "eq", Valor = "true" });
 
-                    string j= JsonSerializer.Serialize(q);
+            //        string j= JsonSerializer.Serialize(q);
 
-                    //var data = plantilla.ObtieneValoresDemo();
-                    //string resp = await repositorio.Inserta(plantilla, data).ConfigureAwait(false);
-                    //if (resp != null)
-                    //{
-                    //    return Ok($"{data}");
-                    //}
-                    //return UnprocessableEntity($"{plantillaid}");
-                    return Ok(j);
-                }
-                else {
-                    return UnprocessableEntity($"{plantillaid}");
-                }
+            //        //var data = plantilla.ObtieneValoresDemo();
+            //        //string resp = await repositorio.Inserta(plantilla, data).ConfigureAwait(false);
+            //        //if (resp != null)
+            //        //{
+            //        //    return Ok($"{data}");
+            //        //}
+            //        //return UnprocessableEntity($"{plantillaid}");
+            //        return Ok(j);
+            //    }
+            //    else {
+            //        return UnprocessableEntity($"{plantillaid}");
+            //    }
                 
-            }
-            else
-            {
-                return NotFound($"{plantillaid}");
-            }
+            //}
+            //else
+            //{
+            //    return NotFound($"{plantillaid}");
+            //}
 
         }
 

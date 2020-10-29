@@ -24,34 +24,21 @@ namespace PIKA.Modelo.Metadatos
         }
 
         /// <summary>
-        /// Inserta un valor en la lista de valores para la plantilla
-        /// </summary>
-        /// <param name="PropiedadId">Identificador único de la propiedad</param>
-        /// <param name="Valor">Valor asociado a la propiedad</param>
-        public  void  InsertaValor(string PropiedadId, string Valor)
-        {
-            if (string.IsNullOrEmpty(PropiedadId)) throw new Exception("El id de la propiedad es requerido");
-
-            if (Valores.Where(x => x.PropiedadId == PropiedadId).Any()) {
-                Valores.Where(x => x.PropiedadId == PropiedadId).First().Valor = Valor;
-            } else
-            {
-                Valores.Add(new ValorPropiedad() { PropiedadId = PropiedadId, Valor = Valor });
-            }
-        }
-
-        
-        /// <summary>
         /// Identificador único del registro de metadatos
         /// </summary>
         public string Id { get; set; }
+
+        /// <summary>
+        /// Identifica si el registro es único para la insercion
+        /// </summary>
+        public bool Unico { get; set; }
+
 
         /// <summary>
         /// Identificador único de la plantilla
         /// </summary>
         public string PlantillaId { get; set; }
 
-        
         /// <summary>
         /// Lista de valores en las propiedades
         /// </summary>
@@ -60,7 +47,7 @@ namespace PIKA.Modelo.Metadatos
         /// <summary>
         /// Propiedad no utilizada
         /// </summary>
-        public string TipoOrigenDefault => throw new NotImplementedException();
+        public string TipoOrigenDefault => "";
 
 
         /// <summary>
@@ -73,6 +60,28 @@ namespace PIKA.Modelo.Metadatos
         /// por ejemplo Usuario: Oswaldo Diaz, Documento: Carta factura 1o Febrero
         /// </summary>
         public string OrigenId { get; set; }
+
+
+        /// <summary>
+        /// Inserta un valor en la lista de valores para la plantilla
+        /// </summary>
+        /// <param name="PropiedadId">Identificador único de la propiedad</param>
+        /// <param name="Valor">Valor asociado a la propiedad</param>
+        public void  InsertaValor(string PropiedadId, string Valor)
+        {
+            if (string.IsNullOrEmpty(PropiedadId)) throw new Exception("El id de la propiedad es requerido");
+
+            if (Valores.Where(x => x.PropiedadId == PropiedadId).Any()) {
+                Valores.Where(x => x.PropiedadId == PropiedadId).First().Valor = Valor;
+            } else
+            {
+                Valores.Add(new ValorPropiedad() { PropiedadId = PropiedadId, Valor = Valor });
+            }
+        }
+
+        
+        
+        
 
     }
 
