@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿    using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -10,6 +10,7 @@ using System;
 using System.Text.Json;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using PIKA.Servicio.Metadatos.ElasticSearch.Excepciones;
 
 namespace PIKA.GD.API.Controllers.Metadatos
 {
@@ -84,11 +85,40 @@ namespace PIKA.GD.API.Controllers.Metadatos
         /// <param name="OrigenId"></param>
         /// <param name="valores"></param>
         /// <returns></returns>
-        [HttpPost]
-        public async Task<ActionResult<string>> Inserta(string TipoOrigenId, string OrigenId, ValoresPlantilla valores)
+        [HttpPost("{plantillaid}/{tipo}/{id}")]
+        public async Task<ActionResult> Inserta(string plantillaid, string tipo, string id, ValoresPlantilla valores)
         {
-            await Task.Delay(1).ConfigureAwait(false);
-            return Ok("");
+            try
+            {
+                logger.LogError("------------");
+                valores.OrigenId = id;
+                valores.TipoOrigenId = tipo;
+                valores.PlantillaId = plantillaid;
+
+                Plantilla plantilla = await appCache.Metadatos.ObtenerPlantilla(plantillaid,
+                ConstantesCache.CONTROLADORMETADATOS).ConfigureAwait(false);
+
+                bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
+                logger.LogError($"{existe}");
+                if (existe)
+                {
+                    await repositorio.Inserta(plantilla, valores).ConfigureAwait(false);
+                    return Ok();
+                }
+
+                return Ok(plantilla);
+            }
+            catch(ExMetadatosNoValidos em)
+            {
+                return BadRequest(em.Message);
+            }
+            catch (Exception ex)
+            {
+
+                logger.LogError(ex.ToString());
+                throw;
+            }
+            
         }
 
 
@@ -172,25 +202,25 @@ namespace PIKA.GD.API.Controllers.Metadatos
 
 
 
-        [HttpPost("buscar/{id}", Name = "Buscar")]
-        public async Task<ActionResult<string>> Buscar([FromBody] ConsultaArray query, string id)
-        {
-            try
-            {
-                logger.LogInformation("Fuiltros {0}", id);
-                logger.LogInformation("Fuiltros {0}", query.ord_direccion);
-                logger.LogInformation("Fuiltros {0}", query.Filtros.Length);
-            }
-            catch (Exception ex)
-            {
+        //[HttpPost("buscar/{id}", Name = "Buscar")]
+        //public async Task<ActionResult<string>> Buscar([FromBody] ConsultaArray query, string id)
+        //{
+        //    try
+        //    {
+        //        logger.LogInformation("Fuiltros {0}", id);
+        //        logger.LogInformation("Fuiltros {0}", query.ord_direccion);
+        //        logger.LogInformation("Fuiltros {0}", query.Filtros.Length);
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-                logger.LogError("Fuiltros {0}", ex.ToString());
-            }
+        //        logger.LogError("Fuiltros {0}", ex.ToString());
+        //    }
             
 
-            await Task.Delay(1).ConfigureAwait(false);
-            return Ok("");
-        }
+        //    await Task.Delay(1).ConfigureAwait(false);
+        //    return Ok("");
+        //}
 
 
 

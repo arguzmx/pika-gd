@@ -80,61 +80,55 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
         public async Task<string> Inserta(Plantilla plantilla, ValoresPlantilla valores)
         {
-            string json = valores.ObtieneJSONValores(plantilla);
+            string json = valores.ObtieneJSONValores(plantilla, valores.Unico);
+            
             var body = ES.PostData.String(json);
 
-            
-            var response = await cliente.LowLevel.CreateAsync<CreateResponse>(plantilla.Id, valores.Id, body);
-
-
-            if (response.Result == Result.Created) return valores.Id;
+            if (valores.Unico)
+            {
+                if (!(await ExisteUnico(valores.PlantillaId, valores.TipoOrigenId, valores.OrigenId)))
+                {
+                    valores.Id = Guid.NewGuid().ToString();
+                    var response = await cliente.LowLevel.CreateAsync<CreateResponse>(plantilla.Id, valores.Id, body);
+                    if (response.Result == Result.Created) return valores.Id;
+                }
+            } else
+            {
+                valores.Id = Guid.NewGuid().ToString();
+                var response = await cliente.LowLevel.CreateAsync<CreateResponse>(plantilla.Id, valores.Id, body);
+                if (response.Result == Result.Created) return valores.Id;
+            }
             return null;
 
         }
 
 
-        private async Task  ExiteUnico(string indice, string tipo, string id )
+        private async Task<bool>  ExisteUnico(string indice, string tipo, string id )
         {
-            var r = await cliente.LowLevel.SearchAsync<StringResponse>(indice, PostData.Serializable(new
-            {
-                from = 0,
-                size = 1,
-                query = new
-                {
-                    @bool = new 
-                    {
-                        must = new object[]
-                        {
-                            new {
-                                term = new
-                                {
-                                    TipoOrigenId = new
-                                    {
-                                        query = tipo
-                                    }
-                                }
-                            },
-                            new {
-                                term = new
-                                {
-                                    OrigenId = new
-                                    {
-                                        query = id
-                                    }
-                                }
-                            }
-                        }
-                        
-                    }
-                    
-                }
-            }));
+            logger.LogDebug("Uncnip");
+            var x = @$"
+                    ¡'size':1,'from':0,
+                    'query':¡'bool':¡'must':[
+                    ¡'term':¡'OrigenId':¡'value':'{id}'!!!,
+                    ¡'term':¡'TipoOrigenId':'{tipo}'!!,
+                    ¡'term':¡'Unico':true!!
+                    ]!!!
+                    ".ToJSONString();
+
+            Console.WriteLine( x);
+
+            var r = await cliente.LowLevel.SearchAsync<StringResponse>(indice, x);
+
+            
 
             if (r.Success)
             {
-                
-            }
+                Console.WriteLine(r.Body);
+                ElasticsearchResult esr = System.Text.Json.JsonSerializer.Deserialize<ElasticsearchResult>(r.Body);
+                return esr.hits.total.value > 0 ? true : false;
+            } 
 
+            return false;
         }
 
         public async Task<bool> ExisteIndice(string id)

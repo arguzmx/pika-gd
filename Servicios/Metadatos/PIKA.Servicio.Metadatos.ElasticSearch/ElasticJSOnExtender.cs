@@ -1,209 +1,157 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Nest;
 using PIKA.Modelo.Metadatos;
+using PIKA.Servicio.Metadatos.ElasticSearch.Excepciones;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace PIKA.Servicio.Metadatos.ElasticSearch
 {
     public static class ElasticJSONExtender
     {
 
-
-        public static string ObtieneJSONValoresDemo(this Plantilla plantilla)
+        public static string ToJSONString(this string s)
         {
-            string json = "{  %C% }";
-            string baseProp = "'%N%': '%V%',";
-            
-            StringBuilder sb = new StringBuilder();
-
-            List<string> palabras = "Tal vez amar es aprendera caminar por este mundo.Aprender a quedarnos quietoscomo el tilo y la encina de la fábula.Aprender a mirar.Tu mirada es sembradora.Plantó un árbol Yo habloporque tú meces los follajes".Split(' ').ToList();
-            string demoBytes = Convert.ToBase64String(Encoding.UTF8.GetBytes(DateTime.Now.ToString()));
-            string boolValue = DateTime.Now.Second%2==0? "true" : "false";
-            string numDouble = DateTime.Now.Second.ToString() + ".25" ;
-            Random random = new Random();
-            DateTime date = DateTime.Now;
-            DateTime dateD = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
-            DateTime dateT = new DateTime(2000, 1, 1, date.Hour, date.Minute, date.Second);
-
-            int len = random.Next(palabras.Count-1);
-            if (len == 0) len = 10;
-            string text = "";
-            for (int i = 0; i< len; i++)
-            {
-                text += palabras[i] + " ";
-            }
-
-            foreach (var item in plantilla.Propiedades)
-            {
-                switch (item.TipoDatoId)
-                {
-
-                    case TipoDato.tBinaryData:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%V%", demoBytes ));
-                        break;
-
-                    case TipoDato.tBoolean:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%V%", boolValue));
-                        break;
-
-                    case TipoDato.tDouble:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%V%", numDouble));
-                        break;
-
-                    case TipoDato.tInt32:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%V%", DateTime.Now.Second.ToString()));
-                        break;
-
-                    case TipoDato.tInt64:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%V%", DateTime.Now.Millisecond.ToString()));
-                        break;
-
-                    case TipoDato.tList:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%V%", palabras[len]));
-                        break;
-
-                    case TipoDato.tString:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%V%", text));
-                        break;
-
-                    case TipoDato.tTime:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%V%", dateT.ToString("o")));
-                        break;
-
-                    case TipoDato.tDate:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%V%", dateD.ToString("o")));
-                        break;
-
-                    case TipoDato.tDateTime:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%V%", date.ToString("o")));
-                        break;
-
-                }
-            }
-
-            string campos = sb.ToString().TrimEnd(',');
-
-            if (campos != "")
-            {
-                return json.Replace("%C%", campos).Replace('\'', '\"');
-            }
-
-            return "";
+            return s.Replace("¡", "{").Replace("!", "}").Replace("'", "\"").Replace("\t", "");
         }
 
-        public static ValoresPlantilla ObtieneValoresDemo(this Plantilla plantilla)
+        public static bool ValorValido(this PropiedadPlantilla p, string valor)
         {
-            ValoresPlantilla valores= new ValoresPlantilla() {
-                Id = System.Guid.NewGuid().ToString(),
-                OrigenId = System.Guid.NewGuid().ToString(),
-                PlantillaId = plantilla.Id,
-                TipoOrigenId = "demo"
-            };
+            Console.WriteLine($"({p.Nombre})");
+            Console.WriteLine($"({valor})");
+            if (p.Requerido && string.IsNullOrEmpty(valor)) return false;
 
-
-            string json = "{  %C% }";
-            string baseProp = "'%N%': '%V%',";
-
-            StringBuilder sb = new StringBuilder();
-
-            List<string> palabras = "Tal vez amar es aprendera caminar por este mundo.Aprender a quedarnos quietoscomo el tilo y la encina de la fábula.Aprender a mirar.Tu mirada es sembradora.Plantó un árbol Yo habloporque tú meces los follajes".Split(' ').ToList();
-            string demoBytes = Convert.ToBase64String(Encoding.UTF8.GetBytes(DateTime.Now.ToString()));
-            string boolValue = DateTime.Now.Second % 2 == 0 ? "true" : "false";
-            string numDouble = DateTime.Now.Second.ToString() + ".25";
-            Random random = new Random();
-            DateTime date = DateTime.Now;
-            DateTime dateD = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
-            DateTime dateT = new DateTime(2000, 1, 1, date.Hour, date.Minute, date.Second);
-
-            int len = random.Next(palabras.Count - 1);
-            if (len == 0) len = 10;
-            string text = "";
-            for (int i = 0; i < len; i++)
+            switch (p.TipoDatoId)
             {
-                text += palabras[i] + " ";
+                case TipoDato.tBoolean:
+                    return (valor == "true" || valor == "false") ? true : false;
+
+                case TipoDato.tTime:
+                case TipoDato.tDateTime:
+                case TipoDato.tDate:
+                    DateTime d;
+                    return DateTime.TryParse(valor, out d);
+
+                case TipoDato.tDouble:
+                    float dec;
+                    if(float.TryParse(valor, out dec))
+                    {
+                        if (p.ValidadorNumero != null)
+                        {
+                            if(p.ValidadorNumero.UtilizarMin && dec< p.ValidadorNumero.min) return false;
+                            if (p.ValidadorNumero.UtilizarMax && dec > p.ValidadorNumero.max) return false;
+                            return true;
+                        } else
+                        {
+                            return true;
+                        }
+                    }
+                    break;
+
+                case TipoDato.tInt32:
+                    int i;
+                    if (int.TryParse(valor, out i))
+                    {
+                        if (p.ValidadorNumero != null)
+                        {
+                            if (p.ValidadorNumero.UtilizarMin && i < p.ValidadorNumero.min) return false;
+                            if (p.ValidadorNumero.UtilizarMax && i > p.ValidadorNumero.max) return false;
+                            return true;
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                    break;
+                    
+
+                case TipoDato.tInt64:
+                    long i64;
+                    if (long.TryParse(valor, out i64))
+                    {
+                        if (p.ValidadorNumero != null)
+                        {
+                            if (p.ValidadorNumero.UtilizarMin && i64 < p.ValidadorNumero.min) return false;
+                            if (p.ValidadorNumero.UtilizarMax && i64 > p.ValidadorNumero.max) return false;
+                            return true;
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                    break;
+                    
+
+                case TipoDato.tString:
+                    if (p.ValidadorTexto! != null)
+                    {
+                        if(!string.IsNullOrEmpty(p.ValidadorTexto.regexp))
+                        {
+                            Regex rgx = new Regex(p.ValidadorTexto.regexp);
+                            return rgx.IsMatch(valor);
+                        } else
+                        {
+                            if (valor.Length < p.ValidadorTexto.longmin) return false;
+                            if (valor.Length > p.ValidadorTexto.longmax) return false;
+                            return true;
+                        }
+
+                    }
+                    break;
             }
 
-            foreach (var item in plantilla.Propiedades)
-            {
-                switch (item.TipoDatoId)
-                {
-
-                    case TipoDato.tBinaryData:
-                        valores.Valores.Add(new ValorPropiedad() { PropiedadId = item.Id, Valor = demoBytes });
-                        break;
-
-                    case TipoDato.tBoolean:
-                        valores.Valores.Add(new ValorPropiedad() { PropiedadId = item.Id, Valor = boolValue });
-                        break;
-
-                    case TipoDato.tDouble:
-                        valores.Valores.Add(new ValorPropiedad() { PropiedadId = item.Id, Valor = numDouble });
-                        break;
-
-                    case TipoDato.tInt32:
-                        valores.Valores.Add(new ValorPropiedad() { PropiedadId = item.Id, Valor = DateTime.Now.Second.ToString() });
-                        break;
-
-                    case TipoDato.tInt64:
-                        valores.Valores.Add(new ValorPropiedad() { PropiedadId = item.Id, Valor = DateTime.Now.Millisecond.ToString() });
-                        break;
-
-                    case TipoDato.tList:
-                        valores.Valores.Add(new ValorPropiedad() { PropiedadId = item.Id, Valor = palabras[len] });
-                        break;
-
-                    case TipoDato.tString:
-                        valores.Valores.Add(new ValorPropiedad() { PropiedadId = item.Id, Valor = text});
-                        break;
-
-                    case TipoDato.tTime:
-                        valores.Valores.Add(new ValorPropiedad() { PropiedadId = item.Id, Valor = dateT.ToString("o") });
-                        break;
-
-                    case TipoDato.tDate:
-                        valores.Valores.Add(new ValorPropiedad() { PropiedadId = item.Id, Valor = dateD.ToString("o") });
-
-                        break;
-
-                    case TipoDato.tDateTime:
-                        valores.Valores.Add(new ValorPropiedad() { PropiedadId = item.Id, Valor = date.ToString("o") });
-
-                        break;
-
-                }
-            }
-
-            return valores;
+            return false;
         }
-
-
-        public static string ObtieneJSONValores(this ValoresPlantilla valores, Plantilla plantilla ) {
+ 
+        public static string ObtieneJSONValores(this ValoresPlantilla valores, Plantilla plantilla, bool Unico ) {
             string json = "{  %C% }";
-            string baseProp = "'%N%': '%V%',";
+            string baseProp = "'%N%': %V%,";
 
             StringBuilder sb = new StringBuilder();
 
             foreach (var item in plantilla.Propiedades)
             {
                 var valor = valores.Valores.Where(x => x.PropiedadId == item.Id).SingleOrDefault();
-                if(valor!=null) sb.Append(baseProp.Replace("%N%", item.Id).Replace("%V%", valor.Valor));
+                if (valor == null) valor = new ValorPropiedad() { PropiedadId = item.Id, Valor = "" };
+
+                if (!ValorValido(item, valor.Valor )) 
+                    throw new ExMetadatosNoValidos($"valor no válido para {item.Nombre} {(valor.Valor)}") ;
+
+                string Delimitador = "'";
+
+                switch (item.TipoDatoId)
+                {
+                    case TipoDato.tDouble:
+                    case TipoDato.tInt32:
+                    case TipoDato.tInt64:
+                    case TipoDato.tBoolean:
+                        Delimitador = "";
+                        break;
+                }
+
+                if (valor!=null) sb.Append(baseProp.Replace("%N%", item.Id).Replace("%V%", $"{Delimitador}{valor.Valor}{Delimitador}"));
             }
 
             if (sb.Length > 0)
             {
                 sb.Append($"'OrigenId': '{valores.OrigenId}',");
+                sb.Append($"'Unico': {(Unico? "true": "false")},");
                 sb.Append($"'TipoOrigenId': '{valores.TipoOrigenId}',");
             }
             string campos = sb.ToString().TrimEnd(',');
 
             if (campos != "")
             {
-                return json.Replace("%C%", campos).Replace('\'', '\"');
+                string r =  json.Replace("%C%", campos).Replace('\'', '\"');
+                Console.WriteLine(r);
+                return r;
             }
 
             return "";
