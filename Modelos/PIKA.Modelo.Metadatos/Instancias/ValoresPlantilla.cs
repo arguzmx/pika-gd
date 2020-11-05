@@ -1,6 +1,7 @@
 ﻿using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 
@@ -29,14 +30,10 @@ namespace PIKA.Modelo.Metadatos
         public string Id { get; set; }
 
         /// <summary>
-        /// Identifica si el registro es único para la insercion
-        /// </summary>
-        public bool Unico { get; set; }
-
-
-        /// <summary>
         /// Identificador único de la plantilla
         /// </summary>
+        [Required]
+        [MinLength(1)]
         public string PlantillaId { get; set; }
 
         /// <summary>
@@ -45,46 +42,49 @@ namespace PIKA.Modelo.Metadatos
         public List<ValorPropiedad> Valores { get; set; }
 
         /// <summary>
-        /// Propiedad no utilizada
-        /// </summary>
-        public string TipoOrigenDefault => "";
-
-
-        /// <summary>
-        /// Identificador del tipo de origen asoaciado a los valores, por ejemplo Dominio, Persona, Documentp
+        /// Dominio de los datos
         /// </summary>
         public string TipoOrigenId { get; set; }
 
         /// <summary>
-        /// Identificador único de la instancia origen a la que se asocian los valores
-        /// por ejemplo Usuario: Oswaldo Diaz, Documento: Carta factura 1o Febrero
+        /// Uniodad organizacional o tenant
         /// </summary>
         public string OrigenId { get; set; }
 
 
         /// <summary>
-        /// Inserta un valor en la lista de valores para la plantilla
+        /// Identificador del tipo de datp asoaciado a los valores, por ejemplo Dominio, Persona, Documentp
         /// </summary>
-        /// <param name="PropiedadId">Identificador único de la propiedad</param>
-        /// <param name="Valor">Valor asociado a la propiedad</param>
-        public void  InsertaValor(string PropiedadId, string Valor)
-        {
-            if (string.IsNullOrEmpty(PropiedadId)) throw new Exception("El id de la propiedad es requerido");
+        [Required]
+        public string TipoDatoId { get; set; }
 
-            if (Valores.Where(x => x.PropiedadId == PropiedadId).Any()) {
-                Valores.Where(x => x.PropiedadId == PropiedadId).First().Valor = Valor;
-            } else
-            {
-                Valores.Add(new ValorPropiedad() { PropiedadId = PropiedadId, Valor = Valor });
-            }
-        }
+        /// <summary>
+        /// Identificador único de la instancia datos a la que se asocian los valores
+        /// por ejemplo Usuario: Oswaldo Diaz, Documento: Carta factura 1o Febrero
+        /// </summary>
+        [Required]
+        public string DatoId { get; set; }
 
-        
-        
-        
+        /// <summary>
+        /// Información adicional para filtrado, por ejemplo el volumen en 
+        /// el caseo del contedido, podría de la concatenación pue permite
+        /// identificar univocamente los datos del objeto asociado dentro de 
+        /// un universo de valores
+        /// </summary>
+        public string IndiceFiltrado { get; set; }
+
+
+        /// <summary>
+        /// Propiedad no utilizada
+        /// </summary>
+        public string TipoOrigenDefault => "";
+
+
+
+
 
     }
 
-    
+
 
 }

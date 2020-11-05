@@ -34,6 +34,27 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             cliente = new ElasticClient(settings);
         }
 
+        public async Task<string> CrearIndice(Plantilla plantilla)
+        {
+            var body = ES.PostData.String(plantilla.ObtieneJSONPlantilla());
+            var response = await cliente.LowLevel.Indices.CreateAsync<CreateIndexResponse>(plantilla.Id, body);
+            return response.Index;
+        }
+
+        public async Task<string> Inserta(Plantilla plantilla, ValoresPlantilla valores)
+        {
+            valores.Id = Guid.NewGuid().ToString();
+            string json = valores.ObtieneJSONValores(plantilla);
+            var body = ES.PostData.String(json);
+            var response = await cliente.LowLevel.CreateAsync<CreateResponse>(plantilla.Id, valores.Id, body);
+            if (response.Result == Result.Created) return valores.Id;
+            return null;
+        }
+
+
+        // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
         public Task<bool> Actualiza(Plantilla plantilla, ValoresPlantilla valores)
         {
             throw new NotImplementedException();
@@ -71,36 +92,9 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             return null;
         }
 
-        public async Task<string> CrearIndice(Plantilla plantilla)
-        {
-            var body = ES.PostData.String(plantilla.ObtieneJSONPlantilla());
-            var response = await cliente.LowLevel.Indices.CreateAsync<CreateIndexResponse>(plantilla.Id, body);
-            return response.Index;
-        }
+    
 
-        public async Task<string> Inserta(Plantilla plantilla, ValoresPlantilla valores)
-        {
-            string json = valores.ObtieneJSONValores(plantilla, valores.Unico);
-            
-            var body = ES.PostData.String(json);
-
-            if (valores.Unico)
-            {
-                if (!(await ExisteUnico(valores.PlantillaId, valores.TipoOrigenId, valores.OrigenId)))
-                {
-                    valores.Id = Guid.NewGuid().ToString();
-                    var response = await cliente.LowLevel.CreateAsync<CreateResponse>(plantilla.Id, valores.Id, body);
-                    if (response.Result == Result.Created) return valores.Id;
-                }
-            } else
-            {
-                valores.Id = Guid.NewGuid().ToString();
-                var response = await cliente.LowLevel.CreateAsync<CreateResponse>(plantilla.Id, valores.Id, body);
-                if (response.Result == Result.Created) return valores.Id;
-            }
-            return null;
-
-        }
+       
 
 
         private async Task<bool>  ExisteUnico(string indice, string tipo, string id )

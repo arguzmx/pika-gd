@@ -27,7 +27,7 @@ namespace PIKA.GD.API.Servicios
         /// <param name="PlantillaId"></param>
         /// <param name="Modulo"></param>
         /// <returns></returns>
-        Task<Plantilla> ObtenerPlantilla(string PlantillaId, string Modulo);
+        Task<Plantilla> ObtenerPlantilla(string PlantillaId, string Modulo, string TipoOrigenId, string OrigenId);
         
         
         /// <summary>

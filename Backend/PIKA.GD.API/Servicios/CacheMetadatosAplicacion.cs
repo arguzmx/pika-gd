@@ -40,14 +40,14 @@ namespace PIKA.GD.API.Servicios
         /// <param name="PlantillaId"></param>
         /// <param name="Modulo"></param>
         /// <returns></returns>
-        public async Task<Plantilla> ObtenerPlantilla(string PlantillaId, string Modulo)
+        public async Task<Plantilla> ObtenerPlantilla(string PlantillaId, string Modulo, string TipoOrigenId, string OrigenId)
         {
 
             Plantilla plantilla = await cachePlantilla.Obtiene(PlantillaId, Modulo).ConfigureAwait(false);
             if (plantilla == null)
             {
                 plantilla = await servicioPlantilla.UnicoAsync(
-                    predicado: x => x.Id == PlantillaId,
+                    predicado: x => x.Id == PlantillaId && x.TipoOrigenId == TipoOrigenId &&  x.OrigenId == OrigenId ,
                     incluir:
                     y => y.Include(z => z.Propiedades).ThenInclude(z => z.TipoDato)
                     .Include(z => z.Propiedades).ThenInclude(z => z.ValidadorNumero)
@@ -106,6 +106,8 @@ namespace PIKA.GD.API.Servicios
         {
             cacheClaves.Inserta(PlantillaId, REPOMETADATOS, PlantillaId, new TimeSpan(24, 0, 0));
         }
+
+
 
     }
 }

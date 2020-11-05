@@ -16,6 +16,7 @@ namespace PIKA.Modelo.Metadatos
         }
 
         public const string tString = "string";
+        public const string tIndexedString = "istring";
         public const string tDouble = "double";
         public const string tBoolean = "bool";
         public const string tInt32 = "int";
@@ -31,6 +32,7 @@ namespace PIKA.Modelo.Metadatos
         {
             List<TipoDato> l = new List<TipoDato>();
 
+            l.Add(new TipoDato() { Id = tIndexedString, Nombre = "Texto indexado" });
             l.Add(new TipoDato() { Id = tString, Nombre = "Texto" });
             l.Add(new TipoDato() { Id = tDouble, Nombre = "Número decimal" });
             l.Add(new TipoDato() { Id = tBoolean, Nombre = "Booleano" });

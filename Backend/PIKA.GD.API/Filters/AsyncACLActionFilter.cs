@@ -84,7 +84,8 @@ namespace PIKA.GD.API.Filters
             (ExcludedACLControllerAttribute)Attribute.GetCustomAttribute(context.Controller.GetType(),
             typeof(ExcludedACLControllerAttribute)) != null ? true : false;
 
-
+            Logger.LogError($"{IsAPIController}");
+            Logger.LogError($"{ExcludeACL}");
 
             if (IsAPIController && !ExcludeACL)
             {

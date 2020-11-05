@@ -87,7 +87,9 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                         }
                     }
                     break;
-                    
+
+                case TipoDato.tList:
+                    return true;
 
                 case TipoDato.tString:
                     if (p.ValidadorTexto! != null)
@@ -110,7 +112,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             return false;
         }
  
-        public static string ObtieneJSONValores(this ValoresPlantilla valores, Plantilla plantilla, bool Unico ) {
+        public static string ObtieneJSONValores(this ValoresPlantilla valores, Plantilla plantilla) {
             string json = "{  %C% }";
             string baseProp = "'%N%': %V%,";
 
@@ -141,9 +143,13 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
             if (sb.Length > 0)
             {
+                sb.Append($"'Id': '{valores.Id}',");
                 sb.Append($"'OrigenId': '{valores.OrigenId}',");
-                sb.Append($"'Unico': {(Unico? "true": "false")},");
                 sb.Append($"'TipoOrigenId': '{valores.TipoOrigenId}',");
+                sb.Append($"'TipoDatoId': '{valores.TipoDatoId}',");
+                sb.Append($"'DatoId': '{valores.DatoId}',");
+                sb.Append($"'IndiceFiltrado': '{valores.IndiceFiltrado}',");
+
             }
             string campos = sb.ToString().TrimEnd(',');
 
@@ -191,9 +197,12 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                         sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "long"));
                         break;
 
-                        
                     case TipoDato.tList:
                     case TipoDato.tString:
+                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "keyword"));
+                        break;
+
+                    case TipoDato.tIndexedString:
                         sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "text"));
                         break;
 
@@ -210,8 +219,11 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             if (sb.Length > 0)
             {
                 sb.Append(baseProp.Replace("%N%", "Unico").Replace("%T%", "boolean"));
-                sb.Append(baseProp.Replace("%N%", "OrigenId").Replace("%T%", "text"));
-                sb.Append(baseProp.Replace("%N%", "TipoOrigenId").Replace("%T%", "text"));
+                sb.Append(baseProp.Replace("%N%", "OrigenId").Replace("%T%", "keyword"));
+                sb.Append(baseProp.Replace("%N%", "TipoOrigenId").Replace("%T%", "keyword"));
+                sb.Append(baseProp.Replace("%N%", "IndiceFiltrado").Replace("%T%", "keyword"));
+                sb.Append(baseProp.Replace("%N%", "TipoDatoId").Replace("%T%", "keyword"));
+                sb.Append(baseProp.Replace("%N%", "DatoId").Replace("%T%", "keyword"));
             }
 
             string campos = sb.ToString().TrimEnd(',');
