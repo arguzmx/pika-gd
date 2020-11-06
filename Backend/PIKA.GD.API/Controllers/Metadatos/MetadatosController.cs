@@ -4,19 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Servicios;
 using PIKA.Modelo.Metadatos;
-using RepositorioEntidades;
-using PIKA.Servicio.Metadatos.ElasticSearch;
 using System;
-using System.Text.Json;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using PIKA.Servicio.Metadatos.ElasticSearch.Excepciones;
 using PIKA.GD.API.Filters;
-using PIKA.Servicio.Metadatos.Interfaces;
 using PIKA.Modelo.Metadatos.Extractores;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
-using Nest;
+using PIKA.Servicio.Metadatos.Interfaces;
+using LazyCache;
+using PIKA.GD.API.Servicios.Caches;
 
 namespace PIKA.GD.API.Controllers.Metadatos
 {
@@ -28,20 +24,22 @@ namespace PIKA.GD.API.Controllers.Metadatos
     {
         private ILogger<MetadatosController> logger;
         private readonly IRepositorioMetadatos repositorio;
-        private readonly ICacheAplicacion appCache;
-
+        private readonly IAppCache appCache;
+        private readonly IServicioPlantilla plantillas;
         public MetadatosController(
             IRepositorioMetadatos repositorio,
+            IServicioPlantilla plantillas,
             ILogger<MetadatosController> logger,
-            ICacheAplicacion appCache
+            IAppCache cache
             )
         {
+            this.plantillas = plantillas;
             this.repositorio = repositorio;
             this.logger = logger;
-            this.appCache = appCache;
+            this.appCache = cache;
         }
 
-
+        
 
         /// <summary>
         /// Obtiene una plantilla a partir de su identificador único
@@ -57,8 +55,8 @@ namespace PIKA.GD.API.Controllers.Metadatos
         {
             try
             {
-                Plantilla plantilla = await appCache.Metadatos.ObtenerPlantilla(id,
-                    ConstantesCache.CONTROLADORMETADATOS, "dominio", this.DominioId).ConfigureAwait(false);
+                Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(id,appCache, plantillas)
+                    .ConfigureAwait(false);
                 
                 if (plantilla == null) return NotFound(id);
 
@@ -99,8 +97,8 @@ namespace PIKA.GD.API.Controllers.Metadatos
                 };
 
 
-                Plantilla plantilla = await appCache.Metadatos.ObtenerPlantilla(valoresplantilla.PlantillaId,
-                    ConstantesCache.CONTROLADORMETADATOS, "dominio", this.DominioId).ConfigureAwait(false);
+                Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
+                        .ConfigureAwait(false);
 
                 if (plantilla == null) return NotFound(valoresplantilla.PlantillaId);
 
@@ -152,8 +150,8 @@ namespace PIKA.GD.API.Controllers.Metadatos
                     IndiceFiltrado = valores.Filtro
                 };
 
-                Plantilla plantilla = await appCache.Metadatos.ObtenerPlantilla(valoresplantilla.PlantillaId,
-                    ConstantesCache.CONTROLADORMETADATOS, "dominio", this.DominioId).ConfigureAwait(false);
+                Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(id, appCache, plantillas)
+                       .ConfigureAwait(false);
 
                 if (plantilla == null) return NotFound(valoresplantilla.PlantillaId);
 
@@ -178,6 +176,42 @@ namespace PIKA.GD.API.Controllers.Metadatos
             }
 
         }
+
+        /// <summary>
+        /// OBtiene los valores de un documento de plantilla para un id unio
+        /// </summary>
+        /// <param name="id">Indetificador único del elemento indexado</param>
+        /// <param name="plantillaid">Indetificador único de la plantilla</param>
+        /// <returns></returns>
+        [HttpGet("{plantillaid}/{id}")]
+        public async Task<ActionResult<ValoresPlantilla>> Unico(string id, string plantillaid)
+        {
+            try
+            {
+                ValoresPlantilla p = new ValoresPlantilla();
+                Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(id, appCache, plantillas)
+                         .ConfigureAwait(false);
+
+                if (plantilla == null) return NotFound($"plantilla {plantillaid}");
+
+                bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
+                if (existe)
+                {
+                    var r = await repositorio.Unico(plantilla, id).ConfigureAwait(false);
+                    if (r!=null) return Ok(r);
+                    
+                }
+
+                return BadRequest($"plantilla {plantillaid}");
+                
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+
+        }
+
 
         // -----------------------------------------------------------------------------
         // -----------------------------------------------------------------------------
@@ -235,8 +269,8 @@ namespace PIKA.GD.API.Controllers.Metadatos
         public async Task<ActionResult<ValoresPlantilla>> Unico(string plantillaid,
             string tipo, string id, [FromBody] ValoresPlantilla valores)
         {
-            Plantilla plantilla = await appCache.Metadatos.ObtenerPlantilla(plantillaid,
-                ConstantesCache.CONTROLADORMETADATOS, "dominio", this.DominioId).ConfigureAwait(false);
+            Plantilla plantilla = null; // await appCache.Metadatos.ObtenerPlantilla(plantillaid,
+                //ConstantesCache.CONTROLADORMETADATOS, "dominio", this.DominioId).ConfigureAwait(false);
 
             bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
             if (existe)
@@ -335,7 +369,8 @@ namespace PIKA.GD.API.Controllers.Metadatos
 
         private async Task<bool> PLantillaGenerada(Plantilla plantilla)
         {
-            bool existe = await appCache.Metadatos.EsPlantillaGenerada(plantilla.Id).ConfigureAwait(false);
+            bool existe = await CacheMetadatos.PlantillaGenerada(plantilla.Id, appCache).ConfigureAwait(false);
+            
             if (!existe)
             {
                 // si no esta en cache
@@ -351,7 +386,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
                 }
                 
               // Si exite o fue creada lo marca en el cache
-                if (existe) appCache.Metadatos.AdicionaPlantillaGenerada(plantilla.Id); 
+                if (existe) CacheMetadatos.EstablecePlantillaGenerada(plantilla.Id, appCache); 
             }
             
             return existe;

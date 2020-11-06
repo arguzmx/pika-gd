@@ -10,6 +10,10 @@ using PIKA.Infraestructura.Comun;
 using Microsoft.Extensions.Logging;
 using Elasticsearch.Net;
 using Microsoft.AspNetCore.Mvc.Formatters.Internal;
+using System.Text.Json;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
+using Newtonsoft.Json.Linq;
 
 namespace PIKA.Servicio.Metadatos.ElasticSearch
 {
@@ -26,7 +30,6 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             Configuration = configuration;
             ConfiguracionRepoMetadatos options = new ConfiguracionRepoMetadatos();
             Configuration.GetSection("Metadatos").Bind(options);
-            //var settings = new ES.ConnectionConfiguration(new Uri(options.CadenaConexion()));
             var settings = new ConnectionSettings(new Uri(options.CadenaConexion()));
                         
         
@@ -56,9 +59,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             bool exixte = await ExisteId(valores.Id, plantilla.Id);
             if (exixte)
             {
-                string json = valores.ObtieneJSONValores(plantilla);
-                var body = ES.PostData.String($"¡'doc': {json}!".ToElasticString());
-
+                var body = ES.PostData.String(valores.ActualizarDocumento(plantilla));
                 var response = await cliente.LowLevel.UpdateAsync<StringResponse>(plantilla.Id, valores.Id, body);
                 if (response.ApiCall.Success)
                 {
@@ -76,19 +77,29 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         /// <returns></returns>
         private async Task<bool> ExisteId(string id, string indice)
         {
-            var q = @$"¡'query': ¡'match': ¡
-                              '_id': '{id}'
-                        !!!".ToElasticString();
-
-            var r = await cliente.LowLevel.SearchAsync<StringResponse>(indice, q);
+            
+            var r = await cliente.LowLevel.SearchAsync<StringResponse>(indice, id.BuscarId());
             if (r.Success)
             {
-                ElasticsearchResult esr = System.Text.Json.JsonSerializer.Deserialize<ElasticsearchResult>(r.Body);
+                ElasticsearchResult esr = JsonSerializer.Deserialize<ElasticsearchResult>(r.Body);
                 return esr.hits.total.value > 0 ? true : false;
             }
 
             return false;
 
+        }
+
+        public async Task<ValoresPlantilla> Unico(Plantilla plantilla, string id)
+        {
+            var r = await cliente.LowLevel.SearchAsync<StringResponse>(plantilla.Id, id.BuscarId());
+            if (r.Success)
+            {
+                ElasticsearchResult esr = JsonSerializer.Deserialize<ElasticsearchResult>(r.Body);
+                JsonElement e = (JsonElement)esr.hits.hits[0];
+                dynamic d = JObject.Parse(e.ToString());
+                return ElasticJSONExtender.Valores(d, plantilla);
+            }
+            return null;
         }
 
 
@@ -114,10 +125,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             throw new NotImplementedException();
         }
 
-        public Task<ValoresPlantilla> Unico(Plantilla plantilla, string id)
-        {
-            throw new NotImplementedException();
-        }
+  
 
         public async Task<Paginado<ValoresPlantilla>> Consulta(Plantilla plantilla, Consulta query)
         {

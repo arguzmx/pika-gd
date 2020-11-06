@@ -25,9 +25,8 @@ namespace PIKA.GD.API.Servicios
         /// Obtiene la definición completa de una plantilla
         /// </summary>
         /// <param name="PlantillaId"></param>
-        /// <param name="Modulo"></param>
         /// <returns></returns>
-        Task<Plantilla> ObtenerPlantilla(string PlantillaId, string Modulo, string TipoOrigenId, string OrigenId);
+        Task<Plantilla> ObtenerPlantilla(string PlantillaId);
         
         
         /// <summary>

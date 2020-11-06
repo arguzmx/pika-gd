@@ -22,8 +22,6 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
         public static bool ValorValido(this PropiedadPlantilla p, string valor)
         {
-            Console.WriteLine($"({p.Nombre})");
-            Console.WriteLine($"({valor})");
             if (p.Requerido && string.IsNullOrEmpty(valor)) return false;
 
             switch (p.TipoDatoId)
@@ -163,7 +161,6 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             return "";
         }
 
-
         public static string ObtieneJSONPlantilla(this Plantilla plantilla)
         {
             string json = "{ 'mappings': { 'properties': { %C% } }}";
@@ -236,6 +233,114 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         }
 
 
+        public static ValoresPlantilla Valores(dynamic datos, Plantilla p)
+        {
+            dynamic d = datos._source;
+            ValoresPlantilla v = new ValoresPlantilla
+            {
+                PlantillaId = p.Id,
+                DatoId = d["DatoId"],
+                Id = d["Id"],
+                IndiceFiltrado = d["IndiceFiltrado"],
+                OrigenId = d["OrigenId"],
+                TipoDatoId = d["TipoDatoId"],
+                TipoOrigenId = d["TipoOrigenId"],
+                Valores = new List<ValorPropiedad>()
+            };
+
+            foreach(var campo in p.Propiedades)
+            {
+                var valor = ValorPropiedad(campo, d);
+                if (valor != null)
+                {
+                    v.Valores.Add(valor);
+                } else
+                {
+                    v.Valores.Add(new Modelo.Metadatos.ValorPropiedad() { PropiedadId = campo.Id, Valor = "" });
+                }
+            }
+            return v;
+        }
+
+        public static ValorPropiedad ValorPropiedad(this PropiedadPlantilla p, dynamic data)
+        {
+            try
+            {
+                switch (p.TipoDatoId)
+                {
+                    case TipoDato.tBoolean:
+                        bool b = (bool)data[p.Id];
+                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = b? "true": "false" };
+                        
+
+                    case TipoDato.tTime:
+                    case TipoDato.tDateTime:
+                    case TipoDato.tDate:
+                        DateTime d = (DateTime)data[p.Id];
+                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = d.ToString("o") };
+
+                    case TipoDato.tDouble:
+                        float dec = (float)data[p.Id];
+                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = dec.ToString() };
+
+
+                    case TipoDato.tInt32:
+                        int i = (int)data[p.Id];
+                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = i.ToString() };
+
+
+
+                    case TipoDato.tInt64:
+                        long i64 = (long)data[p.Id];
+                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = i64.ToString() };
+                        
+
+                    case TipoDato.tList:
+                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = (string)data[p.Id] };
+
+                    case TipoDato.tString:
+                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = (string)data[p.Id] };
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.ToString());
+                
+            }
+
+            return null;
+
+        }
+
+
+        #region plantillas elastic
+
+        public static string BuscarId(this string id)
+        {
+            var q = @$"¡'query': ¡'match': ¡
+                              '_id': '{id}'
+                        !!!".ToElasticString();
+
+            return q;
+        }
+
+        public static string ActualizarDocumento(this string json)
+        {
+            var q = $"¡'doc': {json}!".ToElasticString();
+            return q;
+        }
+
+        public static string ActualizarDocumento(this ValoresPlantilla valores, Plantilla plantilla)
+        {
+            string json = valores.ObtieneJSONValores(plantilla);
+            var q = $"¡'doc': {json}!".ToElasticString();
+            return q;
+        }
+
+        #endregion
 
     }
 }

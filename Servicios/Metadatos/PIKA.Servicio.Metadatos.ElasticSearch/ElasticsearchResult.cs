@@ -9,7 +9,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         public int took { get; set; }
         public bool timed_out { get; set; }
         public ShardResult _shards { get; set; }
-       public HitResult hits { get; set; }
+        public HitResult hits { get; set; }
 
 
     }
@@ -23,12 +23,13 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
     public class HitResult
     {
         public HitTotal total { get; set; }
-        public dynamic[] hits { get; set; }
+        public object[] hits { get; set; }
         public decimal? max_score { get; set; }
     }
 
 
-    public class ShardResult {
+    public class ShardResult
+    {
         public int total { get; set; }
         public int successful { get; set; }
         public int skipped { get; set; }

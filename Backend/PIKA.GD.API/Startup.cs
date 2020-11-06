@@ -114,8 +114,6 @@ namespace PIKA.GD.API
             services.AddTransient(typeof(IProveedorOpcionesContexto<>), typeof(ProveedorOpcionesContexto<>));
 
 
-            services.AddSingleton<ICacheMetadatosAplicacion, CacheMetadatosAplicacion>();
-            services.AddSingleton<ICacheAplicacion, CacheAplicacion>();
 
 #if DEBUG
             services.AddDbContext<DbContextAplicacionPlugin>(options =>
