@@ -15,7 +15,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
     public static class ElasticJSONExtender
     {
 
-        public static string ToJSONString(this string s)
+        public static string ToElasticString(this string s)
         {
             return s.Replace("¡", "{").Replace("!", "}").Replace("'", "\"").Replace("\t", "");
         }
@@ -218,12 +218,11 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
             if (sb.Length > 0)
             {
-                sb.Append(baseProp.Replace("%N%", "Unico").Replace("%T%", "boolean"));
                 sb.Append(baseProp.Replace("%N%", "OrigenId").Replace("%T%", "keyword"));
                 sb.Append(baseProp.Replace("%N%", "TipoOrigenId").Replace("%T%", "keyword"));
-                sb.Append(baseProp.Replace("%N%", "IndiceFiltrado").Replace("%T%", "keyword"));
                 sb.Append(baseProp.Replace("%N%", "TipoDatoId").Replace("%T%", "keyword"));
                 sb.Append(baseProp.Replace("%N%", "DatoId").Replace("%T%", "keyword"));
+                sb.Append(baseProp.Replace("%N%", "IndiceFiltrado").Replace("%T%", "keyword"));
             }
 
             string campos = sb.ToString().TrimEnd(',');

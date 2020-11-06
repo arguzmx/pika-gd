@@ -3,10 +3,23 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 
 namespace PIKA.Modelo.Metadatos
 {
+    public class RequestValoresPlantilla {
+
+        public RequestValoresPlantilla()
+        {
+            this.Valores = new List<ValorPropiedad>();
+        }
+
+        public string Filtro { get; set; }
+
+        public List<ValorPropiedad> Valores { get; set; }
+
+    }
 
     /// <summary>
     /// Mantiene una copia de los datos corespondientes a una plantilla

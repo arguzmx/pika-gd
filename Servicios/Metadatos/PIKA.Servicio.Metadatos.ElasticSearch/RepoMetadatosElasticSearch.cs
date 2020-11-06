@@ -51,14 +51,51 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             return null;
         }
 
-
-        // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-        public Task<bool> Actualiza(Plantilla plantilla, ValoresPlantilla valores)
+        public async Task<bool> Actualiza(Plantilla plantilla, ValoresPlantilla valores)
         {
-            throw new NotImplementedException();
+            bool exixte = await ExisteId(valores.Id, plantilla.Id);
+            if (exixte)
+            {
+                string json = valores.ObtieneJSONValores(plantilla);
+                var body = ES.PostData.String($"¡'doc': {json}!".ToElasticString());
+
+                var response = await cliente.LowLevel.UpdateAsync<StringResponse>(plantilla.Id, valores.Id, body);
+                if (response.ApiCall.Success)
+                {
+                    return true;
+                }     
+            }
+            return false;
         }
+
+        /// <summary>
+        /// Indica la existencia de un Id en el índice
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="indice"></param>
+        /// <returns></returns>
+        private async Task<bool> ExisteId(string id, string indice)
+        {
+            var q = @$"¡'query': ¡'match': ¡
+                              '_id': '{id}'
+                        !!!".ToElasticString();
+
+            var r = await cliente.LowLevel.SearchAsync<StringResponse>(indice, q);
+            if (r.Success)
+            {
+                ElasticsearchResult esr = System.Text.Json.JsonSerializer.Deserialize<ElasticsearchResult>(r.Body);
+                return esr.hits.total.value > 0 ? true : false;
+            }
+
+            return false;
+
+        }
+
+
+        // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 
         public Task<bool> ActualizarIndice(Plantilla plantilla)
         {
@@ -87,19 +124,16 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             string consulta = plantilla.CreaConsulta(query);
             var body = ES.PostData.String(consulta);
             var response = await cliente.LowLevel.SearchAsync<SearchResponse<dynamic>>(body);
-
-
             return null;
         }
 
     
 
-       
+      
 
 
         private async Task<bool>  ExisteUnico(string indice, string tipo, string id )
         {
-            logger.LogDebug("Uncnip");
             var x = @$"
                     ¡'size':1,'from':0,
                     'query':¡'bool':¡'must':[
@@ -107,7 +141,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                     ¡'term':¡'TipoOrigenId':'{tipo}'!!,
                     ¡'term':¡'Unico':true!!
                     ]!!!
-                    ".ToJSONString();
+                    ".ToElasticString();
 
             Console.WriteLine( x);
 
