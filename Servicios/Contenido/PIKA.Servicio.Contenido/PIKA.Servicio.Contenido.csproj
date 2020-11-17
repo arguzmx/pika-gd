@@ -29,6 +29,8 @@
 
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
 
+    <PackageReference Include="NEST" Version="7.10.0" />
+
     <PackageReference Include="SimpleImpersonation" Version="3.0.0" />
 
     <PackageReference Include="SixLabors.ImageSharp" Version="1.0.1" />
