@@ -228,7 +228,12 @@ namespace PIKA.GD.API.Controllers.Metadatos
 
         }
 
-
+        /// <summary>
+        /// Obntiene la lista de metadatos asociados a una lista de plantillas
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="plantillaid"></param>
+        /// <returns></returns>
         [HttpGet("lista/{plantillaid}/{id}")]
         [TypeFilter(typeof(AsyncIdentityFilter))]
         public async Task<ActionResult<DocumentoPlantilla>> Lista(string id, string plantillaid)

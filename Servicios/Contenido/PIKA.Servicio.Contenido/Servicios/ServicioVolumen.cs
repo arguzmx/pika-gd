@@ -338,7 +338,7 @@ namespace PIKA.Servicio.Contenido.Servicios
         {
             List<Volumen> ListaVolumenEli = await this.repo.ObtenerAsync(x=>x.Eliminada==true).ConfigureAwait(false);
             string[] IdsEliminar = ListaVolumenEli.Select(x=>x.Id).ToArray();
-            ServicioElemento se = new ServicioElemento(this.proveedorOpciones,this.logger);
+            // ServicioElemento se = new ServicioElemento(this.proveedorOpciones,this.logger);
             ServicioVolumenPuntoMontaje svpm = new ServicioVolumenPuntoMontaje(this.proveedorOpciones, this.logger);
             ServicioTipoGestorES sTes = new ServicioTipoGestorES(this.proveedorOpciones, this.logger);
             ServicioParte sp = new ServicioParte(this.proveedorOpciones, this.logger);
@@ -349,7 +349,7 @@ namespace PIKA.Servicio.Contenido.Servicios
             await sgvc.Eliminar(IdsEliminar);
             await sglc.Eliminar(IdsEliminar);
             await sgsmb.Eliminar(IdsEliminar);
-            await se.Purgar();
+            //await se.Purgar();
 
             throw new NotImplementedException();
         }
