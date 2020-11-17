@@ -77,7 +77,6 @@ namespace PIKA.GD.API.Controllers.Contenido
                 }
 
             }
-
             return BadRequest($"{TransaccionId}");
         }
 

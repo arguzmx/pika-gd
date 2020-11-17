@@ -95,7 +95,8 @@ namespace PIKA.GD.API
             // ergistra la instancia del servicio de metadatos en base al tipo 
             services.RegistraServicioDeMetadatos(this.Configuration);
 
-
+            //Registra el servicio e almacenamiento de contenido elestic search
+            services.RegistraServicioContenido(this.Configuration);
 
             services.Configure<ConfiguracionServidor>(o => this.Configuration.GetSection("ConfiguracionServidor").Bind(o));
             services.AddSingleton(typeof(IServicioCache), typeof(CacheMemoria));

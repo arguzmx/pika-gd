@@ -37,13 +37,18 @@ namespace PIKA.Servicio.Contenido.Servicios
         private IRepositorioAsync<Carpeta> repoCarpetas;
         private UnidadDeTrabajo<DbContextContenido> UDT;
         private ComunesCarpetas helperCarpetas;
+
+        private IRepositorioContenidoElasticSearch repoElastic;
+
         public ServicioElemento(
+            IRepositorioContenidoElasticSearch repoElastic,
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
             ILogger<ServicioLog> Logger
         ) : base(proveedorOpciones, Logger)
         {
             try
             {
+                this.repoElastic = repoElastic;
                 this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
                 this.repo = UDT.ObtenerRepositoryAsync<Elemento>(new QueryComposer<Elemento>());
                 this.repoVer = UDT.ObtenerRepositoryAsync<Version>(new QueryComposer<Version>());
@@ -161,6 +166,7 @@ namespace PIKA.Servicio.Contenido.Servicios
 
                 await this.repo.CrearAsync(entity);
 
+                // Sustituir esta sección por el almacenamiento en elasticsearc
                 PIKA.Modelo.Contenido.Version v = new Version()
                 {
                     Id = System.Guid.NewGuid().ToString(),

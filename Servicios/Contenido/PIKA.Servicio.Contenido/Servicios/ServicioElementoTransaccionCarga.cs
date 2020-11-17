@@ -31,15 +31,18 @@ namespace PIKA.Servicio.Contenido.Servicios
 
 
         private IRepositorioAsync<ElementoTransaccionCarga> repo;
-        ConfiguracionServidor configuracionServidor;
+        private ConfiguracionServidor configuracionServidor;
         private UnidadDeTrabajo<DbContextContenido> UDT;
-      
+        private IRepositorioContenidoElasticSearch repoElastic;
+
         public ServicioElementoTransaccionCarga(
+            IRepositorioContenidoElasticSearch repoElastic,
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
             ILogger<ServicioLog> Logger,
             IOptions<ConfiguracionServidor> opciones
         ) : base(proveedorOpciones, Logger)
         {
+            this.repoElastic = repoElastic;
             this.configuracionServidor = opciones.Value;
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<ElementoTransaccionCarga>(new QueryComposer<ElementoTransaccionCarga>());

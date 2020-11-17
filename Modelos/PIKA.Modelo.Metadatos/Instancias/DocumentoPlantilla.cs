@@ -8,30 +8,19 @@ using System.Text;
 
 namespace PIKA.Modelo.Metadatos
 {
-    public class RequestValoresPlantilla {
 
-        public RequestValoresPlantilla()
-        {
-            this.Valores = new List<ValorPropiedad>();
-        }
-
-        public string Filtro { get; set; }
-
-        public List<ValorPropiedad> Valores { get; set; }
-
-    }
 
     /// <summary>
     /// Mantiene una copia de los datos corespondientes a una plantilla
     /// Esta clase es solo para manejo en memodia no debe incluirse en la base de datos
     /// </summary>
-    public class ValoresPlantilla: IEntidadRelacionada
+    public class DocumentoPlantilla: IEntidadRelacionada
     {
-        public ValoresPlantilla() {
+        public DocumentoPlantilla() {
             this.Valores = new List<ValorPropiedad>();
         }
 
-        public ValoresPlantilla(string plantillaId)
+        public DocumentoPlantilla(string plantillaId)
         {
             this.PlantillaId = plantillaId;
             this.Valores = new List<ValorPropiedad>();
@@ -53,6 +42,16 @@ namespace PIKA.Modelo.Metadatos
         /// Lista de valores en las propiedades
         /// </summary>
         public List<ValorPropiedad> Valores { get; set; }
+
+        /// <summary>
+        /// Identifica si el documento forma parte de una lista
+        /// </summary>
+        public bool EsLista { get; set; }
+
+        /// <summary>
+        /// Almacena el Id Unico de la lista  la que pertenece el documento
+        /// </summary>
+        public string ListaId { get; set; }
 
         /// <summary>
         /// Dominio de los datos

@@ -13,6 +13,8 @@ using PIKA.Infrastructure.EventBus;
 using PIKA.Infrastructure.EventBus.Abstractions;
 using PIKA.Infrastructure.EventBusRabbitMQ;
 using PIKA.Modelo.Metadatos;
+using PIKA.Servicio.Contenido;
+using PIKA.Servicio.Contenido.Servicios;
 using PIKA.Servicio.Metadatos;
 using PIKA.Servicio.Metadatos.ElasticSearch;
 using PIKA.Servicio.Metadatos.EventosBus;
@@ -123,6 +125,19 @@ namespace PIKA.GD.API
 
                 Log.Logger.Information("Estableciendo el repositorio de metadatos a {x}", "Elasticsearch");
                 services.AddTransient<IRepositorioMetadatos, RepoMetadatosElasticSearch>();
+
+            }
+        }
+
+        public static void RegistraServicioContenido(this IServiceCollection services, IConfiguration Configuration)
+        {
+            ConfiguracionRepoMetadatos repometadtosconf = new ConfiguracionRepoMetadatos();
+            Configuration.GetSection("RepositorioContenido").Bind(repometadtosconf);
+            if (repometadtosconf.Tipo == ConfiguracionRepoMetadatos.ELASTICSEARCH)
+            {
+
+                Log.Logger.Information("Estableciendo el repositorio de contenido a {x}", "Elasticsearch");
+                services.AddTransient<IRepositorioContenidoElasticSearch, ServicioContenidoElasticSearch>();
 
             }
         }

@@ -24,7 +24,6 @@ namespace PIKA.GD.API.Servicios.Caches
             Plantilla p = await  cache.GetAsync<Plantilla>(ClavePlantilla(id)).ConfigureAwait(false);
             if (p == null)
             {
-                Console.WriteLine("--->REPOs");
                 p = await servicio.UnicoAsync(x => x.Id == id, null,
                     y => y.Include(z => z.Propiedades).ThenInclude(z => z.TipoDato)
                     .Include(z => z.Propiedades).ThenInclude(z => z.ValidadorNumero)
@@ -33,9 +32,6 @@ namespace PIKA.GD.API.Servicios.Caches
                 ).ConfigureAwait(false);
                 if (p != null) cache.Add<Plantilla>(ClavePlantilla(id), p);
             }
-            else {
-                Console.WriteLine("--->Cache");
-            }
             return p;
         }
 
@@ -43,7 +39,7 @@ namespace PIKA.GD.API.Servicios.Caches
         public async static Task<bool> PlantillaGenerada(string id, IAppCache cache)
         {
             string p = await cache.GetAsync<string>(ClavePlantillaGenerada(id)).ConfigureAwait(false);
-            return string.IsNullOrEmpty(p);
+            return !string.IsNullOrEmpty(p);
         }
 
         public static void EstablecePlantillaGenerada(string id, IAppCache cache)

@@ -110,7 +110,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             return false;
         }
  
-        public static string ObtieneJSONValores(this ValoresPlantilla valores, Plantilla plantilla) {
+        public static string ObtieneJSONValores(this DocumentoPlantilla valores, Plantilla plantilla) {
             string json = "{  %C% }";
             string baseProp = "'%N%': %V%,";
 
@@ -147,6 +147,8 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 sb.Append($"'TipoDatoId': '{valores.TipoDatoId}',");
                 sb.Append($"'DatoId': '{valores.DatoId}',");
                 sb.Append($"'IndiceFiltrado': '{valores.IndiceFiltrado}',");
+                sb.Append($"'EsLista': '{(valores.EsLista ? "true": "false")}',");
+                sb.Append($"'ListaId': '{ (string.IsNullOrEmpty(valores.ListaId) ? "" : valores.ListaId)}',");
 
             }
             string campos = sb.ToString().TrimEnd(',');
@@ -154,7 +156,6 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             if (campos != "")
             {
                 string r =  json.Replace("%C%", campos).Replace('\'', '\"');
-                Console.WriteLine(r);
                 return r;
             }
 
@@ -220,12 +221,15 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 sb.Append(baseProp.Replace("%N%", "TipoDatoId").Replace("%T%", "keyword"));
                 sb.Append(baseProp.Replace("%N%", "DatoId").Replace("%T%", "keyword"));
                 sb.Append(baseProp.Replace("%N%", "IndiceFiltrado").Replace("%T%", "keyword"));
+                sb.Append(baseProp.Replace("%N%", "EsLista").Replace("%T%", "boolean"));
+                sb.Append(baseProp.Replace("%N%", "ListaId").Replace("%T%", "keyword"));
             }
 
             string campos = sb.ToString().TrimEnd(',');
 
             if (campos != "")
             {
+                Console.WriteLine(json.Replace("%C%", campos).Replace('\'', '\"'));
                 return json.Replace("%C%", campos).Replace('\'','\"');
             }
 
@@ -233,10 +237,10 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         }
 
 
-        public static ValoresPlantilla Valores(dynamic datos, Plantilla p)
+        public static DocumentoPlantilla Valores(dynamic datos, Plantilla p)
         {
             dynamic d = datos._source;
-            ValoresPlantilla v = new ValoresPlantilla
+            DocumentoPlantilla v = new DocumentoPlantilla
             {
                 PlantillaId = p.Id,
                 DatoId = d["DatoId"],
@@ -318,6 +322,13 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
         #region plantillas elastic
 
+
+        public static string BuscarPorLista(this string listaId)
+        {
+            var q = @$"¡'size': 5000,'query':¡ 'term': ¡ 'ListaId': ¡ 'value': '{ listaId }', 'boost': 1.0!!!!".ToElasticString();
+            return q;
+        }
+
         public static string BuscarId(this string id)
         {
             var q = @$"¡'query': ¡'match': ¡
@@ -333,7 +344,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             return q;
         }
 
-        public static string ActualizarDocumento(this ValoresPlantilla valores, Plantilla plantilla)
+        public static string ActualizarDocumento(this DocumentoPlantilla valores, Plantilla plantilla)
         {
             string json = valores.ObtieneJSONValores(plantilla);
             var q = $"¡'doc': {json}!".ToElasticString();

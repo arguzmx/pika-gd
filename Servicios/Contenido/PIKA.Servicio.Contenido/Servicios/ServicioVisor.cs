@@ -25,15 +25,17 @@ namespace PIKA.Servicio.Contenido.Servicios
         private UnidadDeTrabajo<DbContextContenido> UDT;
         private readonly IAppCache lazycache;
         private IOptions<ConfiguracionServidor> opciones;
-
+        private IRepositorioContenidoElasticSearch repoElastic;
 
         public ServicioVisor(
+           IRepositorioContenidoElasticSearch repoElastic,
            IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
            ILogger<ServicioLog> Logger,
            IAppCache lazycache,
            IOptions<ConfiguracionServidor> opciones
        ) : base(proveedorOpciones, Logger)
         {
+            this.repoElastic = repoElastic;
             this.opciones = opciones;
             this.lazycache = lazycache;
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
@@ -42,6 +44,10 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<Documento> ObtieneDocumento(string IdElemento)
         {
+
+            //Sustituir el método para leer desde elastisearch
+            // ELIMINAR TODO EL CODIGO INNECESARIO
+
             ComunesElemento elementos = new ComunesElemento(UDT);
             ComunesPartes partes = new ComunesPartes(UDT);
             Documento d = null;

@@ -37,7 +37,7 @@ namespace PIKA.Modelo.Metadatos
         /// <param name="plantilla">Modelo de la plantilla</param>
         /// <param name="id">Identificador del registro a recuperar</param>
         /// <returns></returns>
-        Task<ValoresPlantilla> Unico(Plantilla plantilla, string id);
+        Task<DocumentoPlantilla> Unico(Plantilla plantilla, string id);
 
         /// <summary>
         /// Elmina un elmento único del repositorio
@@ -47,22 +47,15 @@ namespace PIKA.Modelo.Metadatos
         /// <returns></returns>
         Task<bool> Elimina(Plantilla plantilla, string id);
 
+        Task<List<DocumentoPlantilla>> Lista(Plantilla plantilla, string listaId);
 
-        /// <summary>
-        /// Inserta un elmento al repositorio
-        /// </summary>
-        /// <param name="plantilla">Modelo de la plantilla</param>
-        /// <param name="valores">Datos de los valores en las propedades de la plantilla</param>
-        /// <returns></returns>
-        Task<string> Inserta(Plantilla plantilla, ValoresPlantilla valores);
 
-        /// <summary>
-        /// Actualiza un elmento al repositorio
-        /// </summary>
-        /// <param name="plantilla">Modelo de la plantilla</param>
-        /// <param name="valores">Datos de los valores en las propedades de la plantilla</param>
-        /// <returns></returns>
-        Task<bool> Actualiza(Plantilla plantilla, ValoresPlantilla valores);
+        Task<string> Inserta(string tipoid, string id, string tipoOrigenId,
+            string origenId, bool esLista, string ListaId,
+            Plantilla plantilla, RequestValoresPlantilla valores);
+
+        
+        Task<bool> Actualiza(string id, Plantilla plantilla, RequestValoresPlantilla request);
 
         /// <summary>
         /// Obtiene una lista de elementos de la plantilla
@@ -70,7 +63,7 @@ namespace PIKA.Modelo.Metadatos
         /// <param name="plantilla"></param>
         /// <param name="query"></param>
         /// <returns></returns>
-        Task<Paginado<ValoresPlantilla>> Consulta(Plantilla plantilla, Consulta query);
+        Task<Paginado<DocumentoPlantilla>> Consulta(Plantilla plantilla, Consulta query);
 
 
         /// <summary>

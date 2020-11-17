@@ -39,26 +39,64 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
         public async Task<string> CrearIndice(Plantilla plantilla)
         {
+
             var body = ES.PostData.String(plantilla.ObtieneJSONPlantilla());
             var response = await cliente.LowLevel.Indices.CreateAsync<CreateIndexResponse>(plantilla.Id, body);
             return response.Index;
         }
 
-        public async Task<string> Inserta(Plantilla plantilla, ValoresPlantilla valores)
+        public async Task<string> Inserta(string tipoid, string id, string tipoOrigenId, 
+            string origenId, bool esLista, string ListaId,
+            Plantilla plantilla, RequestValoresPlantilla valores)
         {
-            valores.Id = Guid.NewGuid().ToString();
-            string json = valores.ObtieneJSONValores(plantilla);
+
+            DocumentoPlantilla valoresplantilla = new DocumentoPlantilla()
+            {
+                Id = Guid.NewGuid().ToString(),
+                DatoId = id,
+                TipoDatoId = tipoid,
+                PlantillaId = plantilla.Id,
+                TipoOrigenId = tipoOrigenId,
+                OrigenId = origenId,
+                Valores = valores.Valores,
+                IndiceFiltrado = valores.Filtro,
+                EsLista = esLista,
+                ListaId = ListaId
+            };
+
+            string json = valoresplantilla.ObtieneJSONValores(plantilla);
             var body = ES.PostData.String(json);
-            var response = await cliente.LowLevel.CreateAsync<CreateResponse>(plantilla.Id, valores.Id, body);
-            if (response.Result == Result.Created) return valores.Id;
+            var response = await cliente.LowLevel.CreateAsync<CreateResponse>(plantilla.Id, valoresplantilla.Id, body);
+
+
+            if (response.ApiCall.Success) {
+                return valoresplantilla.Id;
+            } 
+            
             return null;
         }
 
-        public async Task<bool> Actualiza(Plantilla plantilla, ValoresPlantilla valores)
+        public async Task<bool> Actualiza(string id, Plantilla plantilla, RequestValoresPlantilla request)
         {
-            bool exixte = await ExisteId(valores.Id, plantilla.Id);
-            if (exixte)
+            var doc = await Unico(plantilla, id);
+
+            if (doc !=null )
             {
+                DocumentoPlantilla valores = new DocumentoPlantilla()
+                {
+                    Id = id,
+                    Valores = request.Valores,
+                    IndiceFiltrado = request.Filtro,
+                    PlantillaId = doc.PlantillaId,
+                    EsLista = doc.EsLista,
+                    ListaId = doc.ListaId,
+                    DatoId = doc.DatoId,
+                    TipoDatoId = doc.TipoDatoId,
+                    TipoOrigenId = doc.TipoOrigenId,
+                    OrigenId = doc.OrigenId
+                };
+
+
                 var body = ES.PostData.String(valores.ActualizarDocumento(plantilla));
                 var response = await cliente.LowLevel.UpdateAsync<StringResponse>(plantilla.Id, valores.Id, body);
                 if (response.ApiCall.Success)
@@ -89,19 +127,44 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
         }
 
-        public async Task<ValoresPlantilla> Unico(Plantilla plantilla, string id)
+        public async Task<DocumentoPlantilla> Unico(Plantilla plantilla, string id)
         {
             var r = await cliente.LowLevel.SearchAsync<StringResponse>(plantilla.Id, id.BuscarId());
             if (r.Success)
             {
+
                 ElasticsearchResult esr = JsonSerializer.Deserialize<ElasticsearchResult>(r.Body);
-                JsonElement e = (JsonElement)esr.hits.hits[0];
-                dynamic d = JObject.Parse(e.ToString());
-                return ElasticJSONExtender.Valores(d, plantilla);
-            }
+                if (esr.hits.total.value > 0)
+                {
+                    JsonElement e = (JsonElement)esr.hits.hits[0];
+                    dynamic d = JObject.Parse(e.ToString());
+                    return ElasticJSONExtender.Valores(d, plantilla);
+                }
+                
+            } 
             return null;
         }
 
+        public async Task<List<DocumentoPlantilla>> Lista(Plantilla plantilla, string listaId)
+        {
+            var r = await cliente.LowLevel.SearchAsync<StringResponse>(plantilla.Id, listaId.BuscarPorLista());
+            if (r.Success)
+            {
+                List<DocumentoPlantilla> resultados = new List<DocumentoPlantilla>();
+                ElasticsearchResult esr = JsonSerializer.Deserialize<ElasticsearchResult>(r.Body);
+                if (esr.hits.total.value > 0)
+                {
+                    for(int i=0; i<= esr.hits.total.value; i++)
+                    {
+                        JsonElement e = (JsonElement)esr.hits.hits[0];
+                        dynamic d = JObject.Parse(e.ToString());
+                        resultados.Add(ElasticJSONExtender.Valores(d, plantilla));
+                    }
+                }
+                return resultados;
+            }
+            return null;
+        }
 
         // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -127,7 +190,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
   
 
-        public async Task<Paginado<ValoresPlantilla>> Consulta(Plantilla plantilla, Consulta query)
+        public async Task<Paginado<DocumentoPlantilla>> Consulta(Plantilla plantilla, Consulta query)
         {
             string consulta = plantilla.CreaConsulta(query);
             var body = ES.PostData.String(consulta);
