@@ -381,19 +381,21 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<List<string>> Purgar()
         {
-            ServicioElemento se = new ServicioElemento(proveedorOpciones,this.logger);
-            ServicioPuntoMontaje spm = new ServicioPuntoMontaje(proveedorOpciones,this.logger);
-            List<Carpeta> ListaCarpeta = await this.ObtenerAsync(x=>x.Eliminada==true).ConfigureAwait(false);
-            List<Elemento>ListaElemento= await se.ObtenerAsync(x => x.CarpetaId.Contains(ListaCarpeta.Select(x => x.Id).FirstOrDefault()));
-            string[] ElementosEliminados = ListaElemento.Select(x=>x.Id).ToArray();
-            string[] PuntajeEliminado = ListaCarpeta.Select(x=>x.PuntoMontajeId).ToArray();
-            se = new ServicioElemento(proveedorOpciones, this.logger);
-            await spm.Eliminar(PuntajeEliminado);
-            await se.Eliminar(ElementosEliminados);
-            await  se.Purgar();
-            await  spm.Purgar();
+            //ServicioElemento se = new ServicioElemento(proveedorOpciones,this.logger);
+            //ServicioPuntoMontaje spm = new ServicioPuntoMontaje(proveedorOpciones,this.logger);
+            //List<Carpeta> ListaCarpeta = await this.ObtenerAsync(x=>x.Eliminada==true).ConfigureAwait(false);
+            //List<Elemento>ListaElemento= await se.ObtenerAsync(x => x.CarpetaId.Contains(ListaCarpeta.Select(x => x.Id).FirstOrDefault()));
+            //string[] ElementosEliminados = ListaElemento.Select(x=>x.Id).ToArray();
+            //string[] PuntajeEliminado = ListaCarpeta.Select(x=>x.PuntoMontajeId).ToArray();
+            //se = new ServicioElemento(proveedorOpciones, this.logger);
+            //await spm.Eliminar(PuntajeEliminado);
+            //await se.Eliminar(ElementosEliminados);
+            //await  se.Purgar();
+            //await  spm.Purgar();
 
-            return ListaCarpeta.Select(x => x.Id).ToList();
+            //return ListaCarpeta.Select(x => x.Id).ToList();
+
+            return await Task.FromResult(new List<string>());
         }
 
 
