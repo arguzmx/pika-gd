@@ -329,6 +329,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             return q;
         }
 
+
         public static string BuscarId(this string id)
         {
             var q = @$"¡'query': ¡'match': ¡

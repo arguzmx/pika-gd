@@ -166,6 +166,30 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             return null;
         }
 
+
+
+        public async Task<bool> EliminaDocumento(string id, string plantillaId)
+        {
+            var r = await cliente.LowLevel.DeleteByQueryAsync<DeleteByQueryResponse>(plantillaId, id.BuscarId());
+            if (r.ApiCall.Success)
+            {
+                if (r.Total == 1) return true;
+            }
+
+            return false;
+        }
+
+        public async Task<long> EliminaListaDocumentos(string id, string plantillaId)
+        {
+            var r = await cliente.LowLevel.DeleteByQueryAsync<DeleteByQueryResponse>(plantillaId, id.BuscarPorLista());
+            if (r.ApiCall.Success)
+            {
+                return r.Total;
+            }
+
+            return -1;
+        }
+
         // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -178,10 +202,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
        
 
-        public Task<bool> Elimina(Plantilla plantilla, string id)
-        {
-            throw new NotImplementedException();
-        }
+
 
         public Task<bool> EliminarIndice(Plantilla plantilla)
         {
