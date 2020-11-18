@@ -8,6 +8,7 @@ using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
 using System.ComponentModel.DataAnnotations.Schema;
+using PIKA.Constantes.Aplicaciones.Contenido;
 
 namespace PIKA.Modelo.Contenido
 {
@@ -15,7 +16,8 @@ namespace PIKA.Modelo.Contenido
     /// Proporciona una estructura jerárquica de folders para situar elementos del contenido
     /// </summary>
     // [EntidadVinculada(EntidadHijo: "Elemento", Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id", PropiedadHijo: "CarpetaId")]
-    [Entidad(EliminarLogico: true)]
+    [Entidad(PaginadoRelacional: false, EliminarLogico: true,
+TokenApp: ConstantesAppContenido.APP_ID, TokenMod: ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO)]
     public class Carpeta : Entidad<string>, IEntidadNombrada, 
         IEntidadEliminada, IEntidadRegistroCreacion, IEntidadJerarquica
     {
