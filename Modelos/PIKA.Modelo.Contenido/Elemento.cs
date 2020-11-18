@@ -1,4 +1,5 @@
-﻿using PIKA.Infraestructura.Comun;
+﻿using PIKA.Constantes.Aplicaciones.Contenido;
+using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
 using RepositorioEntidades;
@@ -11,7 +12,8 @@ using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Contenido
 {
-    [Entidad(PaginadoRelacional: false, EliminarLogico: true)]
+    [Entidad(PaginadoRelacional: false, EliminarLogico: true,
+TokenApp: ConstantesAppContenido.APP_ID, TokenMod: ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO)]
     [LinkView(Titulo: "visor", Icono: "preview", Vista: "visorcontenido")]
     public class Elemento : Entidad<string>, IEntidadRegistroCreacion, 
         IEntidadEliminada, IEntidadNombrada
