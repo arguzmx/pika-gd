@@ -39,13 +39,7 @@ namespace PIKA.Modelo.Metadatos
         /// <returns></returns>
         Task<DocumentoPlantilla> Unico(Plantilla plantilla, string id);
 
-        /// <summary>
-        /// Elmina un elmento único del repositorio
-        /// </summary>
-        /// <param name="plantilla">Modelo de la plantilla</param>
-        /// <param name="id">Identificador del registro a eliminar</param>
-        /// <returns></returns>
-        Task<bool> Elimina(Plantilla plantilla, string id);
+     
 
         Task<List<DocumentoPlantilla>> Lista(Plantilla plantilla, string listaId);
 
@@ -56,6 +50,23 @@ namespace PIKA.Modelo.Metadatos
 
         
         Task<bool> Actualiza(string id, Plantilla plantilla, RequestValoresPlantilla request);
+
+        /// <summary>
+        /// Elmina un elmento único del repositorio
+        /// </summary>
+        /// <param name="plantillaId">Identificador único de la plantilla</param>
+        /// <param name="id">Identificador del registro a eliminar</param>
+        /// <returns></returns>
+        Task<bool> EliminaDocumento(string id, string plantillaId);
+
+
+        /// <summary>
+        /// Elimina todos los documentos de una lista documenos en  una plantilla
+        /// </summary>
+        /// <param name="id">Identificador único de la lista de documentos</param>
+        /// <param name="plantillaId">identificador único de la plantilla</param>
+        /// <returns></returns>
+        Task<long> EliminaListaDocumentos(string id, string plantillaId);
 
         /// <summary>
         /// Obtiene una lista de elementos de la plantilla
