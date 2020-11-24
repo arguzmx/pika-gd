@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using RepositorioEntidades;
 using Serilog;
 using Serilog.Events;
@@ -13,15 +14,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace PIKA.GD.API
 {
     public static class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
-                    .MinimumLevel.Debug()
+            .MinimumLevel.Debug()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .MinimumLevel.Override("System", LogEventLevel.Warning)
             .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
@@ -31,21 +33,18 @@ namespace PIKA.GD.API
 
             var nodb = args.Contains("/nodb");
             var demodb = args.Contains("/demodb");
-            //if (seed)
-            //{
-            //    args = args.Except(new[] { "/seed" }).ToArray();
-            //}
-
+  
             try
             {
-                Log.Information("Starting up");
+                Log.Information("Iniciando PIKA-GD-API");
                 var host = BuildWebHost(args);
-                var CurrentHost = host.Services.GetService<IWebHostEnvironment>();
+                var environment = host.Services.GetService<IWebHostEnvironment>();
                 var config = host.Services.GetRequiredService<IConfiguration>();
 
                 if (!nodb)
                 {
-                    InicializarAplication(config, CurrentHost, demodb);
+                    InicializarAplication(config, environment, demodb);
+                    await InicializarAplicationAutoConfigurable(environment, host, demodb).ConfigureAwait(false);
                 }
                 else
                 {
@@ -108,6 +107,28 @@ namespace PIKA.GD.API
 
             }
         }
+
+        private static async Task InicializarAplicationAutoConfigurable( IWebHostEnvironment env,  IWebHost host, bool demodb)
+        {
+            List<Type> repositorios = LocalizadorEnsamblados.ObtieneContextosAutoConfigurables();
+            IConfiguration config = host.Services.GetRequiredService<IConfiguration>();
+            ILoggerFactory loggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
+            foreach (Type repo in repositorios)
+            {
+                var instancia = (IRepositorioInicializableAutoConfigurable)Activator.CreateInstance(repo);
+                try
+                {
+                    await instancia.Inicializar(config, env.ApplicationName, demodb, loggerFactory).ConfigureAwait(false);
+                                        
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+
+            }
+        }
+
 
     }
 }

@@ -8,7 +8,7 @@ namespace PIKA.Modelo.Metadatos
 {
     public interface IRepositorioMetadatos
     {
-
+        Task<bool> ActualizaDesdePlantilla(Plantilla plantilla);
 
         /// <summary>
         /// Crea el esapcio  de almacenamiento asociado a la plantilla
@@ -39,14 +39,15 @@ namespace PIKA.Modelo.Metadatos
         /// <returns></returns>
         Task<DocumentoPlantilla> Unico(Plantilla plantilla, string id);
 
-     
+        Task<string> CreaLista(string plantillaId, RequestCrearLista request);
 
         Task<List<DocumentoPlantilla>> Lista(Plantilla plantilla, string listaId);
 
 
-        Task<string> Inserta(string tipoid, string id, string tipoOrigenId,
+        Task<string> Inserta(string tipoOrigenId,
             string origenId, bool esLista, string ListaId,
-            Plantilla plantilla, RequestValoresPlantilla valores);
+            Plantilla plantilla, 
+            RequestValoresPlantilla valores, string nombreRelacion);
 
         
         Task<bool> Actualiza(string id, Plantilla plantilla, RequestValoresPlantilla request);
@@ -66,7 +67,7 @@ namespace PIKA.Modelo.Metadatos
         /// <param name="id">Identificador único de la lista de documentos</param>
         /// <param name="plantillaId">identificador único de la plantilla</param>
         /// <returns></returns>
-        Task<long> EliminaListaDocumentos(string id, string plantillaId);
+        Task<long> EliminaListaDocumentos(string listaId, string plantillaId);
 
         /// <summary>
         /// Obtiene una lista de elementos de la plantilla

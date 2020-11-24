@@ -91,6 +91,37 @@ namespace PIKA.GD.API
             return l;
         }
 
+        public static List<Type> ObtieneContextosAutoConfigurables()
+        {
+            List<Type> l = new List<Type>();
+            string Ruta = ObtieneRutaBin();
+
+            var assemblies = Directory.GetFiles(Ruta, "*.dll",
+                new EnumerationOptions() { RecurseSubdirectories = true });
+
+            foreach (var item in assemblies)
+            {
+                try
+                {
+                    var assembly = Assembly.LoadFile(item);
+                    var Tipos = assembly.GetTypes()
+                            .Where(t =>
+                            !t.IsAbstract &&
+                            typeof(IRepositorioInicializableAutoConfigurable).IsAssignableFrom(t))
+                            .ToArray();
+
+                    l.AddRange(Tipos);
+
+
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            return l;
+        }
 
         public static List<RutaTipo> ObtieneControladoresACL()
         {

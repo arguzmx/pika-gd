@@ -11,8 +11,24 @@ namespace PIKA.Modelo.Metadatos
             this.Valores = new List<ValorPropiedad>();
         }
 
+        /// <summary>
+        /// Tipo del objeto al que se asocia la plantilla
+        /// </summary>
+        public string Tipo { get; set; }
+
+        /// <summary>
+        /// Identificador único de l objeto al que se asocia la plantilla
+        /// </summary>
+        public string Id { get; set; }
+
+        /// <summary>
+        /// Elemento clave de filtrado para la plantilla
+        /// </summary>
         public string Filtro { get; set; }
 
+        /// <summary>
+        /// Lista de valores para la plantilla
+        /// </summary>
         public List<ValorPropiedad> Valores { get; set; }
 
     }

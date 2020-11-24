@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
@@ -25,14 +26,22 @@ namespace PIKA.GD.API.Controllers.Metadatos
         private ILogger<PropiedadPlantillaController> logger;
         private IServicioPropiedadPlantilla servicioEntidad;
         private IProveedorMetadatos<PropiedadPlantilla> metadataProvider;
-        public PropiedadPlantillaController(ILogger<PropiedadPlantillaController> logger,
+        private IServicioPlantilla servicioPlantilla;
+        private IRepositorioMetadatos repositorioMetadatos;
+        public PropiedadPlantillaController(
+            IRepositorioMetadatos repositorioMetadatos,
+            IServicioPlantilla servicioPlantilla,
+            ILogger<PropiedadPlantillaController> logger,
             IProveedorMetadatos<PropiedadPlantilla> metadataProvider,
             IServicioPropiedadPlantilla servicioentidad
             )
         {
+            
             this.logger = logger;
             this.servicioEntidad = servicioentidad;
             this.metadataProvider = metadataProvider;
+            this.repositorioMetadatos = repositorioMetadatos;
+            this.servicioPlantilla = servicioPlantilla;
         }
 
         /// <summary>
@@ -59,6 +68,8 @@ namespace PIKA.GD.API.Controllers.Metadatos
         public async Task<ActionResult<PropiedadPlantilla>> Post([FromBody] PropiedadPlantilla entidad)
         {
             entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
+            Plantilla p = await servicioPlantilla.UnicoAsync(x => x.Id == entidad.PlantillaId, null, x => x.Include(y => y.Propiedades)).ConfigureAwait(false);
+            await repositorioMetadatos.ActualizaDesdePlantilla(p).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetPropiedadPlantilla", new { id = entidad.Id.Trim() }, entidad).Value);
         }
 
