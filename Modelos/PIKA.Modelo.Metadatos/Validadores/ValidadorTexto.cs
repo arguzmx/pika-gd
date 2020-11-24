@@ -1,4 +1,5 @@
-﻿using PIKA.Infraestructura.Comun;
+﻿using PIKA.Constantes.Aplicaciones.Metadatos;
+using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Metadatos.Atributos;
 using RepositorioEntidades;
 using System;
@@ -10,7 +11,8 @@ using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Metadatos
 {
-    
+    [Entidad(PaginadoRelacional: false, EliminarLogico: false,
+    TokenApp: ConstantesAppMetadatos.APP_ID, TokenMod: ConstantesAppMetadatos.MODULO_PLANTILLAS)]
     public class ValidadorTexto: Entidad<string>
     {
         [Prop(Required: false, isId: true, Visible: false, OrderIndex: 0,

@@ -14,7 +14,8 @@ namespace PIKA.Modelo.Metadatos
     /// <summary>
     /// Define las una propiedad asocida a una plantilla del repositoprio
     /// </summary>
-    [Entidad(PaginadoRelacional: false, EliminarLogico: false)]
+    [Entidad(PaginadoRelacional: false, EliminarLogico: false,
+        TokenApp: ConstantesAppMetadatos.APP_ID, TokenMod: ConstantesAppMetadatos.MODULO_PLANTILLAS)]
 
     [EntidadVinculada(TokenSeguridad: ConstantesAppMetadatos.MODULO_PLANTILLAS,
         EntidadHijo: "TipoDatoId", Cardinalidad: TipoCardinalidad.UnoUno,

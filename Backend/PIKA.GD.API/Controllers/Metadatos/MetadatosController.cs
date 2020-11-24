@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using PIKA.GD.API.Servicios;
 using PIKA.Modelo.Metadatos;
 using System;
 using PIKA.Servicio.Metadatos.ElasticSearch.Excepciones;
@@ -41,7 +40,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
             this.appCache = cache;
         }
 
-        
+
 
         /// <summary>
         /// Obtiene una plantilla a partir de su identificador único
@@ -55,272 +54,14 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<MetadataInfo>> ObtienePlantilla(string id)
         {
-            try
-            {
-                Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(id,appCache, plantillas)
-                    .ConfigureAwait(false);
-                
-                if (plantilla == null) return NotFound(id);
+            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(id, appCache, plantillas)
+                .ConfigureAwait(false);
 
-                PlantillaMetadataExtractor extractor = new PlantillaMetadataExtractor();
-                return Ok(extractor.Obtener(plantilla));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
+            if (plantilla == null) return NotFound(id);
 
+            PlantillaMetadataExtractor extractor = new PlantillaMetadataExtractor();
 
-        /// <summary>
-        /// Inserta un registro de metadatos para un objeto
-        /// </summary>
-        /// <param name="plantillaid">Indetificador único de la plantilla</param>
-        /// <param name="tipo">Tipo de objeto asociado por ejemplo Documento</param>
-        /// <param name="tipoid">Identificador único del objeto asociado por ejemplo Id Documento </param>
-        /// <param name="valores">Lista de valores para el registro de metadatos</param>
-        /// <returns></returns>
-        [HttpPost("{plantillaid}/{tipo}/{tipoid}")]
-        [TypeFilter(typeof(AsyncIdentityFilter))]
-        public async Task<ActionResult> Inserta(string plantillaid, string tipo, string tipoid, 
-            [FromBody] RequestValoresPlantilla valores)
-        {
-            try
-            {
-
-                Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
-                        .ConfigureAwait(false);
-
-                if (plantilla == null) return NotFound(plantillaid);
-
-                bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
-                if (existe)
-                {
-                    string id = await repositorio.Inserta(tipo, tipoid, "dominio", this.TenatId, 
-                        false, null, plantilla, valores).ConfigureAwait(false);
-                    if(id !=null) return Ok(id);
-                }
-
-                return BadRequest(valores);
-            }
-            catch (ExMetadatosNoValidos em)
-            {
-                return BadRequest(em.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-
-        }
-
-        [HttpPost("lista/{plantillaid}/{tipo}/{tipoid}/{listaid}")]
-        [TypeFilter(typeof(AsyncIdentityFilter))]
-        public async Task<ActionResult> InsertaEnLista(string plantillaid, string tipo, string tipoid,
-            string listaid, [FromBody] RequestValoresPlantilla valores)
-        {
-            try
-            {
-
-                Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
-                        .ConfigureAwait(false);
-
-                if (plantilla == null) return NotFound(plantillaid);
-
-                bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
-                if (existe)
-                {
-                    string id = await repositorio.Inserta(tipo, tipoid, "dominio", this.TenatId,
-                        true, listaid, plantilla, valores).ConfigureAwait(false);
-                    if (id != null) return Ok(id);
-                }
-
-                return BadRequest(valores);
-            }
-            catch (ExMetadatosNoValidos em)
-            {
-                return BadRequest(em.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
-
-
-        /// <summary>
-        /// Actualiza un registro correspondiente a los datos de una plantilla
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="plantillaid"></param>
-        /// <param name="valores"></param>
-        /// <returns></returns>
-        [HttpPut("{plantillaid}/{id}")]
-        [TypeFilter(typeof(AsyncIdentityFilter))]
-        public async Task<ActionResult> Actualiza(string id, string plantillaid,
-            [FromBody] RequestValoresPlantilla valores)
-        {
-
-            try
-            {
-
-                Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
-                         .ConfigureAwait(false);
-
-                if (plantilla == null) return NotFound(plantillaid);
-
-                bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
-                if (existe)
-                {
-                    bool r = await repositorio.Actualiza(id, plantilla, valores).ConfigureAwait(false);
-                    if (r) return Ok();
-                    return BadRequest(valores);
-                }
-
-                return NotFound($"{plantillaid}/{id}");
-            }
-            catch (ExMetadatosNoValidos em)
-            {
-                return BadRequest(em.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-
-        }
-
-        /// <summary>
-        /// OBtiene los valores de un documento de plantilla para un id unio
-        /// </summary>
-        /// <param name="id">Indetificador único del elemento indexado</param>
-        /// <param name="plantillaid">Indetificador único de la plantilla</param>
-        /// <returns></returns>
-        [HttpGet("{plantillaid}/{id}")]
-        [TypeFilter(typeof(AsyncIdentityFilter))]
-        public async Task<ActionResult<DocumentoPlantilla>> Unico(string id, string plantillaid)
-        {
-            try
-            {
-                DocumentoPlantilla p = new DocumentoPlantilla();
-                Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
-                         .ConfigureAwait(false);
-
-                if (plantilla == null) return NotFound(plantillaid);
-
-                bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
-                if (existe)
-                {
-                    var r = await repositorio.Unico(plantilla, id).ConfigureAwait(false);
-                    if (r!=null) return Ok(r);
-                    
-                }
-
-                return NotFound($"{plantillaid}/{id}");
-                
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-
-        }
-
-        /// <summary>
-        /// Obntiene la lista de metadatos asociados a una lista de plantillas
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="plantillaid"></param>
-        /// <returns></returns>
-        [HttpGet("lista/{plantillaid}/{id}")]
-        [TypeFilter(typeof(AsyncIdentityFilter))]
-        public async Task<ActionResult<DocumentoPlantilla>> Lista(string id, string plantillaid)
-        {
-            try
-            {
-                DocumentoPlantilla p = new DocumentoPlantilla();
-                Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
-                         .ConfigureAwait(false);
-
-                if (plantilla == null) return NotFound(plantillaid);
-
-                bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
-                if (existe)
-                {
-                    var r = await repositorio.Lista(plantilla, id).ConfigureAwait(false);
-                    if (r != null) return Ok(r);
-
-                }
-
-                return NotFound($"{plantillaid}/{id}");
-
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-
-        }
-
-
-        /// <summary>
-        /// Elimina el documento asociado a un identificador de la plantilla
-        /// </summary>
-        /// <param name="id">Identificador único del documento</param>
-        /// <param name="plantillaid">Identificador único de la plantilla a la que pertenece el documento</param>
-        /// <returns></returns>
-        [HttpDelete("{plantillaid}/{id}")]
-        [TypeFilter(typeof(AsyncIdentityFilter))]
-        public async Task<ActionResult<string>> Eliminar(string id, string plantillaid)
-        {
-            try
-            {
-                DocumentoPlantilla p = new DocumentoPlantilla();
-                Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
-                         .ConfigureAwait(false);
-                
-                if (plantilla == null) return NotFound(plantillaid);
-
-                bool respuesta = await repositorio.EliminaDocumento(id, plantillaid).ConfigureAwait(false);
-                if (respuesta) return Ok(id);
-                
-                return NotFound(id);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-
-        }
-
-        /// <summary>
-        /// Elimina todos los documentos de una lista documenos en  una plantilla
-        /// </summary>
-        /// <param name="id">Identificador único de la lista de documentos</param>
-        /// <param name="plantillaid">identificador único de la plantilla</param>
-        /// <returns></returns>
-        [HttpDelete("lista/{plantillaid}/{id}")]
-        [TypeFilter(typeof(AsyncIdentityFilter))]
-        public async Task<ActionResult<string>> EliminarLista(string id, string plantillaid)
-        {
-            try
-            {
-                DocumentoPlantilla p = new DocumentoPlantilla();
-                Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
-                         .ConfigureAwait(false);
-
-                if (plantilla == null) return NotFound(plantillaid);
-
-                long respuesta = await repositorio.EliminaListaDocumentos(id, plantillaid).ConfigureAwait(false);
-                if (respuesta>=0) return Ok(respuesta);
-
-                return NotFound(id);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+            return Ok(extractor.Obtener(plantilla));
 
         }
 
@@ -334,7 +75,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ValorListaOrdenada>>> GetListaPlantillas()
         {
-            var data = await plantillas.ObtenerAsync(x=>x.Eliminada==false).ConfigureAwait(false);
+            var data = await plantillas.ObtenerAsync(x => x.Eliminada == false).ConfigureAwait(false);
             List<ValorListaOrdenada> planbtillas = new List<ValorListaOrdenada>();
             data.ForEach(p =>
             {
@@ -350,13 +91,206 @@ namespace PIKA.GD.API.Controllers.Metadatos
 
 
 
+
+        /// <summary>
+        /// Inserta un registro de datos para la plantilla del documento
+        /// </summary>
+        /// <param name="plantillaid">Identificador único de la plantilla</param>
+        /// <param name="valores">Valores para el documento de plantilla</param>
+        /// <returns></returns>
+        [HttpPost("{plantillaid}")]
+        [TypeFilter(typeof(AsyncIdentityFilter))]
+        public async Task<ActionResult> Inserta(string plantillaid,
+            [FromBody] RequestValoresPlantilla valores)
+        {
+
+            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
+                    .ConfigureAwait(false);
+
+            if (plantilla == null) return NotFound(plantillaid);
+
+            bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
+            if (existe)
+            {
+                string id = await repositorio.Inserta("dominio", this.TenatId,
+                    false, null, plantilla, valores, "").ConfigureAwait(false);
+                if (id != null) return Ok(id);
+            }
+
+            return BadRequest(valores);
+
+        }
+
+
+
+        [HttpPost("{plantillaid}/lista/")]
+        public async Task<ActionResult<string>> CreaLista(string plantillaid, [FromBody] RequestCrearLista request)
+        {
+            string id = await repositorio.CreaLista(plantillaid, request).ConfigureAwait(false);
+            return Ok(id);
+        }
+
+
+        /// <summary>
+        /// Inserta un registro de datos en la listaa para la plantilla del documento
+        /// </summary>
+        /// <param name="plantillaid">Identificador único de la plantilla</param>
+        /// <param name="listaid">Identificador único de la lista, si no existe es creado</param>
+        /// <param name="valores">Valores para el documento de plantilla</param>
+        /// <returns></returns>
+        [HttpPost("{plantillaid}/lista/{listaid}")]
+        [TypeFilter(typeof(AsyncIdentityFilter))]
+        public async Task<ActionResult> InsertaEnLista(string plantillaid,
+            string listaid, [FromBody] RequestValoresPlantilla valores)
+        {
+            logger.LogInformation("1");
+            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
+                    .ConfigureAwait(false);
+
+            if (plantilla == null) return NotFound(plantillaid);
+
+            bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
+            if (existe)
+            {
+                string id = await repositorio.Inserta("dominio", this.TenatId,
+                    true, listaid, plantilla, valores, "").ConfigureAwait(false);
+                if (id != null) return Ok(id);
+            }
+            return BadRequest(valores);
+        }
+
+
+
+        /// <summary>
+        /// Actualiza un registro correspondiente a los datos de una plantilla
+        /// </summary>
+        /// <param name="id">Identificador único del documento de plantilla</param>
+        /// <param name="plantillaid">Identificador único de la plantilla</param>
+        /// <param name="valores">Valores del documento, sólo se actualizan los valores y el índice filtrado</param>
+        /// <returns></returns>
+        [HttpPut("{plantillaid}/{id}")]
+        [TypeFilter(typeof(AsyncIdentityFilter))]
+        public async Task<ActionResult> Actualiza(string id, string plantillaid,
+            [FromBody] RequestValoresPlantilla valores)
+        {
+
+            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
+                     .ConfigureAwait(false);
+
+            if (plantilla == null) return NotFound(plantillaid);
+
+            bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
+            if (existe)
+            {
+                bool r = await repositorio.Actualiza(id, plantilla, valores).ConfigureAwait(false);
+                if (r) return NoContent();
+                return BadRequest(valores);
+            }
+
+            return NotFound($"{plantillaid}/{id}");
+
+        }
+
+        /// <summary>
+        /// OBtiene los valores de un documento de plantilla para un id unio
+        /// </summary>
+        /// <param name="id">Indetificador único del elemento indexado</param>
+        /// <param name="plantillaid">Indetificador único de la plantilla</param>
+        /// <returns></returns>
+        [HttpGet("{plantillaid}/{id}")]
+        [TypeFilter(typeof(AsyncIdentityFilter))]
+        public async Task<ActionResult<DocumentoPlantilla>> Unico(string id, string plantillaid)
+        {
+            DocumentoPlantilla p = new DocumentoPlantilla();
+            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
+                     .ConfigureAwait(false);
+
+            if (plantilla == null) return NotFound(plantillaid);
+
+            bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
+            if (existe)
+            {
+                var r = await repositorio.Unico(plantilla, id).ConfigureAwait(false);
+                if (r != null) return Ok(r);
+
+            }
+
+            return NotFound($"{plantillaid}/{id}");
+
+        }
+
+
+
+        /// <summary>
+        /// Obntiene la lista de metadatos asociados a una lista de plantillas
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="plantillaid"></param>
+        /// <returns></returns>
+        [HttpGet("{plantillaid}/lista/{id}")]
+        [TypeFilter(typeof(AsyncIdentityFilter))]
+        public async Task<ActionResult<DocumentoPlantilla>> Lista(string id, string plantillaid)
+        {
+            DocumentoPlantilla p = new DocumentoPlantilla();
+            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
+                     .ConfigureAwait(false);
+
+            if (plantilla == null) return NotFound(plantillaid);
+
+            bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
+            if (existe)
+            {
+                var r = await repositorio.Lista(plantilla, id).ConfigureAwait(false);
+                if (r != null) return Ok(r);
+
+            }
+
+            return NotFound($"{plantillaid}/{id}");
+
+        }
+
+
+        /// <summary>
+        /// Elimina el documento asociado a un identificador de la plantilla
+        /// </summary>
+        /// <param name="tipo">Tipo del objeto asociado a la plantilla</param>
+        /// <param name="id">Identificador único del objeto asociado a la plantilla</param>
+        /// <param name="plantillaid">Identificador único de la plantilla a la que pertenece el documento</param>
+        /// <param name="docid">Identificador único del documento</param>
+        /// <returns></returns>
+        [HttpDelete("{plantillaid}/{docid}")]
+        [TypeFilter(typeof(AsyncIdentityFilter))]
+        public async Task<ActionResult<string>> Eliminar(string docid, string plantillaid)
+        {
+            await repositorio.EliminaDocumento(docid, plantillaid).ConfigureAwait(false);
+            return Ok(docid);
+        }
+
+        /// <summary>
+        /// Elimina todos los documentos de una lista documenos en  una plantilla
+        /// </summary>
+        /// <param name="id">Identificador único de la lista de documentos</param>
+        /// <param name="plantillaid">identificador único de la plantilla</param>
+        /// <returns></returns>
+        [HttpDelete("{plantillaid}/lista/{listaid}")]
+        [TypeFilter(typeof(AsyncIdentityFilter))]
+        public async Task<ActionResult<string>> EliminarLista(string listaid, string plantillaid)
+        {
+            long respuesta = await repositorio.EliminaListaDocumentos(listaid, plantillaid).ConfigureAwait(false);
+            return Ok(respuesta);
+
+        }
+
+
+
+
         /// <summary>
         /// Ontiene los vinculos a plantillas par un tipo de objeto e identificador único del mismo
         /// </summary>
         /// <param name="tipo">Identificador único del tipo de objeto al que se asocian los metadatos</param>
         /// <param name="id">Identificaodor único del objeto</param>
         /// <returns></returns>
-        [HttpGet("{tipo}/{id}", Name = "ObtieneVinculosPlantillas")]
+        [HttpGet("vinculos/{tipo}/{id}", Name = "ObtieneVinculosPlantillas")]
         [TypeFilter(typeof(AsyncIdentityFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<VinculosObjetoPlantilla>> ObtieneVinculosPlantillas(string tipo, string id)
@@ -398,14 +332,14 @@ namespace PIKA.GD.API.Controllers.Metadatos
                     // y vuelve a consultar
                     existe = await repositorio.ExisteIndice(plantilla.Id).ConfigureAwait(false);
                 }
-                
-              // Si exite o fue creada lo marca en el cache
-                if (existe) CacheMetadatos.EstablecePlantillaGenerada(plantilla.Id, appCache); 
+
+                // Si exite o fue creada lo marca en el cache
+                if (existe) CacheMetadatos.EstablecePlantillaGenerada(plantilla.Id, appCache);
             }
-            
+
             return existe;
         }
-     
+
     }
 
 

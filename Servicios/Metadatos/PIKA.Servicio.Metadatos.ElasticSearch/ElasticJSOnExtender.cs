@@ -20,6 +20,11 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             return s.Replace("¡", "{").Replace("!", "}").Replace("'", "\"").Replace("\t", "");
         }
 
+    
+
+        #region creador de plantillas
+
+
         public static bool ValorValido(this PropiedadPlantilla p, string valor)
         {
             if (p.Requerido && string.IsNullOrEmpty(valor)) return false;
@@ -162,16 +167,90 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             return "";
         }
 
+        public static string ObtieneJSONActualizarPlantilla(this List<PropiedadPlantilla> props) {
+            string json = "{ 'properties': { %C% } }";
+            string baseProp = @"'%N%': {'type': '%T%'},";
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var item in props)
+            {
+                switch (item.TipoDatoId)
+                {
+
+                    case TipoDato.tBinaryData:
+                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "binary"));
+                        break;
+
+                    case TipoDato.tBoolean:
+                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "boolean"));
+                        break;
+
+                    case TipoDato.tDouble:
+                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "double"));
+                        break;
+
+                    case TipoDato.tInt32:
+                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "integer"));
+                        break;
+
+                    case TipoDato.tInt64:
+                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "long"));
+                        break;
+
+                    case TipoDato.tList:
+                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "keyword"));
+                        break;
+
+                    case TipoDato.tString:
+                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "wildcard"));
+                        break;
+
+                    case TipoDato.tIndexedString:
+                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "text"));
+                        break;
+
+                    case TipoDato.tTime:
+                    case TipoDato.tDate:
+                    case TipoDato.tDateTime:
+                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "date"));
+
+                        break;
+
+                }
+            }
+
+            string campos = sb.ToString().TrimEnd(',');
+
+            if (campos != "")
+            {
+                Console.WriteLine(json.Replace("%C%", campos).Replace('\'', '\"'));
+                return json.Replace("%C%", campos).Replace('\'', '\"');
+            }
+
+            return "";
+
+        }
+
+
         public static string ObtieneJSONPlantilla(this Plantilla plantilla)
         {
             string json = "{ 'mappings': { 'properties': { %C% } }}";
             string baseProp = @"'%N%': {'type': '%T%'},";
 
             StringBuilder sb = new StringBuilder();
-            
-            
 
-            foreach(var item in plantilla.Propiedades)
+            // Propiedades fija de los metadtaos
+            sb.Append(baseProp.Replace("%N%", "OrigenId").Replace("%T%", "keyword"));
+            sb.Append(baseProp.Replace("%N%", "TipoOrigenId").Replace("%T%", "keyword"));
+            sb.Append(baseProp.Replace("%N%", "TipoDatoId").Replace("%T%", "keyword"));
+            sb.Append(baseProp.Replace("%N%", "DatoId").Replace("%T%", "keyword"));
+            sb.Append(baseProp.Replace("%N%", "IndiceFiltrado").Replace("%T%", "keyword"));
+            sb.Append(baseProp.Replace("%N%", "EsLista").Replace("%T%", "boolean"));
+            sb.Append(baseProp.Replace("%N%", "ListaId").Replace("%T%", "keyword"));
+
+            
+            foreach (var item in plantilla.Propiedades)
             {
                 switch (item.TipoDatoId) {
                     
@@ -196,8 +275,12 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                         break;
 
                     case TipoDato.tList:
-                    case TipoDato.tString:
                         sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "keyword"));
+                        break;
+
+                    case TipoDato.tString:
+                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "wildcard"));
+                        
                         break;
 
                     case TipoDato.tIndexedString:
@@ -214,17 +297,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 }
             }
 
-            if (sb.Length > 0)
-            {
-                sb.Append(baseProp.Replace("%N%", "OrigenId").Replace("%T%", "keyword"));
-                sb.Append(baseProp.Replace("%N%", "TipoOrigenId").Replace("%T%", "keyword"));
-                sb.Append(baseProp.Replace("%N%", "TipoDatoId").Replace("%T%", "keyword"));
-                sb.Append(baseProp.Replace("%N%", "DatoId").Replace("%T%", "keyword"));
-                sb.Append(baseProp.Replace("%N%", "IndiceFiltrado").Replace("%T%", "keyword"));
-                sb.Append(baseProp.Replace("%N%", "EsLista").Replace("%T%", "boolean"));
-                sb.Append(baseProp.Replace("%N%", "ListaId").Replace("%T%", "keyword"));
-            }
-
+ 
             string campos = sb.ToString().TrimEnd(',');
 
             if (campos != "")
@@ -242,7 +315,6 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             dynamic d = datos._source;
             DocumentoPlantilla v = new DocumentoPlantilla
             {
-                PlantillaId = p.Id,
                 DatoId = d["DatoId"],
                 Id = d["Id"],
                 IndiceFiltrado = d["IndiceFiltrado"],
@@ -252,17 +324,23 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 Valores = new List<ValorPropiedad>()
             };
 
-            foreach(var campo in p.Propiedades)
+            if (p != null)
             {
-                var valor = ValorPropiedad(campo, d);
-                if (valor != null)
+                v.PlantillaId = p.Id;
+                foreach (var campo in p.Propiedades)
                 {
-                    v.Valores.Add(valor);
-                } else
-                {
-                    v.Valores.Add(new Modelo.Metadatos.ValorPropiedad() { PropiedadId = campo.Id, Valor = "" });
+                    var valor = ValorPropiedad(campo, d);
+                    if (valor != null)
+                    {
+                        v.Valores.Add(valor);
+                    }
+                    else
+                    {
+                        v.Valores.Add(new Modelo.Metadatos.ValorPropiedad() { PropiedadId = campo.Id, Valor = "" });
+                    }
                 }
             }
+            
             return v;
         }
 
@@ -319,6 +397,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
         }
 
+        #endregion
 
         #region plantillas elastic
 

@@ -48,7 +48,7 @@ namespace PIKA.Modelo.Metadatos
         /// Identificador del tipo de propiedad
         /// </summary>
         [Prop(Required: false, OrderIndex: 10)]
-        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
+        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.add)]
         [List(Entidad: "TipoDato", DatosRemotos: true, TypeAhead: false)]
         public string TipoDatoId { get; set; }
 

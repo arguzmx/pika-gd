@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
@@ -26,13 +27,18 @@ namespace PIKA.GD.API.Controllers.Metadatos
         private ILogger<PlantillaController> logger;
         private IServicioPlantilla servicioEntidad;
         private IProveedorMetadatos<Plantilla> metadataProvider;
-        public PlantillaController(ILogger<PlantillaController> logger,
+        private IRepositorioMetadatos repoMetadatos;
+
+        public PlantillaController(
+            ILogger<PlantillaController> logger,
             IProveedorMetadatos<Plantilla> metadataProvider,
-            IServicioPlantilla servicioEntidad)
+            IServicioPlantilla servicioEntidad,
+            IRepositorioMetadatos repoMetadatos)
         {
             this.logger = logger;
             this.servicioEntidad = servicioEntidad;
             this.metadataProvider = metadataProvider;
+            this.repoMetadatos = repoMetadatos;
         }
 
         /// <summary>
@@ -61,6 +67,10 @@ namespace PIKA.GD.API.Controllers.Metadatos
             entidad.OrigenId = this.DominioId;
             entidad.TipoOrigenId = "DOMINIO";
             entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(entidad.Id))
+            {
+                await repoMetadatos.CrearIndice(new Plantilla() { Id = entidad.Id }).ConfigureAwait(false);
+            }
             return Ok(CreatedAtAction("GetPlantilla", new { id = entidad.Id.Trim() }, entidad).Value);
         }
 
@@ -86,7 +96,6 @@ namespace PIKA.GD.API.Controllers.Metadatos
             {
                 return BadRequest();
             }
-
             await servicioEntidad.ActualizarAsync(entidad).ConfigureAwait(false);
             return NoContent();
 

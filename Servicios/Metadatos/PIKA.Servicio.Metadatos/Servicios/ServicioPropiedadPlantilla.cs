@@ -43,14 +43,10 @@ namespace PIKA.Servicio.Metadatos.Servicios
             return true;
         }
 
-        private void debug(string algo)
-        {
-            logger.LogDebug($">>>>>>>>>>>>>>{algo}");
-        }
 
         private PropiedadPlantilla ValidaPropiedadPlantilla(PropiedadPlantilla p , bool esActualizar)
         {
-            debug(p.Requerido.ToString() );
+            
 
 
             if (!this.contexto.Plantilla.Where(x => x.Id.Equals(p.PlantillaId)).Any())

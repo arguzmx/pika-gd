@@ -11,7 +11,8 @@ using System.Xml.Serialization;
 namespace PIKA.Modelo.Metadatos
 {
 
-    [Entidad(PaginadoRelacional: false, EliminarLogico: true)]
+    [Entidad(PaginadoRelacional: false, EliminarLogico: true, 
+        TokenApp: ConstantesAppMetadatos.APP_ID, TokenMod: ConstantesAppMetadatos.MODULO_PLANTILLAS)]
     [EntidadVinculada(TokenSeguridad: ConstantesAppMetadatos.MODULO_PLANTILLAS, EntidadHijo: "PropiedadPlantilla",
         Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id", PropiedadHijo: "PlantillaId")]
     public class Plantilla : Entidad<string>, IEntidadNombrada, IEntidadRelacionada, IEntidadEliminada
