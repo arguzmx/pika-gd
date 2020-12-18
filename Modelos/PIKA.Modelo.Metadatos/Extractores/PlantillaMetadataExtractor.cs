@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Internal;
+using PIKA.Modelo.Metadatos.Atributos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,8 +38,70 @@ namespace PIKA.Modelo.Metadatos.Extractores
                 TipoDatoId = pp.TipoDatoId,
                 Visible = pp.Visible,
                 ValorDefault = pp.ValorDefault, OrdenarValoresListaPorNombre = pp.OrdenarValoresListaPorNombre,
-                ValidadorTexto = pp.ValidadorTexto, ValidadorNumero = pp.ValidadorNumero
+                ValidadorTexto = pp.ValidadorTexto, ValidadorNumero = pp.ValidadorNumero,
+                AtributosVistaUI = new List<AtributoVistaUI>()
+        };
+
+
+            var uiatt = new AtributoVistaUI()
+            {
+                Accion = Atributos.Acciones.addupdate,
+                Control = "",
+                Plataforma = "web",
+                PropiedadId = p.Id
             };
+
+            switch (p.TipoDatoId)
+            {
+                case TipoDato.tBinaryData:
+                    uiatt.Control = ControlUI.HTML_FILE;
+                    break;
+
+                case TipoDato.tBoolean:
+                    uiatt.Control = ControlUI.HTML_TOGGLE;
+                    break;
+
+                case TipoDato.tDate:
+                    uiatt.Control = ControlUI.HTML_DATE;
+                    break;
+
+                case TipoDato.tDateTime:
+                    uiatt.Control = ControlUI.HTML_DATETIME;
+                    break;
+
+                case TipoDato.tDouble:
+                    uiatt.Control = ControlUI.HTML_NUMBER;
+                    break;
+
+                case TipoDato.tIndexedString:
+                    uiatt.Control = ControlUI.HTML_TEXTAREA;
+                    break;
+
+                case TipoDato.tInt32:
+                    uiatt.Control = ControlUI.HTML_NUMBER;
+                    break;
+
+                case TipoDato.tInt64:
+                    uiatt.Control = ControlUI.HTML_NUMBER;
+                    break;
+
+                case TipoDato.tList:
+                    uiatt.Control = ControlUI.HTML_SELECT;
+                    break;
+
+                case TipoDato.tString:
+                    uiatt.Control = ControlUI.HTML_TEXT;
+                    break;
+
+                case TipoDato.tTime:
+                    uiatt.Control = ControlUI.HTML_TIME;
+                    break;
+
+            }
+
+            p.AtributosVistaUI.Add(uiatt);
+
+
 
             return p;
 

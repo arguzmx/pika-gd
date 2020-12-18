@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2831aad9-82d6-4c05-abb5-1843cd654491",
+		"_postman_id": "3c7bd98e-5b9f-44cf-bbeb-6f8c786b5183",
 		"name": "CuadroClasificacion",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -12,7 +12,7 @@
 					"name": "TipoDisposicionDocumental",
 					"item": [
 						{
-							"name": "GET MetadataTipo Disposicion Documental",
+							"name": "GET Tipo Disposicion Documental",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -23,7 +23,7 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/TipoDisposicionDocumental/metadata",
+									"raw": "https://localhost:5001/api/v1.0/gd/TipoDisposicionDocumental/000",
 									"protocol": "https",
 									"host": [
 										"localhost"
@@ -34,7 +34,7 @@
 										"v1.0",
 										"gd",
 										"TipoDisposicionDocumental",
-										"metadata"
+										"000"
 									]
 								}
 							},
@@ -71,129 +71,6 @@
 										"v1.0",
 										"gd",
 										"TipoDisposicionDocumental"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "PUT Tipo Disposicion Documental",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"0001\",\r\n  \"nombre\": \"Actualizado\"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/TipoDisposicionDocumental/0001",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"TipoDisposicionDocumental",
-										"0001"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET Tipo Disposicion Documental",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/TipoDisposicionDocumental/000",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"TipoDisposicionDocumental",
-										"000"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET Page Tipo Disposicion Documental",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/TipoDisposicionDocumental/page?i=0&t=100&ordc=Nombre&ordd=asc",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"TipoDisposicionDocumental",
-										"page"
-									],
-									"query": [
-										{
-											"key": "i",
-											"value": "0"
-										},
-										{
-											"key": "t",
-											"value": "100"
-										},
-										{
-											"key": "ordc",
-											"value": "Nombre"
-										},
-										{
-											"key": "ordd",
-											"value": "asc"
-										}
 									]
 								}
 							},
@@ -345,6 +222,129 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "GET MetadataTipo Disposicion Documental",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/TipoDisposicionDocumental/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoDisposicionDocumental",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Tipo Disposicion Documental",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"0001\",\r\n  \"nombre\": \"Actualizado\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoDisposicionDocumental/0001",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoDisposicionDocumental",
+										"0001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Page Tipo Disposicion Documental",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoDisposicionDocumental/page?i=0&t=100&ordc=Nombre&ordd=asc",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoDisposicionDocumental",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"protocolProfileBehavior": {},
@@ -383,36 +383,29 @@
 							"response": []
 						},
 						{
-							"name": "POST Estado Cuadro",
+							"name": "GET Estado Cuadro",
 							"request": {
-								"method": "POST",
+								"method": "GET",
 								"header": [
 									{
 										"key": "Content-Type",
-										"name": "Content-Type",
 										"type": "text",
 										"value": "application/json"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"0002\",\r\n  \"nombre\": \"Estado\"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/EstadoCuadroClasificacion",
-									"protocol": "http",
+									"raw": "https://localhost:5001/api/v1.0/gd/EstadoCuadroClasificacion/000",
+									"protocol": "https",
 									"host": [
 										"localhost"
 									],
-									"port": "5000",
+									"port": "5001",
 									"path": [
 										"api",
 										"v1.0",
 										"gd",
-										"EstadoCuadroClasificacion"
+										"EstadoCuadroClasificacion",
+										"000"
 									]
 								}
 							},
@@ -450,96 +443,6 @@
 										"gd",
 										"EstadoCuadroClasificacion",
 										"0002"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET Estado Cuadro",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/EstadoCuadroClasificacion/000",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"EstadoCuadroClasificacion",
-										"000"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET Page Estados Cuadros",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n\"indice\": 0,\n\"tamano\": 10,\n\"columna_ordenamiento\": \"Nombre\",\n\"direccion_ordenamiento\": \"asc\",\n\"Filtros\": [\n\t{\"Propiedad\":\"nombre\",\"Operador\": \"contains\", \"Valor\": \" \"}\n\t]\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/EstadoCuadroClasificacion/page?i=0&t=100&ordc=Nombre&ordd=asc&",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"EstadoCuadroClasificacion",
-										"page"
-									],
-									"query": [
-										{
-											"key": "i",
-											"value": "0"
-										},
-										{
-											"key": "t",
-											"value": "100"
-										},
-										{
-											"key": "ordc",
-											"value": "Nombre"
-										},
-										{
-											"key": "ordd",
-											"value": "asc"
-										},
-										{
-											"key": "",
-											"value": null
-										}
 									]
 								}
 							},
@@ -612,6 +515,139 @@
 							"response": []
 						},
 						{
+							"name": "GET Page Estados Cuadros",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\"indice\": 0,\n\"tamano\": 10,\n\"columna_ordenamiento\": \"Nombre\",\n\"direccion_ordenamiento\": \"asc\",\n\"Filtros\": [\n\t{\"Propiedad\":\"nombre\",\"Operador\": \"contains\", \"Valor\": \" \"}\n\t]\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/EstadoCuadroClasificacion/page?i=0&t=100&ordc=Nombre&ordd=asc&",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EstadoCuadroClasificacion",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										},
+										{
+											"key": "",
+											"value": null
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Estado Cuadro Clasificacion",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/EstadoCuadroClasificacion/fb940763-3ce2-4652-b2af-b1b45b7dd970,1,0002",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EstadoCuadroClasificacion",
+										"fb940763-3ce2-4652-b2af-b1b45b7dd970,1,0002"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Estado Cuadro",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"0002\",\r\n  \"nombre\": \"Estado\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/EstadoCuadroClasificacion",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EstadoCuadroClasificacion"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "GET PAGE Estado Cuadro Clasificacion por ID",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
@@ -655,49 +691,13 @@
 								}
 							},
 							"response": []
-						},
-						{
-							"name": "DELETE Estado Cuadro Clasificacion",
-							"request": {
-								"method": "DELETE",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/EstadoCuadroClasificacion/fb940763-3ce2-4652-b2af-b1b45b7dd970,1,0002",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"EstadoCuadroClasificacion",
-										"fb940763-3ce2-4652-b2af-b1b45b7dd970,1,0002"
-									]
-								}
-							},
-							"response": []
 						}
 					],
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "d6ca850c-fc61-45f0-b168-f8cf895739bf",
+								"id": "b05a7f68-1b49-4be4-b4ff-d5b7421cfc13",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -707,7 +707,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f992551a-6a8c-4fec-92eb-5e4d5131dd46",
+								"id": "a7bfaf29-d714-43b8-8146-7e54c308ae22",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -751,67 +751,23 @@
 							"response": []
 						},
 						{
-							"name": "POST Tipo Valoracion Documental",
+							"name": "GET Tipo Valoracion Documental",
 							"request": {
-								"method": "POST",
+								"method": "GET",
 								"header": [
 									{
 										"key": "Content-Type",
-										"name": "Content-Type",
 										"type": "text",
 										"value": "application/json"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"0001\",\r\n  \"nombre\": \"segundo  cuadro c:\"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/TipoValoracionDocumental",
-									"protocol": "http",
+									"raw": "https://localhost:5001/api/v1.0/gd/TipoValoracionDocumental/0001",
+									"protocol": "https",
 									"host": [
 										"localhost"
 									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"TipoValoracionDocumental"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "PUT Tipo Valoracion Documental",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"0001\",\r\n  \"nombre\": \"Actualizado:\"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/TipoValoracionDocumental/0001",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
+									"port": "5001",
 									"path": [
 										"api",
 										"v1.0",
@@ -881,62 +837,26 @@
 							"response": []
 						},
 						{
-							"name": "GET Tipo Valoracion Documental",
+							"name": "POST Tipo Valoracion Documental",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [
 									{
 										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/TipoValoracionDocumental/0001",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"TipoValoracionDocumental",
-										"0001"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET PAGE Pares Tipo Valoracion Documental",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
-									{
-										"key": "Content-Type",
+										"name": "Content-Type",
 										"type": "text",
 										"value": "application/json"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "",
+									"raw": "{\r\n  \"id\": \"0001\",\r\n  \"nombre\": \"segundo  cuadro c:\"\r\n}",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/TipoValoracionDocumental/pares?i=0&t=5&f[0][p]=Texto&f[0][o]=starts&f[0][v]=a",
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoValoracionDocumental",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -946,30 +866,7 @@
 										"api",
 										"v1.0",
 										"gd",
-										"TipoValoracionDocumental",
-										"pares"
-									],
-									"query": [
-										{
-											"key": "i",
-											"value": "0"
-										},
-										{
-											"key": "t",
-											"value": "5"
-										},
-										{
-											"key": "f[0][p]",
-											"value": "Texto"
-										},
-										{
-											"key": "f[0][o]",
-											"value": "starts"
-										},
-										{
-											"key": "f[0][v]",
-											"value": "a"
-										}
+										"TipoValoracionDocumental"
 									]
 								}
 							},
@@ -1055,6 +952,109 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "GET PAGE Pares Tipo Valoracion Documental",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoValoracionDocumental/pares?i=0&t=5&f[0][p]=Texto&f[0][o]=starts&f[0][v]=a",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoValoracionDocumental",
+										"pares"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "5"
+										},
+										{
+											"key": "f[0][p]",
+											"value": "Texto"
+										},
+										{
+											"key": "f[0][o]",
+											"value": "starts"
+										},
+										{
+											"key": "f[0][v]",
+											"value": "a"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Tipo Valoracion Documental",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"0001\",\r\n  \"nombre\": \"Actualizado:\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoValoracionDocumental/0001",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoValoracionDocumental",
+										"0001"
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"protocolProfileBehavior": {},
@@ -1087,79 +1087,6 @@
 										"gd",
 										"CuadroClasificacion",
 										"metadata"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "POST Cuadro clasificacion",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"nombre\": \"Cuadro AGN\",\r\n  \"tipoOrigenId\": \"tipoOrigenId\",\r\n  \"origenId\": \"origenId\"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"CuadroClasificacion"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "PUT Cuadro clasificacion",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"3f5e3820-6fc0-4ad4-832a-fb37128a5280\",\r\n  \"tipoOrigenId\": \"tipoOrigenId\",\r\n  \"nombre\": \"  PreOtro7236    \",\r\n  \"origenId\": \"origenId\",\r\n  \"estadoCuadroClasificacionId\":\"Off\" \r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion/3f5e3820-6fc0-4ad4-832a-fb37128a5280",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"CuadroClasificacion",
-										"3f5e3820-6fc0-4ad4-832a-fb37128a5280"
 									]
 								}
 							},
@@ -1268,25 +1195,62 @@
 							"response": []
 						},
 						{
-							"name": "DELETE Cuadro Clasificacion",
+							"name": "POST Cuadro clasificacion",
 							"request": {
-								"method": "DELETE",
+								"method": "POST",
 								"header": [
 									{
 										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nombre\": \"Cuadro AGN\",\r\n  \"tipoOrigenId\": \"tipoOrigenId\",\r\n  \"origenId\": \"origenId\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Cuadro clasificacion",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
 										"type": "text",
 										"value": "application/json"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "",
+									"raw": "{\r\n  \"id\": \"3f5e3820-6fc0-4ad4-832a-fb37128a5280\",\r\n  \"tipoOrigenId\": \"tipoOrigenId\",\r\n  \"nombre\": \"  PreOtro7236    \",\r\n  \"origenId\": \"origenId\",\r\n  \"estadoCuadroClasificacionId\":\"Off\" \r\n}",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion/ABCDE,43e92cbe-bce9-4584-a8a8-f1a0b0018a02",
+									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion/3f5e3820-6fc0-4ad4-832a-fb37128a5280",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -1297,7 +1261,7 @@
 										"v1.0",
 										"gd",
 										"CuadroClasificacion",
-										"ABCDE,43e92cbe-bce9-4584-a8a8-f1a0b0018a02"
+										"3f5e3820-6fc0-4ad4-832a-fb37128a5280"
 									]
 								}
 							},
@@ -1339,13 +1303,49 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "DELETE Cuadro Clasificacion",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/CuadroClasificacion/ABCDE,43e92cbe-bce9-4584-a8a8-f1a0b0018a02",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"CuadroClasificacion",
+										"ABCDE,43e92cbe-bce9-4584-a8a8-f1a0b0018a02"
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "8dc90f52-099a-4be2-bd32-b819f18c98de",
+								"id": "69812ffd-3432-421a-a477-490e55cc50ad",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -1355,7 +1355,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "b681bad0-fdda-46e3-8822-c6a78cee4347",
+								"id": "2361c3df-3871-4530-8791-16ff4295b78b",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -1370,7 +1370,7 @@
 					"name": "Elementos clasifiacion",
 					"item": [
 						{
-							"name": "GET Metadata Elemento Clasificacion",
+							"name": "GET Jerarquia Hijos Elemento Clasificacion",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -1381,7 +1381,7 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/ElementoClasificacion/metadata",
+									"raw": "https://localhost:5001/api/v1.0/gd/ElementoClasificacion/e33a27da-7ae0-44b1-8512-03717b98ecf",
 									"protocol": "https",
 									"host": [
 										"localhost"
@@ -1392,7 +1392,175 @@
 										"v1.0",
 										"gd",
 										"ElementoClasificacion",
-										"metadata"
+										"e33a27da-7ae0-44b1-8512-03717b98ecf"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Elemento Clasificacion",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/ElementoClasificacion/e33a27da-7ae0-44b1-8512-03717b98ecf",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ElementoClasificacion",
+										"e33a27da-7ae0-44b1-8512-03717b98ecf"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Jerarquia Raices Elemento Clasificacion",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/ElementoClasificacion/jerarquia/4893f7ba-17ed-42a1-b3e8-4069eeaaa2a4",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ElementoClasificacion",
+										"jerarquia",
+										"4893f7ba-17ed-42a1-b3e8-4069eeaaa2a4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH  Restaurar Elemento Clasificacion",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion/restaurar/c08b85e4-9170-4b5a-9fb2-40683add65a2,2,3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ElementoClasificacion",
+										"restaurar",
+										"c08b85e4-9170-4b5a-9fb2-40683add65a2,2,3"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Elemento Clasificacion",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion/0fb1a023-511c-426c-8685-4404a9de745d",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ElementoClasificacion",
+										"0fb1a023-511c-426c-8685-4404a9de745d"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Elemento Clasificacion Hijos",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Clave\": \" Clave\",\r\n    \"Nombre\": \"Tests1\",\r\n    \"Eliminada\": false,\r\n    \"Posicion\": 0,\r\n    \"EsRaiz\": false,\r\n    \"CuadroClasifiacionId\": \"717af6ce-8679-42c0-93cf-4e23bee1d372\",\r\n    \"ElementoClasificacionId\":\"e0db28fa-e6bf-42e3-ac38-a77f9b0f6443\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ElementoClasificacion"
 									]
 								}
 							},
@@ -1471,108 +1639,6 @@
 							"response": []
 						},
 						{
-							"name": "POST Elemento Clasificacion Hijos",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"Clave\": \" Clave\",\r\n    \"Nombre\": \"Tests1\",\r\n    \"Eliminada\": false,\r\n    \"Posicion\": 0,\r\n    \"EsRaiz\": false,\r\n    \"CuadroClasifiacionId\": \"717af6ce-8679-42c0-93cf-4e23bee1d372\",\r\n    \"ElementoClasificacionId\":\"e0db28fa-e6bf-42e3-ac38-a77f9b0f6443\"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"ElementoClasificacion"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "PUT Elemento Clasificacion",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"Id\": \"e055a696-889e-49a0-add4-329f7e6d0b03\",\r\n    \"Clave\": \" Clave \",\r\n    \"Nombre\": \":(Actualizado\",\r\n    \"Eliminada\": false,\r\n    \"Posicion\": 1,\r\n    \"CuadroClasifiacionId\": \"717af6ce-8679-42c0-93cf-4e23bee1d372\",\r\n    \"ElementoClasificacionId\":\"42403f1d-e0bf-4881-b32d-d1b394e30c04\"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion/ e055a696-889e-49a0-add4-329f7e6d0b03",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"ElementoClasificacion",
-										" e055a696-889e-49a0-add4-329f7e6d0b03"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET Elemento Clasificacion",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/ElementoClasificacion/e33a27da-7ae0-44b1-8512-03717b98ecf",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"ElementoClasificacion",
-										"e33a27da-7ae0-44b1-8512-03717b98ecf"
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "GET Page Elemento Clasificacion",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
@@ -1630,25 +1696,26 @@
 							"response": []
 						},
 						{
-							"name": "DELETE Elemento Clasificacion",
+							"name": "PUT Elemento Clasificacion",
 							"request": {
-								"method": "DELETE",
+								"method": "PUT",
 								"header": [
 									{
 										"key": "Content-Type",
+										"name": "Content-Type",
 										"type": "text",
 										"value": "application/json"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "",
+									"raw": "{\r\n  \"Id\": \"e055a696-889e-49a0-add4-329f7e6d0b03\",\r\n    \"Clave\": \" Clave \",\r\n    \"Nombre\": \":(Actualizado\",\r\n    \"Eliminada\": false,\r\n    \"Posicion\": 1,\r\n    \"CuadroClasifiacionId\": \"717af6ce-8679-42c0-93cf-4e23bee1d372\",\r\n    \"ElementoClasificacionId\":\"42403f1d-e0bf-4881-b32d-d1b394e30c04\"\r\n}",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion/0fb1a023-511c-426c-8685-4404a9de745d",
+									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion/ e055a696-889e-49a0-add4-329f7e6d0b03",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -1659,51 +1726,14 @@
 										"v1.0",
 										"gd",
 										"ElementoClasificacion",
-										"0fb1a023-511c-426c-8685-4404a9de745d"
+										" e055a696-889e-49a0-add4-329f7e6d0b03"
 									]
 								}
 							},
 							"response": []
 						},
 						{
-							"name": "PATCH  Restaurar Elemento Clasificacion",
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/ElementoClasificacion/restaurar/c08b85e4-9170-4b5a-9fb2-40683add65a2,2,3",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"ElementoClasificacion",
-										"restaurar",
-										"c08b85e4-9170-4b5a-9fb2-40683add65a2,2,3"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET Jerarquia Raices Elemento Clasificacion",
+							"name": "GET Metadata Elemento Clasificacion",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -1714,7 +1744,7 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/ElementoClasificacion/jerarquia/4893f7ba-17ed-42a1-b3e8-4069eeaaa2a4",
+									"raw": "https://localhost:5001/api/v1.0/gd/ElementoClasificacion/metadata",
 									"protocol": "https",
 									"host": [
 										"localhost"
@@ -1725,37 +1755,7 @@
 										"v1.0",
 										"gd",
 										"ElementoClasificacion",
-										"jerarquia",
-										"4893f7ba-17ed-42a1-b3e8-4069eeaaa2a4"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET Jerarquia Hijos Elemento Clasificacion",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/ElementoClasificacion/e33a27da-7ae0-44b1-8512-03717b98ecf",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"ElementoClasificacion",
-										"e33a27da-7ae0-44b1-8512-03717b98ecf"
+										"metadata"
 									]
 								}
 							},
@@ -1766,7 +1766,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "4de34712-fd03-41b7-9178-140aabb957b9",
+								"id": "f35720ff-78c1-4c86-a493-797888a98afe",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -1776,7 +1776,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f246af9c-dd0d-4e7d-9170-cd8808d4cfb1",
+								"id": "86d3ae59-7a13-4421-a76e-c64ea6bd7484",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -1820,6 +1820,35 @@
 							"response": []
 						},
 						{
+							"name": "GET Entrada Clasificacion",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/EntradaClasificacion/65dce824-85aa-4d65-8566-7bac26e40ba",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EntradaClasificacion",
+										"65dce824-85aa-4d65-8566-7bac26e40ba"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "POST Entrada Clasificacion",
 							"request": {
 								"method": "POST",
@@ -1850,6 +1879,43 @@
 										"v1.0",
 										"gd",
 										"EntradaClasificacion"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PATCH  Restaurar Entrada Clasificacion",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/EntradaClasificacion/restaurar/46adaff4-de01-4662-99b4-c9f768f6e6c7,2,3",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EntradaClasificacion",
+										"restaurar",
+										"46adaff4-de01-4662-99b4-c9f768f6e6c7,2,3"
 									]
 								}
 							},
@@ -1887,35 +1953,6 @@
 										"gd",
 										"EntradaClasificacion",
 										"b2f3ef00-427b-4b19-a8ad-57e7361a06cb"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET Entrada Clasificacion",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/EntradaClasificacion/65dce824-85aa-4d65-8566-7bac26e40ba",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"EntradaClasificacion",
-										"65dce824-85aa-4d65-8566-7bac26e40ba"
 									]
 								}
 							},
@@ -2015,43 +2052,6 @@
 							"response": []
 						},
 						{
-							"name": "PATCH  Restaurar Entrada Clasificacion",
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/EntradaClasificacion/restaurar/46adaff4-de01-4662-99b4-c9f768f6e6c7,2,3",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"EntradaClasificacion",
-										"restaurar",
-										"46adaff4-de01-4662-99b4-c9f768f6e6c7,2,3"
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "GET Page Cuadros clasificacion Copy",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
@@ -2131,6 +2131,52 @@
 				{
 					"name": "ValoracionEntradaClasificacion",
 					"item": [
+						{
+							"name": "DELETE Tipo",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/ValoracionEntradaClasificacion/delete?IdEntrada=1b7214af-dfc6-4a9d-bf0b-d411eaca59a4,001,89&IdTipo=fiscal,0001,0002,admin",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"ValoracionEntradaClasificacion",
+										"delete"
+									],
+									"query": [
+										{
+											"key": "IdEntrada",
+											"value": "1b7214af-dfc6-4a9d-bf0b-d411eaca59a4,001,89"
+										},
+										{
+											"key": "IdTipo",
+											"value": "fiscal,0001,0002,admin"
+										}
+									]
+								}
+							},
+							"response": []
+						},
 						{
 							"name": "GET MetadataTipo Disposicion Documental Copy Copy",
 							"request": {
@@ -2264,52 +2310,6 @@
 								}
 							},
 							"response": []
-						},
-						{
-							"name": "DELETE Tipo",
-							"request": {
-								"method": "DELETE",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/ValoracionEntradaClasificacion/delete?IdEntrada=1b7214af-dfc6-4a9d-bf0b-d411eaca59a4,001,89&IdTipo=fiscal,0001,0002,admin",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"ValoracionEntradaClasificacion",
-										"delete"
-									],
-									"query": [
-										{
-											"key": "IdEntrada",
-											"value": "1b7214af-dfc6-4a9d-bf0b-d411eaca59a4,001,89"
-										},
-										{
-											"key": "IdTipo",
-											"value": "fiscal,0001,0002,admin"
-										}
-									]
-								}
-							},
-							"response": []
 						}
 					],
 					"protocolProfileBehavior": {},
@@ -2324,108 +2324,6 @@
 				{
 					"name": "Tipo Archivo",
 					"item": [
-						{
-							"name": "GET MetadataTipo Archivo",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/TipoArchivo/metadata",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"TipoArchivo",
-										"metadata"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "POST Tipo Archivo",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"id2\",\r\n  \"nombre\": \"archivo 2\"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/TipoArchivo",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"TipoArchivo"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "PUT Tipo Archivo",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"test\",\r\n  \"nombre\": \"activo1\",\r\n  \"FaseCicloVitalId\":\"activa\"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/TipoArchivo/test",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"TipoArchivo",
-										"test"
-									]
-								}
-							},
-							"response": []
-						},
 						{
 							"name": "GET Tipo Archivo",
 							"request": {
@@ -2450,6 +2348,35 @@
 										"gd",
 										"TipoArchivo",
 										"000"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET MetadataTipo Archivo",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/TipoArchivo/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoArchivo",
+										"metadata"
 									]
 								}
 							},
@@ -2507,6 +2434,51 @@
 											"key": "ordd",
 											"value": "asc"
 										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET PAGE Tipo Archivo Por ID",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoArchivo/pares/admin,0001,activo,a-con,test",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoArchivo",
+										"pares",
+										"admin,0001,activo,a-con,test"
 									]
 								}
 							},
@@ -2579,33 +2551,26 @@
 							"response": []
 						},
 						{
-							"name": "GET PAGE Tipo Archivo Por ID",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
+							"name": "PUT Tipo Archivo",
 							"request": {
-								"method": "GET",
+								"method": "PUT",
 								"header": [
 									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
-									{
 										"key": "Content-Type",
+										"name": "Content-Type",
 										"type": "text",
 										"value": "application/json"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "",
+									"raw": "{\r\n  \"id\": \"test\",\r\n  \"nombre\": \"activo1\",\r\n  \"FaseCicloVitalId\":\"activa\"\r\n}",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/TipoArchivo/pares/admin,0001,activo,a-con,test",
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoArchivo/test",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -2616,8 +2581,43 @@
 										"v1.0",
 										"gd",
 										"TipoArchivo",
-										"pares",
-										"admin,0001,activo,a-con,test"
+										"test"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Tipo Archivo",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"id2\",\r\n  \"nombre\": \"archivo 2\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoArchivo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoArchivo"
 									]
 								}
 							},
@@ -2696,108 +2696,6 @@
 							"response": []
 						},
 						{
-							"name": "POST Tipo Ampliacion",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"test\",\r\n  \"nombre\": \"test2\"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/TipoAmpliacion",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"TipoAmpliacion"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "PUT Tipo Ampliacion",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"Nombre\": \"activo2\",\r\n    \"Id\": \"test\"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/TipoAmpliacion/test",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"TipoAmpliacion",
-										"test"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET  Tipo Ampliacion",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/TipoAmpliacion/fec957e7-a309-4b02-8f94-143fc66ddd1a",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"TipoAmpliacion",
-										"fec957e7-a309-4b02-8f94-143fc66ddd1a"
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "GET Page  Tipo Ampliacion",
 							"protocolProfileBehavior": {
 								"disableBodyPruning": true
@@ -2849,6 +2747,42 @@
 											"key": "ordd",
 											"value": "asc"
 										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Tipo Ampliacion",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"test\",\r\n  \"nombre\": \"test2\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoAmpliacion",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoAmpliacion"
 									]
 								}
 							},
@@ -3000,13 +2934,79 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "GET  Tipo Ampliacion",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/TipoAmpliacion/fec957e7-a309-4b02-8f94-143fc66ddd1a",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoAmpliacion",
+										"fec957e7-a309-4b02-8f94-143fc66ddd1a"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT Tipo Ampliacion",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Nombre\": \"activo2\",\r\n    \"Id\": \"test\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/TipoAmpliacion/test",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"TipoAmpliacion",
+										"test"
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "0e9a2e0e-e49f-420f-9048-a26befa7e715",
+								"id": "2813524e-f285-4837-ab8b-eda702e8dada",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -3016,7 +3016,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f3cb9724-e467-4a6a-892f-0d46f938873e",
+								"id": "d9aba210-30a7-4514-9b88-6c991ae22bdd",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -3030,6 +3030,35 @@
 				{
 					"name": "Archivo",
 					"item": [
+						{
+							"name": "GET  Archivo",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Archivo/fe83372f-4806-4c37-9bd9-e937b8affbd7",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Archivo",
+										"fe83372f-4806-4c37-9bd9-e937b8affbd7"
+									]
+								}
+							},
+							"response": []
+						},
 						{
 							"name": "GET Metadata Archivo",
 							"request": {
@@ -3060,26 +3089,25 @@
 							"response": []
 						},
 						{
-							"name": "POST Archivo",
+							"name": "DELETE Archivo",
 							"request": {
-								"method": "POST",
+								"method": "DELETE",
 								"header": [
 									{
 										"key": "Content-Type",
-										"name": "Content-Type",
 										"type": "text",
 										"value": "application/json"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"Nombre\": \"r\",\r\n  \"TipoOrigenId\":\"s\",\r\n  \"OrigenId\":\"o\",\r\n  \"TipoArchivoId\":\"a-tra\"\r\n}",
+									"raw": "",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Archivo",
+									"raw": "http://localhost:5000/api/v1.0/gd/Archivo/5ddf89e6-3bbc-4e3b-946d-1d7cf360ea43",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -3089,7 +3117,8 @@
 										"api",
 										"v1.0",
 										"gd",
-										"Archivo"
+										"Archivo",
+										"5ddf89e6-3bbc-4e3b-946d-1d7cf360ea43"
 									]
 								}
 							},
@@ -3133,9 +3162,9 @@
 							"response": []
 						},
 						{
-							"name": "GET  Archivo",
+							"name": "PATCH  Restaurar Archivo",
 							"request": {
-								"method": "GET",
+								"method": "PATCH",
 								"header": [
 									{
 										"key": "Content-Type",
@@ -3143,19 +3172,63 @@
 										"value": "application/json"
 									}
 								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
 								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/Archivo/fe83372f-4806-4c37-9bd9-e937b8affbd7",
-									"protocol": "https",
+									"raw": "http://localhost:5000/api/v1.0/gd/Archivo/restaurar/ 5ddf89e6-3bbc-4e3b-946d-1d7cf360ea43",
+									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "5001",
+									"port": "5000",
 									"path": [
 										"api",
 										"v1.0",
 										"gd",
 										"Archivo",
-										"fe83372f-4806-4c37-9bd9-e937b8affbd7"
+										"restaurar",
+										" 5ddf89e6-3bbc-4e3b-946d-1d7cf360ea43"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Archivo",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"Nombre\": \"r\",\r\n  \"TipoOrigenId\":\"s\",\r\n  \"OrigenId\":\"o\",\r\n  \"TipoArchivoId\":\"a-tra\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Archivo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Archivo"
 									]
 								}
 							},
@@ -3217,79 +3290,6 @@
 								}
 							},
 							"response": []
-						},
-						{
-							"name": "DELETE Archivo",
-							"request": {
-								"method": "DELETE",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Archivo/5ddf89e6-3bbc-4e3b-946d-1d7cf360ea43",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Archivo",
-										"5ddf89e6-3bbc-4e3b-946d-1d7cf360ea43"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "PATCH  Restaurar Archivo",
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Archivo/restaurar/ 5ddf89e6-3bbc-4e3b-946d-1d7cf360ea43",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Archivo",
-										"restaurar",
-										" 5ddf89e6-3bbc-4e3b-946d-1d7cf360ea43"
-									]
-								}
-							},
-							"response": []
 						}
 					],
 					"protocolProfileBehavior": {},
@@ -3299,7 +3299,7 @@
 					"name": "Activo",
 					"item": [
 						{
-							"name": "GET Metadata Activo",
+							"name": "GET  Activo",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -3310,7 +3310,7 @@
 									}
 								],
 								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/activo/metadata",
+									"raw": "https://localhost:5001/api/v1.0/gd/Activo/ b430edd0-c8a1-4ace-9a1c-de28f478a4ba",
 									"protocol": "https",
 									"host": [
 										"localhost"
@@ -3320,44 +3320,8 @@
 										"api",
 										"v1.0",
 										"gd",
-										"activo",
-										"metadata"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "POST Activo",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"Nombre\": \"x\",\r\n  \"TipoOrigenId\":\"activa\",\r\n  \"OrigenId\":\"OrigenId\",\r\n  \"Asunto\":\"a-tra\",\r\n  \"FechaApertura\":\"1997-07-16T19:20:30.45\",\r\n   \"CodigoOptico\":\"algo\",\r\n  \"CodigoElectronico\":\"Otro\",\r\n  \"ElementoClasificacionId\":\"c0dd3150-b999-47fb-adaa-da81ea4c6018\",\r\n  \"ArchivoId\":\"dc5e7106-4754-44ee-924a-27cbb18c9aa1\"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Activo",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Activo"
+										"Activo",
+										" b430edd0-c8a1-4ace-9a1c-de28f478a4ba"
 									]
 								}
 							},
@@ -3395,92 +3359,6 @@
 										"gd",
 										"Activo",
 										"b430edd0-c8a1-4ace-9a1c-de28f478a4ba"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET  Activo",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/Activo/ b430edd0-c8a1-4ace-9a1c-de28f478a4ba",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Activo",
-										" b430edd0-c8a1-4ace-9a1c-de28f478a4ba"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET Page  Activo",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Activo/page?i=0&t=100&ordc=Nombre&ordd=asc",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Activo",
-										"page"
-									],
-									"query": [
-										{
-											"key": "i",
-											"value": "0"
-										},
-										{
-											"key": "t",
-											"value": "100"
-										},
-										{
-											"key": "ordc",
-											"value": "Nombre"
-										},
-										{
-											"key": "ordd",
-											"value": "asc"
-										}
 									]
 								}
 							},
@@ -3558,6 +3436,128 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "GET Page  Activo",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Activo/page?i=0&t=100&ordc=Nombre&ordd=asc",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Activo",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Metadata Activo",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/activo/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"activo",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Activo",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"Nombre\": \"x\",\r\n  \"TipoOrigenId\":\"activa\",\r\n  \"OrigenId\":\"OrigenId\",\r\n  \"Asunto\":\"a-tra\",\r\n  \"FechaApertura\":\"1997-07-16T19:20:30.45\",\r\n   \"CodigoOptico\":\"algo\",\r\n  \"CodigoElectronico\":\"Otro\",\r\n  \"ElementoClasificacionId\":\"c0dd3150-b999-47fb-adaa-da81ea4c6018\",\r\n  \"ArchivoId\":\"dc5e7106-4754-44ee-924a-27cbb18c9aa1\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Activo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Activo"
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"protocolProfileBehavior": {},
@@ -3596,42 +3596,6 @@
 							"response": []
 						},
 						{
-							"name": "POST Historial Archivo Activo",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"a-hisd\",\r\n  \"ActivoId\": \"b430edd0-c8a1-4ace-9a1c-de28f478a4ba \",\r\n  \"ArchivoId\":\" c198247f-8359-4e92-b5ea-2e9d74060c1a\",\r\n  \"FechaIngreso\":\"2020-03-08\"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/HistorialArchivoActivo",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"HistorialArchivoActivo"
-									]
-								}
-							},
-							"response": []
-						},
-						{
 							"name": "PUT Historial Archivo Activo",
 							"request": {
 								"method": "PUT",
@@ -3663,35 +3627,6 @@
 										"gd",
 										"HistorialArchivoActivo",
 										"bcfd4763-0ac5-4fcd-9d7c-7f6a7792a295"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET  Historial Archivo Activo",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/HistorialArchivoActivo/8e675d28-7f76-4f3c-8fc4-376c0a08c466",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"HistorialArchivoActivo",
-										"8e675d28-7f76-4f3c-8fc4-376c0a08c466"
 									]
 								}
 							},
@@ -3755,6 +3690,35 @@
 							"response": []
 						},
 						{
+							"name": "GET  Historial Archivo Activo",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/HistorialArchivoActivo/8e675d28-7f76-4f3c-8fc4-376c0a08c466",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"HistorialArchivoActivo",
+										"8e675d28-7f76-4f3c-8fc4-376c0a08c466"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "DELETE Historial Archivo Activo",
 							"request": {
 								"method": "DELETE",
@@ -3785,6 +3749,42 @@
 										"gd",
 										"HistorialArchivoActivo",
 										"bcfd4763-0ac5-4fcd-9d7c-7f6a7792a295"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Historial Archivo Activo",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"a-hisd\",\r\n  \"ActivoId\": \"b430edd0-c8a1-4ace-9a1c-de28f478a4ba \",\r\n  \"ArchivoId\":\" c198247f-8359-4e92-b5ea-2e9d74060c1a\",\r\n  \"FechaIngreso\":\"2020-03-08\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/HistorialArchivoActivo",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"HistorialArchivoActivo"
 									]
 								}
 							},
@@ -3857,72 +3857,6 @@
 										"v1.0",
 										"gd",
 										"Ampliacion"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "PUT Ampliacion",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"Id\": \"56ea3aa1-e49f-4221-98d2-8dfc26d1011d\",\r\n    \"ActivoId\": \"d6f84d97-106f-4af3-b216-19f010707d60 \",\r\n    \"Vigente\": false,\r\n    \"TipoAmpliacionId\": \"reserva\",\r\n    \"FechaFija\": false,\r\n    \"FundamentoLegal\": \"g\",\r\n    \"Inicio\": null,\r\n    \"Fin\": null,\r\n    \"Anos\": null,\r\n    \"Meses\": null,\r\n    \"Dias\": null,\r\n    \"TipoAmpliacion\": null,\r\n    \"activo\": null\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Ampliacion/56ea3aa1-e49f-4221-98d2-8dfc26d1011d",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Ampliacion",
-										"56ea3aa1-e49f-4221-98d2-8dfc26d1011d"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET  Ampliacion",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/Ampliacion/56ea3aa1-e49f-4221-98d2-8dfc26d1011d",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Ampliacion",
-										"56ea3aa1-e49f-4221-98d2-8dfc26d1011d"
 									]
 								}
 							},
@@ -4020,6 +3954,72 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "PUT Ampliacion",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Id\": \"56ea3aa1-e49f-4221-98d2-8dfc26d1011d\",\r\n    \"ActivoId\": \"d6f84d97-106f-4af3-b216-19f010707d60 \",\r\n    \"Vigente\": false,\r\n    \"TipoAmpliacionId\": \"reserva\",\r\n    \"FechaFija\": false,\r\n    \"FundamentoLegal\": \"g\",\r\n    \"Inicio\": null,\r\n    \"Fin\": null,\r\n    \"Anos\": null,\r\n    \"Meses\": null,\r\n    \"Dias\": null,\r\n    \"TipoAmpliacion\": null,\r\n    \"activo\": null\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Ampliacion/56ea3aa1-e49f-4221-98d2-8dfc26d1011d",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Ampliacion",
+										"56ea3aa1-e49f-4221-98d2-8dfc26d1011d"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET  Ampliacion",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Ampliacion/56ea3aa1-e49f-4221-98d2-8dfc26d1011d",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Ampliacion",
+										"56ea3aa1-e49f-4221-98d2-8dfc26d1011d"
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"protocolProfileBehavior": {},
@@ -4058,26 +4058,54 @@
 							"response": []
 						},
 						{
-							"name": "POST Asunto",
+							"name": "GET  Asunto",
 							"request": {
-								"method": "POST",
+								"method": "GET",
 								"header": [
 									{
 										"key": "Content-Type",
-										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Asunto/452cc39c-48c8-4335-9480-f85adcf13b1d",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Asunto",
+										"452cc39c-48c8-4335-9480-f85adcf13b1d"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Asunto",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
 										"type": "text",
 										"value": "application/json"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"ActivoId\": \"b430edd0-c8a1-4ace-9a1c-de28f478a4ba\",\r\n  \"Contenido\":\"activa\"\r\n}",
+									"raw": "",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Asunto",
+									"raw": "http://localhost:5000/api/v1.0/gd/Asunto/a5e2c28d-bc67-4caf-b7e9-90f8233db0b4",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -4087,7 +4115,8 @@
 										"api",
 										"v1.0",
 										"gd",
-										"Asunto"
+										"Asunto",
+										"a5e2c28d-bc67-4caf-b7e9-90f8233db0b4"
 									]
 								}
 							},
@@ -4131,29 +4160,36 @@
 							"response": []
 						},
 						{
-							"name": "GET  Asunto",
+							"name": "POST Asunto",
 							"request": {
-								"method": "GET",
+								"method": "POST",
 								"header": [
 									{
 										"key": "Content-Type",
+										"name": "Content-Type",
 										"type": "text",
 										"value": "application/json"
 									}
 								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"ActivoId\": \"b430edd0-c8a1-4ace-9a1c-de28f478a4ba\",\r\n  \"Contenido\":\"activa\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
 								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/Asunto/452cc39c-48c8-4335-9480-f85adcf13b1d",
-									"protocol": "https",
+									"raw": "http://localhost:5000/api/v1.0/gd/Asunto",
+									"protocol": "http",
 									"host": [
 										"localhost"
 									],
-									"port": "5001",
+									"port": "5000",
 									"path": [
 										"api",
 										"v1.0",
 										"gd",
-										"Asunto",
-										"452cc39c-48c8-4335-9480-f85adcf13b1d"
+										"Asunto"
 									]
 								}
 							},
@@ -4215,42 +4251,6 @@
 								}
 							},
 							"response": []
-						},
-						{
-							"name": "DELETE Asunto",
-							"request": {
-								"method": "DELETE",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Asunto/a5e2c28d-bc67-4caf-b7e9-90f8233db0b4",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Asunto",
-										"a5e2c28d-bc67-4caf-b7e9-90f8233db0b4"
-									]
-								}
-							},
-							"response": []
 						}
 					],
 					"protocolProfileBehavior": {},
@@ -4265,6 +4265,94 @@
 				{
 					"name": "Prestamo",
 					"item": [
+						{
+							"name": "GET metadata Prestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5Njc1ODMsImV4cCI6MTU4ODk3MTE4MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5Njc1ODMsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.o65kKm53D1J0Kk8-pvZPrdcg7vgMOtd8Yx3__GCO0x3ujunkS8SAm_QopTCm08Y60UzDIqZW7FKmlwDQ-npndKH27wE7k_PxeNhU4MHkp0BRf9y37WkRIplRCNzudyVp0-pRmg8zyns2eBq3t_DoUO5u40x_yrmKyHA1kywNa8o9mof75XrXrpp1lk49HMkK64zrOAueuFQMEuYeJHpbiJSkDAIgPtFC695LZjsiPrEfGKoFBE6NPC2VXW9YGkhZRRKD-Pv_v_8zgRX1FpXuuWEy2jzSiwEff0oVDVDAacSaT8u7ALEWOGVIOEY0ajhkZYiUz0Hi-cesRqFGRxK2yw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Prestamo/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Prestamo",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Prestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODUwMDQ1NDEsImV4cCI6MTU4NTAwODE0MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODUwMDQ1NDEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.LlJPPnE1o5jkK5qwvr7mz5LmqORQ7GByDH99xymFpjO23V3yU60v6tA4kzOzqHfLrYiE1CUVryAqIQgqpxo1Ygw1-iVIDzFq0WEkNoL8ozAclKPlCS3cZenzzRRxZLeLU3dZRHBLjdBMwW0zwFE870fkxlYbqy5ydA2VMrAN7gcWN8KDYwDMuP75umddLCiLgaI0CXBX1GCapjaIod37xO4xtqAHXhv9ZTLmgOdAGPjhscOpdso017PW7g4FVdXM8G6NWPagdG0f6B0mxd_XgjrruM7h6r1JGpTS4zKm1JJzYxj8XZgz1XoLIzVoKOgUWzpzKTlMul20ZVnySl-WOQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Archivo/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Archivo",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
 						{
 							"name": "POST Prestamo",
 							"request": {
@@ -4363,94 +4451,6 @@
 										"gd",
 										"Prestamo",
 										"d5bd9270-7858-43a4-801f-637730edbd8b"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET metadata Prestamo",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5Njc1ODMsImV4cCI6MTU4ODk3MTE4MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5Njc1ODMsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.o65kKm53D1J0Kk8-pvZPrdcg7vgMOtd8Yx3__GCO0x3ujunkS8SAm_QopTCm08Y60UzDIqZW7FKmlwDQ-npndKH27wE7k_PxeNhU4MHkp0BRf9y37WkRIplRCNzudyVp0-pRmg8zyns2eBq3t_DoUO5u40x_yrmKyHA1kywNa8o9mof75XrXrpp1lk49HMkK64zrOAueuFQMEuYeJHpbiJSkDAIgPtFC695LZjsiPrEfGKoFBE6NPC2VXW9YGkhZRRKD-Pv_v_8zgRX1FpXuuWEy2jzSiwEff0oVDVDAacSaT8u7ALEWOGVIOEY0ajhkZYiUz0Hi-cesRqFGRxK2yw",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "uid",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
-										"type": "text"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/Prestamo/metadata",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Prestamo",
-										"metadata"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET Prestamo",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODUwMDQ1NDEsImV4cCI6MTU4NTAwODE0MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODUwMDQ1NDEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.LlJPPnE1o5jkK5qwvr7mz5LmqORQ7GByDH99xymFpjO23V3yU60v6tA4kzOzqHfLrYiE1CUVryAqIQgqpxo1Ygw1-iVIDzFq0WEkNoL8ozAclKPlCS3cZenzzRRxZLeLU3dZRHBLjdBMwW0zwFE870fkxlYbqy5ydA2VMrAN7gcWN8KDYwDMuP75umddLCiLgaI0CXBX1GCapjaIod37xO4xtqAHXhv9ZTLmgOdAGPjhscOpdso017PW7g4FVdXM8G6NWPagdG0f6B0mxd_XgjrruM7h6r1JGpTS4zKm1JJzYxj8XZgz1XoLIzVoKOgUWzpzKTlMul20ZVnySl-WOQ",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "uid",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
-										"type": "text"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/Archivo/metadata",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Archivo",
-										"metadata"
 									]
 								}
 							},
@@ -4587,6 +4587,52 @@
 					"name": "Activo_Prestamo",
 					"item": [
 						{
+							"name": "GET metadata ActivoPrestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NzE1MDAsImV4cCI6MTU4ODk3NTEwMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NzE1MDAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jbv068z2DMAOMsRfqnN6PUkjLT_B2el6Qw6KOyuMlDnmYQlR_y-P0Pt3hZm9yy0FhERwsAb9YV-mPQxJNCFIKZTvUC_xZlH4-bhtr5j86ctXE6s5NwgZNEV7SLz3hMyz1gOL_wvCj-DE6eHezahaB9PE9xW4hcfqMbcI7FFNoCMpraj_1xlwZC4b-SDJawPOdD0TMXctAKegKLzz747LnJOTxnI8k_jk-S5E_Q7yV_dTirMpYUsDWQ9ZQT0BDFM662VLLge1NCyUUvR1B5_mTAwbtA2TTTSJlYDf6CZQNTxpP3FZbx72B0xCcwK_hOwkWuDe3012kAb2qt3sg-KZiw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Prestamo/d5bd9270-7858-43a4-801f-637730edbd8b/Activo/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Prestamo",
+										"d5bd9270-7858-43a4-801f-637730edbd8b",
+										"Activo",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "POST Activo Prestamo",
 							"request": {
 								"auth": {
@@ -4634,106 +4680,6 @@
 										"Prestamo",
 										"d5bd9270-7858-43a4-801f-637730edbd8b",
 										"Activo"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "PUT Activo Prestamo",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5Njc1ODMsImV4cCI6MTU4ODk3MTE4MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5Njc1ODMsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.o65kKm53D1J0Kk8-pvZPrdcg7vgMOtd8Yx3__GCO0x3ujunkS8SAm_QopTCm08Y60UzDIqZW7FKmlwDQ-npndKH27wE7k_PxeNhU4MHkp0BRf9y37WkRIplRCNzudyVp0-pRmg8zyns2eBq3t_DoUO5u40x_yrmKyHA1kywNa8o9mof75XrXrpp1lk49HMkK64zrOAueuFQMEuYeJHpbiJSkDAIgPtFC695LZjsiPrEfGKoFBE6NPC2VXW9YGkhZRRKD-Pv_v_8zgRX1FpXuuWEy2jzSiwEff0oVDVDAacSaT8u7ALEWOGVIOEY0ajhkZYiUz0Hi-cesRqFGRxK2yw",
-											"type": "string"
-										}
-									]
-								},
-								"method": "PUT",
-								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"PrestamoId\": \"d5bd9270-7858-43a4-801f-637730edbd8b\",\r\n    \"ActivoId\": \"d3fd4e58-9f48-44d1-baf2-f006b322a91e\",\r\n    \"Devuelto\": true,\r\n    \"FechaDevolucion\": \"2020-09-14\"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Prestamo/d5bd9270-7858-43a4-801f-637730edbd8b/Activo/d3fd4e58-9f48-44d1-baf2-f006b322a91e",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Prestamo",
-										"d5bd9270-7858-43a4-801f-637730edbd8b",
-										"Activo",
-										"d3fd4e58-9f48-44d1-baf2-f006b322a91e"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET metadata ActivoPrestamo",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NzE1MDAsImV4cCI6MTU4ODk3NTEwMCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NzE1MDAsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.jbv068z2DMAOMsRfqnN6PUkjLT_B2el6Qw6KOyuMlDnmYQlR_y-P0Pt3hZm9yy0FhERwsAb9YV-mPQxJNCFIKZTvUC_xZlH4-bhtr5j86ctXE6s5NwgZNEV7SLz3hMyz1gOL_wvCj-DE6eHezahaB9PE9xW4hcfqMbcI7FFNoCMpraj_1xlwZC4b-SDJawPOdD0TMXctAKegKLzz747LnJOTxnI8k_jk-S5E_Q7yV_dTirMpYUsDWQ9ZQT0BDFM662VLLge1NCyUUvR1B5_mTAwbtA2TTTSJlYDf6CZQNTxpP3FZbx72B0xCcwK_hOwkWuDe3012kAb2qt3sg-KZiw",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "uid",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
-										"type": "text"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/Prestamo/d5bd9270-7858-43a4-801f-637730edbd8b/Activo/metadata",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Prestamo",
-										"d5bd9270-7858-43a4-801f-637730edbd8b",
-										"Activo",
-										"metadata"
 									]
 								}
 							},
@@ -4911,6 +4857,60 @@
 								}
 							},
 							"response": []
+						},
+						{
+							"name": "PUT Activo Prestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5Njc1ODMsImV4cCI6MTU4ODk3MTE4MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5Njc1ODMsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.o65kKm53D1J0Kk8-pvZPrdcg7vgMOtd8Yx3__GCO0x3ujunkS8SAm_QopTCm08Y60UzDIqZW7FKmlwDQ-npndKH27wE7k_PxeNhU4MHkp0BRf9y37WkRIplRCNzudyVp0-pRmg8zyns2eBq3t_DoUO5u40x_yrmKyHA1kywNa8o9mof75XrXrpp1lk49HMkK64zrOAueuFQMEuYeJHpbiJSkDAIgPtFC695LZjsiPrEfGKoFBE6NPC2VXW9YGkhZRRKD-Pv_v_8zgRX1FpXuuWEy2jzSiwEff0oVDVDAacSaT8u7ALEWOGVIOEY0ajhkZYiUz0Hi-cesRqFGRxK2yw",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"PrestamoId\": \"d5bd9270-7858-43a4-801f-637730edbd8b\",\r\n    \"ActivoId\": \"d3fd4e58-9f48-44d1-baf2-f006b322a91e\",\r\n    \"Devuelto\": true,\r\n    \"FechaDevolucion\": \"2020-09-14\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Prestamo/d5bd9270-7858-43a4-801f-637730edbd8b/Activo/d3fd4e58-9f48-44d1-baf2-f006b322a91e",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Prestamo",
+										"d5bd9270-7858-43a4-801f-637730edbd8b",
+										"Activo",
+										"d3fd4e58-9f48-44d1-baf2-f006b322a91e"
+									]
+								}
+							},
+							"response": []
 						}
 					],
 					"protocolProfileBehavior": {},
@@ -4919,6 +4919,50 @@
 				{
 					"name": "ComentarioPrestamo",
 					"item": [
+						{
+							"name": "GET metadata Comentario Prestamo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODUwMDQ1NDEsImV4cCI6MTU4NTAwODE0MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODUwMDQ1NDEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.LlJPPnE1o5jkK5qwvr7mz5LmqORQ7GByDH99xymFpjO23V3yU60v6tA4kzOzqHfLrYiE1CUVryAqIQgqpxo1Ygw1-iVIDzFq0WEkNoL8ozAclKPlCS3cZenzzRRxZLeLU3dZRHBLjdBMwW0zwFE870fkxlYbqy5ydA2VMrAN7gcWN8KDYwDMuP75umddLCiLgaI0CXBX1GCapjaIod37xO4xtqAHXhv9ZTLmgOdAGPjhscOpdso017PW7g4FVdXM8G6NWPagdG0f6B0mxd_XgjrruM7h6r1JGpTS4zKm1JJzYxj8XZgz1XoLIzVoKOgUWzpzKTlMul20ZVnySl-WOQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Archivo/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Archivo",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
 						{
 							"name": "POST Comentario Prestamo",
 							"request": {
@@ -4972,19 +5016,19 @@
 							"response": []
 						},
 						{
-							"name": "PUT Comentario Prestamo",
+							"name": "Delete Comentaio Prestamo",
 							"request": {
 								"auth": {
 									"type": "bearer",
 									"bearer": [
 										{
 											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODUwMDQ1NDEsImV4cCI6MTU4NTAwODE0MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODUwMDQ1NDEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.LlJPPnE1o5jkK5qwvr7mz5LmqORQ7GByDH99xymFpjO23V3yU60v6tA4kzOzqHfLrYiE1CUVryAqIQgqpxo1Ygw1-iVIDzFq0WEkNoL8ozAclKPlCS3cZenzzRRxZLeLU3dZRHBLjdBMwW0zwFE870fkxlYbqy5ydA2VMrAN7gcWN8KDYwDMuP75umddLCiLgaI0CXBX1GCapjaIod37xO4xtqAHXhv9ZTLmgOdAGPjhscOpdso017PW7g4FVdXM8G6NWPagdG0f6B0mxd_XgjrruM7h6r1JGpTS4zKm1JJzYxj8XZgz1XoLIzVoKOgUWzpzKTlMul20ZVnySl-WOQ",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NjA2MTEsImV4cCI6MTU4ODk2NDIxMSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NjA2MTEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.JbwjF_WqIPJQmsv67cgdSDleSiMaIqpB35RCo45Kc9jqR6q5l7DsgpfJHirHfuguwtoXle7vpY16i2nKYXN8a3Gnd6LB9ytrqmSB749YJEpnDutI2pmlvGD1awwL1Jx56lcoE-OUKYP_el4LTHiN4L2wZS_SawbQylyMHWzd_t55o8L6OwkQZtR-hdsHdEVeGV49YFj45Vv0m-z-H3QfXc666PTWYcGAoA5TYh7hBVXlt_iHGY4cSK_UmiyhsMSC8zpyV9h07bHzJ5ETdbO-I6LsyMK5GX2NHchwHQ7WjNWlC52TpUcLajKpAb5OZ2g60IKMX7qYs89k3_4aM33v1g",
 											"type": "string"
 										}
 									]
 								},
-								"method": "PUT",
+								"method": "DELETE",
 								"header": [
 									{
 										"key": "uid",
@@ -4993,20 +5037,19 @@
 									},
 									{
 										"key": "Content-Type",
-										"name": "Content-Type",
 										"type": "text",
 										"value": "application/json"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"8f58c097-dd1a-4dec-8067-1e92b0a1f23f\",\r\n  \"tipoOrigenDefault\": \"demo\",\r\n  \"tipoOrigenId\": \"demoID\",\r\n  \"origenId\": \"demoAbc\",\r\n  \"nombre\": \"Primer activo :3\",\r\n  \"asunto\": \"Alta de post en postman y base de datos\",\r\n  \"fechaApertura\": \"2020-04-13\",\r\n  \"codigoOptico\": \"optico\",\r\n  \"codigoElectronio\": \"287e382e\",\r\n  \"elementoClasificacionId\": \"1b68ee93-b96f-4669-bfe2-2c52b29ee5c6\",\r\n  \"archivoId\": \"1b0f88b3-88e9-48f6-a7d0-ee9a44a46dfa\",\r\n  \"enPrestamo\": true\r\n}",
+									"raw": "[  \"e32fdce5-b333-4960-96ad-de11b758dd8c\"\n\t\n\t]",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Prestamo/ce790948-dec4-4b3c-8696-fca5298d650d",
+									"raw": "http://localhost:5000/api/v1.0/gd/ComentarioPrestamo/",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -5016,52 +5059,8 @@
 										"api",
 										"v1.0",
 										"gd",
-										"Prestamo",
-										"ce790948-dec4-4b3c-8696-fca5298d650d"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET metadata Comentario Prestamo",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODUwMDQ1NDEsImV4cCI6MTU4NTAwODE0MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODUwMDQ1NDEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.LlJPPnE1o5jkK5qwvr7mz5LmqORQ7GByDH99xymFpjO23V3yU60v6tA4kzOzqHfLrYiE1CUVryAqIQgqpxo1Ygw1-iVIDzFq0WEkNoL8ozAclKPlCS3cZenzzRRxZLeLU3dZRHBLjdBMwW0zwFE870fkxlYbqy5ydA2VMrAN7gcWN8KDYwDMuP75umddLCiLgaI0CXBX1GCapjaIod37xO4xtqAHXhv9ZTLmgOdAGPjhscOpdso017PW7g4FVdXM8G6NWPagdG0f6B0mxd_XgjrruM7h6r1JGpTS4zKm1JJzYxj8XZgz1XoLIzVoKOgUWzpzKTlMul20ZVnySl-WOQ",
-											"type": "string"
-										}
-									]
-								},
-								"method": "GET",
-								"header": [
-									{
-										"key": "uid",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
-										"type": "text"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/Archivo/metadata",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Archivo",
-										"metadata"
+										"ComentarioPrestamo",
+										""
 									]
 								}
 							},
@@ -5122,19 +5121,19 @@
 							"response": []
 						},
 						{
-							"name": "Delete Comentaio Prestamo",
+							"name": "PUT Comentario Prestamo",
 							"request": {
 								"auth": {
 									"type": "bearer",
 									"bearer": [
 										{
 											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODg5NjA2MTEsImV4cCI6MTU4ODk2NDIxMSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI4NmViNjZmNC1iNzk1LTRkNWUtOGQ0OS1mNjU1ZjJmNDI5YjgiLCJhdXRoX3RpbWUiOjE1ODg5NjA2MTEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.JbwjF_WqIPJQmsv67cgdSDleSiMaIqpB35RCo45Kc9jqR6q5l7DsgpfJHirHfuguwtoXle7vpY16i2nKYXN8a3Gnd6LB9ytrqmSB749YJEpnDutI2pmlvGD1awwL1Jx56lcoE-OUKYP_el4LTHiN4L2wZS_SawbQylyMHWzd_t55o8L6OwkQZtR-hdsHdEVeGV49YFj45Vv0m-z-H3QfXc666PTWYcGAoA5TYh7hBVXlt_iHGY4cSK_UmiyhsMSC8zpyV9h07bHzJ5ETdbO-I6LsyMK5GX2NHchwHQ7WjNWlC52TpUcLajKpAb5OZ2g60IKMX7qYs89k3_4aM33v1g",
+											"value": "eyJhbGciOiJSUzI1NiIsImtpZCI6Imcxc0pLOEVOY3dHdU02OXl5Z2xqN2ciLCJ0eXAiOiJhdCtqd3QifQ.eyJuYmYiOjE1ODUwMDQ1NDEsImV4cCI6MTU4NTAwODE0MSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo0MDAwIiwiYXVkIjoicGlrYS1nZCIsImNsaWVudF9pZCI6ImFwaS1waWthLWdkLXBhc3MiLCJzdWIiOiI1MDUwYjQwMy0xYzIyLTRkY2MtOTg4Yi02ZDI3MjY0ZjQ1ZjEiLCJhdXRoX3RpbWUiOjE1ODUwMDQ1NDEsImlkcCI6ImxvY2FsIiwic2NvcGUiOlsib3BlbmlkIiwicGlrYS1nZCJdLCJhbXIiOlsicHdkIl19.LlJPPnE1o5jkK5qwvr7mz5LmqORQ7GByDH99xymFpjO23V3yU60v6tA4kzOzqHfLrYiE1CUVryAqIQgqpxo1Ygw1-iVIDzFq0WEkNoL8ozAclKPlCS3cZenzzRRxZLeLU3dZRHBLjdBMwW0zwFE870fkxlYbqy5ydA2VMrAN7gcWN8KDYwDMuP75umddLCiLgaI0CXBX1GCapjaIod37xO4xtqAHXhv9ZTLmgOdAGPjhscOpdso017PW7g4FVdXM8G6NWPagdG0f6B0mxd_XgjrruM7h6r1JGpTS4zKm1JJzYxj8XZgz1XoLIzVoKOgUWzpzKTlMul20ZVnySl-WOQ",
 											"type": "string"
 										}
 									]
 								},
-								"method": "DELETE",
+								"method": "PUT",
 								"header": [
 									{
 										"key": "uid",
@@ -5143,19 +5142,20 @@
 									},
 									{
 										"key": "Content-Type",
+										"name": "Content-Type",
 										"type": "text",
 										"value": "application/json"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "[  \"e32fdce5-b333-4960-96ad-de11b758dd8c\"\n\t\n\t]",
+									"raw": "{\r\n  \"id\": \"8f58c097-dd1a-4dec-8067-1e92b0a1f23f\",\r\n  \"tipoOrigenDefault\": \"demo\",\r\n  \"tipoOrigenId\": \"demoID\",\r\n  \"origenId\": \"demoAbc\",\r\n  \"nombre\": \"Primer activo :3\",\r\n  \"asunto\": \"Alta de post en postman y base de datos\",\r\n  \"fechaApertura\": \"2020-04-13\",\r\n  \"codigoOptico\": \"optico\",\r\n  \"codigoElectronio\": \"287e382e\",\r\n  \"elementoClasificacionId\": \"1b68ee93-b96f-4669-bfe2-2c52b29ee5c6\",\r\n  \"archivoId\": \"1b0f88b3-88e9-48f6-a7d0-ee9a44a46dfa\",\r\n  \"enPrestamo\": true\r\n}",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/ComentarioPrestamo/",
+									"raw": "http://localhost:5000/api/v1.0/gd/Prestamo/ce790948-dec4-4b3c-8696-fca5298d650d",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -5165,8 +5165,8 @@
 										"api",
 										"v1.0",
 										"gd",
-										"ComentarioPrestamo",
-										""
+										"Prestamo",
+										"ce790948-dec4-4b3c-8696-fca5298d650d"
 									]
 								}
 							},
@@ -5181,7 +5181,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "d8ac6344-47ac-4012-820d-a96eb714188e",
+						"id": "db454cd5-05d9-49e6-9538-92331044eaac",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -5191,7 +5191,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "746e98d8-6699-410d-8928-fece19253d7a",
+						"id": "b6063b89-e7df-4ac7-aac6-09f129a27bfb",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -5207,108 +5207,6 @@
 				{
 					"name": "Estado Transferencia",
 					"item": [
-						{
-							"name": "GET Metadata EstadoTransferencia",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/EstadoTransferencia/metadata",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"EstadoTransferencia",
-										"metadata"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "POST Estado Transferencia",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"0001\",\r\n  \"nombre\": \"segundo  cuadro c:\"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/EstadoTransferencia",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"EstadoTransferencia"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "PUT Estado Transferencia",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"0001\",\r\n  \"nombre\": \"Actualizado\"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/EstadoTransferencia/0001",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"EstadoTransferencia",
-										"0001"
-									]
-								}
-							},
-							"response": []
-						},
 						{
 							"name": "GET Estado Transferencia",
 							"request": {
@@ -5333,6 +5231,35 @@
 										"gd",
 										"EstadoTransferencia",
 										"0001"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET Metadata EstadoTransferencia",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/EstadoTransferencia/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EstadoTransferencia",
+										"metadata"
 									]
 								}
 							},
@@ -5390,6 +5317,78 @@
 											"key": "ordd",
 											"value": "asc"
 										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Estado Transferencia",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"0001\",\r\n  \"nombre\": \"segundo  cuadro c:\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/EstadoTransferencia",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EstadoTransferencia"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELETE Estado Transferencia",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/EstadoTransferencia/0001",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"EstadoTransferencia",
+										"0001"
 									]
 								}
 							},
@@ -5462,19 +5461,20 @@
 							"response": []
 						},
 						{
-							"name": "DELETE Estado Transferencia",
+							"name": "PUT Estado Transferencia",
 							"request": {
-								"method": "DELETE",
+								"method": "PUT",
 								"header": [
 									{
 										"key": "Content-Type",
+										"name": "Content-Type",
 										"type": "text",
 										"value": "application/json"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "",
+									"raw": "{\r\n  \"id\": \"0001\",\r\n  \"nombre\": \"Actualizado\"\r\n}",
 									"options": {
 										"raw": {}
 									}
@@ -5504,45 +5504,6 @@
 				{
 					"name": "Activo Declinado",
 					"item": [
-						{
-							"name": "POST Activo Declinado",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"ActivoId\": \"id\",\r\n  \"TransferenciaId\": \"ca6bdfc2-9563-4a38-8c9c-03800839f041\",\r\n  \"Motivo\": \"segundo  cuadro 3 \"\r\n}",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/ca6bdfc2-9563-4a38-8c9c-03800839f041/ActivoDeclinado/id",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"ca6bdfc2-9563-4a38-8c9c-03800839f041",
-										"ActivoDeclinado",
-										"id"
-									]
-								}
-							},
-							"response": []
-						},
 						{
 							"name": "PUT Activo Declinado",
 							"request": {
@@ -5575,6 +5536,45 @@
 										"gd",
 										"Transferencia",
 										"be51e993-c9d0-4dfb-b738-14607f865efa",
+										"ActivoDeclinado",
+										"id"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST Activo Declinado",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"ActivoId\": \"id\",\r\n  \"TransferenciaId\": \"ca6bdfc2-9563-4a38-8c9c-03800839f041\",\r\n  \"Motivo\": \"segundo  cuadro 3 \"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/ca6bdfc2-9563-4a38-8c9c-03800839f041/ActivoDeclinado/id",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Transferencia",
+										"ca6bdfc2-9563-4a38-8c9c-03800839f041",
 										"ActivoDeclinado",
 										"id"
 									]
@@ -5628,7 +5628,10 @@
 					"name": "Transferencia",
 					"item": [
 						{
-							"name": "GET Metadata Transferencia",
+							"name": "GET Page Transferencia",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
 							"request": {
 								"method": "GET",
 								"header": [
@@ -5638,45 +5641,15 @@
 										"value": "application/json"
 									}
 								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/Transferencia/metadata",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"metadata"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "POST  Transferencia",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"name": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"nombre\": \"de acta a curp edited 3\",\r\n    \"estadoTransferenciaId\": \"nueva\",\r\n    \"archivoOrigenId\": \"dc5e7106-4754-44ee-924a-27cbb18c9aa1\",\r\n    \"archivoDestinoId\": \"id2\",\r\n    \"usuarioId\": \"userTEstID\"\r\n}",
+									"raw": "",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia",
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/page?i=0&t=100&ordc=Nombre&ordd=asc",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -5686,7 +5659,26 @@
 										"api",
 										"v1.0",
 										"gd",
-										"Transferencia"
+										"Transferencia",
+										"page"
+									],
+									"query": [
+										{
+											"key": "i",
+											"value": "0"
+										},
+										{
+											"key": "t",
+											"value": "100"
+										},
+										{
+											"key": "ordc",
+											"value": "Nombre"
+										},
+										{
+											"key": "ordd",
+											"value": "asc"
+										}
 									]
 								}
 							},
@@ -5761,10 +5753,7 @@
 							"response": []
 						},
 						{
-							"name": "GET Page Transferencia",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
+							"name": "GET Metadata Transferencia",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -5774,15 +5763,45 @@
 										"value": "application/json"
 									}
 								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Transferencia/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Transferencia",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST  Transferencia",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
 								"body": {
 									"mode": "raw",
-									"raw": "",
+									"raw": "{\r\n    \"nombre\": \"de acta a curp edited 3\",\r\n    \"estadoTransferenciaId\": \"nueva\",\r\n    \"archivoOrigenId\": \"dc5e7106-4754-44ee-924a-27cbb18c9aa1\",\r\n    \"archivoDestinoId\": \"id2\",\r\n    \"usuarioId\": \"userTEstID\"\r\n}",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/page?i=0&t=100&ordc=Nombre&ordd=asc",
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -5792,26 +5811,7 @@
 										"api",
 										"v1.0",
 										"gd",
-										"Transferencia",
-										"page"
-									],
-									"query": [
-										{
-											"key": "i",
-											"value": "0"
-										},
-										{
-											"key": "t",
-											"value": "100"
-										},
-										{
-											"key": "ordc",
-											"value": "Nombre"
-										},
-										{
-											"key": "ordd",
-											"value": "asc"
-										}
+										"Transferencia"
 									]
 								}
 							},
@@ -5861,6 +5861,42 @@
 					"name": "EventoTRansferencia",
 					"item": [
 						{
+							"name": "GET metadata EventoTRansferencia",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "uid",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:5001/api/v1.0/gd/Transferencia/test/EventoTransferencia/metadata",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "5001",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Transferencia",
+										"test",
+										"EventoTransferencia",
+										"metadata"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "POST EventoTRansferencia",
 							"request": {
 								"method": "POST",
@@ -5904,9 +5940,9 @@
 							"response": []
 						},
 						{
-							"name": "PUT EventoTRansferencia",
+							"name": "Delete EventoTRansferencia",
 							"request": {
-								"method": "PUT",
+								"method": "DELETE",
 								"header": [
 									{
 										"key": "uid",
@@ -5915,20 +5951,19 @@
 									},
 									{
 										"key": "Content-Type",
-										"name": "Content-Type",
 										"type": "text",
 										"value": "application/json"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n  \"id\": \"e2c0c761-4283-46f6-9148-20de34fb7d89\",\r\n  \"transferenciaId\": \"0ec7addb-d1d4-413f-8255-513568198650\",\r\n  \"fecha\": \"2020-05-25\",\r\n  \"estadoTransferenciaId\": \"declinada\",\r\n  \"comentario\": \"El papel venía mojado\"\r\n}",
+									"raw": "[\t\"prueba\",\n\t\"c64c457a-ce57-4ba9-92f0-3e6512fd0fcd\",\n\t\"027753f4-816e-439e-8d60-7c5bb80fa2dc\",\n\t\"asdad\"\n]",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/test/EventoTransferencia/e2c0c761-4283-46f6-9148-20de34fb7d89",
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/test/EventoTransferencia",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -5940,80 +5975,7 @@
 										"gd",
 										"Transferencia",
 										"test",
-										"EventoTransferencia",
-										"e2c0c761-4283-46f6-9148-20de34fb7d89"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET metadata EventoTRansferencia",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "uid",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
-										"type": "text"
-									},
-									{
-										"key": "Content-Type",
-										"value": "application/json",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/Transferencia/test/EventoTransferencia/metadata",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"test",
-										"EventoTransferencia",
-										"metadata"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "GET EventoTRansferencia",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "uid",
-										"type": "text",
-										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
-									},
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"url": {
-									"raw": "https://localhost:5001/api/v1.0/gd/Transferencia/8c68a7a1-fb62-4838-b7cc-7ac89ea2e40e/EventoTransferencia/e2c0c761-4283-46f6-9148-20de34fb7d89",
-									"protocol": "https",
-									"host": [
-										"localhost"
-									],
-									"port": "5001",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"8c68a7a1-fb62-4838-b7cc-7ac89ea2e40e",
-										"EventoTransferencia",
-										"e2c0c761-4283-46f6-9148-20de34fb7d89"
+										"EventoTransferencia"
 									]
 								}
 							},
@@ -6088,9 +6050,53 @@
 							"response": []
 						},
 						{
-							"name": "Delete EventoTRansferencia",
+							"name": "PUT EventoTRansferencia",
 							"request": {
-								"method": "DELETE",
+								"method": "PUT",
+								"header": [
+									{
+										"key": "uid",
+										"type": "text",
+										"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+									},
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": \"e2c0c761-4283-46f6-9148-20de34fb7d89\",\r\n  \"transferenciaId\": \"0ec7addb-d1d4-413f-8255-513568198650\",\r\n  \"fecha\": \"2020-05-25\",\r\n  \"estadoTransferenciaId\": \"declinada\",\r\n  \"comentario\": \"El papel venía mojado\"\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/test/EventoTransferencia/e2c0c761-4283-46f6-9148-20de34fb7d89",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Transferencia",
+										"test",
+										"EventoTransferencia",
+										"e2c0c761-4283-46f6-9148-20de34fb7d89"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GET EventoTRansferencia",
+							"request": {
+								"method": "GET",
 								"header": [
 									{
 										"key": "uid",
@@ -6103,27 +6109,21 @@
 										"value": "application/json"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": "[\t\"prueba\",\n\t\"c64c457a-ce57-4ba9-92f0-3e6512fd0fcd\",\n\t\"027753f4-816e-439e-8d60-7c5bb80fa2dc\",\n\t\"asdad\"\n]",
-									"options": {
-										"raw": {}
-									}
-								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/test/EventoTransferencia",
-									"protocol": "http",
+									"raw": "https://localhost:5001/api/v1.0/gd/Transferencia/8c68a7a1-fb62-4838-b7cc-7ac89ea2e40e/EventoTransferencia/e2c0c761-4283-46f6-9148-20de34fb7d89",
+									"protocol": "https",
 									"host": [
 										"localhost"
 									],
-									"port": "5000",
+									"port": "5001",
 									"path": [
 										"api",
 										"v1.0",
 										"gd",
 										"Transferencia",
-										"test",
-										"EventoTransferencia"
+										"8c68a7a1-fb62-4838-b7cc-7ac89ea2e40e",
+										"EventoTransferencia",
+										"e2c0c761-4283-46f6-9148-20de34fb7d89"
 									]
 								}
 							},
@@ -6144,7 +6144,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "56fe9170-a77a-4166-aa54-3691b22a1683",
+								"id": "63b36c2d-81c8-40a3-991a-d0424c712a06",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -6154,7 +6154,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "6973cc63-1971-4c83-9597-f9664500ac9b",
+								"id": "2b7ee1e0-dc0c-4960-bb75-bee9ac801b04",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -6238,26 +6238,25 @@
 							"response": []
 						},
 						{
-							"name": "PUT Comentario Transferencia",
+							"name": "DELETE Comentario Transferencia",
 							"request": {
-								"method": "PUT",
+								"method": "DELETE",
 								"header": [
 									{
 										"key": "Content-Type",
-										"name": "Content-Type",
 										"type": "text",
 										"value": "application/json"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"Id\": \"4e39656a-7391-4071-91bb-fb3b8e3c6cae\",\r\n    \"TransferenciaId\": \"be51e993-c9d0-4dfb-b738-14607f865efa\",\r\n    \"UsuarioId\": \"userTestID\",\r\n    \"Fecha\": \"2020-05-15T00:00:00\",\r\n    \"Comentario\": \"Pendientes de ver para pasarlos a transporte\",\r\n    \"Publico\": false\r\n}",
+									"raw": "",
 									"options": {
 										"raw": {}
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ComentarioTransferencia/4e39656a-7391-4071-91bb-fb3b8e3c6cae",
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ComentarioTransferencia/b979c3a3-af6b-4399-a03a-cdf0d11a4c45",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -6270,7 +6269,7 @@
 										"Transferencia",
 										"be51e993-c9d0-4dfb-b738-14607f865efa",
 										"ComentarioTransferencia",
-										"4e39656a-7391-4071-91bb-fb3b8e3c6cae"
+										"b979c3a3-af6b-4399-a03a-cdf0d11a4c45"
 									]
 								}
 							},
@@ -6336,7 +6335,53 @@
 							"response": []
 						},
 						{
-							"name": "DELETE Comentario Transferencia",
+							"name": "PUT Comentario Transferencia",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"type": "text",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Id\": \"4e39656a-7391-4071-91bb-fb3b8e3c6cae\",\r\n    \"TransferenciaId\": \"be51e993-c9d0-4dfb-b738-14607f865efa\",\r\n    \"UsuarioId\": \"userTestID\",\r\n    \"Fecha\": \"2020-05-15T00:00:00\",\r\n    \"Comentario\": \"Pendientes de ver para pasarlos a transporte\",\r\n    \"Publico\": false\r\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ComentarioTransferencia/4e39656a-7391-4071-91bb-fb3b8e3c6cae",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"api",
+										"v1.0",
+										"gd",
+										"Transferencia",
+										"be51e993-c9d0-4dfb-b738-14607f865efa",
+										"ComentarioTransferencia",
+										"4e39656a-7391-4071-91bb-fb3b8e3c6cae"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Activo Trasferencia",
+					"item": [
+						{
+							"name": "DELETE Activo Declinado",
 							"request": {
 								"method": "DELETE",
 								"header": [
@@ -6354,7 +6399,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ComentarioTransferencia/b979c3a3-af6b-4399-a03a-cdf0d11a4c45",
+									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoTransferencia/0001,id,5401871f-274c-4623-bb23-896b14b915fa",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -6366,20 +6411,13 @@
 										"gd",
 										"Transferencia",
 										"be51e993-c9d0-4dfb-b738-14607f865efa",
-										"ComentarioTransferencia",
-										"b979c3a3-af6b-4399-a03a-cdf0d11a4c45"
+										"ActivoTransferencia",
+										"0001,id,5401871f-274c-4623-bb23-896b14b915fa"
 									]
 								}
 							},
 							"response": []
-						}
-					],
-					"protocolProfileBehavior": {},
-					"_postman_isSubFolder": true
-				},
-				{
-					"name": "Activo Trasferencia",
-					"item": [
+						},
 						{
 							"name": "POST Activo Declinado",
 							"request": {
@@ -6418,51 +6456,13 @@
 								}
 							},
 							"response": []
-						},
-						{
-							"name": "DELETE Activo Declinado",
-							"request": {
-								"method": "DELETE",
-								"header": [
-									{
-										"key": "Content-Type",
-										"type": "text",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {}
-									}
-								},
-								"url": {
-									"raw": "http://localhost:5000/api/v1.0/gd/Transferencia/be51e993-c9d0-4dfb-b738-14607f865efa/ActivoTransferencia/0001,id,5401871f-274c-4623-bb23-896b14b915fa",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "5000",
-									"path": [
-										"api",
-										"v1.0",
-										"gd",
-										"Transferencia",
-										"be51e993-c9d0-4dfb-b738-14607f865efa",
-										"ActivoTransferencia",
-										"0001,id,5401871f-274c-4623-bb23-896b14b915fa"
-									]
-								}
-							},
-							"response": []
 						}
 					],
 					"event": [
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "63e954f3-ec08-4916-96f4-62ef3c97b5ba",
+								"id": "5f831c2c-71a7-4013-b445-7267fd3c503e",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -6472,7 +6472,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "88e45d78-aa93-41e4-bd59-de8d0bae0e64",
+								"id": "7b2712ee-9a5d-43e9-8489-708ab3bef211",
 								"type": "text/javascript",
 								"exec": [
 									""
@@ -6501,7 +6501,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "98199b30-9cec-4e97-8610-f266639aa4e3",
+				"id": "04a3cf1e-c535-45b5-9f95-1af6fbe6c506",
 				"type": "text/javascript",
 				"exec": [
 					"const echoPostRequest = {",
@@ -6547,7 +6547,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "d50bc6e8-3016-4fc3-bdff-8be230aaf6f8",
+				"id": "cf3973d7-d8a2-4d4f-92c0-299f4780bd29",
 				"type": "text/javascript",
 				"exec": [
 					""

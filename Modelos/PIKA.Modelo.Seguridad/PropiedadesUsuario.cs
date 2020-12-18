@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
+using System.Text.Json.Serialization;
 using static PIKA.Modelo.Metadatos.PropAttribute;
 
 namespace PIKA.Modelo.Seguridad
@@ -94,12 +95,14 @@ namespace PIKA.Modelo.Seguridad
         [Prop(Required: false, OrderIndex: 110)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
         [List(Entidad: "Pais", DatosRemotos: true, TypeAhead: false, Default: "MEX")]
+        [JsonPropertyName("PaisId")]
         public string paisid { get; set; }
 
         [Prop(Required: false, OrderIndex: 120)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
         [List(Entidad: "Estado", DatosRemotos: true, TypeAhead: false)]
         [Event(Entidad: "PaisId", Evento: Eventos.AlCambiar, Operacion: Operaciones.Actualizar, "PaisId")]
+        [JsonPropertyName("EstadoId")]
         public string estadoid { get; set; }
 
      

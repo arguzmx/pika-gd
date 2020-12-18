@@ -91,13 +91,23 @@ namespace PIKA.GD.API.Controllers.Metadatos
         /// <param name="query">Consulta para la paginación y búsqueda</param>
         /// <returns></returns>
 
-        [HttpGet("page", Name = "GetPageValorListaPlantilla")]
+        [HttpGet("page/propiedadplantilla/{propiedadid}", Name = "GetPageValorListaPlantilla")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
 
-        public async Task<ActionResult<Paginado<ValorListaPlantilla>>> GetPage(
+        public async Task<ActionResult<Paginado<ValorListaPlantilla>>> GetPage(string propiedadid,
             [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
+
+            query.Filtros.Add(new FiltroConsulta()
+            {
+                Operador = FiltroConsulta.OP_EQ,
+                Propiedad = "PropiedadId",
+                Valor = propiedadid
+            });
+
+            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(query));
+
             var data = await servicioEntidad.ObtenerPaginadoAsync(
                 Query: query,
                 include: null)

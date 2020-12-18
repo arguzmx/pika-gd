@@ -11,6 +11,8 @@
     <Compile Remove="Data\Migrations\20200419041009_InicialMetadatosprueba.Designer.cs" />
     <Compile Remove="Data\Migrations\20200423201439_InicialMetadatosprueba.cs" />
     <Compile Remove="Data\Migrations\20200423201439_InicialMetadatosprueba.Designer.cs" />
+    <Compile Remove="Data\Migrations\20201217233129_PropiedadListaMetadatos.cs" />
+    <Compile Remove="Data\Migrations\20201217233129_PropiedadListaMetadatos.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

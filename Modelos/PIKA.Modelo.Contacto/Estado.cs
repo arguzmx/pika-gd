@@ -18,10 +18,12 @@ namespace PIKA.Modelo.Contacto
         /// </summary>
         public string PaisId { get; set; }
 
-
+        [Prop(Required: false, isId: true, Visible: false, OrderIndex: 0)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.update)]
         public override string Id { get; set; }
 
-
+        [Prop(Required: true, OrderIndex: 10)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
         public override string Nombre { get; set; }
 
 

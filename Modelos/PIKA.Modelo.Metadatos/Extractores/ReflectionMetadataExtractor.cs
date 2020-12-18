@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Security.Policy;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PIKA.Modelo.Metadatos
@@ -98,7 +99,8 @@ namespace PIKA.Modelo.Metadatos
                         HijoDinamico = ev.HijoDinamico, 
                         DiccionarioEntidadesVinculadas = ev.DiccionarioEntidadesVinculadas,
                         PropiedadIdMiembro = ev.PropiedadIdMiembro,
-                        TokenSeguridad = ev.TokenSeguridad
+                        TokenSeguridad = ev.TokenSeguridad,
+                        FiltroUI = ev.FiltroUI
                     });
 
                 }
@@ -138,6 +140,13 @@ namespace PIKA.Modelo.Metadatos
                 {
                     foreach (object attr in attrs)
                     {
+
+                        if (attr is JsonPropertyNameAttribute)
+                        {
+                            JsonPropertyNameAttribute ea = (JsonPropertyNameAttribute)attr;
+                            foundProp.Id = ea.Name;
+                            foundProp.Nombre = ea.Name;
+                        }
 
                         if (attr is ListAttribute)
                         {

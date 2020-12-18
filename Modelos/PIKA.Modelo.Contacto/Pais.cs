@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Contacto
 {
-
+    [Entidad(EliminarLogico: false)]
     public class Pais : EntidadCatalogo<string, Pais>
     {
         public Pais()
@@ -19,10 +19,12 @@ namespace PIKA.Modelo.Contacto
 
         }
 
-
+        [Prop(Required: false, isId: true, Visible: false, OrderIndex: 0)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.update)]
         public override string Id { get; set; }
 
-
+        [Prop(Required: true, OrderIndex: 10)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
         public override string Nombre { get; set; }
 
         /// <summary>

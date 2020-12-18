@@ -18,6 +18,7 @@ namespace PIKA.Modelo.Metadatos
         public string PropiedadHijo { get; set; }
         public bool HijoDinamico { get; set; }
         public string TokenSeguridad { get; set; }
+        public string FiltroUI { get; set; }
         public TipoDespliegueVinculo TipoDespliegue { get; set; }
         public  List<DiccionarioEntidadVinculada> DiccionarioEntidadesVinculadas { get; set; }
     }

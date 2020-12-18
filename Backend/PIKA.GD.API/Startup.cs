@@ -126,9 +126,6 @@ namespace PIKA.GD.API
             services.AddDbContext<DbContextContacto>(options =>
             options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
-            services.AddDbContext<DbContextMetadatos>(options =>
-            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-
             services.AddDbContext<DbContextContenido>(options =>
             options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
@@ -141,6 +138,8 @@ namespace PIKA.GD.API
             services.AddDbContext<DBContextGestionDocumental>(options =>
             options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
+            services.AddDbContext<DbContextMetadatos>(options =>
+            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
 #endif
 
