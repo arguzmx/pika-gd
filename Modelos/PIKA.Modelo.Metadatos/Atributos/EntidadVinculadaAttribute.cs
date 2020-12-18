@@ -13,7 +13,7 @@ namespace PIKA.Modelo.Metadatos
     /// <summary>
     /// Permite deifinir un vínculo de navegación entre entidades
     /// </summary>
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = false)]
     public class EntidadVinculadaAttribute : Attribute
     {
     
@@ -23,6 +23,7 @@ namespace PIKA.Modelo.Metadatos
         private string _Hijo;
         private string _PropiedadIdMiembro;
         private string _TokenSeguridad;
+        private string _FiltroUI;
         private bool _HijoDinamico;
         private TipoDespliegueVinculo _TipoDespliegueVinculo;
         private List<DiccionarioEntidadVinculada> _DiccionarioEntidadVinculada;
@@ -40,11 +41,12 @@ namespace PIKA.Modelo.Metadatos
         /// <param name="TipoDespliegueVinculo">Tipo de despliegue</param>
         /// <param name="HijoDinamico">Determina si el hijo de vinculación es dinámico en base a la propeieda del objecto definida por EntidadHijo</param>
         /// <param name="Diccionario">El diccionario se forma de pres seprardos por , separados por |</param>
+        /// <param name="FiltroUI">Filtro booleano en la UI para mostrar/activar el filtro</param>
         public EntidadVinculadaAttribute(string TokenSeguridad, string EntidadHijo = ""
         , TipoCardinalidad Cardinalidad = TipoCardinalidad.UnoVarios
         , string PropiedadPadre = "", string PropiedadHijo = ""
         , TipoDespliegueVinculo TipoDespliegueVinculo = TipoDespliegueVinculo.Tabular, 
-            bool HijoDinamico = false, string PropiedadIdMiembro="", string Diccionario = "")
+            bool HijoDinamico = false, string PropiedadIdMiembro="", string Diccionario = "", string FiltroUI="")
         {
             _DiccionarioEntidadVinculada = new List<DiccionarioEntidadVinculada>();
             if ( !string.IsNullOrEmpty(Diccionario))
@@ -75,6 +77,7 @@ namespace PIKA.Modelo.Metadatos
             this._Hijo = PropiedadHijo;
             this._TipoDespliegueVinculo = TipoDespliegueVinculo;
             this._HijoDinamico = HijoDinamico;
+            this._FiltroUI = FiltroUI;
         }
 
         /// <summary>
@@ -106,7 +109,7 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public virtual string TokenSeguridad
         {
-            get { return _Padre; }
+            get { return _TokenSeguridad; }
         }
 
         // Nombre de la propiedad de relación en la entidad hiji
@@ -137,6 +140,12 @@ namespace PIKA.Modelo.Metadatos
         public virtual List<DiccionarioEntidadVinculada> DiccionarioEntidadesVinculadas
         {
             get { return _DiccionarioEntidadVinculada; }
+        }
+
+        // Filtro booleano en la UI para mostrar/activar el filtro
+        public virtual string FiltroUI
+        {
+            get { return _FiltroUI; }
         }
 
     }

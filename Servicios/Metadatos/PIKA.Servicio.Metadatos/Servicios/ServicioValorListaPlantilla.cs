@@ -42,10 +42,14 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<ValorListaPlantilla> CrearAsync(ValorListaPlantilla entity, CancellationToken cancellationToken = default)
         {
-
+            if (string.IsNullOrEmpty(entity.Texto))
+            {
+                throw new ExDatosNoValidos();
+            }
 
             if (await Existe(x => x.PropiedadId.Equals(entity.PropiedadId.Trim(), StringComparison.InvariantCultureIgnoreCase)
-            && x.Id != entity.Id))
+            && x.Texto.Equals(entity.Texto.Trim(), StringComparison.InvariantCultureIgnoreCase)
+            ))
             {
                 throw new ExElementoExistente(entity.PropiedadId);
             }
@@ -61,6 +65,11 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task ActualizarAsync(ValorListaPlantilla entity)
         {
+            if (string.IsNullOrEmpty(entity.Texto))
+            {
+                throw new ExDatosNoValidos();
+            }
+
             ValorListaPlantilla o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
             if (o == null)
@@ -70,6 +79,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
 
             if (await Existe(x => x.PropiedadId.Equals(entity.PropiedadId.Trim(), StringComparison.InvariantCultureIgnoreCase)
+            && x.Texto.Equals(entity.Texto.Trim(), StringComparison.InvariantCultureIgnoreCase)
             && x.Id != entity.Id))
             {
                 throw new ExElementoExistente(entity.PropiedadId);

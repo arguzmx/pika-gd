@@ -18,8 +18,8 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
             builder.Property(x => x.Id).IsRequired().ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.Texto).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.Indice).IsRequired().HasDefaultValue(0);
+            builder.Property(x => x.PropiedadId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
             builder.HasOne(x => x.Propiedad).WithMany(y => y.ValoresLista).HasForeignKey(z => z.PropiedadId).OnDelete(DeleteBehavior.Restrict);
-            builder.HasIndex(x => x.PropiedadId);
 
         }
     }

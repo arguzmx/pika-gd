@@ -1,0 +1,214 @@
+{
+	"info": {
+		"_postman_id": "eaa62139-5902-4200-89ae-ba5892419019",
+		"name": "Configuracion Aplicaciones",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Configuracion",
+			"item": [
+				{
+					"name": "Get Ruteo Tipos",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/Sistema/AppConfig/ruteotipos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"Sistema",
+								"AppConfig",
+								"ruteotipos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtiene menu del usuario",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "did",
+								"value": "dominio",
+								"type": "text"
+							},
+							{
+								"key": "tid",
+								"value": "unidadprincipal",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/usuario/Perfil/menu/123",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"usuario",
+								"Perfil",
+								"menu",
+								"123"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtiene ACL Usuario",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "uid",
+								"type": "text",
+								"value": "9b5ac73d-41a2-497d-beb4-246fe889a700"
+							},
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1.0/media/pagina/45475d3d-3698-433e-9b95-128309477578/7ce33cc7-3860-489a-bc32-79f331b36e20/7fc1125c-106a-41ad-b94a-71bc269f837a/44a3cef0-c211-42a8-b7e3-3f9d254de730/.jpg",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1.0",
+								"media",
+								"pagina",
+								"45475d3d-3698-433e-9b95-128309477578",
+								"7ce33cc7-3860-489a-bc32-79f331b36e20",
+								"7fc1125c-106a-41ad-b94a-71bc269f837a",
+								"44a3cef0-c211-42a8-b7e3-3f9d254de730",
+								".jpg"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "078c50b8-45af-42ac-8ab6-8b4056489469",
+				"type": "text/javascript",
+				"exec": [
+					"const echoPostRequest = {",
+					"  url: 'http://localhost:4000/connect/token',",
+					"  method: 'POST',",
+					"  header: 'Content-Type:application/x-www-form-urlencoded',",
+					"  body: {",
+					"    mode: 'raw',",
+					" raw: 'grant_type=password&username=oswaldodg&password=Pa$$w0rd&scope=openid%20pika-gd&client_id=api-pika-gd-pass&client_secret=secret'",
+					"  }",
+					"};",
+					"",
+					"var getToken = true;",
+					"",
+					"if (!pm.environment.get('accessTokenExpiry') || ",
+					"    !pm.environment.get('accessToken')) {",
+					"    console.log('Token or expiry date are missing')",
+					"} else if (pm.environment.get('accessTokenExpiry') <= (new Date()).getTime()) {",
+					"    console.log('Token is expired')",
+					"} else {",
+					"    getToken = false;",
+					"    console.log('Token and expiry date are all good');",
+					"}",
+					"",
+					"if (getToken === true) {",
+					"    pm.sendRequest(echoPostRequest, function (err, res) {",
+					"    console.log(err ? err : res.json());",
+					"        if (err === null) {",
+					"            console.log('Saving the token and expiry date')",
+					"            var responseJson = res.json();",
+					"            pm.environment.set('accessToken', responseJson.access_token)",
+					"    ",
+					"            var expiryDate = new Date();",
+					"            expiryDate.setSeconds(expiryDate.getSeconds() + responseJson.expires_in);",
+					"            pm.environment.set('accessTokenExpiry', expiryDate.getTime());",
+					"        }",
+					"    });",
+					"}",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "c998bf3f-163e-49ba-ae89-8c322dea598b",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "900edd28-0828-4098-8347-934498419a08",
+			"key": "accessTokenExpiry",
+			"value": ""
+		},
+		{
+			"id": "84255001-5ef6-457b-861e-4c65642d4c5a",
+			"key": "accessToken",
+			"value": ""
+		}
+	],
+	"protocolProfileBehavior": {}
+}

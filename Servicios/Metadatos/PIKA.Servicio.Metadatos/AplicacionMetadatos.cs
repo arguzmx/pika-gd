@@ -35,7 +35,8 @@ namespace PIKA.Servicio.Metadatos
                         typeof(AtributoTabla),
                         typeof(TipoDato), 
                         typeof(ValidadorNumero), 
-                        typeof(ValidadorTexto)
+                        typeof(ValidadorTexto),
+                        typeof(ValorListaPlantilla)
                     }
                 }
             };

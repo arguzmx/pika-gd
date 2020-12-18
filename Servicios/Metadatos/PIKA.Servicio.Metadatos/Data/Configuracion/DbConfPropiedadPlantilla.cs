@@ -39,10 +39,15 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
             builder.Property(x=>x.EsIndice).IsRequired();
             builder.Property(x=>x.ControlHTML).HasMaxLength(LongitudDatos.ControlHTML).IsRequired();
 
-            builder.HasOne(x => x.AtributoTabla).WithOne(y => y.PropiedadPlantilla).HasForeignKey<AtributoTabla>(z=>z.PropiedadId).OnDelete(DeleteBehavior.Restrict);
+            builder.Ignore(x => x.AtributoLista);
+            builder.Ignore(x => x.AtributosEvento);
+            builder.Ignore(x => x.AtributosVistaUI);
+            builder.Ignore(x => x.AtributoTabla);
+            builder.Ignore(x => x.ParametroLinkVista);
+
+
             builder.HasOne(x => x.ValidadorTexto).WithOne(y => y.PropiedadPlantilla).HasForeignKey<ValidadorTexto>(z => z.PropiedadId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(x => x.ValidadorNumero).WithOne(y => y.PropiedadPlantilla).HasForeignKey<ValidadorNumero>(z => z.PropiedadId).OnDelete(DeleteBehavior.Restrict);
-           
 
         }
     }

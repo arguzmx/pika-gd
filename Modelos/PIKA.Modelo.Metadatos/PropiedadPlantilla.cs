@@ -21,7 +21,12 @@ namespace PIKA.Modelo.Metadatos
         EntidadHijo: "TipoDatoId", Cardinalidad: TipoCardinalidad.UnoUno,
         HijoDinamico: true, TipoDespliegueVinculo: TipoDespliegueVinculo.EntidadUnica,
         PropiedadPadre: "Id", PropiedadHijo: "PropiedadId",
-        Diccionario: "string,ValidadorTexto|double,ValidadorNumero|int,ValidadorNumero|long,ValidadorNumero")]
+        Diccionario: "string,ValidadorTexto|double,ValidadorNumero|int,ValidadorNumero|long,ValidadorNumero",
+        FiltroUI: "(['TipoDatoId']==='string' || ['TipoDatoId']==='double' || ['TipoDatoId']==='int' || ['TipoDatoId']==='long')")]
+
+    [EntidadVinculada(TokenSeguridad: ConstantesAppMetadatos.MODULO_PLANTILLAS, EntidadHijo: "ValorListaPlantilla",
+        Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id", PropiedadHijo: "PropiedadId",
+        FiltroUI: "(['TipoDatoId']==='list')")]
     public class PropiedadPlantilla : Propiedad
     {
 

@@ -236,69 +236,6 @@ namespace PIKA.Servicio.Metadatos.Data
 
  
    
-        private static void InicializarAtributoTabla(DbContextMetadatos dbContext, string contentPath)
-        {
-            try
-            {
-                List<AtributoTabla> atributotabla = new List<AtributoTabla>();
-
-                string path = Path.Combine(contentPath, "Data", "Inicializar", "AtributoTabla.txt");
-
-
-                if (File.Exists(path))
-                {
-
-
-                    int index = 0;
-                    List<string> lineas = File.ReadAllText(path).Split('\n').ToList();
-                    foreach (string linea in lineas)
-                    {
-                        if (index > 0)
-                        {
-
-                            List<string> partes = linea.TrimStart().TrimEnd().Split('\t').ToList();
-                            atributotabla.Add(new AtributoTabla()
-                            {
-                                Id = partes[4],
-                                PropiedadId = partes[0]
-                            });
-
-                        }
-                        index++;
-                    }
-                }
-
-
-                foreach (AtributoTabla atributostabla in atributotabla)
-                {
-
-                    AtributoTabla instancia = dbContext.AtributoTabla.Find(atributostabla.Id);
-                    if (instancia == null)
-                    {
-                        AtributoTabla p = new AtributoTabla()
-                        {
-                            Id = atributostabla.Id,
-                            PropiedadId = atributostabla.PropiedadId
-                        };
-
-                        dbContext.AtributoTabla.Add(p);
-                    }
-                    else
-                    {
-                        instancia.Id = atributostabla.Id;
-                    }
-                }
-                dbContext.SaveChanges();
-
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-
-        }
-
         private static void InicializarValidadorNumero(DbContextMetadatos dbContext, string contentPath)
         {
             try
@@ -456,25 +393,6 @@ namespace PIKA.Servicio.Metadatos.Data
                 }
 
 
-                foreach (AsociacionPlantilla asociacionplantillas in asociacionplantilla)
-                {
-
-                    AsociacionPlantilla instancia = dbContext.AsociacionPlantilla.Find(asociacionplantillas.Id);
-                    if (instancia == null)
-                    {
-                        AsociacionPlantilla p = new AsociacionPlantilla()
-                        {
-                            Id = asociacionplantillas.Id,
-                            PlantillaId = asociacionplantillas.PlantillaId
-                        };
-
-                        dbContext.AsociacionPlantilla.Add(p);
-                    }
-                    else
-                    {
-                        instancia.Id = asociacionplantillas.Id;
-                    }
-                }
                 dbContext.SaveChanges();
 
             }
