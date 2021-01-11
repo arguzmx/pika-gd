@@ -28,8 +28,17 @@ namespace PIKA.GD.API.Servicios.Caches
                     y => y.Include(z => z.Propiedades).ThenInclude(z => z.TipoDato)
                     .Include(z => z.Propiedades).ThenInclude(z => z.ValidadorNumero)
                     .Include(z => z.Propiedades).ThenInclude(z => z.ValidadorTexto)
-                    .Include(z => z.Propiedades).ThenInclude(z => z.AtributoTabla)
+                    .Include(z => z.Propiedades).ThenInclude(z => z.ValoresLista)
                 ).ConfigureAwait(false);
+
+                foreach(var i in p.Propiedades)
+                {
+                    if(i.TipoDatoId == TipoDato.tList)
+                    {
+                        i.ValoresLista = await servicio.ObtenerValores(i.Id).ConfigureAwait(false);
+                    }
+                }
+
                 if (p != null) cache.Add<Plantilla>(ClavePlantilla(id), p);
             }
             return p;

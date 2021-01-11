@@ -89,7 +89,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         #endregion
 
 
-        public async Task<string> Inserta(string tipoOrigenId, string origenId, bool esLista, string ListaId,
+        public async Task<DocumentoPlantilla> Inserta(string tipoOrigenId, string origenId, bool esLista, string ListaId,
             Plantilla plantilla, RequestValoresPlantilla valores, string nombreRelacion = "")
         {
 
@@ -112,7 +112,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 EsLista = esLista,
                 ListaId = ListaId
             };
-
+            Console.WriteLine($"{valoresplantilla.ObtieneJSONValores(plantilla)}");
             var body = ES.PostData.String(valoresplantilla.ObtieneJSONValores(plantilla));
             var response = await cliente.LowLevel.CreateAsync<CreateResponse>(plantilla.Id, valoresplantilla.Id, body);
 
@@ -125,8 +125,8 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                         valoresplantilla.PlantillaId, nombreRelacion);
                 }
 
-                return valoresplantilla.Id;
-            }
+                return valoresplantilla;
+            } 
 
             return null;
         }

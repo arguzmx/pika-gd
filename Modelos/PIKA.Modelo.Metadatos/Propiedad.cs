@@ -220,6 +220,6 @@ namespace PIKA.Modelo.Metadatos
         [NotMapped]
         public virtual ParametroLinkVista ParametroLinkVista { get; set; }
 
-        // public virtual ICollection<ValorLista> ValoresLista { get; set; }
+        //public virtual ICollection<ValorLista> ValoresLista { get; set; }
     }
 }

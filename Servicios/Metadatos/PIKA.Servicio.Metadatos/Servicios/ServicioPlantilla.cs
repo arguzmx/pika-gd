@@ -188,6 +188,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
             return this.repo.ObtenerAsync(predicado);
         }
 
+        public async Task<List<ValorListaPlantilla>> ObtenerValores(string PropiedadId)
+        {
+            var lista = await this.UDT.Context.ValoresListaPropiedad.Where(x => x.PropiedadId == PropiedadId).ToListAsync();
+            return lista;
+        }
+
         #region Sin Implementar
         public Task<IEnumerable<Plantilla>> CrearAsync(params Plantilla[] entities)
         {

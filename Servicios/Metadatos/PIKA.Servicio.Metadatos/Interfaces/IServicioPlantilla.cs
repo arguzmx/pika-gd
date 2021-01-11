@@ -11,5 +11,6 @@ namespace PIKA.Servicio.Metadatos.Interfaces
     {
         Task Purgar();
 
+        Task<List<ValorListaPlantilla>> ObtenerValores(string PropiedadId);
     }
 }
