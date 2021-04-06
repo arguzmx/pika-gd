@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using LazyCache;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
@@ -16,12 +11,9 @@ using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Contenido;
-using PIKA.Modelo.Contenido.Extensiones;
-using PIKA.Modelo.Contenido.ui;
 using PIKA.Servicio.Contenido.Helpers;
 using PIKA.Servicio.Contenido.Interfaces;
 using RepositorioEntidades;
-using Version = PIKA.Modelo.Contenido.Version;
 
 namespace PIKA.Servicio.Contenido.Servicios
 {
@@ -33,16 +25,13 @@ namespace PIKA.Servicio.Contenido.Servicios
         private IRepositorioAsync<ElementoTransaccionCarga> repo;
         private ConfiguracionServidor configuracionServidor;
         private UnidadDeTrabajo<DbContextContenido> UDT;
-        private IRepositorioContenidoElasticSearch repoElastic;
 
         public ServicioElementoTransaccionCarga(
-            IRepositorioContenidoElasticSearch repoElastic,
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
             ILogger<ServicioLog> Logger,
             IOptions<ConfiguracionServidor> opciones
         ) : base(proveedorOpciones, Logger)
         {
-            this.repoElastic = repoElastic;
             this.configuracionServidor = opciones.Value;
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<ElementoTransaccionCarga>(new QueryComposer<ElementoTransaccionCarga>());
@@ -56,7 +45,6 @@ namespace PIKA.Servicio.Contenido.Servicios
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
             return entity;
-
         }
 
         public async Task ProcesoElemento(string ElementoId, bool Error, string Motivo)
@@ -79,8 +67,11 @@ namespace PIKA.Servicio.Contenido.Servicios
             }
         }
 
-        public async Task EliminarTransaccion(string TransaccionId)
+        public async Task EliminarTransaccion(string TransaccionId,string VolId, long CuentaBytes)
         {
+
+            ComunesPartes hpartes = new ComunesPartes(this.UDT);
+            await hpartes.ActualizaTamanoVolumen(VolId, CuentaBytes, true);
             List<ElementoTransaccionCarga> l = await repo.ObtenerAsync(x => x.TransaccionId == TransaccionId);
             await repo.EliminarRango(l);
             UDT.SaveChanges();
@@ -91,52 +82,6 @@ namespace PIKA.Servicio.Contenido.Servicios
             List<ElementoTransaccionCarga> l = await repo.ObtenerAsync(x => x.TransaccionId == TransaccionId);
             return l.OrderBy(x => x.Indice).ToList();
         }
-
-        public async Task<List<Pagina>> ProcesaTransaccion(string TransaccionId, string VolumenId, IGestorES gestor)
-        {
-            List<ElementoTransaccionCarga> l = await OtieneElementosTransaccion(TransaccionId).ConfigureAwait(false);
-
-            string ruta = Path.Combine(configuracionServidor.ruta_cache_fisico, TransaccionId);
-            List<Parte> partes = new List<Parte>();
-
-            l.ForEach(p => {
-                string filePath = Path.Combine(ruta, p.Id + Path.GetExtension(p.NombreOriginal));
-                if (System.IO.File.Exists(filePath))
-                {
-                    partes.Add(p.ConvierteParte());
-                }
-
-            });
-
-            ComunesPartes hpartes = new ComunesPartes(this.UDT);
-            List<Parte> resultados = await hpartes.CrearAsync(partes);
-            List<Pagina> paginas= new List<Pagina>();
-            foreach(Parte p in resultados)
-            {
-                string filePath = Path.Combine(ruta, p.Id + Path.GetExtension(p.NombreOriginal));
-                await gestor.EscribeBytes(p.Id, p.ElementoId, p.VersionId, filePath, new FileInfo(p.NombreOriginal), false).ConfigureAwait(false);
-                paginas.Add(p.APagina());
- 
-
-            }
-
-            await this.EliminarTransaccion(TransaccionId);
-            try
-            {
-                Directory.Delete(ruta, true);
-            }
-            catch (Exception) { }
-
-            return paginas;
-        }
-
-
-        public async Task<string> ObtieneVolumenIdTransaccion(string TransaccionId)
-        {
-            ElementoTransaccionCarga l = await repo.UnicoAsync(x => x.TransaccionId == TransaccionId);
-            return l?.VolumenId;
-        }
-
 
     }
 

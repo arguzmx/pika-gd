@@ -21,6 +21,7 @@ namespace PIKA.GD.API.Servicios.Caches
 
         public async static Task<Plantilla> ObtienePlantillaPorId(string id, IAppCache cache, IServicioPlantilla servicio)
         {
+
             Plantilla p = await  cache.GetAsync<Plantilla>(ClavePlantilla(id)).ConfigureAwait(false);
             if (p == null)
             {
@@ -31,6 +32,7 @@ namespace PIKA.GD.API.Servicios.Caches
                     .Include(z => z.Propiedades).ThenInclude(z => z.ValoresLista)
                 ).ConfigureAwait(false);
 
+
                 foreach(var i in p.Propiedades)
                 {
                     if(i.TipoDatoId == TipoDato.tList)
@@ -38,6 +40,8 @@ namespace PIKA.GD.API.Servicios.Caches
                         i.ValoresLista = await servicio.ObtenerValores(i.Id).ConfigureAwait(false);
                     }
                 }
+
+                Console.WriteLine($"{System.Text.Json.JsonSerializer.Serialize(p)}");
 
                 if (p != null) cache.Add<Plantilla>(ClavePlantilla(id), p);
             }

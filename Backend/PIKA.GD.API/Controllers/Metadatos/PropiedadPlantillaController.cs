@@ -70,7 +70,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
             entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
             Plantilla p = await servicioPlantilla.UnicoAsync(x => x.Id == entidad.PlantillaId, null, x => x.Include(y => y.Propiedades)).ConfigureAwait(false);
             await repositorioMetadatos.ActualizaDesdePlantilla(p).ConfigureAwait(false);
-            return Ok(CreatedAtAction("GetPropiedadPlantilla", new { id = entidad.Id.Trim() }, entidad).Value);
+            return Ok(CreatedAtAction("GetPropiedadPlantilla", new { id = entidad.Id.Trim() },  entidad ).Value);
         }
 
 

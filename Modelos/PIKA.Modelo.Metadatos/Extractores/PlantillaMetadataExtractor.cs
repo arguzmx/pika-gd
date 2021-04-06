@@ -39,7 +39,8 @@ namespace PIKA.Modelo.Metadatos.Extractores
                 Visible = pp.Visible,
                 ValorDefault = pp.ValorDefault, OrdenarValoresListaPorNombre = pp.OrdenarValoresListaPorNombre,
                 ValidadorTexto = pp.ValidadorTexto, ValidadorNumero = pp.ValidadorNumero,
-                AtributosVistaUI = new List<AtributoVistaUI>()
+                AtributosVistaUI = new List<AtributoVistaUI>(),
+                IdNumericoPlantilla = pp.IdNumericoPlantilla
         };
 
 
@@ -128,7 +129,7 @@ namespace PIKA.Modelo.Metadatos.Extractores
                 foreach (var prop in p.Propiedades)
                 {
                     var pm = prop.ToPropiedad();
-                    Console.WriteLine($"{prop.Nombre} {prop.ValoresLista.Count}");
+                    
                     if (prop.ValoresLista != null
                         && prop.ValoresLista.Count > 0)
                     {

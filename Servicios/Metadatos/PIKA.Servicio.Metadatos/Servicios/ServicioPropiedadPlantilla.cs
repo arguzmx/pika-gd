@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
-using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.Metadatos;
@@ -13,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,13 +24,16 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         private IRepositorioAsync<PropiedadPlantilla> repo;
         private UnidadDeTrabajo<DbContextMetadatos> UDT;
+        private IRepositorioMetadatos repositorioMetadatos;
 
         public ServicioPropiedadPlantilla(
+           IRepositorioMetadatos repositorioMetadatos,
            IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
            ILogger<ServicioPropiedadPlantilla> Logger) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<PropiedadPlantilla>(new QueryComposer<PropiedadPlantilla>());
+            this.repositorioMetadatos = repositorioMetadatos;
         }
 
         public async Task<bool> Existe(Expression<Func<PropiedadPlantilla, bool>> predicado)
@@ -48,12 +48,16 @@ namespace PIKA.Servicio.Metadatos.Servicios
         {
             
 
-
+            
             if (!this.contexto.Plantilla.Where(x => x.Id.Equals(p.PlantillaId)).Any())
                 throw new ExErrorRelacional(p.PlantillaId);
 
-            if (!this.contexto.TipoDato.Where(x => x.Id.Equals(p.TipoDatoId)).Any())
-                throw new ExErrorRelacional(p.TipoDatoId);
+            if(!esActualizar)
+            {
+                if (!this.contexto.TipoDato.Where(x => x.Id.Equals(p.TipoDatoId)).Any())
+                    throw new ExErrorRelacional(p.TipoDatoId);
+            }
+            
 
             if (esActualizar)
             {
@@ -97,11 +101,16 @@ namespace PIKA.Servicio.Metadatos.Servicios
             try
             {
                 entity = ValidaPropiedadPlantilla(entity, false);
+                var elementos = await this.repo.ObtenerAsync(x => x.PlantillaId == entity.PlantillaId);
 
+                entity.IdNumericoPlantilla = elementos.Count == 0 ? 1 : elementos.Max(x => x.IdNumericoPlantilla) + 1;
                 await this.repo.CrearAsync(entity);
 
                 UDT.SaveChanges();
-                return entity;
+
+                await PlantillaActualizada(entity.PlantillaId);
+
+                return entity.Copia();
             }
             catch (Exception ex)
             {
@@ -112,33 +121,75 @@ namespace PIKA.Servicio.Metadatos.Servicios
         }
 
 
-        public async Task ActualizarAsync(PropiedadPlantilla entity)
+        private async Task PlantillaActualizada(string Id)
         {
 
-            PropiedadPlantilla o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
-            if (o == null)
+            var p = await this.UDT.Context.Plantilla.Where(x => x.Id == Id).FirstOrDefaultAsync();
+
+
+            if (p != null)
             {
-                throw new EXNoEncontrado(entity.Id);
+                var tipoDatos = await this.UDT.Context.TipoDato.ToListAsync();
+                p.Propiedades = await this.UDT.Context.PropiedadPlantilla.Where(x => x.PlantillaId == p.Id).ToListAsync();
+                foreach (var prop in p.Propiedades)
+                {
+                    prop.TipoDato = tipoDatos.Where(t => t.Id == prop.TipoDatoId).FirstOrDefault();
+                    
+
+                    if (prop.TipoDatoId == TipoDato.tInt32 ||
+                        prop.TipoDatoId == TipoDato.tInt64 ||
+                        prop.TipoDatoId == TipoDato.tDouble)
+                    {
+                        prop.ValidadorNumero = await this.UDT.Context.ValidadorNumero.Where(x => x.PropiedadId == prop.Id).SingleOrDefaultAsync();
+                    }
+
+                    if (prop.TipoDatoId == TipoDato.tString)
+                    {
+                        prop.ValidadorTexto = await this.UDT.Context.ValidadorTexto.Where(x => x.PropiedadId == prop.Id).SingleOrDefaultAsync();
+                    }
+
+                    if (prop.TipoDatoId == TipoDato.tList)
+                    {
+                        prop.ValoresLista = await this.UDT.Context.ValoresListaPropiedad.Where(x => x.PropiedadId == prop.Id).ToListAsync();
+                    }
+
+                }
+                Console.WriteLine($"ActualizarIndice pre {this.repositorioMetadatos ==null}");
+                await this.repositorioMetadatos.ActualizarIndice(p);
+
             }
 
-            entity = ValidaPropiedadPlantilla(entity, true);
+        }
 
-            o.IndiceOrdenamiento = entity.IndiceOrdenamiento;
-            o.Nombre = entity.Nombre;
-            o.Requerido = entity.Requerido;
-            o.AtributoTabla = entity.AtributoTabla;
-            o.Autogenerado = entity.Autogenerado;
-            o.Buscable = entity.Buscable;
-            o.ControlHTML = entity.ControlHTML;
-            o.EsFiltroJerarquia = entity.EsFiltroJerarquia;
-            o.EsIdClaveExterna = entity.EsIdClaveExterna;
-            o.TipoDatoId = entity.TipoDatoId;
-            o.EsIdRegistro = entity.EsIdRegistro;
+        public async Task ActualizarAsync(PropiedadPlantilla entity)
+        {
+          
+                PropiedadPlantilla o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
-            UDT.Context.Entry(o).State = EntityState.Modified;
-            UDT.SaveChanges();
+                if (o == null)
+                {
+                    throw new EXNoEncontrado(entity.Id);
+                }
 
+                entity = ValidaPropiedadPlantilla(entity, true);
+
+                o.IndiceOrdenamiento = entity.IndiceOrdenamiento;
+                o.Nombre = entity.Nombre;
+                o.Requerido = entity.Requerido;
+                o.AtributoTabla = entity.AtributoTabla;
+                o.Autogenerado = entity.Autogenerado;
+                o.Buscable = entity.Buscable;
+                o.ControlHTML = entity.ControlHTML;
+                o.EsFiltroJerarquia = entity.EsFiltroJerarquia;
+                o.EsIdClaveExterna = entity.EsIdClaveExterna;
+                o.EsIdRegistro = entity.EsIdRegistro;
+
+                UDT.Context.Entry(o).State = EntityState.Modified;
+                UDT.SaveChanges();
+
+
+         
         }
         private Consulta GetDefaultQuery(Consulta query)
         {

@@ -20,9 +20,7 @@ namespace PIKA.Servicio.Contenido.Helpers
 
         public async Task<Elemento> ObtieneElemento(string Id)
         {
-            Elemento el = await repo.UnicoAsync(x => x.Id.Equals(Id, StringComparison.InvariantCultureIgnoreCase),
-                 null, x => x.Include(x => x.Versiones));
-
+            Elemento el = await repo.UnicoAsync(x => x.Id.Equals(Id, StringComparison.InvariantCultureIgnoreCase));
             return el;
         }
 

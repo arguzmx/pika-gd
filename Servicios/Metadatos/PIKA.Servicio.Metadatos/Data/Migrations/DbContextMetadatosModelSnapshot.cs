@@ -71,6 +71,9 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
                     b.Property<bool>("Eliminada")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<bool>("Generada")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
@@ -133,6 +136,9 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
 
                     b.Property<bool>("Etiqueta")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("IdNumericoPlantilla")
+                        .HasColumnType("int");
 
                     b.Property<int>("IndiceOrdenamiento")
                         .HasColumnType("int");

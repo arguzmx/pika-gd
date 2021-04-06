@@ -21,7 +21,8 @@ namespace PIKA.Servicio.Contenido
                 VolumenId = d.VolumenId,
                 CarpetaId = d.CarpetaId,
                 PermisoId = d.PermisoId,
-                Versionado = d.Versionado
+                Versionado = d.Versionado,
+                VersionId = d.VersionId
             };
         }
     }

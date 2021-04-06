@@ -64,6 +64,14 @@ namespace PIKA.Modelo.Metadatos
         public bool Eliminada { get; set; }
 
         /// <summary>
+        /// Determina si la plantilla ha sido gnerada en esl sisteams de gestión de metadatos
+        /// </summary>
+        [Prop(Required: false, OrderIndex: 1000, ShowInTable: false, Searchable: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+        public bool Generada { get; set; }
+
+
+        /// <summary>
         /// Identificador único del almacen de datos
         /// </summary>
         public string AlmacenDatosId { get; set; }

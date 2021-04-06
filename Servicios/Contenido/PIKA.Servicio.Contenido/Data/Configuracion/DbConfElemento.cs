@@ -27,11 +27,10 @@ namespace PIKA.Servicio.Contenido.Data.Configuracion
             builder.Property(x => x.CarpetaId).IsRequired(false).HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.PermisoId).HasMaxLength(LongitudDatos.GUID).IsRequired(false);
             builder.Property(x => x.Versionado).IsRequired().HasDefaultValue(false);
+            builder.Property(x => x.VersionId).IsRequired();
 
             builder.HasOne(x => x.Permiso).WithMany(y => y.Elementos).HasForeignKey(z => z.PermisoId);
             builder.HasOne(x => x.Volumen).WithMany(y => y.Elementos).HasForeignKey(z => z.VolumenId);
-            builder.HasMany(x => x.Versiones).WithOne(y => y.Elemento).HasForeignKey(z => z.ElementoId).OnDelete( DeleteBehavior.Restrict);
-            builder.HasMany(x => x.Partes).WithOne(y => y.Elemento).HasForeignKey(z => z.ElementoId).OnDelete(DeleteBehavior.Restrict);
         }
 
 

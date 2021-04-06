@@ -187,6 +187,15 @@ namespace PIKA.Modelo.Metadatos
 
         public bool Etiqueta { get; set; }
 
+
+        /// <summary>
+        /// Establece un identificador numérico unico para cada propiedad en una plantilla
+        /// sirve para recortar el Id para ElasticSearch
+        /// </summary>
+        [Prop(Required: false, OrderIndex: 1000, ShowInTable: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+        public int IdNumericoPlantilla { get; set; }
+
         /// <summary>
         /// Especifica si al propiedad debe inferirse del contexto de ejecución
         /// </summary>

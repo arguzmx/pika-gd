@@ -47,12 +47,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<Plantilla> CrearAsync(Plantilla entity, CancellationToken cancellationToken = default)
         {
-
-            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)
-            && x.Eliminada ==  false & x.OrigenId == entity.OrigenId && x.TipoOrigenId == entity.TipoOrigenId ))
-            {
-                throw new ExElementoExistente(entity.Nombre);
-            }
+            Console.WriteLine("**************");
+            //if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)
+            //&& x.Eliminada ==  false & x.OrigenId == entity.OrigenId && x.TipoOrigenId == entity.TipoOrigenId ))
+            //{
+            //    throw new ExElementoExistente(entity.Nombre);
+            //}
 
             try
             {
@@ -63,12 +63,13 @@ namespace PIKA.Servicio.Metadatos.Servicios
                 UDT.SaveChanges();
             }
 
-            catch (DbUpdateException)
+            //catch (DbUpdateException)
+            //{
+            //    throw new ExErrorRelacional(entity.AlmacenDatosId);
+            //}
+            catch (Exception ex)
             {
-                throw new ExErrorRelacional(entity.AlmacenDatosId);
-            }
-            catch (Exception)
-            {
+                Console.WriteLine(ex.ToString());
                 throw;
             }
         

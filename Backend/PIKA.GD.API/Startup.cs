@@ -95,8 +95,12 @@ namespace PIKA.GD.API
             // ergistra la instancia del servicio de metadatos en base al tipo 
             services.RegistraServicioDeMetadatos(this.Configuration);
 
+
             //Registra el servicio e almacenamiento de contenido elestic search
-            services.RegistraServicioContenido(this.Configuration);
+            services.RegistraServicioDeContenido(this.Configuration);
+
+            //Registra el servicio de bsuqeuda de contenido de elastic search
+            services.RegistraServicioBusquedaContenido(this.Configuration);
 
             services.Configure<ConfiguracionServidor>(o => this.Configuration.GetSection("ConfiguracionServidor").Bind(o));
             services.AddSingleton(typeof(IServicioCache), typeof(CacheMemoria));
@@ -126,9 +130,6 @@ namespace PIKA.GD.API
             services.AddDbContext<DbContextContacto>(options =>
             options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
-            services.AddDbContext<DbContextContenido>(options =>
-            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
-
             services.AddDbContext<DbContextReportes>(options =>
             options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
@@ -141,6 +142,8 @@ namespace PIKA.GD.API
             services.AddDbContext<DbContextMetadatos>(options =>
             options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
+            services.AddDbContext<DbContextContenido>(options =>
+            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 #endif
 
             //registra los ensamblados validables

@@ -14,7 +14,6 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using PIKA.Modelo.Metadatos.Instancias;
 using PIKA.Infraestructura.Comun.Excepciones;
-using Microsoft.EntityFrameworkCore;
 
 namespace PIKA.Servicio.Metadatos.ElasticSearch
 {
@@ -64,8 +63,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         #region métodos comunes
         public async Task<string> CrearIndice(Plantilla plantilla)
         {
-
-            if(!await ExisteIndice(plantilla.Id))
+            if (!await ExisteIndice(plantilla.Id))
             {
                 var body = ES.PostData.String(plantilla.ObtieneJSONPlantilla());
                 var response = await cliente.LowLevel.Indices.CreateAsync<CreateIndexResponse>(plantilla.Id, body);
@@ -93,12 +91,17 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             Plantilla plantilla, RequestValoresPlantilla valores, string nombreRelacion = "")
         {
 
+            Console.WriteLine("Vinculos");
             if (esLista)
             {
                 VinculosObjetoPlantilla v = await ObtieneVinculos(valores.Tipo, valores.Id);
-                if(v == null || !v.Listas.Any(x=>x.ListaId == ListaId)) throw new EXNoEncontrado(ListaId);
+
+                Console.WriteLine($"{v==null}");
+
+                if (v == null || !v.Listas.Any(x=>x.ListaId == ListaId)) throw new EXNoEncontrado(ListaId);
             }
 
+            
             DocumentoPlantilla valoresplantilla = new DocumentoPlantilla()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -112,11 +115,25 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 EsLista = esLista,
                 ListaId = ListaId
             };
-            Console.WriteLine($"{valoresplantilla.ObtieneJSONValores(plantilla)}");
+
+            Console.WriteLine($"Passed");
+            try
+            {
+                Console.WriteLine($"{valoresplantilla.ObtieneJSONValores(plantilla)}");
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine($"{ex}");
+            }
+            
+            
             var body = ES.PostData.String(valoresplantilla.ObtieneJSONValores(plantilla));
+
+            Console.WriteLine($"Passed 2");
             var response = await cliente.LowLevel.CreateAsync<CreateResponse>(plantilla.Id, valoresplantilla.Id, body);
 
-
+            Console.WriteLine($"Passed 3");
             if (response.ApiCall.Success)
             {
                 if (!esLista)
@@ -126,7 +143,11 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 }
 
                 return valoresplantilla;
-            } 
+            }  else
+            {
+                Console.WriteLine($"{response.ApiCall.OriginalException.Message}");
+                Console.WriteLine($"{response.ServerError.Error}");
+            }
 
             return null;
         }
@@ -329,9 +350,45 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
 
 
-        public Task<bool> ActualizarIndice(Plantilla plantilla)
+        public async Task<bool> ActualizarIndice(Plantilla plantilla)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("ActualizarIndice");
+            var r = new GetMappingRequest( Indices.Index(plantilla.Id));
+            var result = await cliente.Indices.GetMappingAsync(r);
+
+            if (result.IsValid)
+            {
+                var indices = result.Indices[plantilla.Id].Mappings.Properties.ToList();
+                List<int> ids = new List<int>();
+                plantilla.Propiedades.ToList().ForEach(p =>
+                {
+                    if(!indices.Where(x=>x.Key.Name == $"P{p.IdNumericoPlantilla}").Any())
+                    {
+                        ids.Add(p.IdNumericoPlantilla);
+                    }
+                }
+                    );
+
+                if (ids.Count > 0)
+                {
+
+                    var body = ES.PostData.String(plantilla.ObtieneJSONActualizacionPlantilla(ids));
+                    var response = await cliente.LowLevel.Indices.PutMappingAsync<PutMappingResponse>(plantilla.Id, body);
+                    if (!response.ApiCall.Success)
+                    {
+                        return false;
+
+                    }                     
+                }
+
+            } else
+            {
+                Console.WriteLine(result.ApiCall.OriginalException.ToString());
+                return false;
+            }
+            
+
+            return true;
         }
 
 

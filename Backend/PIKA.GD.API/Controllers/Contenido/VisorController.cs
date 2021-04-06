@@ -12,7 +12,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Contenido;
+using PIKA.Modelo.Contenido.Extensiones;
 using PIKA.Modelo.Contenido.ui;
+using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Contenido.Interfaces;
 
 namespace PIKA.GD.API.Controllers.Contenido
@@ -25,24 +27,47 @@ namespace PIKA.GD.API.Controllers.Contenido
     {
         private ILogger<VisorController> logger;
         private IServicioVisor servicioVisor;
+        private IRepoContenidoElasticSearch repoContenido;
         public VisorController(
+            IRepoContenidoElasticSearch repoContenido,
             ILogger<VisorController> logger,
             IServicioVisor servicioVisor)
         {
             this.logger = logger;
             this.servicioVisor = servicioVisor;
+            this.repoContenido = repoContenido;
         }
 
         [HttpGet("documento/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Documento>> GetDocumento(string Id)
         {
-            Documento d = await servicioVisor.ObtieneDocumento(Id)
+            try
+            {
+                Documento d = await servicioVisor.ObtieneDocumento(Id)
                 .ConfigureAwait(false);
 
-            if (d == null) return NotFound(Id);
+                if (d == null) return NotFound(Id);
 
-            return Ok(d);
+                this.logger.LogError(Id);
+                var v = await repoContenido.ObtieneVersion(d.Id).ConfigureAwait(false);
+
+                if(v!=null && v.Partes != null)
+                {
+                    foreach (var p in v.Partes)
+                    {
+                        d.Paginas.Add(p.APagina($"{p.Indice}"));
+                    }
+                }
+
+                return Ok(d);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex.ToString());
+                throw;
+            }
+            
         }
 
     
