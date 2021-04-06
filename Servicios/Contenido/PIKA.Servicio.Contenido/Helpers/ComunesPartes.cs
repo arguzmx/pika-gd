@@ -35,6 +35,13 @@ namespace PIKA.Servicio.Contenido.Helpers
         }
 
 
+        public async Task ActualizaTamanoVolumen(string VolId, long CuentaBytes, bool incremento=true)
+        {
+            ComunesVolumen hvol = new ComunesVolumen(this.UDT);
+            if (!incremento) CuentaBytes *= -1;
+            await hvol.IncrementaTamanoVolumen(VolId, CuentaBytes);
+        }
+
         /// <summary>
         /// Crea una lista de partes para la carga de contenidos 
         /// y actualiza las entidades dependientes
@@ -78,12 +85,10 @@ namespace PIKA.Servicio.Contenido.Helpers
                     p.Indice = indice;
                     p.ConsecutivoVolumen = 0;
                     p.VolumenId = version.VolumenId;
-                    await repo.CrearAsync(p);
                 }
-                UDT.SaveChanges();
 
                 await hvol.IncrementaTamanoVolumen(volumen.Id, grupoPartes.Sum(x => x.LongitudBytes));
-                await hver.RecalcularContenido(version.Id);
+
                 resulatdos.AddRange(grupoPartes);
 
             }

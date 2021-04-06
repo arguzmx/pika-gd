@@ -56,6 +56,7 @@
     <ProjectReference Include="..\..\..\Infraestructura\RepositorioEntidades\RepositorioEntidades.csproj" />
     <ProjectReference Include="..\..\..\Modelos\PIKA.Constantes.Aplicaciones\PIKA.Constantes.Aplicaciones.csproj" />
     <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.GestorDocumental\PIKA.Modelo.GestorDocumental.csproj" />
+    <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.Metadatos\PIKA.Modelo.Metadatos.csproj" />
     <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.Reportes\PIKA.Modelo.Reportes.csproj" />
     <ProjectReference Include="..\..\Reportes\PIKA.Servicio.Reportes\PIKA.Servicio.Reportes.csproj" />
   </ItemGroup>

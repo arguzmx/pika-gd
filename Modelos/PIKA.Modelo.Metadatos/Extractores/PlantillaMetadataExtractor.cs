@@ -39,7 +39,8 @@ namespace PIKA.Modelo.Metadatos.Extractores
                 Visible = pp.Visible,
                 ValorDefault = pp.ValorDefault, OrdenarValoresListaPorNombre = pp.OrdenarValoresListaPorNombre,
                 ValidadorTexto = pp.ValidadorTexto, ValidadorNumero = pp.ValidadorNumero,
-                AtributosVistaUI = new List<AtributoVistaUI>()
+                AtributosVistaUI = new List<AtributoVistaUI>(),
+                IdNumericoPlantilla = pp.IdNumericoPlantilla
         };
 
 
@@ -115,21 +116,49 @@ namespace PIKA.Modelo.Metadatos.Extractores
 
         public MetadataInfo Obtener(Plantilla p)
         {
-
-            MetadataInfo m = new MetadataInfo()
+            try
             {
-                Tipo = p.Id,
-                FullName = p.Nombre,
-                EntidadesVinculadas = new List<EntidadVinculada>(),
-                CatalogosVinculados = new List<CatalogoVinculado>()
-            };
+                MetadataInfo m = new MetadataInfo()
+                {
+                    Tipo = p.Id,
+                    FullName = p.Nombre,
+                    EntidadesVinculadas = new List<EntidadVinculada>(),
+                    CatalogosVinculados = new List<CatalogoVinculado>()
+                };
 
-            foreach( var prop in p.Propiedades)
+                foreach (var prop in p.Propiedades)
+                {
+                    var pm = prop.ToPropiedad();
+                    
+                    if (prop.ValoresLista != null
+                        && prop.ValoresLista.Count > 0)
+                    {
+                        pm.AtributoLista = new AtributoLista();
+                        pm.AtributoLista.DatosRemotos = false;
+                        foreach (var l in prop.ValoresLista)
+                        {
+                            pm.AtributoLista.Valores.Add(new ValorLista()
+                            {
+                                Id = l.Id,
+                                Indice = l.Indice,
+                                Texto = l.Texto
+                            });
+
+                        }
+                    }
+
+                    m.Propiedades.Add(pm);
+                }
+
+                return m;
+            }
+            catch (Exception ex)
             {
-                m.Propiedades.Add(prop.ToPropiedad());
+                Console.WriteLine(ex.ToString());
+                throw;
             }
 
-            return m;
+
 
         }
     }

@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using PIKA.Infraestructura.Comun;
+using PIKA.ServicioBusqueda.Contenido;
 using RepositorioEntidades;
 using Serilog;
 using Serilog.Events;
@@ -45,6 +47,8 @@ namespace PIKA.GD.API
                 {
                     InicializarAplication(config, environment, demodb);
                     await InicializarAplicationAutoConfigurable(environment, host, demodb).ConfigureAwait(false);
+                    Console.WriteLine("--------------------------------------");
+                    InicializaEslasticSearch(config, host);
                 }
                 else
                 {
@@ -81,6 +85,13 @@ namespace PIKA.GD.API
             .Build();
 
 
+        private static void InicializaEslasticSearch(IConfiguration configuracion, IWebHost host)
+        {
+            var IlogFactory = host.Services.GetRequiredService<ILoggerFactory>();
+            ServicioBusquedaContenido s = new ServicioBusquedaContenido(configuracion, IlogFactory);
+            s.Inicializar("", false); ;
+            Console.WriteLine("..................................");
+        }
 
         private static void InicializarAplication(IConfiguration configuracion, IWebHostEnvironment env, bool demodb)
         {

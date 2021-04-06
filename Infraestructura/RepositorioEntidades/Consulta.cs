@@ -13,6 +13,7 @@ namespace RepositorioEntidades
         }
 
         public List<FiltroConsulta> Filtros { get; set; }
+        
 
     }
 

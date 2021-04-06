@@ -37,6 +37,7 @@ namespace PIKA.Servicio.Metadatos.Data.Configuracion
             builder.Property(x=>x.Requerido).IsRequired();
             builder.Property(x=>x.Autogenerado).IsRequired();
             builder.Property(x=>x.EsIndice).IsRequired();
+            builder.Property(x => x.IdNumericoPlantilla).IsRequired();
             builder.Property(x=>x.ControlHTML).HasMaxLength(LongitudDatos.ControlHTML).IsRequired();
 
             builder.Ignore(x => x.AtributoLista);

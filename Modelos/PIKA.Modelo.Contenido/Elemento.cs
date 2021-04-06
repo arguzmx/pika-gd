@@ -13,8 +13,9 @@ using System.Xml.Serialization;
 namespace PIKA.Modelo.Contenido
 {
     [Entidad(PaginadoRelacional: false, EliminarLogico: true,
-TokenApp: ConstantesAppContenido.APP_ID, TokenMod: ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO)]
+    TokenApp: ConstantesAppContenido.APP_ID, TokenMod: ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO)]
     [LinkView(Titulo: "visor", Icono: "preview", Vista: "visorcontenido")]
+    [LinkView(Titulo: "buscarcontenido", Icono: "manage_search", Vista: "buscarcontenido", RequireSeleccion: false)]
     public class Elemento : Entidad<string>, IEntidadRegistroCreacion, 
         IEntidadEliminada, IEntidadNombrada
     {
@@ -110,28 +111,26 @@ TokenApp: ConstantesAppContenido.APP_ID, TokenMod: ConstantesAppContenido.MODULO
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public bool Versionado { get; set; }
 
-        [NotMapped]
-        [Prop(Required: false, isId: false, Visible: false, ShowInTable: false, OrderIndex: 1010)]
-        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+
+        [Prop(Required: false, isId: false, Visible: false, ToggleInTable: false, OrderIndex: 1010)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.update)]
         [LinkViewParameter(Vista: "visorcontenido")]
         public string VersionId { get; set; }
 
 
-        [XmlIgnore]
-        [JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public Permiso Permiso { get; set; }
-        [XmlIgnore]
-        [JsonIgnore]
+        
+        [JsonIgnore, XmlIgnore]
         public virtual Volumen Volumen { get; set; }
-        [XmlIgnore]
-        [JsonIgnore]
+
+        [JsonIgnore, XmlIgnore, NotMapped]
         public virtual ICollection<Version> Versiones { get; set; }
-        [XmlIgnore]
-        [JsonIgnore]
+        
+        [JsonIgnore, XmlIgnore, NotMapped]
         public virtual ICollection<Parte> Partes { get; set; }
 
-        [XmlIgnore]
-        [JsonIgnore]
+        [JsonIgnore, XmlIgnore]
         public PuntoMontaje PuntoMontaje { get; set; }
     }
 }

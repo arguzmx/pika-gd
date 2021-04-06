@@ -8,7 +8,7 @@ namespace PIKA.Modelo.Contenido.Extensiones
 {
     public static class ExtensionesVisor
     {
-        public static Pagina APagina(this Parte parte)
+        public static Pagina APagina(this Parte parte, string Id)
         {
             Pagina p = new Pagina()
             {
@@ -16,7 +16,7 @@ namespace PIKA.Modelo.Contenido.Extensiones
                 Ancho = 0,
                 EsImagen = parte.EsImagen,
                 Extension = parte.Extension,
-                Id = parte.Id,
+                Id = Id, 
                 Indice = parte.Indice,
                 Nombre = parte.NombreOriginal,
                 Rotacion = 0,

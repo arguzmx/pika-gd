@@ -11,6 +11,7 @@ using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
 using PIKA.Modelo.Contenido;
 using PIKA.Modelo.Metadatos;
+using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Contenido.Interfaces;
 using RepositorioEntidades;
 
@@ -26,13 +27,18 @@ namespace PIKA.GD.API.Controllers.Contenido
         private ILogger<ElementoController> logger;
         private IServicioElemento servicioEntidad;
         private IProveedorMetadatos<Elemento> metadataProvider;
-        public ElementoController(ILogger<ElementoController> logger,
+        private IRepoContenidoElasticSearch repoContenido;
+
+        public ElementoController(
+            IRepoContenidoElasticSearch repoContenido,
+            ILogger<ElementoController> logger,
             IProveedorMetadatos<Elemento> metadataProvider,
             IServicioElemento servicioEntidad)
         {
             this.logger = logger;
             this.servicioEntidad = servicioEntidad;
             this.metadataProvider = metadataProvider;
+            this.repoContenido = repoContenido;
         }
 
 
@@ -61,7 +67,26 @@ namespace PIKA.GD.API.Controllers.Contenido
         {
             entidad.CreadorId = this.UsuarioId;
                entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
+
+            Console.WriteLine($"----{entidad.VersionId}");
+            // Sustituir esta sección por el almacenamiento en elasticsearc
+            Modelo.Contenido.Version v = new Modelo.Contenido.Version()
+            {
+                Id = entidad.VersionId,
+                Activa = true,
+                CreadorId = entidad.CreadorId,
+                ElementoId = entidad.Id,
+                Eliminada = false,
+                FechaCreacion = entidad.FechaCreacion,
+                VolumenId = entidad.VolumenId,
+                ConteoPartes = 0,
+                MaxIndicePartes = 0,
+                TamanoBytes = 0
+            };
+
+            var id = await this.repoContenido.CreaVersion(v).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetElemento", new { id = entidad.Id }, entidad).Value);
+
         }
 
         /// <summary>
@@ -103,8 +128,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             var data = await servicioEntidad.ObtenerPaginadoAsync(
-                 Query: query,
-                 include:  x=>x.Include(y=>y.Versiones) )
+                 Query: query)
                  .ConfigureAwait(false);
 
             return Ok(data);

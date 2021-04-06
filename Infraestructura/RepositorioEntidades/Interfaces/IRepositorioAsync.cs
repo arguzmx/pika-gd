@@ -39,6 +39,8 @@ namespace RepositorioEntidades
            bool disableTracking = true,
            CancellationToken cancellationToken = default(CancellationToken));
 
+        Task<IPaginado<T>> ObtenerConteoAsync(Consulta Query,
+            CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IPaginado<T>> ObtenerPaginadoAsync(Expression<Func<T, bool>> predicate , Consulta Query,
                 Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,

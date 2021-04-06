@@ -3,7 +3,6 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,10 +13,10 @@ using PIKA.Infrastructure.EventBus.Abstractions;
 using PIKA.Infrastructure.EventBusRabbitMQ;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Contenido;
+using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Contenido.Servicios;
-using PIKA.Servicio.Metadatos;
 using PIKA.Servicio.Metadatos.ElasticSearch;
-using PIKA.Servicio.Metadatos.EventosBus;
+using PIKA.ServicioBusqueda.Contenido;
 using RabbitMQ.Client;
 using Serilog;
 using System;
@@ -116,6 +115,35 @@ namespace PIKA.GD.API
         }
 
 
+        public static void RegistraServicioDeContenido(this IServiceCollection services, IConfiguration Configuration)
+        {
+            ConfiguracionRepoMetadatos repometadtosconf = new ConfiguracionRepoMetadatos();
+            Configuration.GetSection("Contenido").Bind(repometadtosconf);
+            if (repometadtosconf.Tipo == ConfiguracionRepoMetadatos.ELASTICSEARCH)
+            {
+                Log.Logger.Information("Estableciendo el repositorio de contenido a {x}", "Elasticsearch");
+                services.AddTransient<IRepoContenidoElasticSearch>(provider => {
+                    var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
+                    return new RepoContenidoElasticSearch(Configuration, loggerFactory);
+                });
+            }
+        }
+
+
+        public static void RegistraServicioBusquedaContenido(this IServiceCollection services, IConfiguration Configuration)
+        {
+            ConfiguracionRepoMetadatos repometadtosconf = new ConfiguracionRepoMetadatos();
+            Configuration.GetSection("BusquedaContenido").Bind(repometadtosconf);
+            if (repometadtosconf.Tipo == ConfiguracionRepoMetadatos.ELASTICSEARCH)
+            {
+                Log.Logger.Information("Estableciendo el repositorio de búsqueda de contenido a {x}", "Elasticsearch");
+                services.AddTransient<IServicioBusquedaContenido>(provider => {
+                    var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
+                    return new ServicioBusquedaContenido(Configuration, loggerFactory);
+                });
+            }
+        }
+
         public static void RegistraServicioDeMetadatos(this IServiceCollection services, IConfiguration Configuration)
         {
             ConfiguracionRepoMetadatos repometadtosconf = new ConfiguracionRepoMetadatos();
@@ -128,19 +156,6 @@ namespace PIKA.GD.API
                     var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
                     return new RepoMetadatosElasticSearch(Configuration, loggerFactory);
                 });
-
-            }
-        }
-
-        public static void RegistraServicioContenido(this IServiceCollection services, IConfiguration Configuration)
-        {
-            ConfiguracionRepoMetadatos repometadtosconf = new ConfiguracionRepoMetadatos();
-            Configuration.GetSection("RepositorioContenido").Bind(repometadtosconf);
-            if (repometadtosconf.Tipo == ConfiguracionRepoMetadatos.ELASTICSEARCH)
-            {
-
-                Log.Logger.Information("Estableciendo el repositorio de contenido a {x}", "Elasticsearch");
-                services.AddTransient<IRepositorioContenidoElasticSearch, ServicioContenidoElasticSearch>();
 
             }
         }

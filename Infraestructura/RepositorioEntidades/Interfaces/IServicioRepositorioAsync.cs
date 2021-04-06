@@ -32,9 +32,10 @@ namespace RepositorioEntidades
             CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IPaginado<T>> ObtenerPaginadoAsync(Consulta Query,
-    Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
-   bool disableTracking = true,
-   CancellationToken cancellationToken = default(CancellationToken));
+                Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+                bool disableTracking = true,
+                CancellationToken cancellationToken = default(CancellationToken));
+
 
         Task<T> CrearAsync(T entity, CancellationToken cancellationToken = default(CancellationToken));
 

@@ -67,7 +67,9 @@
     <ProjectReference Include="..\..\Modelos\PIKA.Modelo.Organizaciion\PIKA.Modelo.Organizacion.csproj" />
     <ProjectReference Include="..\..\Modelos\PIKA.Modelo.Seguridad\PIKA.Modelo.Seguridad.csproj" />
     <ProjectReference Include="..\..\Servicios\Aplicacion\PIKA.Servicio.Aplicacion\PIKA.Servicio.AplicacionPlugin.csproj" />
+    <ProjectReference Include="..\..\Servicios\Busqueda\PIKA.ServicioBusqueda.Contenido\PIKA.ServicioBusqueda.Contenido.csproj" />
     <ProjectReference Include="..\..\Servicios\Contacto\PIKA.Servicio.Contacto\PIKA.Servicio.Contacto.csproj" />
+    <ProjectReference Include="..\..\Servicios\Contenido\PIKA.Servicio.Contenido.ElasticSearch\PIKA.Servicio.Contenido.ElasticSearch.csproj" />
     <ProjectReference Include="..\..\Servicios\Contenido\PIKA.Servicio.Contenido\PIKA.Servicio.Contenido.csproj" />
     <ProjectReference Include="..\..\Servicios\GestionDocumental\PIKA.Servicio.GestionDocumental\PIKA.Servicio.GestionDocumental.csproj" />
     <ProjectReference Include="..\..\Servicios\Metadatos\PIKA.Servicio.Metadatos.ElasticSearch\PIKA.Servicio.Metadatos.ElasticSearch.csproj" />

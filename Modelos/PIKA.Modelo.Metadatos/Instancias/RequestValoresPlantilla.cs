@@ -22,7 +22,7 @@ namespace PIKA.Modelo.Metadatos
         public string Id { get; set; }
 
         /// <summary>
-        /// Elemento clave de filtrado para la plantilla
+        /// Elemento clave de filtrado para la plantilla, por ejemplo el nombre del volumen de datos
         /// </summary>
         public string Filtro { get; set; }
 

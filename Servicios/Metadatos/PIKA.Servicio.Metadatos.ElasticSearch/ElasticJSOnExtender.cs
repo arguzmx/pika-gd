@@ -94,6 +94,9 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 case TipoDato.tList:
                     return true;
 
+                case TipoDato.tIndexedString:
+                    return true; 
+
                 case TipoDato.tString:
                     if (p.ValidadorTexto! != null)
                     {
@@ -141,19 +144,19 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                         break;
                 }
 
-                if (valor!=null) sb.Append(baseProp.Replace("%N%", item.Id).Replace("%V%", $"{Delimitador}{valor.Valor}{Delimitador}"));
+                if (valor!=null) sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%V%", $"{Delimitador}{valor.Valor}{Delimitador}"));
             }
 
             if (sb.Length > 0)
             {
-                sb.Append($"'Id': '{valores.Id}',");
-                sb.Append($"'OrigenId': '{valores.OrigenId}',");
-                sb.Append($"'TipoOrigenId': '{valores.TipoOrigenId}',");
-                sb.Append($"'TipoDatoId': '{valores.TipoDatoId}',");
-                sb.Append($"'DatoId': '{valores.DatoId}',");
-                sb.Append($"'IndiceFiltrado': '{valores.IndiceFiltrado}',");
-                sb.Append($"'EsLista': '{(valores.EsLista ? "true": "false")}',");
-                sb.Append($"'ListaId': '{ (string.IsNullOrEmpty(valores.ListaId) ? "" : valores.ListaId)}',");
+                sb.Append($"'ID': '{valores.Id}',");
+                sb.Append($"'OID': '{valores.OrigenId}',");
+                sb.Append($"'TOID': '{valores.TipoOrigenId}',");
+                sb.Append($"'TDID': '{valores.TipoDatoId}',");
+                sb.Append($"'DID': '{valores.DatoId}',");
+                sb.Append($"'IF': '{valores.IndiceFiltrado}',");
+                sb.Append($"'L': '{(valores.EsLista ? "true": "false")}',");
+                sb.Append($"'LID': '{ (string.IsNullOrEmpty(valores.ListaId) ? "" : valores.ListaId)}',");
 
             }
             string campos = sb.ToString().TrimEnd(',');
@@ -179,41 +182,41 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 {
 
                     case TipoDato.tBinaryData:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "binary"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "binary"));
                         break;
 
                     case TipoDato.tBoolean:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "boolean"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "boolean"));
                         break;
 
                     case TipoDato.tDouble:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "double"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "double"));
                         break;
 
                     case TipoDato.tInt32:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "integer"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "integer"));
                         break;
 
                     case TipoDato.tInt64:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "long"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "long"));
                         break;
 
                     case TipoDato.tList:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "keyword"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "keyword"));
                         break;
 
                     case TipoDato.tString:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "wildcard"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "wildcard"));
                         break;
 
                     case TipoDato.tIndexedString:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "text"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "text"));
                         break;
 
                     case TipoDato.tTime:
                     case TipoDato.tDate:
                     case TipoDato.tDateTime:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "date"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "date"));
 
                         break;
 
@@ -232,6 +235,79 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
         }
 
+        public static string ObtieneJSONActualizacionPlantilla(this Plantilla plantilla, List<int> indices)
+        {
+            string json = "{ 'properties': { %C% } }";
+            string baseProp = @"'%N%': {'type': '%T%'},";
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach(int id in indices)
+            {
+                var item = plantilla.Propiedades.Where(x => x.IdNumericoPlantilla == id).FirstOrDefault();
+                if (item != null)
+                {
+                    switch (item.TipoDatoId)
+                    {
+
+                        case TipoDato.tBinaryData:
+                            sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "binary"));
+                            break;
+
+                        case TipoDato.tBoolean:
+                            sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "boolean"));
+                            break;
+
+                        case TipoDato.tDouble:
+                            sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "double"));
+                            break;
+
+                        case TipoDato.tInt32:
+                            sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "integer"));
+                            break;
+
+                        case TipoDato.tInt64:
+                            sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "long"));
+                            break;
+
+                        case TipoDato.tList:
+                            sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "keyword"));
+                            break;
+
+                        case TipoDato.tString:
+                            sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "wildcard"));
+
+                            break;
+
+                        case TipoDato.tIndexedString:
+                            sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "text"));
+                            break;
+
+                        case TipoDato.tTime:
+                        case TipoDato.tDate:
+                        case TipoDato.tDateTime:
+                            sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "date"));
+
+                            break;
+
+                    }
+                }
+            }
+
+
+
+
+            string campos = sb.ToString().TrimEnd(',');
+
+            if (campos != "")
+            {
+                Console.WriteLine(json.Replace("%C%", campos).Replace('\'', '\"'));
+                return json.Replace("%C%", campos).Replace('\'', '\"');
+            }
+
+            return "";
+        }
+
 
         public static string ObtieneJSONPlantilla(this Plantilla plantilla)
         {
@@ -241,13 +317,13 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             StringBuilder sb = new StringBuilder();
 
             // Propiedades fija de los metadtaos
-            sb.Append(baseProp.Replace("%N%", "OrigenId").Replace("%T%", "keyword"));
-            sb.Append(baseProp.Replace("%N%", "TipoOrigenId").Replace("%T%", "keyword"));
-            sb.Append(baseProp.Replace("%N%", "TipoDatoId").Replace("%T%", "keyword"));
-            sb.Append(baseProp.Replace("%N%", "DatoId").Replace("%T%", "keyword"));
-            sb.Append(baseProp.Replace("%N%", "IndiceFiltrado").Replace("%T%", "keyword"));
-            sb.Append(baseProp.Replace("%N%", "EsLista").Replace("%T%", "boolean"));
-            sb.Append(baseProp.Replace("%N%", "ListaId").Replace("%T%", "keyword"));
+            sb.Append(baseProp.Replace("%N%", "OID").Replace("%T%", "keyword"));
+            sb.Append(baseProp.Replace("%N%", "TOID").Replace("%T%", "keyword"));
+            sb.Append(baseProp.Replace("%N%", "TDID").Replace("%T%", "keyword"));
+            sb.Append(baseProp.Replace("%N%", "DID").Replace("%T%", "keyword"));
+            sb.Append(baseProp.Replace("%N%", "IF").Replace("%T%", "keyword"));
+            sb.Append(baseProp.Replace("%N%", "L").Replace("%T%", "boolean"));
+            sb.Append(baseProp.Replace("%N%", "LID").Replace("%T%", "keyword"));
 
             
             foreach (var item in plantilla.Propiedades)
@@ -255,42 +331,42 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 switch (item.TipoDatoId) {
                     
                     case TipoDato.tBinaryData:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "binary"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "binary"));
                         break;
 
                     case TipoDato.tBoolean:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "boolean"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "boolean"));
                         break;
 
                     case TipoDato.tDouble:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "double"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "double"));
                         break;
 
                     case TipoDato.tInt32:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "integer"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "integer"));
                         break;
 
                     case TipoDato.tInt64:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "long"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "long"));
                         break;
 
                     case TipoDato.tList:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "keyword"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "keyword"));
                         break;
 
                     case TipoDato.tString:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "wildcard"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "wildcard"));
                         
                         break;
 
                     case TipoDato.tIndexedString:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "text"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "text"));
                         break;
 
                     case TipoDato.tTime:
                     case TipoDato.tDate:
                     case TipoDato.tDateTime:
-                        sb.Append(baseProp.Replace("%N%", item.Id).Replace("%T%", "date"));
+                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "date"));
 
                         break;
 
@@ -315,12 +391,12 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             dynamic d = datos._source;
             DocumentoPlantilla v = new DocumentoPlantilla
             {
-                DatoId = d["DatoId"],
-                Id = d["Id"],
-                IndiceFiltrado = d["IndiceFiltrado"],
-                OrigenId = d["OrigenId"],
-                TipoDatoId = d["TipoDatoId"],
-                TipoOrigenId = d["TipoOrigenId"],
+                DatoId = d["DID"],
+                Id = d["ID"],
+                IndiceFiltrado = d["IF"],
+                OrigenId = d["OID"],
+                TipoDatoId = d["TDID"],
+                TipoOrigenId = d["TOID"],
                 Valores = new List<ValorPropiedad>()
             };
 
@@ -336,7 +412,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                     }
                     else
                     {
-                        v.Valores.Add(new Modelo.Metadatos.ValorPropiedad() { PropiedadId = campo.Id, Valor = "" });
+                        v.Valores.Add(new ValorPropiedad() { PropiedadId = campo.Id, Valor = "" });
                     }
                 }
             }
@@ -351,37 +427,38 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 switch (p.TipoDatoId)
                 {
                     case TipoDato.tBoolean:
-                        bool b = (bool)data[p.Id];
+                        bool b = (bool)data[$"P{p.IdNumericoPlantilla}"];
                         return new ValorPropiedad() { PropiedadId = p.Id, Valor = b? "true": "false" };
                         
 
                     case TipoDato.tTime:
                     case TipoDato.tDateTime:
                     case TipoDato.tDate:
-                        DateTime d = (DateTime)data[p.Id];
+                        DateTime d = (DateTime)data[$"P{p.IdNumericoPlantilla}"];
                         return new ValorPropiedad() { PropiedadId = p.Id, Valor = d.ToString("o") };
 
                     case TipoDato.tDouble:
-                        float dec = (float)data[p.Id];
+                        float dec = (float)data[$"P{p.IdNumericoPlantilla}"];
                         return new ValorPropiedad() { PropiedadId = p.Id, Valor = dec.ToString() };
 
 
                     case TipoDato.tInt32:
-                        int i = (int)data[p.Id];
+                        int i = (int)data[$"P{p.IdNumericoPlantilla}"];
                         return new ValorPropiedad() { PropiedadId = p.Id, Valor = i.ToString() };
 
 
 
                     case TipoDato.tInt64:
-                        long i64 = (long)data[p.Id];
+                        long i64 = (long)data[$"P{p.IdNumericoPlantilla}"];
                         return new ValorPropiedad() { PropiedadId = p.Id, Valor = i64.ToString() };
                         
 
                     case TipoDato.tList:
-                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = (string)data[p.Id] };
+                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = (string)data[$"P{p.IdNumericoPlantilla}"] };
 
+                    case TipoDato.tIndexedString:
                     case TipoDato.tString:
-                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = (string)data[p.Id] };
+                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = (string)data[$"P{p.IdNumericoPlantilla}"] };
 
                 }
 
@@ -404,7 +481,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
         public static string BuscarPorLista(this string listaId)
         {
-            var q = @$"¡'size': 5000,'query':¡ 'term': ¡ 'ListaId': ¡ 'value': '{ listaId }', 'boost': 1.0!!!!".ToElasticString();
+            var q = @$"¡'size': 5000,'query':¡ 'term': ¡ 'LID': ¡ 'value': '{ listaId }', 'boost': 1.0!!!!".ToElasticString();
             return q;
         }
 

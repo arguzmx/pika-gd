@@ -30,8 +30,8 @@ namespace PIKA.Servicio.Metadatos
                 Buscable = d.Buscable,
                 ControlHTML = d.ControlHTML,
                 ValorDefault = d.ValorDefault,
-                IndiceOrdenamiento = d.IndiceOrdenamiento
-
+                IndiceOrdenamiento = d.IndiceOrdenamiento, 
+                IdNumericoPlantilla = d.IdNumericoPlantilla
             };
 
             if (d.TipoDato != null)

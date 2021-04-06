@@ -39,9 +39,10 @@ namespace PIKA.Modelo.Metadatos
         {
             return new LinkVista()
             {
-                 Icono = link.Icono,
-                  Titulo = link.Titulo,
-                   Vista = link.Vista
+                Icono = link.Icono,
+                Titulo = link.Titulo,
+                Vista = link.Vista, 
+                RequiereSeleccion = link.RequireSeleccion
             };
         }
 

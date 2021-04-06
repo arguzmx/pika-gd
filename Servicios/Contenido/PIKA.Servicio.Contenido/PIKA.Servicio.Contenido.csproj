@@ -19,6 +19,14 @@
     <Compile Remove="Data\Migrations\20200923183355_ModificacionParteContenido.Designer.cs" />
     <Compile Remove="Data\Migrations\20200923203320_AdicionVolumenIdParteVersion.cs" />
     <Compile Remove="Data\Migrations\20200923203320_AdicionVolumenIdParteVersion.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210330211726_EliminarObjetosElasticSearhc.cs" />
+    <Compile Remove="Data\Migrations\20210330211726_EliminarObjetosElasticSearhc.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210330212049_EliminarObjetosElasticSearhc.cs" />
+    <Compile Remove="Data\Migrations\20210330212049_EliminarObjetosElasticSearhc.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210330212454_EliminarObjetosElasticSearhc.cs" />
+    <Compile Remove="Data\Migrations\20210330212454_EliminarObjetosElasticSearhc.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210330212931_EliminarObjetosElasticSearhc.cs" />
+    <Compile Remove="Data\Migrations\20210330212931_EliminarObjetosElasticSearhc.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -7,6 +7,7 @@ using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
 using System.Reflection.Emit;
 using PIKA.Constantes.Aplicaciones.Contenido;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PIKA.Modelo.Contenido
 {
@@ -151,37 +152,30 @@ namespace PIKA.Modelo.Contenido
         [XmlIgnore]
         public TipoGestorES TipoGestorES { get; set; }
 
-        [XmlIgnore]
-        [JsonIgnore]
+        [XmlIgnore, JsonIgnore]
         public ICollection<VolumenPuntoMontaje> PuntosMontajeVolumen { get; set; }
 
-        [XmlIgnore]
-        [JsonIgnore]
+        [XmlIgnore, JsonIgnore]
         public ICollection<PuntoMontaje> PuntosMontaje { get; set; }
 
-        [XmlIgnore]
-        [JsonIgnore]
+        [XmlIgnore, JsonIgnore, NotMapped]
         public ICollection<Parte> Partes { get; set; }
 
-        [XmlIgnore]
-        [JsonIgnore]
+
+        [XmlIgnore, JsonIgnore, NotMapped]
         public ICollection<Version> Versiones { get; set; }
 
 
-        [XmlIgnore]
-        [JsonIgnore]
+        [XmlIgnore, JsonIgnore]
         public ICollection<Elemento> Elementos { get; set; }
 
-        [XmlIgnore]
-        [JsonIgnore]
+        [XmlIgnore, JsonIgnore]
         public GestorAzureConfig AxureConfig { get; set; }
 
-        [XmlIgnore]
-        [JsonIgnore]
+        [XmlIgnore, JsonIgnore]
         public GestorLocalConfig LocalConfig { get; set; }
 
-        [XmlIgnore]
-        [JsonIgnore]
+        [XmlIgnore, JsonIgnore]
         public GestorSMBConfig SMBConfig { get; set; }
     }
 

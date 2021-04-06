@@ -118,8 +118,54 @@ namespace RepositorioEntidades
                 query = query.OrdenarPor(consulta.ord_columna, consulta.ord_direccion.ToLower() == "desc" ? false : true);
 
                 return query.PaginadoAsync(consulta.indice, consulta.tamano,  tokenCancelacion);
+        }
 
-          
+
+        public Task<IPaginado<T>> ObtenerConteoAsync(Consulta consulta,
+          CancellationToken tokenCancelacion = default(CancellationToken))
+        {
+
+            List<Expression<Func<T, bool>>> filtros = null;
+            if (filtros == null) filtros = new List<Expression<Func<T, bool>>>();
+
+            IQueryable<T> query = _dbSet;
+            query = query.AsNoTracking();
+
+            if (consulta.Filtros.Count > 0 || filtros.Count > 0)
+            {
+
+                var type = typeof(T);
+                ParameterExpression pe = Expression.Parameter(type, "search");
+
+
+                Expression predicateBody = _compositor.Componer(pe, consulta);
+                Expression<Func<T, bool>> lambdaPredicado = null;
+                if (predicateBody != null)
+                {
+                    lambdaPredicado = Expression.Lambda<Func<T, bool>>(predicateBody, pe);
+                    filtros.Insert(0, lambdaPredicado);
+                };
+
+                if (filtros.Count > 0)
+                {
+                    var filtro = filtros[0];
+                    for (int i = 1; i < filtros.Count; i++)
+                    {
+                        filtro = filtro.AndAlso(filtros[i]);
+                    }
+
+                    MethodCallExpression whereCallExpression = Expression.Call(
+                    typeof(Queryable),
+                    "Where",
+                    new Type[] { query.ElementType },
+                    query.Expression,
+                    filtro);
+
+                    query = query.Provider.CreateQuery<T>(whereCallExpression);
+                }
+            }
+            
+            return query.ConteoAsync(consulta.indice, consulta.tamano, tokenCancelacion);
         }
 
 

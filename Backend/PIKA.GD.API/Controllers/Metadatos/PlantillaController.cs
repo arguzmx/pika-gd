@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Interfaces;
-using PIKA.Servicio.Metadatos.Servicios;
 using RepositorioEntidades;
 
 
@@ -52,13 +49,12 @@ namespace PIKA.GD.API.Controllers.Metadatos
         {
             return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
         }
+
         /// <summary>
         /// Añade una nueva entidad Plantilla
         /// </summary>
         /// <param name="entidad"></param>
         /// <returns></returns>
-
-
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -67,6 +63,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
             entidad.OrigenId = this.DominioId;
             entidad.TipoOrigenId = "DOMINIO";
             entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
+            Console.WriteLine(entidad.Id);
             if (!string.IsNullOrEmpty(entidad.Id))
             {
                 await repoMetadatos.CrearIndice(new Plantilla() { Id = entidad.Id }).ConfigureAwait(false);

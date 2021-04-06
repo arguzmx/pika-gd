@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Metadatos
 {
@@ -90,10 +92,6 @@ namespace PIKA.Modelo.Metadatos
         /// Propiedad no utilizada
         /// </summary>
         public string TipoOrigenDefault => "";
-
-
-
-
 
     }
 

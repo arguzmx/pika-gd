@@ -12,9 +12,8 @@ namespace PIKA.Servicio.Contenido.Interfaces
     {
         Task<ElementoTransaccionCarga> CrearAsync(ElementoTransaccionCarga entity, CancellationToken cancellationToken = default);
         Task ProcesoElemento(string ElementoId, bool Error, string Motivo);
-        Task EliminarTransaccion(string TransaccionId);
+        Task EliminarTransaccion(string TransaccionId, string VolId, long CuentaBytes);
         Task<List<ElementoTransaccionCarga>> OtieneElementosTransaccion(string TransaccionId);
-        Task<List<Pagina>> ProcesaTransaccion(string TransaccionId, string VolumenId, IGestorES gestor);
-        Task<string> ObtieneVolumenIdTransaccion(string TransaccionId);
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using RepositorioEntidades;
+﻿using PIKA.Modelo.Metadatos.Instancias;
+using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -44,7 +45,7 @@ namespace PIKA.Modelo.Metadatos
         Task<List<DocumentoPlantilla>> Lista(Plantilla plantilla, string listaId);
 
 
-        Task<string> Inserta(string tipoOrigenId,
+        Task<DocumentoPlantilla> Inserta(string tipoOrigenId,
             string origenId, bool esLista, string ListaId,
             Plantilla plantilla, 
             RequestValoresPlantilla valores, string nombreRelacion);
@@ -84,6 +85,9 @@ namespace PIKA.Modelo.Metadatos
         /// <param name="id"></param>
         /// <returns></returns>
         Task<bool> ExisteIndice(string id);
+
+
+        Task<VinculosObjetoPlantilla> ObtieneVinculos(string tipo, string id);
 
     }
 

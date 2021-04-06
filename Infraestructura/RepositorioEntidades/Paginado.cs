@@ -7,7 +7,7 @@ namespace RepositorioEntidades
 {
     public class Paginado<T> : IPaginado<T>
     {
-        internal Paginado(IEnumerable<T> source, int Indice, int Tamano, int Desde)
+        public Paginado(IEnumerable<T> source, int Indice, int Tamano, int Desde)
         {
             var enumerable = source as T[] ?? source.ToArray();
 
@@ -37,7 +37,7 @@ namespace RepositorioEntidades
             }
         }
 
-        internal Paginado()
+        public Paginado()
         {
             Elementos = new T[0];
         }
@@ -56,7 +56,7 @@ namespace RepositorioEntidades
     }
 
 
-    internal class Paginado<TSource, TResult> : IPaginado<TResult>
+    public class Paginado<TSource, TResult> : IPaginado<TResult>
     {
         public Paginado(IEnumerable<TSource> source, Func<IEnumerable<TSource>, IEnumerable<TResult>> converter,
             int Indice, int Tamano, int Desde)

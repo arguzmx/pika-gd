@@ -1,10 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using RepositorioEntidades;
-using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Contenido;
 using PIKA.Servicio.Contenido.Data;
 using PIKA.Servicio.Contenido.Data.Configuracion;
@@ -42,7 +38,6 @@ namespace PIKA.Servicio.Contenido
 
         public static string TablaGestorAzure { get => $"{esquema}gestorazure"; }
 
-
         public static string TablaPuntoMontaje { get => $"{esquema}pmontaje"; }
 
         public static string TablaPermisos { get => $"{esquema}permiso"; }
@@ -52,11 +47,8 @@ namespace PIKA.Servicio.Contenido
         public static string TablaCarpeta { get => $"{esquema}carpeta"; }
 
         public static string TablaElemento { get => $"{esquema}elemento"; }
-        public static string TablaParte { get => $"{esquema}versionpartes"; }
 
         public static string TablaTipoGestorEs { get => $"{esquema}tipogestores"; }
-
-        public static string TablaVersionElemento { get => $"{esquema}versionelemento"; }
 
         public static string TablaVolumen { get => $"{esquema}volumen"; }
 
@@ -98,24 +90,11 @@ namespace PIKA.Servicio.Contenido
         /// </summary>
         public DbSet<Carpeta> Carpetas { get; set; }
 
-
         /// <summary>
         /// Elemento de contenido
         /// </summary>
         public DbSet<Elemento> Elemento { get; set; }
         
-        /// <summary>
-        /// Versiones de elemntos de contenido
-        /// </summary>
-        public DbSet<PIKA.Modelo.Contenido.Version> Version { get; set; }
-
-        /// <summary>
-        /// Partes que componen una versión para un  elemento de contenidp
-        /// </summary>
-        public DbSet<Parte> Partes { get; set; }
-
-
-
         /// <summary>
         /// Configuración del gestor de E/S Azure
         /// </summary>
@@ -155,8 +134,6 @@ namespace PIKA.Servicio.Contenido
             builder.ApplyConfiguration<PuntoMontaje>(new DbConfPuntoMontaje());
             builder.ApplyConfiguration<Carpeta>(new DbConfCarpeta());
             builder.ApplyConfiguration<Elemento>(new DbConfElemento());
-            builder.ApplyConfiguration<PIKA.Modelo.Contenido.Version>(new DbConfVersion());
-            builder.ApplyConfiguration<Parte>(new DbConfParte());
             builder.ApplyConfiguration<VolumenPuntoMontaje>(new DbConfVolumenPuntoMontaje());
             builder.ApplyConfiguration<GestorLocalConfig>(new DbConfigGestorLocal());
             builder.ApplyConfiguration<GestorSMBConfig>(new DbConfigGestorSMB());
