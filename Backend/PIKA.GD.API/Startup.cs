@@ -77,7 +77,7 @@ namespace PIKA.GD.API
 
 
             //registra los ensamblados con módulos administrables para  ACL 
-            services.RegistraMódulosAdministrados();
+            services.RegistraModulosAdministrados();
 
             //Registra servicios inyetables
             services.RegistraServiciosIntectables();
@@ -164,7 +164,7 @@ namespace PIKA.GD.API
 
 
             // Configura la autenticación con el servidor de identidad
-            services.ConfiguraAutenticaciónJWT(this.Configuration);
+            services.ConfiguraAutenticacionJWT(this.Configuration);
 
 
             // Registro de servicios vía Autofac, es necesario para Rabbit MQ

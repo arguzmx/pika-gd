@@ -73,7 +73,7 @@ namespace PIKA.GD.API
         /// REgistra los módulos de la aplicación utilizados para la revisón de ACL
         /// </summary>
         /// <param name="services"></param>
-        public static void RegistraMódulosAdministrados(this IServiceCollection services)
+        public static void RegistraModulosAdministrados(this IServiceCollection services)
         {
             List<TipoAdministradorModulo> ModulosAdministrados = LocalizadorEnsamblados.ObtieneTiposAdministrados();
             Log.Logger.Information("Módulos ACL registrados automáticamente");
@@ -299,7 +299,7 @@ namespace PIKA.GD.API
         /// </summary>
         /// <param name="services"></param>
         /// <param name="configuration"></param>
-        public static void ConfiguraAutenticaciónJWT(this IServiceCollection services, IConfiguration configuration)
+        public static void ConfiguraAutenticacionJWT(this IServiceCollection services, IConfiguration configuration)
         {
 
             Log.Logger.Information("Configurando autenticación JWT");
