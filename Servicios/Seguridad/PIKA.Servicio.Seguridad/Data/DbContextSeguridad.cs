@@ -40,7 +40,7 @@ namespace PIKA.Servicio.Seguridad
 
         public static string TablaSeguridad= "seguridad$";
 
-        public static string TablaApplicationUser { get => "aspnetusers"; }
+        public static string TablaApplicationUser { get => "AspNetUsers"; }
 
         public static string TablaApplicationUserClaims { get => "aspnetuserclaims"; }
 

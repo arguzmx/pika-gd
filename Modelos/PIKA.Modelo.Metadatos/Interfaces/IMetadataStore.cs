@@ -89,6 +89,14 @@ namespace PIKA.Modelo.Metadatos
 
         Task<VinculosObjetoPlantilla> ObtieneVinculos(string tipo, string id);
 
+
+        /// <summary>
+        /// Devuleve el numero de docuentos que cumplent una condicio
+        /// </summary>
+        /// <param name="q"></param>
+        /// <param name="plantilla"></param>
+        /// <returns></returns>
+        Task<long> ContarPorConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId);
     }
 
 }

@@ -68,9 +68,9 @@ namespace PIKA.ServicioBusqueda.Contenido
         private void EjecutarConteos(BusquedaContenido busqueda)
         {
             List<Task> conteos = new List<Task>();
-            Task<int> ConteoEnFolder = null;
-            Task<int> ConteoPropieddes = null;
-            Task<int> ConteoMetadatos = null;
+            Task<long> ConteoEnFolder = null;
+            Task<long> ConteoPropieddes = null;
+            Task<long> ConteoMetadatos = null;
 
             if (busqueda.BuscarEnFolder())
             {
@@ -86,8 +86,8 @@ namespace PIKA.ServicioBusqueda.Contenido
 
             if (busqueda.BuscarMetadatos())
             {
-                ConteoEnFolder = ContarEnMetadatos(busqueda.ObtenerBusqueda(Constantes.METADATOS).Consulta);
-                conteos.Add(ConteoMetadatos);
+                //ConteoEnFolder = ContarEnMetadatos(busqueda.ObtenerBusqueda(Constantes.METADATOS).Consulta);
+                //conteos.Add(ConteoMetadatos);
             }
 
 

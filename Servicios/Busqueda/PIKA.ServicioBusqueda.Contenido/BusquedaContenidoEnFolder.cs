@@ -20,7 +20,7 @@ namespace PIKA.ServicioBusqueda.Contenido
 
         
 
-        private async Task<int> ContarEnFolder(Consulta q, bool IncluirIds)
+        private async Task<long> ContarEnFolder(Consulta q, bool IncluirIds)
         {
             if (IncluirIds)
             {
@@ -28,21 +28,22 @@ namespace PIKA.ServicioBusqueda.Contenido
             }
             
             int conteo = 0;
-            var filtro = q.Filtros.Where(x => x.Propiedad.ToLower() == "id").FirstOrDefault();
-            if (filtro != null)
+            var Id = q.Filtros.Where(x => x.Propiedad.ToLower() == "id").FirstOrDefault();
+            var PuntoMontajeId = q.Filtros.Where(x => x.Propiedad.ToLower() == "puntomontajeid").FirstOrDefault();
+            if (Id != null && PuntoMontajeId !=null )
             {
                 var connection = new MySqlConnection(this.Configuration["ConnectionStrings:pika-gd"]);
                 await connection.OpenAsync();
-                conteo = await ConteoRecursivoEnFolder(filtro.Valor, connection, IncluirIds);
+                conteo = await ConteoRecursivoEnFolder(Id.Valor, PuntoMontajeId.Valor, connection, IncluirIds);
                 await connection.CloseAsync();
             }
             return conteo;
         }
 
-        private async Task<int> ConteoRecursivoEnFolder(string Id, MySqlConnection cn, bool IncluirIds)
+        private async Task<int> ConteoRecursivoEnFolder(string Id, string PuntoMontajeId, MySqlConnection cn, bool IncluirIds)
         {
 
-            string sqls = $"SELECT count(*) FROM contenido$carpeta where PuntoMontajeId='' and CarpetaPadreId='{Id}'";
+            string sqls = $"SELECT count(*) FROM contenido$carpeta where PuntoMontajeId='{PuntoMontajeId}' and CarpetaPadreId='{Id}'";
             int conteo = 0;
             MySqlCommand cmd = new MySqlCommand(sqls, cn);
             DbDataReader dr = await cmd.ExecuteReaderAsync();
@@ -55,8 +56,8 @@ namespace PIKA.ServicioBusqueda.Contenido
 
             if (conteo > 0)
             {
-                List<string> ids = new List<string>(); 
-               sqls = $"SELECT Id FROM contenido$carpeta where CarpetaPadreId='{Id}'";
+               List<string> ids = new List<string>(); 
+               sqls = $"SELECT Id FROM contenido$carpeta where PuntoMontajeId='{PuntoMontajeId}' and CarpetaPadreId='{Id}'";
                cmd.CommandText = sqls;
                 dr = await cmd.ExecuteReaderAsync();
                 while(dr.Read())
@@ -72,7 +73,7 @@ namespace PIKA.ServicioBusqueda.Contenido
 
                 foreach (string id in ids)
                 {
-                    conteo += await ConteoRecursivoEnFolder(id, cn, IncluirIds);
+                    conteo += await ConteoRecursivoEnFolder(id, PuntoMontajeId, cn, IncluirIds);
                 }
 
             }

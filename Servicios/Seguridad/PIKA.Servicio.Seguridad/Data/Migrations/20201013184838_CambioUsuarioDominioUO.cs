@@ -7,7 +7,7 @@ namespace PIKA.Servicio.Seguridad.data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_seguridad$usuariosdominio_aspnetusers_ApplicationUserId",
+                name: "FK_seguridad$usuariosdominio_AspNetUsers_ApplicationUserId",
                 table: "seguridad$usuariosdominio");
 
             migrationBuilder.DropPrimaryKey(
@@ -78,10 +78,10 @@ namespace PIKA.Servicio.Seguridad.data.Migrations
                 columns: new[] { "ApplicationUserId", "TipoOrigenId", "OrigenId" });
 
             migrationBuilder.AddForeignKey(
-                name: "FK_seguridad$usuariosdominio_aspnetusers_ApplicationUserId",
+                name: "FK_seguridad$usuariosdominio_AspNetUsers_ApplicationUserId",
                 table: "seguridad$usuariosdominio",
                 column: "ApplicationUserId",
-                principalTable: "aspnetusers",
+                principalTable: "AspNetUsers",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
         }

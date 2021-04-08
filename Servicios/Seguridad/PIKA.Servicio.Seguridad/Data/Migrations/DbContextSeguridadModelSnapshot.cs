@@ -287,7 +287,7 @@ namespace PIKA.Servicio.Seguridad.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("aspnetusers");
+                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("PIKA.Modelo.Seguridad.Base.UsuarioDominio", b =>

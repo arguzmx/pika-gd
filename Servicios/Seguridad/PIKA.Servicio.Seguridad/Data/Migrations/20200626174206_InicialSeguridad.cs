@@ -51,9 +51,9 @@ namespace PIKA.Servicio.Seguridad.Data.Migrations
                 {
                     table.PrimaryKey("PK_seguridad$usuariosdominio", x => new { x.ApplicationUserId, x.TipoOrigenId, x.OrigenId });
                     table.ForeignKey(
-                        name: "FK_seguridad$usuariosdominio_aspnetusers_ApplicationUserId",
+                        name: "FK_seguridad$usuariosdominio_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
-                        principalTable: "aspnetusers",
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -118,9 +118,9 @@ namespace PIKA.Servicio.Seguridad.Data.Migrations
                 {
                     table.PrimaryKey("PK_seguridad$usuarioprops", x => x.UsuarioId);
                     table.ForeignKey(
-                        name: "FK_seguridad$usuarioprops_aspnetusers_UsuarioId",
+                        name: "FK_seguridad$usuarioprops_AspNetUsers_UsuarioId",
                         column: x => x.UsuarioId,
-                        principalTable: "aspnetusers",
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(

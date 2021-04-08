@@ -8,7 +8,7 @@ namespace PIKA.Identity.Server.Data.migrations.ApplicationDb
         {
             migrationBuilder.AddColumn<bool>(
                 name: "GlobalAdmin",
-                table: "aspnetusers",
+                table: "AspNetUsers",
                 nullable: false,
                 defaultValue: false);
         }
@@ -17,7 +17,7 @@ namespace PIKA.Identity.Server.Data.migrations.ApplicationDb
         {
             migrationBuilder.DropColumn(
                 name: "GlobalAdmin",
-                table: "aspnetusers");
+                table: "AspNetUsers");
         }
     }
 }

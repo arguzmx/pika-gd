@@ -54,8 +54,8 @@ namespace PIKA.ServicioBusqueda.Contenido
         /// <summary>
         /// total de elementos encontrado en la bsqueda al momento de la ejecucuión
         /// </summary>
-        [Number(NumberType.Integer)]
-        public int Conteo { get; set; }
+        [Number(NumberType.Long)]
+        public long Conteo { get; set; }
 
         /// <summary>
         /// Lista de identificadores utilizados para la interseccón en el caso de b´psquedas compuestas

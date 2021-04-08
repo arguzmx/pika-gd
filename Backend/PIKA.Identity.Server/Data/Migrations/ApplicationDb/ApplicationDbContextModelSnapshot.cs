@@ -220,7 +220,7 @@ namespace PIKA.Identity.Server.Data.Migrations.ApplicationDb
                         .IsUnique()
                         .HasName("UserNameIndex");
 
-                    b.ToTable("aspnetusers");
+                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("PIKA.Modelo.Seguridad.Base.UsuarioDominio", b =>

@@ -11,13 +11,13 @@ namespace PIKA.Identity.Server.Data.Migrations.ApplicationDb
 
             migrationBuilder.AddColumn<bool>(
                 name: "Eliminada",
-                table: "aspnetusers",
+                table: "AspNetUsers",
                 nullable: false,
                 defaultValue: false);
 
             migrationBuilder.AddColumn<bool>(
                 name: "Inactiva",
-                table: "aspnetusers",
+                table: "AspNetUsers",
                 nullable: false,
                 defaultValue: false);
 
@@ -28,11 +28,11 @@ namespace PIKA.Identity.Server.Data.Migrations.ApplicationDb
 
             migrationBuilder.DropColumn(
                 name: "Eliminada",
-                table: "aspnetusers");
+                table: "AspNetUsers");
 
             migrationBuilder.DropColumn(
                 name: "Inactiva",
-                table: "aspnetusers");
+                table: "AspNetUsers");
 
 
         }

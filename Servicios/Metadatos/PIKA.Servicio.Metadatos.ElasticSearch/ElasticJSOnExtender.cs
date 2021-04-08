@@ -111,6 +111,9 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                             return true;
                         }
 
+                    } else
+                    {
+                        return true;
                     }
                     break;
             }
@@ -173,6 +176,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         public static string ObtieneJSONActualizarPlantilla(this List<PropiedadPlantilla> props) {
             string json = "{ 'properties': { %C% } }";
             string baseProp = @"'%N%': {'type': '%T%'},";
+            string analizerProp = @"'%N%': {'type': '%T%'}, 'analyzer': '%A%'";
 
             StringBuilder sb = new StringBuilder();
 
@@ -206,7 +210,9 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                         break;
 
                     case TipoDato.tString:
-                        sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%T%", "wildcard"));
+                        sb.Append(analizerProp.Replace("%N%", $"P{item.IdNumericoPlantilla}")
+                            .Replace("%T%", "wildcard")
+                            .Replace("%A%", "keyword"));
                         break;
 
                     case TipoDato.tIndexedString:
