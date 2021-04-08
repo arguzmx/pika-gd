@@ -31,6 +31,7 @@ using PIKA.GD.API.JsonConverters;
 using PIKA.Servicio.Seguridad.Servicios;
 using PIKA.Servicio.Seguridad.Interfaces;
 using PIKA.Servicio.Reportes.Data;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace PIKA.GD.API
 {
@@ -186,6 +187,12 @@ namespace PIKA.GD.API
 
             //app.UseMiddleware<JWTAuthenticationMiddleware>();
             app.UseMiddleware<GlobalExceptionMiddleware>();
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
 
             app.UseHealthChecks("/health");
 

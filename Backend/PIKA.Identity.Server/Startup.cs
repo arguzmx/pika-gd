@@ -21,6 +21,7 @@ using Autofac.Extensions.DependencyInjection;
 using IdentityServer4.Configuration;
 using PIKA.Modelo.Seguridad;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace PIKA.Identity.Server
 {
@@ -160,7 +161,13 @@ namespace PIKA.Identity.Server
                 app.ApplicationServices.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
             app.UseStaticFiles();
-            
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
+
             app.UseHealthChecks("/health");
 
             app.UseRouting();
