@@ -97,6 +97,8 @@ namespace PIKA.Identity.Server
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+            
+            services.AddHealthChecks();
 
             var builder = services.AddIdentityServer(options =>
                 {
@@ -158,6 +160,8 @@ namespace PIKA.Identity.Server
                 app.ApplicationServices.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
             app.UseStaticFiles();
+            
+            app.UseHealthChecks("/health");
 
             app.UseRouting();
             app.UseIdentityServer();

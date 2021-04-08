@@ -166,6 +166,7 @@ namespace PIKA.GD.API
             // Configura la autenticación con el servidor de identidad
             services.ConfiguraAutenticacionJWT(this.Configuration);
 
+            services.AddHealthChecks();
 
             // Registro de servicios vía Autofac, es necesario para Rabbit MQ
             var container = new ContainerBuilder();
@@ -186,7 +187,7 @@ namespace PIKA.GD.API
             //app.UseMiddleware<JWTAuthenticationMiddleware>();
             app.UseMiddleware<GlobalExceptionMiddleware>();
 
-            //app.UseHealthChecks("/health");
+            app.UseHealthChecks("/health");
 
 
             //app.UseHttpsRedirection();
