@@ -7,7 +7,14 @@ namespace RepositorioEntidades
 {
     public static class MySQLQueryComposer
     {
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="NombreCampo"></param>
+        /// <param name="Operador"></param>
+        /// <param name="Value"></param>
+        /// <param name="negar"></param>
+        /// <returns></returns>
         private static string GetStringExpression(string NombreCampo, string Operador, string Value, bool negar)
         {
 
