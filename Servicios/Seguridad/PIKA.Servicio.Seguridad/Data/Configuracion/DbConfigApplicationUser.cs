@@ -30,7 +30,7 @@ namespace PIKA.Servicio.Seguridad.Data.Configuracion
             builder.Property(x => x.Inactiva).IsRequired().HasDefaultValue(false);
             builder.Property(x => x.Eliminada).IsRequired().HasDefaultValue(false);
 
-            builder.HasMany(x => x.UsuariosDominio).WithOne(y => y.ApplicationUser).HasForeignKey(z => z.ApplicationUserId);
+           // builder.HasMany(x => x.UsuariosDominio).WithOne(y => y.ApplicationUser).HasForeignKey(z => z.ApplicationUserId);
 
 
         }

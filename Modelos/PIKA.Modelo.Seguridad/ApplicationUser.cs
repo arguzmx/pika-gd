@@ -13,7 +13,7 @@ namespace PIKA.Modelo.Seguridad
     {
 
         public ApplicationUser() {
-            this.UsuariosDominio = new HashSet<UsuarioDominio>();
+            // this.UsuariosDominio = new HashSet<UsuarioDominio>();
         }
 
         //
@@ -121,13 +121,16 @@ namespace PIKA.Modelo.Seguridad
         /// </summary>
         public bool Eliminada { get; set; }
 
+        /// <summary>
+        /// Determina si el usuario el adminisatrdor global
+        /// </summary>
         public bool GlobalAdmin { get; set; }
 
         public virtual ICollection<UsuarioDominio>  UsuariosDominio { get; set; }
 
-        public virtual ICollection<UserClaim> Claims { get; set; }
-
         public virtual PropiedadesUsuario Propiedades { get; set; }
-        
+
+        //public virtual ICollection<UserClaim> Claims { get; set; }
+
     }
 }

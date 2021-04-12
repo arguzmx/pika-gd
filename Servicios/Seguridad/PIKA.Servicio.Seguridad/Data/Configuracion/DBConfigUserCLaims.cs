@@ -20,7 +20,7 @@ namespace PIKA.Servicio.Seguridad.Data.Configuracion
             builder.Property(x => x.ClaimType).HasColumnType("longtext");
             builder.Property(x => x.ClaimValue).HasColumnType("longtext");
 
-            builder.HasOne(x => x.User).WithMany(x => x.Claims).HasForeignKey(z => z.UserId);
+            //builder.HasOne(x => x.User).WithMany(x => x.Claims).HasForeignKey(z => z.UserId);
 
         }
     }

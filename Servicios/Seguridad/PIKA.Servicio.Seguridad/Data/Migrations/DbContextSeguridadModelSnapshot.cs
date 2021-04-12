@@ -494,7 +494,7 @@ namespace PIKA.Servicio.Seguridad.Data.Migrations
             modelBuilder.Entity("PIKA.Modelo.Seguridad.UserClaim", b =>
                 {
                     b.HasOne("PIKA.Modelo.Seguridad.ApplicationUser", "User")
-                        .WithMany("Claims")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

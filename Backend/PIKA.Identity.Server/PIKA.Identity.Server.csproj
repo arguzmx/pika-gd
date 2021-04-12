@@ -6,13 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Data\Migrations\ApplicationDb\20200624204452_UsuariosDominio.cs" />
-    <Compile Remove="Data\Migrations\ApplicationDb\20200624204452_UsuariosDominio.Designer.cs" />
-    <Compile Remove="Data\Migrations\ApplicationDb\20200625174249_PropiedadEliminadaInactiva.cs" />
-    <Compile Remove="Data\Migrations\ApplicationDb\20200625174249_PropiedadEliminadaInactiva.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Autofac" Version="5.2.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="ExtCore.Mvc" Version="5.1.0" />

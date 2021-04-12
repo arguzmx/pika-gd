@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PIKA.Servicio.Seguridad;
 
-namespace PIKA.Servicio.Seguridad.data.Migrations
+namespace PIKA.Servicio.Seguridad.Data.Migrations
 {
     [DbContext(typeof(DbContextSeguridad))]
-    [Migration("20201013185039_CambioUsuarioDominioUOFks")]
-    partial class CambioUsuarioDominioUOFks
+    [Migration("20210412211500_InitialSeguridad")]
+    partial class InitialSeguridad
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -496,7 +496,7 @@ namespace PIKA.Servicio.Seguridad.data.Migrations
             modelBuilder.Entity("PIKA.Modelo.Seguridad.UserClaim", b =>
                 {
                     b.HasOne("PIKA.Modelo.Seguridad.ApplicationUser", "User")
-                        .WithMany("Claims")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

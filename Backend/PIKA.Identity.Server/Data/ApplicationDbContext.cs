@@ -17,7 +17,7 @@ namespace PIKA.Identity.Server.Data
         {
             base.OnModelCreating(builder);
             builder.ApplyConfiguration<ApplicationUser>(new DBConfigApplicationUser());
-            builder.ApplyConfiguration<UserClaim>(new DbConfigUserClaims());
+            //builder.ApplyConfiguration<UserClaim>(new DbConfigUserClaims());
             builder.ApplyConfiguration<UsuarioDominio>(new DbConfigUsuariosDominio());
             builder.ApplyConfiguration<PropiedadesUsuario>(new DbConfPropiedadesUsuario());
         }
