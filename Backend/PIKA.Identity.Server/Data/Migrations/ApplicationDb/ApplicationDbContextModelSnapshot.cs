@@ -358,7 +358,7 @@ namespace PIKA.Identity.Server.Data.Migrations.ApplicationDb
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("aspnetuserclaims");
+                    b.ToTable("AspNetUserClaims");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

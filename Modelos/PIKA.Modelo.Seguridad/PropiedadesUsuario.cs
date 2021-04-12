@@ -26,7 +26,7 @@ namespace PIKA.Modelo.Seguridad
         public string UsuarioId { get; set; }
 
         /// <summary>
-        /// Esta propeidad viene de la tabla aspnetuser en oeraciones GET, debe incluirse en POST
+        /// Esta propeidad viene de la tabla AspNetUser en oeraciones GET, debe incluirse en POST
         /// </summary>
         [Prop(Required: true, OrderIndex: 10)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
@@ -44,7 +44,7 @@ namespace PIKA.Modelo.Seguridad
         public string password { get; set; }
 
         /// <summary>
-        ///  OIDC Claims se alamcenana en la tabla aspnetuserclaims
+        ///  OIDC Claims se alamcenana en la tabla AspNetUserClaims
         /// </summary>
         [Prop(Required: true, OrderIndex: 30)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]

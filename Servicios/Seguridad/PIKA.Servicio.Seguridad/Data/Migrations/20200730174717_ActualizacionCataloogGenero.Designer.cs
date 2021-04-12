@@ -385,7 +385,7 @@ namespace PIKA.Servicio.Seguridad.data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("aspnetuserclaims");
+                    b.ToTable("AspNetUserClaims");
                 });
 
             modelBuilder.Entity("PIKA.Infraestructura.Comun.ModuloAplicacion", b =>
