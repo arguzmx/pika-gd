@@ -22,6 +22,7 @@ using IdentityServer4.Configuration;
 using PIKA.Modelo.Seguridad;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
+using IdentityServer4.Hosting;
 
 namespace PIKA.Identity.Server
 {
@@ -103,11 +104,11 @@ namespace PIKA.Identity.Server
 
             var builder = services.AddIdentityServer(options =>
                 {
+                    options.PublicOrigin = Configuration["PublicOrigin"];
                     options.Events.RaiseErrorEvents = true;
                     options.Events.RaiseInformationEvents = true;
                     options.Events.RaiseFailureEvents = true;
                     options.Events.RaiseSuccessEvents = true;
-
                     options.UserInteraction = new UserInteractionOptions()
                     {
                         LogoutUrl = "/account/logout",
@@ -172,6 +173,8 @@ namespace PIKA.Identity.Server
 
             app.UseRouting();
             app.UseIdentityServer();
+
+
             app.UseAuthentication();
             app.UseAuthorization();
 

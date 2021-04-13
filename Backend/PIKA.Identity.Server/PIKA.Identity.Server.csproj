@@ -47,4 +47,6 @@
     <ProjectReference Include="..\..\Modelos\PIKA.Modelo.Seguridad\PIKA.Modelo.Seguridad.csproj" />
     <ProjectReference Include="..\..\Servicios\Seguridad\PIKA.Servicio.Seguridad\PIKA.Servicio.Seguridad.csproj" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 </Project>
