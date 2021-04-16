@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Seguridad;
+using PIKA.Modelo.Seguridad.Base;
 
 namespace PIKA.Servicio.Seguridad.Data
 {
@@ -12,12 +13,31 @@ namespace PIKA.Servicio.Seguridad.Data
     {
         public static void Inicializar(DbContextSeguridad dbContext, string contentPath, bool datosDemo)
         {
+            DatosIniciales(dbContext);
             InicializarGeneros(dbContext);
             
         }
+        private static void DatosIniciales(
+           DbContextSeguridad dbContext)
+        {
 
+            UsuarioDominio u = new UsuarioDominio()
+            {
+                ApplicationUserId = "admin",
+                DominioId = "principal",
+                EsAdmin = true,
+                UnidadOrganizacionalId = "principal"
+            };
 
-        private static void InicializarGeneros(
+            if (dbContext.UsuariosDominio.Find(u.ApplicationUserId) == null)
+            {
+                dbContext.UsuariosDominio.Add(u);
+                dbContext.SaveChanges();
+            }
+
+        }
+
+            private static void InicializarGeneros(
            DbContextSeguridad dbContext)
         {
  

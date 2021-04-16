@@ -15,12 +15,76 @@ namespace PIKA.Servicio.Organizacion
     public class InicializarDatos
     {
         public static void Inicializar(DbContextOrganizacion dbContext, string contentPath, bool datosDemo) {
+            DatosIniciales(dbContext);
             if (datosDemo)
             {
                 InicializarDatosDemo(dbContext);
             }
         }
 
+        public static void DatosIniciales(DbContextOrganizacion dbContext)
+        {
+            Dominio d = new Dominio()
+            {
+                Eliminada = false,
+                Nombre = $"Mi Organización",
+                Id = $"principal",
+                OrigenId = ConstantesModelo.IDORIGEN_GLOBAL,
+                TipoOrigenId = ConstantesModelo.IDORIGEN_GLOBAL
+            };
+            if (dbContext.Dominios.Find(d.Id) == null)
+            {
+                dbContext.Dominios.Add(d);
+                dbContext.SaveChanges();
+            }
+                
+
+            UnidadOrganizacional uo = new UnidadOrganizacional()
+            {
+                DominioId = d.Id,
+                Eliminada = false,
+                Id = "principal",
+                Nombre = "Mi oficina"
+            };
+
+            if (dbContext.UnidadesOrganizacionales.Find(uo.Id) == null)
+            {
+                dbContext.UnidadesOrganizacionales.Add(uo);
+                dbContext.SaveChanges();
+            }
+
+            Rol r = new Rol()
+            {
+                Nombre = $"Usuarios",
+                Id = $"usuarios",
+                OrigenId = d.Id,
+                TipoOrigenId = ConstantesModelo.IDORIGEN_DOMINIO,
+                Descripcion = "Usuarios del sistema"
+            };
+            
+            if (dbContext.Roles.Find(r.Id) == null)
+            {
+                dbContext.Roles.Add(r);
+                dbContext.SaveChanges();
+            }
+
+
+            r = new Rol()
+            {
+                Nombre = $"Administradores",
+                Id = $"administradores",
+                OrigenId = d.Id,
+                TipoOrigenId = ConstantesModelo.IDORIGEN_DOMINIO,
+                Descripcion = "Administradores del sistema"
+            };
+
+            if (dbContext.Roles.Find(r.Id) == null)
+            {
+                dbContext.Roles.Add(r);
+                dbContext.SaveChanges();
+            }
+
+        }
 
         public static void InicializarDatosDemo(DbContextOrganizacion dbContext)
         {

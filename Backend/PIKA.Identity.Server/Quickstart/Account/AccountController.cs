@@ -123,7 +123,11 @@ namespace IdentityServer4.Quickstart.UI
 
                     if (context != null)
                     {
-                        model.ReturnUrl = "/" + _config["PublicBaseURL"] + model.ReturnUrl; 
+                        if (!string.IsNullOrEmpty(_config["PublicBaseURL"]))
+                        {
+                            model.ReturnUrl = "/" + _config["PublicBaseURL"] + model.ReturnUrl;
+                        }
+                        
                         if (await _clientStore.IsPkceClientAsync(context.ClientId))
                         {
                             // if the client is PKCE then we assume it's native, so this change in how to
@@ -134,7 +138,12 @@ namespace IdentityServer4.Quickstart.UI
                         // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
                         return Redirect(model.ReturnUrl);
                     }
-                    model.ReturnUrl = "/" + _config["PublicBaseURL"] + model.ReturnUrl; 
+
+                    if (!string.IsNullOrEmpty(_config["PublicBaseURL"]))
+                    {
+                        model.ReturnUrl = "/" + _config["PublicBaseURL"] + model.ReturnUrl;
+                    }
+
                     // request for a local page
                     if (Url.IsLocalUrl(model.ReturnUrl))
                     {

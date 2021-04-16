@@ -78,27 +78,26 @@ new Client {
     IdentityTokenLifetime = 30,
 
     RequireClientSecret = false,
-    AllowedGrantTypes = GrantTypes.Code,
+    AllowedGrantTypes = GrantTypes.Implicit,
     RequirePkce = true,
 
     AllowAccessTokensViaBrowser = true,
     RedirectUris = new List<string>
     {
-        $"http://localhost:4200",
-        $"http://localhost:4200/acceso/callback",
-        $"http://localhost:4200/acceso/login",
-         "http://localhost:4200/silent-refresh.html"
+        "http://localhost/silent-refresh.html",
+        "http://localhost/index.html",
+        "http://localhost",
     },
     PostLogoutRedirectUris = new List<string>
     {
         $"{spaClientUrl}",
-        $"http://localhost:4200/acceso/callback",
-        $"http://localhost:4200/acceso/login",
-        "http://localhost:4200/silent-refresh.html"
+        "http://localhost/silent-refresh.html",
+        "http://localhost/index.html",
+        "http://localhost",
     },
     AllowedCorsOrigins = new List<string>
     {
-        $"http://localhost:4200",
+        $"http://localhost",
 
     },
     AllowedScopes = new List<string>
