@@ -18,6 +18,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using PIKA.Modelo.Seguridad;
+using Microsoft.Extensions.Configuration;
 
 namespace IdentityServer4.Quickstart.UI
 {
@@ -31,13 +32,14 @@ namespace IdentityServer4.Quickstart.UI
         private readonly IClientStore _clientStore;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
         private readonly IEventService _events;
-    
+        private IConfiguration _config;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
+            IConfiguration config,
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events)
         {
@@ -47,6 +49,7 @@ namespace IdentityServer4.Quickstart.UI
             _clientStore = clientStore;
             _schemeProvider = schemeProvider;
             _events = events;
+            _config = config;
         }
 
    
@@ -115,22 +118,23 @@ namespace IdentityServer4.Quickstart.UI
                 var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
-
                     var user = await _userManager.FindByNameAsync(model.Username);
                     await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.ClientId));
 
                     if (context != null)
                     {
+                        model.ReturnUrl = "/" + _config["PublicBaseURL"] + model.ReturnUrl; 
                         if (await _clientStore.IsPkceClientAsync(context.ClientId))
                         {
                             // if the client is PKCE then we assume it's native, so this change in how to
                             // return the response is for better UX for the end user.
-                            return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
+                            //return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
+                            return Redirect(model.ReturnUrl);
                         }
                         // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
                         return Redirect(model.ReturnUrl);
                     }
-
+                    model.ReturnUrl = "/" + _config["PublicBaseURL"] + model.ReturnUrl; 
                     // request for a local page
                     if (Url.IsLocalUrl(model.ReturnUrl))
                     {
