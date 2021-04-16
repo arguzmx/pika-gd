@@ -32,6 +32,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
         private IRepositorioAsync<PropiedadesUsuario> repo;
         private IRepositorioAsync<ApplicationUser> repoAppUser;
+        private IRepositorioAsync<UsuarioDominio> repoUsuarioDominio;
         private IRepositorioAsync<UserClaim> repoClaims;
         private UnidadDeTrabajo<DbContextSeguridad> UDT;
 
@@ -44,6 +45,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             this.repo = UDT.ObtenerRepositoryAsync<PropiedadesUsuario>(new QueryComposer<PropiedadesUsuario>());
             this.repoAppUser = UDT.ObtenerRepositoryAsync<ApplicationUser>(new QueryComposer<ApplicationUser>());
             this.repoClaims = UDT.ObtenerRepositoryAsync<UserClaim>(new QueryComposer<UserClaim>());
+            this.repoUsuarioDominio = UDT.ObtenerRepositoryAsync<UsuarioDominio>(new QueryComposer<UsuarioDominio>());
         }
 
         public async Task<bool> Existe(Expression<Func<PropiedadesUsuario, bool>> predicado)
@@ -53,6 +55,17 @@ namespace PIKA.Servicio.Seguridad.Servicios
             return true;
         }
 
+        public async Task<Boolean> EsAdmin(string dominioId, string UnidadOrgId, string Id) {
+
+            var a = await this.repoAppUser.UnicoAsync(x => x.Id == Id);
+            var u = await this.repoUsuarioDominio.UnicoAsync(x => x.DominioId == dominioId && x.UnidadOrganizacionalId == UnidadOrgId
+            && x.ApplicationUserId == Id);
+
+            if (a == null) a = new ApplicationUser() { GlobalAdmin = false };
+            if (u == null) u = new UsuarioDominio() { EsAdmin = false };
+
+            return a.GlobalAdmin || a.GlobalAdmin;
+        }
 
         public async Task<PropiedadesUsuario> CrearAsync(string dominioId, string UnidadOrgId, PropiedadesUsuario entity, CancellationToken cancellationToken = default)
         {

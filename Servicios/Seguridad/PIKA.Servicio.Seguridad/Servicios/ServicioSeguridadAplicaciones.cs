@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Seguridad.Servicios
 {
-    public class ServicioSeguridadAplicaciones: ContextoServicioSeguridad, 
+    public class ServicioSeguridadAplicaciones : ContextoServicioSeguridad,
         IServicioInyectable, IServicioSeguridadAplicaciones
     {
         private IRepositorioAsync<PermisoAplicacion> repo;
@@ -41,7 +41,6 @@ namespace PIKA.Servicio.Seguridad.Servicios
             return lista;
         }
 
- 
 
         public async Task<int> CrearActualizarAsync(string DominioId, params PermisoAplicacion[] entities)
         {

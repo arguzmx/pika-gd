@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +9,7 @@ using Nest;
 using PIKA.Constantes.Aplicaciones.Aplicaciones;
 using PIKA.Constantes.Aplicaciones.Seguridad;
 using PIKA.GD.API.Filters;
+using PIKA.GD.API.Model;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Servicio.AplicacionPlugin;
@@ -76,10 +78,18 @@ namespace PIKA.GD.API.Controllers.Sistema
         [TypeFilter(typeof(AsyncACLActionFilter),
             Arguments = new object[] { ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_ACL })]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<ICollection<PermisoAplicacion>>> GetPermisosPorTipo(string  tipo, string id)
+        public async Task<ActionResult<RespuestaPermisos>> GetPermisosPorTipo(string  tipo, string id)
         {
-            var data = await servicioSeguridad.ObtienePermisosAsync(tipo, id, this.DominioId).ConfigureAwait(false);
-            return Ok(data);
+            RespuestaPermisos r = new RespuestaPermisos();
+
+            r.Permisos = (await servicioSeguridad.ObtienePermisosAsync(tipo, id, this.DominioId).ConfigureAwait(false)).ToList();
+            r.Id = id;
+            r.EsAdmmin = false;
+            if (tipo.ToLower() == "u")
+            {
+                r.EsAdmmin = await servicioUsuarios.EsAdmin(this.DominioId, this.TenatId, id);
+            }
+            return Ok(r);
         }
 
         [HttpGet("usuarios/pares", Name = "GetUsuarios")]
