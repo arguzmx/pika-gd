@@ -75,12 +75,12 @@ new Client {
 
     AccessTokenType = AccessTokenType.Jwt,
     AccessTokenLifetime = 3600,// 330 seconds, default 60 minutes
-    IdentityTokenLifetime = 30,
+    IdentityTokenLifetime = 3600,
 
     RequireClientSecret = false,
     AllowedGrantTypes = GrantTypes.Implicit,
     RequirePkce = true,
-
+    RequireConsent =false,
     AllowAccessTokensViaBrowser = true,
     RedirectUris = new List<string>
     {
