@@ -13,10 +13,6 @@
     <Compile Remove="Data\Migrations\20200423201439_InicialMetadatosprueba.Designer.cs" />
     <Compile Remove="Data\Migrations\20201217233129_PropiedadListaMetadatos.cs" />
     <Compile Remove="Data\Migrations\20201217233129_PropiedadListaMetadatos.Designer.cs" />
-    <Compile Remove="Data\Migrations\20210417160931_EliminarAlmacenPlantilla.cs" />
-    <Compile Remove="Data\Migrations\20210417160931_EliminarAlmacenPlantilla.Designer.cs" />
-    <Compile Remove="Data\Migrations\20210417161415_EliminarAlmacenPlantilla.cs" />
-    <Compile Remove="Data\Migrations\20210417161415_EliminarAlmacenPlantilla.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

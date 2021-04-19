@@ -58,7 +58,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
             {
                 entity.Id = System.Guid.NewGuid().ToString();
                 entity.Eliminada = false;
-                entity.AlmacenDatosId = "ELASTIC";
+                entity.AlmacenDatosId = "default";
                 await this.repo.CrearAsync(entity);
                 UDT.SaveChanges();
             }
