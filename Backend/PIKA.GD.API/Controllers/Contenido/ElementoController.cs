@@ -169,7 +169,16 @@ namespace PIKA.GD.API.Controllers.Contenido
             }
             string[] lids = IdsTrim.Split(',').ToList()
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            return Ok(await servicioEntidad.Eliminar(lids).ConfigureAwait(false));
+
+            List<string> eliminados = (await servicioEntidad.Eliminar(lids).ConfigureAwait(false)).ToList();
+            Console.WriteLine($">>>{eliminados.Count}");
+            if (eliminados.Count==0)
+            {
+                return Conflict();
+            } else
+            {
+                return Ok(eliminados);
+            }
         }
         /// <summary>
         /// Este metodo  puerga todos los elementos

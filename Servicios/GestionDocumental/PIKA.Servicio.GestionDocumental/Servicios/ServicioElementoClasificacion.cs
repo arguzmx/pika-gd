@@ -304,28 +304,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             return respuesta;
         }
-        public async Task<ICollection<string>> Eliminar(string[] ids)
-        {
-            int x = 0;
-            ElementoClasificacion e;
-            ICollection<string> listaEliminados = new HashSet<string>();
-            foreach (var Id in ids)
-            {
-                e = await this.repo.UnicoAsync(x => x.Id == Id.Trim()).ConfigureAwait(false);
-                if (e != null)
-                {
-                    x++;
-
-                    e.Eliminada = true;
-                    UDT.Context.Entry(e).State = EntityState.Modified;
-                    listaEliminados.Add(e.Id);
-                    await ioCuadroClasificacion.EliminarCuadroCalsificacionExcel(e.CuadroClasifiacionId, ConfiguracionServidor.ruta_cache_fisico, ConfiguracionServidor.separador_ruta).ConfigureAwait(false);
-
-                }
-            }
-            UDT.SaveChanges();
-            return listaEliminados;
-        }
         public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
             ElementoClasificacion c;
@@ -415,28 +393,126 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             return IdsELiminar(elemento.Select(x=>x.Id).ToArray());
         }
+
         private async Task<ICollection<string>> EliminarElementos(string[] ids) 
         {
-            ElementoClasificacion e;
             ICollection<string> listaEliminados = new HashSet<string>();
+
             foreach (var Id in ids)
             {
-                e = await this.repo.UnicoAsync(x => x.Id == Id).ConfigureAwait(false);
-                if (e != null)
+                Console.WriteLine($"Eliminaod {Id}");
+                bool done = await EliminarJerarquia(Id);
+                Console.WriteLine($"done = {done}");
+                if (!done)
                 {
-                    await this.repo.Eliminar(e).ConfigureAwait(false);
-                    listaEliminados.Add(e.Id);
-                }
+                    return null;
 
-            Console.WriteLine($"\n Eliminar elementos {Id}");
+                } else
+                {
+                    listaEliminados.Add(Id);
+                }
             }
-            UDT.SaveChanges();
+
+            return listaEliminados;
+
+        }
+
+        public async Task<ICollection<string>> Eliminar(string[] ids)
+        {
+            ICollection<string> listaEliminados = new HashSet<string>();
+
+            foreach (var Id in ids)
+            {
+                bool done = await EliminarJerarquia(Id);
+                if (!done)
+                {
+                    listaEliminados.Clear();
+                } else
+                {
+                    listaEliminados.Add(Id);
+                }
+            }
+
             return listaEliminados;
         }
+
+
         private string[] IdsELiminar(string[] ids) 
         {
             return ids;
         }
+
+
+
+        private async Task<bool> EliminarJerarquia(string id)
+        {
+
+            List<string> ids = new List<string>() { id };
+            var r = await ObtieneIdHijosRecursivo(id);
+            if(r.Count>0) ids.AddRange(r);
+
+            
+            List<string> ecs = new List<string>();
+            foreach (string s in ids)
+            {
+                List<EntradaClasificacion> entradas = this.UDT.Context.EntradaClasificacion.Where(x => x.ElementoClasificacionId == id).ToList();
+                
+                    foreach(var en in entradas)
+                    {
+
+                        if(this.UDT.Context.Activos.Any(x => x.EntradaClasificacionId == en.Id))
+                        {
+
+                        return false;
+                    }  else
+                        {
+                        ecs.Add(en.Id); 
+                        }
+                    }
+            }
+
+            ecs.ForEach(id =>
+            {
+                string sqls = $"delete from gd$entradaclasificacion where Id ='{id}'";
+                this.UDT.Context.Database.ExecuteSqlRaw(sqls);
+            });
+
+            // Los elementos deben eliminarse desde los hijos hacia los padres
+            ids.Reverse();
+            ids.ForEach(id =>
+            {
+                string sqls = $"delete from gd$elementoclasificacion where  Id = '{id}'";
+                this.UDT.Context.Database.ExecuteSqlRaw(sqls);
+            });
+
+
+            return true;
+        }
+
+
+
+
+        private async Task<List<string>> ObtieneIdHijosRecursivo(string id)
+        {
+            List<string> ids = new List<string>();
+            var hijos = await this.UDT.Context.ElementosClasificacion.Where(x => x.ElementoClasificacionId == id).ToListAsync();
+
+            foreach (var h in hijos)
+            {
+                ids.Add(h.Id);
+            }
+
+            foreach (var h in hijos)
+            {
+                var r = await ObtieneIdHijosRecursivo(h.Id);
+                if (r.Count > 0)
+                {
+                    ids.AddRange(r);
+                }
+            }
+            return ids;
+        }
+
 
         #region Sin implementar
         public async Task EjecutarSql(string sqlCommand)

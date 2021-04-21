@@ -1086,7 +1086,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.HasOne("PIKA.Modelo.GestorDocumental.TipoDisposicionDocumental", "DisposicionEntrada")
                         .WithMany("EntradaClasificacion")
                         .HasForeignKey("TipoDisposicionDocumentalId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("PIKA.Modelo.GestorDocumental.EstadisticaClasificacionAcervo", b =>
@@ -1193,7 +1193,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.HasOne("PIKA.Modelo.GestorDocumental.EntradaClasificacion", "EntradaClasificacion")
                         .WithMany("ValoracionesEntrada")
                         .HasForeignKey("EntradaClasificacionId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("PIKA.Modelo.GestorDocumental.TipoValoracionDocumental", "TipoValoracionDocumental")

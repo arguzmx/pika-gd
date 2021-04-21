@@ -298,10 +298,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 }
             }
             UDT.SaveChanges();
-
             return listaEliminados;
-
         }
+
 
         private async Task<string> RestaurarNombre(string Clave, string ElementoCuadroClasificacionId, string id, string Nombre)
         {

@@ -137,6 +137,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete(string ids)
         {
+
             string IdsTrim = "";
             foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
             {
@@ -144,7 +145,20 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             }
             string[] lids = IdsTrim.Split(',').ToList()
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            return Ok(await servicioElemento.Eliminar(lids).ConfigureAwait(false));
+
+            List<string> eliminados = (await servicioElemento.Eliminar(lids).ConfigureAwait(false)).ToList();
+
+            return Ok(eliminados);
+
+            if (eliminados.Count == 0)
+            {
+                return Conflict();
+            }
+            else
+            {
+                return Ok(eliminados);
+            }
+
         }
         /// <summary>
         /// Restaura una lista dede Elemento eliminados en base al arreglo de identificadores recibidos

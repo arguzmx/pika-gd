@@ -41,7 +41,6 @@
     <Compile Remove="Data\Migrations\20200909151514_AgregarEstadisticaModificaiconIndices.Designer.cs" />
   </ItemGroup>
 
-
   <ItemGroup>
     <PackageReference Include="Bogus" Version="29.0.2" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="2.11.3" />
