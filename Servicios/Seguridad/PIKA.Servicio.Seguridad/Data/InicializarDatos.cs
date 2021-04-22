@@ -29,7 +29,9 @@ namespace PIKA.Servicio.Seguridad.Data
                 UnidadOrganizacionalId = "principal"
             };
 
-            if (dbContext.UsuariosDominio.Find(new { u.ApplicationUserId, u.DominioId, u.UnidadOrganizacionalId } ) == null)
+            if (dbContext.UsuariosDominio.Where(x => x.ApplicationUserId == u.ApplicationUserId 
+                && x.DominioId == u.DominioId
+                && x.UnidadOrganizacionalId == u.UnidadOrganizacionalId) == null)
             {
                 dbContext.UsuariosDominio.Add(u);
                 dbContext.SaveChanges();
