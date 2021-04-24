@@ -1,9 +1,7 @@
 ﻿using PIKA.Modelo.Reportes;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace PIKA.Servicio.Reportes.Data
 {
@@ -46,7 +44,7 @@ namespace PIKA.Servicio.Reportes.Data
                 r.Plantilla = Convert.ToBase64String(File.ReadAllBytes(fi.FullName));
                 dbContext.ReporteEntidades.Add(r);
                 dbContext.SaveChanges();
-            }
+            } 
 
         }
 
@@ -71,8 +69,7 @@ namespace PIKA.Servicio.Reportes.Data
                             break;
                     }
                 }
-
-                
+               
             }
             
         }

@@ -61,7 +61,7 @@ namespace PIKA.Infraestrctura.Reportes
                 }
                 try
                 {
-                    var barcode = new Barcode(config.Texto, tipo, true, Cm2Pixeles(config.Ancho), Cm2Pixeles(config.Alto));
+                    var barcode = new Barcode(config.Texto, tipo, false, Cm2Pixeles(config.Ancho), Cm2Pixeles(config.Alto));
                     barcode.SaveImageFile(rutaArchivo, ImageFormat.Png);
                 }
                 catch (Exception) { }

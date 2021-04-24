@@ -161,20 +161,19 @@ namespace PIKA.Servicio.GestionDocumental
             LlenadoEstructuraExcel(exp, c, row, "Clave");
             List<TipoValoracionDocumental> list = await this.repoTVD.ObtenerAsync(x => x.Id != null, include: null);
 
-            foreach (TipoValoracionDocumental tp in list)
-            {
-                c = c + 1;
-                LlenadoEstructuraExcel(exp, c, row, tp.Nombre);
-
-            }
+       
             for (int i = 1; i < 4; i++)
             {
                 c = c + 1;
                 LlenadoEstructuraExcel(exp, c, row, ValorEncabezado(i));
             }
 
-            
+            foreach (TipoValoracionDocumental tp in list)
+            {
+                c = c + 1;
+                LlenadoEstructuraExcel(exp, c, row, tp.Nombre);
 
+            }
 
         }
         /// <summary>
@@ -236,16 +235,7 @@ namespace PIKA.Servicio.GestionDocumental
             IndiceColumna = IndiceColumna + 1;
             LlenadoEstructuraExcel(exp, IndiceColumna, NumeroFila, nombreclave);
            
-            foreach (TipoValoracionDocumental tp in list)
-            {
-                IndiceColumna = IndiceColumna + 1;
-                List<ValoracionEntradaClasificacion> vl = await this.repoTV.ObtenerAsync(x => x.TipoValoracionDocumentalId.Equals(tp.Id) && x.EntradaClasificacionId.Equals(EntradasClasificion.Id));
-                if (vl.Count() > 0)
-                {
-                    LlenadoEstructuraExcel(exp, IndiceColumna, NumeroFila, "X");
-                }
-
-            }
+         
             for (int i = 1; i < 4; i++)
             {
 
@@ -274,7 +264,17 @@ namespace PIKA.Servicio.GestionDocumental
 
 
             }
-           
+
+            foreach (TipoValoracionDocumental tp in list)
+            {
+                IndiceColumna = IndiceColumna + 1;
+                List<ValoracionEntradaClasificacion> vl = await this.repoTV.ObtenerAsync(x => x.TipoValoracionDocumentalId.Equals(tp.Id) && x.EntradaClasificacionId.Equals(EntradasClasificion.Id));
+                if (vl.Count() > 0)
+                {
+                    LlenadoEstructuraExcel(exp, IndiceColumna, NumeroFila, "X");
+                }
+
+            }
         }
 
         /// <summary>

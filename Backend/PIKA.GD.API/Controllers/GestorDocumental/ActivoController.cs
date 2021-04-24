@@ -12,6 +12,7 @@ using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.GestionDocumental.Interfaces;
 using PIKA.Servicio.GestionDocumental.Servicios.Reporte;
+using PIKA.Servicio.Organizacion;
 using RepositorioEntidades;
 
 
@@ -26,13 +27,20 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         private readonly ILogger<ActivoController> logger;
         private IServicioActivo servicioActivo;
         private IProveedorMetadatos<Activo> metadataProvider;
+        IServicioUnidadOrganizacional servicioUO;
+        IServicioDominio servicioDominio;
+
         public ActivoController(ILogger<ActivoController> logger,
             IProveedorMetadatos<Activo> metadataProvider,
-            IServicioActivo servicioActivo)
+            IServicioActivo servicioActivo,
+            IServicioUnidadOrganizacional servicioUO,
+            IServicioDominio servicioDominio)
         {
             this.logger = logger;
             this.servicioActivo = servicioActivo;
             this.metadataProvider = metadataProvider;
+            this.servicioUO = servicioUO;
+            this.servicioDominio = servicioDominio;
         }
 
 
@@ -226,8 +234,14 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<FileResult> GetReporteCaratuaActivo(string id)
         {
-            logger.LogInformation("API");
-            byte[] bytes = await servicioActivo.ReporteCaratulaActivo("Ejmeplo","Dominio", id).ConfigureAwait(false);
+            string dominio = "";
+            string unidad = "";
+            var d = await this.servicioDominio.UnicoAsync(x => x.Id == this.DominioId);
+            var ou = await this.servicioUO.UnicoAsync(x => x.Id == this.TenatId);
+            if (d != null) dominio = d.Nombre;
+            if (ou != null) unidad = ou.Nombre;
+
+            byte[] bytes = await servicioActivo.ReporteCaratulaActivo( dominio, unidad, id).ConfigureAwait(false);
             
             const string contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
             HttpContext.Response.ContentType = contentType;

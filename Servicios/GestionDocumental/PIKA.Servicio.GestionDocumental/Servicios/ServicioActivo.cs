@@ -443,9 +443,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
                 string jsonString = JsonSerializer.Serialize(g);
 
+
+
                 logger.LogInformation(jsonString);
 
-                byte[] data = Convert.FromBase64String(r.Plantilla);
+                //byte[] data = Convert.FromBase64String(r.Plantilla);
+                byte[] data = System.IO.File.ReadAllBytes(@"c:\Borrame\demo.docx");
 
                 return ReporteEntidades.ReportePlantilla(data, jsonString, Config.Value.ruta_cache_fisico, true);
             }

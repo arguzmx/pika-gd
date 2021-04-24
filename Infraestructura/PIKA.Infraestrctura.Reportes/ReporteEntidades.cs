@@ -39,12 +39,18 @@ namespace PIKA.Infraestrctura.Reportes
 
         public const string PREFIJO_BARCODE1D = "CB:1D:";
         public const string PREFIJO_BARCODE2D = "CB:2D:";
+        public const string PREFIJO_BOOLEANO = "BOOL:";
 
 
- 
+
 
 
         #region comunes
+
+        public static bool EsCodigoBooleano(this string token)
+        {
+            return token.StartsWith(PREFIJO_BOOLEANO);
+        }
 
         public static bool EsCodigo1D(this string token)
         {
@@ -60,13 +66,27 @@ namespace PIKA.Infraestrctura.Reportes
         public static bool EsTokenTexto(this string token)
         {
 
-            if(token.StartsWith(PREFIJO_BARCODE1D) || token.StartsWith(PREFIJO_BARCODE2D))
+            if(token.StartsWith(PREFIJO_BARCODE1D) || 
+                token.StartsWith(PREFIJO_BARCODE2D) ||
+                token.StartsWith(PREFIJO_BOOLEANO))
             {
                 return false;
             }
 
             return true;
         }
+
+        private static TokenBooleano OntieneTokenBooleano(this string token)
+        {
+            TokenBooleano t = new TokenBooleano();
+            List<string> partes = token.TrimStart('#').TrimEnd('#').Split(':').ToList();
+            t.Verdadero = partes[1];
+            t.Falso = partes[2];
+            t.Dato = partes[3];
+            return t;
+        }
+
+
 
         private static TokenCB1D ObtieneToken1D(this string token)
         {
@@ -139,11 +159,10 @@ namespace PIKA.Infraestrctura.Reportes
 
 
 
-        private static void ProcesadorParrafos(List<Paragraph> parrafos, dynamic data, string rutaTemporales, WordprocessingDocument wpd, bool eliminar,
+        private static void ProcesadorParrafos(List<Paragraph> parrafos, dynamic data, 
+            string rutaTemporales, WordprocessingDocument wpd, bool eliminar,
             bool useIndex = false, int index = 0, string TablaId = "")
         {
-
-            
             List<ParteToken> tokens = new List<ParteToken>();
             for(int p=0; p < parrafos.Count; p++)
             {
@@ -269,6 +288,20 @@ namespace PIKA.Infraestrctura.Reportes
                             
                         }
                         
+                    }
+
+                    if(t.EsCodigoBooleano())
+                    {
+                        TokenBooleano config = t.OntieneTokenBooleano();
+                        string valor = ObtieneValorDato(config.Dato, data);
+                        if ("1,true,t,v".IndexOf(valor.ToLower()) >= 0)
+                        {
+                            textos[item.Text].Text = config.Verdadero;
+                        } else
+                        {
+                            textos[item.Text].Text = config.Falso;
+                        }
+
                     }
 
                     if (t.EsCodigo2D())
@@ -398,7 +431,7 @@ namespace PIKA.Infraestrctura.Reportes
                     for (int c = 0; c < celdas.Count; c++)
                     {
                         List<Paragraph> parrafos = celdas[c].OfType<Paragraph>().ToList();
-                        ProcesadorParrafos(parrafos, data, rutaTemporales, wpd, eliminarTemporal,  true, c, TablaId);
+                        ProcesadorParrafos(parrafos, data, rutaTemporales, wpd, eliminarTemporal,  true, i-1, TablaId);
                     }
                 }
 
