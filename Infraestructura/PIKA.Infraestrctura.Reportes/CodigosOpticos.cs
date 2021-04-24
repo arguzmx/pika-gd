@@ -16,7 +16,7 @@ namespace PIKA.Infraestrctura.Reportes
 
             string nombreArchivo = System.Guid.NewGuid().ToString() + ".png";
             string rutaArchivo = Path.Combine(rutaTemporales, nombreArchivo);
-
+            Console.WriteLine(rutaArchivo);
             if (config != null)
             {
                 NetBarcode.Type tipo = NetBarcode.Type.Code39;
@@ -64,7 +64,9 @@ namespace PIKA.Infraestrctura.Reportes
                     var barcode = new Barcode(config.Texto, tipo, false, Cm2Pixeles(config.Ancho), Cm2Pixeles(config.Alto));
                     barcode.SaveImageFile(rutaArchivo, ImageFormat.Png);
                 }
-                catch (Exception) { }
+                catch (Exception ex) {
+                    Console.WriteLine(ex.ToString());
+                }
             }
 
             return File.Exists(rutaArchivo) ? rutaArchivo : "";
@@ -75,7 +77,7 @@ namespace PIKA.Infraestrctura.Reportes
 
             string nombreArchivo = System.Guid.NewGuid().ToString() + ".png";
             string rutaArchivo = Path.Combine(rutaTemporales, nombreArchivo);
-
+            Console.WriteLine(rutaArchivo);
             if (config != null)
             {
                 try
@@ -86,7 +88,10 @@ namespace PIKA.Infraestrctura.Reportes
                     Bitmap qrCodeImage = qrCode.GetGraphic(20);
                     qrCodeImage.Save(rutaArchivo);
                 }
-                catch (Exception) { }
+                catch (Exception ex) {
+
+                    Console.WriteLine(ex.ToString());
+                }
             }
 
             return File.Exists(rutaArchivo) ? rutaArchivo : "";
