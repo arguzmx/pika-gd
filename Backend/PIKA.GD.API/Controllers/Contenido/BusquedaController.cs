@@ -8,6 +8,7 @@ using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Extractores;
 using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Metadatos.Interfaces;
+using PIKA.ServicioBusqueda.Contenido;
 using System;
 using System.Threading.Tasks;
 
@@ -19,54 +20,21 @@ namespace PIKA.GD.API.Controllers.Contenido
     [Route("api/v{version:apiVersion}/contenido/[controller]")]
     public class BusquedaController : ControllerBase
     {
-        IRepoContenidoElasticSearch repoContenido;
-        private readonly IAppCache appCache;
-        private IServicioPlantilla plantillas;
 
-        //ServicioBiusquedaElemento
-        //ServicioBusquedaCarpeta
+        private IServicioBusquedaContenido busqueda;
+
         public BusquedaController(
-            IRepoContenidoElasticSearch repoContenido,
-            IAppCache cache,
-            IServicioPlantilla plantillas) {
-            this.repoContenido = repoContenido;
-            this.appCache = cache;
-            this.plantillas = plantillas;
+            IServicioBusquedaContenido busqueda ) {
+            this.busqueda = busqueda;
         }
 
-
-        /// <summary>
-        /// Obtiene una plantilla a partir de su identificador único
-        /// </summary>
-        /// <param name="id">Identificador único de la plantilla</param>
-        /// <returns></returns>
-        [HttpGet("{id}", Name = "ObtienePlantillaBusquedaContenido")]
-        [TypeFilter(typeof(AsyncIdentityFilter))]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<MetadataInfo>> ObtienePlantilla(string id)
+        [HttpPost]
+        public async Task<ActionResult> Buscar([FromBody] BusquedaContenido request)
         {
-            try
-            {
-                Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(id, appCache, plantillas)
-                .ConfigureAwait(false);
-
-                if (plantilla == null) return NotFound(id);
-
-                PlantillaMetadataExtractor extractor = new PlantillaMetadataExtractor();
-
-                return Ok(extractor.Obtener(plantilla));
-            }
-            catch (Exception ex)
-            {
-
-                Console.WriteLine($"{ex}");
-                throw;
-            }
-
-
+            await busqueda.Buscar(request);
+            return Ok();
         }
+        
 
     }
 }

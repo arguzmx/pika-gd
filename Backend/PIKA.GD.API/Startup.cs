@@ -32,6 +32,7 @@ using PIKA.Servicio.Seguridad.Servicios;
 using PIKA.Servicio.Seguridad.Interfaces;
 using PIKA.Servicio.Reportes.Data;
 using Microsoft.AspNetCore.HttpOverrides;
+using PIKA.ServicioBusqueda.Contenido;
 
 namespace PIKA.GD.API
 {
@@ -112,6 +113,7 @@ namespace PIKA.GD.API
             services.AddTransient<ICacheSeguridad, CacheSeguridadMemoria>();
             services.AddTransient<IServicioPerfilUsuario, ServicioPerfilUsuario>();
             services.AddTransient(typeof(IProveedorMetadatos<>), typeof(ReflectionMetadataExtractor<>));
+            services.AddTransient<IServicioBusquedaContenido, ServicioBusquedaContenido>();
 
             services.AddTransient<IServicioInfoAplicacion, ServicioInfoAplicacionReflectivo>();
             services.AddScoped<AsyncACLActionFilter>();

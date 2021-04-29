@@ -246,5 +246,30 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             return fileContentResult;
         }
 
+
+
+        [HttpGet("reporte/inventario/{id}", Name = "GetReporteIvventario")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<FileResult> GetReporteIvventario(string id)
+        {
+
+            string file =  await servicioArchivo.ReporteGuiaInventario(id).ConfigureAwait(false);
+            
+            var archivo = await servicioArchivo.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+
+            const string contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            HttpContext.Response.ContentType = contentType;
+            HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+
+            var bytes = await System.IO.File.ReadAllBytesAsync(file);
+
+            var fileContentResult = new FileContentResult(bytes, contentType)
+            {
+                FileDownloadName = $"Inventario {DateTime.Now.ToString("dd/MM/yyyy")} {archivo.Nombre}.csv"
+            };
+            return fileContentResult;
+        }
+
     }
 }

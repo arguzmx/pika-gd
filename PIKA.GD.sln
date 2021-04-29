@@ -94,7 +94,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reportes", "Reportes", "{4B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Busqueda", "Busqueda", "{EF1FF426-5DA8-4C8E-87CE-F3E8376AA402}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIKA.ServicioBusqueda.Contenido", "Servicios\Busqueda\PIKA.ServicioBusqueda.Contenido\PIKA.ServicioBusqueda.Contenido.csproj", "{CDE1C2CD-C909-4BBB-AC0F-56059D393149}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIKA.ServicioBusqueda.Contenido", "Servicios\Busqueda\PIKA.ServicioBusqueda.Contenido\PIKA.ServicioBusqueda.Contenido.csproj", "{CDE1C2CD-C909-4BBB-AC0F-56059D393149}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

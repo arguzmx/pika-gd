@@ -17,16 +17,4 @@ namespace RepositorioEntidades
 
     }
 
-    public class ConsultaArray : ParametrosConsulta
-    {
-        public ConsultaArray()
-        {
-
-            
-        }
-
-        public FiltroConsulta[] Filtros { get; set; }
-
-    }
-
 }

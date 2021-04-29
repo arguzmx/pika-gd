@@ -19,16 +19,16 @@
             Salir
 
         </h2>
-        <div class="thumbnail"><img src="./PIKA_PARROT.svg" /></div>
+        <div class="thumbnail"><img src="../PIKA_PARROT.svg" /></div>
         @if (!string.IsNullOrWhiteSpace(nameUser))
         {
             <div class="nombre"> <b>  @nameUser</b></div>
         }
 
-    <div class="links">  <a href="~/">Regresar a la aplicación</a> </div>
+        <div class="links">  <a href="~/">Regresar a la aplicación</a> </div>
         @if (Model.PostLogoutRedirectUri != null)
         {
-            <form  class="links">
+            <form class="links">
                 <a class="PostLogoutRedirectUri" href="@Model.PostLogoutRedirectUri">Regresar a la aplicación</a>
                 <span>@Model.ClientName</span>.
             </form>
@@ -43,9 +43,11 @@
 
     @section scripts
 {
+
+        <script src="~/js/signout-redirect.js"></script>
         @if (Model.AutomaticRedirectAfterSignOut)
         {
-            <script src="~/js/signout-redirect.js"></script>
+
         }
     </div>
 }

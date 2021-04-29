@@ -18,6 +18,7 @@ using PIKA.Servicio.Contenido.Servicios;
 using PIKA.Servicio.Metadatos.ElasticSearch;
 using PIKA.ServicioBusqueda.Contenido;
 using RabbitMQ.Client;
+using RepositorioEntidades;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -139,7 +140,8 @@ namespace PIKA.GD.API
                 Log.Logger.Information("Estableciendo el repositorio de búsqueda de contenido a {x}", "Elasticsearch");
                 services.AddTransient<IServicioBusquedaContenido>(provider => {
                     var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
-                    return new ServicioBusquedaContenido(Configuration, loggerFactory);
+                    var IpOpciones = provider.GetRequiredService<IProveedorOpcionesContexto<DbContextBusquedaContenido>>();
+                    return new ServicioBusquedaContenido(IpOpciones, Configuration, loggerFactory);
                 });
             }
         }

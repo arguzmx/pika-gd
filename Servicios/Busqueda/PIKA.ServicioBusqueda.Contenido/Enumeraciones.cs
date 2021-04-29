@@ -14,7 +14,7 @@ namespace PIKA.ServicioBusqueda.Contenido
 
     public class Constantes
     {
-        public const string PROPIEDEDES = "propiededes";
+        public const string PROPIEDEDES = "propiedades";
         public const string ENFOLDER = "enfolder";
         public const string METADATOS = "metadatos";
     }

@@ -88,7 +88,8 @@ namespace PIKA.GD.API
         private static void InicializaEslasticSearch(IConfiguration configuracion, IWebHost host)
         {
             var IlogFactory = host.Services.GetRequiredService<ILoggerFactory>();
-            ServicioBusquedaContenido s = new ServicioBusquedaContenido(configuracion, IlogFactory);
+            var IpOpciones = host.Services.GetRequiredService<IProveedorOpcionesContexto<DbContextBusquedaContenido>>();
+            ServicioBusquedaContenido s = new ServicioBusquedaContenido(IpOpciones, configuracion, IlogFactory);
             s.Inicializar("", false); ;
             Console.WriteLine("..................................");
         }

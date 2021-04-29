@@ -60,5 +60,10 @@ namespace RepositorioEntidades
         /// deben estar separados por un caracter separador de valores que por default es ,
         /// </summary>
         public string Valor { get; set; }
+
+        /// <summary>
+        /// Lista concatenada de valores 
+        /// </summary>
+        public string ValorString { get; set; }
     }
 }

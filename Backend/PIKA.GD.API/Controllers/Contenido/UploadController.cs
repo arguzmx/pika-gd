@@ -41,8 +41,8 @@ namespace PIKA.GD.API.Controllers.Contenido
             this.servicioVol = servicioVol;
             this.logger = logger;
             this.configuracionServidor = opciones.Value;
-            FiltroArchivos.minimo = 1024; //1 KB
-            FiltroArchivos.maximo = 10485760; //10 MB
+            FiltroArchivos.minimo = 1; //1 KB
+            FiltroArchivos.maximo = long.MaxValue; //10 MB
             FiltroArchivos.addExt(".jpg");
             FiltroArchivos.addExt(".pdf");
             FiltroArchivos.addExt(".doc");
@@ -61,6 +61,8 @@ namespace PIKA.GD.API.Controllers.Contenido
 
         }
 
+
+        [RequestSizeLimit(long.MaxValue)]
         [HttpPost("completar/{TransaccionId}")]
         public async Task<ActionResult<List<Pagina>>> FinalizarLote(string TransaccionId)
         {
@@ -218,7 +220,7 @@ namespace PIKA.GD.API.Controllers.Contenido
             }
             return valida;
         }
-        private bool tamanoValido(long size, int min, int max)
+        private bool tamanoValido(long size, long min, long max)
         {
             if (size > 0)
                 if (size > min && size <= max)

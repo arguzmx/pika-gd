@@ -10,8 +10,8 @@ namespace PIKA.Modelo.Contenido
         {
             _extensiones = new List<string>();
         }
-        public static int minimo { get; set; }
-        public static int maximo { get; set; }
+        public static long minimo { get; set; }
+        public static long maximo { get; set; }
 
         private static List<string> _extensiones;
 

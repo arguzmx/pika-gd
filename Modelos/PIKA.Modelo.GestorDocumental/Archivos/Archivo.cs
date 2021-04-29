@@ -45,6 +45,7 @@ namespace PIKA.Modelo.GestorDocumental
             TransferenciasDestino = new HashSet<Transferencia>();
             this.Reportes = new List<IProveedorReporte>();
             this.Reportes.Add(new ReporteGuiaSimpleArchivo());
+            this.Reportes.Add(new ReporteInventario());
         }
 
 

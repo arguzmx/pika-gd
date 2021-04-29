@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2010.ExcelAc;
-using LazyCache;
+﻿using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query;
@@ -15,7 +14,6 @@ using PIKA.Modelo.GestorDocumental.Reportes.JSON;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.GestionDocumental.Interfaces;
 using PIKA.Servicio.Reportes.Interfaces;
-using PIKA.Servicio.Reportes.Servicios;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
@@ -24,6 +22,7 @@ using System.Linq.Expressions;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace PIKA.Servicio.GestionDocumental.Servicios
 {
@@ -396,7 +395,66 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             byte[] data = Convert.FromBase64String(r.Plantilla);
 
             return ReporteEntidades.ReportePlantilla( data , jsonString, Config.Value.ruta_cache_fisico, true);
-        } 
+        }
+
+
+
+        /// <summary>
+        /// Crea el reporte de inventario
+        /// </summary>
+        /// <param name="ArchivoId">Identificador del archivo para el reporte</param>
+        /// <returns></returns>
+        public async Task<string> ReporteGuiaInventario(string ArchivoId)
+        {
+
+            string nombreArchivo = $"activos{Guid.NewGuid().ToString().Replace("-","")}.csv";
+            string ruta = Path.Combine(Config.Value.ruta_cache_fisico, nombreArchivo);
+            string q = $"select *  from gd$activo where ArchivoId='{ArchivoId}'";
+            List<Activo> activos = await this.UDT.Context.Activos.FromSqlRaw(q).ToListAsync();
+            List<EntradaClasificacion> entradas = UDT.Context.EntradaClasificacion.ToList();
+
+            FileStream fs = new FileStream(ruta, FileMode.Create);
+            StreamWriter sw = new StreamWriter(fs, System.Text.Encoding.Default);
+
+            sw.WriteLine("Nombre\tIdentificador\tClave\tFecha Apertura\tFecha Cierre\tRetención AT\tRetención AC\tEn Préstamo\tReservado\tConfidencial\tAmpliado\tCódigo Barras\tCódigo RFID\tAsunto");
+
+            foreach (var a in activos)
+            {
+                System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                sb.Append(a.Nombre);
+                sb.Append("\t");
+                sb.Append(string.IsNullOrEmpty(a.IDunico) ? "" : a.IDunico);
+                sb.Append("\t");
+                sb.Append(entradas.Where(x=>x.Id == a.EntradaClasificacionId).First().NombreCompleto);
+                sb.Append("\t");
+                sb.Append(a.FechaApertura.ToString("dd/MM/yyyy"));
+                sb.Append("\t");
+                sb.Append(a.FechaCierre.HasValue? a.FechaCierre.Value.ToString("dd/MM/yyyy") :"");
+                sb.Append("\t");
+                sb.Append(a.FechaRetencionAT.HasValue ? a.FechaRetencionAT.Value.ToString("dd/MM/yyyy") : "");
+                sb.Append("\t");
+                sb.Append(a.FechaRetencionAC.HasValue ? a.FechaRetencionAC.Value.ToString("dd/MM/yyyy") : "");
+                sb.Append("\t");
+                sb.Append(a.EnPrestamo ? "X" : "");
+                sb.Append("\t");
+                sb.Append(a.Reservado ? "X" : "");
+                sb.Append("\t");
+                sb.Append(a.Confidencial ? "X" : "");
+                sb.Append("\t");
+                sb.Append(a.Ampliado ? "X" : "");
+                sb.Append(string.IsNullOrEmpty(a.CodigoOptico) ? "": a.CodigoOptico);
+                sb.Append("\t");
+                sb.Append(string.IsNullOrEmpty(a.CodigoElectronico) ? "": a.CodigoElectronico);
+                sb.Append("\t");
+                sb.Append(string.IsNullOrEmpty(a.Asunto) ? "" : a.Asunto);
+                sw.WriteLine(sb.ToString());
+            }
+            sw.Close();
+            fs.Close();
+
+            return ruta;
+        }
+
 
         #region Sin Implementación
         public Task<IPaginado<Archivo>> ObtenerPaginadoAsync(Expression<Func<Archivo, bool>> predicate = null, Func<IQueryable<Archivo>, IOrderedQueryable<Archivo>> orderBy = null, Func<IQueryable<Archivo>, IIncludableQueryable<Archivo, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)

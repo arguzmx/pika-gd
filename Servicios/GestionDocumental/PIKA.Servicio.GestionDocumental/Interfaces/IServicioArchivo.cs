@@ -14,5 +14,7 @@ namespace PIKA.Servicio.GestionDocumental.Interfaces
 
         Task<byte[]> ReporteGuiaSimpleArchivo(string ArchivoId);
 
+        Task<string> ReporteGuiaInventario(string ArchivoId);
+
     }
 }
