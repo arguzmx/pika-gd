@@ -97,6 +97,8 @@ namespace PIKA.Modelo.Metadatos
         /// <param name="plantilla"></param>
         /// <returns></returns>
         Task<long> ContarPorConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId);
+
+        Task<List<string>> IdsrPorConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId);
     }
 
 }

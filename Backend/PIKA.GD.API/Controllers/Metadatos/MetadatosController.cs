@@ -117,14 +117,11 @@ namespace PIKA.GD.API.Controllers.Metadatos
             Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
                     .ConfigureAwait(false);
 
-            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(plantilla));
-
             if (plantilla == null) return NotFound(plantillaid);
 
             bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
             if (existe)
             {
-                Console.WriteLine($"??{existe}");
                 DocumentoPlantilla documento = await repositorio.Inserta("dominio", this.TenatId,
                     false, null, plantilla, valores, "").ConfigureAwait(false);
                 if (documento != null) return Ok(documento);
@@ -323,16 +320,13 @@ namespace PIKA.GD.API.Controllers.Metadatos
         private async Task<bool> PLantillaGenerada(Plantilla plantilla)
         {
             bool existe = await CacheMetadatos.PlantillaGenerada(plantilla.Id, appCache).ConfigureAwait(false);
-            Console.WriteLine($"Existe plantilla {existe}");
             if (!existe)
             {
                 // si no esta en cache
                 //Verifcica en el repositorio
                 existe = await repositorio.ExisteIndice(plantilla.Id).ConfigureAwait(false);
-                Console.WriteLine($"Existe indice en repo {existe}");
                 if (!existe)
                 {
-                    Console.WriteLine($"crea plantilla");
                     // Crea la plantilla si no existe
                     await repositorio.CrearIndice(plantilla).ConfigureAwait(false);
                     // y vuelve a consultar

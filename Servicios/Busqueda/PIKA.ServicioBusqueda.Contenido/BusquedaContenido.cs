@@ -9,7 +9,7 @@ namespace PIKA.ServicioBusqueda.Contenido
 
 
 
-    public class BusquedaContenido
+    public class BusquedaContenido: ParametrosConsulta
     {
         /// <summary>
         /// Identificador único de la búsqueda
@@ -28,6 +28,9 @@ namespace PIKA.ServicioBusqueda.Contenido
 
         [Number(NumberType.Integer)]
         public EstadoBusqueda Estado { get; set; }
+
+        [Keyword]
+        public string PuntoMontajeId { get; set; }
 
 
     }

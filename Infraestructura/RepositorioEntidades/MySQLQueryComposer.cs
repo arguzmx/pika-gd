@@ -214,31 +214,31 @@ namespace RepositorioEntidades
                     break;
 
                 case FiltroConsulta.OP_BETWEN:
-                    final = $" {NombreCampo} betwwen '{fechas[0].ReemplazoFecha()}' and '{fechas[1].ReemplazoFecha()}' ";
+                    final = $" {NombreCampo} between {fechas[0].ReemplazoFecha()} and {fechas[1].ReemplazoFecha()} ";
                     break;
 
                 case FiltroConsulta.OP_NEQ:
-                    final = $" {NombreCampo} <> '{fechas[0].ReemplazoFecha()}'";
+                    final = $" {NombreCampo} <> {fechas[0].ReemplazoFecha()}";
                     break;
 
                 case FiltroConsulta.OP_EQ:
-                    final = $" {NombreCampo} = '{fechas[0].ReemplazoFecha()}'";
+                    final = $" {NombreCampo} = {fechas[0].ReemplazoFecha()}";
                     break;
 
                 case FiltroConsulta.OP_GT:
-                    final = $" {NombreCampo} > '{fechas[0].ReemplazoFecha()}'";
+                    final = $" {NombreCampo} > {fechas[0].ReemplazoFecha()}";
                     break;
 
                 case FiltroConsulta.OP_GTE:
-                    final = $" {NombreCampo} >= '{fechas[0].ReemplazoFecha()}'";
+                    final = $" {NombreCampo} >= {fechas[0].ReemplazoFecha()}";
                     break;
 
                 case FiltroConsulta.OP_LT:
-                    final = $" {NombreCampo} < '{fechas[0].ReemplazoFecha()}'";
+                    final = $" {NombreCampo} < {fechas[0].ReemplazoFecha()}";
                     break;
 
                 case FiltroConsulta.OP_LTE:
-                    final = $" {NombreCampo} <= '{fechas[0].ReemplazoFecha()}'";
+                    final = $" {NombreCampo} <= {fechas[0].ReemplazoFecha()}";
                     break;
 
             }

@@ -8,7 +8,10 @@ namespace PIKA.ServicioBusqueda.Contenido
 {
     public static class Extensiones
     {
-
+        public static void LogS(this string o)
+        {
+            Console.WriteLine(o);
+        }
         public static void LogS(this object o)
         {
             Console.WriteLine(o.ToS());

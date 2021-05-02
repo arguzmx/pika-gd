@@ -5,9 +5,35 @@ using ES = Elasticsearch.Net;
 using System.Linq;
 using System.Threading.Tasks;
 using Nest;
+using System.Collections.Generic;
+using Elasticsearch.Net;
+using Newtonsoft.Json.Linq;
 
 namespace PIKA.Servicio.Metadatos.ElasticSearch
 {
+    public static class Extenders
+    {
+        public static string DblQuotes(this string o)
+        {
+            return o.Replace("'", "\"");
+        }
+
+        public static void LogS(this string o)
+        {
+            Console.WriteLine(o);
+        }
+
+        public static void LogS(this object o)
+        {
+            Console.WriteLine(o.ToS());
+        }
+
+        public static string ToS(this object o)
+        {
+            return System.Text.Json.JsonSerializer.Serialize(o);
+        }
+    }
+
     public partial class RepoMetadatosElasticSearch
     {
 
@@ -20,7 +46,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         private const string CONTAINS = "{ 'wildcard': { '#F#': { 'value': '*#V#*' } } }";
         private const string STARTS = "{ 'wildcard': { '#F#': { 'value': '*V#*' } } }";
         private const string ENDS = "{ 'wildcard': { '#F#': { 'value': '*#V#' } } }";
-        private const string TERM = "{ 'term': { '#F#': {'value': ^#V#^ }}";
+        private const string TERM = "{ 'term': { '#F#': {'value': ^#V#^ } } }";
         private const string RANGECLOSED = "{ 'range': { '#F#': { 'gte': ^#V#^, 'lte': ^#W#^ } } }";
         private const string RANGEOPEN = "{ 'range': { '#F#': { 'gt': ^#V#^, 'lt': ^#W#^ } } }";
         private const string RANGEGT = "{ 'range': { '#F#': { 'gt': ^#V#^} } }";
@@ -28,21 +54,45 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         private const string RANGELT = "{ 'range': { '#F#': { 'lt': ^#V#^} } }";
         private const string RANGELTE = "{ 'range': { '#F#': { 'lte': ^#V#^} } }";
 
-        private const string BOOLQUERY = "{ 'query': { 'bool': { %M% #N# #F# } } }";
+        private const string BOOLQUERY = "'query': { 'bool': { #M# #N# #F# } }";
+        private const string PLAINBOOLQUERY = "{ #Q# }";
+        private const string IDSQUERY = "{ 'size': 5000, '_source': ['DID'], #Q# }";
 
         public async Task<long> ContarPorConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId)
         {
-            string consulta = CreaConsulta(q, plantilla, PuntoMontajeId);
+            string consulta = PLAINBOOLQUERY.Replace("#Q#", CreaConsulta(q, plantilla, PuntoMontajeId)).DblQuotes(); 
+        Console.WriteLine(consulta);
+                var body = ES.PostData.String(consulta);
+                var response = await cliente.LowLevel.CountAsync<CountResponse>(body);
+
+                if (response.IsValid)
+                {
+                    return response.Count;
+                }
+                return 0;
+        }
+
+        public async Task<List<string>> IdsrPorConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId)
+        {
+
+            List<string> l = new List<string>();
+            string consulta = IDSQUERY.Replace("#Q#", CreaConsulta(q, plantilla, PuntoMontajeId)).DblQuotes();
+            Console.WriteLine(consulta);
             var body = ES.PostData.String(consulta);
-            var response = await cliente.LowLevel.CountAsync<CountResponse>(body);
 
-            if (response.IsValid)
+            var response = await cliente.LowLevel.SearchAsync<StringResponse>(body);
+            if (response.Success)
             {
-                return response.Count;
+                    
+                dynamic r = JObject.Parse(response.Body);
+                var hits = r.hits.hits;
+                foreach(var h in hits)
+                {
+                    l.Add( (string)h._source.DID );
+                }
             }
+            return l;
 
-            return 0;
-            
         }
 
         private string CreaConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId)
@@ -52,10 +102,14 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             string must_not = "";
             string filter = TERM
                         .Replace("#F#", $"IF")
-                        .Replace("#V#", PuntoMontajeId); 
+                        .Replace("#V#", PuntoMontajeId)
+                        .Replace("^", "'");
 
             foreach (var f in q.Filtros)
             {
+                f.Valor = f.ValorString;
+                f.ToS();
+
                 Propiedad p = plantilla.Propiedades.Where(x => x.Id == f.Propiedad).FirstOrDefault();
                 if (p != null)
                 {
@@ -166,6 +220,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 }
             }
 
+
             if (must_not.Length > 0) { 
                 must_not = must_not.TrimEnd(',');
                 must_not = MUSTNOT.Replace("#Q#", must_not);
@@ -183,13 +238,12 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 filter = FILTER.Replace("#Q#", filter);
             }
 
-            string consulta = BOOLQUERY
-                .Replace("M", must.Length>0 ? must + "," : "" )
-                .Replace("N", must_not.Length > 0 ? must_not + "," : "")
-                .Replace("F", filter)
-                ;
 
-            Console.WriteLine(consulta);
+            string consulta = BOOLQUERY
+                .Replace("#M#", must.Length>0 ? must + "," : "" )
+                .Replace("#N#", must_not.Length > 0 ? must_not + "," : "")
+                .Replace("#F#", filter)
+                ;
 
             return consulta;
         }
@@ -430,7 +484,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         {
             string query = null;
             bool mustNot = false;
-
+            f.LogS();
             f.Valor = "1,true,t".Split(',').ToList().IndexOf(f.Valor.ToLower()) >= 0 ? "true" : "false";
 
             switch (f.Operador)

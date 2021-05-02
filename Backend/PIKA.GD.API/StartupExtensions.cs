@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using LazyCache;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -141,7 +142,10 @@ namespace PIKA.GD.API
                 services.AddTransient<IServicioBusquedaContenido>(provider => {
                     var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
                     var IpOpciones = provider.GetRequiredService<IProveedorOpcionesContexto<DbContextBusquedaContenido>>();
-                    return new ServicioBusquedaContenido(IpOpciones, Configuration, loggerFactory);
+                    var ICache = provider.GetRequiredService<IAppCache>();
+                    var IRepositorioMetadatos = provider.GetRequiredService<IRepositorioMetadatos>();
+                    var IServicioPlantilla = provider.GetRequiredService<Servicio.Metadatos.Interfaces.IServicioPlantilla>();
+                    return new ServicioBusquedaContenido(IServicioPlantilla, IRepositorioMetadatos, ICache, IpOpciones, Configuration, loggerFactory);
                 });
             }
         }

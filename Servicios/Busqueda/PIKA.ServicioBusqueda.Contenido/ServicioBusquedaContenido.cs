@@ -1,8 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using LazyCache;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Nest;
 using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Contenido;
+using PIKA.Modelo.Metadatos;
+using PIKA.Servicio.Metadatos.Interfaces;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
@@ -18,6 +22,11 @@ namespace PIKA.ServicioBusqueda.Contenido
         private const string INDICEBUSQUEDA = "contenido-busqueda";
         private ILogger logger;
         private HashSet<Elemento> elementos;
+        private IAppCache cache;
+        private IRepositorioMetadatos repoMetadatos;
+        private IServicioPlantilla servicioPlantilla;
+        private Plantilla Plantilla;
+
         /// <summary>
         /// Lista los identificadores del filtro 'en folder'
         /// </summary>
@@ -38,17 +47,22 @@ namespace PIKA.ServicioBusqueda.Contenido
         protected DbContextBusquedaContenido contexto;
 
         public ServicioBusquedaContenido(
+            IServicioPlantilla servicioPlantilla,
+            IRepositorioMetadatos repositorioMetadatos,
+            IAppCache cache,
             IProveedorOpcionesContexto<DbContextBusquedaContenido> proveedorOpciones,
             IConfiguration Configuration,
             ILoggerFactory loggerFactory)
         {
             DbContextContenidoFactory cf = new DbContextContenidoFactory(proveedorOpciones);
             this.contexto = cf.Crear();
-
+            this.cache = cache;
             this.logger = loggerFactory.CreateLogger(nameof(ServicioBusquedaContenido));
             this.Configuration = Configuration;
             this.CreaClientes(this.Configuration);
             this.UDT = new UnidadDeTrabajo<DbContextBusquedaContenido>(contexto);
+            this.repoMetadatos = repositorioMetadatos;
+            this.servicioPlantilla = servicioPlantilla;
         }
 
         public void CreaClientes(IConfiguration configuration)
@@ -68,49 +82,95 @@ namespace PIKA.ServicioBusqueda.Contenido
         {
             await Task.Delay(1);
             
-            EjecutarConteos(busqueda);
+            
+            CacheBusqueda cacheB = null;
 
-            if(busqueda.Elementos.Sum(x => x.Conteo) > 0)
+
+            if(!busqueda.recalcular_totales)
             {
-                EjecutarUQeryIds(busqueda);
-
-                var validos = busqueda.Elementos.Where(x => x.Conteo > 0).OrderBy(x => x.Conteo).ToList();
-                
-                List<string> unicos = new List<string>();
-                if(validos.Count > 1)
-                {
-                    for (int i = 0; i < validos.Count -1; i++)
-                    {
-                        unicos = validos[i].Ids.Intersect(validos[i + 1].Ids).ToList();
-                    }
-                } else
-                {
-                    unicos = validos[0].Ids;
-                }
-
-                unicos.LogS();
-                await EjecutarUQeryElementos(busqueda, unicos);
-
-                elementos.LogS();
-            }
-
+                cacheB = cache.Get<CacheBusqueda>(busqueda.Id);
+            } 
             
 
-            return null;
+            if (cacheB == null) {
+
+                await EjecutarConteos(busqueda);
+                
+                busqueda.Elementos.Sum(x => x.Conteo).ToString().LogS();
+
+                if (busqueda.Elementos.Sum(x => x.Conteo) > 0)
+                {
+                    await EjecutarUQeryIds(busqueda);
+
+                    var validos = busqueda.Elementos.Where(x => x.Conteo > 0).OrderBy(x => x.Conteo).ToList();
+
+                    List<string> unicos = new List<string>();
+                    if (validos.Count > 1)
+                    {
+                        for (int i = 0; i < validos.Count - 1; i++)
+                        {
+                            unicos = validos[i].Ids.Intersect(validos[i + 1].Ids).ToList();
+                        }
+                    }
+                    else
+                    {
+                        unicos = validos[0].Ids;
+                    }
+
+                    cacheB = new CacheBusqueda()
+                    {
+                        Id = busqueda.Id,
+                        Unicos = unicos
+                    };
+
+                    cacheB.Unicos.LogS();
+
+                    cache.Add(busqueda.Id, cacheB);
+                }
+            } else
+            {
+                Console.WriteLine("cache");
+            }
+
+            Paginado<Elemento> p = new Paginado<Elemento>()
+            {
+                ConteoFiltrado = 0,
+                ConteoTotal = 0,
+                Desde = busqueda.indice,
+                Elementos = new List<Elemento>(),
+                Indice = busqueda.indice,
+                Paginas = 0,
+                Tamano = busqueda.tamano
+            };
+
+            if (cacheB!=null)
+            {
+                p.ConteoFiltrado = cacheB.Unicos.Count;
+                p.ConteoTotal = cacheB.Unicos.Count;
+                p.Elementos = (await BuscarPorIds(busqueda, cacheB.Unicos)).ToList();
+                p.Paginas = (cacheB.Unicos.Count % busqueda.tamano)>0 ? (int)(cacheB.Unicos.Count / busqueda.tamano) + 1  : (int)(cacheB.Unicos.Count / busqueda.tamano);
+            }
+
+            return p;
+
         }
 
-        private async Task EjecutarUQeryElementos(BusquedaContenido busqueda, List<string> Ids)
-        {
-            elementos = await BuscarPorIds(busqueda, Ids);
-        }
 
 
-        private void EjecutarUQeryIds(BusquedaContenido busqueda)
+        private async Task EjecutarUQeryIds(BusquedaContenido busqueda)
         {
             List<Task> conteos = new List<Task>();
             Task<long> ConteoEnFolder = null;
             Task<long> ConteoPropieddes = null;
-            Task<long> ConteoMetadatos = null;
+            Task<List<string>> ConteoMetadatos = null;
+
+            if (busqueda.Conteo(Constantes.METADATOS) > 0)
+            {
+                var filtro = busqueda.ObtenerBusqueda(Constantes.METADATOS);
+                ConteoMetadatos= this.repoMetadatos.IdsrPorConsulta(filtro.Consulta, this.Plantilla, busqueda.PuntoMontajeId);
+                conteos.Add(ConteoMetadatos);
+            }
+
 
             if (busqueda.Conteo(Constantes.ENFOLDER) >0  )
             {
@@ -120,16 +180,9 @@ namespace PIKA.ServicioBusqueda.Contenido
 
             if (busqueda.Conteo(Constantes.PROPIEDEDES) > 0)
             {
-                ConteoPropieddes = ContarPropiedades(busqueda.ObtenerBusqueda(Constantes.PROPIEDEDES).Consulta, true);
+                ConteoPropieddes = ContarPropiedades(busqueda.ObtenerBusqueda(Constantes.PROPIEDEDES).Consulta, true, busqueda.PuntoMontajeId);
                 conteos.Add(ConteoPropieddes);
             }
-
-            if (busqueda.Conteo(Constantes.METADATOS) > 0)
-            {
-                //ConteoEnFolder = ContarEnMetadatos(busqueda.ObtenerBusqueda(Constantes.METADATOS).Consulta);
-                //conteos.Add(ConteoMetadatos);
-            }
-
 
             if (conteos.Count > 0)
             {
@@ -148,18 +201,27 @@ namespace PIKA.ServicioBusqueda.Contenido
 
                 if (busqueda.BuscarMetadatos())
                 {
-                    // busqueda.ActualizaConteo(Constantes.METADATOS, ConteoMetadatos.Result);
+                    busqueda.ActualizaIds(Constantes.METADATOS, ConteoMetadatos.Result);
                 }
             }
         }
 
 
-        private void EjecutarConteos(BusquedaContenido busqueda)
+        private async Task EjecutarConteos(BusquedaContenido busqueda)
         {
             List<Task> conteos = new List<Task>();
             Task<long> ConteoEnFolder = null;
             Task<long> ConteoPropieddes = null;
             Task<long> ConteoMetadatos = null;
+            Console.WriteLine($"{busqueda.BuscarMetadatos()}");
+            if (busqueda.BuscarMetadatos())
+            {
+                var filtro = busqueda.ObtenerBusqueda(Constantes.METADATOS);
+                filtro.LogS();
+                this.Plantilla = await servicioPlantilla.UnicoAsync(x => x.Id == filtro.Topico, null,  p => p.Include(z=>z.Propiedades) );
+                ConteoMetadatos = this.repoMetadatos.ContarPorConsulta(filtro.Consulta, this.Plantilla, busqueda.PuntoMontajeId);
+                conteos.Add(ConteoMetadatos);
+            }
 
             if (busqueda.BuscarEnFolder())
             {
@@ -169,15 +231,11 @@ namespace PIKA.ServicioBusqueda.Contenido
 
             if (busqueda.BuscarPropiedades())
             {
-                ConteoPropieddes = ContarPropiedades(busqueda.ObtenerBusqueda(Constantes.PROPIEDEDES).Consulta, false);
+                ConteoPropieddes = ContarPropiedades(busqueda.ObtenerBusqueda(Constantes.PROPIEDEDES).Consulta, false, busqueda.PuntoMontajeId);
                 conteos.Add(ConteoPropieddes);
             }
 
-            if (busqueda.BuscarMetadatos())
-            {
-                //ConteoEnFolder = ContarEnMetadatos(busqueda.ObtenerBusqueda(Constantes.METADATOS).Consulta);
-                //conteos.Add(ConteoMetadatos);
-            }
+ 
 
 
             if (conteos.Count > 0)
@@ -197,9 +255,12 @@ namespace PIKA.ServicioBusqueda.Contenido
 
                 if (busqueda.BuscarMetadatos())
                 {
-                    // busqueda.ActualizaConteo(Constantes.METADATOS, ConteoMetadatos.Result);
+                    busqueda.ActualizaConteo(Constantes.METADATOS, ConteoMetadatos.Result);
                 }
             }
+
+
+            
 
         }
 

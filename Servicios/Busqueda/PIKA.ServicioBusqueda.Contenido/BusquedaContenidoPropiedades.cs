@@ -25,78 +25,71 @@ namespace PIKA.ServicioBusqueda.Contenido
 
             try
             {
+                Ids.LogS();
+
                 this.UDT.Context.Database.GetDbConnection().Open();
                 var cmd = this.UDT.Context.Database.GetDbConnection().CreateCommand();
-                
-            //    Console.WriteLine(this.Configuration["ConnectionStrings:pika-gd"]);
-            //var cn = new MySqlConnection(this.Configuration["ConnectionStrings:pika-gd"]);
-            //await cn.OpenAsync();
 
-            //if (Ids.Count > 100)
-            //{
+                string tableName = $"temp{ busqueda.Id.Replace("-", "")}";
 
-            string tableName = $"temp{ busqueda.Id.Replace("-", "")}";
-                Console.WriteLine(tableName);
-            string tempT = $@"CREATE TEMPORARY TABLE {tableName} (Id varchar(128) PRIMARY KEY )";
-                Console.WriteLine(tempT);
+                string tempT = $@"CREATE TEMPORARY TABLE {tableName} (Id varchar(128) PRIMARY KEY )";
                 string dropT = $"DROP TEMPORARY TABLE {tableName}";
-                Console.WriteLine(dropT);
                 string bulk = $@"insert into `{tableName}`(`Id`) values";
+                Console.WriteLine(tempT);
+
+
+                cmd.CommandText = tempT;
+                var a = await cmd.ExecuteScalarAsync();
 
 
 
-                //MySqlCommand cmd = new MySqlCommand(tempT, cn);
-            cmd.CommandText = tempT;
-            var a = await cmd.ExecuteScalarAsync();
-
-
-
-            int pageIndex = 0;
-            StringBuilder insert = new StringBuilder();
-            for (int i = 0; i < Ids.Count; i++)
-            {
-                if (pageIndex == 0)
+                int pageIndex = 0;
+                StringBuilder insert = new StringBuilder();
+                for (int i = 0; i < Ids.Count; i++)
                 {
-                    insert.Append(bulk + $"('{Ids[i]}'),");
-                }
-                else
-                {
-                    insert.Append($"('{Ids[i]}'),");
-                }
-                pageIndex++;
+                    if (pageIndex == 0)
+                    {
+                        insert.Append(bulk + $"('{Ids[i]}'),");
+                    }
+                    else
+                    {
+                        insert.Append($"('{Ids[i]}'),");
+                    }
+                    pageIndex++;
 
-                if (pageIndex > 100)
+                    if (pageIndex > 100)
+                    {
+                        cmd.CommandText = insert.ToString().TrimEnd(',');
+                        await cmd.ExecuteNonQueryAsync();
+                        insert.Clear();
+                        pageIndex = 0;
+                    }
+                }
+
+
+                if (insert.ToString().EndsWith(','))
                 {
                     cmd.CommandText = insert.ToString().TrimEnd(',');
                     await cmd.ExecuteNonQueryAsync();
                     insert.Clear();
-                    pageIndex = 0;
                 }
-            }
-
-
-            if (insert.ToString().EndsWith(','))
-            {
-                cmd.CommandText = insert.ToString().TrimEnd(',');
-                await cmd.ExecuteNonQueryAsync();
-                insert.Clear();
-            }
 
                 string x = $"select count(*) from {tableName}";
+                Console.WriteLine(x);
                 cmd.CommandText = x;
 
                 var xx = cmd.ExecuteScalar();
 
                 xx.LogS();
 
+                long offset = (busqueda.indice * busqueda.tamano)-1;
+                if (offset == -1) offset = 0;
 
-                string sqls = $"select distinct c.*  from contenido$elemento  c inner join {tableName}  t on c.Id = t.Id";
-
+                string sqls = $"select distinct c.*  from contenido$elemento  c inner join {tableName}  t on c.Id = t.Id LIMIT {offset},{busqueda.tamano}";
                 Console.WriteLine(sqls);
                 HashSet<Elemento> Lista = this.UDT.Context.Elementos.FromSqlRaw(sqls).ToHashSet();
-                Console.WriteLine(">>>");
-                Lista.LogS();
-            return Lista;
+
+                return Lista;
 
             }
             catch (Exception ex)
@@ -107,7 +100,7 @@ namespace PIKA.ServicioBusqueda.Contenido
             }
         }
 
-        private async Task<long> ContarPropiedades(Consulta q, bool IncluirIds)
+        private async Task<long> ContarPropiedades(Consulta q, bool IncluirIds, string PuntoMontajeId)
         {
             try
             {
@@ -117,14 +110,13 @@ namespace PIKA.ServicioBusqueda.Contenido
                 int conteo = 0;
                 List<string> condiciones = MySQLQueryComposer.Condiciones<Elemento>(q);
                 StringBuilder query = new StringBuilder();
-                var PuntoMontajeId = q.Filtros.Where(x => x.Propiedad.ToLower() == "puntomontajeid").FirstOrDefault();
                 string contexto = "count(*)";
 
 
                 var cn = new MySqlConnection(this.Configuration["ConnectionStrings:pika-gd"]);
                 await cn.OpenAsync();
 
-                string sqls = $"select {contexto}  from contenido$elemento where PuntoMontajeId='{PuntoMontajeId.Valor}' ";
+                string sqls = $"select {contexto}  from contenido$elemento where PuntoMontajeId='{PuntoMontajeId}' ";
                 foreach (string s in condiciones)
                 {
                     sqls += $" and ({s})";
@@ -142,7 +134,12 @@ namespace PIKA.ServicioBusqueda.Contenido
                 if (IncluirIds)
                 {
                     contexto = "Id";
-                    sqls = $"select {contexto}  from contenido$elemento where PuntoMontajeId='{PuntoMontajeId.Valor}' ";
+                    sqls = $"select {contexto}  from contenido$elemento where PuntoMontajeId='{PuntoMontajeId}' ";
+                    foreach (string s in condiciones)
+                    {
+                        sqls += $" and ({s})";
+                    }
+
                     cmd.CommandText = sqls;
                     dr = await cmd.ExecuteReaderAsync();
                     IdsPropiedades = dr.Select<string>(r => r.GetString(0)).ToList();

@@ -1,4 +1,5 @@
 using FluentValidation;
+using LazyCache;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
+using PIKA.Modelo.Metadatos;
+using PIKA.Servicio.Metadatos.Interfaces;
 using PIKA.ServicioBusqueda.Contenido;
 using RepositorioEntidades;
 using Serilog;
@@ -47,7 +50,6 @@ namespace PIKA.GD.API
                 {
                     InicializarAplication(config, environment, demodb);
                     await InicializarAplicationAutoConfigurable(environment, host, demodb).ConfigureAwait(false);
-                    Console.WriteLine("--------------------------------------");
                     InicializaEslasticSearch(config, host);
                 }
                 else
@@ -89,9 +91,11 @@ namespace PIKA.GD.API
         {
             var IlogFactory = host.Services.GetRequiredService<ILoggerFactory>();
             var IpOpciones = host.Services.GetRequiredService<IProveedorOpcionesContexto<DbContextBusquedaContenido>>();
-            ServicioBusquedaContenido s = new ServicioBusquedaContenido(IpOpciones, configuracion, IlogFactory);
+            var ICache = host.Services.GetRequiredService<IAppCache>();
+            var IRepositorioMetadatos = host.Services.GetRequiredService<IRepositorioMetadatos>();
+            var IServicioPlantila = host.Services.GetRequiredService<IServicioPlantilla>();
+            ServicioBusquedaContenido s = new ServicioBusquedaContenido(IServicioPlantila, IRepositorioMetadatos, ICache, IpOpciones, configuracion, IlogFactory);
             s.Inicializar("", false); ;
-            Console.WriteLine("..................................");
         }
 
         private static void InicializarAplication(IConfiguration configuracion, IWebHostEnvironment env, bool demodb)
