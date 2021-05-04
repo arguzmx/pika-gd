@@ -32,6 +32,8 @@ namespace PIKA.ServicioBusqueda.Contenido
         [Keyword]
         public string PuntoMontajeId { get; set; }
 
+        [Keyword]
+        public string PlantillaId { get; set; }
 
     }
 

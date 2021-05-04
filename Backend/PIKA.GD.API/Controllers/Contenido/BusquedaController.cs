@@ -30,7 +30,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         }
 
         [HttpPost]
-        public async Task<ActionResult<IPaginado<Elemento>>> Buscar([FromBody] BusquedaContenido request)
+        public async Task<ActionResult<IPaginado<ElementoBusqueda>>> Buscar([FromBody] BusquedaContenido request)
         {
             try
             {

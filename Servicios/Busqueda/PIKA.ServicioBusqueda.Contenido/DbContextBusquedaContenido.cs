@@ -29,7 +29,7 @@ namespace PIKA.ServicioBusqueda.Contenido
         {
         }
 
-        public DbSet<Elemento> Elementos { get; set; }
+        public DbSet<ElementoBusqueda> Elementos { get; set; }
 
     }
 }

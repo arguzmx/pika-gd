@@ -17,6 +17,9 @@ namespace PIKA.ServicioBusqueda.Contenido
         public const string PROPIEDEDES = "propiedades";
         public const string ENFOLDER = "enfolder";
         public const string METADATOS = "metadatos";
+
+        public const int INDICEDOCUMENTO = 0;
+        public const int INDICEIDELASTIC = 1;
     }
 
 }

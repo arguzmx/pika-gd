@@ -20,7 +20,7 @@ namespace PIKA.ServicioBusqueda.Contenido
         }
 
 
-        public async Task<HashSet<Elemento>> BuscarPorIds(BusquedaContenido busqueda, List<string> Ids)
+        public async Task<HashSet<ElementoBusqueda>> BuscarPorIds(BusquedaContenido busqueda, List<string> Ids)
         {
 
             try
@@ -87,7 +87,7 @@ namespace PIKA.ServicioBusqueda.Contenido
 
                 string sqls = $"select distinct c.*  from contenido$elemento  c inner join {tableName}  t on c.Id = t.Id LIMIT {offset},{busqueda.tamano}";
                 Console.WriteLine(sqls);
-                HashSet<Elemento> Lista = this.UDT.Context.Elementos.FromSqlRaw(sqls).ToHashSet();
+                HashSet<ElementoBusqueda> Lista = this.UDT.Context.Elementos.FromSqlRaw(sqls).ToHashSet();
 
                 return Lista;
 
@@ -108,7 +108,7 @@ namespace PIKA.ServicioBusqueda.Contenido
 
 
                 int conteo = 0;
-                List<string> condiciones = MySQLQueryComposer.Condiciones<Elemento>(q);
+                List<string> condiciones = MySQLQueryComposer.Condiciones<ElementoBusqueda>(q);
                 StringBuilder query = new StringBuilder();
                 string contexto = "count(*)";
 

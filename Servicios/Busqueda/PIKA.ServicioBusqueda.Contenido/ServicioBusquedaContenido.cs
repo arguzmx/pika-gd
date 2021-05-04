@@ -37,11 +37,6 @@ namespace PIKA.ServicioBusqueda.Contenido
         /// </summary>
         private List<string> IdsPropiedades;
 
-        /// <summary>
-        /// Lista los identificadores del filtro 'metadatos'
-        /// </summary>
-        private List<string> IdsMetadatos;
-
 
         private UnidadDeTrabajo<DbContextBusquedaContenido> UDT;
         protected DbContextBusquedaContenido contexto;
@@ -78,13 +73,9 @@ namespace PIKA.ServicioBusqueda.Contenido
 
 
 
-        public async Task<Paginado<Elemento>> Buscar(BusquedaContenido busqueda)
+        public async Task<Paginado<ElementoBusqueda>> Buscar(BusquedaContenido busqueda)
         {
-            await Task.Delay(1);
-            
-            
             CacheBusqueda cacheB = null;
-
 
             if(!busqueda.recalcular_totales)
             {
@@ -102,42 +93,77 @@ namespace PIKA.ServicioBusqueda.Contenido
                 {
                     await EjecutarUQeryIds(busqueda);
 
-                    var validos = busqueda.Elementos.Where(x => x.Conteo > 0).OrderBy(x => x.Conteo).ToList();
+                    var validos = busqueda.Elementos.Where(x => x.Conteo > 0)
+                        .OrderBy(x => x.Conteo).ToList();
 
                     List<string> unicos = new List<string>();
                     if (validos.Count > 1)
                     {
                         for (int i = 0; i < validos.Count - 1; i++)
                         {
-                            unicos = validos[i].Ids.Intersect(validos[i + 1].Ids).ToList();
+                            switch(validos[i].Tag)
+                            {
+                                case Constantes.METADATOS:
+                                    unicos = validos[i].Ids.Intersect(
+                                        validos[i].Ids.Select(x => x.Split('|')[Constantes.INDICEDOCUMENTO]).ToList()
+                                        ).ToList();
+                                    break;
+
+                                default:
+                                    unicos = validos[i].Ids.Intersect(validos[i + 1].Ids).ToList();
+                                    break;
+                            }
+                            
                         }
                     }
                     else
                     {
-                        unicos = validos[0].Ids;
+
+                        switch (validos[0].Tag)
+                        {
+                            case Constantes.METADATOS:
+                                unicos = validos[0].Ids.Select(x => x.Split('|')[Constantes.INDICEDOCUMENTO]).ToList();
+                                break;
+
+                            default:
+                                unicos = validos[0].Ids;
+                                break;
+                        }
+
+                        
                     }
+
+
 
                     cacheB = new CacheBusqueda()
                     {
                         Id = busqueda.Id,
-                        Unicos = unicos
+                        Unicos = unicos,
+                        UnicosElastic = new List<string>()
                     };
 
-                    cacheB.Unicos.LogS();
+                    if (unicos.Count > 0 && validos.Any(x => x.Tag == Constantes.METADATOS))
+                    {
+                        var t = validos.Where(x => x.Tag == Constantes.METADATOS).First();
 
+                        unicos.ForEach(u =>
+                        {
+                            var IdElastic = t.Ids.Where(x => x.StartsWith(u)).SingleOrDefault();
+                            cacheB.UnicosElastic.Add(IdElastic.Split('|')[Constantes.INDICEIDELASTIC]);
+                        });
+                    }
+
+                    cacheB.LogS();
                     cache.Add(busqueda.Id, cacheB);
                 }
-            } else
-            {
-                Console.WriteLine("cache");
-            }
+            }  
 
-            Paginado<Elemento> p = new Paginado<Elemento>()
+            Paginado<ElementoBusqueda> p = new Paginado<ElementoBusqueda>()
             {
                 ConteoFiltrado = 0,
                 ConteoTotal = 0,
                 Desde = busqueda.indice,
-                Elementos = new List<Elemento>(),
+                Elementos = new List<ElementoBusqueda>(),
                 Indice = busqueda.indice,
                 Paginas = 0,
                 Tamano = busqueda.tamano
@@ -149,13 +175,44 @@ namespace PIKA.ServicioBusqueda.Contenido
                 p.ConteoTotal = cacheB.Unicos.Count;
                 p.Elementos = (await BuscarPorIds(busqueda, cacheB.Unicos)).ToList();
                 p.Paginas = (cacheB.Unicos.Count % busqueda.tamano)>0 ? (int)(cacheB.Unicos.Count / busqueda.tamano) + 1  : (int)(cacheB.Unicos.Count / busqueda.tamano);
+
+                if (!string.IsNullOrEmpty(busqueda.PlantillaId))
+                {
+
+                }
             }
 
             return p;
 
         }
 
+        private async Task GeneraMetadatos(BusquedaContenido busqueda, Paginado<ElementoBusqueda> p)
+        {
+            Plantilla Plantilla = null;
+            if (busqueda.PlantillaId != this.Plantilla.Id)
+            {
+                Plantilla = await servicioPlantilla.UnicoAsync(x => x.Id == busqueda.PlantillaId, null, p => p.Include(z => z.Propiedades));
+            }
+            {
+                Plantilla = this.Plantilla;
+            }
 
+            p.PropiedadesExtendidas = new PropiedadesExtendidas();
+            Plantilla.Propiedades.ToList().ForEach(prop =>
+           {
+               p.PropiedadesExtendidas.Propiedades.Add(
+                   new PropiedadExtendida()
+                   {
+                       Id = prop.Id,
+                       Nombre = prop.Nombre,
+                       PlantillaId = Plantilla.Id,
+                       TipoDatoId = prop.TipoDatoId
+                   }
+                   );
+           });
+
+
+        }
 
         private async Task EjecutarUQeryIds(BusquedaContenido busqueda)
         {

@@ -83,12 +83,11 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             var response = await cliente.LowLevel.SearchAsync<StringResponse>(body);
             if (response.Success)
             {
-                    
                 dynamic r = JObject.Parse(response.Body);
                 var hits = r.hits.hits;
                 foreach(var h in hits)
                 {
-                    l.Add( (string)h._source.DID );
+                    l.Add( (string)h._source.DID + "|" + (string)h._id);
                 }
             }
             return l;

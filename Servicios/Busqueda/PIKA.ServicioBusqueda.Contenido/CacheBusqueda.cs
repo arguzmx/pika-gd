@@ -8,6 +8,7 @@ namespace PIKA.ServicioBusqueda.Contenido
     {
         public string Id { get; set; }
         public List<string> Unicos { get; set; }
+        public List<string> UnicosElastic { get; set; }
 
     }
 }

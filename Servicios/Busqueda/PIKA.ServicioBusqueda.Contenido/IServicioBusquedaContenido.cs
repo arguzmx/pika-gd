@@ -6,6 +6,6 @@ namespace PIKA.ServicioBusqueda.Contenido
 {
     public interface IServicioBusquedaContenido
     {
-        Task<Paginado<Elemento>> Buscar(BusquedaContenido busqueda);
+        Task<Paginado<ElementoBusqueda>> Buscar(BusquedaContenido busqueda);
     }
 }

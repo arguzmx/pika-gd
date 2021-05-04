@@ -20,9 +20,9 @@ namespace RepositorioEntidades
                 this.Tamano = Tamano;
                 this.Desde = Desde;
                 this.ConteoFiltrado = querable.Count();
-                Paginas= (int)Math.Ceiling(ConteoFiltrado / (double)Tamano);
+                Paginas = (int)Math.Ceiling(ConteoFiltrado / (double)Tamano);
 
-                Elementos = querable.Skip((Indice- Desde) * Tamano).Take(Tamano).ToList();
+                Elementos = querable.Skip((Indice - Desde) * Tamano).Take(Tamano).ToList();
             }
             else
             {
@@ -33,7 +33,7 @@ namespace RepositorioEntidades
                 ConteoFiltrado = enumerable.Count();
                 Paginas = (int)Math.Ceiling(ConteoFiltrado / (double)Tamano);
 
-                Elementos = enumerable.Skip((Indice- Desde) * Tamano).Take(Tamano).ToList();
+                Elementos = enumerable.Skip((Indice - Desde) * Tamano).Take(Tamano).ToList();
             }
         }
 
@@ -52,7 +52,10 @@ namespace RepositorioEntidades
 
         public int ConteoTotal { get; set; }
 
-    public int ConteoFiltrado { get; set; }
+        public int ConteoFiltrado { get; set; }
+
+        public PropiedadesExtendidas PropiedadesExtendidas { get; set; }
+
     }
 
 
