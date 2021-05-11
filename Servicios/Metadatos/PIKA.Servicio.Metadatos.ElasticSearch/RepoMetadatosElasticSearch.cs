@@ -352,7 +352,6 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
         public async Task<bool> ActualizarIndice(Plantilla plantilla)
         {
-            Console.WriteLine("ActualizarIndice");
             var r = new GetMappingRequest( Indices.Index(plantilla.Id));
             var result = await cliente.Indices.GetMappingAsync(r);
 

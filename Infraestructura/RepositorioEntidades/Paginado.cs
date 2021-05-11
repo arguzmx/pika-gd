@@ -40,6 +40,7 @@ namespace RepositorioEntidades
         public Paginado()
         {
             Elementos = new T[0];
+            PropiedadesExtendidas = new PropiedadesExtendidas();
         }
 
         public int Desde { get; set; }

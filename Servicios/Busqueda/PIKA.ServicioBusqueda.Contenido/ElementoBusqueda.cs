@@ -13,10 +13,6 @@ namespace PIKA.ServicioBusqueda.Contenido
         IEntidadEliminada, IEntidadNombrada
     {
 
-        public ElementoBusqueda()
-        {
-            PropiedadesExtendidas = new PropiedadesExtendidas();
-        }
 
         public override string Id { get => base.Id; set => base.Id = value; }
         public string Nombre { get; set; }
@@ -29,10 +25,6 @@ namespace PIKA.ServicioBusqueda.Contenido
         public string PermisoId { get; set; }
         public bool Versionado { get; set; }
         public string VersionId { get; set; }
-
-        [NotMapped]
-        public PropiedadesExtendidas PropiedadesExtendidas { get; set; }
-
     }
 
 }

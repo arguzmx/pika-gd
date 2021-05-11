@@ -8,7 +8,20 @@ namespace RepositorioEntidades
 
     public class PropiedadesExtendidas
     {
+        public PropiedadesExtendidas()
+        {
+            Propiedades = new List<PropiedadExtendida>();
+            ValoresEntidad = new List<ValoresEntidad>();
+        }
+
+        /// <summary>
+        /// Propiedaes incluidas en el paginado
+        /// </summary>
         public List<PropiedadExtendida> Propiedades { get; set; }
+        
+        /// <summary>
+        /// Lista de los valore aspciados en base al Id de la entidad devuelta
+        /// </summary>
         public List<ValoresEntidad> ValoresEntidad { get; set; }
     }
 
@@ -22,14 +35,18 @@ namespace RepositorioEntidades
 
     public class ValoresEntidad
     {
+        public ValoresEntidad()
+        {
+            Valores = new List<string>();
+        }
+
         public string Id { get; set; }
-        public List<ValorPropiedad> Valores { get; set; }
+
+        /// <summary>
+        /// Lista de los valores en el mismo orden que la definición de propiedades
+        /// </summary>
+        public List<string> Valores { get; set; }
     }
 
-    public class ValorPropiedad
-    {
-        public string Id { get; set; }
-        public string Valor { get; set; }
-    }
 
 }

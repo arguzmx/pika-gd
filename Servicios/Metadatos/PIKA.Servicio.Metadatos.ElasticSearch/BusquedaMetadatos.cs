@@ -8,6 +8,7 @@ using Nest;
 using System.Collections.Generic;
 using Elasticsearch.Net;
 using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace PIKA.Servicio.Metadatos.ElasticSearch
 {
@@ -57,13 +58,14 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         private const string BOOLQUERY = "'query': { 'bool': { #M# #N# #F# } }";
         private const string PLAINBOOLQUERY = "{ #Q# }";
         private const string IDSQUERY = "{ 'size': 5000, '_source': ['DID'], #Q# }";
+        private const string QUERYMETADATOSPORID = "{ 'query': { 'ids': { 'values': #IDS#  } } }";
 
         public async Task<long> ContarPorConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId)
         {
             string consulta = PLAINBOOLQUERY.Replace("#Q#", CreaConsulta(q, plantilla, PuntoMontajeId)).DblQuotes(); 
         Console.WriteLine(consulta);
                 var body = ES.PostData.String(consulta);
-                var response = await cliente.LowLevel.CountAsync<CountResponse>(body);
+                var response = await cliente.LowLevel.CountAsync<CountResponse>(plantilla.Id, body);
 
                 if (response.IsValid)
                 {
@@ -80,16 +82,116 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             Console.WriteLine(consulta);
             var body = ES.PostData.String(consulta);
 
-            var response = await cliente.LowLevel.SearchAsync<StringResponse>(body);
+            var response = await cliente.LowLevel.SearchAsync<StringResponse>(plantilla.Id, body);
             if (response.Success)
             {
-                dynamic r = JObject.Parse(response.Body);
+                    dynamic r = JObject.Parse(response.Body);
                 var hits = r.hits.hits;
                 foreach(var h in hits)
                 {
                     l.Add( (string)h._source.DID + "|" + (string)h._id);
                 }
             }
+            return l;
+
+        }
+
+
+        public async Task<List<ValoresEntidad>> ConsultaMetadatosPorListaIds(Plantilla plantilla, List<string> Ids)
+        {
+
+            List<ValoresEntidad> l = new List<ValoresEntidad>();
+            StringBuilder sb = new StringBuilder();
+            sb.Append("[");
+            Ids.ForEach(id =>
+            {
+                sb.Append($"'{id}'");
+                sb.Append(",");
+            });
+            sb.Remove(sb.Length - 1, 1);
+            sb.Append("]");
+
+            string consulta = QUERYMETADATOSPORID.Replace("#IDS#", sb.ToString() ).DblQuotes();
+
+            var body = ES.PostData.String(consulta);
+
+            var response = await cliente.LowLevel.SearchAsync<StringResponse>(plantilla.Id, body);
+            if (response.Success)
+            {
+                var campos = plantilla.Propiedades.ToList().OrderBy(x => x.IndiceOrdenamiento).ToList();
+                
+
+                dynamic r = JObject.Parse(response.Body);
+                var hits = r.hits.hits;
+                foreach (var h in hits)
+                {
+                    ValoresEntidad v = new ValoresEntidad()
+                    {
+                        Id = (string)h._source.DID
+                    };
+
+                    campos.ForEach(c => {
+
+                        var propiedad = plantilla.Propiedades.Where(x => x.IdNumericoPlantilla == c.IdNumericoPlantilla).First();
+                        switch (propiedad.TipoDatoId)
+                        {
+
+                            case TipoDato.tList:
+                                var etiqueta = propiedad.ValoresLista.Where(x => x.Id == (string)h._source[$"P{c.IdNumericoPlantilla}"]).FirstOrDefault();
+                                v.Valores.Add(etiqueta == null ? "" : etiqueta.Texto);
+                                break;
+
+                            case TipoDato.tDate:
+                                if(h._source[$"P{c.IdNumericoPlantilla}"]!=null)
+                                {
+                                    DateTime fecha = (DateTime)h._source[$"P{c.IdNumericoPlantilla}"];
+                                    DateTime fecha2 = new DateTime(fecha.Year, fecha.Month, fecha.Day, 0, 0, 0);
+                                    v.Valores.Add(fecha2.ToString("o"));
+                                    
+                                } else
+                                {
+                                    v.Valores.Add(null);
+                                }
+                                break;
+
+                            case TipoDato.tDateTime:
+                                if (h._source[$"P{c.IdNumericoPlantilla}"] != null)
+                                {
+                                    v.Valores.Add(((DateTime)h._source[$"P{c.IdNumericoPlantilla}"]).ToString("o"));
+                                }
+                                else
+                                {
+                                    v.Valores.Add(null);
+                                }
+                                break;
+
+                            case TipoDato.tTime:
+
+                                if (h._source[$"P{c.IdNumericoPlantilla}"] != null)
+                                {
+                                    DateTime hora = (DateTime)h._source[$"P{c.IdNumericoPlantilla}"];
+                                    DateTime hora2 = new DateTime(2000, 1, 1, hora.Hour, hora.Minute, hora.Second);
+                                    v.Valores.Add(hora2.ToString("o"));
+                                }
+                                else
+                                {
+                                    v.Valores.Add(null);
+                                }
+                                break;
+
+                            default:
+                                v.Valores.Add((string)h._source[$"P{c.IdNumericoPlantilla}"]);
+                                break;
+                        }
+
+                        
+                        
+                    });
+
+                    l.Add(v);
+                }
+            }
+
             return l;
 
         }

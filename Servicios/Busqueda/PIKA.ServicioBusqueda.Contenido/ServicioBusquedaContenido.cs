@@ -113,12 +113,10 @@ namespace PIKA.ServicioBusqueda.Contenido
                                     unicos = validos[i].Ids.Intersect(validos[i + 1].Ids).ToList();
                                     break;
                             }
-                            
                         }
                     }
                     else
                     {
-
                         switch (validos[0].Tag)
                         {
                             case Constantes.METADATOS:
@@ -129,11 +127,7 @@ namespace PIKA.ServicioBusqueda.Contenido
                                 unicos = validos[0].Ids;
                                 break;
                         }
-
-                        
                     }
-
-
 
                     cacheB = new CacheBusqueda()
                     {
@@ -153,7 +147,7 @@ namespace PIKA.ServicioBusqueda.Contenido
                         });
                     }
 
-                    cacheB.LogS();
+                    
                     cache.Add(busqueda.Id, cacheB);
                 }
             }  
@@ -176,9 +170,21 @@ namespace PIKA.ServicioBusqueda.Contenido
                 p.Elementos = (await BuscarPorIds(busqueda, cacheB.Unicos)).ToList();
                 p.Paginas = (cacheB.Unicos.Count % busqueda.tamano)>0 ? (int)(cacheB.Unicos.Count / busqueda.tamano) + 1  : (int)(cacheB.Unicos.Count / busqueda.tamano);
 
-                if (!string.IsNullOrEmpty(busqueda.PlantillaId))
-                {
 
+                if(! string.IsNullOrEmpty(busqueda.PlantillaId))
+                {
+                    busqueda.PlantillaId = busqueda.ObtenerBusqueda(Constantes.METADATOS).Topico;
+                    busqueda.PlantillaId.LogS();
+                }
+
+
+
+                p.ConteoTotal.LogS();
+                "-----------------------".LogS();
+                cacheB.LogS();
+                if (!string.IsNullOrEmpty(busqueda.PlantillaId) && p.ConteoTotal>0)
+                {
+                    await GeneraMetadatos(busqueda, p, cacheB);
                 }
             }
 
@@ -186,19 +192,22 @@ namespace PIKA.ServicioBusqueda.Contenido
 
         }
 
-        private async Task GeneraMetadatos(BusquedaContenido busqueda, Paginado<ElementoBusqueda> p)
+        private async Task GeneraMetadatos(BusquedaContenido busqueda, Paginado<ElementoBusqueda> p, CacheBusqueda b )
         {
             Plantilla Plantilla = null;
             if (busqueda.PlantillaId != this.Plantilla.Id)
             {
-                Plantilla = await servicioPlantilla.UnicoAsync(x => x.Id == busqueda.PlantillaId, null, p => p.Include(z => z.Propiedades));
+                Plantilla = await servicioPlantilla.UnicoAsync(x => x.Id == busqueda.PlantillaId, null, 
+                    p => p.Include(z => z.Propiedades));
             }
             {
                 Plantilla = this.Plantilla;
             }
 
+      
+
             p.PropiedadesExtendidas = new PropiedadesExtendidas();
-            Plantilla.Propiedades.ToList().ForEach(prop =>
+            Plantilla.Propiedades.ToList().OrderBy(x=>x.IndiceOrdenamiento).ToList().ForEach(prop =>
            {
                p.PropiedadesExtendidas.Propiedades.Add(
                    new PropiedadExtendida()
@@ -211,6 +220,20 @@ namespace PIKA.ServicioBusqueda.Contenido
                    );
            });
 
+            List<string> elastic = new List<string>();
+            p.Elementos.Select(c => c.Id).ToList().ForEach( e=> {
+
+                int index = b.Unicos.IndexOf(e);
+                if (index >= 0)
+                {
+                    elastic.Add(b.UnicosElastic[index]);
+                }
+            
+            });
+
+           p.PropiedadesExtendidas.ValoresEntidad = await this.repoMetadatos.ConsultaMetadatosPorListaIds(this.Plantilla, elastic);
+
+            p.LogS();
 
         }
 
@@ -274,8 +297,17 @@ namespace PIKA.ServicioBusqueda.Contenido
             if (busqueda.BuscarMetadatos())
             {
                 var filtro = busqueda.ObtenerBusqueda(Constantes.METADATOS);
-                filtro.LogS();
                 this.Plantilla = await servicioPlantilla.UnicoAsync(x => x.Id == filtro.Topico, null,  p => p.Include(z=>z.Propiedades) );
+                if (this.Plantilla != null)
+                {
+                    foreach (var p in Plantilla.Propiedades) { 
+                        if(p.TipoDatoId == TipoDato.tList)
+                        {
+                            p.ValoresLista = await servicioPlantilla.ObtenerValores(p.Id);
+                        }
+                    } 
+                }
+
                 ConteoMetadatos = this.repoMetadatos.ContarPorConsulta(filtro.Consulta, this.Plantilla, busqueda.PuntoMontajeId);
                 conteos.Add(ConteoMetadatos);
             }
