@@ -84,6 +84,7 @@ namespace PIKA.Modelo.Metadatos
                     info.PaginadoRelacional = ea.PaginadoRelacional;
                     info.TokenApp = ea.TokenApp;
                     info.TokenMod = ea.TokenMod;
+                    info.AsociadoMetadatos = ea.AsociadoMetadatos;
                 }
 
                 if (attr is EntidadVinculadaAttribute)

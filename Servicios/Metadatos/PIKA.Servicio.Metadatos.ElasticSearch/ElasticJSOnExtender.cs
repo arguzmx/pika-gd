@@ -158,7 +158,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 sb.Append($"'TDID': '{valores.TipoDatoId}',");
                 sb.Append($"'DID': '{valores.DatoId}',");
                 sb.Append($"'IF': '{valores.IndiceFiltrado}',");
-                sb.Append($"'L': '{(valores.EsLista ? "true": "false")}',");
+                sb.Append($"'L': {(valores.EsLista ? "true": "false")},");
                 sb.Append($"'LID': '{ (string.IsNullOrEmpty(valores.ListaId) ? "" : valores.ListaId)}',");
 
             }

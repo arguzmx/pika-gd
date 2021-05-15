@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RepositorioEntidades;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -16,6 +17,13 @@ namespace PIKA.ServicioBusqueda.Contenido
         {
             Console.WriteLine(o.ToS());
         }
+
+
+        public static bool OrdenamientoMetadatos(this BusquedaContenido c)
+        {
+            return Guid.TryParse(c.ord_columna, out _);
+        }
+
 
         public static string ToS(this object o)
         {
@@ -51,6 +59,23 @@ namespace PIKA.ServicioBusqueda.Contenido
             var elemento = b.Elementos.Where(e => e.Tag == Tipo).FirstOrDefault();
             return elemento==null? 0 : elemento.Conteo; 
         }
+
+        public static Consulta AConsulta(this BusquedaContenido b)
+        {
+            Consulta el = new Consulta()
+            {
+                consecutivo = 0,
+                indice = b.indice,
+                ord_columna = b.ord_columna,
+                ord_direccion = b.ord_direccion,
+                recalcular_totales = b.recalcular_totales,
+                tamano = b.tamano,
+                Filtros = new List<FiltroConsulta>()
+            };
+
+            return el;
+        }
+
 
         public static void ActualizaConteo(this BusquedaContenido b, string Tag, long Conteo)
         {

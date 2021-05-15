@@ -91,13 +91,9 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             Plantilla plantilla, RequestValoresPlantilla valores, string nombreRelacion = "")
         {
 
-            Console.WriteLine("Vinculos");
             if (esLista)
             {
                 VinculosObjetoPlantilla v = await ObtieneVinculos(valores.Tipo, valores.Id);
-
-                Console.WriteLine($"{v==null}");
-
                 if (v == null || !v.Listas.Any(x=>x.ListaId == ListaId)) throw new EXNoEncontrado(ListaId);
             }
 
@@ -116,18 +112,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 ListaId = ListaId
             };
 
-            Console.WriteLine($"Passed");
-            try
-            {
-                Console.WriteLine($"{valoresplantilla.ObtieneJSONValores(plantilla)}");
-            }
-            catch (Exception ex)
-            {
-
-                Console.WriteLine($"{ex}");
-            }
-            
-            
+           
             var body = ES.PostData.String(valoresplantilla.ObtieneJSONValores(plantilla));
 
             Console.WriteLine($"Passed 2");
@@ -143,10 +128,6 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 }
 
                 return valoresplantilla;
-            }  else
-            {
-                Console.WriteLine($"{response.ApiCall.OriginalException.Message}");
-                Console.WriteLine($"{response.ServerError.Error}");
             }
 
             return null;

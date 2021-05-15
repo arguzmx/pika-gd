@@ -20,12 +20,11 @@ namespace PIKA.ServicioBusqueda.Contenido
         }
 
 
-        public async Task<HashSet<ElementoBusqueda>> BuscarPorIds(BusquedaContenido busqueda, List<string> Ids)
+        public async Task<HashSet<ElementoBusqueda>> BuscarPorIds(BusquedaContenido busqueda, List<string> Ids, bool DeMetadatos)
         {
 
             try
             {
-                Ids.LogS();
 
                 this.UDT.Context.Database.GetDbConnection().Open();
                 var cmd = this.UDT.Context.Database.GetDbConnection().CreateCommand();
@@ -35,13 +34,9 @@ namespace PIKA.ServicioBusqueda.Contenido
                 string tempT = $@"CREATE TEMPORARY TABLE {tableName} (Id varchar(128) PRIMARY KEY )";
                 string dropT = $"DROP TEMPORARY TABLE {tableName}";
                 string bulk = $@"insert into `{tableName}`(`Id`) values";
-                Console.WriteLine(tempT);
-
 
                 cmd.CommandText = tempT;
                 var a = await cmd.ExecuteScalarAsync();
-
-
 
                 int pageIndex = 0;
                 StringBuilder insert = new StringBuilder();
@@ -74,18 +69,33 @@ namespace PIKA.ServicioBusqueda.Contenido
                     insert.Clear();
                 }
 
-                string x = $"select count(*) from {tableName}";
-                Console.WriteLine(x);
-                cmd.CommandText = x;
+                string sqls;
+                if (DeMetadatos)
+                {
+                    sqls = $"select distinct c.*  from contenido$elemento  c inner join {tableName}  t on c.Id = t.Id order by t.Id";
 
-                var xx = cmd.ExecuteScalar();
+                } else
+                {
+                    long offset = busqueda.indice == 0 ? 0 : ((busqueda.indice) * busqueda.tamano) - 1;
+                    var filtros = busqueda.ObtenerBusqueda(Constantes.PROPIEDEDES);
 
-                xx.LogS();
+                    sqls = $"select distinct c.*  from contenido$elemento  c inner join {tableName}  t on c.Id = t.Id ";
+                    sqls += $" where c.PuntoMontajeId='{busqueda.PuntoMontajeId}' ";
+                    
+                    if (filtros != null)
+                    {
+                        List<string> condiciones = MySQLQueryComposer.Condiciones<ElementoBusqueda>(filtros.Consulta, "c.");
+                        foreach (string s in condiciones)
+                        {
+                            sqls += $" and ({s})";
+                        }
+                    }
+                    sqls += $" order by {busqueda.ord_columna} {busqueda.ord_direccion} ";
+                    sqls += $" LIMIT {offset},{busqueda.tamano}";
 
-                long offset = (busqueda.indice * busqueda.tamano)-1;
-                if (offset == -1) offset = 0;
-
-                string sqls = $"select distinct c.*  from contenido$elemento  c inner join {tableName}  t on c.Id = t.Id LIMIT {offset},{busqueda.tamano}";
+                }
+             
+                
                 Console.WriteLine(sqls);
                 HashSet<ElementoBusqueda> Lista = this.UDT.Context.Elementos.FromSqlRaw(sqls).ToHashSet();
 

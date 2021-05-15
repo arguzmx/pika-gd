@@ -59,6 +59,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         private const string PLAINBOOLQUERY = "{ #Q# }";
         private const string IDSQUERY = "{ 'size': 5000, '_source': ['DID'], #Q# }";
         private const string QUERYMETADATOSPORID = "{ 'query': { 'ids': { 'values': #IDS#  } } }";
+        private const string QUERYPAGINAMETADATOSPORID = "{ 'from': #SKIP#, 'size': #SIZE#, 'sort' : [ { '#SFIELD#' : {'order' : '#SORD#'}} ], 'query': { 'bool': { 'filter': [ { 'terms' : { '_id' : [#IDS#] } } ] } } }";
 
         public async Task<long> ContarPorConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId)
         {
@@ -195,6 +196,115 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             return l;
 
         }
+
+        public async Task<List<ValoresEntidad>> ConsultaPaginaMetadatosPorListaIds(Plantilla plantilla, List<string> Ids, Consulta q)
+        {
+            
+            List<ValoresEntidad> l = new List<ValoresEntidad>();
+            StringBuilder sb = new StringBuilder();
+            Ids.ForEach(id =>
+            {
+                sb.Append($"'{id}'");
+                sb.Append(",");
+            });
+            sb.Remove(sb.Length - 1, 1);
+
+            var p = plantilla.Propiedades.Where(x => x.Id == q.ord_columna).FirstOrDefault();
+
+            string consulta = QUERYPAGINAMETADATOSPORID.Replace("#IDS#", sb.ToString()).DblQuotes();
+            consulta = consulta.Replace("#SIZE#", q.tamano.ToString());
+            consulta = consulta.Replace("#SKIP#", (q.indice * q.tamano).ToString());
+
+            if (p != null)
+            {
+                consulta = consulta.Replace("#SORD#", q.ord_direccion);
+                consulta = consulta.Replace("#SFIELD#", $"P{p.IdNumericoPlantilla}");
+            }
+
+            var body = ES.PostData.String(consulta);
+
+            var response = await cliente.LowLevel.SearchAsync<StringResponse>(plantilla.Id, body);
+            if (response.Success)
+            {
+                var campos = plantilla.Propiedades.ToList().OrderBy(x => x.IndiceOrdenamiento).ToList();
+
+
+                dynamic r = JObject.Parse(response.Body);
+                var hits = r.hits.hits;
+                foreach (var h in hits)
+                {
+                    ValoresEntidad v = new ValoresEntidad()
+                    {
+                        Id = (string)h._source.DID
+                    };
+
+                    campos.ForEach(c => {
+
+                        var propiedad = plantilla.Propiedades.Where(x => x.IdNumericoPlantilla == c.IdNumericoPlantilla).First();
+                        switch (propiedad.TipoDatoId)
+                        {
+
+                            case TipoDato.tList:
+                                var etiqueta = propiedad.ValoresLista.Where(x => x.Id == (string)h._source[$"P{c.IdNumericoPlantilla}"]).FirstOrDefault();
+                                v.Valores.Add(etiqueta == null ? "" : etiqueta.Texto);
+                                break;
+
+                            case TipoDato.tDate:
+                                if (h._source[$"P{c.IdNumericoPlantilla}"] != null)
+                                {
+                                    DateTime fecha = (DateTime)h._source[$"P{c.IdNumericoPlantilla}"];
+                                    DateTime fecha2 = new DateTime(fecha.Year, fecha.Month, fecha.Day, 0, 0, 0);
+                                    v.Valores.Add(fecha2.ToString("o"));
+
+                                }
+                                else
+                                {
+                                    v.Valores.Add(null);
+                                }
+                                break;
+
+                            case TipoDato.tDateTime:
+                                if (h._source[$"P{c.IdNumericoPlantilla}"] != null)
+                                {
+                                    v.Valores.Add(((DateTime)h._source[$"P{c.IdNumericoPlantilla}"]).ToString("o"));
+                                }
+                                else
+                                {
+                                    v.Valores.Add(null);
+                                }
+                                break;
+
+                            case TipoDato.tTime:
+
+                                if (h._source[$"P{c.IdNumericoPlantilla}"] != null)
+                                {
+                                    DateTime hora = (DateTime)h._source[$"P{c.IdNumericoPlantilla}"];
+                                    DateTime hora2 = new DateTime(2000, 1, 1, hora.Hour, hora.Minute, hora.Second);
+                                    v.Valores.Add(hora2.ToString("o"));
+                                }
+                                else
+                                {
+                                    v.Valores.Add(null);
+                                }
+                                break;
+
+                            default:
+                                v.Valores.Add((string)h._source[$"P{c.IdNumericoPlantilla}"]);
+                                break;
+                        }
+
+
+
+                    });
+
+                    l.Add(v);
+                }
+            }
+
+            return l;
+
+        }
+
 
         private string CreaConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId)
         {

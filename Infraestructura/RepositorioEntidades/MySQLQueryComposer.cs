@@ -289,7 +289,7 @@ namespace RepositorioEntidades
         }
 
 
-        public static List<string> Condiciones<T>(Consulta q)
+        public static List<string> Condiciones<T>(Consulta q, string tableId = "")
         {
             Type type = typeof(T);
             var Props = type.GetProperties().ToList();
@@ -313,25 +313,25 @@ namespace RepositorioEntidades
                         case Type longype when longype == typeof(long):
                         case Type floatype when floatype == typeof(float):
                         case Type decimalType when decimalType == typeof(decimal):
-                            condicion = GetNumExpression(p.ObtieneNombreCampo(), 
+                            condicion = GetNumExpression(tableId + p.ObtieneNombreCampo(), 
                                 f.Operador, f.Valor, f.Negacion);
                             break;
 
 
                         case Type datetimeTypeNull when datetimeTypeNull == typeof(DateTime?):
                         case Type datetimeType when datetimeType == typeof(DateTime):
-                            condicion= GetDateTimeExpression(p.ObtieneNombreCampo(), 
+                            condicion= GetDateTimeExpression(tableId + p.ObtieneNombreCampo(), 
                                 f.Operador, f.Valor, f.Negacion);
                             break;
 
                         case Type boolType when boolType == typeof(bool):
-                            condicion = GetBoolExpression( p.ObtieneNombreCampo(), 
+                            condicion = GetBoolExpression(tableId + p.ObtieneNombreCampo(), 
                                 f.Operador, f.Valor, f.Negacion);
                             break;
 
 
                         case Type stringType when stringType == typeof(string):
-                            condicion = GetStringExpression(p.ObtieneNombreCampo(),
+                            condicion = GetStringExpression(tableId + p.ObtieneNombreCampo(),
                                 f.Operador, f.Valor, f.Negacion);
                             break;
 
