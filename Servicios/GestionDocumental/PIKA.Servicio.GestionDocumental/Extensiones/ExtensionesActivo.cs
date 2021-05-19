@@ -34,6 +34,8 @@ namespace PIKA.Servicio.GestionDocumental
                 IDunico = a.IDunico,
                 CuadroClasificacionId = a.CuadroClasificacionId,
                 TipoArchivoId = a.TipoArchivoId,
+                TieneContenido = a.TieneContenido,
+                ElementoId = a.ElementoId
             };
         }
     }

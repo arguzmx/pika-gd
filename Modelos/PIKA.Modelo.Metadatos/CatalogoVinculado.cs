@@ -27,8 +27,8 @@ namespace PIKA.Modelo.Metadatos
                 Despliegue = link.Despliegue,
                 EntidadCatalogo = link.EntidadCatalogo,
                 IdCatalogo = link.IdCatalogo,
-                IdEntidad = link.IdEntidad, 
-                EntidadVinculo =link.EntidadVinculo,
+                IdEntidad = link.IdEntidad,
+                EntidadVinculo = link.EntidadVinculo,
                 IdEntidadMap = link.IdEntidadMap,
                 IdCatalogoMap = link.IdCatalogoMap,
                 PropiedadReceptora = link.PropiedadReceptora
@@ -41,8 +41,9 @@ namespace PIKA.Modelo.Metadatos
             {
                 Icono = link.Icono,
                 Titulo = link.Titulo,
-                Vista = link.Vista, 
-                RequiereSeleccion = link.RequireSeleccion
+                Vista = link.Vista,
+                RequiereSeleccion = link.RequireSeleccion,
+                 Tipo = link.Tipo
             };
         }
 
@@ -51,7 +52,8 @@ namespace PIKA.Modelo.Metadatos
         {
             return new ParametroLinkVista()
             {
-                 Vista = link.Vista
+                Vista = link.Vista,
+                ParamName = link.ParamName
             };
         }
     }

@@ -99,6 +99,19 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         public virtual TipoArchivo Tipo { get; set; }
 
+
+
+        [Prop(Required: false, OrderIndex: 80)]
+        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
+        [List(Entidad: "Volumen", DatosRemotos: true, TypeAhead: false)]
+        public string VolumenDefaultId { get; set; }
+
+
+        [Prop(Required: false, OrderIndex: 81)]
+        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
+        [List(Entidad: "PuntoMontaje", DatosRemotos: true, TypeAhead: false)]
+        public string PuntoMontajeId { get; set; }
+
         /// <summary>
         /// Alamcenes físicos que tiene al archivo bajo su control
         /// </summary>

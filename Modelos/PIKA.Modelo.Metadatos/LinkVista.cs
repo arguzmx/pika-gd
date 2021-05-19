@@ -25,5 +25,10 @@ namespace PIKA.Modelo.Metadatos
         {
             get; set;
         }
+
+        public virtual TipoVista Tipo
+        {
+            get; set;
+        }
     }
 }

@@ -7,7 +7,8 @@ using RepositorioEntidades;
 
 namespace PIKA.Servicio.Contenido.Interfaces
 {
-   public interface IServicioPuntoMontaje : IServicioRepositorioAsync<PuntoMontaje, string>
+   public interface IServicioPuntoMontaje : IServicioRepositorioAsync<PuntoMontaje, string>,
+        IServicioValorTextoAsync<PuntoMontaje>
     {
         Task<List<string>> Purgar();
     }

@@ -17,7 +17,9 @@ namespace PIKA.Servicio.GestionDocumental
                 OrigenId = a.OrigenId,
                 TipoOrigenId = a.TipoOrigenId,
                 TipoArchivoId = a.TipoArchivoId,
-                Eliminada = a.Eliminada
+                Eliminada = a.Eliminada,
+                VolumenDefaultId = a.VolumenDefaultId, 
+                PuntoMontajeId = a.PuntoMontajeId
             };
         }
     }

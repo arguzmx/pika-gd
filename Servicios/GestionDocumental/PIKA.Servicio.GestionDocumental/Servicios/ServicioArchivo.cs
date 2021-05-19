@@ -75,7 +75,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new ExElementoExistente(entity.Nombre);
             }
 
-
             entity.Nombre = entity.Nombre.Trim();
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
@@ -101,7 +100,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
-          
+
+            o.PuntoMontajeId = entity.PuntoMontajeId;
+            o.VolumenDefaultId = entity.VolumenDefaultId;
             o.Nombre = entity.Nombre.Trim();
             o.Eliminada = entity.Eliminada;
             o.TipoArchivoId = o.TipoArchivoId.Trim();

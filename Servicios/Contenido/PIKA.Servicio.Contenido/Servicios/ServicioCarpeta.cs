@@ -14,6 +14,7 @@ using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Contenido;
+using PIKA.Modelo.Contenido.Request;
 using PIKA.Servicio.Contenido.Helpers;
 using PIKA.Servicio.Contenido.Interfaces;
 using RepositorioEntidades;
@@ -342,6 +343,72 @@ namespace PIKA.Servicio.Contenido.Servicios
             return l.ToList().OrderBy(x => x.NombreJerarquico).ToList();
 
         }
+
+        public async Task<Carpeta> ObtenerCrearPorRuta(CarpetaDeRuta entidad)
+        {
+            entidad.Ruta= entidad.Ruta.TrimStart('/');
+            List<string> nombres = entidad.Ruta.Split('/').ToList();
+            bool primera = true;
+            Carpeta padre= null;
+            Carpeta c = null;
+            foreach (string n in nombres)
+            {
+                if(primera)
+                {
+                    c = await this.UDT.Context.Carpetas.Where(x => x.Nombre == n && x.Eliminada == false && x.EsRaiz == true).FirstOrDefaultAsync();
+                    if (c == null)
+                    {
+                        c = new Carpeta()
+                        {
+                            CarpetaPadreId = null,
+                            CreadorId = entidad.UsuarioId,
+                            Eliminada = false,
+                            EsRaiz = true,
+                            FechaCreacion = DateTime.UtcNow,
+                            Id = Guid.NewGuid().ToString(),
+                            Nombre = n,
+                            PermisoId = null,
+                            PuntoMontajeId = entidad.PuntoMontajeId
+                        };
+                        this.UDT.Context.Add(c);
+                        await this.UDT.Context.SaveChangesAsync();
+                    }
+
+                    primera = false;
+                    padre = c.Copia();
+
+                } else
+                {
+
+                    c = await this.UDT.Context.Carpetas.Where(x => x.Nombre == n && x.Eliminada == false && x.CarpetaPadreId == padre.CarpetaPadreId).FirstOrDefaultAsync();
+                    if (c == null)
+                    {
+                        c = new Carpeta()
+                        {
+                            CarpetaPadreId = null,
+                            CreadorId = entidad.UsuarioId,
+                            Eliminada = false,
+                            EsRaiz = true,
+                            FechaCreacion = DateTime.UtcNow,
+                            Id = Guid.NewGuid().ToString(),
+                            Nombre = n,
+                            PermisoId = null,
+                            PuntoMontajeId = entidad.PuntoMontajeId
+                        };
+
+                        this.UDT.Context.Add(c);
+                        await this.UDT.Context.SaveChangesAsync();
+                    }
+                   
+                    padre = c.Copia();
+
+                }
+                
+            }
+
+            return c;
+        }
+
         #region No Implemenatdaos
 
         public Task<IEnumerable<Carpeta>> CrearAsync(params Carpeta[] entities)

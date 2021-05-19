@@ -6,6 +6,11 @@ namespace PIKA.Modelo.Metadatos
 {
     public  class ParametroLinkVista
     {
+        public virtual string ParamName
+        {
+            get; set;
+        }
+
         public virtual string Vista
         {
             get; set;

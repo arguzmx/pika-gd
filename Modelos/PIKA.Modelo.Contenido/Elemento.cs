@@ -17,7 +17,7 @@ namespace PIKA.Modelo.Contenido
     [LinkView(Titulo: "visor", Icono: "preview", Vista: "visorcontenido")]
     [LinkView(Titulo: "buscarcontenido", Icono: "manage_search", Vista: "buscarcontenido", RequireSeleccion: false)]
     public class Elemento : Entidad<string>, IEntidadRegistroCreacion, 
-        IEntidadEliminada, IEntidadNombrada
+        IEntidadEliminada, IEntidadNombrada, IEntidadRelacionada
     {
        
         public Elemento() {
@@ -92,7 +92,7 @@ namespace PIKA.Modelo.Contenido
         [Prop(Required: false, Visible: false, OrderIndex: 1000, ShowInTable: false, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "PadreId")]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string CarpetaId { get; set; }
-        // Es opcional
+        
 
         /// <summary>
         /// Identificador únido del permiso asociado al elemeento
@@ -100,7 +100,25 @@ namespace PIKA.Modelo.Contenido
         [Prop(Required: false, isId: false, Visible: false, ShowInTable: false, OrderIndex: 1010)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.none)]
         public string PermisoId { get; set; }
-        // Es opcional
+
+
+
+        /// <summary>
+        /// Determina el orien vinculado al elemento por ejemplo Carpeta de conteido, Activo de acervo etc
+        /// </summary>
+        [Prop(Required: false, OrderIndex: 1020)]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.add)]
+        [LinkViewParameter(Vista: "visorcontenido")]
+        public string TipoOrigenId { get; set; }
+
+        /// <summary>
+        /// Identifiacdor del registor padre, en el caso de contenido se encuentra vacio, en otro tipo de catos 
+        /// Puede ser por ejemplo Acervo
+        /// </summary>
+        [Prop(Required: true, OrderIndex: 1021)]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.add)]
+        [LinkViewParameter(Vista: "visorcontenido")]
+        public string OrigenId { get; set; }
 
         /// <summary>
         /// Identifica si el elemento es administrado por versiones
@@ -118,6 +136,9 @@ namespace PIKA.Modelo.Contenido
         public string VersionId { get; set; }
 
 
+        public string TipoOrigenDefault =>  "";
+
+
         [JsonIgnore, XmlIgnore]
         public Permiso Permiso { get; set; }
         
@@ -132,5 +153,6 @@ namespace PIKA.Modelo.Contenido
 
         [JsonIgnore, XmlIgnore]
         public PuntoMontaje PuntoMontaje { get; set; }
+
     }
 }

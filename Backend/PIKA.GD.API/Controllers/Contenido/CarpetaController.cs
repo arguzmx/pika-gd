@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
 using PIKA.Modelo.Contenido;
+using PIKA.Modelo.Contenido.Request;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Contenido.Interfaces;
 using RepositorioEntidades;
@@ -63,6 +64,19 @@ namespace PIKA.GD.API.Controllers.Contenido
             entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetCarpeta", new { id = entidad.Id }, entidad).Value);
         }
+
+
+
+        [HttpPost("ruta")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<Carpeta>> PostRuta([FromBody] CarpetaDeRuta entidad)
+        {
+            entidad.UsuarioId = this.UsuarioId;
+            Carpeta c = await servicioEntidad.ObtenerCrearPorRuta(entidad).ConfigureAwait(false);
+            return Ok(c);
+        }
+
 
         /// <summary>
         /// Actualiza una entidad Carpeta existente, el Id debe incluirse en el Querystring así como en 

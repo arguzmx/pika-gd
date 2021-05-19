@@ -60,15 +60,15 @@ namespace PIKA.Modelo.Metadatos
         public bool PaginadoRelacional { get; set; }
 
         /// <summary>
-        /// Detrmina si es posible asociar metadtaos a la entidad
+        /// Detrmina si es posible asociar metadtaos a la entidad, por ejmeplo un documento con su plantilla
         /// </summary>
         public bool AsociadoMetadatos { get; set; }
-
 
         /// <summary>
         /// Identifica la columna utilizada para determinar la eliminación lógica
         /// </summary>
         public string ColumaEliminarLogico { get; set; }
+
         
         public virtual List<Propiedad> Propiedades { get; set; }
         

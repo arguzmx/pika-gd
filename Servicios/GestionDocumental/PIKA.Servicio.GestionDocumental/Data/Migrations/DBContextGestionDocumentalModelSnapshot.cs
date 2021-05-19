@@ -56,6 +56,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasColumnType("varchar(250) CHARACTER SET utf8mb4")
                         .HasMaxLength(250);
 
+                    b.Property<string>("ElementoId")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<bool>("Eliminada")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
@@ -101,6 +104,11 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.Property<bool>("Reservado")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<bool>("TieneContenido")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(true);
+
                     b.Property<string>("TipoArchivoId")
                         .IsRequired()
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
@@ -140,6 +148,8 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.HasIndex("FechaRetencionAT");
 
                     b.HasIndex("Nombre");
+
+                    b.HasIndex("TieneContenido");
 
                     b.HasIndex("TipoArchivoId");
 

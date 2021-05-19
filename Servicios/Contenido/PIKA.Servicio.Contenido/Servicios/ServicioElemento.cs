@@ -225,9 +225,10 @@ namespace PIKA.Servicio.Contenido.Servicios
         }
         public async Task<IPaginado<Elemento>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Elemento>, IIncludableQueryable<Elemento, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
-            Query = GetDefaultQuery(Query);
-            var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
-            return respuesta;
+                Query = GetDefaultQuery(Query);
+                var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
+                return respuesta;
+          
         }
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {

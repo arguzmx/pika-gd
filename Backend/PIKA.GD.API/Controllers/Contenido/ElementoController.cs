@@ -66,9 +66,8 @@ namespace PIKA.GD.API.Controllers.Contenido
         public async Task<ActionResult<Elemento>> Post([FromBody]Elemento entidad)
         {
             entidad.CreadorId = this.UsuarioId;
-               entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
+            entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
 
-            Console.WriteLine($"----{entidad.VersionId}");
             // Sustituir esta sección por el almacenamiento en elasticsearc
             Modelo.Contenido.Version v = new Modelo.Contenido.Version()
             {
@@ -126,6 +125,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Elemento>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
+
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             var data = await servicioEntidad.ObtenerPaginadoAsync(
                  Query: query)

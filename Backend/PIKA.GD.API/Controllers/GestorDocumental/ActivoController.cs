@@ -29,10 +29,14 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         private IProveedorMetadatos<Activo> metadataProvider;
         IServicioUnidadOrganizacional servicioUO;
         IServicioDominio servicioDominio;
+        private IServicioArchivo servicioarchivo;
+        private IServicioEntradaClasificacion servicioEntrada;
 
         public ActivoController(ILogger<ActivoController> logger,
             IProveedorMetadatos<Activo> metadataProvider,
             IServicioActivo servicioActivo,
+            IServicioArchivo servicioArchivo,
+            IServicioEntradaClasificacion servicioEntrada,
             IServicioUnidadOrganizacional servicioUO,
             IServicioDominio servicioDominio)
         {
@@ -41,6 +45,8 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             this.metadataProvider = metadataProvider;
             this.servicioUO = servicioUO;
             this.servicioDominio = servicioDominio;
+            this.servicioarchivo = servicioArchivo;
+            this.servicioEntrada = servicioEntrada;
         }
 
 
@@ -254,6 +260,61 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             return fileContentResult;
         }
 
-        
+
+        #region contenido vinculado
+
+        [HttpGet("{id}/contenido")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<Modelo.Contenido.Elemento>> GetContenidoVinculado(string id)
+        {
+            List<Task> tareas = new List<Task>();
+            var o = await servicioActivo.UnicoAsync(x => x.Id == id.Trim()).ConfigureAwait(false);
+            if(o==null) return NotFound(id);
+
+            var a = await servicioarchivo.UnicoAsync(x => x.Id == o.ArchivoId);
+            var entrada = await servicioEntrada.UnicoAsync(e => e.Id == o.EntradaClasificacionId);
+
+            ElementoContenidoVinculado el = new ElementoContenidoVinculado()
+            {
+                Id = o.TieneContenido ? o.ElementoId : null,
+                Nombre = o.Nombre,
+                Eliminada = false,
+                PuntoMontajeId = a.PuntoMontajeId,
+                CreadorId = this.UsuarioId,
+                FechaCreacion = DateTime.Now,
+                VolumenId = a.VolumenDefaultId,
+                CarpetaId = null,
+                PermisoId = null,
+                TipoOrigenId = nameof(Activo),
+                OrigenId = id,
+                Versionado = true,
+                VersionId = null,
+                RutaRepositorio = $"/{entrada.Clave} {entrada.Nombre}"
+            };
+            return Ok(el);
+        }
+
+        [HttpPost("{id}/contenido/{contenidoId}")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<Modelo.Contenido.Elemento>> CreaContenidoVinculado(string id, string contenidoId)
+        {
+            List<Task> tareas = new List<Task>();
+            var o = await servicioActivo.UnicoAsync(x => x.Id == id.Trim()).ConfigureAwait(false);
+            if (o == null) return NotFound(id);
+
+            o.ElementoId = contenidoId;
+            o.TieneContenido = true;
+
+            await servicioActivo.ActualizarAsync(o);
+            
+            return Ok(o);
+        }
+
+
+        #endregion
+
+
     }
 }

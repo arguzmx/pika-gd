@@ -15,9 +15,13 @@ namespace PIKA.Modelo.GestorDocumental
     [Entidad(PaginadoRelacional: false, EliminarLogico: true,
         TokenMod: ConstantesAppGestionDocumental.MODULO_ACTIVOS,
         TokenApp: ConstantesAppGestionDocumental.APP_ID)]
+    
     [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ACTIVOS, 
         EntidadHijo: "ampliacion", Cardinalidad: TipoCardinalidad.UnoVarios,
         PropiedadPadre: "Id", PropiedadHijo: "ActivoId")]
+    
+    [LinkView(Titulo: "crear-contenido-activo", Icono: "attachment", Vista: "crearcontenidoactivo", 
+        RequireSeleccion: true, Tipo: TipoVista.Comando)]
     public class Activo: Entidad<string>, IEntidadRelacionada, IEntidadIdElectronico, 
         IEntidadEliminada, IEntidadReportes
     {
@@ -37,6 +41,7 @@ namespace PIKA.Modelo.GestorDocumental
 
         [Prop(Required: false, isId: true, Visible: false, OrderIndex: 0)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.update)]
+        [LinkViewParameter(Vista: "visorcontenido")]
         public override string Id { get => base.Id; set => base.Id = value; }
 
 
@@ -228,6 +233,17 @@ namespace PIKA.Modelo.GestorDocumental
         [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
         [List("", false, false, false, "0", "0,7,15,30,60,90,120,150,180")]
         public int? Vencidos { get; set; }
+
+
+        [Prop(Required: false, OrderIndex: 1501, DefaultValue: "false", Visible: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.none)]
+        public bool TieneContenido{ get; set; }
+
+
+        [Prop(Required: true, Visible: false, OrderIndex: 1502, Contextual: false, ShowInTable: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.none)]
+        [LinkViewParameter(Vista: "crearcontenidoactivo", ParamName: "ElementoIdId")]
+        public string ElementoId { get; set; }
 
 
         [XmlIgnore]
