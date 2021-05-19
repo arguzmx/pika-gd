@@ -43,7 +43,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.TipoArchivoId).IsRequired().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.FechaRetencionAC).IsRequired(false);
             builder.Property(x => x.FechaRetencionAT).IsRequired(false);
-            builder.Property(x => x.TieneContenido).IsRequired().HasDefaultValue(true);
+            builder.Property(x => x.TieneContenido).IsRequired().HasDefaultValue(false);
             builder.Property(x => x.ElementoId).IsRequired(false);
 
             builder.HasIndex(i => new { i.ArchivoOrigenId });

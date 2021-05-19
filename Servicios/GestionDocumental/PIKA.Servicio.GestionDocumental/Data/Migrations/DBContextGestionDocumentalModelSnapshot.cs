@@ -107,7 +107,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.Property<bool>("TieneContenido")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(true);
+                        .HasDefaultValue(false);
 
                     b.Property<string>("TipoArchivoId")
                         .IsRequired()
@@ -324,6 +324,10 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
+                    b.Property<string>("PuntoMontajeId")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
                     b.Property<string>("TipoArchivoId")
                         .IsRequired()
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
@@ -331,6 +335,10 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
 
                     b.Property<string>("TipoOrigenId")
                         .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("VolumenDefaultId")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
