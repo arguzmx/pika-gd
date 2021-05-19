@@ -41,12 +41,7 @@
     <Compile Remove="Data\Migrations\20200909151514_AgregarEstadisticaModificaiconIndices.Designer.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\..\..\..\..\..\Data\Migrations\20210517184144_VolumenArchivo.cs" Link="Data\Migrations\20210517184144_VolumenArchivo.cs" />
-    <Compile Include="..\..\..\..\..\..\Data\Migrations\20210517184144_VolumenArchivo.Designer.cs" Link="Data\Migrations\20210517184144_VolumenArchivo.Designer.cs" />
-    <Compile Include="..\..\..\..\..\..\Data\Migrations\20210517200524_PuntoMontajeArchivo.cs" Link="Data\Migrations\20210517200524_PuntoMontajeArchivo.cs" />
-    <Compile Include="..\..\..\..\..\..\Data\Migrations\20210517200524_PuntoMontajeArchivo.Designer.cs" Link="Data\Migrations\20210517200524_PuntoMontajeArchivo.Designer.cs" />
-  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Bogus" Version="29.0.2" />
