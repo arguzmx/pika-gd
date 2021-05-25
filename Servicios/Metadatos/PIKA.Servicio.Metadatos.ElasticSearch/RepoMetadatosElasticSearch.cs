@@ -201,7 +201,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 {
                     JsonElement e = (JsonElement)esr.hits.hits[0];
                     dynamic d = JObject.Parse(e.ToString());
-                    return ElasticJSONExtender.Valores(d, plantilla);
+                    return ElasticJSONExtender.Valores(d, plantilla, false);
                 }
 
             }
@@ -230,11 +230,11 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 ElasticsearchResult esr = JsonSerializer.Deserialize<ElasticsearchResult>(r.Body);
                 if (esr.hits.total.value > 0)
                 {
-                    for (int i = 0; i <= esr.hits.total.value; i++)
+                    for (int i = 0; i < esr.hits.total.value; i++)
                     {
-                        JsonElement e = (JsonElement)esr.hits.hits[0];
+                        JsonElement e = (JsonElement)esr.hits.hits[i];
                         dynamic d = JObject.Parse(e.ToString());
-                        resultados.Add(ElasticJSONExtender.Valores(d, plantilla));
+                        resultados.Add(ElasticJSONExtender.Valores(d, plantilla, false));
                     }
                 }
                 return resultados;
@@ -242,6 +242,27 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             return null;
         }
 
+        public async Task<List<DocumentoPlantilla>> ListaTipoIds(Plantilla plantilla, List<string> Ids, string Tipo)
+        {
+            Console.WriteLine(Ids.BuscarPorTipoIds(Tipo));
+            var r = await cliente.LowLevel.SearchAsync<StringResponse>(plantilla.Id, Ids.BuscarPorTipoIds(Tipo));
+            if (r.Success)
+            {
+                List<DocumentoPlantilla> resultados = new List<DocumentoPlantilla>();
+                ElasticsearchResult esr = JsonSerializer.Deserialize<ElasticsearchResult>(r.Body);
+                if (esr.hits.total.value > 0)
+                {
+                    for (int i = 0; i < esr.hits.total.value; i++)
+                    {
+                        JsonElement e = (JsonElement)esr.hits.hits[i];
+                        dynamic d = JObject.Parse(e.ToString());
+                        resultados.Add(ElasticJSONExtender.Valores(d, plantilla, true));
+                    }
+                }
+                return resultados;
+            }
+            return null;
+        }
 
 
         public async Task<bool> EliminaDocumento(string docid, string plantillaId)
@@ -255,7 +276,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 {
                     JsonElement e = (JsonElement)esr.hits.hits[0];
                     dynamic d = JObject.Parse(e.ToString());
-                    DocumentoPlantilla doc = ElasticJSONExtender.Valores(d, null);
+                    DocumentoPlantilla doc = ElasticJSONExtender.Valores(d, null, false);
 
                     var del = await cliente.LowLevel.DeleteByQueryAsync<DeleteByQueryResponse>(plantillaId, docid.BuscarId());
                     if (del.ApiCall.Success)

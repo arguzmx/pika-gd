@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Nest;
+﻿using Nest;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.ElasticSearch.Excepciones;
 using System;
@@ -392,7 +391,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         }
 
 
-        public static DocumentoPlantilla Valores(dynamic datos, Plantilla p)
+        public static DocumentoPlantilla Valores(dynamic datos, Plantilla p, bool reemplazarIdsLista)
         {
             dynamic d = datos._source;
             DocumentoPlantilla v = new DocumentoPlantilla
@@ -414,7 +413,20 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                     var valor = ValorPropiedad(campo, d);
                     if (valor != null)
                     {
-                        v.Valores.Add(valor);
+                        if(campo.TipoDatoId == TipoDato.tList && reemplazarIdsLista) {
+                            
+                           var id = (string)d[$"P{campo.IdNumericoPlantilla}"];
+
+                           var elemento = campo.ValoresLista.Where(x => x.Id == id).FirstOrDefault();
+                            if (elemento != null)
+                            {
+                                valor = new ValorPropiedad() { PropiedadId = campo.Id, Valor = elemento.Texto };
+                            }
+                            v.Valores.Add(valor);
+                        } else
+                        {
+                            v.Valores.Add(valor);
+                        }
                     }
                     else
                     {
@@ -488,6 +500,19 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         public static string BuscarPorLista(this string listaId)
         {
             var q = @$"¡'size': 5000,'query':¡ 'term': ¡ 'LID': ¡ 'value': '{ listaId }', 'boost': 1.0!!!!".ToElasticString();
+            return q;
+        }
+
+        public static string BuscarPorTipoIds(this List<string> ids, string tipo)
+        {
+            StringBuilder sb = new StringBuilder();
+            ids.ForEach(id =>
+            {
+                sb.Append($"\"{id}\",");
+            });
+
+            var q = $@"¡ 'query': ¡ 'bool': ¡ 'filter': [ ¡ 'term': ¡ 'TDID': '{tipo}' !!, ¡ 'terms': ¡ 'DID': [ {sb.ToString().TrimEnd(',')} ] ! ! ] ! ! !".ToElasticString(); ;
+
             return q;
         }
 

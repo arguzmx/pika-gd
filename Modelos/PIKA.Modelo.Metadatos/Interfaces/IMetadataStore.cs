@@ -44,6 +44,8 @@ namespace PIKA.Modelo.Metadatos
 
         Task<List<DocumentoPlantilla>> Lista(Plantilla plantilla, string listaId);
 
+        Task<List<DocumentoPlantilla>> ListaTipoIds(Plantilla plantilla, List<string> Ids, string Tipo);
+
 
         Task<DocumentoPlantilla> Inserta(string tipoOrigenId,
             string origenId, bool esLista, string ListaId,

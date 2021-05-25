@@ -14,6 +14,7 @@ using LazyCache;
 using PIKA.GD.API.Servicios.Caches;
 using RepositorioEntidades;
 using PIKA.Modelo.Metadatos.Instancias;
+using PIKA.Servicio.Metadatos.ElasticSearch.modelos;
 
 namespace PIKA.GD.API.Controllers.Metadatos
 {
@@ -71,7 +72,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
                 Console.WriteLine($"{ex}");
                 throw;
             }
-            
+
 
         }
 
@@ -255,6 +256,32 @@ namespace PIKA.GD.API.Controllers.Metadatos
             }
 
             return NotFound($"{plantillaid}/{id}");
+
+        }
+
+        [HttpPost("{plantillaid}/lista/{tipo}/id")]
+        [TypeFilter(typeof(AsyncIdentityFilter))]
+        public async Task<ActionResult<DocumentoPlantilla>> ListPorIdTpo(string plantillaid, string tipo, [FromBody]  RequestPlantillaTipo  request)
+        {
+
+            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
+                     .ConfigureAwait(false);
+
+            Console.WriteLine(plantillaid);
+            Console.WriteLine($"{plantilla == null}");
+            
+            if (plantilla == null) return NotFound(plantillaid);
+
+            bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
+            Console.WriteLine($"{existe}");
+            if (existe)
+            {
+                var r = await repositorio.ListaTipoIds(plantilla, request.Ids , tipo).ConfigureAwait(false);
+                if (r != null) return Ok(r);
+
+            }
+
+            return NotFound();
 
         }
 
