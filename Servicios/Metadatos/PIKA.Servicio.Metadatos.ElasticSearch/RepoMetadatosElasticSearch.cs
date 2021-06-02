@@ -14,6 +14,7 @@ using System.Linq;
 using Newtonsoft.Json.Linq;
 using PIKA.Modelo.Metadatos.Instancias;
 using PIKA.Infraestructura.Comun.Excepciones;
+using LazyCache;
 
 namespace PIKA.Servicio.Metadatos.ElasticSearch
 {
@@ -27,7 +28,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         private ElasticClient cliente;
         private ElasticClient clienteVinculos;
         private ILogger logger;
-
+        private IAppCache appCache;
         /// <summary>
         /// Esta constructor es para ser llamda vía IRepositorioInicializableAutoConfigurable
         /// </summary>
@@ -36,10 +37,12 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         }
 
         public RepoMetadatosElasticSearch(
+            IAppCache appCache,
             IConfiguration configuration, 
             ILoggerFactory loggerFactory)
         {
             this.logger = loggerFactory.CreateLogger(nameof(RepoMetadatosElasticSearch));
+            this.appCache = appCache;
             CreaClientes(configuration);
         }
 
@@ -109,16 +112,15 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 Valores = valores.Valores,
                 IndiceFiltrado = valores.Filtro,
                 EsLista = esLista,
-                ListaId = ListaId
+                ListaId = ListaId,
+                IndiceJerarquia  =valores.FiltroJerarquico
             };
 
-           
+            
             var body = ES.PostData.String(valoresplantilla.ObtieneJSONValores(plantilla));
 
-            Console.WriteLine($"Passed 2");
             var response = await cliente.LowLevel.CreateAsync<CreateResponse>(plantilla.Id, valoresplantilla.Id, body);
 
-            Console.WriteLine($"Passed 3");
             if (response.ApiCall.Success)
             {
                 if (!esLista)
@@ -150,7 +152,9 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                     DatoId = doc.DatoId,
                     TipoDatoId = doc.TipoDatoId,
                     TipoOrigenId = doc.TipoOrigenId,
-                    OrigenId = doc.OrigenId
+                    OrigenId = doc.OrigenId,
+                    IndiceJerarquia = doc.IndiceJerarquia
+
                 };
 
                 var body = ES.PostData.String(valores.ActualizarDocumento(plantilla));
@@ -183,7 +187,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             if (r.Success)
             {
                 ElasticsearchResult esr = JsonSerializer.Deserialize<ElasticsearchResult>(r.Body);
-                return esr.hits.total.value > 0 ? true : false;
+                return esr.hits.hits.Length > 0 ? true : false;
             }
 
             return false;
@@ -197,7 +201,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             {
 
                 ElasticsearchResult esr = JsonSerializer.Deserialize<ElasticsearchResult>(r.Body);
-                if (esr.hits.total.value > 0)
+                if (esr.hits.hits.Length > 0)
                 {
                     JsonElement e = (JsonElement)esr.hits.hits[0];
                     dynamic d = JObject.Parse(e.ToString());
@@ -228,9 +232,9 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             {
                 List<DocumentoPlantilla> resultados = new List<DocumentoPlantilla>();
                 ElasticsearchResult esr = JsonSerializer.Deserialize<ElasticsearchResult>(r.Body);
-                if (esr.hits.total.value > 0)
+                if (esr.hits.hits.Length > 0)
                 {
-                    for (int i = 0; i < esr.hits.total.value; i++)
+                    for (int i = 0; i < esr.hits.hits.Length; i++)
                     {
                         JsonElement e = (JsonElement)esr.hits.hits[i];
                         dynamic d = JObject.Parse(e.ToString());
@@ -244,15 +248,15 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
         public async Task<List<DocumentoPlantilla>> ListaTipoIds(Plantilla plantilla, List<string> Ids, string Tipo)
         {
-            Console.WriteLine(Ids.BuscarPorTipoIds(Tipo));
+            
             var r = await cliente.LowLevel.SearchAsync<StringResponse>(plantilla.Id, Ids.BuscarPorTipoIds(Tipo));
             if (r.Success)
             {
                 List<DocumentoPlantilla> resultados = new List<DocumentoPlantilla>();
                 ElasticsearchResult esr = JsonSerializer.Deserialize<ElasticsearchResult>(r.Body);
-                if (esr.hits.total.value > 0)
+                if (esr.hits.hits.Length > 0)
                 {
-                    for (int i = 0; i < esr.hits.total.value; i++)
+                    for (int i = 0; i < esr.hits.hits.Length; i++)
                     {
                         JsonElement e = (JsonElement)esr.hits.hits[i];
                         dynamic d = JObject.Parse(e.ToString());
@@ -272,7 +276,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             {
                 
                 ElasticsearchResult esr = JsonSerializer.Deserialize<ElasticsearchResult>(r.Body);
-                if (esr.hits.total.value > 0)
+                if (esr.hits.hits.Length > 0)
                 {
                     JsonElement e = (JsonElement)esr.hits.hits[0];
                     dynamic d = JObject.Parse(e.ToString());

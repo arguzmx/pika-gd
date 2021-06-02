@@ -32,6 +32,7 @@ namespace RepositorioEntidades
         public const string OP_ISNOTNULL = "notnull";
         public const string OP_BETWEN = "between";
         public const string OP_FULLTEXT = "fulltext";
+        public const string OP_INLIST = "inlist";
 
         /// <summary>
         /// Propiedad para aplicar el filtro

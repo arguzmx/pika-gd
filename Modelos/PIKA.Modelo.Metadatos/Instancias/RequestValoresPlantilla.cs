@@ -27,6 +27,11 @@ namespace PIKA.Modelo.Metadatos
         public string Filtro { get; set; }
 
         /// <summary>
+        /// Filtrso de jeraquia por ejmepl Id de carpeta
+        /// </summary>
+        public string FiltroJerarquico { get; set; }
+
+        /// <summary>
         /// Lista de valores para la plantilla
         /// </summary>
         public List<ValorPropiedad> Valores { get; set; }

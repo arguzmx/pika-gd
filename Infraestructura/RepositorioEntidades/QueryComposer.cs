@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+﻿using LazyCache;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,17 @@ namespace RepositorioEntidades
 {
     public  class QueryComposer<T>: ICompositorConsulta<T>
     {
-
+        private IAppCache cache;
         public QueryComposer()
         {
           
 
+        }
+
+        public QueryComposer(IAppCache cache)
+        {
+
+            this.cache = cache;
         }
 
         #region expression composer
@@ -454,6 +461,16 @@ namespace RepositorioEntidades
 
                         break;
 
+                    case FiltroConsulta.OP_INLIST:
+                        var b = this.cache.Get<CacheBusqueda>(Value);
+                        if (b == null) b = new CacheBusqueda() { Unicos = new List<string>() };
+                        Expression<Func<ICollection<string>>> valsrefcache = () =>  b.Unicos ?? new List<string>();
+                        var valscache = valsrefcache.Body;
+                        var miContainsCache = valsrefcache.Body.Type.GetMethod("Contains", new[] { typeof(string) });
+                        final = Expression.AndAlso(isNotNull, Expression.Call(valscache, miContainsCache, toLower));
+
+                        break;
+
                     default:
                         return null;
                 }
@@ -510,6 +527,9 @@ namespace RepositorioEntidades
         public  Expression Componer(ParameterExpression pe, Consulta q)
         {
             Expression final = null;
+            try
+            {
+
 
             
             if (q.Filtros.Count > 0)
@@ -571,6 +591,13 @@ namespace RepositorioEntidades
             }
           
             return final;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
         }
 
     }

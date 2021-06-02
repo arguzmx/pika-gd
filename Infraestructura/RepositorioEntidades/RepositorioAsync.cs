@@ -63,6 +63,7 @@ namespace RepositorioEntidades
 
         }
 
+
       
 
         public Task<IPaginado<T>> ObtenerPaginadoAsync(Consulta consulta,
@@ -120,6 +121,63 @@ namespace RepositorioEntidades
                 return query.PaginadoAsync(consulta.indice, consulta.tamano,  tokenCancelacion);
         }
 
+
+
+        public Task<IPaginado<T>> ObtenerPaginadoDesdeAsync(Consulta consulta, int desde,
+   Func<IQueryable<T>, IIncludableQueryable<T, object>> incluir = null,
+   List<Expression<Func<T, bool>>> filtros = null,
+   bool inhabilitarSeguimiento = true,
+   CancellationToken tokenCancelacion = default(CancellationToken))
+        {
+
+            if (filtros == null) filtros = new List<Expression<Func<T, bool>>>();
+
+            IQueryable<T> query = _dbSet;
+
+
+            if (inhabilitarSeguimiento) query = query.AsNoTracking();
+
+            if (incluir != null) query = incluir(query);
+
+            if (consulta.Filtros.Count > 0 || filtros.Count > 0)
+            {
+
+                var type = typeof(T);
+                ParameterExpression pe = Expression.Parameter(type, "search");
+
+
+                Expression predicateBody = _compositor.Componer(pe, consulta);
+                Expression<Func<T, bool>> lambdaPredicado = null;
+                if (predicateBody != null)
+                {
+                    lambdaPredicado = Expression.Lambda<Func<T, bool>>(predicateBody, pe);
+                    filtros.Insert(0, lambdaPredicado);
+                };
+
+
+                if (filtros.Count > 0)
+                {
+                    var filtro = filtros[0];
+                    for (int i = 1; i < filtros.Count; i++)
+                    {
+                        filtro = filtro.AndAlso(filtros[i]);
+                    }
+
+                    MethodCallExpression whereCallExpression = Expression.Call(
+                    typeof(Queryable),
+                    "Where",
+                    new Type[] { query.ElementType },
+                    query.Expression,
+                    filtro);
+
+                    query = query.Provider.CreateQuery<T>(whereCallExpression);
+                }
+            }
+
+            query = query.OrdenarPor(consulta.ord_columna, consulta.ord_direccion.ToLower() == "desc" ? false : true);
+
+            return query.PaginadoAsync(desde, consulta.indice, consulta.tamano, tokenCancelacion);
+        }
 
         public Task<IPaginado<T>> ObtenerConteoAsync(Consulta consulta,
           CancellationToken tokenCancelacion = default(CancellationToken))
@@ -190,6 +248,8 @@ namespace RepositorioEntidades
 
             return query.PaginadoAsync(indice, tamano,  tokenCancelacion);
         }
+
+        
 
         public Task CrearAsync(T entity, CancellationToken cancellationToken = default(CancellationToken))
         {

@@ -9,6 +9,7 @@ namespace PIKA.Servicio.Contenido.Interfaces
 {
     public interface IServicioElemento : IServicioRepositorioAsync<Elemento, string>
     {
+        Task<List<Elemento>> ObtenerPaginadoByIdsAsync(ConsultaAPI q);
         Task<List<string>> Purgar();
     }
 }

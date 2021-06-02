@@ -142,7 +142,13 @@ namespace PIKA.Modelo.Metadatos
                     foreach (object attr in attrs)
                     {
 
-                        if (attr is JsonPropertyNameAttribute)
+                        if (attr is LinkMetadatosAttribute)
+                        {
+                            var mattr = ((LinkMetadatosAttribute)attr);
+                            foundProp.VinculoMetadatos = mattr.CampoMetadatos;
+                        }
+
+                         if (attr is JsonPropertyNameAttribute)
                         {
                             JsonPropertyNameAttribute ea = (JsonPropertyNameAttribute)attr;
                             foundProp.Id = ea.Name;

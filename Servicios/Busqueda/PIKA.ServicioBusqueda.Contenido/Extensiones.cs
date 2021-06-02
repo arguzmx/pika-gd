@@ -15,7 +15,7 @@ namespace PIKA.ServicioBusqueda.Contenido
         }
         public static void LogS(this object o)
         {
-            Console.WriteLine(o.ToS());
+            Console.WriteLine(o.ToS() + "\r\n");
         }
 
 
@@ -27,7 +27,7 @@ namespace PIKA.ServicioBusqueda.Contenido
 
         public static string ToS(this object o)
         {
-            return System.Text.Json.JsonSerializer.Serialize(o);
+            return System.Text.Json.JsonSerializer.Serialize(o, new System.Text.Json.JsonSerializerOptions() {  WriteIndented = true});
         }
 
         public static IEnumerable<T> Select<T>(this IDataReader reader,

@@ -160,7 +160,8 @@ namespace PIKA.GD.API
                 Log.Logger.Information("Estableciendo el repositorio de metadatos a {x}", "Elasticsearch");
                 services.AddTransient<IRepositorioMetadatos>(provider => {
                     var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
-                    return new RepoMetadatosElasticSearch(Configuration, loggerFactory);
+                    var appCache = provider.GetRequiredService<IAppCache>();
+                    return new RepoMetadatosElasticSearch(appCache, Configuration, loggerFactory);
                 });
 
             }

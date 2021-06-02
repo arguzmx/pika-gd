@@ -286,6 +286,27 @@ namespace PIKA.GD.API.Controllers.Metadatos
         }
 
 
+
+        [HttpPost("{plantillaid}/pagina")]
+        [TypeFilter(typeof(AsyncIdentityFilter))]
+        public async Task<ActionResult<Paginado<DocumentoPlantilla>>> PaginaPlantilla(string plantillaid, [FromBody] ConsultaAPI q)
+        {
+            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
+                     .ConfigureAwait(false);
+
+            if (plantilla == null) return NotFound(plantillaid);
+            bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
+
+            if (existe)
+            {
+                var r = await repositorio.PaginadoDocumentoPlantilla(q, plantilla, "","").ConfigureAwait(false);
+                if (r != null) return Ok(r);
+            }
+
+            return NotFound();
+        }
+
+
         /// <summary>
         /// Elimina el documento asociado a un identificador de la plantilla
         /// </summary>

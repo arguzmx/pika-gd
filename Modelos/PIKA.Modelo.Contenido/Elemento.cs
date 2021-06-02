@@ -84,6 +84,7 @@ namespace PIKA.Modelo.Contenido
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.add)]
         [List(Entidad: "Volumen", DatosRemotos: true, TypeAhead: false)]
         [LinkViewParameter(Vista: "visorcontenido")]
+        [LinkMetadatos(CampoMetadatos: LinkMetadatosAttribute.IndiceFiltrado)]
         public string VolumenId { get; set; }
 
         /// <summary>
@@ -91,6 +92,8 @@ namespace PIKA.Modelo.Contenido
         /// </summary>
         [Prop(Required: false, Visible: false, OrderIndex: 1000, ShowInTable: false, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "PadreId")]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
+        [LinkViewParameter(Vista: "visorcontenido")]
+        [LinkMetadatos(CampoMetadatos: LinkMetadatosAttribute.IndiceJerarquico)]
         public string CarpetaId { get; set; }
         
 
@@ -106,8 +109,8 @@ namespace PIKA.Modelo.Contenido
         /// <summary>
         /// Determina el orien vinculado al elemento por ejemplo Carpeta de conteido, Activo de acervo etc
         /// </summary>
-        [Prop(Required: false, OrderIndex: 1020)]
-        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.add)]
+        [Prop(Required: false, OrderIndex: 1020, Visible: false, ShowInTable: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
         [LinkViewParameter(Vista: "visorcontenido")]
         public string TipoOrigenId { get; set; }
 
@@ -115,8 +118,8 @@ namespace PIKA.Modelo.Contenido
         /// Identifiacdor del registor padre, en el caso de contenido se encuentra vacio, en otro tipo de catos 
         /// Puede ser por ejemplo Acervo
         /// </summary>
-        [Prop(Required: true, OrderIndex: 1021)]
-        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.add)]
+        [Prop(Required: true, OrderIndex: 1021, Visible: false, ShowInTable: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
         [LinkViewParameter(Vista: "visorcontenido")]
         public string OrigenId { get; set; }
 

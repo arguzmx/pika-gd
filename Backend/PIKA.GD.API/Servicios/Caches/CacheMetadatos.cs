@@ -41,8 +41,6 @@ namespace PIKA.GD.API.Servicios.Caches
                     }
                 }
 
-                Console.WriteLine($"{System.Text.Json.JsonSerializer.Serialize(p)}");
-
                 if (p != null) cache.Add<Plantilla>(ClavePlantilla(id), p);
             }
             return p;

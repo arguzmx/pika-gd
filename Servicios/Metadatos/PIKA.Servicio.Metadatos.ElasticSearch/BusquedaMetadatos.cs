@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Elasticsearch.Net;
 using Newtonsoft.Json.Linq;
 using System.Text;
+using System.Text.Json;
 
 namespace PIKA.Servicio.Metadatos.ElasticSearch
 {
@@ -38,7 +39,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
     public partial class RepoMetadatosElasticSearch
     {
 
-        
+
         private const string MUSTNOT = "'must_not': [ #Q# ]";
         private const string MUST = "'must': [ #Q# ]";
         private const string FILTER = "'filter': [ #Q# ]";
@@ -60,43 +61,143 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         private const string IDSQUERY = "{ 'size': 5000, '_source': ['DID'], #Q# }";
         private const string QUERYMETADATOSPORID = "{ 'query': { 'ids': { 'values': #IDS#  } } }";
         private const string QUERYPAGINAMETADATOSPORID = "{ 'from': #SKIP#, 'size': #SIZE#, 'sort' : [ { '#SFIELD#' : {'order' : '#SORD#'}} ], 'query': { 'bool': { 'filter': [ { 'terms' : { '_id' : [#IDS#] } } ] } } }";
+        private const string QUERYPAGINAMETADATOS = "{ 'from': #SKIP#, 'size': #SIZE#, 'sort' : [ { '#SFIELD#' : {'order' : '#SORD#'}} ], #Q# }";
+        private const string QUERYPAGINAMETADATOSPORIDLISTADID = "{ 'from': #SKIP#, 'size': #SIZE#, 'sort' : [ { '#SFIELD#' : {'order' : '#SORD#'}} ], 'query': { 'bool': { 'filter': [ { 'terms' : { 'DID' : [#IDS#] } } ] } } }";
 
-        public async Task<long> ContarPorConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId)
+
+
+
+
+        public async Task<long> ContarPorConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId, string IdJerarquico)
         {
-            string consulta = PLAINBOOLQUERY.Replace("#Q#", CreaConsulta(q, plantilla, PuntoMontajeId)).DblQuotes(); 
-        Console.WriteLine(consulta);
-                var body = ES.PostData.String(consulta);
-                var response = await cliente.LowLevel.CountAsync<CountResponse>(plantilla.Id, body);
+            string consulta = PLAINBOOLQUERY.Replace("#Q#", CreaConsulta(q, plantilla, PuntoMontajeId, IdJerarquico)).DblQuotes();
 
-                if (response.IsValid)
-                {
-                    return response.Count;
-                }
-                return 0;
+            var body = ES.PostData.String(consulta);
+            var response = await cliente.LowLevel.CountAsync<CountResponse>(plantilla.Id, body);
+
+            if (response.IsValid)
+            {
+                return response.Count;
+            }
+            return 0;
         }
 
-        public async Task<List<string>> IdsrPorConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId)
+        public async Task<List<string>> IdsrPorConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId, string IdJerarquico)
         {
 
             List<string> l = new List<string>();
-            string consulta = IDSQUERY.Replace("#Q#", CreaConsulta(q, plantilla, PuntoMontajeId)).DblQuotes();
-            Console.WriteLine(consulta);
+            string consulta = IDSQUERY.Replace("#Q#", CreaConsulta(q, plantilla, PuntoMontajeId, IdJerarquico)).DblQuotes();
+
             var body = ES.PostData.String(consulta);
 
             var response = await cliente.LowLevel.SearchAsync<StringResponse>(plantilla.Id, body);
             if (response.Success)
             {
-                    dynamic r = JObject.Parse(response.Body);
+                dynamic r = JObject.Parse(response.Body);
                 var hits = r.hits.hits;
-                foreach(var h in hits)
+                foreach (var h in hits)
                 {
-                    l.Add( (string)h._source.DID + "|" + (string)h._id);
+                    l.Add((string)h._source.DID + "|" + (string)h._id);
                 }
             }
             return l;
 
         }
 
+        public async Task<Paginado<DocumentoPlantilla>> PaginadoDocumentoPlantilla(ConsultaAPI q, Plantilla plantilla, string PuntoMontajeId, string IdJerarquico)
+        {
+            try
+            {
+                CacheBusqueda b = null;
+
+                string consulta = "";
+                if(string.IsNullOrEmpty(q.IdCache))
+                {
+                    consulta = QUERYPAGINAMETADATOS.Replace("#Q#", CreaConsulta(q, plantilla)).DblQuotes();
+
+                } else
+                {
+                    b = this.appCache.Get<CacheBusqueda>(q.IdCache);
+                    StringBuilder sb = new StringBuilder();
+                    if (b == null) b = new CacheBusqueda() { Unicos = new List<string>() };
+                    foreach(string s in b.Unicos)
+                    {
+                        sb.Append($"\"{s}\",");
+                    }
+
+                    consulta = QUERYPAGINAMETADATOSPORIDLISTADID.Replace("#IDS#", sb.ToString().TrimEnd(',') ).DblQuotes();
+                }
+
+                var p = plantilla.Propiedades.Where(x => x.Id == q.ord_columna).FirstOrDefault();
+
+
+                consulta = consulta.Replace("#SIZE#", q.tamano.ToString());
+                consulta = consulta.Replace("#SKIP#", (q.indice * q.tamano).ToString());
+
+                if (p != null)
+                {
+                    consulta = consulta.Replace("#SORD#", q.ord_direccion);
+                    consulta = consulta.Replace("#SFIELD#", $"P{p.IdNumericoPlantilla}");
+                }
+
+
+                var body = ES.PostData.String(consulta);
+                var response = await cliente.LowLevel.SearchAsync<StringResponse>(plantilla.Id, body);
+
+                if (response.Success)
+                {
+                    List<DocumentoPlantilla> resultados = new List<DocumentoPlantilla>();
+                    ElasticsearchResult esr = JsonSerializer.Deserialize<ElasticsearchResult>(response.Body);
+                    if (esr.hits.hits.Length > 0)
+                    {
+                        for (int i = 0; i < esr.hits.hits.Length; i++)
+                        {
+                            JsonElement e = (JsonElement)esr.hits.hits[i];
+                            dynamic d = JObject.Parse(e.ToString());
+                            resultados.Add(ElasticJSONExtender.Valores(d, plantilla, true));
+                        }
+                    }
+
+
+                    // Si es el pagindo basadoe  IDs debe completarse el conteo si existen elementos adicionales en la lista
+                    // hasta completar una pagina
+                    if (!string.IsNullOrEmpty(q.IdCache) && esr.hits.hits.Length < q.tamano)
+                    {
+                        int delta = q.tamano - esr.hits.hits.Length;
+                        foreach(string s in b.Unicos)
+                        {
+                            if(!resultados.Any(x=>x.DatoId == s)){
+                                resultados.Add(ElasticJSONExtender.ValoresVacios(s, plantilla));
+                                delta--;
+                                if(delta == 0) break;
+                            }
+                        }
+                    }
+
+                     return new Paginado<DocumentoPlantilla>()
+                    {
+                        ConteoFiltrado = 0,
+                        ConteoTotal = 0,
+                        Desde = 0,
+                        Elementos = resultados,
+                        Indice = q.indice,
+                        Paginas = 0,
+                        Tamano = q.tamano
+                    };
+
+                } else
+                {
+                    Console.WriteLine(response.OriginalException.Message);
+                }
+                return null;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+        }
 
         public async Task<List<ValoresEntidad>> ConsultaMetadatosPorListaIds(Plantilla plantilla, List<string> Ids)
         {
@@ -112,7 +213,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             sb.Remove(sb.Length - 1, 1);
             sb.Append("]");
 
-            string consulta = QUERYMETADATOSPORID.Replace("#IDS#", sb.ToString() ).DblQuotes();
+            string consulta = QUERYMETADATOSPORID.Replace("#IDS#", sb.ToString()).DblQuotes();
 
             var body = ES.PostData.String(consulta);
 
@@ -120,7 +221,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             if (response.Success)
             {
                 var campos = plantilla.Propiedades.ToList().OrderBy(x => x.IndiceOrdenamiento).ToList();
-                
+
 
                 dynamic r = JObject.Parse(response.Body);
                 var hits = r.hits.hits;
@@ -131,7 +232,8 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                         Id = (string)h._source.DID
                     };
 
-                    campos.ForEach(c => {
+                    campos.ForEach(c =>
+                    {
 
                         var propiedad = plantilla.Propiedades.Where(x => x.IdNumericoPlantilla == c.IdNumericoPlantilla).First();
                         switch (propiedad.TipoDatoId)
@@ -143,13 +245,14 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                                 break;
 
                             case TipoDato.tDate:
-                                if(h._source[$"P{c.IdNumericoPlantilla}"]!=null)
+                                if (h._source[$"P{c.IdNumericoPlantilla}"] != null)
                                 {
                                     DateTime fecha = (DateTime)h._source[$"P{c.IdNumericoPlantilla}"];
                                     DateTime fecha2 = new DateTime(fecha.Year, fecha.Month, fecha.Day, 0, 0, 0);
                                     v.Valores.Add(fecha2.ToString("o"));
-                                    
-                                } else
+
+                                }
+                                else
                                 {
                                     v.Valores.Add(null);
                                 }
@@ -185,8 +288,8 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                                 break;
                         }
 
-                        
-                        
+
+
                     });
 
                     l.Add(v);
@@ -199,7 +302,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
         public async Task<List<ValoresEntidad>> ConsultaPaginaMetadatosPorListaIds(Plantilla plantilla, List<string> Ids, Consulta q)
         {
-            
+
             List<ValoresEntidad> l = new List<ValoresEntidad>();
             StringBuilder sb = new StringBuilder();
             Ids.ForEach(id =>
@@ -238,7 +341,8 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                         Id = (string)h._source.DID
                     };
 
-                    campos.ForEach(c => {
+                    campos.ForEach(c =>
+                    {
 
                         var propiedad = plantilla.Propiedades.Where(x => x.IdNumericoPlantilla == c.IdNumericoPlantilla).First();
                         switch (propiedad.TipoDatoId)
@@ -305,16 +409,192 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
         }
 
-
-        private string CreaConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId)
+        private string CreaConsulta(ConsultaAPI q, Plantilla plantilla)
         {
-                
+
+            string must = "";
+            string must_not = "";
+            string filter = "";
+
+            foreach (var f in q.Filtros)
+            {
+
+                if ("OID,TOID,TDID,DID,IF,IJ,LID".IndexOf(f.Propiedad) >= 0)
+                {
+                    filter += TERM
+                        .Replace("#F#", f.Propiedad)
+                        .Replace("#V#", f.ValorString)
+                        .Replace("^", "'") + ",";
+
+                }
+                else
+                {
+                    f.Valor = f.ValorString;
+                    f.ToS();
+
+                    Propiedad p = plantilla.Propiedades.Where(x => x.Id == f.Propiedad).FirstOrDefault();
+                    if (p != null)
+                    {
+                        switch (p.TipoDatoId)
+                        {
+                            case TipoDato.tString:
+                                var (tString, tStringMustNot) = StringQuery(f, p);
+                                if (f.Negacion) tStringMustNot = !tStringMustNot;
+                                if (tString != null)
+                                {
+                                    if (tStringMustNot)
+                                    {
+                                        must_not += $" {tString} ,";
+                                    }
+                                    else
+                                    {
+                                        must += $" {tString} ,";
+                                    }
+                                }
+                                break;
+
+
+                            case TipoDato.tIndexedString:
+                                var (tIndexedString, tIndexedStringMustNot) = IndexedStringQuery(f, p);
+                                if (f.Negacion) tIndexedStringMustNot = !tIndexedStringMustNot;
+                                if (tIndexedString != null)
+                                {
+                                    if (tIndexedStringMustNot)
+                                    {
+                                        must_not += $" {tIndexedString} ,";
+                                    }
+                                    else
+                                    {
+                                        must += $" {tIndexedString} ,";
+                                    }
+                                }
+                                break;
+
+                            case TipoDato.tBoolean:
+                                var (tBoolean, tBooleanMustNot) = BooleanStringQuery(f, p);
+                                if (f.Negacion) tBooleanMustNot = !tBooleanMustNot;
+                                if (tBoolean != null)
+                                {
+                                    if (tBooleanMustNot)
+                                    {
+                                        must_not += $" {tBoolean} ,";
+                                    }
+                                    else
+                                    {
+                                        must += $" {tBoolean} ,";
+                                    }
+                                }
+                                break;
+
+
+                            case TipoDato.tTime:
+                            case TipoDato.tDateTime:
+                            case TipoDato.tDate:
+                                var (tDate, tDateMustNot) = DateQuery(f, p);
+                                if (tDate != null)
+                                {
+                                    if (f.Negacion) tDateMustNot = !tDateMustNot;
+                                    if (tDateMustNot)
+                                    {
+                                        must_not += $" {tDate} ,";
+                                    }
+                                    else
+                                    {
+                                        must += $" {tDate} ,";
+                                    }
+                                }
+                                break;
+
+
+                            case TipoDato.tDouble:
+                            case TipoDato.tInt32:
+                            case TipoDato.tInt64:
+                                var (tNumber, tNumberMustNot) = NumberQuery(f, p);
+                                if (tNumber != null)
+                                {
+                                    if (f.Negacion) tNumberMustNot = !tNumberMustNot;
+                                    if (tNumberMustNot)
+                                    {
+                                        must_not += $" {tNumber} ,";
+                                    }
+                                    else
+                                    {
+                                        must += $" {tNumber} ,";
+                                    }
+                                }
+                                break;
+
+                            case TipoDato.tList:
+                                var (tList, tListMustNot) = ListQuery(f, p);
+                                if (tList != null)
+                                {
+                                    if (f.Negacion) tListMustNot = !tListMustNot;
+                                    if (tListMustNot)
+                                    {
+                                        must_not += $" {tList} ,";
+                                    }
+                                    else
+                                    {
+                                        must += $" {tList} ,";
+                                    }
+                                }
+                                break;
+                        }
+                    }
+                }
+
+
+            }
+
+
+            if (must_not.Length > 0)
+            {
+                must_not = must_not.TrimEnd(',');
+                must_not = MUSTNOT.Replace("#Q#", must_not);
+            }
+
+            if (must.Length > 0)
+            {
+                must = must.TrimEnd(',');
+                must = MUST.Replace("#Q#", must);
+            }
+
+            if (filter.Length > 0)
+            {
+                filter = filter.TrimEnd(',');
+                filter = FILTER.Replace("#Q#", filter);
+            }
+
+
+            string consulta = BOOLQUERY
+                .Replace("#M#", must.Length > 0 ? must + "," : "")
+                .Replace("#N#", must_not.Length > 0 ? must_not + "," : "")
+                .Replace("#F#", filter)
+                ;
+
+            return consulta;
+        }
+
+
+
+        private string CreaConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId, string IndiceJEarquia)
+        {
+
             string must = "";
             string must_not = "";
             string filter = TERM
                         .Replace("#F#", $"IF")
                         .Replace("#V#", PuntoMontajeId)
                         .Replace("^", "'");
+
+            string FilterJerarquira = "";
+            if (!string.IsNullOrEmpty(IndiceJEarquia))
+            {
+                FilterJerarquira = TERM
+                        .Replace("#F#", $"IJ")
+                        .Replace("#V#", IndiceJEarquia)
+                        .Replace("^", "'");
+            }
 
             foreach (var f in q.Filtros)
             {
@@ -362,7 +642,8 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                         case TipoDato.tBoolean:
                             var (tBoolean, tBooleanMustNot) = BooleanStringQuery(f, p);
                             if (f.Negacion) tBooleanMustNot = !tBooleanMustNot;
-                            if (tBoolean != null) {
+                            if (tBoolean != null)
+                            {
                                 if (tBooleanMustNot)
                                 {
                                     must_not += $" {tBoolean} ,";
@@ -432,7 +713,8 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             }
 
 
-            if (must_not.Length > 0) { 
+            if (must_not.Length > 0)
+            {
                 must_not = must_not.TrimEnd(',');
                 must_not = MUSTNOT.Replace("#Q#", must_not);
             }
@@ -445,13 +727,14 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
             if (filter.Length > 0)
             {
+                filter = string.IsNullOrEmpty(FilterJerarquira) ? filter : $"{filter},{FilterJerarquira}";
                 filter = filter.TrimEnd(',');
                 filter = FILTER.Replace("#Q#", filter);
             }
 
 
             string consulta = BOOLQUERY
-                .Replace("#M#", must.Length>0 ? must + "," : "" )
+                .Replace("#M#", must.Length > 0 ? must + "," : "")
                 .Replace("#N#", must_not.Length > 0 ? must_not + "," : "")
                 .Replace("#F#", filter)
                 ;
@@ -460,7 +743,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         }
 
 
-        
+
 
         private string FechaISO(string fecha, string tipo)
         {
@@ -495,8 +778,8 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             {
                 ni = f.Valor.Split(',')[0];
                 nf = f.Valor.Split(',')[1];
-                
-                if(!decimal.TryParse(ni, out _))
+
+                if (!decimal.TryParse(ni, out _))
                 {
                     return (null, false);
                 }
@@ -596,16 +879,17 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 ff = f.Valor.Split(',')[1];
                 fi = FechaISO(fi, p.TipoDatoId);
                 ff = FechaISO(ff, p.TipoDatoId);
-                if(ff==null || fi ==null) return (null, false);
-                
-                if(DateTime.Parse(fi).Ticks > DateTime.Parse(ff).Ticks)
+                if (ff == null || fi == null) return (null, false);
+
+                if (DateTime.Parse(fi).Ticks > DateTime.Parse(ff).Ticks)
                 {
                     string tmp = fi;
                     fi = ff;
                     ff = tmp;
                 }
 
-            } else
+            }
+            else
             {
                 fi = FechaISO(f.Valor, p.TipoDatoId);
                 if (fi == null) return (null, false);
@@ -695,7 +979,6 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         {
             string query = null;
             bool mustNot = false;
-            f.LogS();
             f.Valor = "1,true,t".Split(',').ToList().IndexOf(f.Valor.ToLower()) >= 0 ? "true" : "false";
 
             switch (f.Operador)
@@ -726,7 +1009,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                         .Replace("#F#", $"P{p.IdNumericoPlantilla}")
                         .Replace("#V#", f.Valor)
                         .Replace("#Z#", f.NivelFuzzy.ToString());
-            
+
             if (query != null) query = query.Replace("^", "'");
             return (query, mustNot);
         }
@@ -775,6 +1058,6 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             if (query != null) query = query.Replace("^", "'");
             return (query, mustNot);
         }
-        
+
     }
 }

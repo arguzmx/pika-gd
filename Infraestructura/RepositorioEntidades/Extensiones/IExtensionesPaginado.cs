@@ -46,6 +46,29 @@ namespace RepositorioEntidades
             return list;
         }
 
+        public static async Task<IPaginado<T>> PaginadoAsync<T>(this IQueryable<T> origen, int desde, int indice, int tamano,
+            CancellationToken cancellationToken = default(CancellationToken))
+        {
+            
+            var count = await origen.CountAsync(cancellationToken).ConfigureAwait(false);
+
+            var items = await origen.Skip(desde)
+                .Take(tamano).ToListAsync(cancellationToken).ConfigureAwait(false);
+            
+            var list = new Paginado<T>
+            {
+                Indice = indice,
+                Tamano = tamano,
+                Desde = desde,
+                ConteoTotal = count,
+                //ConteoFiltrado
+                Elementos = items,
+                Paginas = (int)Math.Ceiling(count / (double)tamano)
+            };
+
+            return list;
+        }
+
 
         public static async Task<IPaginado<T>> ConteoAsync<T>(this IQueryable<T> origen, int indice, int tamano,
             CancellationToken cancellationToken = default(CancellationToken))

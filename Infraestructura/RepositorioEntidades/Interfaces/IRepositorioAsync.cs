@@ -24,7 +24,7 @@ namespace RepositorioEntidades
 
         Task<List<T>> ObtenerAsync(string SqlCommand);
 
-
+        
         Task<IPaginado<T>> ObtenerPaginadoAsync(Expression<Func<T, bool>> predicate = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
@@ -34,6 +34,12 @@ namespace RepositorioEntidades
             CancellationToken cancellationToken = default(CancellationToken));
 
         Task<IPaginado<T>> ObtenerPaginadoAsync(Consulta Query,
+           Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+           List<Expression<Func<T, bool>>> filtros = null,
+           bool disableTracking = true,
+           CancellationToken cancellationToken = default(CancellationToken));
+
+        Task<IPaginado<T>> ObtenerPaginadoDesdeAsync(Consulta Query, int desde,
            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
            List<Expression<Func<T, bool>>> filtros = null,
            bool disableTracking = true,

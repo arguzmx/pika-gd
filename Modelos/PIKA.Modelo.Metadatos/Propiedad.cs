@@ -212,6 +212,9 @@ namespace PIKA.Modelo.Metadatos
         [NotMapped]
         public bool AlternarEnTabla { get; set; }
 
+        [NotMapped]
+        public string VinculoMetadatos { get; set; }
+
         public virtual TipoDato TipoDato { get; set; }
 
         public virtual AtributoLista AtributoLista { get; set; }

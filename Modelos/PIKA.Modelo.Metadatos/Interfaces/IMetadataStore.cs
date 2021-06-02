@@ -98,13 +98,15 @@ namespace PIKA.Modelo.Metadatos
         /// <param name="q"></param>
         /// <param name="plantilla"></param>
         /// <returns></returns>
-        Task<long> ContarPorConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId);
+        Task<long> ContarPorConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId, string IdJearquia);
 
-        Task<List<string>> IdsrPorConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId);
+        Task<List<string>> IdsrPorConsulta(Consulta q, Plantilla plantilla, string PuntoMontajeId, string IdJearquia);
 
         Task<List<ValoresEntidad>> ConsultaMetadatosPorListaIds(Plantilla plantilla, List<string> Ids);
         
         Task<List<ValoresEntidad>> ConsultaPaginaMetadatosPorListaIds(Plantilla plantilla, List<string> Ids, Consulta q);
+
+        Task<Paginado<DocumentoPlantilla>> PaginadoDocumentoPlantilla(ConsultaAPI q, Plantilla plantilla, string PuntoMontajeId, string IdJerarquico);
     }
 
 }

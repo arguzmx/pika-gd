@@ -3,8 +3,6 @@ using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.ElasticSearch.Excepciones;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -157,6 +155,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 sb.Append($"'TDID': '{valores.TipoDatoId}',");
                 sb.Append($"'DID': '{valores.DatoId}',");
                 sb.Append($"'IF': '{valores.IndiceFiltrado}',");
+                sb.Append($"'IJ': '{valores.IndiceJerarquia}',");
                 sb.Append($"'L': {(valores.EsLista ? "true": "false")},");
                 sb.Append($"'LID': '{ (string.IsNullOrEmpty(valores.ListaId) ? "" : valores.ListaId)}',");
 
@@ -232,7 +231,6 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
             if (campos != "")
             {
-                Console.WriteLine(json.Replace("%C%", campos).Replace('\'', '\"'));
                 return json.Replace("%C%", campos).Replace('\'', '\"');
             }
 
@@ -327,6 +325,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             sb.Append(baseProp.Replace("%N%", "TDID").Replace("%T%", "keyword"));
             sb.Append(baseProp.Replace("%N%", "DID").Replace("%T%", "keyword"));
             sb.Append(baseProp.Replace("%N%", "IF").Replace("%T%", "keyword"));
+            sb.Append(baseProp.Replace("%N%", "IJ").Replace("%T%", "keyword"));
             sb.Append(baseProp.Replace("%N%", "L").Replace("%T%", "boolean"));
             sb.Append(baseProp.Replace("%N%", "LID").Replace("%T%", "keyword"));
 
@@ -383,11 +382,37 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
             if (campos != "")
             {
-                Console.WriteLine(json.Replace("%C%", campos).Replace('\'', '\"'));
                 return json.Replace("%C%", campos).Replace('\'','\"');
             }
 
             return "";
+        }
+
+        public static DocumentoPlantilla ValoresVacios(string Id, Plantilla p)
+        {
+            
+            DocumentoPlantilla v = new DocumentoPlantilla
+            {
+                DatoId = Id,
+                Id = Id,
+                IndiceFiltrado = "",
+                IndiceJerarquia = "",
+                OrigenId = "",
+                TipoDatoId = "",
+                TipoOrigenId = "",
+                Valores = new List<ValorPropiedad>()
+            };
+
+            if (p != null)
+            {
+                v.PlantillaId = p.Id;
+                foreach (var campo in p.Propiedades)
+                {
+                    v.Valores.Add(new ValorPropiedad() { PropiedadId = campo.Id, Valor = "" });
+                }
+            }
+
+            return v;
         }
 
 
@@ -399,6 +424,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 DatoId = d["DID"],
                 Id = d["ID"],
                 IndiceFiltrado = d["IF"],
+                IndiceJerarquia = d["IJ"],
                 OrigenId = d["OID"],
                 TipoDatoId = d["TDID"],
                 TipoOrigenId = d["TOID"],
@@ -420,7 +446,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                            var elemento = campo.ValoresLista.Where(x => x.Id == id).FirstOrDefault();
                             if (elemento != null)
                             {
-                                valor = new ValorPropiedad() { PropiedadId = campo.Id, Valor = elemento.Texto };
+                                valor = new ValorPropiedad() { PropiedadId = campo.Id, Valor = string.IsNullOrEmpty(elemento.Texto) ? "" : elemento.Texto };
                             }
                             v.Valores.Add(valor);
                         } else
@@ -472,11 +498,11 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                         
 
                     case TipoDato.tList:
-                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = (string)data[$"P{p.IdNumericoPlantilla}"] };
+                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = string.IsNullOrEmpty((string)data[$"P{p.IdNumericoPlantilla}"])  ? "" : (string)data[$"P{p.IdNumericoPlantilla}"] };
 
                     case TipoDato.tIndexedString:
                     case TipoDato.tString:
-                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = (string)data[$"P{p.IdNumericoPlantilla}"] };
+                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = string.IsNullOrEmpty((string)data[$"P{p.IdNumericoPlantilla}"]) ? "" :  (string)data[$"P{p.IdNumericoPlantilla}"] };
 
                 }
 

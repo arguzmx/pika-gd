@@ -87,6 +87,11 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public string IndiceFiltrado { get; set; }
 
+        /// <summary>
+        /// Est indice permite filtrar cuando un elemento se encuentre asociado
+        /// a una entidad jerárquica padre tal como carpetas en el contenido
+        /// </summary>
+        public string IndiceJerarquia { get; set; }
 
         /// <summary>
         /// Propiedad no utilizada

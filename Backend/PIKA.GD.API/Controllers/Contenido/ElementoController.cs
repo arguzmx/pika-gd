@@ -123,12 +123,24 @@ namespace PIKA.GD.API.Controllers.Contenido
         [HttpGet("page", Name = "GetPageElemento")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Elemento>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
+        public async Task<ActionResult<Paginado<Elemento>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
 
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             var data = await servicioEntidad.ObtenerPaginadoAsync(
                  Query: query)
+                 .ConfigureAwait(false);
+
+            return Ok(data);
+        }
+
+        [HttpPost("page/ids", Name = "GetPageElementoById")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<Elemento>>> GetPageIds(ConsultaAPI q)
+        {
+            ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
+            var data = await servicioEntidad.ObtenerPaginadoByIdsAsync(q)
                  .ConfigureAwait(false);
 
             return Ok(data);

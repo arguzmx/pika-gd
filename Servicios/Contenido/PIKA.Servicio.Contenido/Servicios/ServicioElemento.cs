@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
@@ -13,6 +14,7 @@ using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Contenido;
 using PIKA.Servicio.Contenido.Helpers;
 using PIKA.Servicio.Contenido.Interfaces;
+using PIKA.Servicio.Contenido.Servicios.Busqueda;
 using RepositorioEntidades;
 using Version = PIKA.Modelo.Contenido.Version;
 
@@ -32,16 +34,18 @@ namespace PIKA.Servicio.Contenido.Servicios
         private IRepositorioAsync<Carpeta> repoCarpetas;
         private UnidadDeTrabajo<DbContextContenido> UDT;
         private ComunesCarpetas helperCarpetas;
-
+        private IAppCache appcache;
         public ServicioElemento(
+            IAppCache cache,
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
             ILogger<ServicioLog> Logger
         ) : base(proveedorOpciones, Logger)
         {
+            this.appcache = cache;
             try
             {
                 this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
-                this.repo = UDT.ObtenerRepositoryAsync<Elemento>(new QueryComposer<Elemento>());
+                this.repo = UDT.ObtenerRepositoryAsync<Elemento>(new QueryComposer<Elemento>(cache));
                 this.repoVol = UDT.ObtenerRepositoryAsync<Volumen>(new QueryComposer<Volumen>());
                 this.repoVPM = UDT.ObtenerRepositoryAsync<VolumenPuntoMontaje>(new QueryComposer<VolumenPuntoMontaje>());
                 this.repoPerm = UDT.ObtenerRepositoryAsync<Permiso>(new QueryComposer<Permiso>());
@@ -230,6 +234,51 @@ namespace PIKA.Servicio.Contenido.Servicios
                 return respuesta;
           
         }
+
+        public async Task<List<Elemento>> ObtenerPaginadoByIdsAsync(ConsultaAPI q)
+        {
+            Console.WriteLine("BYid");
+            if (!string.IsNullOrEmpty(q.IdCache))
+            {
+                var consulta = GetDefaultQuery(q.AConulta());
+                consulta.Filtros.Add(new FiltroConsulta()
+                {
+                    Negacion = false,
+                    NivelFuzzy = -1,
+                    Operador = FiltroConsulta.OP_INLIST,
+                    Propiedad = "Id",
+                    Valor = q.IdCache,
+                    ValorString = q.IdCache
+                });
+
+
+                Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(consulta, new System.Text.Json.JsonSerializerOptions() { WriteIndented = true }));
+
+                return (await this.repo.ObtenerPaginadoAsync(consulta)).Elementos.ToList();
+
+            } else
+            {
+                var list = await this.UDT.Context.Elemento.Where(x => q.Ids.Contains(x.Id)).ToListAsync();
+                if (list.Count() < q.tamano)
+                {
+                    int desde = q.indice * q.tamano;
+                    q.tamano += q.tamano - list.Count();
+                    var respuesta = await this.repo.ObtenerPaginadoDesdeAsync(GetDefaultQuery(q.AConulta()), desde);
+                    q.tamano += q.tamano + list.Count();
+
+                    foreach (var e in respuesta.Elementos)
+                    {
+                        if (!list.Any(x => x.Id == e.Id))
+                        {
+                            list.Add(e);
+                            if (list.Count() == q.tamano) break;
+                        }
+                    }
+                }
+                return list;
+            }
+        }
+
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
             Elemento o;
