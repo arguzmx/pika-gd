@@ -542,7 +542,17 @@ namespace RepositorioEntidades
                 {
                     f.Operador = f.Operador.TrimEnd('}');
                     f.Valor = f.Valor.TrimEnd('}');
-                    Expression e = null;
+
+
+                        if (string.IsNullOrEmpty(f.Valor) && !string.IsNullOrEmpty(f.ValorString))
+                        {
+                            f.ValorString = f.ValorString.TrimEnd('}');
+                            f.Valor = f.ValorString;
+                        }
+                        Expression e = null;
+
+
+                        
 
                     var p = Props.Where(x => x.Name == f.Propiedad).FirstOrDefault();
                     if (p == null) continue;

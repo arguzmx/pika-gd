@@ -183,7 +183,6 @@ namespace PIKA.GD.API.Controllers.Contenido
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
 
             List<string> eliminados = (await servicioEntidad.Eliminar(lids).ConfigureAwait(false)).ToList();
-            Console.WriteLine($">>>{eliminados.Count}");
             if (eliminados.Count==0)
             {
                 return Conflict();

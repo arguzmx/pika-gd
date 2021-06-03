@@ -130,6 +130,7 @@ namespace RepositorioEntidades
    CancellationToken tokenCancelacion = default(CancellationToken))
         {
 
+
             if (filtros == null) filtros = new List<Expression<Func<T, bool>>>();
 
             IQueryable<T> query = _dbSet;
@@ -141,7 +142,6 @@ namespace RepositorioEntidades
 
             if (consulta.Filtros.Count > 0 || filtros.Count > 0)
             {
-
                 var type = typeof(T);
                 ParameterExpression pe = Expression.Parameter(type, "search");
 
@@ -175,7 +175,6 @@ namespace RepositorioEntidades
             }
 
             query = query.OrdenarPor(consulta.ord_columna, consulta.ord_direccion.ToLower() == "desc" ? false : true);
-
             return query.PaginadoAsync(desde, consulta.indice, consulta.tamano, tokenCancelacion);
         }
 

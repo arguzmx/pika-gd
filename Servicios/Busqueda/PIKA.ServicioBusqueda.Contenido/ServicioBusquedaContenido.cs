@@ -90,9 +90,6 @@ namespace PIKA.ServicioBusqueda.Contenido
 
                         var validos = busqueda.Elementos.OrderBy(x => x.Conteo).ToList();
 
-                        Console.WriteLine($">>-------------------------{validos.Count}");
-
-
                         List<string> unicos = new List<string>();
                         if (validos.Count > 1)
                         {
@@ -152,7 +149,6 @@ namespace PIKA.ServicioBusqueda.Contenido
                                 }
                             }
 
-                            unicos.LogS();
                         }
                         else
                         {
@@ -226,7 +222,6 @@ namespace PIKA.ServicioBusqueda.Contenido
                 {
                     await EjecutarConteos(busqueda);
 
-                    Console.WriteLine(busqueda.Elementos.Sum(x => x.Conteo).ToString() + "!!!!");
                     if (busqueda.Elementos.Sum(x => x.Conteo) > 0)
                     {
                         await EjecutarUQeryIds(busqueda);
@@ -273,7 +268,7 @@ namespace PIKA.ServicioBusqueda.Contenido
                         }
                         else
                         {
-                            Console.WriteLine("1XXXXX------------\r\n");
+
                             // La respuesta proviene de un solo tipo de elementos
                             switch (validos[0].Tag)
                             {

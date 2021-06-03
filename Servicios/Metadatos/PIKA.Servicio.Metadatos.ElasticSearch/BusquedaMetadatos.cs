@@ -124,7 +124,6 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                     {
                         sb.Append($"\"{s}\",");
                     }
-
                     consulta = QUERYPAGINAMETADATOSPORIDLISTADID.Replace("#IDS#", sb.ToString().TrimEnd(',') ).DblQuotes();
                 }
 
@@ -140,7 +139,6 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                     consulta = consulta.Replace("#SFIELD#", $"P{p.IdNumericoPlantilla}");
                 }
 
-
                 var body = ES.PostData.String(consulta);
                 var response = await cliente.LowLevel.SearchAsync<StringResponse>(plantilla.Id, body);
 
@@ -152,6 +150,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                     {
                         for (int i = 0; i < esr.hits.hits.Length; i++)
                         {
+                            
                             JsonElement e = (JsonElement)esr.hits.hits[i];
                             dynamic d = JObject.Parse(e.ToString());
                             resultados.Add(ElasticJSONExtender.Valores(d, plantilla, true));
@@ -163,15 +162,30 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                     // hasta completar una pagina
                     if (!string.IsNullOrEmpty(q.IdCache) && esr.hits.hits.Length < q.tamano)
                     {
-                        int delta = q.tamano - esr.hits.hits.Length;
-                        foreach(string s in b.Unicos)
+                        List<string> eliminados = new List<string>();
+
+                        resultados.ForEach(r =>
                         {
-                            if(!resultados.Any(x=>x.DatoId == s)){
-                                resultados.Add(ElasticJSONExtender.ValoresVacios(s, plantilla));
-                                delta--;
-                                if(delta == 0) break;
-                            }
+                            eliminados.Add(r.DatoId);
+                            b.Unicos.Remove(r.DatoId);
+                        });
+
+                        int startat = (q.indice * q.tamano);
+                        int delta = q.tamano - esr.hits.hits.Length;
+           
+                        foreach (string s in b.Unicos.Skip(startat))
+                        {
+                           resultados.Add(ElasticJSONExtender.ValoresVacios(s, plantilla));
+                           delta--;
+                            if (delta == 0) break;
                         }
+
+                        // hay que recuperarlos debido a que el objeto se pasa por referncia del cache
+                        eliminados.ForEach(r =>
+                        {
+                            b.Unicos.Add(r);
+                        });
+
                     }
 
                      return new Paginado<DocumentoPlantilla>()

@@ -304,7 +304,6 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
             if (campos != "")
             {
-                Console.WriteLine(json.Replace("%C%", campos).Replace('\'', '\"'));
                 return json.Replace("%C%", campos).Replace('\'', '\"');
             }
 

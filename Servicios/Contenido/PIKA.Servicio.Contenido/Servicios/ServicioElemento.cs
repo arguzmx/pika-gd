@@ -237,9 +237,11 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<List<Elemento>> ObtenerPaginadoByIdsAsync(ConsultaAPI q)
         {
-            Console.WriteLine("BYid");
+
             if (!string.IsNullOrEmpty(q.IdCache))
             {
+                q.ord_columna = "";
+                q.ord_direccion = "";
                 var consulta = GetDefaultQuery(q.AConulta());
                 consulta.Filtros.Add(new FiltroConsulta()
                 {
@@ -252,19 +254,19 @@ namespace PIKA.Servicio.Contenido.Servicios
                 });
 
 
-                Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(consulta, new System.Text.Json.JsonSerializerOptions() { WriteIndented = true }));
-
-                return (await this.repo.ObtenerPaginadoAsync(consulta)).Elementos.ToList();
+                    return (await this.repo.ObtenerPaginadoAsync(consulta)).Elementos.ToList();
 
             } else
             {
                 var list = await this.UDT.Context.Elemento.Where(x => q.Ids.Contains(x.Id)).ToListAsync();
-                if (list.Count() < q.tamano)
+                if (q.tamano>0 && (list.Count() < q.tamano))
                 {
+
+                   
                     int desde = q.indice * q.tamano;
-                    q.tamano += q.tamano - list.Count();
+                    q.tamano = q.tamano - list.Count();
                     var respuesta = await this.repo.ObtenerPaginadoDesdeAsync(GetDefaultQuery(q.AConulta()), desde);
-                    q.tamano += q.tamano + list.Count();
+                    q.tamano = q.tamano + list.Count();
 
                     foreach (var e in respuesta.Elementos)
                     {

@@ -65,7 +65,8 @@ namespace RepositorioEntidades
                 ord_columna = this.ord_columna,
                 ord_direccion = this.ord_direccion,
                 recalcular_totales = this.recalcular_totales,
-                tamano = this.tamano
+                tamano = this.tamano, 
+                IdCache = this.IdCache
             };
         }
 

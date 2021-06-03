@@ -55,8 +55,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<MetadataInfo>> ObtienePlantilla(string id)
         {
-            try
-            {
+          
                 Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(id, appCache, plantillas)
                 .ConfigureAwait(false);
 
@@ -65,15 +64,6 @@ namespace PIKA.GD.API.Controllers.Metadatos
                 PlantillaMetadataExtractor extractor = new PlantillaMetadataExtractor();
 
                 return Ok(extractor.Obtener(plantilla));
-            }
-            catch (Exception ex)
-            {
-
-                Console.WriteLine($"{ex}");
-                throw;
-            }
-
-
         }
 
 
@@ -267,13 +257,9 @@ namespace PIKA.GD.API.Controllers.Metadatos
             Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
                      .ConfigureAwait(false);
 
-            Console.WriteLine(plantillaid);
-            Console.WriteLine($"{plantilla == null}");
-            
             if (plantilla == null) return NotFound(plantillaid);
 
             bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
-            Console.WriteLine($"{existe}");
             if (existe)
             {
                 var r = await repositorio.ListaTipoIds(plantilla, request.Ids , tipo).ConfigureAwait(false);
