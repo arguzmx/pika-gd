@@ -80,6 +80,7 @@ namespace PIKA.GD.API.Controllers.Contenido
 
                 if (elementos.Count > 0)
                 {
+
                     string VolId = elementos[0].VolumenId;
                     string version = elementos[0].VersionId;
                     long conteoBytes = 0;

@@ -33,7 +33,11 @@
 
     <PackageReference Include="Bogus" Version="29.0.2" />
 
+    <PackageReference Include="DotNetZip" Version="1.15.0" />
+
     <PackageReference Include="LazyCache.AspNetCore" Version="2.0.4" />
+
+    <PackageReference Include="Magick.NET-Q16-x64" Version="7.24.1" />
 
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
 

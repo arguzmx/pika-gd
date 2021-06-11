@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+﻿using ImageMagick;
+using Ionic.Zip;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
@@ -194,6 +196,73 @@ namespace PIKA.Servicio.Contenido.Gestores
                 CreaMiniatura(rutaMiniaturas, rutaFinal, 200, ParteId);
             }
             return 1;
+        }
+
+        public async Task<string> ObtieneZIP(Modelo.Contenido.Version version, List<string> parteIds)
+        {
+            var tempDir = this.configServidor.ruta_cache_fisico;
+            var zipFile = Path.Combine(tempDir, $"z{Guid.NewGuid().ToString().Replace("-","")}.zip");
+            int cuenta = 0;
+            using (ZipFile zip = new ZipFile() { CompressionLevel = Ionic.Zlib.CompressionLevel.None})
+            {
+                version.Partes.ForEach(p =>
+                {
+                    string ruta = Path.Combine(this.configGestor.Ruta, version.ElementoId, version.Id);
+                    string nombreArchivo = p.Indice.ToString() + p.Extension.ToUpper();
+                    string rutaFinal = Path.Combine(ruta, nombreArchivo);
+
+                    if (File.Exists(rutaFinal))
+                    {
+                        zip.AddFile(rutaFinal, "");
+                        cuenta ++;
+                    }
+
+                });
+
+                if (cuenta > 0)
+                {
+                    zip.Save(zipFile);
+                }
+            }
+
+            await Task.Delay(1);
+            return cuenta > 0 ? zipFile : "";
+        }
+
+        public async Task<string> ObtienePDF(Modelo.Contenido.Version version, List<string> parteIds)
+        {
+            var tempDir = this.configServidor.ruta_cache_fisico;
+            var pdfFile = Path.Combine(tempDir, $"z{Guid.NewGuid().ToString().Replace("-", "")}.pdf");
+            int cuenta = 0;
+            List<string> imgFormats = new List<string>() { ".png", ".jpg", ".jpeg", ".bmp", ".tif", ".gif" };
+
+            using (var collection = new MagickImageCollection())
+            {
+                version.Partes.ForEach(p =>
+                {
+                    if(imgFormats.IndexOf(p.Extension.ToLower()) >= 0)
+                    {
+                        string ruta = Path.Combine(this.configGestor.Ruta, version.ElementoId, version.Id);
+                        string nombreArchivo = p.Indice.ToString() + p.Extension.ToUpper();
+                        string rutaFinal = Path.Combine(ruta, nombreArchivo);
+
+                        if (File.Exists(rutaFinal))
+                        {
+                            collection.Add(new MagickImage(rutaFinal));
+                            cuenta++;
+                        }
+                    }
+                });
+
+                if (cuenta > 0)
+                {
+                    collection.Write(pdfFile);
+                }
+            }
+
+            await Task.Delay(1);
+           return cuenta > 0 ? pdfFile : "";
+
         }
     }
 }

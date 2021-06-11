@@ -21,6 +21,21 @@ namespace PIKA.Modelo.Contenido
         Task<byte[]> LeeBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension );
         Task<byte[]> LeeThumbnailBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension);
 
+        /// <summary>
+        /// DEvulve la ruta al archivo generado
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="parteIds"></param>
+        /// <returns></returns>
+        Task<string> ObtieneZIP(Version version, List<string> parteIds);
 
+
+        /// <summary>
+        /// DEvulve la ruta al archivo generado
+        /// </summary>
+        /// <param name="version"></param>
+        /// <param name="parteIds"></param>
+        /// <returns></returns>
+        Task<string> ObtienePDF(Version version, List<string> parteIds);
     }
 }

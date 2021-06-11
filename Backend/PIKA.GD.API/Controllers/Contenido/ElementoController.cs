@@ -28,10 +28,12 @@ namespace PIKA.GD.API.Controllers.Contenido
         private IServicioElemento servicioEntidad;
         private IProveedorMetadatos<Elemento> metadataProvider;
         private IRepoContenidoElasticSearch repoContenido;
+        private IServicioVolumen servicioVol;
 
         public ElementoController(
             IRepoContenidoElasticSearch repoContenido,
-            ILogger<ElementoController> logger,
+             IServicioVolumen servicioVol,
+        ILogger<ElementoController> logger,
             IProveedorMetadatos<Elemento> metadataProvider,
             IServicioElemento servicioEntidad)
         {
@@ -39,6 +41,7 @@ namespace PIKA.GD.API.Controllers.Contenido
             this.servicioEntidad = servicioEntidad;
             this.metadataProvider = metadataProvider;
             this.repoContenido = repoContenido;
+            this.servicioVol = servicioVol;
         }
 
 
@@ -222,6 +225,69 @@ namespace PIKA.GD.API.Controllers.Contenido
             string[] lids = IdsTrim.Split(',').ToList()
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
             return Ok(await servicioEntidad.Restaurar(lids).ConfigureAwait(false));
+        }
+
+        [HttpGet("zip/{id}/{v}", Name = "GeneraZip")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetZIP(string id, string  v)
+        {
+            v = "";
+            var elemento = await this.servicioEntidad.UnicoAsync(x => x.Id == id);
+            if (elemento == null)
+            {
+                return NotFound();
+            }
+
+            if (string.IsNullOrEmpty(v)) v = elemento.VersionId;
+            IGestorES gestor = await servicioVol.ObtienInstanciaGestor(elemento.VolumenId)
+                           .ConfigureAwait(false);
+
+            Modelo.Contenido.Version vElemento = await this.repoContenido.ObtieneVersion(v).ConfigureAwait(false);
+            if(vElemento==null)
+            {
+                return NotFound();
+            }
+            var archivo = await gestor.ObtieneZIP(vElemento, null);
+
+            if (string.IsNullOrEmpty(archivo)) return BadRequest();
+
+            this.HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+            return PhysicalFile(archivo, MimeTypes.GetMimeType($"{elemento.Nombre}.zip"), elemento.Nombre + ".zip");
+
+
+        }
+
+
+        [HttpGet("pdf/{id}/{v}", Name = "GeneraPDF")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetPDF(string id, string v)
+        {
+            v = "";
+            var elemento = await this.servicioEntidad.UnicoAsync(x => x.Id == id);
+            if (elemento == null)
+            {
+                return NotFound();
+            }
+
+            if (string.IsNullOrEmpty(v)) v = elemento.VersionId;
+            IGestorES gestor = await servicioVol.ObtienInstanciaGestor(elemento.VolumenId)
+                           .ConfigureAwait(false);
+
+            Modelo.Contenido.Version vElemento = await this.repoContenido.ObtieneVersion(v).ConfigureAwait(false);
+            if (vElemento == null)
+            {
+                return NotFound();
+            }
+            var archivo = await gestor.ObtienePDF(vElemento, null);
+
+            if (string.IsNullOrEmpty(archivo)) return BadRequest();
+
+            this.HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+            return PhysicalFile(archivo, MimeTypes.GetMimeType($"{elemento.Nombre}.pdf"), elemento.Nombre + ".pdf");
+
+
         }
 
     }
