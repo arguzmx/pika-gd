@@ -129,6 +129,7 @@ namespace PIKA.Modelo.Seguridad
         public virtual ICollection<UsuarioDominio>  UsuariosDominio { get; set; }
 
         public virtual PropiedadesUsuario Propiedades { get; set; }
+        public virtual List<ValorClaveUsuario> ValoresClave { get; set; }
 
         //public virtual ICollection<UserClaim> Claims { get; set; }
 

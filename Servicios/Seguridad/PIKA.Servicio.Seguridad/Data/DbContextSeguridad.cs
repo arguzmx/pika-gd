@@ -52,7 +52,7 @@ namespace PIKA.Servicio.Seguridad
 
         public static string TablaPermisosApp { get => $"{TablaSeguridad}permisosapl"; }
 
-
+        public static string TablaValorClaveUsuario { get => $"{TablaSeguridad}valorclave"; }
 
         /// <summary>
         /// Nombre de la tabla para las entidades de Aplicaciones
@@ -135,6 +135,8 @@ namespace PIKA.Servicio.Seguridad
         public DbSet<TipoAdministradorModulo> TipoAdministradorModulo { get; set; }
 
         public DbSet<PermisoAplicacion> PermisosAplicacion { get; set; }
+        
+        public DbSet<ValorClaveUsuario> ValoresClaveUsuario { get; set; }
 
 
         public void AplicarMigraciones()
@@ -151,6 +153,7 @@ namespace PIKA.Servicio.Seguridad
         {
             base.OnModelCreating(builder);
             builder.ApplyConfiguration<Aplicacion>(new DbConfAplicacion());
+            builder.ApplyConfiguration<ValorClaveUsuario>(new DbConfValorClaveUsuario());
             builder.ApplyConfiguration<PermisoAplicacion>(new DbConfPermisosAplicacion());
             builder.ApplyConfiguration<ApplicationUser>(new DBConfigApplicationUser());
             builder.ApplyConfiguration<UsuarioDominio>(new DbConfigUsuariosDominio());
