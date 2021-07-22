@@ -203,6 +203,27 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.ToTable("gd$activoprestamo");
                 });
 
+            modelBuilder.Entity("PIKA.Modelo.GestorDocumental.ActivoSeleccionado", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("TemaId")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id", "UsuarioId", "TemaId");
+
+                    b.HasIndex("TemaId");
+
+                    b.ToTable("gd$activoseleccionado");
+                });
+
             modelBuilder.Entity("PIKA.Modelo.GestorDocumental.ActivoTransferencia", b =>
                 {
                     b.Property<string>("ActivoId")
@@ -743,6 +764,29 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.ToTable("gd$prestamo");
                 });
 
+            modelBuilder.Entity("PIKA.Modelo.GestorDocumental.Temas.TemaActivos", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("gd$temasactivos");
+                });
+
             modelBuilder.Entity("PIKA.Modelo.GestorDocumental.TipoAmpliacion", b =>
                 {
                     b.Property<string>("Id")
@@ -993,6 +1037,21 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.HasOne("PIKA.Modelo.GestorDocumental.Prestamo", "Prestamo")
                         .WithMany("ActivosRelacionados")
                         .HasForeignKey("PrestamoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PIKA.Modelo.GestorDocumental.ActivoSeleccionado", b =>
+                {
+                    b.HasOne("PIKA.Modelo.GestorDocumental.Activo", "Activo")
+                        .WithMany("ActivosSeleccionados")
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("PIKA.Modelo.GestorDocumental.Temas.TemaActivos", "TemaActivos")
+                        .WithMany("ActivosSeleccionados")
+                        .HasForeignKey("TemaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

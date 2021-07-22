@@ -12,6 +12,7 @@ using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.GestorDocumental.Reportes.JSON;
+using PIKA.Modelo.GestorDocumental.Temas;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.GestionDocumental.Interfaces;
 using PIKA.Servicio.Reportes.Interfaces;
@@ -167,16 +168,56 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 }
             }
 
+            IPaginado<Activo> respuesta = null;
+            if (string.IsNullOrEmpty(Query.IdSeleccion))
+            {
+                respuesta = await this.repo.ObtenerPaginadoAsync(Query, null, filtros);
+            }
+            else {
+                respuesta = await ObtenerPaginadoSeleccionAsync(Query);
+            }
 
-            var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null, filtros);
+            
             await ObtieneVencimientos(respuesta);
 
             return respuesta;
         }
 
 
-      
-     
+        private async Task<IPaginado<Activo>> ObtenerPaginadoSeleccionAsync(Consulta Query)
+        {
+            Paginado<Activo> p = new Paginado<Activo>();
+            string sqls = @$"
+select a.*  from {DBContextGestionDocumental.TablaActivos} a inner join {DBContextGestionDocumental.TablaActivoSelecionado} p
+on a.Id = p.Id 
+where p.TemaId='{Query.IdSeleccion}' 
+order by {Query.ord_columna} {Query.ord_direccion} 
+limit {Query.indice *  Query.tamano}, {Query.tamano};";
+
+            Console.WriteLine(sqls);
+            try
+            {
+                p.Elementos = await this.UDT.Context.Activos.FromSqlRaw(sqls, new object[] { }).ToListAsync();
+                p.ConteoFiltrado = await this.UDT.Context.ActivosSeleccionados.Where(x => x.TemaId == Query.IdSeleccion).CountAsync();
+                p.ConteoTotal = p.ConteoFiltrado;
+
+                p.Indice = Query.indice;
+                p.Paginas = 0;
+                p.Tamano = Query.tamano;
+                p.Desde = Query.indice * Query.tamano;
+
+                return p;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+            
+        }
+
+
+
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
             List<Activo> eliminados = new List<Activo>();
@@ -512,7 +553,138 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             throw new NotImplementedException();
         }
 
-      
+        #region ActivosSeleccionados
+        
+        public async Task<List<Activo>> ObtieneSeleccionados(string TemaId, string UsuarioId)
+        {
+            if (!Guid.TryParse(UsuarioId, out _)) throw new ExDatosNoValidos();
+            string template = @$"select *  from {DBContextGestionDocumental.TablaActivos} where Id in (
+                select Id from {DBContextGestionDocumental.TablaActivoSelecionado} where UsuarioId = '{UsuarioId}' and TemaId='{TemaId}')";
+            return await UDT.Context.Activos.FromSqlRaw(template, null).ToListAsync();
+        }
+
+        private  async Task CrearSeleccionLocal(string TemaId, string Id, string UsuarioId, bool guardar = true) {
+            if (!(await this.UDT.Context.ActivosSeleccionados.AnyAsync(x => x.Id == Id && x.UsuarioId == UsuarioId && x.TemaId == TemaId)))
+            {
+                var item = new ActivoSeleccionado()
+                {
+                    TemaId = TemaId,
+                    UsuarioId = UsuarioId,
+                    Id = Id
+                };
+                Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(item));
+                this.UDT.Context.ActivosSeleccionados.Add(item);
+
+
+
+                if (guardar) await this.UDT.Context.SaveChangesAsync();
+            }
+        }
+
+        public async Task CrearSeleccion(string TemaId, string Id, string UsuarioId)
+        {
+            await this.CrearSeleccionLocal(TemaId, Id, UsuarioId, false);
+        }
+
+        private async Task EliminaSeleccionLocal(string Id, string TemaId, string UsuarioId, bool guardar = true) {
+            var seleccionado = await this.UDT.Context.ActivosSeleccionados.Where(x => x.Id == Id && x.UsuarioId == UsuarioId && x.TemaId == TemaId).SingleOrDefaultAsync();
+            if (seleccionado != null)
+            {
+                this.UDT.Context.ActivosSeleccionados.Remove(seleccionado);
+                if (guardar) await this.UDT.Context.SaveChangesAsync();
+            }
+        }
+
+        public async Task EliminaSeleccion(string Id, string TemaId, string UsuarioId)
+        {
+            await this.EliminaSeleccionLocal(Id, TemaId, UsuarioId, false);
+        }
+
+        public async Task CrearSeleccion(List<string> Ids, string TemaId, string UsuarioId)
+        {
+            try
+            {
+                foreach (string id in Ids)
+                {
+                    await this.CrearSeleccionLocal(TemaId, id, UsuarioId, false);
+                }
+                await this.UDT.Context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+           
+        }
+
+        public async Task EliminaSeleccion(List<string> Ids, string TemaId, string UsuarioId)
+        {
+            foreach (string id in Ids)
+            {
+                await this.EliminaSeleccionLocal(id, TemaId, UsuarioId, false);
+            }
+            await this.UDT.Context.SaveChangesAsync();
+        }
+
+        public async Task BorraSeleccion(string TemaId, string UsuarioId)
+        {
+            var seleccionados = await this.UDT.Context.ActivosSeleccionados.Where(x => x.UsuarioId == UsuarioId && x.TemaId== TemaId).ToListAsync();
+            if(seleccionados!=null && seleccionados.Count > 0)
+            {
+                this.UDT.Context.ActivosSeleccionados.RemoveRange(seleccionados);
+                await this.UDT.Context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<string> CreaTema(string Tema, string UsuarioId)
+        {
+            Tema = Tema.TrimEnd().TrimStart();
+            var tema = await this.UDT.Context.TemasActivos.Where(x => x.UsuarioId == UsuarioId && 
+            x.Nombre.Equals(Tema, StringComparison.OrdinalIgnoreCase)).SingleOrDefaultAsync();
+            if (tema == null)
+            {
+                TemaActivos t = new TemaActivos()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Nombre = Tema,
+                    UsuarioId = UsuarioId
+                };
+
+                this.UDT.Context.TemasActivos.Add(t);
+                await this.UDT.Context.SaveChangesAsync();
+
+                return t.Id;
+            }
+            else
+            {
+                throw new ExElementoExistente(Tema);
+            }
+
+        }
+
+        public async Task EliminaTema(string Id, string UsuarioId)
+        {
+            var tema = await this.UDT.Context.TemasActivos.Where(x => x.UsuarioId == UsuarioId && x.Id == Id ).SingleOrDefaultAsync();
+            if(tema!=null)
+            {
+                this.UDT.Context.TemasActivos.Remove(tema);
+                await this.UDT.Context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new ExElementoExistente(Id);
+            }
+
+        }
+
+        public async  Task<List<ValorListaOrdenada>> ObtienTemas(string UsuarioId)
+        {
+            var lista = await this.UDT.Context.TemasActivos.Where(x => x.UsuarioId == UsuarioId).OrderBy(x => x.Nombre).ToListAsync();
+            return lista.Select(x => new ValorListaOrdenada { Id = x.Id, Texto = x.Nombre, Indice = 0 }).ToList();
+        }
+
+        #endregion
 
 
 

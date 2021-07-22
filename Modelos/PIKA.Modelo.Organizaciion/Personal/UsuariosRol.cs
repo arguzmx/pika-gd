@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PIKA.Constantes.Aplicaciones.Organizacion;
 using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
@@ -12,7 +13,9 @@ namespace PIKA.Modelo.Organizacion
     /// <summary>
     /// Vincula a los usuarios con los diferentes roles
     /// </summary>
-    [Entidad(EliminarLogico: false)]
+    
+    [Entidad(EliminarLogico: false,
+        TokenApp: ConstantesAppOrganizacion.APP_ID, TokenMod: ConstantesAppOrganizacion.MODULO_ROL)]
     public class UsuariosRol
     {
         /// <summary>

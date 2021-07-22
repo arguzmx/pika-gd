@@ -39,6 +39,14 @@
     <Compile Remove="Data\Migrations\20200820153233_ModificacionActivo.Designer.cs" />
     <Compile Remove="Data\Migrations\20200909151514_AgregarEstadisticaModificaiconIndices.cs" />
     <Compile Remove="Data\Migrations\20200909151514_AgregarEstadisticaModificaiconIndices.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210718223213_TemasActivosSeleccionado.cs" />
+    <Compile Remove="Data\Migrations\20210718223213_TemasActivosSeleccionado.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210718224250_TemasActivosSeleccionado.cs" />
+    <Compile Remove="Data\Migrations\20210718224250_TemasActivosSeleccionado.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210718224602_TemasActivosSeleccionado.cs" />
+    <Compile Remove="Data\Migrations\20210718224602_TemasActivosSeleccionado.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210720002728_SeleccionActivos.cs" />
+    <Compile Remove="Data\Migrations\20210720002728_SeleccionActivos.Designer.cs" />
   </ItemGroup>
 
 

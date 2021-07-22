@@ -18,7 +18,9 @@ namespace PIKA.Modelo.Organizacion
     /// <summary>
     /// Rol laboral en la organización
     /// </summary>
-    [Entidad(EliminarLogico: false)]
+
+    [Entidad(EliminarLogico: false,
+        TokenApp: ConstantesAppOrganizacion.APP_ID, TokenMod: ConstantesAppOrganizacion.MODULO_ROL)]
     [EntidadVinculada(TokenSeguridad: ConstantesAppOrganizacion.MODULO_ROL, EntidadHijo: "usuariosrol", Cardinalidad: TipoCardinalidad.UnoVarios,
         PropiedadPadre: "Id", PropiedadHijo: "RolId", PropiedadIdMiembro: "ApplicationUserId",
         TipoDespliegueVinculo: TipoDespliegueVinculo.Membresia)]

@@ -12,15 +12,15 @@ using PIKA.Modelo.GestorDocumental.Reportes;
 
 namespace PIKA.Modelo.GestorDocumental
 {
-    [Entidad(PaginadoRelacional: false, EliminarLogico: true,
+    [Entidad(PaginadoRelacional: false, EliminarLogico: true, HabilitarSeleccion: true,
         TokenMod: ConstantesAppGestionDocumental.MODULO_ACTIVOS,
         TokenApp: ConstantesAppGestionDocumental.APP_ID)]
     
     [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ACTIVOS, 
         EntidadHijo: "ampliacion", Cardinalidad: TipoCardinalidad.UnoVarios,
         PropiedadPadre: "Id", PropiedadHijo: "ActivoId")]
-    
-    [LinkView(Titulo: "crear-contenido-activo", Icono: "attachment", Vista: "crearcontenidoactivo", 
+
+    [LinkView(Titulo: "crear-contenido-activo", Icono: "preview", Vista: "crearcontenidoactivo",
         RequireSeleccion: true, Tipo: TipoVista.Comando)]
     public class Activo: Entidad<string>, IEntidadRelacionada, IEntidadIdElectronico, 
         IEntidadEliminada, IEntidadReportes
@@ -295,6 +295,11 @@ namespace PIKA.Modelo.GestorDocumental
         [JsonIgnore]
         public virtual ICollection<ActivoDeclinado> DeclinadosTransferenciaRelacionados { get; set; }
 
+
+
+        [XmlIgnore]
+        [JsonIgnore]
+        public virtual ICollection<ActivoSeleccionado> ActivosSeleccionados { get; set; }
 
         [NotMapped]
         [JsonIgnore]

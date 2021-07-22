@@ -13,7 +13,7 @@ namespace RepositorioEntidades
 
         public List<FiltroConsulta> Filtros { get; set; }
         public string IdCache { get; set; }
-
+        public string IdSeleccion { get; set; }
     }
 
     public class ConsultaAPI

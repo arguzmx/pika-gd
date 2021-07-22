@@ -65,6 +65,11 @@ namespace PIKA.Modelo.Metadatos
         public bool AsociadoMetadatos { get; set; }
 
         /// <summary>
+        /// Determina si puede crearse una selección de las entidades para el usuario en sesión
+        /// </summary>
+        public bool HabilitarSeleccion { get; set; }
+
+        /// <summary>
         /// Identifica la columna utilizada para determinar la eliminación lógica
         /// </summary>
         public string ColumaEliminarLogico { get; set; }

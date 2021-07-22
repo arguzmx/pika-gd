@@ -76,7 +76,8 @@ namespace PIKA.Modelo.Metadatos
             foreach (object attr in TypeAttrs) {
                 if (attr is EntidadAttribute)
                 {
-                    var ea = ((EntidadAttribute)attr);
+                    
+                    EntidadAttribute ea = ((EntidadAttribute)attr);
                     info.OpcionActivarDesativar = ea.OpcionActivar;
                     info.ColumnaActivarDesativar = ea.ColumnaActivar;
                     info.ElminarLogico = ea.EliminarLogico;
@@ -85,6 +86,7 @@ namespace PIKA.Modelo.Metadatos
                     info.TokenApp = ea.TokenApp;
                     info.TokenMod = ea.TokenMod;
                     info.AsociadoMetadatos = ea.AsociadoMetadatos;
+                    info.HabilitarSeleccion = ea.HabilitarSeleccion;
                 }
 
                 if (attr is EntidadVinculadaAttribute)

@@ -24,6 +24,8 @@ namespace PIKA.GD.API.Model
                 result.ord_direccion = bindingContext.ActionContext.HttpContext.Request.Query[$"ordd"];
                 result.recalcular_totales = bindingContext.ActionContext.HttpContext.Request.Query["recalc"] == "true" ? true : false;
                 result.IdCache = bindingContext.ActionContext.HttpContext.Request.Query[$"idcache"];
+                result.IdSeleccion = bindingContext.ActionContext.HttpContext.Request.Query["sel"];
+
 
                 int columnindex = 0;
                 List<string> keys = bindingContext.ActionContext.HttpContext.Request.Query.Keys.ToList();

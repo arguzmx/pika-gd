@@ -20,9 +20,17 @@ namespace PIKA.Modelo.Metadatos
         private string _TokenMod;
         private string _TokenApp;
         private bool _AsociadoMetadatos;
+        private bool _HabilitarSeleccion;
 
-        public EntidadAttribute( bool PaginadoRelacional=false, bool EliminarLogico = false, bool OpcionActivar = false,
-           string ColumnaActivar = "", string Columna = "Eliminada", string TokenMod = "", string TokenApp = "", bool AsociadoMetadatos = false)
+        public EntidadAttribute( bool PaginadoRelacional=false, 
+            bool EliminarLogico = false, 
+            bool OpcionActivar = false,
+           string ColumnaActivar = "", 
+           string Columna = "Eliminada", 
+           string TokenMod = "", 
+           string TokenApp = "", 
+           bool AsociadoMetadatos = false,
+           bool HabilitarSeleccion = false)
         {
             this._Columna = EliminarLogico ? Columna :"";
             this._EliminarLogico = EliminarLogico;
@@ -32,8 +40,22 @@ namespace PIKA.Modelo.Metadatos
             _TokenApp = TokenApp;
             _TokenMod = TokenMod;
             _AsociadoMetadatos = AsociadoMetadatos;
+            _HabilitarSeleccion = HabilitarSeleccion;
         }
 
+       
+        /// <summary>
+        /// Determina si puede crearse una selección de las entidades para el usuario en sesión
+        /// </summary>
+        public virtual bool HabilitarSeleccion
+        {
+            get { return _HabilitarSeleccion; }
+        }
+
+
+        /// <summary>
+        /// detrmina si la entidas puede asociarse a los metadtaos
+        /// </summary>
         public virtual bool AsociadoMetadatos
         {
             get { return _AsociadoMetadatos; }

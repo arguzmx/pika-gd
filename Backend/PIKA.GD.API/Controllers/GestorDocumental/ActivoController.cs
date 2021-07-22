@@ -58,10 +58,10 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
 
-        public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
+        public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery] Consulta query = null)
         {
-                return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
-            
+            return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
+
         }
 
 
@@ -75,7 +75,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
 
-        public async Task<ActionResult<Activo>> Post([FromBody]Activo entidad)
+        public async Task<ActionResult<Activo>> Post([FromBody] Activo entidad)
         {
             entidad = await servicioActivo.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetActivo", new { id = entidad.Id }, entidad).Value);
@@ -94,7 +94,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Put(string id, [FromBody]Activo entidad)
+        public async Task<IActionResult> Put(string id, [FromBody] Activo entidad)
         {
             var x = ObtieneFiltrosIdentidad();
 
@@ -117,7 +117,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpGet("page", Name = "GetPageActivo")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<Activo>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
+        public async Task<ActionResult<IEnumerable<Activo>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
             var data = await servicioActivo.ObtenerPaginadoAsync(
                 Query: query,
@@ -174,7 +174,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         public async Task<FileResult> GetReporteCuadroClasificacion([FromBody] PropiedadesImportadorActivos p)
         {
 
-            byte[] bytes = await servicioActivo.ImportarActivos(p.archivo,p.ArchivoId,p.TipoOrigenId,p.OrigenId,p.FormatoFecha).ConfigureAwait(false);
+            byte[] bytes = await servicioActivo.ImportarActivos(p.archivo, p.ArchivoId, p.TipoOrigenId, p.OrigenId, p.FormatoFecha).ConfigureAwait(false);
             var cuadro = await servicioActivo.UnicoAsync(x => x.ArchivoId == p.ArchivoId).ConfigureAwait(false);
 
             const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -247,8 +247,8 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             if (d != null) dominio = d.Nombre;
             if (ou != null) unidad = ou.Nombre;
 
-            byte[] bytes = await servicioActivo.ReporteCaratulaActivo( dominio, unidad, id).ConfigureAwait(false);
-            
+            byte[] bytes = await servicioActivo.ReporteCaratulaActivo(dominio, unidad, id).ConfigureAwait(false);
+
             const string contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
             HttpContext.Response.ContentType = contentType;
             HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
@@ -270,7 +270,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         {
             List<Task> tareas = new List<Task>();
             var o = await servicioActivo.UnicoAsync(x => x.Id == id.Trim()).ConfigureAwait(false);
-            if(o==null) return NotFound(id);
+            if (o == null) return NotFound(id);
 
             var a = await servicioarchivo.UnicoAsync(x => x.Id == o.ArchivoId);
             var entrada = await servicioEntrada.UnicoAsync(e => e.Id == o.EntradaClasificacionId);
@@ -308,10 +308,101 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             o.TieneContenido = true;
 
             await servicioActivo.ActualizarAsync(o);
-            
+
             return Ok(o);
         }
 
+
+        #endregion
+
+        #region Seleccion
+
+        [HttpGet("tema", Name = "ObtieneTemasActivosSeleccioandos")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ValorListaOrdenada>>> ObtieneTemasActivosSeleccioandos()
+        {
+            var temas = await servicioActivo.ObtienTemas(this.GetUserId());
+            return Ok(temas);
+        }
+
+
+        [HttpPost("tema/{nombre}", Name = "CreaTemaActivosSeleccionados")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ValorListaOrdenada>> CreaTemaActivosSeleccionados(string  nombre)
+        {
+           var id =  await servicioActivo.CreaTema(nombre , this.GetUserId());
+            return Ok(new ValorListaOrdenada() { Id = id, Texto = nombre, Indice =0 });
+        }
+
+        [HttpDelete("tema/{id}", Name = "EliminaTemaActivosSeleccionados")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<string>> EliminaTemaActivosSeleccionados(string id)
+        {
+            await servicioActivo.EliminaTema(id, this.GetUserId());
+            return Ok(id);
+        }
+
+
+        [HttpGet("tema/{temaid}/seleccion", Name = "ObtieneActivosSeleccioandos")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<Activo>>> ObtieneActivosSeleccioandos(string temaid)
+        {
+            var seleccionados = await servicioActivo.ObtieneSeleccionados(temaid, this.GetUserId());
+            return Ok(seleccionados);
+        }
+
+        [HttpPost("tema/{temaid}/seleccion/{id}", Name = "CreaActivoSeleccionado")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> CreaActivoSeleccionado(string temaid, string id)
+        {
+            await servicioActivo.CrearSeleccion(id, temaid, this.GetUserId());
+            return Ok();
+        }
+
+        [HttpPost("tema/{temaid}/seleccion", Name = "CreaActivoSeleccionadoLista")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> CreaActivoSeleccionadoLista(string temaid, [FromBody] ListaStringIds lista)
+        {
+            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(lista));
+            await servicioActivo.CrearSeleccion(lista.Ids, temaid, this.GetUserId());
+            return Ok();
+        }
+
+
+        [HttpDelete("tema/{temaid}/seleccion/{id}", Name = "EliminaActivoSeleccionado")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> EliminaActivoSeleccionado(string temaid, string id)
+        {
+            await servicioActivo.EliminaSeleccion(id, temaid, this.GetUserId());
+            return Ok();
+        }
+
+
+        [HttpPost("tema/{temaid}seleccion/eliminar", Name = "EliminaActivoSeleccionadoLista")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> EliminaActivoSeleccionadoLista(string temaid, [FromBody] ListaStringIds lista)
+        {
+            await servicioActivo.EliminaSeleccion(lista.Ids, temaid, this.GetUserId());
+            return Ok();
+        }
+
+
+        [HttpDelete("tema/{temaid}/seleccion/vaciar", Name = "EliminaSeleccion")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> EliminaSeleccion(string temaid)
+        {
+            await servicioActivo.BorraSeleccion(temaid, this.GetUserId());
+            return Ok();
+        }
 
         #endregion
 

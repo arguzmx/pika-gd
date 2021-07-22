@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PIKA.Modelo.GestorDocumental;
+using PIKA.Modelo.GestorDocumental.Temas;
 using PIKA.Modelo.GestorDocumental.Topologia;
 using PIKA.Servicio.GestionDocumental.Data.Configuracion;
 using RepositorioEntidades;
@@ -99,6 +100,9 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// </summary>
         public static string TablaPrestamos { get => "gd$prestamo"; }
 
+        public static string TablaActivoSelecionado { get => "gd$activoseleccionado"; }
+
+
         /// <summary>
         /// Nombre de la tabla para las entidades del tipo Asunto 
         /// </summary>
@@ -176,6 +180,8 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// </summary>
         public static string TablaTipoValoracionDocumental { get => "gd$tipovaloraciondocumental"; }
         public static string TablaEstadisticaClasificacionAcervo { get => "gd$estadisticaclasificacionacervo"; }
+
+        public static string TablaTemasActivos { get => "gd$temasactivos"; }
 
 
         #endregion
@@ -311,6 +317,11 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// Variable Estadistica Clasificacion Acervo
         /// </summary>
         public DbSet<EstadisticaClasificacionAcervo> EstadisticaClasificacionAcervo { get; set; }
+
+        public DbSet<ActivoSeleccionado> ActivosSeleccionados { get; set; }
+
+        public DbSet<TemaActivos> TemasActivos { get; set; }
+
         public void AplicarMigraciones()
         {
             this.Database.Migrate();
@@ -339,6 +350,8 @@ namespace PIKA.Servicio.GestionDocumental.Data
 
             builder.ApplyConfiguration<Activo>(new DbConfActivo());
             builder.ApplyConfiguration<Asunto>(new DbConfAsunto());
+            builder.ApplyConfiguration<ActivoSeleccionado>(new DbConfActivoSeleccionado());
+            builder.ApplyConfiguration<TemaActivos>(new DbConfTemaActivoSeleccionado());
 
             builder.ApplyConfiguration<Ampliacion>(new DbConfAmpliacion());
             builder.ApplyConfiguration<TipoAmpliacion>(new DbConfTipoAmpliacion());
