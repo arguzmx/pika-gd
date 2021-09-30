@@ -8,8 +8,8 @@ namespace PIKA.Modelo.Metadatos
     {
         Vista = 0,
         Comando = 1,
-        EventoApp = 2
-
+        EventoApp = 2,
+        WebCommand = 3
     }
 
 
@@ -21,6 +21,7 @@ namespace PIKA.Modelo.Metadatos
         private string _Icono;
         private string _Titulo;
         private bool _RequireSeleccion;
+        private string _Condicion;
 
         /// <summary>
         /// Vínculo a vista en el frontend
@@ -28,13 +29,19 @@ namespace PIKA.Modelo.Metadatos
         /// <param name="Vista">id único de lavista</param>
         /// <param name="Icono">icono de la librería material</param>
         /// <param name="Titulo">titulo o id de traducción</param>
-        public LinkViewAttribute(string Vista, string Icono, string Titulo, bool RequireSeleccion = true, TipoVista Tipo = TipoVista.Vista)
+        public LinkViewAttribute(string Vista, string Icono, string Titulo, bool RequireSeleccion = true, TipoVista Tipo = TipoVista.Vista, string Condicion = "")
         {
             this._Vista = Vista;
             this._Icono = Icono;
             this._Titulo = Titulo;
             this._RequireSeleccion = RequireSeleccion;
             this._TipoVista = Tipo;
+            this._Condicion = Condicion;
+        }
+
+        public virtual string Condicion
+        {
+            get { return _Condicion; }
         }
 
         public virtual TipoVista Tipo

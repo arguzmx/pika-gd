@@ -180,11 +180,12 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
 
             modelBuilder.Entity("PIKA.Modelo.GestorDocumental.ActivoPrestamo", b =>
                 {
-                    b.Property<string>("PrestamoId")
+                    b.Property<string>("Id")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
                     b.Property<string>("ActivoId")
+                        .IsRequired()
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
@@ -196,9 +197,16 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.Property<DateTime?>("FechaDevolucion")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("PrestamoId", "ActivoId");
+                    b.Property<string>("PrestamoId")
+                        .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
 
                     b.HasIndex("ActivoId");
+
+                    b.HasIndex("PrestamoId");
 
                     b.ToTable("gd$activoprestamo");
                 });
@@ -733,7 +741,24 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
+                    b.Property<int>("CantidadActivos")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Descripcion")
+                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
+                        .HasMaxLength(200);
+
+                    b.Property<bool>("Devuelto")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
+
                     b.Property<bool>("Eliminada")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("Entregado")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false);
@@ -757,9 +782,29 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false);
 
+                    b.Property<string>("UsuarioDestinoId")
+                        .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("UsuarioOrigenId")
+                        .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
                     b.HasKey("Id");
 
                     b.HasIndex("ArchivoId");
+
+                    b.HasIndex("Devuelto");
+
+                    b.HasIndex("FechaProgramadaDevolucion");
+
+                    b.HasIndex("Folio");
+
+                    b.HasIndex("UsuarioDestinoId");
+
+                    b.HasIndex("UsuarioOrigenId");
 
                     b.ToTable("gd$prestamo");
                 });

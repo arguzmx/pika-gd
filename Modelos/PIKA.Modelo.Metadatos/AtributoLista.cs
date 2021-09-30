@@ -21,6 +21,8 @@ namespace PIKA.Modelo.Metadatos
         public bool DatosRemotos { get; set; }
 
         public bool TypeAhead { get; set; }
+        public bool EsListaTemas { get; set; }
+        public bool FiltroBusqueda { get; set; }
 
         public string Default { get; set; }
 

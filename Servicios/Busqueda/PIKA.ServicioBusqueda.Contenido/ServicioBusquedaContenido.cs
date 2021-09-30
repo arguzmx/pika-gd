@@ -20,6 +20,7 @@ namespace PIKA.ServicioBusqueda.Contenido
         private IConfiguration Configuration;
         private ElasticClient cliente;
         private const string INDICEBUSQUEDA = "contenido-busqueda";
+        private const string INDICECONTENIDO = "contenido-indexado";
         private ILogger logger;
         private HashSet<Elemento> elementos;
         private IAppCache cache;
@@ -81,11 +82,15 @@ namespace PIKA.ServicioBusqueda.Contenido
 
                 if (cacheB == null)
                 {
+
+                    // Caclcula las cantidades existentes por cada tipo de busqueda
                     await EjecutarConteos(busqueda);
 
-                    
+                    // Si hay coincidencias 
                     if (busqueda.Elementos.Sum(x => x.Conteo) > 0)
                     {
+
+                        // Realiza la búsqueda por tipo
                         await EjecutarUQeryIds(busqueda);
 
                         var validos = busqueda.Elementos.OrderBy(x => x.Conteo).ToList();
@@ -561,6 +566,25 @@ namespace PIKA.ServicioBusqueda.Contenido
             {
                 logger.LogInformation($"Repositorio de contenido configurado");
             }
+
+            if (!await ExisteIndice(INDICECONTENIDO))
+            {
+                logger.LogInformation($"Creando repositorio de indexado de contenido");
+                var createIndexResponse = await cliente.Indices.CreateAsync(INDICECONTENIDO, c => c
+                    .Map<Modelo.Contenido.ContenidoTextoCompleto>(m => m.AutoMap())
+                );
+
+                if (!createIndexResponse.ApiCall.Success)
+                {
+                    logger.LogError(createIndexResponse.DebugInformation);
+                    logger.LogError(createIndexResponse.OriginalException.ToString());
+                }
+            }
+            else
+            {
+                logger.LogInformation($"Repositorio de nidexados de contenido configurado");
+            }
+
             return true;
         }
 

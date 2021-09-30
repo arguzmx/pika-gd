@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
@@ -53,12 +55,86 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new ExElementoExistente(entity.Folio);
             }
 
+            entity.CantidadActivos = 0;
+            entity.Devuelto = false;
+            entity.FechaCreacion = DateTime.UtcNow;
             entity.Id = Guid.NewGuid().ToString();
             entity.FechaCreacion = DateTime.UtcNow;
 
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
             return entity.Copia();
+        }
+
+        public async Task<Prestamo> CrearDesdeTemaAsync(Prestamo entity, string TemaId, CancellationToken cancellationToken = default) {
+
+            try
+            {
+
+
+            string sql = @$"SELECT count(*) FROM  {DBContextGestionDocumental.TablaActivoSelecionado} s inner join {DBContextGestionDocumental.TablaActivos} a 
+                    on s.Id = a.Id where s.TemaId = '{TemaId}' and a.EnPrestamo =0;";
+
+
+            this.UDT.Context.Database.GetDbConnection().Open();
+            var cmd = this.UDT.Context.Database.GetDbConnection().CreateCommand();
+            cmd.CommandText = sql;
+            int conteo = Convert.ToInt32( cmd.ExecuteScalar());
+            if(conteo==0)
+            {
+                throw new ExDatosNoValidos("Algunos de los elementos se encuentran en préstamo");
+            }
+
+            if (await Existe(x => x.Folio.Equals(entity.Folio, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                throw new ExElementoExistente(entity.Folio);
+            }
+
+            // Actualiza los activos en prestamo
+            sql = @$"update {DBContextGestionDocumental.TablaActivos} set EnPrestamo =1 where Id in 
+(SELECT s.Id FROM  {DBContextGestionDocumental.TablaActivoSelecionado} s where s.TemaId = '{TemaId}');";
+
+            await this.UDT.Context.Database.ExecuteSqlRawAsync(sql);
+
+
+            // Crea rl prestamo
+            entity.CantidadActivos = conteo;
+            entity.Devuelto = false;
+            entity.FechaCreacion = DateTime.UtcNow;
+            entity.Id = Guid.NewGuid().ToString();
+            entity.FechaCreacion = DateTime.UtcNow;
+
+            await this.repo.CrearAsync(entity);
+            UDT.SaveChanges();
+
+                List<ActivoSeleccionado> activos = await this.UDT.Context.ActivosSeleccionados.Where(x => x.TemaId == TemaId).ToListAsync();
+                activos.ForEach(a => {
+                    ActivoPrestamo ap = new ActivoPrestamo()
+                    {
+                        ActivoId = a.Id,
+                        Devuelto = false,
+                        Id = Guid.NewGuid().ToString(),
+                        PrestamoId = entity.Id
+                    };
+                    UDT.Context.ActivosPrestamo.Add(ap);
+                });
+
+           // añade los elementos de prestamo
+            sql = $@"INSERT INTO {DBContextGestionDocumental.TablaActivosPrestamo} (Id, PrestamoId, ActivoId, Devuelto,FechaDevolucion ) 
+SELECT UUID() as Id, '{entity.Id}' as PrestamoId, s.Id as ActivoId, 0 as Devuelto, null as FechaDevolucion 
+FROM  {DBContextGestionDocumental.TablaActivoSelecionado} s inner join {DBContextGestionDocumental.TablaActivos} a 
+on s.Id = a.Id where s.TemaId = '{TemaId}';";
+
+            await this.UDT.Context.Database.ExecuteSqlRawAsync(sql);
+            this.UDT.Context.Database.GetDbConnection().Close();
+            return entity.Copia();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
         }
 
         public async Task ActualizarAsync(Prestamo entity)
@@ -102,7 +178,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
             return query;
         }
-        public async Task<IPaginado<Prestamo>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Prestamo>, IIncludableQueryable<Prestamo, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
+        public async Task<IPaginado<Prestamo>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Prestamo>, 
+            IIncludableQueryable<Prestamo, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
@@ -207,5 +284,87 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
             return ListaPrestamo.Select(x=>x.Id).ToList();
         }
+
+
+        public async Task<RespuestaComandoWeb> ComandoWeb(string command, object payload) {
+
+            switch (command)
+            {
+                case "gd-prestamo-entregar":
+                    return await EntregaPrestamo(payload);
+
+                case "gd-prestamo-devolver":
+                    return await DevuelvePrestamo(payload);
+
+                default:
+                    return new RespuestaComandoWeb() { Estatus = false, MensajeId = RespuestaComandoWeb.Novalido, Payload = null }; 
+            }
+        }
+
+
+        private async Task<RespuestaComandoWeb> DevuelvePrestamo(object payload)
+        {
+            RespuestaComandoWeb r = new RespuestaComandoWeb() { Estatus = false };
+            try
+            {
+                dynamic d = JObject.Parse(System.Text.Json.JsonSerializer.Serialize(payload));
+                Prestamo p = await this.UDT.Context.Prestamos.FindAsync(Convert.ToString(d.Id));
+                if (p != null)
+                {
+                    if (p.Entregado == false || p.Devuelto == true)
+                    {
+                        r.MensajeId = "error-prestamo-devuelto";
+                    }
+                    p.Devuelto = true;
+                    p.FechaDevolucion = DateTime.UtcNow;
+                    UDT.Context.Entry(p).State = EntityState.Modified;
+                    await UDT.Context.SaveChangesAsync();
+                    r.MensajeId = "prestamo-devuelto";
+                    r.Estatus = true;
+                }
+                else
+                {
+                    r.MensajeId = RespuestaComandoWeb.NoEncontrado;
+                }
+            }
+            catch (Exception ex)
+            {
+                r.MensajeId = RespuestaComandoWeb.ErrorProceso;
+            }
+            return r;
+        }
+
+
+        private async Task<RespuestaComandoWeb> EntregaPrestamo(object payload) {
+            RespuestaComandoWeb r = new RespuestaComandoWeb() { Estatus = false };
+            try
+            {
+                dynamic d = JObject.Parse(System.Text.Json.JsonSerializer.Serialize(payload));
+                Prestamo p = await this.UDT.Context.Prestamos.FindAsync(Convert.ToString( d.Id));
+                if (p != null)
+                {
+                    if (p.Entregado)
+                    {
+                        r.MensajeId= "error-prestamo-entregado";
+                    }
+                    p.Entregado = true;
+                    UDT.Context.Entry(p).State = EntityState.Modified;
+                    await UDT.Context.SaveChangesAsync();
+                    r.MensajeId = "prestamo-entregado";
+                    r.Estatus = true;
+                }
+                else
+                {
+                    r.MensajeId = RespuestaComandoWeb.NoEncontrado;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                r.MensajeId =  RespuestaComandoWeb.ErrorProceso;
+            }
+            return r;
+        }
+
     }
 }

@@ -74,7 +74,24 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         public string ColumaEliminarLogico { get; set; }
 
-        
+
+        /// <summary>
+        /// Dtermina  si ela entidad acepta comandos para Altas
+        /// </summary>
+        public bool PermiteAltas { get; set; }
+
+        /// <summary>
+        /// Dtermina  si ela entidad acepta comandos para Bajas
+        /// </summary>
+        public bool PermiteBajas { get; set; }
+
+        /// <summary>
+        /// Dtermina  si ela entidad acepta comandos para Cambios
+        /// </summary>
+        public bool PermiteCambios { get; set; }
+
+
+
         public virtual List<Propiedad> Propiedades { get; set; }
         
         public virtual List<EntidadVinculada> EntidadesVinculadas { get; set; }

@@ -11,6 +11,11 @@ namespace PIKA.Modelo.Contenido
     public class Version: Entidad<string>, IEntidadRegistroCreacion ,IEntidadEliminada
     {
 
+        public Version()
+        {
+            this.EstadoIndexado = EstadoIndexado.PorIndexar;
+        }
+
         /// <summary>
         /// Identificador único de la version
         /// </summary>
@@ -28,7 +33,13 @@ namespace PIKA.Modelo.Contenido
         /// </summary>
         [Boolean(Name = "act")]
         public bool Activa { get; set; }
-        // este campo debe estar indexado
+
+
+        /// <summary>
+        /// Esatdo de indexado de la versión de contenido
+        /// </summary>
+        [Number(NumberType.Integer, Name = "eidx")]
+        public EstadoIndexado EstadoIndexado { get; set; }
 
         /// <summary>
         /// Fecha de ceración de la versión

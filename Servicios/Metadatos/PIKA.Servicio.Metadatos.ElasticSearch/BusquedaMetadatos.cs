@@ -94,8 +94,8 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             if (response.Success)
             {
                 dynamic r = JObject.Parse(response.Body);
-                var hits = r.hits.hits;
-                foreach (var h in hits)
+                // retorna el ID del documento y el ID asigando por ElasticSearch
+                foreach (var h in r.hits.hits)
                 {
                     l.Add((string)h._source.DID + "|" + (string)h._id);
                 }

@@ -43,7 +43,8 @@ namespace PIKA.Modelo.Metadatos
                 Titulo = link.Titulo,
                 Vista = link.Vista,
                 RequiereSeleccion = link.RequireSeleccion,
-                 Tipo = link.Tipo
+                Tipo = link.Tipo,
+                Condicion = link.Condicion
             };
         }
 

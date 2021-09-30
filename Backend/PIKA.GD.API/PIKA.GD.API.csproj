@@ -35,6 +35,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.14" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.3" />
     <PackageReference Include="MimeTypes" Version="2.0.2">
       <PrivateAssets>all</PrivateAssets>
@@ -58,6 +59,7 @@
     <ProjectReference Include="..\..\Infraestructura\EventBusRabbitMQ\EventBusRabbitMQ.csproj" />
     <ProjectReference Include="..\..\Infraestructura\EventBus\EventBus.csproj" />
     <ProjectReference Include="..\..\Infraestructura\PIKA.Infraestructura.Comun\PIKA.Infraestructura.Comun.csproj" />
+    <ProjectReference Include="..\..\Infraestructura\PikaOCR\PikaOCR.csproj" />
     <ProjectReference Include="..\..\Modelos\PIKA.Constantes.Aplicaciones\PIKA.Constantes.Aplicaciones.csproj" />
     <ProjectReference Include="..\..\Modelos\PIKA.Modelo.Aplicacion\PIKA.Modelo.Aplicacion.csproj" />
     <ProjectReference Include="..\..\Modelos\PIKA.Modelo.Contenido\PIKA.Modelo.Contenido.csproj" />

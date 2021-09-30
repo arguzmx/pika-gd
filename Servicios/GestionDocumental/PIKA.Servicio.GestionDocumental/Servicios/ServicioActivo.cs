@@ -524,37 +524,56 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
 
         }
 
-
-        #region Sin Implementar
-
-        public Task<IEnumerable<Activo>> CrearAsync(params Activo[] entities)
+        public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < Query.Filtros.Count; i++)
+            {
+                if (Query.Filtros[i].Propiedad.ToLower() == "texto")
+                {
+                    Query.Filtros[i].Propiedad = "Nombre";
+                }
+            }
+            if (Query.Filtros.Where(x => x.Propiedad.ToLower() == "eliminada").Count() == 0)
+            {
+                Query.Filtros.Add(new FiltroConsulta()
+                {
+                    Propiedad = "Eliminada",
+                    Negacion = false,
+                    Operador = "eq",
+                    Valor = "false"
+                });
+            }
+            Query = GetDefaultQuery(Query);
+            var resultados = await this.repo.ObtenerPaginadoAsync(Query);
+            List<ValorListaOrdenada> l = resultados.Elementos.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
         }
 
-        public Task<IEnumerable<Activo>> CrearAsync(IEnumerable<Activo> entities, CancellationToken cancellationToken = default)
+
+        public async Task<List<ValorListaOrdenada>> ObtenerParesPorId(List<string> Lista)
         {
-            throw new NotImplementedException();
+            var resultados = await this.repo.ObtenerAsync(x => Lista.Contains(x.Id));
+            List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
         }
 
-        public async Task EjecutarSql(string sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task EjecutarSqlBatch(List<string> sqlCommand)
-        {
-            throw new NotImplementedException();
-        }
 
 
-        public Task<IPaginado<Activo>> ObtenerPaginadoAsync(Expression<Func<Activo, bool>> predicate = null, Func<IQueryable<Activo>, IOrderedQueryable<Activo>> orderBy = null, Func<IQueryable<Activo>, IIncludableQueryable<Activo, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
 
         #region ActivosSeleccionados
-        
+
         public async Task<List<Activo>> ObtieneSeleccionados(string TemaId, string UsuarioId)
         {
             if (!Guid.TryParse(UsuarioId, out _)) throw new ExDatosNoValidos();
@@ -563,7 +582,8 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
             return await UDT.Context.Activos.FromSqlRaw(template, null).ToListAsync();
         }
 
-        private  async Task CrearSeleccionLocal(string TemaId, string Id, string UsuarioId, bool guardar = true) {
+        private async Task CrearSeleccionLocal(string TemaId, string Id, string UsuarioId, bool guardar = true)
+        {
             if (!(await this.UDT.Context.ActivosSeleccionados.AnyAsync(x => x.Id == Id && x.UsuarioId == UsuarioId && x.TemaId == TemaId)))
             {
                 var item = new ActivoSeleccionado()
@@ -586,7 +606,8 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
             await this.CrearSeleccionLocal(TemaId, Id, UsuarioId, false);
         }
 
-        private async Task EliminaSeleccionLocal(string Id, string TemaId, string UsuarioId, bool guardar = true) {
+        private async Task EliminaSeleccionLocal(string Id, string TemaId, string UsuarioId, bool guardar = true)
+        {
             var seleccionado = await this.UDT.Context.ActivosSeleccionados.Where(x => x.Id == Id && x.UsuarioId == UsuarioId && x.TemaId == TemaId).SingleOrDefaultAsync();
             if (seleccionado != null)
             {
@@ -615,7 +636,7 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
                 Console.WriteLine(ex.ToString());
                 throw;
             }
-           
+
         }
 
         public async Task EliminaSeleccion(List<string> Ids, string TemaId, string UsuarioId)
@@ -629,8 +650,8 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
 
         public async Task BorraSeleccion(string TemaId, string UsuarioId)
         {
-            var seleccionados = await this.UDT.Context.ActivosSeleccionados.Where(x => x.UsuarioId == UsuarioId && x.TemaId== TemaId).ToListAsync();
-            if(seleccionados!=null && seleccionados.Count > 0)
+            var seleccionados = await this.UDT.Context.ActivosSeleccionados.Where(x => x.UsuarioId == UsuarioId && x.TemaId == TemaId).ToListAsync();
+            if (seleccionados != null && seleccionados.Count > 0)
             {
                 this.UDT.Context.ActivosSeleccionados.RemoveRange(seleccionados);
                 await this.UDT.Context.SaveChangesAsync();
@@ -640,7 +661,7 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
         public async Task<string> CreaTema(string Tema, string UsuarioId)
         {
             Tema = Tema.TrimEnd().TrimStart();
-            var tema = await this.UDT.Context.TemasActivos.Where(x => x.UsuarioId == UsuarioId && 
+            var tema = await this.UDT.Context.TemasActivos.Where(x => x.UsuarioId == UsuarioId &&
             x.Nombre.Equals(Tema, StringComparison.OrdinalIgnoreCase)).SingleOrDefaultAsync();
             if (tema == null)
             {
@@ -665,8 +686,8 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
 
         public async Task EliminaTema(string Id, string UsuarioId)
         {
-            var tema = await this.UDT.Context.TemasActivos.Where(x => x.UsuarioId == UsuarioId && x.Id == Id ).SingleOrDefaultAsync();
-            if(tema!=null)
+            var tema = await this.UDT.Context.TemasActivos.Where(x => x.UsuarioId == UsuarioId && x.Id == Id).SingleOrDefaultAsync();
+            if (tema != null)
             {
                 this.UDT.Context.TemasActivos.Remove(tema);
                 await this.UDT.Context.SaveChangesAsync();
@@ -678,19 +699,44 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
 
         }
 
-        public async  Task<List<ValorListaOrdenada>> ObtienTemas(string UsuarioId)
+        public async Task<List<ValorListaOrdenada>> ObtienTemas(string UsuarioId)
         {
             var lista = await this.UDT.Context.TemasActivos.Where(x => x.UsuarioId == UsuarioId).OrderBy(x => x.Nombre).ToListAsync();
             return lista.Select(x => new ValorListaOrdenada { Id = x.Id, Texto = x.Nombre, Indice = 0 }).ToList();
         }
 
+
         #endregion
 
 
 
+        #region Sin Implementar
+
+        public Task<IEnumerable<Activo>> CrearAsync(params Activo[] entities)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Activo>> CrearAsync(IEnumerable<Activo> entities, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task EjecutarSql(string sqlCommand)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task EjecutarSqlBatch(List<string> sqlCommand)
+        {
+            throw new NotImplementedException();
+        }
 
 
-
+        public Task<IPaginado<Activo>> ObtenerPaginadoAsync(Expression<Func<Activo, bool>> predicate = null, Func<IQueryable<Activo>, IOrderedQueryable<Activo>> orderBy = null, Func<IQueryable<Activo>, IIncludableQueryable<Activo, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 

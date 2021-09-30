@@ -19,7 +19,15 @@ namespace PIKA.Servicio.GestionDocumental
                 FechaDevolucion = p.FechaDevolucion,
                 Comentarios = p.Comentarios,
                 FechaProgramadaDevolucion = p.FechaProgramadaDevolucion,
-                TieneDevolucionesParciales = p.TieneDevolucionesParciales
+                TieneDevolucionesParciales = p.TieneDevolucionesParciales,
+                ArchivoId = p.ArchivoId,
+                CantidadActivos = p.CantidadActivos,
+                Descripcion = p.Descripcion,
+                Devuelto = p.Devuelto,
+                Entregado = p.Entregado,
+                TemaId = p.TemaId,
+                UsuarioDestinoId = p.UsuarioDestinoId,
+                UsuarioOrigenId = p.UsuarioOrigenId,
             };
         }
     }

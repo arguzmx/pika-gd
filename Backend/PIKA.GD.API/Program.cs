@@ -11,6 +11,7 @@ using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Interfaces;
 using PIKA.ServicioBusqueda.Contenido;
+using PikaOCR;
 using RepositorioEntidades;
 using Serilog;
 using Serilog.Events;
@@ -81,6 +82,9 @@ namespace PIKA.GD.API
             {
                 config.AddJsonFile("appsettings.local.json", optional: true);
             })
+            .ConfigureServices(services => {
+                services.AddHostedService<OCRHostedService>();
+            })
             .UseStartup<Startup>()
             .UseContentRoot(Directory.GetCurrentDirectory())
             .UseSerilog()
@@ -110,8 +114,6 @@ namespace PIKA.GD.API
                 var dbContext = (DbContext)Activator.CreateInstance(dbContextType, optionsBuilder.Options);
                 try
                 {
-
-
                     ((IRepositorioInicializable)dbContext).AplicarMigraciones();
                     ((IRepositorioInicializable)dbContext).Inicializar(env.ContentRootPath, demodb);
 

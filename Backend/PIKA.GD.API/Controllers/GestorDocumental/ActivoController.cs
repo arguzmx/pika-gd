@@ -342,7 +342,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         public async Task<ActionResult<string>> EliminaTemaActivosSeleccionados(string id)
         {
             await servicioActivo.EliminaTema(id, this.GetUserId());
-            return Ok(id);
+            return Ok();
         }
 
 
@@ -406,6 +406,37 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         #endregion
 
+
+        [HttpGet("pares", Name = "GetParesActivos")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ValorListaOrdenada>>> GetParesActivos(
+[ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        {
+            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(query, new System.Text.Json.JsonSerializerOptions()
+            { WriteIndented = true }));
+            var data = await servicioActivo.ObtenerParesAsync(query)
+                .ConfigureAwait(false);
+
+            return Ok(data);
+        }
+
+        
+
+        [HttpGet("pares/{ids}", Name = "GetParesActivosporId")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ValorListaOrdenada>>> GetParesActivosporId(
+              string ids)
+        {
+
+            List<string> lids = ids.Split(',').ToList()
+               .Where(x => !string.IsNullOrEmpty(x)).ToList();
+            var data = await servicioActivo.ObtenerParesPorId(lids)
+                .ConfigureAwait(false);
+
+            return Ok(data);
+        }
 
     }
 }

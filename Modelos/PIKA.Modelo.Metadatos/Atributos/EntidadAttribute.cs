@@ -21,6 +21,9 @@ namespace PIKA.Modelo.Metadatos
         private string _TokenApp;
         private bool _AsociadoMetadatos;
         private bool _HabilitarSeleccion;
+        private bool _PermiteAltas;
+        private bool _PermiteBajas;
+        private bool _PermiteCambios;
 
         public EntidadAttribute( bool PaginadoRelacional=false, 
             bool EliminarLogico = false, 
@@ -30,7 +33,10 @@ namespace PIKA.Modelo.Metadatos
            string TokenMod = "", 
            string TokenApp = "", 
            bool AsociadoMetadatos = false,
-           bool HabilitarSeleccion = false)
+           bool HabilitarSeleccion = false,
+           bool PermiteAltas = true,
+           bool PermiteBajas = true,
+           bool PermiteCambios = true)
         {
             this._Columna = EliminarLogico ? Columna :"";
             this._EliminarLogico = EliminarLogico;
@@ -41,9 +47,29 @@ namespace PIKA.Modelo.Metadatos
             _TokenMod = TokenMod;
             _AsociadoMetadatos = AsociadoMetadatos;
             _HabilitarSeleccion = HabilitarSeleccion;
+            _PermiteAltas = PermiteAltas;
+            _PermiteBajas = PermiteBajas;
+            _PermiteCambios = PermiteCambios;
+
         }
 
-       
+
+        public virtual bool PermiteCambios
+        {
+            get { return _PermiteCambios; }
+        }
+
+        public virtual bool PermiteBajas
+        {
+            get { return _PermiteBajas; }
+        }
+
+        public virtual bool PermiteAltas
+        {
+            get { return _PermiteAltas; }
+        }
+
+
         /// <summary>
         /// Determina si puede crearse una selección de las entidades para el usuario en sesión
         /// </summary>

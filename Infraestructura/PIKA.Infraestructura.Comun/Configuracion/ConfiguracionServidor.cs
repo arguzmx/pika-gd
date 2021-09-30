@@ -48,5 +48,9 @@ namespace PIKA.Infraestructura.Comun
         public string ruta_cache_fisico { get; set; }
 
         public string separador_ruta { get; set; }
+
+        public string ruta_temporal { get; set; }
+        
+        public string ruta_tesseract { get; set; }
     }
 }

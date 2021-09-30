@@ -56,6 +56,7 @@ namespace PIKA.Servicio.Contenido.Gestores
 
         public Task<byte[]> LeeBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension)
         {
+            Console.WriteLine($"{this.configGestor.Ruta} : {ElementoId} : {VersionId} ");
             string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
             string nombreArchivo = ParteId + Extension.ToUpper();
             string rutaFinal = Path.Combine(ruta, nombreArchivo);

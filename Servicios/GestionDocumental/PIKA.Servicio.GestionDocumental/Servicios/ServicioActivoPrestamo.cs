@@ -22,7 +22,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
     public class ServicioActivoPrestamo : ContextoServicioGestionDocumental,
         IServicioInyectable, IServicioActivoPrestamo
     {
-        private const string DEFAULT_SORT_COL = "FechaCreacion";
+        private const string DEFAULT_SORT_COL = "ActivoId";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<ActivoPrestamo> repo;
@@ -47,14 +47,34 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<ActivoPrestamo> CrearAsync(ActivoPrestamo entity, CancellationToken cancellationToken = default)
         {
-            if (await Existe(x => x.PrestamoId == entity.PrestamoId && x.ActivoId == entity.ActivoId ))
+            var prestamo = await UDT.Context.Prestamos.FindAsync(entity.PrestamoId);
+            if (prestamo.Devuelto || prestamo.Entregado) throw
+                       new ExDatosNoValidos("No pueden añadirse activos a un prestamo entragado o cerrado");
+            
+            var activo = await UDT.Context.Activos.FindAsync(entity.ActivoId);
+            if (activo.EnPrestamo)
             {
-                throw new ExElementoExistente(entity.PrestamoId + "|" + entity.ActivoId);
+                new ExDatosNoValidos("El elemento se encuentra en préstamo");
             }
 
-            await this.repo.CrearAsync(entity);
-            UDT.SaveChanges(); 
-            return entity.Copia();
+            if (prestamo != null)
+            {
+                if (!await Existe(x => x.PrestamoId == entity.PrestamoId && x.ActivoId == entity.ActivoId))
+                {
+                    entity.Id = Guid.NewGuid().ToString();
+                    entity.Devuelto = false;
+                    await this.repo.CrearAsync(entity);
+                    UDT.SaveChanges();
+
+                    prestamo.CantidadActivos++;
+                    UDT.SaveChanges();
+
+                    EstableceEnPrestamo(new List<string>() { entity.ActivoId }, true);
+                }
+                return entity.Copia();
+            }
+            throw new EXNoEncontrado(entity.PrestamoId);
+            
         }
 
         public async Task ActualizarAsync(ActivoPrestamo entity)
@@ -119,11 +139,24 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
+            
             ActivoPrestamo ap;
+            bool primero = true;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
             {
-                ap = await this.repo.UnicoAsync(x => x.ActivoId == Id);
+                ap = await this.repo.UnicoAsync(x => x.Id == Id);
+                if (ap!=null && primero)
+                {
+                    Prestamo p = UDT.Context.Prestamos.Find(ap.PrestamoId);
+                    if(p.Devuelto || p.Entregado)
+                    {
+                        throw new ExDatosNoValidos("No pueden eliminarse elementos de un préstamo entregado o devuelto");
+                    }
+                    primero = false;
+                }
+
+                
                 if (ap != null)
                 {
                     UDT.Context.Entry(ap).State = EntityState.Deleted;
@@ -131,8 +164,28 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 }
             }
             UDT.SaveChanges();
+
+            EstableceEnPrestamo(listaEliminados.ToList(), false);
+
             return listaEliminados;
         }
+
+        private void EstableceEnPrestamo(List<string> lista, bool EnPrestamo)
+        {
+            string l = "";
+            lista.ToList().ForEach(id =>
+            {
+                l += $"'{id}',";
+            });
+
+            this.UDT.Context.Database.GetDbConnection().Open();
+            var cmd = this.UDT.Context.Database.GetDbConnection().CreateCommand();
+            string p = EnPrestamo ? "1": "0";
+            string sql = @$"update  {DBContextGestionDocumental.TablaActivos} set EnPrestamo={p} where Id In ({l.TrimEnd(',')});";
+            cmd.CommandText = sql;
+            cmd.ExecuteNonQuery();
+        }
+
 
         public Task<List<ActivoPrestamo>> ObtenerAsync(Expression<Func<ActivoPrestamo, bool>> predicado)
         {

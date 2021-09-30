@@ -21,6 +21,11 @@ namespace PIKA.Modelo.Metadatos
             get; set;
         }
 
+        public virtual string Condicion
+        {
+            get; set;
+        }
+
         public virtual bool RequiereSeleccion
         {
             get; set;

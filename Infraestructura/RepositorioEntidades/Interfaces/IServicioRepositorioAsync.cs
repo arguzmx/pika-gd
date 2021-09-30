@@ -56,7 +56,6 @@ namespace RepositorioEntidades
 
         Task<bool> Existe(Expression<Func<T, bool>> predicado);
 
-
     }
 
 

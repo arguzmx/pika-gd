@@ -14,11 +14,6 @@ namespace PIKA.Modelo.Contenido
 
         }
 
-        /// <summary>
-        /// Esta propiedad se ignora para elastci search el ID a utilizar en el del indice
-        /// </summary>
-        [Ignore]
-        
         public override string Id { get => base.Id; set => base.Id = value; }
 
         /// <summary>

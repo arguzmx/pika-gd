@@ -80,7 +80,7 @@ namespace PIKA.GD.API.Controllers.Contenido
 
                 if (elementos.Count > 0)
                 {
-
+                    string elementoId = elementos[0].ElementoId;
                     string VolId = elementos[0].VolumenId;
                     string version = elementos[0].VersionId;
                     long conteoBytes = 0;
@@ -91,11 +91,27 @@ namespace PIKA.GD.API.Controllers.Contenido
                     {
                         return BadRequest("Gestor de volumen no válido");
                     }
-                    
-                    var v = await this.repoContenido.ObtieneVersion(version).ConfigureAwait(false);
+
+                    Modelo.Contenido.Version v = await this.repoContenido.ObtieneVersion(version).ConfigureAwait(false);
                     if (v == null)
                     {
-                        return NotFound();
+
+                        // Sustituir esta sección por el almacenamiento en elasticsearc
+                        v = new Modelo.Contenido.Version()
+                        {
+                            Id = version,
+                            Activa = true,
+                            CreadorId = this.GetUserId(),
+                            ElementoId = elementoId,
+                            Eliminada = false,
+                            FechaCreacion = DateTime.UtcNow,
+                            VolumenId = VolId,
+                            ConteoPartes = 0,
+                            MaxIndicePartes = 0,
+                            TamanoBytes = 0
+                        };
+
+                        var id = await this.repoContenido.CreaVersion(v).ConfigureAwait(false);
                     }
 
                     int indice = 1;

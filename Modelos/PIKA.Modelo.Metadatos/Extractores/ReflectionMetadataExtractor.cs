@@ -87,6 +87,9 @@ namespace PIKA.Modelo.Metadatos
                     info.TokenMod = ea.TokenMod;
                     info.AsociadoMetadatos = ea.AsociadoMetadatos;
                     info.HabilitarSeleccion = ea.HabilitarSeleccion;
+                    info.PermiteAltas = ea.PermiteAltas;
+                    info.PermiteBajas = ea.PermiteBajas;
+                    info.PermiteCambios = ea.PermiteCambios;
                 }
 
                 if (attr is EntidadVinculadaAttribute)
@@ -248,7 +251,9 @@ namespace PIKA.Modelo.Metadatos
                 TypeAhead = source.TypeAhead,
                 Default = source.Default,
                 OrdenarAlfabetico = source.OrdenarAlfabetico,
-                ValoresCSV = source.ValoresCSV
+                ValoresCSV = source.ValoresCSV,
+                EsListaTemas = source.EsListaTemas,
+                FiltroBusqueda = source.FiltroBusqueda
             };
         }
 

@@ -3,15 +3,18 @@ using Microsoft.Extensions.Logging;
 using Nest;
 using PIKA.Infraestructura.Comun;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Contenido.ElasticSearch
 {
-    public class RepoContenidoElasticSearch: IRepoContenidoElasticSearch
+    public partial class RepoContenidoElasticSearch : IRepoContenidoElasticSearch
     {
         private IConfiguration Configuration;
         private ElasticClient cliente;
+        private ElasticClient clienteOCR;
         private const string INDICEVERSIONES = "contenido-versiones";
+        private const string INDICECONTENIDO = "contenido-indexado";
         private ILogger logger;
 
         public RepoContenidoElasticSearch(IConfiguration Configuration,
@@ -31,8 +34,11 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
 
             var settingsVersiones = new ConnectionSettings(new Uri(options.CadenaConexion()))
                 .DefaultIndex(INDICEVERSIONES);
+            var settingsContenido = new ConnectionSettings(new Uri(options.CadenaConexion()))
+                .DefaultIndex(INDICECONTENIDO);
 
             cliente = new ElasticClient(settingsVersiones);
+            clienteOCR = new ElasticClient(settingsContenido);
         }
 
 
@@ -47,7 +53,8 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
             return version.Id;
         }
 
-        public async Task<bool> CreaRepositorio() {
+        public async Task<bool> CreaRepositorio()
+        {
             logger.LogInformation($"Verificando repositorio");
             if (!await ExisteIndice(INDICEVERSIONES))
             {
@@ -66,6 +73,26 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
             {
                 logger.LogInformation($"Repositorio de contenido configurado");
             }
+
+            if (!await ExisteIndice(INDICECONTENIDO))
+            {
+                logger.LogInformation($"Creando repositorio de indexado de contenido");
+                var createIndexResponse = await cliente.Indices.CreateAsync(INDICECONTENIDO, c => c
+                    .Map<Modelo.Contenido.ContenidoTextoCompleto>(m => m.AutoMap())
+                );
+
+                if (!createIndexResponse.ApiCall.Success)
+                {
+                    logger.LogError(createIndexResponse.DebugInformation);
+                    logger.LogError(createIndexResponse.OriginalException.ToString());
+                }
+            }
+            else
+            {
+                logger.LogInformation($"Repositorio de nidexados de contenido configurado");
+            }
+
+
             return true;
         }
 
@@ -99,7 +126,7 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
 
             Console.WriteLine(resultado.Result);
 
-            if(resultado.Result == Result.Updated ||
+            if (resultado.Result == Result.Updated ||
                 resultado.Result == Result.Noop)
             {
                 return true;
@@ -120,5 +147,6 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
 
             return false;
         }
+
     }
 }

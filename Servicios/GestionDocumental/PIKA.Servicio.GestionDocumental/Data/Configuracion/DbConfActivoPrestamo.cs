@@ -11,7 +11,8 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
         public void Configure(EntityTypeBuilder<ActivoPrestamo> builder)
         {
             builder.ToTable(DBContextGestionDocumental.TablaActivosPrestamo);
-            builder.HasKey(x => new { x.PrestamoId, x.ActivoId });
+            builder.HasKey(x =>  x.Id);
+            builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.PrestamoId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.ActivoId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.Devuelto).HasDefaultValue(false).IsRequired();
