@@ -15,6 +15,7 @@
     <ProjectReference Include="..\..\..\Infraestructura\RepositorioEntidades\RepositorioEntidades.csproj" />
     <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.Contenido\PIKA.Modelo.Contenido.csproj" />
     <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.Metadatos\PIKA.Modelo.Metadatos.csproj" />
+    <ProjectReference Include="..\..\Contenido\PIKA.Servicio.Contenido.ElasticSearch\PIKA.Servicio.Contenido.ElasticSearch.csproj" />
     <ProjectReference Include="..\..\Metadatos\PIKA.Servicio.Metadatos\PIKA.Servicio.Metadatos.csproj" />
   </ItemGroup>
 

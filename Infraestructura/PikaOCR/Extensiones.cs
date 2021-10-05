@@ -21,7 +21,8 @@ namespace PikaOCR
                 VolumenId = Parte.VolumenId,
                 CarpetaId = CarpetaId,
                 PuntoMontajeId = PuntoMontajeId,
-                VersionId = Parte.VersionId
+                VersionId = Parte.VersionId,
+                DocumentoId = Parte.ElementoId 
             };
         }
 

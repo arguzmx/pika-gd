@@ -49,7 +49,7 @@ namespace PikaOCR
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogDebug("OCR inicialiando");
+            _logger.LogDebug("OCR inicializado");
             _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
             return Task.CompletedTask;
         }
@@ -58,97 +58,98 @@ namespace PikaOCR
         {
             if (!Procesando)
             {
-                _logger.LogDebug("Buscando pendientes de OCR");
-                var siguiente = Task.Run(() => this._repoElastic.SiguenteIndexar(null));
+                var siguiente = Task.Run(async () => await this._repoElastic.SiguenteIndexar(null));
+                siguiente.Wait();
                 if (siguiente.Result != null)
                 {
                     Procesando = true;
-
                     var task = Task.Run(async () => await ProcesaVersion(siguiente.Result));
                     task.Wait();
-
-                    // var resultado = Task.Run(() => ProcesaVersion(siguiente.Result));
-
-                    _logger.LogDebug($"OCR Finalizado {task.Result.EstadoIndexado}");
                     Procesando = false;
-                }
-
+                } 
             }
         }
 
         private async Task<PIKA.Modelo.Contenido.Version> ProcesaVersion(PIKA.Modelo.Contenido.Version version)
         {
-
-            Volumen v = await _volumenes.UnicoAsync(v => v.Id == version.VolumenId);
-            Elemento elemento = await _elementos.UnicoAsync(x => x.Id == version.ElementoId);
-            IGestorES gestor = await _volumenes.ObtienInstanciaGestor(v.Id);
-
-            ExtractorTexto x = new ExtractorTexto(_logger, _opciones.Value, gestor);
-            foreach (var parte in version.Partes)
+            try
             {
-                // Estos datos no estan en la parte para economizr espacio en el documento de ElasticSearch
-                parte.VersionId = version.Id;
-                parte.ElementoId = version.ElementoId;
-
-                if (!parte.Indexada)
+                if (version.Partes != null && version.Partes.Count > 0)
                 {
-                    string nombreTemporal = x.NombreArchivoTemporal(parte);
+                    Volumen v = await _volumenes.UnicoAsync(v => v.Id == version.VolumenId);
+                    Elemento elemento = await _elementos.UnicoAsync(x => x.Id == version.ElementoId);
+                    IGestorES gestor = await _volumenes.ObtienInstanciaGestor(v.Id);
 
-                    if (extensionesIndexado.IndexOf(parte.Extension.ToLower()) >= 0)
+                    ExtractorTexto x = new ExtractorTexto(_logger, _opciones.Value, gestor);
+                    foreach (var parte in version.Partes)
                     {
-                        _logger.LogDebug($"Indexando {parte.Extension} {parte.Id}");
+                        // Estos datos no estan en la parte para economizr espacio en el documento de ElasticSearch
+                        parte.VersionId = version.Id;
+                        parte.ElementoId = version.ElementoId;
 
-                        switch (parte.Extension.ToLower())
+                        if (!parte.Indexada)
                         {
-                            case ".pdf":
-                                
-                                var resultadoPDF = await x.TextoPDF(parte, nombreTemporal);
-                                _logger.LogDebug($"R {resultadoPDF.Item1} {parte.Extension} {parte.Id}");
-                                if (resultadoPDF.Item1)
-                                {
-                                    int pagina = 1;
-                                    foreach(var t in resultadoPDF.Item2)
-                                    {
-                                        await _repoElastic.IndexarTextoCompleto(parte.ParteAContenidoTextoCompleto(File.ReadAllText(t), elemento.PuntoMontajeId, elemento.CarpetaId, pagina));
-                                        pagina++;
-                                    }
-                                    x.ElimninaArchivosOCR(nombreTemporal);
-                                    parte.Indexada = true;
-                                }
-                                else
-                                {
-                                    parte.Indexada = false;
-                                }
-                                
-                                break;
+                            string nombreTemporal = x.NombreArchivoTemporal(parte);
 
-                            default:
-                                var resultadoImagen = await x.TextoImagen(parte, nombreTemporal);
-                                _logger.LogDebug($"R {resultadoImagen.Item1} {parte.Extension} {parte.Id}");
-                                if (resultadoImagen.Item1)
+                            if (extensionesIndexado.IndexOf(parte.Extension.ToLower()) >= 0)
+                            {
+                                switch (parte.Extension.ToLower())
                                 {
-                                    await _repoElastic.IndexarTextoCompleto(parte.ParteAContenidoTextoCompleto(File.ReadAllText(resultadoImagen.Item2), elemento.PuntoMontajeId, elemento.CarpetaId));
-                                    parte.Indexada = true;
+                                    case ".pdf":
+
+                                        var resultadoPDF = await x.TextoPDF(parte, nombreTemporal);
+                                        if (resultadoPDF.Item1)
+                                        {
+                                            int pagina = 1;
+                                            foreach (var t in resultadoPDF.Item2)
+                                            {
+                                                await _repoElastic.IndexarTextoCompleto(parte.ParteAContenidoTextoCompleto(File.ReadAllText(t), elemento.PuntoMontajeId, elemento.CarpetaId, pagina));
+                                                pagina++;
+                                            }
+                                            x.ElimninaArchivosOCR(nombreTemporal);
+                                            parte.Indexada = true;
+                                        }
+                                        else
+                                        {
+                                            parte.Indexada = false;
+                                        }
+
+                                        break;
+
+                                    default:
+                                        var resultadoImagen = await x.TextoImagen(parte, nombreTemporal);
+                                        if (resultadoImagen.Item1)
+                                        {
+                                            await _repoElastic.IndexarTextoCompleto(parte.ParteAContenidoTextoCompleto(File.ReadAllText(resultadoImagen.Item2), elemento.PuntoMontajeId, elemento.CarpetaId));
+                                            parte.Indexada = true;
+                                        }
+                                        else
+                                        {
+                                            parte.Indexada = false;
+                                        }
+                                        x.ElimninaArchivosOCR(nombreTemporal);
+                                        break;
                                 }
-                                else
-                                {
-                                    parte.Indexada = false;
-                                }
-                                x.ElimninaArchivosOCR(nombreTemporal);
-                                break;
+
+                            }
+
+
                         }
-                        
-                    }
 
-                    
+                        parte.VersionId = null;
+                        parte.ElementoId = null;
+                    }
                 }
 
-                parte.VersionId = null;
-                parte.ElementoId = null;
+                version.EstadoIndexado = version.Partes.Any(p => p.Indexada == false) ? EstadoIndexado.FinalizadoError : EstadoIndexado.FinalizadoOK;
+
+               
             }
-
-            version.EstadoIndexado = version.Partes.Any(p => p.Indexada == false) ? EstadoIndexado.FinalizadoError : EstadoIndexado.FinalizadoOK;
-
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+                version.EstadoIndexado = EstadoIndexado.FinalizadoError;
+            }
             await _repoElastic.ActualizaEstadoOCR(version.Id, version);
             return version;
         }

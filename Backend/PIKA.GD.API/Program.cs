@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Metadatos;
+using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Metadatos.Interfaces;
 using PIKA.ServicioBusqueda.Contenido;
 using PikaOCR;
@@ -98,7 +99,8 @@ namespace PIKA.GD.API
             var ICache = host.Services.GetRequiredService<IAppCache>();
             var IRepositorioMetadatos = host.Services.GetRequiredService<IRepositorioMetadatos>();
             var IServicioPlantila = host.Services.GetRequiredService<IServicioPlantilla>();
-            ServicioBusquedaContenido s = new ServicioBusquedaContenido(IServicioPlantila, IRepositorioMetadatos, ICache, IpOpciones, configuracion, IlogFactory);
+            var IRepoContenidoElasticSearch = host.Services.GetRequiredService<IRepoContenidoElasticSearch>();
+            ServicioBusquedaContenido s = new ServicioBusquedaContenido(IServicioPlantila, IRepositorioMetadatos, IRepoContenidoElasticSearch, ICache, IpOpciones, configuracion, IlogFactory);
             s.Inicializar("", false); ;
         }
 

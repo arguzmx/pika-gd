@@ -145,7 +145,8 @@ namespace PIKA.GD.API
                     var ICache = provider.GetRequiredService<IAppCache>();
                     var IRepositorioMetadatos = provider.GetRequiredService<IRepositorioMetadatos>();
                     var IServicioPlantilla = provider.GetRequiredService<Servicio.Metadatos.Interfaces.IServicioPlantilla>();
-                    return new ServicioBusquedaContenido(IServicioPlantilla, IRepositorioMetadatos, ICache, IpOpciones, Configuration, loggerFactory);
+                    var IRepoContenidoElasticSearch = provider.GetRequiredService<IRepoContenidoElasticSearch>();
+                    return new ServicioBusquedaContenido(IServicioPlantilla, IRepositorioMetadatos, IRepoContenidoElasticSearch, ICache, IpOpciones, Configuration, loggerFactory);
                 });
             }
         }

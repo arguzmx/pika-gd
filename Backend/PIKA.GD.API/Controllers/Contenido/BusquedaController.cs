@@ -1,8 +1,11 @@
 ﻿using LazyCache;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.ServicioBusqueda.Contenido;
+using RepositorioEntidades;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PIKA.GD.API.Controllers.Contenido
@@ -22,12 +25,12 @@ namespace PIKA.GD.API.Controllers.Contenido
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> BuscarIds([FromBody] BusquedaContenido request)
+        public async Task<ActionResult<Paginado<string>>> BuscarIds([FromBody] BusquedaContenido request)
         {
             try
             {
-                
-                return Ok(await busqueda.BuscarIds(request));
+                var data = await busqueda.BuscarIds(request);
+                return Ok(data);
             }
             catch (Exception ex)
             {
@@ -35,7 +38,23 @@ namespace PIKA.GD.API.Controllers.Contenido
                 Console.WriteLine(ex.ToString());
                 throw;
             }
+        }
 
+
+        [HttpPost("sinopsis/{consultaid}")]
+        public async Task<ActionResult<List<HighlightHit>>> SinopisPorIds(string consultaId, List<string> Ids)
+        {
+            try
+            {
+                var data = await busqueda.BuscarSinopsis(consultaId, Ids);
+                return Ok(data);
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
         }
 
 
@@ -52,9 +71,9 @@ namespace PIKA.GD.API.Controllers.Contenido
         //        Console.WriteLine(ex.ToString());
         //        throw;
         //    }
-            
+
         //}
-        
+
 
     }
 }

@@ -48,6 +48,11 @@ namespace PIKA.Modelo.Contenido
         [Keyword(Name = "fid")]
         public string CarpetaId { get; set; }
 
+        /// <summary>
+        /// Identificador único del documento asociado a  la version
+        /// </summary>
+        [Keyword(Name = "did")]
+        public string DocumentoId { get; set; }
 
         /// <summary>
         /// Página de OCR para los documentos multi página, por ejemplo PDF

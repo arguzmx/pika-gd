@@ -49,6 +49,11 @@ namespace PIKA.ServicioBusqueda.Contenido
             return (b.Elementos.Any(e => e.Tag == Constantes.METADATOS));
         }
 
+        public static bool BuscarTexto(this BusquedaContenido b)
+        {
+            return (b.Elementos.Any(e => e.Tag == Constantes.TEXTO));
+        }
+
         public static bool BuscarEnFolder(this BusquedaContenido b)
         {
             return (b.Elementos.Any(e => e.Tag == Constantes.ENFOLDER));

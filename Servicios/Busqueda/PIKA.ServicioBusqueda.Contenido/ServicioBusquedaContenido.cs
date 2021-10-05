@@ -6,11 +6,13 @@ using Nest;
 using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.Contenido;
 using PIKA.Modelo.Metadatos;
+using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Metadatos.Interfaces;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PIKA.ServicioBusqueda.Contenido
@@ -26,6 +28,7 @@ namespace PIKA.ServicioBusqueda.Contenido
         private IAppCache cache;
         private IRepositorioMetadatos repoMetadatos;
         private IServicioPlantilla servicioPlantilla;
+        private IRepoContenidoElasticSearch repoContenido;
         private Plantilla Plantilla;
 
         /// <summary>
@@ -45,6 +48,7 @@ namespace PIKA.ServicioBusqueda.Contenido
         public ServicioBusquedaContenido(
             IServicioPlantilla servicioPlantilla,
             IRepositorioMetadatos repositorioMetadatos,
+            IRepoContenidoElasticSearch repoContenido,
             IAppCache cache,
             IProveedorOpcionesContexto<DbContextBusquedaContenido> proveedorOpciones,
             IConfiguration Configuration,
@@ -59,6 +63,7 @@ namespace PIKA.ServicioBusqueda.Contenido
             this.UDT = new UnidadDeTrabajo<DbContextBusquedaContenido>(contexto);
             this.repoMetadatos = repositorioMetadatos;
             this.servicioPlantilla = servicioPlantilla;
+            this.repoContenido = repoContenido;
         }
 
         public void CreaClientes(IConfiguration configuration)
@@ -72,9 +77,30 @@ namespace PIKA.ServicioBusqueda.Contenido
             cliente = new ElasticClient(settingsVersiones);
         }
 
-        public async Task<Paginado<string>> BuscarIds(BusquedaContenido busqueda) {
+        public async Task<List<HighlightHit>> BuscarSinopsis(string Id, List<string> Ids)
+        {
+            BusquedaContenido bc = cache.Get<BusquedaContenido>($"b{Id}");
+            CacheBusqueda cacheB = cache.Get<CacheBusqueda>(Id);
+
+            if (cacheB != null && bc != null)
+            {
+                var b = bc.ObtenerBusqueda(Constantes.TEXTO);
+                var fTexto = b.Consulta.Filtros.Where(f => f.Propiedad == "texto").SingleOrDefault();
+                return await repoContenido.SinopsisPorIDs(fTexto.ValorString, Ids, "b", fTexto.ValorString.Length * 5);
+            } 
+            return new List<HighlightHit>();
+        }
+
+        public async Task<Paginado<string>> BuscarIds(BusquedaContenido busqueda)
+        {
             try
             {
+
+                if (cache.Get<BusquedaContenido>($"b{busqueda.Id}") == null)
+                {
+                    cache.Add($"b{busqueda.Id}", busqueda);
+                }
+
                 CacheBusqueda cacheB = null;
 
                 // busca cache existente de los datos
@@ -82,6 +108,12 @@ namespace PIKA.ServicioBusqueda.Contenido
 
                 if (cacheB == null)
                 {
+                    cacheB = new CacheBusqueda()
+                    {
+                        Id = busqueda.Id,
+                        sort_col = busqueda.ord_columna,
+                        sort_dir = busqueda.ord_direccion
+                    };
 
                     // Caclcula las cantidades existentes por cada tipo de busqueda
                     await EjecutarConteos(busqueda);
@@ -89,20 +121,33 @@ namespace PIKA.ServicioBusqueda.Contenido
                     // Si hay coincidencias 
                     if (busqueda.Elementos.Sum(x => x.Conteo) > 0)
                     {
-
                         // Realiza la búsqueda por tipo
                         await EjecutarUQeryIds(busqueda);
 
+                        // Orderna la búsqueda en bae al menor numero de resultados
+                        // para restringir el conteo total y las intersecciones
                         var validos = busqueda.Elementos.OrderBy(x => x.Conteo).ToList();
 
                         List<string> unicos = new List<string>();
                         if (validos.Count > 1)
                         {
+                            // Hay más de un tipo de consulta involucrado 
+
                             switch (validos[0].Tag)
                             {
+
+                                case Constantes.TEXTO:
+                                    if (busqueda.BuscarTexto())
+                                    {
+                                        // para el caso de los datos que vienen de Elasticsearch se separa el id del elemento del del repositorio
+                                        unicos = validos[0].Ids == null ? new List<string>() : validos[0].Ids.Select(x => x.Split('|')[Constantes.INDICEDOCUMENTO]).ToList();
+                                    }
+                                    break;
+
                                 case Constantes.METADATOS:
                                     if (busqueda.BuscarMetadatos())
                                     {
+                                        // para el caso de los datos que vienen de Elasticsearch se separa el id del elemento del del repositorio
                                         unicos = validos[0].Ids == null ? new List<string>() : validos[0].Ids.Select(x => x.Split('|')[Constantes.INDICEDOCUMENTO]).ToList();
                                     }
                                     break;
@@ -125,14 +170,26 @@ namespace PIKA.ServicioBusqueda.Contenido
                             unicos.Count.ToS();
 
                             // Hay mas de un tipo de elementos participando en la respuesta
+                            // La interseccion comienza desde el 2o elemento  por lo que el índice es 1
                             for (int i = 1; i < validos.Count; i++)
                             {
                                 switch (validos[i].Tag)
                                 {
+                                    case Constantes.TEXTO:
+                                        if (busqueda.BuscarTexto())
+                                        {
+                                            // Se separa el valor del elemento de la clave de Elasticsearch
+                                            unicos = unicos.Intersect(
+                                                validos[i].Ids.Select(x => x.Split('|')[Constantes.INDICEDOCUMENTO]).ToList()
+                                                ).ToList();
+                                        }
+                                        break;
+
                                     case Constantes.METADATOS:
                                         if (busqueda.BuscarMetadatos())
                                         {
-                                        unicos = unicos.Intersect(
+                                            // Se separa el valor del elemento de la clave de Elasticsearch
+                                            unicos = unicos.Intersect(
                                             validos[i].Ids.Select(x => x.Split('|')[Constantes.INDICEDOCUMENTO]).ToList()
                                             ).ToList();
                                         }
@@ -157,11 +214,12 @@ namespace PIKA.ServicioBusqueda.Contenido
                         }
                         else
                         {
-                            "asaslajsl".ToS();
                             // La respuesta proviene de un solo tipo de elementos
                             switch (validos[0].Tag)
                             {
+                                case Constantes.TEXTO:
                                 case Constantes.METADATOS:
+                                    // Se separa el id del elemento ddel id del repositorio
                                     unicos = validos[0].Ids == null ? new List<string>() : validos[0].Ids.Select(x => x.Split('|')[Constantes.INDICEDOCUMENTO]).ToList();
                                     break;
 
@@ -181,18 +239,22 @@ namespace PIKA.ServicioBusqueda.Contenido
                             sort_dir = busqueda.ord_direccion
                         };
 
-                        if (unicos.Count > 0 && validos.Any(x => x.Tag == Constantes.METADATOS))
-                        {
-                            var t = validos.Where(x => x.Tag == Constantes.METADATOS).First();
 
-                            unicos.ForEach(u =>
-                            {
-                                var IdElastic = t.Ids.Where(x => x.StartsWith(u)).SingleOrDefault();
-                                cacheB.UnicosElastic.Add(IdElastic.Split('|')[Constantes.INDICEIDELASTIC]);
-                            });
-                        }
+                        //// Se añade la lista de Ids únicos de Elasticsearch para metadatos 
+                        //if (unicos.Count > 0 && validos.Any(x => x.Tag == Constantes.METADATOS))
+                        //{
+                        //    var t = validos.Where(x => x.Tag == Constantes.METADATOS).First();
 
-                        
+                        //    unicos.ForEach(u =>
+                        //    {
+                        //        var IdElastic = t.Ids.Where(x => x.StartsWith(u)).FirstOrDefault();
+                        //        if (cacheB.UnicosElastic.IndexOf(IdElastic.Split('|')[Constantes.INDICEIDELASTIC]) < 0)
+                        //        {
+                        //            cacheB.UnicosElastic.Add(IdElastic.Split('|')[Constantes.INDICEIDELASTIC]);
+                        //        }
+                        //    });
+                        //}
+
                         cache.Add(busqueda.Id, cacheB);
                     }
                 }
@@ -203,7 +265,7 @@ namespace PIKA.ServicioBusqueda.Contenido
                     ConteoTotal = cacheB.Unicos.Count(),
                     ConteoFiltrado = cacheB.Unicos.Count()
                 };
-                
+
                 return p;
             }
             catch (Exception ex)
@@ -218,6 +280,12 @@ namespace PIKA.ServicioBusqueda.Contenido
 
             try
             {
+                if (cache.Get<BusquedaContenido>($"b{busqueda.Id}") == null)
+                {
+                    cache.Add($"b{busqueda.Id}", busqueda);
+                }
+
+
                 CacheBusqueda cacheB = null;
 
                 // busca cache existente de los datos
@@ -225,22 +293,32 @@ namespace PIKA.ServicioBusqueda.Contenido
 
                 if (cacheB == null)
                 {
+                    cacheB = new CacheBusqueda()
+                    {
+                        Id = busqueda.Id,
+                        sort_col = busqueda.ord_columna,
+                        sort_dir = busqueda.ord_direccion
+                    };
+
                     await EjecutarConteos(busqueda);
 
                     if (busqueda.Elementos.Sum(x => x.Conteo) > 0)
                     {
+
+                        // Obtiene la lsta de identificadores únicos para cada tipo de busqueda
                         await EjecutarUQeryIds(busqueda);
+
                         var validos = busqueda.Elementos.Where(x => x.Conteo > 0)
                             .OrderBy(x => x.Conteo).ToList();
-
-
 
                         List<string> unicos = new List<string>();
                         if (validos.Count > 1)
                         {
-                            switch (validos[0].Tag) {
+                            switch (validos[0].Tag)
+                            {
+                                case Constantes.TEXTO:
                                 case Constantes.METADATOS:
-                                    unicos= validos[0].Ids.Select(x => x.Split('|')[Constantes.INDICEDOCUMENTO]).ToList();
+                                    unicos = validos[0].Ids.Select(x => x.Split('|')[Constantes.INDICEDOCUMENTO]).ToList();
                                     break;
 
                                 case Constantes.ENFOLDER:
@@ -258,6 +336,7 @@ namespace PIKA.ServicioBusqueda.Contenido
                             {
                                 switch (validos[i].Tag)
                                 {
+                                    case Constantes.TEXTO:
                                     case Constantes.METADATOS:
                                         unicos = unicos.Intersect(
                                             validos[i].Ids.Select(x => x.Split('|')[Constantes.INDICEDOCUMENTO]).ToList()
@@ -277,6 +356,7 @@ namespace PIKA.ServicioBusqueda.Contenido
                             // La respuesta proviene de un solo tipo de elementos
                             switch (validos[0].Tag)
                             {
+                                case Constantes.TEXTO:
                                 case Constantes.METADATOS:
                                     unicos = validos[0].Ids.Select(x => x.Split('|')[Constantes.INDICEDOCUMENTO]).ToList();
                                     break;
@@ -301,7 +381,7 @@ namespace PIKA.ServicioBusqueda.Contenido
                         {
                             var t = validos.Where(x => x.Tag == Constantes.METADATOS).First();
 
-                            unicos.ForEach(u =>
+                            unicos.Take(busqueda.tamano).ToList().ForEach(u =>
                             {
                                 var IdElastic = t.Ids.Where(x => x.StartsWith(u)).SingleOrDefault();
                                 cacheB.UnicosElastic.Add(IdElastic.Split('|')[Constantes.INDICEIDELASTIC]);
@@ -334,34 +414,34 @@ namespace PIKA.ServicioBusqueda.Contenido
                 {
                     p.ConteoFiltrado = cacheB.Unicos.Count;
                     p.ConteoTotal = cacheB.Unicos.Count;
-                    p.Paginas = (cacheB.Unicos.Count % busqueda.tamano) > 0 
-                        ? (int)(cacheB.Unicos.Count / busqueda.tamano) + 1 
+                    p.Paginas = (cacheB.Unicos.Count % busqueda.tamano) > 0
+                        ? (int)(cacheB.Unicos.Count / busqueda.tamano) + 1
                         : (int)(cacheB.Unicos.Count / busqueda.tamano);
 
-                    if (!string.IsNullOrEmpty(busqueda.PlantillaId) )
+                    if (!string.IsNullOrEmpty(busqueda.PlantillaId))
                     {
                         busqueda.PlantillaId = busqueda.ObtenerBusqueda(Constantes.METADATOS).Topico;
                     }
 
-                    
-                    
+
                     if (busqueda.OrdenamientoMetadatos() && (cacheB.UnicosElastic.Count() > 0))
                     {
-                        
+
                         await GeneraPaginaMetadatos(busqueda, p, cacheB);
 
                         List<string> documentos = p.PropiedadesExtendidas.ValoresEntidad.Select(x => x.Id).ToList();
                         List<string> faltantes = cacheB.Unicos.Except(documentos).ToList();
-                        if(documentos.Count() < busqueda.tamano)
+                        if (documentos.Count() < busqueda.tamano)
                         {
                             int cuantos = busqueda.tamano - documentos.Count();
                             int conteofaltantes = faltantes.Count();
-                            for(int i= 0; i < cuantos; i++)
+                            for (int i = 0; i < cuantos; i++)
                             {
                                 if (conteofaltantes >= i + 1)
                                 {
                                     documentos.Add(faltantes[i]);
-                                } else
+                                }
+                                else
                                 {
                                     break;
                                 }
@@ -377,7 +457,9 @@ namespace PIKA.ServicioBusqueda.Contenido
                         p.Elementos = (await BuscarPorIds(busqueda, cacheB.Unicos, false)).ToList();
 
                     }
-                    
+
+
+
                 }
 
                 return p;
@@ -392,8 +474,8 @@ namespace PIKA.ServicioBusqueda.Contenido
         private async Task GeneraPaginaMetadatos(BusquedaContenido busqueda, Paginado<ElementoBusqueda> p, CacheBusqueda b)
         {
             Plantilla Plantilla = await servicioPlantilla.UnicoAsync(x => x.Id == busqueda.PlantillaId, null,
-                    p => p.Include(z => z.Propiedades)); 
-            
+                    p => p.Include(z => z.Propiedades));
+
 
             p.PropiedadesExtendidas = new PropiedadesExtendidas();
             Plantilla.Propiedades.ToList().OrderBy(x => x.IndiceOrdenamiento).ToList().ForEach(prop =>
@@ -415,35 +497,54 @@ namespace PIKA.ServicioBusqueda.Contenido
 
         private async Task EjecutarUQeryIds(BusquedaContenido busqueda)
         {
-            List<Task> conteos = new List<Task>();
+            List<Task> busquedaIds = new List<Task>();
             Task<long> ConteoEnFolder = null;
             Task<long> ConteoPropieddes = null;
+            Task<List<string>> idsTexto = null;
             Task<List<string>> ConteoMetadatos = null;
 
+
+
+            if (busqueda.Conteo(Constantes.TEXTO) > 0)
+            {
+                var b = busqueda.ObtenerBusqueda(Constantes.TEXTO);
+                var fTexto = b.Consulta.Filtros.Where(f => f.Propiedad == "texto").SingleOrDefault();
+                var fFuzzy = b.Consulta.Filtros.Where(f => f.Propiedad == "fuzzy").SingleOrDefault();
+                if (fTexto != null && !string.IsNullOrEmpty(fTexto.ValorString))
+                {
+                    int fuzzy = 0;
+                    if (fFuzzy != null)
+                    {
+                        int.TryParse(fFuzzy.ValorString, out fuzzy);
+                    }
+                    idsTexto = this.repoContenido.IdsPorConsulta(fTexto.ValorString, busqueda.PuntoMontajeId, busqueda.JerarquiaId, fuzzy);
+                    busquedaIds.Add(idsTexto);
+                }
+            }
 
             if (busqueda.Conteo(Constantes.METADATOS) > 0)
             {
                 var filtro = busqueda.ObtenerBusqueda(Constantes.METADATOS);
                 ConteoMetadatos = this.repoMetadatos.IdsrPorConsulta(filtro.Consulta, this.Plantilla, busqueda.PuntoMontajeId, busqueda.JerarquiaId);
-                conteos.Add(ConteoMetadatos);
+                busquedaIds.Add(ConteoMetadatos);
             }
 
 
             if (busqueda.Conteo(Constantes.ENFOLDER) > 0)
             {
                 ConteoEnFolder = ContarEnFolder(busqueda.ObtenerBusqueda(Constantes.ENFOLDER).Consulta, true);
-                conteos.Add(ConteoEnFolder);
+                busquedaIds.Add(ConteoEnFolder);
             }
 
             if (busqueda.Conteo(Constantes.PROPIEDEDES) > 0)
             {
                 ConteoPropieddes = ContarPropiedades(busqueda.ObtenerBusqueda(Constantes.PROPIEDEDES).Consulta, true, busqueda.PuntoMontajeId);
-                conteos.Add(ConteoPropieddes);
+                busquedaIds.Add(ConteoPropieddes);
             }
 
-            if (conteos.Count > 0)
+            if (busquedaIds.Count > 0)
             {
-                Task.WaitAll(conteos.ToArray());
+                Task.WaitAll(busquedaIds.ToArray());
 
                 if (busqueda.BuscarEnFolder() && (busqueda.Conteo(Constantes.ENFOLDER) > 0))
                 {
@@ -459,6 +560,14 @@ namespace PIKA.ServicioBusqueda.Contenido
                 {
                     busqueda.ActualizaIds(Constantes.METADATOS, ConteoMetadatos.Result);
                 }
+
+                if (busqueda.BuscarTexto() && (busqueda.Conteo(Constantes.TEXTO) > 0))
+                {
+                    // En el caso de la busqueda de texto pueden contrarse multimples hits en un documento 
+                    // si tiene varias páginas por lo que el conteo final proviene de la lista de Ids distintos
+                    busqueda.ActualizaIds(Constantes.TEXTO, idsTexto.Result);
+                    busqueda.ActualizaConteo(Constantes.TEXTO, idsTexto.Result.Count);
+                }
             }
         }
 
@@ -469,7 +578,24 @@ namespace PIKA.ServicioBusqueda.Contenido
             Task<long> ConteoEnFolder = null;
             Task<long> ConteoPropieddes = null;
             Task<long> ConteoMetadatos = null;
+            Task<long> ConteoTexto = null;
 
+            if (busqueda.BuscarTexto())
+            {
+                var b = busqueda.ObtenerBusqueda(Constantes.TEXTO);
+                var fTexto = b.Consulta.Filtros.Where(f => f.Propiedad == "texto").SingleOrDefault();
+                var fFuzzy = b.Consulta.Filtros.Where(f => f.Propiedad == "fuzzy").SingleOrDefault();
+                if (fTexto != null && !string.IsNullOrEmpty(fTexto.ValorString))
+                {
+                    int fuzzy = 0;
+                    if (fFuzzy != null)
+                    {
+                        int.TryParse(fFuzzy.ValorString, out fuzzy);
+                    }
+                    ConteoTexto = this.repoContenido.ContarPorConsulta(fTexto.ValorString, busqueda.PuntoMontajeId, busqueda.JerarquiaId, fuzzy);
+                    conteos.Add(ConteoTexto);
+                }
+            }
 
             if (busqueda.BuscarMetadatos())
             {
@@ -523,11 +649,12 @@ namespace PIKA.ServicioBusqueda.Contenido
                 {
                     busqueda.ActualizaConteo(Constantes.METADATOS, ConteoMetadatos.Result);
                 }
+
+                if (busqueda.BuscarTexto())
+                {
+                    busqueda.ActualizaConteo(Constantes.TEXTO, ConteoTexto.Result);
+                }
             }
-
-
-
-
         }
 
 
@@ -640,6 +767,7 @@ namespace PIKA.ServicioBusqueda.Contenido
         {
             Task.Run(() => CreaRepositorio()).Wait();
         }
+
 
         #endregion
 

@@ -44,6 +44,7 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
 
         public async Task<string> CreaVersion(Modelo.Contenido.Version version)
         {
+            version.EstadoIndexado = Modelo.Contenido.EstadoIndexado.FinalizadoOK;
             var respuesta = await this.cliente.IndexDocumentAsync(version);
             if (!respuesta.IsValid)
             {
@@ -115,8 +116,7 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
         public async Task<bool> ActualizaVersion(string Id, Modelo.Contenido.Version version)
         {
 
-            Console.WriteLine(Id);
-
+            version.EstadoIndexado = Modelo.Contenido.EstadoIndexado.PorIndexar;
             var resultado = await cliente.UpdateAsync<Modelo.Contenido.Version, object>(
                 new DocumentPath<Modelo.Contenido.Version>(Id),
                u => u.Index(INDICEVERSIONES)
