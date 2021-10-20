@@ -12,7 +12,7 @@ using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Contenido
 {
-    [Entidad(PaginadoRelacional: false, EliminarLogico: true, AsociadoMetadatos: true,
+    [Entidad(PaginadoRelacional: false, EliminarLogico: true, AsociadoMetadatos: true, TipoSeguridad: TipoSeguridad.AlIngreso,
     TokenApp: ConstantesAppContenido.APP_ID, TokenMod: ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO)]
     [LinkView(Titulo: "visor", Icono: "preview", Vista: "visorcontenido", Tipo: TipoVista.EventoApp)]
     [LinkView(Titulo: "buscarcontenido", Icono: "manage_search", Vista: "buscarcontenido", RequireSeleccion: false)]

@@ -37,6 +37,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         }
 
 
+    
         /// <summary>
         /// Otiene los metadatos asociados a la carpeta
         /// </summary>

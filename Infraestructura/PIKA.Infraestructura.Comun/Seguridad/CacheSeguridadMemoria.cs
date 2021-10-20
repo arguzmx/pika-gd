@@ -43,13 +43,15 @@ namespace PIKA.Infraestructura.Comun.Seguridad
         public async Task<bool> AllowMethod(string UserId, string DomainId, string AppId, string ModuleId, string Method)
         {
             bool allow = false;
-            ulong Mask = 0;
+            int Mask = 0;
 
-            DefinicionSeguridadUsuario usuario = await SecurityTokenService.ObtenerSeguridadUsuario(UserId, DomainId); 
+            DefinicionSeguridadUsuario usuario = await SecurityTokenService.ObtenerSeguridadUsuario(UserId, DomainId);
 
-            if ( (usuario == null) || (usuario.Permisos == null)  || (usuario.Permisos.Where(x => x.NegarAcceso).Count() > 0)) return false;
+            if ( (usuario == null) || (usuario.Permisos == null)
+                || (usuario.Permisos.Where(x => x.AplicacionId == AppId && x.ModuloId == ModuleId && x.NegarAcceso).Count() > 0)
+                ) return false;
 
-            Mask = (usuario.EsAdmin) ? ulong.MaxValue : this.ObtienePermisos(usuario.Permisos, Config.seguridad_minimo_permisos, AppId, ModuleId);
+            Mask = (usuario.EsAdmin) ? int.MaxValue : this.ObtienePermisos(usuario.Permisos, Config.seguridad_minimo_permisos, AppId, ModuleId);
 
             if (Mask > 0)
             {
@@ -88,11 +90,19 @@ namespace PIKA.Infraestructura.Comun.Seguridad
             return allow;
         }
 
-
-
-        private ulong ObtienePermisos(List<PermisoAplicacion> Permisos, bool Minimos, string ApppId, string ModuleId)
+        public async Task<UsuarioAPI> DatosUsuarioGet(string Id)
         {
-            ulong p = 0;
+            return await SecurityTokenService.DatosUsuarioGet(Id);
+        }
+
+        public async Task DatosUsuarioSet(UsuarioAPI Usuario)
+        {
+            await  SecurityTokenService.DatosUsuarioSet(Usuario);
+        }
+
+        private int ObtienePermisos(List<PermisoAplicacion> Permisos, bool Minimos, string ApppId, string ModuleId)
+        {
+            int p = 0;
 
             List<PermisoAplicacion> efectivos = Permisos.Where(x => x.AplicacionId.Equals(ApppId, StringComparison.InvariantCultureIgnoreCase)
             && x.ModuloId.Equals(ModuleId, StringComparison.InvariantCultureIgnoreCase)).ToList();
@@ -101,7 +111,7 @@ namespace PIKA.Infraestructura.Comun.Seguridad
 
             if (Minimos)
             {
-                p = ulong.MaxValue;
+                p = int.MaxValue;
                 foreach (var permiso in efectivos)
                 {
                     p &= permiso.Mascara;

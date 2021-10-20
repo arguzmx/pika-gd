@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Contenido;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Contenido.ElasticSearch;
@@ -44,6 +45,27 @@ namespace PIKA.GD.API.Controllers.Contenido
             this.servicioVol = servicioVol;
         }
 
+     
+        [HttpGet("acl/{id}", Name = "ACLCarpetaContenido")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<int>> GetACL(string id)
+        {
+
+            int permisos = 0;
+            if (this.usuario.AdminGlobal)
+            {
+                permisos = int.MaxValue - MascaraPermisos.PDenegarAcceso; 
+
+            } else
+            {
+                servicioEntidad.Usuario = this.usuario;
+                permisos = await servicioEntidad.ACLPuntoMontaje(id).ConfigureAwait(false);
+            }
+
+            
+            return Ok( permisos);
+        }
 
         /// <summary>
         /// Otiene los metadatos asociados al Elemento

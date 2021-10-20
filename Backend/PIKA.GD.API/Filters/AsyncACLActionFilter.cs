@@ -63,106 +63,179 @@ namespace PIKA.GD.API.Filters
             bool IsAPIController = false;
             bool ExcludeACL = false;
 
-
-            var identity = context.HttpContext.User.Identity as ClaimsIdentity;
-            var valor = identity.Claims.Where(x => x.Type == JwtRegisteredClaimNames.Sub).FirstOrDefault();
-            if (valor != null) UserId = valor.Value;
-
-
-            if (string.IsNullOrEmpty(UserId))
+            try
             {
-                context.Result = new UnauthorizedResult();
-                return;
-            }
+                var identity = context.HttpContext.User.Identity as ClaimsIdentity;
+          
+                var valor = identity.Claims.Where(x => x.Type == JwtRegisteredClaimNames.Sub).FirstOrDefault();
+                if (valor != null) UserId = valor.Value;
 
 
-            IsAPIController =
-            (ApiControllerAttribute)Attribute.GetCustomAttribute(context.Controller.GetType(),
-            typeof(ApiControllerAttribute)) != null ? true : false;
+                if (string.IsNullOrEmpty(UserId))
+                {
+                    context.Result = new UnauthorizedResult();
+                    return;
+                }
 
-            ExcludeACL =
-            (ExcludedACLControllerAttribute)Attribute.GetCustomAttribute(context.Controller.GetType(),
-            typeof(ExcludedACLControllerAttribute)) != null ? true : false;
 
-            Logger.LogError($"{IsAPIController}");
-            Logger.LogError($"{ExcludeACL}");
+                IsAPIController =
+                (ApiControllerAttribute)Attribute.GetCustomAttribute(context.Controller.GetType(),
+                typeof(ApiControllerAttribute)) != null ? true : false;
 
-            if (IsAPIController && !ExcludeACL)
-            {
-                
-                //Analiza por reflección de IMetadateProvider si no están presentes los IDs solicutados
-                if (string.IsNullOrEmpty(AppId) || string.IsNullOrEmpty(ModuleId))
+                ExcludeACL =
+                (ExcludedACLControllerAttribute)Attribute.GetCustomAttribute(context.Controller.GetType(),
+                typeof(ExcludedACLControllerAttribute)) != null ? true : false;
+
+                //Logger.LogError($"{IsAPIController}");
+                //Logger.LogError($"{ExcludeACL}");
+
+                if (IsAPIController && !ExcludeACL)
                 {
 
-                   Type  t =LocalizadorEnsamblados.ObtieneTipoMetadata(context.Controller.GetType());
-                    foreach (var m in ServicioAplicacion.ModulosAdministrados)
+
+                    //Analiza por reflección de IMetadateProvider si no están presentes los IDs solicutados
+                    if (string.IsNullOrEmpty(AppId) || string.IsNullOrEmpty(ModuleId))
                     {
-                        foreach (var ta in m.TiposAdministrados)
+
+                        Type t = LocalizadorEnsamblados.ObtieneTipoMetadata(context.Controller.GetType());
+                        foreach (var m in ServicioAplicacion.ModulosAdministrados)
                         {
-                            if(ta.FullName == t.FullName)
+                            foreach (var ta in m.TiposAdministrados)
                             {
-                                this.AppId = m.AplicacionId;
-                                this.ModuleId = m.ModuloId;
-                                break;
+                                if (ta.FullName == t.FullName)
+                                {
+                                    this.AppId = m.AplicacionId;
+                                    this.ModuleId = m.ModuloId;
+                                    break;
+                                }
                             }
+
                         }
 
+                        if (string.IsNullOrEmpty(AppId) || string.IsNullOrEmpty(ModuleId))
+                        {
+                            context.Result = new BadRequestResult();
+                            return;
+                        }
                     }
 
-                    if (string.IsNullOrEmpty(AppId) || string.IsNullOrEmpty(ModuleId))
+
+                    //VErifica la validez los datos del modelo
+                    if (!context.ModelState.IsValid)
                     {
                         context.Result = new BadRequestResult();
                         return;
                     }
-               }
 
 
-                //VErifica la validez los datos del modelo
-                if (!context.ModelState.IsValid)
-                {
-                    context.Result = new BadRequestResult();
-                    return;
-                }
+                    if (context.HttpContext.Request.Headers.TryGetValue(Config.header_dominio, out values)) DomainId = values[0];
+                    if (context.HttpContext.Request.Headers.TryGetValue(Config.header_tenantid, out values)) UOid = values[0];
 
-             
-                if (context.HttpContext.Request.Headers.TryGetValue(Config.header_dominio, out values)) DomainId = values[0];
-                if (context.HttpContext.Request.Headers.TryGetValue(Config.header_tenantid, out values)) UOid = values[0];
+                    // Console.WriteLine($"{UserId} + {AppId}");
+                    if (string.IsNullOrEmpty(UserId) || string.IsNullOrEmpty(AppId))
+                    {
 
-              
-                if (string.IsNullOrEmpty(UserId)  || string.IsNullOrEmpty(AppId))
-                {
-                    
-                    context.Result = new UnauthorizedResult();
-                    return;
-                }
+                        context.Result = new UnauthorizedResult();
+                        return;
+                    }
 
-                bool allow = false;
+                    bool allow = false;
 
-                string Method = context.HttpContext.Request.Method;
-                allow = await SecurityCache.AllowMethod(UserId, DomainId, AppId, ModuleId, Method).ConfigureAwait(false);
+                    string Method = context.HttpContext.Request.Method;
+                    allow = await SecurityCache.AllowMethod(UserId, DomainId, AppId, ModuleId, Method).ConfigureAwait(false);
 
-                if (allow)
-                {
+                    // Console.WriteLine($"-------------------------------> + {allow}");
+                    if (allow)
+                    {
+                        ((ACLController)context.Controller).Roles = new List<string>();
+                        ((ACLController)context.Controller).Accesos = new List<string>();
+                        ((ACLController)context.Controller).AdminGlobal = false;
+                       
+                        
+                        identity.Claims.Where(x => x.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role").ToList().ForEach(c => {
 
-                    ((ACLController)context.Controller).UsuarioId = UserId;
-                    ((ACLController)context.Controller).TenatId = UOid;
-                    ((ACLController)context.Controller).DominioId = DomainId;
+                            switch (c.Value)
+                            {
+                                case "adminglobal":
+                                    ((ACLController)context.Controller).AdminGlobal = true;
+                                    break;
 
-                    var result = await next().ConfigureAwait(false);
+                                default:
+
+                                    if (c.Value.IndexOf("-") > 0)
+                                    {
+                                        // Acceso a universos
+                                        ((ACLController)context.Controller).Accesos.Add(c.Value);
+
+                                    }
+                                    else
+                                    {
+                                        // rol de usuario
+                                        ((ACLController)context.Controller).Roles.Add(c.Value);
+                                    }
+                                    break;
+                            }
+
+
+                        });
+
+
+                        ((ACLController)context.Controller).UsuarioId = UserId;
+                        ((ACLController)context.Controller).TenatId = UOid;
+                        ((ACLController)context.Controller).DominioId = DomainId;
+
+                        var u = ObtieneUsuarioAPI(UserId, ((ACLController)context.Controller).Roles, true, ((ACLController)context.Controller).Accesos);
+                        ((ACLController)context.Controller).usuario = u;
+
+                        await SecurityCache.DatosUsuarioSet(u).ConfigureAwait(false);
+
+                        var result = await next().ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        context.Result = new UnauthorizedResult();
+                        return;
+                    }
                 }
                 else
                 {
-                    context.Result = new UnauthorizedResult();
-                    return;
+                    var result = await next().ConfigureAwait(false);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                var result = await next().ConfigureAwait(false);
+                Console.WriteLine(ex.ToString());
+                throw;
             }
 
+          
 
 
+
+        }
+
+
+        public UsuarioAPI ObtieneUsuarioAPI(string Id, List<string> Roles, bool AdminGlobal, List<string> Accesos)
+        {
+            UsuarioAPI u = new UsuarioAPI()
+            {
+                Id = Id,
+                Roles = Roles,
+                AdminGlobal = AdminGlobal
+            };
+
+            Accesos.ForEach(a =>
+            {
+                List<string> data = a.Split('-').ToList();
+                u.Accesos.Add(new Acceso()
+                {
+                    Admin = data[2] == "admin",
+                    Dominio = data[0],
+                    OU = data[1]
+                });
+            });
+
+            return u;
         }
     }
 }

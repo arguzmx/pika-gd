@@ -299,7 +299,12 @@ namespace RepositorioEntidades
             foreach (var f in q.Filtros)
             {
                 f.Operador = f.Operador.TrimEnd('}');
-                f.Valor = f.ValorString.TrimEnd('}');
+                
+                if (!string.IsNullOrEmpty(f.ValorString))
+                {
+                    f.Valor = f.ValorString.TrimEnd('}');
+                }
+               
 
                 var p = Props.Where(x => x.Name == f.Propiedad).FirstOrDefault();
                 if (p == null) continue;

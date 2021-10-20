@@ -61,6 +61,7 @@ namespace PIKA.GD.API.Controllers
         [TypeFilter(typeof(AsyncIdentityFilter))]
         public async Task<ActionResult<DefinicionSeguridadUsuario>> ObtieneACLAplicacion()
         {
+            Console.WriteLine($"{this.UsuarioId}:{this.DominioId}");
             var acl = await ServicioTokenSeguridad.ObtenerSeguridadUsuario(this.UsuarioId, this.DominioId)
                 .ConfigureAwait(false);
             return Ok(acl);

@@ -23,6 +23,9 @@ using PIKA.Modelo.Seguridad;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using IdentityServer4.Hosting;
+using PIKA.Identity.Server.Services;
+using PIKA.Servicio.Usuarios;
+using RepositorioEntidades;
 
 namespace PIKA.Identity.Server
 {
@@ -93,6 +96,9 @@ namespace PIKA.Identity.Server
 
             services.AddControllersWithViews();
 
+            services.AddTransient<IServicioPerfilUsuario, ServicioPerfilUsuario>();
+            services.AddTransient(typeof(IProveedorOpcionesContexto<>), typeof(ProveedorOpcionesContexto<>));
+
             services.AddDbContext<ApplicationDbContext>(options =>
                  options.UseMySql(dbconnstr));
 
@@ -126,7 +132,8 @@ namespace PIKA.Identity.Server
                         options.ConfigureDbContext = b => b.UseMySql(dbconnstr,
                             sql => sql.MigrationsAssembly(migrationsAssembly));
                     })
-                .AddAspNetIdentity<ApplicationUser>();
+                .AddAspNetIdentity<ApplicationUser>()
+                .AddProfileService<PikaProfileService>();
 
 
             builder.Services.ConfigureExternalCookie(options => {

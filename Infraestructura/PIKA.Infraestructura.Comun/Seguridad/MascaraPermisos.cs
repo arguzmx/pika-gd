@@ -10,12 +10,12 @@ namespace PIKA.Infraestructura.Comun.Seguridad
 
     public class MascaraPermisos
     {
-        private const int PDenegarAcceso = 1;
-        private const int PLeer = 2;
-        private const int PEscribir = 4;
-        private const int PEliminar = 8;
-        private const int PAdministrar = 16;
-        private const int PEjecutar = 32;
+        public const int PDenegarAcceso = 1;
+        public const int PLeer = 2;
+        public const int PEscribir = 4;
+        public const int PEliminar = 8;
+        public const int PAdministrar = 16;
+        public const int PEjecutar = 32;
 
 
         public MascaraPermisos()
@@ -47,14 +47,14 @@ namespace PIKA.Infraestructura.Comun.Seguridad
         /// Devuelve la lsita de permisos apra un módulo o aplicación administrable
         /// </summary>
         /// <returns></returns>
-        public static ulong PermisosAdministrables(){
+        public static int PermisosAdministrables(){
             return PLeer + PEscribir + PEliminar +  PAdministrar + PEjecutar; 
         }
 
-        public ulong Mascara { get { return ObtenerMascara(); } }
+        public int Mascara { get { return ObtenerMascara(); } }
 
 
-        public void EstablacerMascara(ulong Mask)
+        public void EstablacerMascara(int Mask)
         {
             NegarAcceso = (Mask & PDenegarAcceso) > 0 ? true : false;
             Leer = (Mask & PLeer) > 0 ? true : false;
@@ -64,9 +64,9 @@ namespace PIKA.Infraestructura.Comun.Seguridad
             Ejecutar = (Mask & PEjecutar) > 0 ? true : false;
         }
 
-        public ulong ObtenerMascara()
+        public int ObtenerMascara()
         {
-            ulong mask = 0;
+            int mask = 0;
 
             mask = NegarAcceso ? mask + PDenegarAcceso : mask;
             mask = Leer ? mask + PLeer : mask;

@@ -44,7 +44,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Infraestructura\PIKA.Infraestructura.Comun\PIKA.Infraestructura.Comun.csproj" />
+    <ProjectReference Include="..\..\Infraestructura\RepositorioEntidades\RepositorioEntidades.csproj" />
     <ProjectReference Include="..\..\Modelos\PIKA.Modelo.Seguridad\PIKA.Modelo.Seguridad.csproj" />
+    <ProjectReference Include="..\..\Servicios\PIKA.Servicio.Usuarios\PIKA.Servicio.Usuarios.csproj" />
     <ProjectReference Include="..\..\Servicios\Seguridad\PIKA.Servicio.Seguridad\PIKA.Servicio.Seguridad.csproj" />
   </ItemGroup>
 

@@ -7,7 +7,26 @@ namespace PIKA.Servicio.Contenido
 {
     public static partial class Extensiones
     {
+        public static PermisosPuntoMontaje Copia(this PermisosPuntoMontaje d)
+        {
+            if (d == null) return null;
+            var o = new PermisosPuntoMontaje()
+            {
+                Id = d.Id,
+                DestinatarioId = d.DestinatarioId,
+                GestionContenido = d.GestionContenido,
+                GestionMetadatos = d.GestionMetadatos,
+                PuntoMontajeId = d.PuntoMontajeId,
+                Actualizar = d.Actualizar,
+                Crear = d.Crear,
+                Elminar = d.Elminar,
+                Leer = d.Leer
+            };
 
+
+
+            return o;
+        }
         public static PuntoMontaje Copia(this PuntoMontaje d)
         {
             if (d == null) return null;
@@ -23,14 +42,14 @@ namespace PIKA.Servicio.Contenido
                 VolumenDefaultId = d.VolumenDefaultId
             };
 
-            if (d.VolumenDefault!=null)
+            if (d.VolumenDefault != null)
             {
                 o.VolumenDefault = d.VolumenDefault.Copia();
             }
 
             if (d.VolumenesPuntoMontaje != null)
             {
-                foreach(var v in d.VolumenesPuntoMontaje)
+                foreach (var v in d.VolumenesPuntoMontaje)
                 {
                     o.VolumenesPuntoMontaje.Add(v.Copia());
                 }

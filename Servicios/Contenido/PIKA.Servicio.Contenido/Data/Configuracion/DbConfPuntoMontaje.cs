@@ -30,7 +30,30 @@ namespace PIKA.Servicio.Contenido.Data.Configuracion
             builder.HasMany(x => x.Carpetas).WithOne(y => y.PuntoMontaje).HasForeignKey(z => z.PuntoMontajeId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(x => x.VolumenDefault).WithMany(y => y.PuntosMontaje).HasForeignKey(z => z.VolumenDefaultId);
             builder.HasMany(x => x.VolumenesPuntoMontaje).WithOne(y => y.PuntoMontaje).HasForeignKey(z => z.VolumenId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(x => x.PermisosPuntoMontaje).WithOne(y => y.PuntoMontaje).HasForeignKey(z => z.PuntoMontajeId).OnDelete(DeleteBehavior.Restrict);
             builder.Ignore(x => x.TipoOrigenDefault);
+        }
+
+
+    }
+
+    public class DbConfPermisosPuntoMontaje : IEntityTypeConfiguration<PermisosPuntoMontaje>
+    {
+        public void Configure(EntityTypeBuilder<PermisosPuntoMontaje> builder)
+        {
+            builder.ToTable(DbContextContenido.TablaPermisosPuntoMontaje);
+            builder.HasKey(x => x.Id);
+            builder.Property(x => x.Id).HasMaxLength(LongitudDatos.GUID).IsRequired();
+
+            builder.Property(x => x.PuntoMontajeId).IsRequired().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.DestinatarioId).IsRequired().HasMaxLength(LongitudDatos.GUID);
+
+            builder.Property(x => x.Actualizar).IsRequired();
+            builder.Property(x => x.Crear).IsRequired();
+            builder.Property(x => x.Elminar).IsRequired();
+            builder.Property(x => x.Leer).IsRequired();
+            builder.Property(x => x.GestionContenido ).IsRequired();
+            builder.Property(x => x.GestionMetadatos).IsRequired();
         }
 
 

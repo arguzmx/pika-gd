@@ -40,6 +40,9 @@ namespace PIKA.Servicio.Contenido
 
         public static string TablaPuntoMontaje { get => $"{esquema}pmontaje"; }
 
+        public static string TablaPermisosPuntoMontaje { get => $"{esquema}permpmontaje"; }
+
+
         public static string TablaPermisos { get => $"{esquema}permiso"; }
         
         public static string TablaDestinatariosPermisos { get => $"{esquema}destinatariopermiso"; }
@@ -82,6 +85,8 @@ namespace PIKA.Servicio.Contenido
         /// Puntos de montaje disponibles para la creación de carpetas
         /// </summary>
         public DbSet<PuntoMontaje> PuntosMontaje { get; set; }
+
+        public DbSet<PermisosPuntoMontaje> PermisosPuntoMontaje { get; set; }
 
         public DbSet<VolumenPuntoMontaje> VolumenPuntosMontaje { get; set; }
 
@@ -139,6 +144,7 @@ namespace PIKA.Servicio.Contenido
             builder.ApplyConfiguration<GestorSMBConfig>(new DbConfigGestorSMB());
             builder.ApplyConfiguration<GestorAzureConfig>(new DbConfigGestorAzure());
             builder.ApplyConfiguration<ElementoTransaccionCarga>(new DbConfElementoTransaccionCarga());
+            builder.ApplyConfiguration<PermisosPuntoMontaje>(new DbConfPermisosPuntoMontaje());
 
         }
 

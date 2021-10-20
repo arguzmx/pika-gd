@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Contenido;
 using PIKA.Servicio.Contenido.Interfaces;
@@ -27,6 +29,7 @@ namespace PIKA.Servicio.Contenido.Servicios
         private IRepositorioAsync<PuntoMontaje> repo;
         private IRepositorioAsync<VolumenPuntoMontaje> repoVPM;
         private UnidadDeTrabajo<DbContextContenido> UDT;
+        public UsuarioAPI usuario { get; set; }
 
         public ServicioPuntoMontaje(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
@@ -164,17 +167,108 @@ namespace PIKA.Servicio.Contenido.Servicios
             {
                 query = new Consulta() { indice = 0, tamano = 20, ord_columna = DEFAULT_SORT_COL, ord_direccion = DEFAULT_SORT_DIRECTION };
             }
+
+
+            foreach(var f in query.Filtros)
+            {
+                if (f.Propiedad == "TenantId") f.Propiedad = "OrigenId";
+            }
+
             return query;
         }
         public async Task<IPaginado<PuntoMontaje>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<PuntoMontaje>, IIncludableQueryable<PuntoMontaje, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
-            Query = GetDefaultQuery(Query);
-            var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
-            return respuesta;
+
+            try
+            {
+                Query = GetDefaultQuery(Query);
+                long offset = Query.indice == 0 ? 0 : ((Query.indice) * Query.tamano) - 1;
+                string sqls = @$"SELECT  COUNT(*) FROM {DbContextContenido.TablaPuntoMontaje} where  (1=1) ";
+                string sqlsCount = "";
+                int total = 0;
+                string queryNoAdmin = "";
+                bool esAdmin = false;
+
+                var FOU = Query.Filtros.Where(x => x.Propiedad == "OrigenId").SingleOrDefault();
+                if (FOU != null)
+                {
+                    var acceso = usuario.Accesos.Where(x => x.OU == FOU.Valor).FirstOrDefault();
+                    if (acceso != null)
+                    {
+                        esAdmin = acceso.Admin;
+                    }
+                }
+
+                if (!esAdmin)
+                {
+                    string roles = "";
+                    usuario.Roles.ForEach(r =>
+                    {
+                        roles += $"'{r}',";
+                    });
+                    roles = roles.TrimEnd(',');
+
+                    // en caso de que el usuario no sea administrador y no tengo roles esto bloqueará la llamada
+                    if (string.IsNullOrEmpty(roles)) roles = "empty";
+                    queryNoAdmin = @$" and (Id in (select PuntoMontajeId  from {DbContextContenido.TablaPermisosPuntoMontaje} where DestinatarioId in ({roles})))";
+                }
+
+
+
+                if (Query.Filtros != null)
+                {
+                    List<string> condiciones = MySQLQueryComposer.Condiciones<PuntoMontaje>(Query, "");
+                    foreach (string s in condiciones)
+                    {
+                        sqls += $" and ({s})";
+                    }
+                }
+                sqls += $" {queryNoAdmin}";
+
+                // Consulta de conteo sin ordenamiento ni limites
+                sqlsCount = sqls;
+
+                sqls += $" order by {Query.ord_columna} {Query.ord_direccion} ";
+                sqls += $" LIMIT {offset},{Query.tamano}";
+
+                sqls = sqls.Replace("COUNT(*)", "DISTINCT *");
+                
+                using (var command = UDT.Context.Database.GetDbConnection().CreateCommand())
+                {
+                    command.CommandText = sqlsCount;
+                    UDT.Context.Database.OpenConnection();
+                    using (var result = await command.ExecuteReaderAsync())
+                    {
+                        if (result.Read())
+                        {
+                            total = result.GetInt32(0);
+                        }
+                    }
+                }
+
+
+                Paginado<PuntoMontaje> respuesta = new Paginado<PuntoMontaje>()
+                {
+                    ConteoFiltrado = total,
+                    ConteoTotal = total,
+                    Desde = Query.indice * Query.tamano,
+                    Indice = Query.indice,
+                    Tamano = Query.tamano,
+                    Paginas = (int)Math.Ceiling(total / (double)Query.tamano)
+                };
+                respuesta.Elementos = this.UDT.Context.PuntosMontaje.FromSqlRaw(sqls).ToList();
+
+                return respuesta;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+
+           
         }
-
       
-
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
             PuntoMontaje d;

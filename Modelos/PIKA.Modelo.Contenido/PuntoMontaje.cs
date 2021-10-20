@@ -16,10 +16,16 @@ namespace PIKA.Modelo.Contenido
     /// </summary>
     [Entidad(PaginadoRelacional: false, EliminarLogico: true, 
     TokenApp: ConstantesAppContenido.APP_ID, TokenMod: ConstantesAppContenido.MODULO_ADMIN_CONFIGURACION)]
+    
     [EntidadVinculada(TokenSeguridad: ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO, 
         EntidadHijo: "Carpeta,Elemento",
         Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id",
         PropiedadHijo: "PuntoMontajeId", TipoDespliegueVinculo: TipoDespliegueVinculo.Jerarquico)]
+
+    [EntidadVinculada(TokenSeguridad: ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO,
+        EntidadHijo: "PermisosPuntoMontaje",
+        Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id",
+        PropiedadHijo: "PuntoMontajeId", TipoDespliegueVinculo: TipoDespliegueVinculo.Tabular)]
     public class PuntoMontaje : Entidad<string>, IEntidadRelacionada, 
         IEntidadNombrada, IEntidadEliminada, IEntidadRegistroCreacion
     {
@@ -109,6 +115,8 @@ namespace PIKA.Modelo.Contenido
         public Volumen VolumenDefault { get; set; }
 
         public ICollection<VolumenPuntoMontaje> VolumenesPuntoMontaje { get; set; }
+
+        public ICollection<PermisosPuntoMontaje> PermisosPuntoMontaje { get; set; }
 
     }
 }

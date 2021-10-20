@@ -11,6 +11,8 @@ namespace PIKA.Infraestructura.Comun.Seguridad
     {
 
         Task<DefinicionSeguridadUsuario> ObtenerSeguridadUsuario(string UserId, string DomainId);
+        Task DatosUsuarioSet(UsuarioAPI Usuario);
 
+        Task<UsuarioAPI> DatosUsuarioGet(string Id);
     }
 }

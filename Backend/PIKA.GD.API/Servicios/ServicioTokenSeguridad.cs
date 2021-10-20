@@ -21,6 +21,7 @@ namespace PIKA.GD.API.Servicios
         private const string CACHE_P_USUARIOS = "pu";
         private const string CACHE_P_ROLES = "pr";
         private const string CACHE_ROLES_USUARIO = "ru";
+        private const string CACHE_USUARIO_API = "uapi";
 
         private readonly ConfiguracionServidor Config;
         private readonly IServicioPerfilUsuario ServicioPerfilUsuario;
@@ -62,6 +63,29 @@ namespace PIKA.GD.API.Servicios
             return $"{CACHE_P_ROLES}-{rid}";
         }
 
+        private string ObtieneClaveCacheUsuarioAPI(string uid)
+        {
+            return $"{CACHE_USUARIO_API}-{uid}";
+        }
+
+        public async Task DatosUsuarioSet(UsuarioAPI usuario)
+        {
+            string key = ObtieneClaveCacheUsuarioAPI(usuario.Id);
+            var cacheUsuario = await cache.GetAsync<UsuarioAPI>(key).ConfigureAwait(false);
+            if(cacheUsuario != null)
+            {
+                cache.Remove(key);
+            }
+            cache.Add<UsuarioAPI>(key, usuario, TimeSpan.FromMinutes(Config.seguridad_cache_segundos));
+        }
+
+        public async Task<UsuarioAPI> DatosUsuarioGet(string Id)
+        {
+            string key = ObtieneClaveCacheUsuarioAPI(Id);
+            return await cache.GetAsync<UsuarioAPI>(key).ConfigureAwait(false);
+        }
+
+
         public async Task<DefinicionSeguridadUsuario> ObtenerSeguridadUsuario(string UserId, string DomainId)
         {
 
@@ -74,7 +98,7 @@ namespace PIKA.GD.API.Servicios
             List<PermisoAplicacion> permisos = new List<PermisoAplicacion>();
             
             if (Config.seguridad_almacenar_cache) cacheUcuario = await cache.GetAsync<DefinicionSeguridadUsuario>(key).ConfigureAwait(false);
-
+            cacheUcuario = null;
             // NO hay permisos en el cache
             if (cacheUcuario == null)
             {
@@ -141,7 +165,7 @@ namespace PIKA.GD.API.Servicios
                     cache.Add<DefinicionSeguridadUsuario>(key, cacheUcuario, TimeSpan.FromMinutes(Config.seguridad_cache_segundos));
                 }
             }
-
+     
             return cacheUcuario;
 
         }

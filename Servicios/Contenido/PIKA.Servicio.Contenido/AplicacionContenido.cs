@@ -33,6 +33,7 @@ namespace PIKA.Servicio.Contenido
                         typeof(GestorAzureConfig),
                         typeof(GestorLocalConfig),
                         typeof(VolumenPuntoMontaje),
+                        typeof(PermisosPuntoMontaje),
                         typeof(PuntoMontaje),
                         typeof(TipoGestorES),
                         typeof(Volumen),
@@ -54,6 +55,11 @@ namespace PIKA.Servicio.Contenido
                      new ElementoAplicacion(ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_VISOR_CONTENIDO ) {
                     Titulo = "Acceso al visor de contenido",
                     Descripcion = "Permite acceder al visor de cotenids para su visualización y edición",
+                    Tipos = new List<Type> {}
+                },
+                     new ElementoAplicacion(ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_PERMISOS_CONTENIDO ) {
+                    Titulo = "Acceso al administrador de permisos de contenido",
+                    Descripcion = "Permite acceder administardor de permisos de acceso de contenido que define la seguridad del mismo",
                     Tipos = new List<Type> {}
                 }
 

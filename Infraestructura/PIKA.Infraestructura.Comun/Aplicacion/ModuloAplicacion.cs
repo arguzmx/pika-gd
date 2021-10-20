@@ -49,7 +49,7 @@ namespace PIKA.Infraestructura.Comun
         public string Descripcion { get; set; }
 
         public ModuloAplicacion(string AplicacionId, string ModuloId, bool Asegurable,
-            string Nombre, string Descripcion, string Icon, string UICulture, ulong PermisosDisponibles,
+            string Nombre, string Descripcion, string Icon, string UICulture, int PermisosDisponibles,
             string ModuloPadreId, string AplicacionPadreId, TipoModulo Tipo = TipoModulo.Administracion)
         {
             this.AplicacionPadreId = AplicacionPadreId;
@@ -94,7 +94,7 @@ namespace PIKA.Infraestructura.Comun
         /// <summary>
         /// Permisos configurables para el módulo
         /// </summary>
-        public ulong PermisosDisponibles { get; set; }
+        public int PermisosDisponibles { get; set; }
 
         /// <summary>
         /// Modulos descendientes

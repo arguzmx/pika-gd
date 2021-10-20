@@ -59,6 +59,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PuntoMontaje>> Post([FromBody]PuntoMontaje entidad)
         {
+            servicioEntidad.usuario = this.usuario;
             entidad.CreadorId = this.UsuarioId;
             entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetPuntoMontaje", new { id = entidad.Id }, entidad).Value);
@@ -79,7 +80,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         public async Task<IActionResult> Put(string id, [FromBody]PuntoMontaje entidad)
         {
             var x = ObtieneFiltrosIdentidad();
-
+            servicioEntidad.usuario = this.usuario;
 
             if (id != entidad.Id)
             {
@@ -101,8 +102,9 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<PuntoMontaje>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
+            servicioEntidad.usuario = this.usuario;
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
-            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
+            query.Filtros.AddRange(ObtieneFiltrosIdentidadSinDominio());
             var data = await servicioEntidad.ObtenerPaginadoAsync(query).ConfigureAwait(false);
             return Ok(data);
         }
@@ -119,6 +121,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<PuntoMontaje>> Get(string id)
         {
+            servicioEntidad.usuario = this.usuario;
             var o = await servicioEntidad.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
@@ -135,6 +138,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete(string ids)
         {
+            servicioEntidad.usuario = this.usuario;
             string IdsTrim = "";
             foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
             {
@@ -155,6 +159,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Undelete(string ids)
         {
+            servicioEntidad.usuario = this.usuario;
             string IdsTrim = "";
             foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
             {
@@ -178,6 +183,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         public async Task<ActionResult<List<ValorListaOrdenada>>> GetPares(
         [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
+            servicioEntidad.usuario = this.usuario;
             var data = await servicioEntidad.ObtenerParesAsync(query)
                 .ConfigureAwait(false);
 
@@ -195,7 +201,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         public async Task<ActionResult<List<ValorListaOrdenada>>> GetParesporId(
               string ids)
         {
-
+            servicioEntidad.usuario = this.usuario;
             List<string> lids = ids.Split(',').ToList()
                .Where(x => !string.IsNullOrEmpty(x)).ToList();
             var data = await servicioEntidad.ObtenerParesPorId(lids)

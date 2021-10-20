@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PIKA.Servicio.Contenido;
 
-namespace PIKA.Servicio.Contenido.data.Migrations
+namespace PIKA.Servicio.Contenido.Data.Migrations
 {
     [DbContext(typeof(DbContextContenido))]
-    partial class DbContextContenidoModelSnapshot : ModelSnapshot
+    [Migration("20211016153131_PermisosPuntoMontaje")]
+    partial class PermisosPuntoMontaje
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -341,10 +343,16 @@ namespace PIKA.Servicio.Contenido.data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
-                    b.Property<bool>("Actualizar")
+                    b.Property<bool>("ActualizarCarpeta")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("Crear")
+                    b.Property<bool>("ActualizarDocumento")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("CrearCarpeta")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("CrearDocumento")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("DestinatarioId")
@@ -352,7 +360,10 @@ namespace PIKA.Servicio.Contenido.data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
-                    b.Property<bool>("Elminar")
+                    b.Property<bool>("ElminarCarpeta")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("ElminarDocumento")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("GestionContenido")
@@ -361,17 +372,14 @@ namespace PIKA.Servicio.Contenido.data.Migrations
                     b.Property<bool>("GestionMetadatos")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("Leer")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("PuntoMontajeId")
+                    b.Property<string>("PuntoMontajeIdId")
                         .IsRequired()
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PuntoMontajeId");
+                    b.HasIndex("PuntoMontajeIdId");
 
                     b.ToTable("contenido$permpmontaje");
                 });
@@ -605,7 +613,7 @@ namespace PIKA.Servicio.Contenido.data.Migrations
                 {
                     b.HasOne("PIKA.Modelo.Contenido.PuntoMontaje", "PuntoMontaje")
                         .WithMany("PermisosPuntoMontaje")
-                        .HasForeignKey("PuntoMontajeId")
+                        .HasForeignKey("PuntoMontajeIdId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

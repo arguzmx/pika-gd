@@ -40,7 +40,15 @@ namespace PIKA.Servicio.Usuarios
             this.repoUO = UDTORG.ObtenerRepositoryAsync<UnidadOrganizacional>(new QueryComposer<UnidadOrganizacional>());
         }
 
-
+        public async Task<List<string>> ObtieneRoles(string UsuarioId) {
+            var roles = await UDTORG.Context.UsuariosRoles.Where(x => x.ApplicationUserId == UsuarioId).ToListAsync();
+            List<string> l = new List<string>();
+            roles.ForEach(r =>
+            {
+                l.Add(r.RolId);
+            });
+            return l;
+        }
         public async Task<List<DominioActivo>> Dominios(string UsuarioId)
         {
             List<DominioActivo> l =  new List<DominioActivo>();
@@ -76,6 +84,7 @@ namespace PIKA.Servicio.Usuarios
             else {
                 var suscripciones = await repoUsuariosDominio.ObtenerAsync(x => x.ApplicationUserId == UsuarioId);
                 foreach (var s in suscripciones) {
+
                     Dominio d = dominios.Where(x => x.Id == s.DominioId).SingleOrDefault();
                     if (d != null)
                     {

@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Contenido;
 using PIKA.Servicio.Contenido.Helpers;
@@ -35,6 +36,9 @@ namespace PIKA.Servicio.Contenido.Servicios
         private UnidadDeTrabajo<DbContextContenido> UDT;
         private ComunesCarpetas helperCarpetas;
         private IAppCache appcache;
+
+        public UsuarioAPI Usuario { get; set; }
+
         public ServicioElemento(
             IAppCache cache,
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
@@ -60,6 +64,44 @@ namespace PIKA.Servicio.Contenido.Servicios
                 throw ex;
             }
             
+        }
+
+        public async Task<int> ACLPuntoMontaje(string PuntoMontajeId)
+        {
+            if (Usuario == null) return 0;
+            int mascara = int.MaxValue;
+
+            var pm = UDT.Context.PuntosMontaje.Where(x => x.Id == PuntoMontajeId).SingleOrDefault();
+            if (pm != null)
+            {
+                foreach (var a in Usuario.Accesos) {
+                    if (a.Admin && pm.OrigenId == a.OU)
+                    {
+                        return mascara - MascaraPermisos.PDenegarAcceso;
+                    }
+                }
+            }
+
+            foreach(string r in Usuario.Roles)
+            {
+                var permiso = await UDT.Context.PermisosPuntoMontaje.Where(x => x.DestinatarioId == r && x.PuntoMontajeId == PuntoMontajeId).SingleOrDefaultAsync();
+                if(permiso!=null)
+                {
+                    MascaraPermisos m = new MascaraPermisos()
+                    {
+                        Admin = false,
+                        Ejecutar = false,
+                        Eliminar = permiso.Elminar,
+                        Escribir = permiso.Actualizar,
+                        Leer = permiso.Leer
+                    };
+
+                    // asigna los permisos mínimos de acuerdo a los roles
+                    mascara &= m.ObtenerMascara();
+                }
+            }
+
+            return mascara;
         }
 
         public async Task<bool> Existe(Expression<Func<Elemento, bool>> predicado)
@@ -387,25 +429,25 @@ namespace PIKA.Servicio.Contenido.Servicios
             List<Elemento> ListaElementos = await this.ObtenerAsync(x=>x.Eliminada==true);
             if (ListaElementos.Count > 0)
             {
-                List<Carpeta> ListaCarpeta = await this.repoCarpetas.ObtenerAsync(x => x.Id.Contains(ListaElementos.Select(x => x.CarpetaId).FirstOrDefault()));
-                List<Volumen> ListaVolumen = await this.repoVol.ObtenerAsync(x => x.Id.Contains(ListaElementos.Select(x => x.VolumenId).FirstOrDefault()));
-                List<PuntoMontaje> ListaPuntaje = await this.repoPM.ObtenerAsync(x => x.Id.Contains(ListaElementos.Select(x => x.PuntoMontajeId).FirstOrDefault()));
-                List<VolumenPuntoMontaje> ListaVolumenPuntoMontaje = await this.repoVPM.ObtenerAsync(x => x.VolumenId.Contains(ListaVolumen.Select(x => x.Id).FirstOrDefault()));
-                ServicioParte sp = new ServicioParte(this.proveedorOpciones, this.logger);
-                List<Parte> ListaPartes = await sp.ObtenerAsync(x => x.ElementoId.Contains(ListaElementos.Select(x => x.Id).FirstOrDefault()));
-                string[] PartesEliminadas = ListaPartes.Select(x => x.Id).ToArray();
-                ServicioPuntoMontaje spm = new ServicioPuntoMontaje(this.proveedorOpciones,this.logger);
-                ServicioVolumenPuntoMontaje vem = new ServicioVolumenPuntoMontaje(this.proveedorOpciones,this.logger);
-                string[] Idvol = ListaVolumen.Select(x=>x.Id).ToArray();
-                foreach (PuntoMontaje puntaje in ListaPuntaje)
-                {
-                    PuntoMontaje p = await repoPM.UnicoAsync(x=>x.Id.Equals(puntaje.Id,StringComparison.InvariantCultureIgnoreCase));
-                    p.Eliminada = true;
-                    await spm.ActualizarAsync(p);
-                    await vem.Eliminar(puntaje.Id,Idvol);
+                //List<Carpeta> ListaCarpeta = await this.repoCarpetas.ObtenerAsync(x => x.Id.Contains(ListaElementos.Select(x => x.CarpetaId).FirstOrDefault()));
+                //List<Volumen> ListaVolumen = await this.repoVol.ObtenerAsync(x => x.Id.Contains(ListaElementos.Select(x => x.VolumenId).FirstOrDefault()));
+                //List<PuntoMontaje> ListaPuntaje = await this.repoPM.ObtenerAsync(x => x.Id.Contains(ListaElementos.Select(x => x.PuntoMontajeId).FirstOrDefault()));
+                //List<VolumenPuntoMontaje> ListaVolumenPuntoMontaje = await this.repoVPM.ObtenerAsync(x => x.VolumenId.Contains(ListaVolumen.Select(x => x.Id).FirstOrDefault()));
+                //ServicioParte sp = new ServicioParte(this.proveedorOpciones, this.logger);
+                //List<Parte> ListaPartes = await sp.ObtenerAsync(x => x.ElementoId.Contains(ListaElementos.Select(x => x.Id).FirstOrDefault()));
+                //string[] PartesEliminadas = ListaPartes.Select(x => x.Id).ToArray();
+                //ServicioPuntoMontaje spm = new ServicioPuntoMontaje(this.proveedorOpciones,this.logger);
+                //ServicioVolumenPuntoMontaje vem = new ServicioVolumenPuntoMontaje(this.proveedorOpciones,this.logger);
+                //string[] Idvol = ListaVolumen.Select(x=>x.Id).ToArray();
+                //foreach (PuntoMontaje puntaje in ListaPuntaje)
+                //{
+                //    PuntoMontaje p = await repoPM.UnicoAsync(x=>x.Id.Equals(puntaje.Id,StringComparison.InvariantCultureIgnoreCase));
+                //    p.Eliminada = true;
+                //    await spm.ActualizarAsync(p);
+                //    await vem.Eliminar(puntaje.Id,Idvol);
 
-                }
-                Console.WriteLine($"Ingreso al metodos de la funcion Purgar {Idvol.Count()}");
+                //}
+                //Console.WriteLine($"Ingreso al metodos de la funcion Purgar {Idvol.Count()}");
             }
             //await repoVol.EliminarRango(ListaVolumen);
             //await repoVer.EliminarRango(ListaVersion);

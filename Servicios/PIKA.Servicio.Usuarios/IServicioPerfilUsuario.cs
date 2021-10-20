@@ -11,5 +11,7 @@ namespace PIKA.Servicio.Usuarios
         Task<List<DominioActivo>> Dominios(string UsuarioId);
 
         Task<bool> EsAdmin(string UsuarioId, string DomainId);
+
+        Task<List<string>> ObtieneRoles(string UsuarioId);
     }
 }

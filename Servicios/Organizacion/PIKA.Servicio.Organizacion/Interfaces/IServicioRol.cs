@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Organizacion.Interfaces
 {
-    public interface IServicioRol : IServicioRepositorioAsync<Rol,string>
+    public interface IServicioRol : IServicioRepositorioAsync<Rol,string>, IServicioValorTextoAsync<Rol>
     {
 
         Task<ICollection<Rol>> ObtieneRoles(string idDominio);

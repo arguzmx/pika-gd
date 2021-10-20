@@ -5,6 +5,27 @@ using System.Text;
 namespace PIKA.Modelo.Metadatos
 {
 
+
+    public enum TipoSeguridad { 
+    
+        /// <summary>
+        /// Utilza la seguridad del ACL de roles
+        /// </summary>
+        Default = 0, 
+
+        /// <summary>
+        /// Determina que la seguridad será calculada desde la API al entrar al módulo
+        /// </summary>
+        AlIngreso =1,
+
+        /// <summary>
+        /// Determina que la seguridad será calculada desde la API al cambiar la selección en la UI
+        /// </summary>
+        AlCambiar = 2
+
+    }
+
+
     /// <summary>
     /// Agrega propiedadesgenerales sobre la entidad 
     /// </summary>
@@ -24,6 +45,8 @@ namespace PIKA.Modelo.Metadatos
         private bool _PermiteAltas;
         private bool _PermiteBajas;
         private bool _PermiteCambios;
+        public TipoSeguridad _TipoSeguridad;
+
 
         public EntidadAttribute( bool PaginadoRelacional=false, 
             bool EliminarLogico = false, 
@@ -36,8 +59,10 @@ namespace PIKA.Modelo.Metadatos
            bool HabilitarSeleccion = false,
            bool PermiteAltas = true,
            bool PermiteBajas = true,
-           bool PermiteCambios = true)
+           bool PermiteCambios = true,
+           TipoSeguridad TipoSeguridad = TipoSeguridad.Default)
         {
+            this._TipoSeguridad = TipoSeguridad;
             this._Columna = EliminarLogico ? Columna :"";
             this._EliminarLogico = EliminarLogico;
             this._PaginadoRelacional = PaginadoRelacional;
@@ -67,6 +92,12 @@ namespace PIKA.Modelo.Metadatos
         public virtual bool PermiteAltas
         {
             get { return _PermiteAltas; }
+        }
+
+
+        public virtual TipoSeguridad TipoSeguridad
+        {
+            get { return _TipoSeguridad; }
         }
 
 

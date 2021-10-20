@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PIKA.GD.API.Model;
 using PIKA.Infraestructura.Comun;
+using PIKA.Infraestructura.Comun.Seguridad;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
@@ -23,16 +25,40 @@ namespace PIKA.GD.API
             return "";
         }
 
+        /// <summary>
+        ///  Estas propiedaes vienen del filtro AsyncACLActionFilter
+        /// </summary>
         public string TenatId{ get; set; }
         public string UsuarioId { get; set; }
         public string DominioId { get; set; }
+        public List<string> Roles { get; set; }
+        public List<string> Accesos { get; set; }
+        public bool AdminGlobal { get; set; }
+        public UsuarioAPI usuario { get; set; }
+
+
+        public List<string> Universos
+        {
+            get
+            {
+
+                List<string> us = new List<string>();
+
+                Accesos.ForEach(a =>
+                {
+                    us.Add(a.Split('-')[0]);
+                });
+                return us;
+            }
+        }
+
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [NonAction]
         protected List<FiltroConsulta> ObtieneFiltrosIdentidad() {
             List<FiltroConsulta> l = new List<FiltroConsulta>();
             l.Add(new FiltroConsulta() { Operador = FiltroConsulta.OP_EQ, Propiedad = "UsuarioId", Valor = UsuarioId });
-            l.Add(new FiltroConsulta() { Operador = FiltroConsulta.OP_EQ, Propiedad = "TenatId", Valor = TenatId });
+            l.Add(new FiltroConsulta() { Operador = FiltroConsulta.OP_EQ, Propiedad = "TenantId", Valor = TenatId });
             l.Add(new FiltroConsulta() { Operador = FiltroConsulta.OP_EQ, Propiedad = "DominioId", Valor = DominioId });
 
             return l;
@@ -44,7 +70,7 @@ namespace PIKA.GD.API
         {
             List<FiltroConsulta> l = new List<FiltroConsulta>();
             l.Add(new FiltroConsulta() { Operador = FiltroConsulta.OP_EQ, Propiedad = "UsuarioId", Valor = UsuarioId });
-            l.Add(new FiltroConsulta() { Operador = FiltroConsulta.OP_EQ, Propiedad = "TenatId", Valor = TenatId });
+            l.Add(new FiltroConsulta() { Operador = FiltroConsulta.OP_EQ, Propiedad = "TenantId", Valor = TenatId });
 
             return l;
         }

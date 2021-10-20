@@ -90,6 +90,7 @@ namespace PIKA.Modelo.Metadatos
                     info.PermiteAltas = ea.PermiteAltas;
                     info.PermiteBajas = ea.PermiteBajas;
                     info.PermiteCambios = ea.PermiteCambios;
+                    info.TipoSeguridad = ea.TipoSeguridad;
                 }
 
                 if (attr is EntidadVinculadaAttribute)

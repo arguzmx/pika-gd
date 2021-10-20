@@ -190,5 +190,53 @@ namespace PIKA.GD.API.Controllers.Organizacion
             return Ok(resultado.ToList());
         }
 
+        [HttpGet("pares", Name = "GetParesRol")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ValorListaOrdenada>>> GetPares(
+       [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        {
+
+            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
+
+            query.Filtros.Add(new FiltroConsulta()
+            {
+                Negacion = false,
+                Operador = FiltroConsulta.OP_EQ,
+                Propiedad = "OrigenId",
+                Valor = this.DominioId,
+                ValorString = this.DominioId
+            });
+
+            Console.WriteLine(
+            System.Text.Json.JsonSerializer.Serialize(query.Filtros)
+            );
+
+            var data = await servicioRol.ObtenerParesAsync(query)
+                .ConfigureAwait(false);
+
+            return Ok(data);
+        }
+        /// <summary>
+        /// Obtiene una lista de paises en base a con el parámetro ID de consulta
+        /// </summary>
+        /// <param name="ids">parametro Id para consulta a la base de datos</param>
+        /// <returns></returns>
+
+        [HttpGet("pares/{ids}", Name = "GetParesRoleporId")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ValorListaOrdenada>>> GetParesRoleporId(
+              string ids)
+        {
+
+            List<string> lids = ids.Split(',').ToList()
+               .Where(x => !string.IsNullOrEmpty(x)).ToList();
+            var data = await servicioRol.ObtenerParesPorId(lids)
+                .ConfigureAwait(false);
+
+            return Ok(data);
+        }
+
     }
 }
