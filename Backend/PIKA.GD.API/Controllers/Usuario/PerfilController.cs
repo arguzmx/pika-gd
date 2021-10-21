@@ -14,6 +14,7 @@ using PIKA.Infraestructura.Comun.Menus;
 using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Servicio.Seguridad.Interfaces;
 using PIKA.Servicio.Usuarios;
+using PIKA.Servicio.Usuarios.Entidades;
 
 namespace PIKA.GD.API.Controllers
 {
@@ -29,22 +30,31 @@ namespace PIKA.GD.API.Controllers
         private ICacheSeguridad CacheSeguridad;
         private IServicioMenuAplicacion ServicioMenuAplicacion;
         private IServicioTokenSeguridad ServicioTokenSeguridad;
+        private IServicioUsuarios servicioUsuarios;
 
         public PerfilController(
             IServicioTokenSeguridad ServicioTokenSeguridad,
             IServicioMenuAplicacion ServicioMenuAplicacion,
             ICacheSeguridad CacheSeguridad,
             ILogger<PerfilController> logger,
-            IServicioPerfilUsuario servicioEntidad)
+            IServicioPerfilUsuario servicioEntidad,
+            IServicioUsuarios servicioUsuarios)
         {
             this.logger = logger;
             this.ServicioTokenSeguridad = ServicioTokenSeguridad;
             this.CacheSeguridad = CacheSeguridad;
             this.servicioEntidad = servicioEntidad;
             this.ServicioMenuAplicacion = ServicioMenuAplicacion;
+            this.servicioUsuarios = servicioUsuarios;
         }
 
-    
+        [HttpPost("contrasena/actualizar", Name = "ActualizarContrasena")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> ActualizarContrasena([FromBody] ActualizarContrasena request)
+        {
+            Console.WriteLine($"{this.GetUserId()} -> {request.Actual} ? {request.Nueva}");
+            return StatusCode(await this.servicioUsuarios.ActutalizarContrasena(this.GetUserId(), request.Actual, request.Nueva).ConfigureAwait(false));
+        }
 
         [HttpGet("dominios", Name = "DominiosUsuario")]
         [ProducesResponseType(StatusCodes.Status200OK)]

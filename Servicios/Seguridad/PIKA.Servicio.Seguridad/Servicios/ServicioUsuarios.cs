@@ -48,6 +48,37 @@ namespace PIKA.Servicio.Seguridad.Servicios
             this.repoUsuarioDominio = UDT.ObtenerRepositoryAsync<UsuarioDominio>(new QueryComposer<UsuarioDominio>());
         }
 
+        public async Task<int> ActutalizarContrasena(string UsuarioId, string Actual, string nueva)
+        {
+            var u = await this.UDT.Context.Usuarios.Where(x => x.Id == UsuarioId).FirstAsync();
+            if (u != null)
+            {
+                PasswordHasher<ApplicationUser> hasher = new PasswordHasher<ApplicationUser>();
+                var result = hasher.VerifyHashedPassword(u, u.PasswordHash, Actual);
+                if(result == PasswordVerificationResult.Success)
+                {
+                    if (ValidadorUsuario.ContrasenaValida(nueva, this.logger))
+                    {
+                        u.PasswordHash = hasher.HashPassword(u, nueva);
+                        u.SecurityStamp = Guid.NewGuid().ToString();
+                        u.ConcurrencyStamp = Guid.NewGuid().ToString();
+                        await this.UDT.Context.SaveChangesAsync();
+                        return 200;
+                    
+                    } else
+                    {
+                        return 400;
+                    }
+
+                    
+                } else
+                {
+                    return 409;
+                }
+            }
+            return 404;
+        }
+
         public async Task<bool> Existe(Expression<Func<PropiedadesUsuario, bool>> predicado)
         {
             List<PropiedadesUsuario> l = await this.repo.ObtenerAsync(predicado);

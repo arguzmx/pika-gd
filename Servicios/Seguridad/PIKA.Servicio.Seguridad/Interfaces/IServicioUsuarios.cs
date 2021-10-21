@@ -20,6 +20,7 @@ namespace PIKA.Servicio.Seguridad.Interfaces
         Task<Boolean> EsAdmin(string dominioId, string UnidadOrgId, string Id);
 
         Task<PropiedadesUsuario> CrearAsync(string dominioId, string UnidadOrgId, PropiedadesUsuario entity, CancellationToken cancellationToken = default);
+        Task<int> ActutalizarContrasena(string UsuarioId, string Actual, string nueva);
 
         Task<IPaginado<PropiedadesUsuario>> ObtenerPaginadoIdsAsync(List<string> ids, Consulta Query,
             Func<IQueryable<PropiedadesUsuario>,

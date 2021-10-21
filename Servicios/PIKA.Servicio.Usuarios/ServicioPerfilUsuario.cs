@@ -40,6 +40,7 @@ namespace PIKA.Servicio.Usuarios
             this.repoUO = UDTORG.ObtenerRepositoryAsync<UnidadOrganizacional>(new QueryComposer<UnidadOrganizacional>());
         }
 
+
         public async Task<List<string>> ObtieneRoles(string UsuarioId) {
             var roles = await UDTORG.Context.UsuariosRoles.Where(x => x.ApplicationUserId == UsuarioId).ToListAsync();
             List<string> l = new List<string>();

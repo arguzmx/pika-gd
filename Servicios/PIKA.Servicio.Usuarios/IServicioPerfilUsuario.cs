@@ -9,9 +9,8 @@ namespace PIKA.Servicio.Usuarios
     public interface IServicioPerfilUsuario
     {
         Task<List<DominioActivo>> Dominios(string UsuarioId);
-
         Task<bool> EsAdmin(string UsuarioId, string DomainId);
-
         Task<List<string>> ObtieneRoles(string UsuarioId);
+
     }
 }
