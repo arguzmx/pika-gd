@@ -14,7 +14,7 @@ using PIKA.Modelo.Contacto;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Contacto;
 using RepositorioEntidades;
-
+using TimeZoneConverter;
 
 namespace PIKA.GD.API.Controllers.Contacto
 {
@@ -161,6 +161,22 @@ namespace PIKA.GD.API.Controllers.Contacto
             return Ok(await servicioEntidad.Eliminar(lids).ConfigureAwait(false));
         }
 
+        [HttpGet("zonashorarias", Name = "GetZonasHorarias")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ValorListaOrdenada>>> GetZonasHorarias()
+        {
+            await Task.Delay(0).ConfigureAwait(false);
+            List<ValorListaOrdenada> zonas = new List<ValorListaOrdenada>();
+            var list = TZConvert.KnownIanaTimeZoneNames;
+            list.ToList().ForEach(z =>
+            {
+                zonas.Add(new ValorListaOrdenada() { Id = z, Texto = z, Indice = 0 });
+            });
+            return Ok(zonas.OrderBy(x=>x.Id).ToList());
+        }
+
+
         /// <summary>
         /// Obtiene una lista de paises en base a los parámetros de consulta
         /// </summary>
@@ -168,11 +184,16 @@ namespace PIKA.GD.API.Controllers.Contacto
         /// <returns></returns>
 
         [HttpGet("pares", Name = "GetParesPais")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ValorListaOrdenada>>> GetPares(
         [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
+
+            if(query== null)
+            {
+                query = new Consulta() { indice = 0, consecutivo = 0, Filtros = new List<FiltroConsulta>(), tamano = int.MaxValue };
+            }
+
             var data = await servicioEntidad.ObtenerParesAsync(query)
                 .ConfigureAwait(false);
 
@@ -185,7 +206,6 @@ namespace PIKA.GD.API.Controllers.Contacto
         /// <returns></returns>
 
         [HttpGet("pares/{ids}", Name = "GetParesPaisporId")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ValorListaOrdenada>>> GetParesporId(
               string ids)

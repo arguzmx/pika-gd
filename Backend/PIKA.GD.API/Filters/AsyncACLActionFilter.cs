@@ -92,12 +92,12 @@ namespace PIKA.GD.API.Filters
                 if (IsAPIController && !ExcludeACL)
                 {
 
-
                     //Analiza por reflección de IMetadateProvider si no están presentes los IDs solicutados
                     if (string.IsNullOrEmpty(AppId) || string.IsNullOrEmpty(ModuleId))
                     {
 
                         Type t = LocalizadorEnsamblados.ObtieneTipoMetadata(context.Controller.GetType());
+                        Console.WriteLine($"{t}");
                         foreach (var m in ServicioAplicacion.ModulosAdministrados)
                         {
                             foreach (var ta in m.TiposAdministrados)
@@ -181,7 +181,7 @@ namespace PIKA.GD.API.Filters
 
 
                         ((ACLController)context.Controller).UsuarioId = UserId;
-                        ((ACLController)context.Controller).TenatId = UOid;
+                        ((ACLController)context.Controller).TenantId = UOid;
                         ((ACLController)context.Controller).DominioId = DomainId;
 
                         var u = ObtieneUsuarioAPI(UserId, ((ACLController)context.Controller).Roles, true, ((ACLController)context.Controller).Accesos);

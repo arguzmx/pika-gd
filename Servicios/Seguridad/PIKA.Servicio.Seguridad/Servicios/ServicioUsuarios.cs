@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
@@ -47,6 +48,9 @@ namespace PIKA.Servicio.Seguridad.Servicios
             this.repoClaims = UDT.ObtenerRepositoryAsync<UserClaim>(new QueryComposer<UserClaim>());
             this.repoUsuarioDominio = UDT.ObtenerRepositoryAsync<UsuarioDominio>(new QueryComposer<UsuarioDominio>());
         }
+
+
+
 
         public async Task<int> ActutalizarContrasena(string UsuarioId, string Actual, string nueva)
         {
@@ -316,129 +320,143 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
         public async Task ActualizarAsync(PropiedadesUsuario entity)
         {
-
-            ApplicationUser o = await this.repoAppUser.UnicoAsync(x => x.Id == entity.UsuarioId);
-
-            if (o == null)
+            try
             {
-                throw new EXNoEncontrado(entity.UsuarioId);
-            }
+                ApplicationUser o = await this.repoAppUser.UnicoAsync(x => x.Id == entity.UsuarioId);
 
-            if (!string.IsNullOrEmpty(entity.email))
-            {
-
-                if (!ValidadorUsuario.IsValidEmail(entity.email))
+                if (o == null)
                 {
-                    throw new ExLoginInfoInvalida($"e:{entity.email}");
+                    throw new EXNoEncontrado(entity.UsuarioId);
                 }
 
-                ApplicationUser m = await this.repoAppUser.UnicoAsync(x => x.Id != entity.UsuarioId
-                    && x.NormalizedEmail == entity.email.ToUpper());
-
-                if (m != null)
+                if (!string.IsNullOrEmpty(entity.email))
                 {
-                    throw new ExElementoExistente(entity.email);
-                }
 
-                if (entity.email != o.Email)
-                {
-                    o.Email = entity.email;
-                    o.NormalizedEmail = entity.email.ToUpper();
-                    UDT.Context.Entry(o).State = EntityState.Modified;
-                }
-            }
+                    if (!ValidadorUsuario.IsValidEmail(entity.email))
+                    {
+                        throw new ExLoginInfoInvalida($"e:{entity.email}");
+                    }
 
+                    ApplicationUser m = await this.repoAppUser.UnicoAsync(x => x.Id != entity.UsuarioId
+                        && x.NormalizedEmail == entity.email.ToUpper());
 
+                    if (m != null)
+                    {
+                        throw new ExElementoExistente(entity.email);
+                    }
 
-            PropiedadesUsuario p = await this.repo.UnicoAsync(x => x.UsuarioId == entity.UsuarioId);
-
-            string gmt = null;
-            double gmt_offset = -1;
-
-            if (!string.IsNullOrEmpty(entity.gmt))
-            {
-
-                try
-                {
-                    TimeZoneInfo tz = TZConvert.GetTimeZoneInfo(entity.gmt);
-                    TimeSpan offset = tz.GetUtcOffset(DateTime.UtcNow);
-
-                    gmt = tz.Id;
-                    gmt_offset = tz.BaseUtcOffset.TotalMinutes;
-                }
-                catch (Exception ex)
-                {
-                    gmt = null;
-                    gmt_offset = -1;
+                    if (entity.email != o.Email)
+                    {
+                        o.Email = entity.email;
+                        o.NormalizedEmail = entity.email.ToUpper();
+                        UDT.Context.Entry(o).State = EntityState.Modified;
+                    }
                 }
 
 
-            }
 
-            if (p != null)
-            {
-                p.nickname = entity.nickname;
-                p.middle_name = entity.middle_name;
-                p.given_name = entity.given_name;
-                p.family_name = entity.family_name;
-                p.name = entity.name;
-                p.UsuarioId = entity.UsuarioId;
-                p.generoid = entity.generoid;
-                p.paisid = entity.password;
-                p.estadoid = entity.estadoid;
-                p.updated_at = DateTime.UtcNow;
-                p.gmt = gmt;
+                PropiedadesUsuario p = await this.repo.UnicoAsync(x => x.UsuarioId == entity.UsuarioId);
 
-                if ((gmt != null))
+                string gmt = null;
+                double gmt_offset = 0;
+
+                if (!string.IsNullOrEmpty(entity.gmt))
                 {
-                    p.gmt_offset = (float)gmt_offset;
+
+                    gmt = entity.gmt;
+                    try
+                    {
+                        TimeZoneInfo tz = TZConvert.GetTimeZoneInfo(entity.gmt);
+                        TimeSpan offset = tz.GetUtcOffset(DateTime.UtcNow);
+                        gmt_offset = tz.BaseUtcOffset.TotalMinutes;
+                    }
+                    catch (Exception)
+                    {
+                    }
+
+
+                }
+
+                if (p != null)
+                {
+                    p.nickname = entity.nickname;
+                    p.middle_name = entity.middle_name;
+                    p.given_name = entity.given_name;
+                    p.family_name = entity.family_name;
+                    p.name = entity.name;
+                    p.UsuarioId = entity.UsuarioId;
+                    if(!string.IsNullOrEmpty(entity.generoid))
+                    {
+                        p.generoid = entity.generoid;
+                    }
+                    if (!string.IsNullOrEmpty(entity.paisid))
+                    {
+                        p.paisid = entity.paisid;
+                    }
+
+                    if (!string.IsNullOrEmpty(entity.estadoid))
+                    {
+                        p.estadoid = entity.estadoid;
+                    }
+
+                    p.updated_at = DateTime.UtcNow;
+                    p.gmt = gmt;
+
+                    if ((gmt != null))
+                    {
+                        p.gmt_offset = (float)gmt_offset;
+                    }
+                    else
+                    {
+                        p.gmt_offset = null;
+                    }
+
+
+                    UDT.Context.Entry(p).State = EntityState.Modified;
                 }
                 else
                 {
-                    p.gmt_offset = null;
+
+                    PropiedadesUsuario prop = new PropiedadesUsuario()
+                    {
+                        nickname = entity.nickname,
+                        middle_name = entity.middle_name,
+                        given_name = entity.given_name,
+                        family_name = entity.family_name,
+                        UsuarioId = entity.UsuarioId,
+                        generoid = entity.generoid,
+                        paisid = entity.password,
+                        estadoid = entity.estadoid,
+                        updated_at = DateTime.UtcNow,
+                        name = entity.name
+                    };
+
+                    p.gmt = gmt;
+                    if ((gmt != null))
+                    {
+                        p.gmt_offset = (float)gmt_offset;
+                    }
+                    else
+                    {
+                        p.gmt_offset = null;
+                    }
+                    // Añade sus propiedades
+                    await repo.CrearAsync(prop);
+
                 }
 
-
-                UDT.Context.Entry(p).State = EntityState.Modified;
+                UDT.SaveChanges();
+                await UpdateClaims(entity);
             }
-            else
+            catch (Exception ex)
             {
-
-                PropiedadesUsuario prop = new PropiedadesUsuario()
-                {
-                    nickname = entity.nickname,
-                    middle_name = entity.middle_name,
-                    given_name = entity.given_name,
-                    family_name = entity.family_name,
-                    UsuarioId = entity.UsuarioId,
-                    generoid = entity.generoid,
-                    paisid = entity.password,
-                    estadoid = entity.estadoid,
-                    updated_at = DateTime.UtcNow,
-                    name = entity.name
-                };
-
-                p.gmt = gmt;
-                if ((gmt != null))
-                {
-                    p.gmt_offset = (float)gmt_offset;
-                }
-                else
-                {
-                    p.gmt_offset = null;
-                }
-                // Añade sus propiedades
-                await repo.CrearAsync(prop);
-
+                Console.WriteLine(ex.ToString());
+                throw;
             }
-
-            UDT.SaveChanges();
-            await UpdateClaims(entity);
 
         }
 
-
-
+ 
         private Consulta GetDefaultQuery(Consulta query)
         {
             if (query != null)

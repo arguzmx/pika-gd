@@ -7,6 +7,7 @@ using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Modelo.Organizacion;
+using PIKA.Modelo.Organizacion.Estructura;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,37 @@ namespace PIKA.Servicio.Organizacion.Servicios
 
         }
 
+
+        public async Task<ActDominioOU> OntieneDominioOU(string DominioId, string OUId)
+        {
+            var d = await this.UDT.Context.Dominios.Where(x => x.Id == DominioId).SingleOrDefaultAsync();
+            var ou = await this.UDT.Context.UnidadesOrganizacionales.Where(x => x.Id == OUId).SingleOrDefaultAsync();
+
+            if (d != null && ou != null)
+            {
+                return new ActDominioOU() { Dominio = d.Nombre, OU = ou.Nombre };
+            }
+
+            return null;
+        }
+
+        public async Task<bool> ActualizaDominioOU(ActDominioOU request, string DominioId, string OUId )
+        {
+            var d = await this.UDT.Context.Dominios.Where(x => x.Id == DominioId).SingleOrDefaultAsync();
+            var ou = await this.UDT.Context.UnidadesOrganizacionales.Where(x => x.Id == OUId).SingleOrDefaultAsync();
+
+            if(d!=null && ou != null)
+            {
+                if(!string.IsNullOrWhiteSpace(request.Dominio) && !string.IsNullOrWhiteSpace(request.OU))
+                {
+                    d.Nombre = request.Dominio;
+                    ou.Nombre = request.OU;
+                    await this.UDT.Context.SaveChangesAsync();
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public async Task<bool> Existe(Expression<Func<Dominio, bool>> predicado)
         {

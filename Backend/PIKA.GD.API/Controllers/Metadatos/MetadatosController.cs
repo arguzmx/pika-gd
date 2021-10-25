@@ -113,7 +113,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
             bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
             if (existe)
             {
-                DocumentoPlantilla documento = await repositorio.Inserta("dominio", this.TenatId,
+                DocumentoPlantilla documento = await repositorio.Inserta("dominio", this.TenantId,
                     false, null, plantilla, valores, "").ConfigureAwait(false);
                 if (documento != null) return Ok(documento);
             }
@@ -152,7 +152,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
             bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
             if (existe)
             {
-                var documento = await repositorio.Inserta("dominio", this.TenatId,
+                var documento = await repositorio.Inserta("dominio", this.TenantId,
                     true, listaid, plantilla, valores, "").ConfigureAwait(false);
                 if (documento != null) return Ok(documento);
             }

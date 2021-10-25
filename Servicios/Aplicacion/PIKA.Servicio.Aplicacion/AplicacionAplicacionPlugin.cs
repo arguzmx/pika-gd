@@ -12,7 +12,7 @@ namespace PIKA.Servicio.AplicacionPlugin
     public class AplicacionAplicacionPlugin : InformacionAplicacionBase, IInformacionAplicacion
     {
         
-        public override Aplicacion Info()
+     public override Aplicacion Info()
         {
             Aplicacion a = AplicacionRaiz.ObtieneAplicacionRaiz();
             a.Modulos = this.ModulosAplicacion();
@@ -30,15 +30,21 @@ namespace PIKA.Servicio.AplicacionPlugin
             {
 
                 new ElementoAplicacion(ConstantesAppAplicacionPlugin.APP_ID, ConstantesAppAplicacionPlugin.MODULO_APLICACIONES ) {
-                    Titulo = "Aplicaciones del sistema",
-                    Descripcion = "Permite administrar la configuración de las aplicaciones del sistema",
+                    Titulo = "Configuración del sistema",
+                    Descripcion = "Permite administrar la configuración del sistema",
                     Tipos = new List<Type> { typeof(Aplicacion) }
                 },
-                new ElementoAplicacion(ConstantesAppAplicacionPlugin.APP_ID, ConstantesAppAplicacionPlugin.MODULO_PLUGINS ) {
-                    Titulo = "Plugins del sistema",
-                    Descripcion = "Permite administrar la configuración de los pluigns del sistema",
-                    Tipos = new List<Type> { typeof(Plugin), typeof(VersionPlugin), typeof(PluginInstalado) }
-                }
+
+                //new ElementoAplicacion(ConstantesAppAplicacionPlugin.APP_ID, ConstantesAppAplicacionPlugin.MODULO_APLICACIONES ) {
+                //    Titulo = "Aplicaciones del sistema",
+                //    Descripcion = "Permite administrar la configuración de las aplicaciones del sistema",
+                //    Tipos = new List<Type> { typeof(Aplicacion) }
+                //},
+                //new ElementoAplicacion(ConstantesAppAplicacionPlugin.APP_ID, ConstantesAppAplicacionPlugin.MODULO_PLUGINS ) {
+                //    Titulo = "Plugins del sistema",
+                //    Descripcion = "Permite administrar la configuración de los pluigns del sistema",
+                //    Tipos = new List<Type> { typeof(Plugin), typeof(VersionPlugin), typeof(PluginInstalado) }
+                //}
             };
             return m;
         }

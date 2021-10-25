@@ -28,7 +28,7 @@ namespace PIKA.GD.API
         /// <summary>
         ///  Estas propiedaes vienen del filtro AsyncACLActionFilter
         /// </summary>
-        public string TenatId{ get; set; }
+        public string TenantId{ get; set; }
         public string UsuarioId { get; set; }
         public string DominioId { get; set; }
         public List<string> Roles { get; set; }
@@ -58,7 +58,7 @@ namespace PIKA.GD.API
         protected List<FiltroConsulta> ObtieneFiltrosIdentidad() {
             List<FiltroConsulta> l = new List<FiltroConsulta>();
             l.Add(new FiltroConsulta() { Operador = FiltroConsulta.OP_EQ, Propiedad = "UsuarioId", Valor = UsuarioId });
-            l.Add(new FiltroConsulta() { Operador = FiltroConsulta.OP_EQ, Propiedad = "TenantId", Valor = TenatId });
+            l.Add(new FiltroConsulta() { Operador = FiltroConsulta.OP_EQ, Propiedad = "TenantId", Valor = TenantId });
             l.Add(new FiltroConsulta() { Operador = FiltroConsulta.OP_EQ, Propiedad = "DominioId", Valor = DominioId });
 
             return l;
@@ -70,7 +70,7 @@ namespace PIKA.GD.API
         {
             List<FiltroConsulta> l = new List<FiltroConsulta>();
             l.Add(new FiltroConsulta() { Operador = FiltroConsulta.OP_EQ, Propiedad = "UsuarioId", Valor = UsuarioId });
-            l.Add(new FiltroConsulta() { Operador = FiltroConsulta.OP_EQ, Propiedad = "TenantId", Valor = TenatId });
+            l.Add(new FiltroConsulta() { Operador = FiltroConsulta.OP_EQ, Propiedad = "TenantId", Valor = TenantId });
 
             return l;
         }

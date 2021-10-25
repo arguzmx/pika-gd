@@ -87,7 +87,7 @@ namespace PIKA.GD.API.Controllers.Sistema
             r.EsAdmmin = false;
             if (tipo.ToLower() == "u")
             {
-                r.EsAdmmin = await servicioUsuarios.EsAdmin(this.DominioId, this.TenatId, id);
+                r.EsAdmmin = await servicioUsuarios.EsAdmin(this.DominioId, this.TenantId, id);
             }
             return Ok(r);
         }

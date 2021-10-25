@@ -12,6 +12,7 @@ using PIKA.GD.API.Filters;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Menus;
 using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Modelo.Seguridad;
 using PIKA.Servicio.Seguridad.Interfaces;
 using PIKA.Servicio.Usuarios;
 using PIKA.Servicio.Usuarios.Entidades;
@@ -48,11 +49,38 @@ namespace PIKA.GD.API.Controllers
             this.servicioUsuarios = servicioUsuarios;
         }
 
+        [HttpGet()]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<PropiedadesUsuario>> ObtieneUsuario()
+        {
+            var u = await this.servicioUsuarios.UnicoAsync(x => x.UsuarioId == this.GetUserId()).ConfigureAwait(false);
+            if (u != null)
+            {
+                return Ok(u);
+            }
+            return NotFound();
+        }
+
+        [HttpPut()]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> ActualizaPropieades([FromBody] PropiedadesUsuario propiedades)
+        {
+            var u = await this.servicioUsuarios.UnicoAsync(x => x.UsuarioId == this.GetUserId()).ConfigureAwait(false);
+            if (u != null)
+            {
+                propiedades.UsuarioId = this.GetUserId();
+                await this.servicioUsuarios.ActualizarAsync(propiedades).ConfigureAwait(false);
+                return Ok();
+            }
+            return NotFound();
+        }
+
+
+
         [HttpPost("contrasena/actualizar", Name = "ActualizarContrasena")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> ActualizarContrasena([FromBody] ActualizarContrasena request)
         {
-            Console.WriteLine($"{this.GetUserId()} -> {request.Actual} ? {request.Nueva}");
             return StatusCode(await this.servicioUsuarios.ActutalizarContrasena(this.GetUserId(), request.Actual, request.Nueva).ConfigureAwait(false));
         }
 

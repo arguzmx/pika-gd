@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 using static PIKA.Modelo.Metadatos.PropAttribute;
 
 namespace PIKA.Modelo.Seguridad
@@ -142,9 +143,12 @@ namespace PIKA.Modelo.Seguridad
 
         //public Pais pais { get; set; }
         //public Estado estado { get; set; }
-
+        [JsonIgnore]
+        [XmlIgnore]
         public Genero genero { get; set; }
 
+        [JsonIgnore]
+        [XmlIgnore]
         public ApplicationUser Usuario { get; set; }
 
 

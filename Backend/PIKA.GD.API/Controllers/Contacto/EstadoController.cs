@@ -184,11 +184,14 @@ namespace PIKA.GD.API.Controllers.Contacto
         /// <param name="query">Query de busqueda a la base de datos</param>
         /// <returns></returns>
         [HttpGet("pares", Name = "GetParesEstados")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ValorListaOrdenada>>> GetPares(
         [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
+            if (query == null)
+            {
+                query = new Consulta() { indice = 0, consecutivo = 0, Filtros = new List<FiltroConsulta>(), tamano = int.MaxValue };
+            }
             var data = await servicioEntidad.ObtenerParesAsync(query)
                 .ConfigureAwait(false);
 
@@ -201,7 +204,6 @@ namespace PIKA.GD.API.Controllers.Contacto
         /// <param name="ids"></param>
         /// <returns></returns>
         [HttpGet("pares/{ids}", Name = "GetParesEstadoporId")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ValorListaOrdenada>>> GetParesporId(
            string ids)

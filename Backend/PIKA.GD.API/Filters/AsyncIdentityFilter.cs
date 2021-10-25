@@ -77,7 +77,7 @@ namespace PIKA.GD.API.Filters
 
 
             ((ACLController)context.Controller).UsuarioId = UserId;
-            ((ACLController)context.Controller).TenatId = UOid;
+            ((ACLController)context.Controller).TenantId = UOid;
             ((ACLController)context.Controller).DominioId = DomainId;
 
             var result = await next().ConfigureAwait(false);

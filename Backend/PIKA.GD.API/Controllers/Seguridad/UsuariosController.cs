@@ -59,7 +59,7 @@ namespace PIKA.GD.API.Controllers.Seguridad
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PropiedadesUsuario>> Post([FromBody] PropiedadesUsuario entidad)
         {
-            entidad = await servicioEntidad.CrearAsync(this.DominioId, this.TenatId, entidad).ConfigureAwait(false);
+            entidad = await servicioEntidad.CrearAsync(this.DominioId, this.TenantId, entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("Get", new { id = entidad.UsuarioId }, entidad).Value);
         }
 

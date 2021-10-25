@@ -1,4 +1,5 @@
-﻿using PIKA.Constantes.Aplicaciones.Contenido;
+﻿using PIKA.Constantes.Aplicaciones.Aplicaciones;
+using PIKA.Constantes.Aplicaciones.Contenido;
 using PIKA.Constantes.Aplicaciones.GestorDocumental;
 using PIKA.Constantes.Aplicaciones.Metadatos;
 using PIKA.Constantes.Aplicaciones.Organizacion;
@@ -31,15 +32,21 @@ namespace PIKA.Servicio.Seguridad.Modelos
             el.EsHome = true;
             l.Add(el);
 
-            l.Add(CreaElemento(10, "", "OPCIONES","", true));
+            ElementoMenu menu = CreaElemento(10, "", "OPCIONES", "", true);
 
-            l.Add(CreatElementoGestionDocumental(20));
+            if (menu.Hijos.Count > 0) { l.Add(menu); }
 
-            l.Add(CreatElementoContenido(30));
+            menu = CreatElementoGestionDocumental(20);
+            if (menu.Hijos.Count > 0) { l.Add(menu); }
 
-            l.Add(CreatElementoOrganizacion(40));
+            menu = CreatElementoContenido(30);
+            if (menu.Hijos.Count > 0) { l.Add(menu); }
 
-            l.Add(CreatElementoConfigSistema(50));
+            menu = CreatElementoOrganizacion(40);
+            if (menu.Hijos.Count > 0) { l.Add(menu); }
+
+            menu = CreatElementoConfigSistema(50);
+            if (menu.Hijos.Count > 0) { l.Add(menu); }
 
             return l;
         }
@@ -110,7 +117,11 @@ namespace PIKA.Servicio.Seguridad.Modelos
         {
             ElementoMenu gd = CreaElemento(index, "settings-2-outline", "Configuración sistema", "");
 
-           
+            ElementoMenu el = CreaElemento(5, "", "Configuración", "/pages/cofiguracionsistema/");
+            el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "configuracionsistema" });
+            el.TokenApp = ConstantesAppAplicacionPlugin.APP_ID;
+            el.TokenMod = ConstantesAppAplicacionPlugin.MODULO_APLICACIONES;
+            gd.Hijos.Add(el);
 
             return gd;
         }

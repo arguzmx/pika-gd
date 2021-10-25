@@ -243,7 +243,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             string dominio = "";
             string unidad = "";
             var d = await this.servicioDominio.UnicoAsync(x => x.Id == this.DominioId);
-            var ou = await this.servicioUO.UnicoAsync(x => x.Id == this.TenatId);
+            var ou = await this.servicioUO.UnicoAsync(x => x.Id == this.TenantId);
             if (d != null) dominio = d.Nombre;
             if (ou != null) unidad = ou.Nombre;
 

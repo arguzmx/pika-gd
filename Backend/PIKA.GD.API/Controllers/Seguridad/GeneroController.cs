@@ -165,11 +165,14 @@ namespace PIKA.GD.API.Controllers.Seguridad
         /// <returns></returns>
 
         [HttpGet("pares", Name = "GetParesGenero")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ValorListaOrdenada>>> GetPares(
         [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
+            if (query == null)
+            {
+                query = new Consulta() { indice = 0, consecutivo = 0, Filtros = new List<FiltroConsulta>(), tamano = int.MaxValue };
+            }
             var data = await servicioEntidad.ObtenerParesAsync(query)
                 .ConfigureAwait(false);
 
@@ -182,7 +185,6 @@ namespace PIKA.GD.API.Controllers.Seguridad
         /// <returns></returns>
 
         [HttpGet("pares/{ids}", Name = "GetParesGeneroporId")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ValorListaOrdenada>>> GetParesporId(
               string ids)
