@@ -77,7 +77,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpGet("page", Name = "GetPageEstante")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<Estante>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
+        public async Task<ActionResult<Paginado<Estante>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             var data = await servicioEstante.ObtenerPaginadoAsync(
                            Query: query,

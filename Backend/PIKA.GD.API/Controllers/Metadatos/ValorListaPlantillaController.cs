@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -55,6 +56,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ValorListaPlantilla>> Post([FromBody] ValorListaPlantilla entidad)
         {
+            Console.WriteLine(JsonSerializer.Serialize(entidad));
             entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetValorListaPlantilla", new { id = entidad.Id }, entidad).Value);
         }

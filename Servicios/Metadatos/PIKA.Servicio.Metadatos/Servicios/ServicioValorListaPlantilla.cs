@@ -42,25 +42,34 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<ValorListaPlantilla> CrearAsync(ValorListaPlantilla entity, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrEmpty(entity.Texto))
+            try
             {
-                throw new ExDatosNoValidos();
-            }
+                if (string.IsNullOrEmpty(entity.Texto))
+                {
+                    throw new ExDatosNoValidos();
+                }
 
-            if (await Existe(x => x.PropiedadId.Equals(entity.PropiedadId.Trim(), StringComparison.InvariantCultureIgnoreCase)
-            && x.Texto.Equals(entity.Texto.Trim(), StringComparison.InvariantCultureIgnoreCase)
-            ))
+                if (await Existe(x => x.PropiedadId.Equals(entity.PropiedadId.Trim(), StringComparison.InvariantCultureIgnoreCase)
+                && x.Texto.Equals(entity.Texto.Trim(), StringComparison.InvariantCultureIgnoreCase)
+                ))
+                {
+                    throw new ExElementoExistente(entity.PropiedadId);
+                }
+
+
+                entity.PropiedadId = entity.PropiedadId.Trim();
+                entity.Id = System.Guid.NewGuid().ToString();
+                await this.repo.CrearAsync(entity);
+                UDT.SaveChanges();
+
+                return entity.Copia();
+            }
+            catch (Exception ex)
             {
-                throw new ExElementoExistente(entity.PropiedadId);
+                Console.WriteLine(ex.ToString());
+                throw;
             }
-
-
-            entity.PropiedadId = entity.PropiedadId.Trim();
-            entity.Id = System.Guid.NewGuid().ToString();
-            await this.repo.CrearAsync(entity);
-            UDT.SaveChanges();
-
-            return entity.Copia();
+            
         }
 
         public async Task ActualizarAsync(ValorListaPlantilla entity)

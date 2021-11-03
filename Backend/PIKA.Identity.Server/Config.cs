@@ -35,6 +35,19 @@ namespace PIKA.Identity.Server
         public static IEnumerable<Client> Clients =>
             new Client[]
             {
+new Client
+        {
+            ClientName = "Cliente REST API password para PIKA Gestión Documental",
+            ClientId = "pika-password",
+            ClientSecrets = {
+                new Secret( "secret".Sha256() )
+            },
+            AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+            AllowedScopes = {
+                PIKAGDNAME
+            },
+        },
+
 new Client {
     ClientId = "angular_spa",
     ClientName = "Angular 4 Client",
@@ -113,6 +126,6 @@ new Client {
 
             };
 
-        
+
     }
 }

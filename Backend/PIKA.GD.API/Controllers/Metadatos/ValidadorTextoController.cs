@@ -73,7 +73,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
 
         [HttpGet("page", Name = "GetPageValidadorTexto")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<ValidadorTexto>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
+        public async Task<ActionResult<Paginado<ValidadorTexto>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
 
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller

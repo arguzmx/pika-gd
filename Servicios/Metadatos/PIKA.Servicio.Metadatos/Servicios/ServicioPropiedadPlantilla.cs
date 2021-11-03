@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -46,8 +47,8 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         private PropiedadPlantilla ValidaPropiedadPlantilla(PropiedadPlantilla p , bool esActualizar)
         {
-            
 
+            Console.WriteLine(JsonSerializer.Serialize(p, new JsonSerializerOptions() { WriteIndented = true }));
             
             if (!this.contexto.Plantilla.Where(x => x.Id.Equals(p.PlantillaId)).Any())
                 throw new ExErrorRelacional(p.PlantillaId);

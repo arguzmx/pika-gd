@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 
@@ -14,6 +15,16 @@ namespace PIKA.GD.API.Model
     {
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
+
+#if DEBUG
+            Console.WriteLine(bindingContext.ActionContext.HttpContext.Request.QueryString);
+#endif
+
+            if (string.IsNullOrWhiteSpace(bindingContext.ActionContext.HttpContext.Request.QueryString.Value))
+            {
+                bindingContext.Result = ModelBindingResult.Success(new Consulta());
+                return Task.CompletedTask;
+            }
 
             var result = new Consulta();
             try
@@ -75,12 +86,12 @@ namespace PIKA.GD.API.Model
 
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 bindingContext.Result = ModelBindingResult.Failed();
+                Console.WriteLine(ex.ToString());
                 return Task.CompletedTask;
             }
-
 
             bindingContext.Result = ModelBindingResult.Success(result);
             return Task.CompletedTask;

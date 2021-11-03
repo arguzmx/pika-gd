@@ -182,6 +182,7 @@ namespace PIKA.Servicio.Contenido.Servicios
             try
             {
                 Query = GetDefaultQuery(Query);
+
                 long offset = Query.indice == 0 ? 0 : ((Query.indice) * Query.tamano) - 1;
                 string sqls = @$"SELECT  COUNT(*) FROM {DbContextContenido.TablaPuntoMontaje} where  (1=1) ";
                 string sqlsCount = "";

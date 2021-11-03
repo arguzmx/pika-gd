@@ -64,7 +64,7 @@ namespace PIKA.Identity.Server.Services
 
             //    claims.Add(new Claim(JwtClaimTypes.Scope, "dataEventRecords"));
 
-            claims.Add(new Claim(IdentityServerConstants.StandardScopes.Email, user.Email));
+            claims.Add(new Claim(IdentityServerConstants.StandardScopes.Email, user.Email ?? "" ));
 
             context.IssuedClaims = claims;
         }

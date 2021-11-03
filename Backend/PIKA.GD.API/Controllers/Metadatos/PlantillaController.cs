@@ -63,12 +63,11 @@ namespace PIKA.GD.API.Controllers.Metadatos
             entidad.OrigenId = this.DominioId;
             entidad.TipoOrigenId = "DOMINIO";
             entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
-            Console.WriteLine(entidad.Id);
             if (!string.IsNullOrEmpty(entidad.Id))
             {
                 await repoMetadatos.CrearIndice(new Plantilla() { Id = entidad.Id }).ConfigureAwait(false);
             }
-            return Ok(CreatedAtAction("GetPlantilla", new { id = entidad.Id.Trim() }, entidad).Value);
+            return Ok(entidad);
         }
 
 

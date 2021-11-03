@@ -71,7 +71,7 @@ namespace PIKA.GD.API.Controllers.AplicacionPlugin
 
         [HttpGet("page", Name = "GetPageVersionPlugin")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<VersionPlugin>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
+        public async Task<ActionResult<Paginado<VersionPlugin>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             var data = await servicioEntidad.ObtenerPaginadoAsync(

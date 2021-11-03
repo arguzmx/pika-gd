@@ -78,7 +78,7 @@ namespace PIKA.GD.API.Controllers.AplicacionPlugin
 
         [HttpGet("page", Name = "GetPagePluginInstalado")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<PluginInstalado>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
+        public async Task<ActionResult<Paginado<PluginInstalado>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             var data = await servicioPluginInstalado.ObtenerPaginadoAsync(
                Query: query,

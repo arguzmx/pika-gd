@@ -117,7 +117,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpGet("page", Name = "GetPageActivo")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<Activo>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        public async Task<ActionResult<Paginado<Activo>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
             var data = await servicioActivo.ObtenerPaginadoAsync(
                 Query: query,
@@ -130,7 +130,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         [HttpGet("page/archivo/{Id}", Name = "GetPageActivoArchivo")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
-        public async Task<ActionResult<IEnumerable<Activo>>> GetPageActivoArchivo(string Id, [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        public async Task<ActionResult<Paginado<Activo>>> GetPageActivoArchivo(string Id, [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
             query.Filtros.Add(new FiltroConsulta()
             {

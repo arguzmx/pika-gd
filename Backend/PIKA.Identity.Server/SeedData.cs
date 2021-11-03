@@ -62,14 +62,18 @@ namespace PIKA.Identity.Server
                     contextConfiguration.Database.Migrate();
 
 
-                    if (!contextConfiguration.Clients.Any())
+                    foreach (var client in Config.Clients)
                     {
-                        foreach (var client in Config.Clients)
+                        Console.WriteLine(client.ClientId);
+                        if (!contextConfiguration.Clients.Any(x=>x.ClientId == client.ClientId))
                         {
                             contextConfiguration.Clients.Add(client.ToEntity());
-                        }
-                        contextConfiguration.SaveChanges();
+                            contextConfiguration.SaveChanges();
+                        } 
                     }
+                    
+
+                    
 
                     if (!contextConfiguration.IdentityResources.Any())
                     {

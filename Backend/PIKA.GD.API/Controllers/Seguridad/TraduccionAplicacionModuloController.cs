@@ -81,7 +81,7 @@ namespace PIKA.GD.API.Controllers.Seguridad
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
 
-        public async Task<ActionResult<IEnumerable<TraduccionAplicacionModulo>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
+        public async Task<ActionResult<Paginado<TraduccionAplicacionModulo>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
             
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
