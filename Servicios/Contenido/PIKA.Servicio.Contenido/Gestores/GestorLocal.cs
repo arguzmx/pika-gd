@@ -24,6 +24,8 @@ namespace PIKA.Servicio.Contenido.Gestores
         private ConfiguracionServidor configServidor;
         private ILogger logger;
 
+        public bool AlmacenaOCR { get => true; }
+        public bool UtilizaIdentificadorExterno { get => false; }
 
         /// <summary>
         /// Constructur para validación de la conexión
@@ -264,6 +266,35 @@ namespace PIKA.Servicio.Contenido.Gestores
             await Task.Delay(1);
            return cuenta > 0 ? pdfFile : "";
 
+        }
+
+        public async Task<long> EscribeThumbnailBytes(string ParteId, string ElementoId, string VersionId, byte[] contenido)
+        {
+            string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
+            string rutaMiniaturas = Path.Combine(ruta, "thumbnails");
+            string nombreArchivo = ParteId + ".PNG";
+            string rutaFinal = Path.Combine(rutaMiniaturas, nombreArchivo);
+            await File.WriteAllBytesAsync(rutaFinal, contenido);
+            return contenido.Length;
+        }
+
+        public async Task<long> EscribeOCRBytes(string ParteId, string ElementoId, string VersionId, byte[] contenido)
+        {
+            string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
+            string rutaMiniaturas = Path.Combine(ruta, "ocr");
+            string nombreArchivo = ParteId + ".TXT";
+            string rutaFinal = Path.Combine(rutaMiniaturas, nombreArchivo);
+            await File.WriteAllBytesAsync(rutaFinal, contenido);
+            return contenido.Length;
+        }
+
+        public Task<byte[]> LeeOCRBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension)
+        {
+            string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
+            string rutaMiniaturas = Path.Combine(ruta, "ocr");
+            string nombreArchivo = ParteId + ".TXT";
+            string rutaFinal = Path.Combine(rutaMiniaturas, nombreArchivo);
+            return LeeArchivo(rutaFinal);
         }
     }
 }

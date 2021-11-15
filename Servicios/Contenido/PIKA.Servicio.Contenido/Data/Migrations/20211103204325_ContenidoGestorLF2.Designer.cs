@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PIKA.Servicio.Contenido;
 
-namespace PIKA.Servicio.Contenido.data.Migrations
+namespace PIKA.Servicio.Contenido.Data.Migrations
 {
     [DbContext(typeof(DbContextContenido))]
-    partial class DbContextContenidoModelSnapshot : ModelSnapshot
+    [Migration("20211103204325_ContenidoGestorLF2")]
+    partial class ContenidoGestorLF2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -262,18 +264,6 @@ namespace PIKA.Servicio.Contenido.data.Migrations
                     b.Property<string>("VolumenId")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
-
-                    b.Property<bool>("ConvertirTiff")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(false);
-
-                    b.Property<string>("FormatoConversion")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(10) CHARACTER SET utf8mb4")
-                        .HasMaxLength(10)
-                        .HasDefaultValue("JPG");
 
                     b.Property<string>("Ruta")
                         .IsRequired()

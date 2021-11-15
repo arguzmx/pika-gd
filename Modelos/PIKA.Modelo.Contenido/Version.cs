@@ -88,7 +88,6 @@ namespace PIKA.Modelo.Contenido
         /// <summary>
         /// LIsta de partes que componene la versión
         /// </summary>
-        [JsonIgnore, XmlIgnore, NotMapped]
         [Object( Name = "partes")]
         public virtual List<Parte> Partes { get; set; }
 

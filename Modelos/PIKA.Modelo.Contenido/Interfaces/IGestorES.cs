@@ -19,7 +19,23 @@ namespace PIKA.Modelo.Contenido
         Task<long> EscribeBytes(string ParteId, string ElementoId, string VersionId, string archivoFuente, FileInfo informacion, bool sobreescribir);
 
         Task<byte[]> LeeBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension );
+
         Task<byte[]> LeeThumbnailBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension);
+        Task<long> EscribeThumbnailBytes(string ParteId, string ElementoId, string VersionId,  byte[] contenido);
+        Task<long> EscribeOCRBytes(string ParteId, string ElementoId, string VersionId, byte[] contenido);
+        Task<byte[]> LeeOCRBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension);
+
+
+        /// <summary>
+        /// Determina si el gestort tiene la capacidad de almacenar OCR
+        /// </summary>
+        bool AlmacenaOCR { get; }
+
+        /// <summary>
+        /// Determin si las partes se acceden utilizando el identificador externo
+        /// </summary>
+        bool UtilizaIdentificadorExterno { get; }
+
 
         /// <summary>
         /// DEvulve la ruta al archivo generado

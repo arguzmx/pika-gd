@@ -21,7 +21,7 @@ namespace PIKA.Modelo.Contenido
         EntidadHijo: "TipoGestorESId", Cardinalidad: TipoCardinalidad.UnoUno, 
         HijoDinamico: true, TipoDespliegueVinculo: TipoDespliegueVinculo.EntidadUnica,
         PropiedadPadre: "Id", PropiedadHijo: "VolumenId",
-        Diccionario: "azure-blob,GestorAzureConfig|folder,GestorLocalConfig|smb,GestorSMBConfig")]
+        Diccionario: "azure-blob,GestorAzureConfig|folder,GestorLocalConfig|smb,GestorSMBConfig|laserfiche,GestorLaserficheConfig")]
     public class Volumen : Entidad<string>, IEntidadNombrada, IEntidadEliminada, IEntidadRelacionada
     {
         public string TipoOrigenDefault => ConstantesModelo.IDORIGEN_DOMINIO;
@@ -177,6 +177,9 @@ namespace PIKA.Modelo.Contenido
 
         [XmlIgnore, JsonIgnore]
         public GestorSMBConfig SMBConfig { get; set; }
+
+        [XmlIgnore, JsonIgnore]
+        public GestorLaserficheConfig LaserficheConfig { get; set; }
     }
 
 }

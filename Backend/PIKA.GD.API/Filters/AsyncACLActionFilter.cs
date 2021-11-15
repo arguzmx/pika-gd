@@ -214,7 +214,6 @@ namespace PIKA.GD.API.Filters
 
         }
 
-
         public UsuarioAPI ObtieneUsuarioAPI(string Id, List<string> Roles, bool AdminGlobal, List<string> Accesos)
         {
             UsuarioAPI u = new UsuarioAPI()

@@ -105,7 +105,8 @@ namespace PIKA.GD.API.Controllers.Contenido
                 VolumenId = entidad.VolumenId,
                 ConteoPartes = 0,
                 MaxIndicePartes = 0,
-                TamanoBytes = 0
+                TamanoBytes = 0, 
+                EstadoIndexado=  EstadoIndexado.FinalizadoOK
             };
 
             var id = await this.repoContenido.CreaVersion(v).ConfigureAwait(false);

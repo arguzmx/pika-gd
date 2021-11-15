@@ -66,6 +66,16 @@ namespace PIKA.Servicio.Contenido.Servicios
             
         }
 
+        public async Task ActualizaVersion(string Id, string VersionId) {
+            Elemento o = await this.repo.UnicoAsync(x => x.Id == Id);
+            if (o != null)
+            {
+                o.VersionId = VersionId;
+                UDT.Context.Entry(o).State = EntityState.Modified;
+                UDT.SaveChanges();
+            }
+        }
+
         public async Task<int> ACLPuntoMontaje(string PuntoMontajeId)
         {
             if (Usuario == null) return 0;

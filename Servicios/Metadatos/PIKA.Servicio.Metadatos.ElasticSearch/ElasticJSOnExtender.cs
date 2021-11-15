@@ -25,7 +25,9 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         public static bool ValorValido(this PropiedadPlantilla p, string valor)
         {
             if (p.Requerido && string.IsNullOrEmpty(valor)) return false;
-
+            
+            if (!p.Requerido && (string.IsNullOrEmpty(valor) || (valor.ToLower()=="null") )) return true;
+            
             switch (p.TipoDatoId)
             {
                 case TipoDato.tBoolean:
@@ -35,6 +37,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 case TipoDato.tDateTime:
                 case TipoDato.tDate:
                     DateTime d;
+                    
                     return DateTime.TryParse(valor, out d);
 
                 case TipoDato.tDouble:
@@ -127,7 +130,17 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
             foreach (var item in plantilla.Propiedades)
             {
                 var valor = valores.Valores.Where(x => x.PropiedadId == item.Id).SingleOrDefault();
-                if (valor == null) valor = new ValorPropiedad() { PropiedadId = item.Id, Valor = "" };
+                if (valor == null)
+                {
+                    valor = new ValorPropiedad() { PropiedadId = item.Id, Valor = "" };
+                }
+                else { 
+                if(valor.Valor =="null")
+                    {
+                        valor.Valor = "";
+                    }
+                }
+                
 
                 if (!ValorValido(item, valor.Valor )) 
                     throw new ExMetadatosNoValidos($"valor no válido para {item.Nombre} {(valor.Valor)}") ;
@@ -143,8 +156,9 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                         Delimitador = "";
                         break;
                 }
+                
 
-                if (valor!=null) sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%V%", $"{Delimitador}{valor.Valor}{Delimitador}"));
+                if (valor!=null && !string.IsNullOrEmpty(valor.Valor) ) sb.Append(baseProp.Replace("%N%", $"P{item.IdNumericoPlantilla}").Replace("%V%", $"{Delimitador}{valor.Valor}{Delimitador}"));
             }
 
             if (sb.Length > 0)

@@ -709,7 +709,7 @@ namespace PIKA.ServicioBusqueda.Contenido
             }
             else
             {
-                logger.LogInformation($"Repositorio de nidexados de contenido configurado");
+                logger.LogInformation($"Repositorio de indexados de contenido configurado");
             }
 
             return true;

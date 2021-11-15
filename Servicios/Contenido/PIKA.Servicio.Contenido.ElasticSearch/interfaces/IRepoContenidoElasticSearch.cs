@@ -17,8 +17,10 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
         Task<Modelo.Contenido.Version> SiguenteIndexar(string volumenId);
         Task<bool> ActualizaEstadoOCR(string Id, Modelo.Contenido.Version version);
         Task<string> IndexarTextoCompleto(Modelo.Contenido.ContenidoTextoCompleto contenido);
+        Task<bool> ActualizarTextoCompleto(string Id, Modelo.Contenido.ContenidoTextoCompleto contenido);
         Task<long> ContarPorConsulta(string texto, string PuntoMontajeId, string IdJerarquico, int NivelFuzzy);
         Task<List<string>> IdsPorConsulta(string texto, string PuntoMontajeId, string IdJerarquico, int NivelFuzzy);
         Task<List<HighlightHit>> SinopsisPorIDs(string texto, List<string> Ids, string HtmlTag, int Tamano);
+        Task<string> ExisteTextoCompleto(Modelo.Contenido.ContenidoTextoCompleto contenido);
     }
 }

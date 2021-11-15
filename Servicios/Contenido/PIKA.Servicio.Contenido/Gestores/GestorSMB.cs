@@ -19,6 +19,8 @@ namespace PIKA.Servicio.Contenido.Gestores
         private GestorSMBConfig configGestor;
         private ConfiguracionServidor configServidor;
         private Volumen volumen;
+        public bool AlmacenaOCR { get => true; }
+        public bool UtilizaIdentificadorExterno { get => false; }
 
         public GestorSMB(GestorSMBConfig configGestor,
             Volumen volumen,
@@ -84,7 +86,22 @@ namespace PIKA.Servicio.Contenido.Gestores
             throw new NotImplementedException();
         }
 
+        public Task<long> EscribeOCRBytes(string ParteId, string ElementoId, string VersionId, byte[] contenido)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<long> EscribeThumbnailBytes(string ParteId, string ElementoId, string VersionId, byte[] contenido)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<byte[]> LeeBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<byte[]> LeeOCRBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension)
         {
             throw new NotImplementedException();
         }

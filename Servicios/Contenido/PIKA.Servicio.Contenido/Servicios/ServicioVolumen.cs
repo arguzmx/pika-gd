@@ -30,7 +30,7 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         private IRepositorioAsync<Volumen> repo;
         private UnidadDeTrabajo<DbContextContenido> UDT;
-        private static TimeSpan volCacheExpiry = new TimeSpan(0, 10, 0); 
+        private static TimeSpan volCacheExpiry = new TimeSpan(0, 1, 0); 
         private readonly IAppCache lazycache;
         private IOptions<ConfiguracionServidor> opciones;
         public ServicioVolumen(
@@ -96,6 +96,25 @@ namespace PIKA.Servicio.Contenido.Servicios
                             gestor = new GestorLocal(logger, config, opciones);
                         }
                         break;
+
+                    case TipoGestorES.LaserFiche:
+                        GestorLaserficheConfig configlf = lazycache.Get<GestorLaserficheConfig>(key);
+                        if (configlf == null)
+                        {
+                            IRepositorioAsync<GestorLaserficheConfig> repoconfig = UDT.ObtenerRepositoryAsync<GestorLaserficheConfig>(new QueryComposer<GestorLaserficheConfig>()); ;
+                            configlf = await repoconfig.UnicoAsync(x => x.VolumenId.Equals(VolumenId.Trim(), StringComparison.InvariantCultureIgnoreCase));
+                            if (configlf != null)
+                            {
+                                this.lazycache.Add<GestorLaserficheConfig>(key, configlf, volCacheExpiry);
+                            }
+                        }
+
+                        if (configlf != null)
+                        {
+                            gestor = new GestorLaserfiche(logger, configlf, opciones);
+                        }
+                        break;
+
 
                     case TipoGestorES.SMB:
                         break;

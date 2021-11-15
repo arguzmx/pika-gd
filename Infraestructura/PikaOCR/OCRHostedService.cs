@@ -86,9 +86,17 @@ namespace PikaOCR
                         // Estos datos no estan en la parte para economizr espacio en el documento de ElasticSearch
                         parte.VersionId = version.Id;
                         parte.ElementoId = version.ElementoId;
+                        
+                        // Asigna el ID del proces
+                        if (gestor.UtilizaIdentificadorExterno)
+                        {
+                            parte.Id = parte.IdentificadorExterno;
+                        }
 
                         if (!parte.Indexada)
                         {
+                            var idExistente = await _repoElastic.ExisteTextoCompleto(new ContenidoTextoCompleto() { ElementoId = parte.ElementoId, ParteId = parte.Id, VersionId = parte.VersionId });
+                            // la parte no jha sido indexada
                             string nombreTemporal = x.NombreArchivoTemporal(parte);
 
                             if (extensionesIndexado.IndexOf(parte.Extension.ToLower()) >= 0)
@@ -96,14 +104,21 @@ namespace PikaOCR
                                 switch (parte.Extension.ToLower())
                                 {
                                     case ".pdf":
-
-                                        var resultadoPDF = await x.TextoPDF(parte, nombreTemporal);
-                                        if (resultadoPDF.Item1)
+                                        var (Exito, Rutas) = await x.TextoPDF(parte, nombreTemporal);
+                                        if (Exito)
                                         {
                                             int pagina = 1;
-                                            foreach (var t in resultadoPDF.Item2)
+                                            foreach (var t in Rutas)
                                             {
-                                                await _repoElastic.IndexarTextoCompleto(parte.ParteAContenidoTextoCompleto(File.ReadAllText(t), elemento.PuntoMontajeId, elemento.CarpetaId, pagina));
+                                                if (string.IsNullOrEmpty(idExistente))
+                                                {
+                                                    await _repoElastic.IndexarTextoCompleto(parte.ParteAContenidoTextoCompleto(File.ReadAllText(t), elemento.PuntoMontajeId, elemento.CarpetaId, pagina));
+
+                                                } else
+                                                {
+                                                    await _repoElastic.ActualizarTextoCompleto(idExistente, parte.ParteAContenidoTextoCompleto(File.ReadAllText(t), elemento.PuntoMontajeId, elemento.CarpetaId, pagina));
+                                                }
+                                                
                                                 pagina++;
                                             }
                                             x.ElimninaArchivosOCR(nombreTemporal);
@@ -118,9 +133,16 @@ namespace PikaOCR
 
                                     default:
                                         var resultadoImagen = await x.TextoImagen(parte, nombreTemporal);
-                                        if (resultadoImagen.Item1)
+                                        if (resultadoImagen.Exito)
                                         {
-                                            await _repoElastic.IndexarTextoCompleto(parte.ParteAContenidoTextoCompleto(File.ReadAllText(resultadoImagen.Item2), elemento.PuntoMontajeId, elemento.CarpetaId));
+                                            if (string.IsNullOrEmpty(idExistente))
+                                            {
+                                                await _repoElastic.IndexarTextoCompleto(parte.ParteAContenidoTextoCompleto(File.ReadAllText(resultadoImagen.Ruta), elemento.PuntoMontajeId, elemento.CarpetaId));
+                                            }
+                                            else {
+                                                await _repoElastic.ActualizarTextoCompleto(idExistente, parte.ParteAContenidoTextoCompleto(File.ReadAllText(resultadoImagen.Ruta), elemento.PuntoMontajeId, elemento.CarpetaId));
+                                            }
+                                                
                                             parte.Indexada = true;
                                         }
                                         else
@@ -132,10 +154,11 @@ namespace PikaOCR
                                 }
 
                             }
-
-
+ 
                         }
 
+
+                        // Elimina el espacio requerido en elasticsearch, esto mininmiza el tamaño del almacen
                         parte.VersionId = null;
                         parte.ElementoId = null;
                     }

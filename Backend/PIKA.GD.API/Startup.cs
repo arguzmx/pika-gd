@@ -33,6 +33,7 @@ using PIKA.Servicio.Seguridad.Interfaces;
 using PIKA.Servicio.Reportes.Data;
 using Microsoft.AspNetCore.HttpOverrides;
 using PIKA.ServicioBusqueda.Contenido;
+using Microsoft.IdentityModel.Logging;
 
 namespace PIKA.GD.API
 {
@@ -195,6 +196,9 @@ namespace PIKA.GD.API
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
 
+#if DEBUG
+            IdentityModelEventSource.ShowPII = true;
+#endif
 
             app.UseHealthChecks("/health");
 

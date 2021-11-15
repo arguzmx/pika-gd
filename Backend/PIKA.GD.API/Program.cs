@@ -83,7 +83,8 @@ namespace PIKA.GD.API
             {
                 config.AddJsonFile("appsettings.local.json", optional: true);
             })
-            .ConfigureServices(services => {
+            .ConfigureServices(services =>
+            {
                 services.AddHostedService<OCRHostedService>();
             })
             .UseStartup<Startup>()

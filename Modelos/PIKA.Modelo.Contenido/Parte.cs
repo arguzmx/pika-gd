@@ -18,11 +18,10 @@ namespace PIKA.Modelo.Contenido
 
         /// <summary>
         /// Id del elemento contenido padre
-        /// No se utiliza en elastc search
+        /// No se utiliza en elastc search se obtiene de la versión
         /// </summary>
         [Ignore]
         public string ElementoId { get; set; }
-        //#GUID requerida, CLAVE PRIAMRIA
 
         /// <summary>
         /// Version del elemento al que pertenecen las partes, 
@@ -58,6 +57,13 @@ namespace PIKA.Modelo.Contenido
         /// </summary>
         [Keyword(Name = "ex")]
         public string Extension { get; set; }
+
+
+        /// <summary>
+        /// Identificador externo de la parte, por ejemplo al importar de otros sistemas
+        /// </summary>
+        [Keyword(Name = "xid")]
+        public string IdentificadorExterno { get; set; }
 
         /// <summary>
         /// Longidut en bytes de la parte

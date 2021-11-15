@@ -25,7 +25,19 @@ namespace PIKA.Servicio.Contenido.Data.Configuracion
                     
         }
     }
+    public class DbConfigGestorLaserfiche : IEntityTypeConfiguration<GestorLaserficheConfig>
+    {
+        public void Configure(EntityTypeBuilder<GestorLaserficheConfig> builder)
+        {
+            builder.ToTable(DbContextContenido.TablaGestorLaserfiche);
+            builder.HasKey(x => x.VolumenId);
+            builder.Property(x => x.ConvertirTiff).IsRequired().HasDefaultValue(false);
+            builder.Property(x => x.FormatoConversion).IsRequired().HasDefaultValue("JPG").HasMaxLength(10);
+            builder.Property(x => x.VolumenId).HasMaxLength(LongitudDatos.GUID).IsRequired();
+            builder.Property(x => x.Ruta).HasMaxLength(LongitudDatos.NombreLargo).IsRequired();
 
+        }
+    }
 
     public class DbConfigGestorLocal : IEntityTypeConfiguration<GestorLocalConfig>
     {

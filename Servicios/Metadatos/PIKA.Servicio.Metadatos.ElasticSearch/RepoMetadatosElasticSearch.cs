@@ -116,12 +116,12 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 IndiceJerarquia  =valores.FiltroJerarquico
             };
 
-            
-            var body = ES.PostData.String(valoresplantilla.ObtieneJSONValores(plantilla));
+            string q = valoresplantilla.ObtieneJSONValores(plantilla);
+            var body = ES.PostData.String(q);
 
-            var response = await cliente.LowLevel.CreateAsync<CreateResponse>(plantilla.Id, valoresplantilla.Id, body);
+            var response = await cliente.LowLevel.IndexAsync<IndexResponse>(plantilla.Id, valoresplantilla.Id, body);
 
-            if (response.ApiCall.Success)
+            if (response.Result == Result.Created)
             {
                 if (!esLista)
                 {

@@ -40,59 +40,98 @@ namespace PikaOCR
         /// <param name="p"></param>
         /// <param name="lang"></param>
         /// <returns></returns>
-        public async Task<Tuple<bool,string>> TextoImagen(Parte p, string NombreTemporal, string lang = "spa")
+        public async Task<(bool Exito,string Ruta)> TextoImagen(Parte p, string NombreTemporal, string lang = "spa")
         {
             bool doneOk = false;
             string ruta = null;
             string filename = NombreTemporal;
+
             try
             {
-                var bytes = await gestor.LeeBytes(p.ElementoId, p.Id, p.VersionId, p.VolumenId, p.Extension);
-                File.WriteAllBytes( filename, bytes);
-                var info = new ProcessStartInfo
+                if (gestor.AlmacenaOCR)
                 {
-                    FileName = configuracion.ruta_tesseract,
-                    Arguments = $"{filename} {filename} -l {lang}",
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    CreateNoWindow = true,
-                    UseShellExecute = false
-                };
-
-                
-                using (var ps = Process.Start(info))
-                {
-                    ps.WaitForExit();
-
-                    var exitCode = ps.ExitCode;
-
-                    if (exitCode == 0)
+                    try
                     {
-                        ruta = filename + ".txt";
-                        doneOk = true;
+                        var textoOCR = await gestor.LeeOCRBytes(p.ElementoId, gestor.UtilizaIdentificadorExterno ? p.IdentificadorExterno : p.Id, p.VersionId, p.VolumenId, p.Extension);
+                        if (textoOCR != null)
+                        {
+                            ruta = filename + ".txt";
+                            File.WriteAllBytes(ruta, textoOCR);
+                            doneOk = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError($"Error al leer OCR");
+                        logger.LogError($"{ex}");
                     }
                 }
 
-                return new Tuple<bool, string>(doneOk, ruta);
+                if(!doneOk)
+                {
+                    var bytes = await gestor.LeeBytes(p.ElementoId, gestor.UtilizaIdentificadorExterno ? p.IdentificadorExterno : p.Id, p.VersionId, p.VolumenId, p.Extension);
+                    File.WriteAllBytes(filename, bytes);
+                    var info = new ProcessStartInfo
+                    {
+                        FileName = configuracion.ruta_tesseract,
+                        Arguments = $"{filename} {filename} -l {lang}",
+                        RedirectStandardError = true,
+                        RedirectStandardOutput = true,
+                        CreateNoWindow = true,
+                        UseShellExecute = false
+                    };
+
+                    using (var ps = Process.Start(info))
+                    {
+                        ps.WaitForExit();
+
+                        var exitCode = ps.ExitCode;
+
+                        if (exitCode == 0)
+                        {
+                            ruta = filename + ".txt";
+                            doneOk = true;
+
+                            if (gestor.AlmacenaOCR)
+                            {
+                                try
+                                {
+                                    await gestor.EscribeOCRBytes(gestor.UtilizaIdentificadorExterno ? p.IdentificadorExterno : p.Id, p.ElementoId, p.VersionId, File.ReadAllBytes(ruta));
+                                }
+                                catch (Exception ex)
+                                {
+                                    logger.LogError($"Error al escribir OCR");
+                                    logger.LogError($"{ex}");
+                                }
+                                
+                            }
+                        }
+                    }
+
+                }
+
+
+
+                return (doneOk, ruta);
             }
             catch (Exception ex)
             {
                 logger.LogError($"{ex}");
                 logger.LogError($"Error al obtener texto para {p.Id}@{p.VersionId}-{p.VolumenId}");
-                return new Tuple<bool, string>(false, "");
+                return (false, "");
             }
             
         }
 
 
-        public async Task<Tuple<bool, List<string>>> TextoPDF(Parte p, string NombreTemporal, string lang = "spa")
+        public async Task<(bool Exito, List<string> Rutas)> TextoPDF(Parte p, string NombreTemporal, string lang = "spa")
         {
             List<string> rutas = new List<string>();
             bool doneOk = false;
             string filename = NombreTemporal;
             try
             {
-                var bytes = await gestor.LeeBytes(p.ElementoId, p.Id, p.VersionId, p.VolumenId, p.Extension);
+                var bytes = await gestor.LeeBytes(p.ElementoId, gestor.UtilizaIdentificadorExterno? p.IdentificadorExterno :  p.Id, p.VersionId, p.VolumenId, p.Extension);
                 File.WriteAllBytes(filename, bytes);
 
                 using (PdfDocument document = PdfDocument.Open(filename))
@@ -111,14 +150,14 @@ namespace PikaOCR
                 }
                 doneOk = true;
 
-                return new Tuple<bool, List<string>>(doneOk, rutas);
+                return (doneOk, rutas);
 
             }
             catch (Exception ex)
             {
                 logger.LogError(ex.ToString());
                 logger.LogError($"Error al obtener texto para {p.Id}@{p.VersionId}-{p.VolumenId}");
-                return new Tuple<bool, List<string>>(false, new List<string>());
+                return (false, new List<string>());
             }
 
         }

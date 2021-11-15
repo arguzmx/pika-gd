@@ -11,9 +11,54 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
 {
     public partial class RepoContenidoElasticSearch : IRepoContenidoElasticSearch
     {
+        public async Task<string> ExisteTextoCompleto(Modelo.Contenido.ContenidoTextoCompleto contenido)
+        {
+            var response = await cliente.SearchAsync<ContenidoTextoCompleto>(sd =>
+             sd.Index(INDICECONTENIDO)
+             .Query(
+                 q => q
+                 .Bool(bq => bq
+                   .Filter(f => f
+                     .Term(t => t.ElementoId, contenido.ElementoId)
+                   )
+                   .Filter(f => f
+                     .Term(t => t.ParteId, contenido.ParteId)
+                   )
+                   .Filter(f => f
+                     .Term(t => t.VersionId, contenido.VersionId)
+                   )
+                 )
+              )
+             );
+
+            if (response.ApiCall.Success)
+            {
+                return response.Hits.Count > 0 ?  response.Hits.ToList()[0].Id : null;
+            }
+            return null;
+        }
+
+        public async Task<bool> ActualizarTextoCompleto(string Id, Modelo.Contenido.ContenidoTextoCompleto contenido)
+        {
+            var resultado = await cliente.UpdateAsync<Modelo.Contenido.ContenidoTextoCompleto, object>(
+                    new DocumentPath<Modelo.Contenido.ContenidoTextoCompleto>(Id),
+                        u => u.Index(INDICECONTENIDO)
+                        .DocAsUpsert(true)
+                        .Doc(contenido)
+                        .Refresh(Elasticsearch.Net.Refresh.True));
+
+            if (resultado.Result == Result.Updated ||
+                resultado.Result == Result.Noop)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public async Task<string> IndexarTextoCompleto(Modelo.Contenido.ContenidoTextoCompleto contenido)
         {
-            var result = clienteOCR.IndexDocument(contenido);
+            var result = await clienteOCR.IndexDocumentAsync(contenido);
             if (result.ApiCall.Success)
             {
                 return result.Id;

@@ -5,6 +5,7 @@ using PIKA.Infraestructura.Comun;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using ES = Elasticsearch.Net;
 
 namespace PIKA.Servicio.Contenido.ElasticSearch
 {
@@ -44,7 +45,6 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
 
         public async Task<string> CreaVersion(Modelo.Contenido.Version version)
         {
-            version.EstadoIndexado = Modelo.Contenido.EstadoIndexado.FinalizadoOK;
             var respuesta = await this.cliente.IndexDocumentAsync(version);
             if (!respuesta.IsValid)
             {
@@ -56,7 +56,7 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
 
         public async Task<bool> CreaRepositorio()
         {
-            logger.LogInformation($"Verificando repositorio");
+            logger.LogInformation($"Verificando repositorio ...");
             if (!await ExisteIndice(INDICEVERSIONES))
             {
                 logger.LogInformation($"Creando repositorio de contenido");
@@ -72,6 +72,12 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
             }
             else
             {
+
+                Console.WriteLine("Actualizando repositorio contenido");
+                var body = ES.PostData.String("{\"properties\": {\"partes\": {\"properties\": {\"xid\": {\"type\":\"keyword\" }}}}}");
+                var r = cliente.LowLevel.Indices.PutMapping<PutMappingResponse>(INDICEVERSIONES, body);
+                Console.WriteLine($"{r.Acknowledged}");
+
                 logger.LogInformation($"Repositorio de contenido configurado");
             }
 
@@ -90,7 +96,7 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
             }
             else
             {
-                logger.LogInformation($"Repositorio de nidexados de contenido configurado");
+                logger.LogInformation($"Repositorio de indexados de contenido configurado");
             }
 
 
@@ -116,15 +122,15 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
         public async Task<bool> ActualizaVersion(string Id, Modelo.Contenido.Version version)
         {
 
+            // Cada que se actualzia la versión hayq que marcarla para indexar
             version.EstadoIndexado = Modelo.Contenido.EstadoIndexado.PorIndexar;
+            
             var resultado = await cliente.UpdateAsync<Modelo.Contenido.Version, object>(
                 new DocumentPath<Modelo.Contenido.Version>(Id),
                u => u.Index(INDICEVERSIONES)
                    .DocAsUpsert(true)
                    .Doc(version)
                    .Refresh(Elasticsearch.Net.Refresh.True));
-
-            Console.WriteLine(resultado.Result);
 
             if (resultado.Result == Result.Updated ||
                 resultado.Result == Result.Noop)

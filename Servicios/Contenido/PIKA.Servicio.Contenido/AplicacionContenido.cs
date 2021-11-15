@@ -30,6 +30,7 @@ namespace PIKA.Servicio.Contenido
                     Titulo = "Configuración de almacenamiento de los repositorios",
                     Descripcion = "Permite administrar la configuración de los almacenamientos del repositorio",
                     Tipos = new List<Type> {
+                        typeof(GestorLaserficheConfig),
                         typeof(GestorAzureConfig),
                         typeof(GestorLocalConfig),
                         typeof(VolumenPuntoMontaje),

@@ -11,6 +11,7 @@ using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
 using PIKA.Modelo.Contenido;
 using PIKA.Modelo.Metadatos;
+using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Contenido.Interfaces;
 using RepositorioEntidades;
 using Version = PIKA.Modelo.Contenido.Version;
@@ -25,15 +26,22 @@ namespace PIKA.GD.API.Controllers.Contenido
     {
 
         private ILogger<VersionController> logger;
-        private IServicioVersion servicioEntidad;
+        private IServicioElemento servicioElemento;
         private IProveedorMetadatos<Version> metadataProvider;
+        private IRepoContenidoElasticSearch repoContenido;
+        private readonly IServicioVolumen servicioVol;
         public VersionController(ILogger<VersionController> logger,
             IProveedorMetadatos<Version> metadataProvider,
-            IServicioVersion servicioEntidad)
+            IServicioVersion servicioEntidad,
+            IRepoContenidoElasticSearch repoContenido,
+            IServicioVolumen servicioVol,
+            IServicioElemento servicioElemento)
         {
             this.logger = logger;
-            this.servicioEntidad = servicioEntidad;
             this.metadataProvider = metadataProvider;
+            this.repoContenido = repoContenido;
+            this.servicioVol = servicioVol;
+            this.servicioElemento = servicioElemento;
         }
 
 
@@ -41,7 +49,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         /// Otiene los metadatos asociados a la Version
         /// </summary>
         /// <returns></returns>
-        [HttpGet("metadata", Name = "MetadataVersionContenid")]
+        [HttpGet("metadata", Name = "MetadataVersionContenido")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<MetadataInfo>> GetMetadata()
@@ -58,10 +66,17 @@ namespace PIKA.GD.API.Controllers.Contenido
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Version>> Post([FromBody]Version entidad)
+        public async Task<ActionResult<Version>> Post([FromBody]Modelo.Contenido.Version entidad)
         {
-            entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
-            return Ok(CreatedAtAction("GetVersion", new { id = entidad.Id }, entidad).Value);
+            await repoContenido.CreaRepositorio().ConfigureAwait(false);
+            entidad.CreadorId = this.UsuarioId;
+            
+            var id = await this.repoContenido.CreaVersion(entidad).ConfigureAwait(false);
+            await servicioElemento.ActualizaVersion(entidad.ElementoId, id).ConfigureAwait(false);
+            
+            // entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
+
+            return Ok(CreatedAtAction("GetVersion", new { id }, entidad).Value);
         }
 
         /// <summary>
@@ -78,34 +93,32 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Put(string id, [FromBody]Version entidad)
         {
-            var x = ObtieneFiltrosIdentidad();
-
-
             if (id != entidad.Id)
             {
                 return BadRequest();
             }
+            await this.repoContenido.ActualizaVersion(id, entidad).ConfigureAwait(false);
 
-            await servicioEntidad.ActualizarAsync(entidad).ConfigureAwait(false);
+            // await servicioEntidad.ActualizarAsync(entidad).ConfigureAwait(false);
             return NoContent();
 
         }
 
-        /// <summary>
-        /// Otiene una página de resultados de Versiones de contenide en base a la configuración de paginado u al query recibido 
-        /// </summary>
-        /// <param name="query">Query de filtrado para el paginado</param>
-        /// <returns></returns>
-        [HttpGet("page", Name = "GetPageVersion")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Paginado<Version>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
-        {
-            ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
-            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            var data = await servicioEntidad.ObtenerPaginadoAsync(query).ConfigureAwait(false);
-            return Ok(data);
-        }
+        ///// <summary>
+        ///// Otiene una página de resultados de Versiones de contenide en base a la configuración de paginado u al query recibido 
+        ///// </summary>
+        ///// <param name="query">Query de filtrado para el paginado</param>
+        ///// <returns></returns>
+        //[HttpGet("page", Name = "GetPageVersion")]
+        //[TypeFilter(typeof(AsyncACLActionFilter))]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //public async Task<ActionResult<Paginado<Version>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
+        //{
+        //    ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
+        //    query.Filtros.AddRange(ObtieneFiltrosIdentidad());
+        //    var data = await servicioEntidad.ObtenerPaginadoAsync(query).ConfigureAwait(false);
+        //    return Ok(data);
+        //}
 
 
         /// <summary>
@@ -119,7 +132,8 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Version>> Get(string id)
         {
-            var o = await servicioEntidad.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            var o = await this.repoContenido.ObtieneVersion(id).ConfigureAwait(false);
+            // var o = await servicioEntidad.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
         }
@@ -140,30 +154,37 @@ namespace PIKA.GD.API.Controllers.Contenido
             {
                 IdsTrim += item.Trim() + ",";
             }
+            
             string[] lids = IdsTrim.Split(',').ToList()
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            return Ok(await servicioEntidad.Eliminar(lids).ConfigureAwait(false));
+
+            foreach(string id  in lids)
+            {
+                await this.repoContenido.EliminaVersion(id).ConfigureAwait(false);
+            };
+
+            return Ok(lids);
         }
 
-        /// <summary>
-        /// Restaura una lista de Versioness eliminados en base al arreglo de identificadores recibidos
-        /// </summary>
-        /// <param name="ids">Arreglo de identificadores string</param>
-        /// <returns></returns>
-        [HttpPatch("restaurar/{ids}", Name = "RestaurarVersion")]
-        [TypeFilter(typeof(AsyncACLActionFilter))]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult> Undelete(string ids)
-        {
-            string IdsTrim = "";
-            foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
-            {
-                IdsTrim += item.Trim() + ",";
-            }
-            string[] lids = IdsTrim.Split(',').ToList()
-           .Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            return Ok(await servicioEntidad.Restaurar(lids).ConfigureAwait(false));
-        }
+        ///// <summary>
+        ///// Restaura una lista de Versioness eliminados en base al arreglo de identificadores recibidos
+        ///// </summary>
+        ///// <param name="ids">Arreglo de identificadores string</param>
+        ///// <returns></returns>
+        //[HttpPatch("restaurar/{ids}", Name = "RestaurarVersion")]
+        //[TypeFilter(typeof(AsyncACLActionFilter))]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //public async Task<ActionResult> Undelete(string ids)
+        //{
+        //    string IdsTrim = "";
+        //    foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
+        //    {
+        //        IdsTrim += item.Trim() + ",";
+        //    }
+        //    string[] lids = IdsTrim.Split(',').ToList()
+        //   .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+        //    return Ok(await servicioEntidad.Restaurar(lids).ConfigureAwait(false));
+        //}
 
     }
 }

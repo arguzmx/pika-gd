@@ -38,6 +38,7 @@ namespace PIKA.Servicio.Contenido.Data.Configuracion
             builder.HasOne(x => x.SMBConfig).WithOne(y => y.Volumen).HasForeignKey<GestorSMBConfig>(z => z.VolumenId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(x => x.AxureConfig).WithOne(y => y.Volumen).HasForeignKey<GestorAzureConfig>(z => z.VolumenId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(x => x.LocalConfig).WithOne(y => y.Volumen).HasForeignKey<GestorLocalConfig>(z => z.VolumenId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(x => x.LaserficheConfig).WithOne(y => y.Volumen).HasForeignKey<GestorLaserficheConfig>(z => z.VolumenId).OnDelete(DeleteBehavior.Cascade);
         }
 
      

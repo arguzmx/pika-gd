@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PIKA.Servicio.Contenido;
 
-namespace PIKA.Servicio.Contenido.data.Migrations
+namespace PIKA.Servicio.Contenido.Data.Migrations
 {
     [DbContext(typeof(DbContextContenido))]
-    partial class DbContextContenidoModelSnapshot : ModelSnapshot
+    [Migration("20211103202627_ContenidoGestorLF")]
+    partial class ContenidoGestorLF
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -263,24 +265,18 @@ namespace PIKA.Servicio.Contenido.data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
-                    b.Property<bool>("ConvertirTiff")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasDefaultValue(false);
-
-                    b.Property<string>("FormatoConversion")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("varchar(10) CHARACTER SET utf8mb4")
-                        .HasMaxLength(10)
-                        .HasDefaultValue("JPG");
-
                     b.Property<string>("Ruta")
                         .IsRequired()
                         .HasColumnType("varchar(500) CHARACTER SET utf8mb4")
                         .HasMaxLength(500);
 
+                    b.Property<string>("VolumenId1")
+                        .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
+
                     b.HasKey("VolumenId");
+
+                    b.HasIndex("VolumenId1");
 
                     b.ToTable("contenido$gestorlf");
                 });
@@ -614,8 +610,8 @@ namespace PIKA.Servicio.Contenido.data.Migrations
             modelBuilder.Entity("PIKA.Modelo.Contenido.GestorLaserficheConfig", b =>
                 {
                     b.HasOne("PIKA.Modelo.Contenido.Volumen", "Volumen")
-                        .WithOne("LaserficheConfig")
-                        .HasForeignKey("PIKA.Modelo.Contenido.GestorLaserficheConfig", "VolumenId")
+                        .WithMany()
+                        .HasForeignKey("VolumenId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

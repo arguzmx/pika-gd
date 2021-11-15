@@ -27,6 +27,10 @@
     <Compile Remove="Data\Migrations\20210330212454_EliminarObjetosElasticSearhc.Designer.cs" />
     <Compile Remove="Data\Migrations\20210330212931_EliminarObjetosElasticSearhc.cs" />
     <Compile Remove="Data\Migrations\20210330212931_EliminarObjetosElasticSearhc.Designer.cs" />
+    <Compile Remove="Data\Migrations\20211110231112_LFConfigMoreProps.cs" />
+    <Compile Remove="Data\Migrations\20211110231112_LFConfigMoreProps.Designer.cs" />
+    <Compile Remove="Data\Migrations\20211110231337_LFConfigMoreProps.cs" />
+    <Compile Remove="Data\Migrations\20211110231337_LFConfigMoreProps.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

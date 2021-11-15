@@ -14,5 +14,6 @@ namespace PIKA.Servicio.Contenido.Interfaces
         Task<List<Elemento>> ObtenerPaginadoByIdsAsync(ConsultaAPI q);
         Task<List<string>> Purgar();
         Task<int> ACLPuntoMontaje(string PuntoMontajeId);
+        Task ActualizaVersion(string Id, string VersionId);
     }
 }

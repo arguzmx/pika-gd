@@ -35,6 +35,7 @@ namespace PIKA.Servicio.Contenido
 
         public static string TablaGestorSMB { get => $"{esquema}gestorsmb"; }
         public static string TablaGestorLocal { get => $"{esquema}gestorlocal"; }
+        public static string TablaGestorLaserfiche { get => $"{esquema}gestorlf"; }
 
         public static string TablaGestorAzure { get => $"{esquema}gestorazure"; }
 
@@ -110,6 +111,8 @@ namespace PIKA.Servicio.Contenido
         /// </summary>
         public DbSet<GestorLocalConfig> GestorLocalConfig { get; set; }
 
+        public DbSet<GestorLaserficheConfig> GestorLaserficheConfig { get; set; }
+
         /// <summary>
         /// Configuración del gestor de E/S SMB
         /// </summary>
@@ -143,6 +146,7 @@ namespace PIKA.Servicio.Contenido
             builder.ApplyConfiguration<GestorLocalConfig>(new DbConfigGestorLocal());
             builder.ApplyConfiguration<GestorSMBConfig>(new DbConfigGestorSMB());
             builder.ApplyConfiguration<GestorAzureConfig>(new DbConfigGestorAzure());
+            builder.ApplyConfiguration<GestorLaserficheConfig>(new DbConfigGestorLaserfiche());
             builder.ApplyConfiguration<ElementoTransaccionCarga>(new DbConfElementoTransaccionCarga());
             builder.ApplyConfiguration<PermisosPuntoMontaje>(new DbConfPermisosPuntoMontaje());
 

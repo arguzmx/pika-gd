@@ -16,7 +16,7 @@ namespace PIKA.Modelo.Contenido.Extensiones
                 Ancho = 0,
                 EsImagen = parte.EsImagen,
                 Extension = parte.Extension,
-                Id = Id, 
+                Id = !string.IsNullOrEmpty(parte.IdentificadorExterno) ? parte.IdentificadorExterno :  Id,  // POr ejemplo laserfiche
                 Indice = parte.Indice,
                 Nombre = parte.NombreOriginal,
                 Rotacion = 0,

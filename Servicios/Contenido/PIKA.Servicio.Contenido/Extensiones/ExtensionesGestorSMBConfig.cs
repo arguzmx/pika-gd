@@ -28,5 +28,21 @@ namespace PIKA.Servicio.Contenido
             return d;
         }
 
+        public static GestorLaserficheConfig Copia(this GestorLaserficheConfig d)
+        {
+            if (d == null) return null;
+            var c = new GestorSMBConfig()
+            {
+                VolumenId = d.VolumenId,
+                Ruta = d.Ruta,
+            };
+
+            if (d.Volumen != null)
+            {
+                c.Volumen = d.Volumen.Copia();
+            }
+            return d;
+        }
+
     }
 }
