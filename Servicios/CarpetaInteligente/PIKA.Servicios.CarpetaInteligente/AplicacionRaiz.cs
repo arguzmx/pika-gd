@@ -12,8 +12,8 @@ namespace PIKA.Servicio.Contenido
             Aplicacion a = new Aplicacion()
             {
                 Id = ConstantesAppContenido.APP_ID,
-                Descripcion = "Permite la gestión de carpetas inteligentes",
-                Nombre = "Administrador de carpetas inteligentes",
+                Descripcion = "Permite la gestión de contenido de la aplicación",
+                Nombre = "Administrador de contenido",
                 UICulture = "es-MX",
                 Version = Version,
                 ReleaseIndex = 0

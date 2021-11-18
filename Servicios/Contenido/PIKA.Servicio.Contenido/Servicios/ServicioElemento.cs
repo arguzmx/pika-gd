@@ -172,12 +172,12 @@ namespace PIKA.Servicio.Contenido.Servicios
                 }
                 else
                 {
-                    var lista = await this.repoVPM.ObtenerAsync(x => x.PuntoMontajeId == carpeta.PuntoMontajeId
-                    && x.VolumenId == entity.VolumenId);
-                    if(lista.Count == 0)
-                    {
-                        throw new ExDatosNoValidos($"Carpeta {entity.CarpetaId} no pertenece al volumen {entity.VolumenId}");
-                    }
+                    //var lista = await this.repoVPM.ObtenerAsync(x => x.PuntoMontajeId == carpeta.PuntoMontajeId
+                    //&& x.VolumenId == entity.VolumenId);
+                    //if(lista.Count == 0)
+                    //{
+                    //    throw new ExDatosNoValidos($"Carpeta {entity.CarpetaId} no pertenece al volumen {entity.VolumenId}");
+                    //}
 
                     if (await this.helperCarpetas.EsCarpetaEliminada(entity.CarpetaId))
                     {
