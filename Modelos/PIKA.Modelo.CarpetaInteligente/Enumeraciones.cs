@@ -6,7 +6,7 @@ namespace PIKA.Modelo.CarpetaInteligente
 {
     public enum TipoContenido
     {
-        Ninguno = 0, Documento = 1, Carpeta = 2, VinculoExpediente = 3
+        Ninguno = 0, Documento = 1, Carpeta = 2, VinculoExpediente = 3, Secreto
     }
 
     public enum TipoCaducidad
@@ -19,4 +19,15 @@ namespace PIKA.Modelo.CarpetaInteligente
     {
         Ninguna = 0, Segundos = 1, Minutos= 2, Horas=3, Dias=4, Meses=5
     }
+
+    public enum TipoEntidadAcceso
+    {
+        Usuario = 0, Grupo = 1
+    }
+
+    public enum TipoContenidoSecreto
+    {
+        Texto=0, Archivo=1
+    }
+
 }

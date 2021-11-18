@@ -25,6 +25,7 @@ namespace PIKA.Modelo.CarpetaInteligente
         public Expediente()
         {
             Contenido = new List<ContenidoBase>();
+            Permisos = new List<PermisoAcceso>();
         }
 
         /// <summary>
@@ -98,5 +99,10 @@ namespace PIKA.Modelo.CarpetaInteligente
         /// </summary>
         public List<ContenidoBase> Contenido { get; set; }
 
+
+        /// <summary>
+        /// LIsta de permisos de acceso a la entidad
+        /// </summary>
+        public List<PermisoAcceso> Permisos { get; set; }
     }
 }

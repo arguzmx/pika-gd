@@ -21,6 +21,7 @@ namespace PIKA.Modelo.CarpetaInteligente
         {
             TipoOrigenId = this.TipoOrigenDefault;
             Contenido = new List<ContenidoBase>();
+            Permisos = new List<PermisoAcceso>();
           }
 
         [XmlIgnore]
@@ -70,7 +71,7 @@ namespace PIKA.Modelo.CarpetaInteligente
         /// <summary>
         /// Valor fijo siempre debe ser el identificador de dominio
         /// </summary>
-        public string TipoOrigenId { get ; set ; }
+        public string TipoOrigenId { get; set; }
 
         /// <summary>
         /// Identificador único del dominio al que pertenece la carpeta
@@ -92,6 +93,11 @@ namespace PIKA.Modelo.CarpetaInteligente
         /// Lista de elementos contenidos a nivel raíz de la carpeta
         /// </summary>
         public List<ContenidoBase> Contenido { get; set; }
+
+        /// <summary>
+        /// LIsta de permisos de acceso a la entidad
+        /// </summary>
+        public List<PermisoAcceso> Permisos { get; set; }
 
     }
 }
