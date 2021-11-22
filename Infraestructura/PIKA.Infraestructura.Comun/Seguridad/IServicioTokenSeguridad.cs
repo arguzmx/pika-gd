@@ -14,5 +14,7 @@ namespace PIKA.Infraestructura.Comun.Seguridad
         Task DatosUsuarioSet(UsuarioAPI Usuario);
 
         Task<UsuarioAPI> DatosUsuarioGet(string Id);
+        Task<PermisoAplicacion> PermisosModuloId(string UserId, string DomainId, string ModuloId);
+
     }
 }

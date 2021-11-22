@@ -7,19 +7,8 @@ namespace PIKA.Modelo.CarpetaInteligente
     /// <summary>
     /// Permisos de acceso a las entidades
     /// </summary>
-    public class PermisoAcceso
+    public class PermisoAcceso: Persona
     {
-
-        /// <summary>
-        /// Identificador único del grupo o usuario de acceso
-        /// </summary>
-        public string Id { get; set; }
-
-        /// <summary>
-        /// Tipo de entida de acceso
-        /// </summary>
-        public TipoEntidadAcceso Tipo { get; set; }
-
         /// <summary>
         /// Permite leer el contenido  y metadatos de la entidad
         /// </summary>

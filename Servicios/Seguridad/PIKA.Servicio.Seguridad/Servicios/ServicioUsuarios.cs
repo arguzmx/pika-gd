@@ -119,9 +119,9 @@ namespace PIKA.Servicio.Seguridad.Servicios
                     throw new ExLoginInfoInvalida($"p:{entity.password}");
                 }
 
-                if (!ValidadorUsuario.IsValidEmail(entity.email))
+                if (!ValidadorUsuario.IsValidEmail(entity.username))
                 {
-                    throw new ExLoginInfoInvalida($"e:{entity.email}");
+                    throw new ExLoginInfoInvalida($"e:{entity.username}");
                 }
 
                 if (!ValidadorUsuario.UsernameValido(entity.username))
@@ -131,7 +131,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
                 ApplicationUser tmp = await repoAppUser.UnicoAsync(
                     x => x.NormalizedUserName == entity.username.ToUpper() ||
-                    x.NormalizedEmail == entity.email.ToUpper());
+                    x.NormalizedEmail == entity.username.ToUpper());
                 if (tmp != null)
                 {
                     throw new ExElementoExistente(entity.username);
@@ -143,7 +143,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
                 {
                     Id = Guid.NewGuid().ToString(),
                     UserName = entity.username,
-                    Email = entity.email,
+                    Email = entity.username,
                     AccessFailedCount = 0,
                     ConcurrencyStamp = Guid.NewGuid().ToString(),
                     EmailConfirmed = false,
@@ -152,7 +152,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
                     PhoneNumberConfirmed = false,
                     TwoFactorEnabled = false,
                     NormalizedUserName = entity.username.ToUpper(),
-                    NormalizedEmail = entity.email.ToUpper(),
+                    NormalizedEmail = entity.username.ToUpper(),
                     Inactiva = false,
                     Eliminada = false
                 };
@@ -188,7 +188,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine($"{ex}");
                 throw ex;
             }
         }
@@ -634,16 +634,17 @@ namespace PIKA.Servicio.Seguridad.Servicios
             }
 
             Query = GetDefaultQuery(Query);
+            //Console.WriteLine($"--->>{nombre}");
 
-            var resultados = await this.repo.ObtenerAsync(x => ((x.name ?? "") + (x.nickname ?? "") + (x.email ?? "") +
-            (x.family_name ?? "") + (x.given_name ?? "") + (x.username ?? "")).Contains(nombre));
+            //var resultados = await this.repo.ObtenerAsync(x => ((x.name ?? "") + (x.nickname ?? "") + (x.email ?? "") +
+            //(x.family_name ?? "") + (x.given_name ?? "") + (x.username ?? "")).Contains(nombre));
 
-
-            List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
+            var usuarios = UDT.Context.PropiedadesUsuario.Where(x=>x.username.Contains(nombre, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            List<ValorListaOrdenada> l = usuarios.Select(x => new ValorListaOrdenada()
             {
                 Id = x.UsuarioId,
                 Indice = 0,
-                Texto = x.email + $" [{(x.username ?? "")}] {(x.name ?? "")} {(x.given_name ?? "")} {(x.family_name ?? "")}"
+                Texto =  $"{(x.name ?? "")} {(x.given_name ?? "")} {(x.family_name ?? "")} [{x.username}]"
             }).ToList();
 
             return l.OrderBy(x => x.Texto).ToList();
@@ -657,7 +658,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             {
                 Id = x.UsuarioId,
                 Indice = 0,
-                Texto = x.email + $" [{(x.username ?? "")}] {(x.name ?? "")} {(x.given_name ?? "")} {(x.family_name ?? "")}"
+                Texto = $"{(x.name ?? "")} {(x.given_name ?? "")} {(x.family_name ?? "")} [{x.username}]"
             }).ToList();
 
             return l.OrderBy(x => x.Texto).ToList();

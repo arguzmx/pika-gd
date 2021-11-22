@@ -282,6 +282,12 @@ namespace PIKA.Servicio.Contenido.Gestores
         {
             string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
             string rutaMiniaturas = Path.Combine(ruta, "ocr");
+            
+            if (!Directory.Exists(rutaMiniaturas))
+            {
+                Directory.CreateDirectory(rutaMiniaturas);
+            }
+
             string nombreArchivo = ParteId + ".TXT";
             string rutaFinal = Path.Combine(rutaMiniaturas, nombreArchivo);
             await File.WriteAllBytesAsync(rutaFinal, contenido);

@@ -19,12 +19,12 @@ namespace PIKA.Modelo.CarpetaInteligente
         /// <summary>
         /// Especifica el tipo de caducidad
         /// </summary>
-        public TipoCaducidad TipoCaducidad { get; set; }
+        public TipoPeriodicidad TipoCaducidad { get; set; }
 
         /// <summary>
         /// Unidad de medida para el intevalo de caducidad
         /// </summary>
-        public UnidadesCaducidad UnidadesCaducidad { get; set; }
+        public UnidadesTiempo UnidadesTiempo { get; set; }
 
         /// <summary>
         /// Número de unidades del intervalo para calcular la caducidad

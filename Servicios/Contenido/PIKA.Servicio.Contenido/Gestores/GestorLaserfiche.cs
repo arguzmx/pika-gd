@@ -286,7 +286,7 @@ namespace PIKA.Servicio.Contenido.Gestores
         {
             string hex = int.Parse(ParteId).ToString("x").PadLeft(8, '0');
             string rutafinal = Path.Combine(Ruta(ParteId, ".tif"), $"{hex}.TXT");
-            return LeeArchivo(rutafinal.ToUpper());
+            return LeeArchivoTexto(rutafinal.ToUpper());
         }
 
 
@@ -299,5 +299,20 @@ namespace PIKA.Servicio.Contenido.Gestores
         {
             throw new NotImplementedException();
         }
+
+        private async Task<byte[]> LeeArchivoTexto(string ruta)
+        {
+            string ocr = null;
+            if (File.Exists(ruta))
+            {
+                var bytes = await File.ReadAllBytesAsync(ruta);
+                ocr = Encoding.Unicode.GetString(bytes);
+
+            }
+
+            return ocr != null ? Encoding.UTF8.GetBytes(ocr) : null;
+        }
+
+
     }
 }

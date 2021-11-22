@@ -30,6 +30,7 @@ namespace PIKA.Servicio.Contenido.Servicios
         private IRepositorioAsync<VolumenPuntoMontaje> repoVPM;
         private UnidadDeTrabajo<DbContextContenido> UDT;
         public UsuarioAPI usuario { get; set; }
+        public PermisoAplicacion permisos { get; set; }
 
         public ServicioPuntoMontaje(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
@@ -198,6 +199,11 @@ namespace PIKA.Servicio.Contenido.Servicios
                     {
                         esAdmin = acceso.Admin;
                     }
+                }
+
+                if (this.permisos.Admin)
+                {
+                    esAdmin = true;
                 }
 
                 if (!esAdmin)

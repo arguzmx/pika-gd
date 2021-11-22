@@ -93,68 +93,66 @@ namespace PikaOCR
                             parte.Id = parte.IdentificadorExterno;
                         }
 
-                        if (!parte.Indexada)
+                        var idExistente = await _repoElastic.ExisteTextoCompleto(new ContenidoTextoCompleto() { ElementoId = parte.ElementoId, ParteId = parte.Id, VersionId = parte.VersionId });
+                        // la parte no jha sido indexada
+                        string nombreTemporal = x.NombreArchivoTemporal(parte);
+
+                        if (extensionesIndexado.IndexOf(parte.Extension.ToLower()) >= 0)
                         {
-                            var idExistente = await _repoElastic.ExisteTextoCompleto(new ContenidoTextoCompleto() { ElementoId = parte.ElementoId, ParteId = parte.Id, VersionId = parte.VersionId });
-                            // la parte no jha sido indexada
-                            string nombreTemporal = x.NombreArchivoTemporal(parte);
-
-                            if (extensionesIndexado.IndexOf(parte.Extension.ToLower()) >= 0)
+                            switch (parte.Extension.ToLower())
                             {
-                                switch (parte.Extension.ToLower())
-                                {
-                                    case ".pdf":
-                                        var (Exito, Rutas) = await x.TextoPDF(parte, nombreTemporal);
-                                        if (Exito)
-                                        {
-                                            int pagina = 1;
-                                            foreach (var t in Rutas)
-                                            {
-                                                if (string.IsNullOrEmpty(idExistente))
-                                                {
-                                                    await _repoElastic.IndexarTextoCompleto(parte.ParteAContenidoTextoCompleto(File.ReadAllText(t), elemento.PuntoMontajeId, elemento.CarpetaId, pagina));
-
-                                                } else
-                                                {
-                                                    await _repoElastic.ActualizarTextoCompleto(idExistente, parte.ParteAContenidoTextoCompleto(File.ReadAllText(t), elemento.PuntoMontajeId, elemento.CarpetaId, pagina));
-                                                }
-                                                
-                                                pagina++;
-                                            }
-                                            x.ElimninaArchivosOCR(nombreTemporal);
-                                            parte.Indexada = true;
-                                        }
-                                        else
-                                        {
-                                            parte.Indexada = false;
-                                        }
-
-                                        break;
-
-                                    default:
-                                        var resultadoImagen = await x.TextoImagen(parte, nombreTemporal);
-                                        if (resultadoImagen.Exito)
+                                case ".pdf":
+                                    var (Exito, Rutas) = await x.TextoPDF(parte, nombreTemporal);
+                                    if (Exito)
+                                    {
+                                        int pagina = 1;
+                                        foreach (var t in Rutas)
                                         {
                                             if (string.IsNullOrEmpty(idExistente))
                                             {
-                                                await _repoElastic.IndexarTextoCompleto(parte.ParteAContenidoTextoCompleto(File.ReadAllText(resultadoImagen.Ruta), elemento.PuntoMontajeId, elemento.CarpetaId));
+                                                await _repoElastic.IndexarTextoCompleto(parte.ParteAContenidoTextoCompleto(File.ReadAllText(t), elemento.PuntoMontajeId, elemento.CarpetaId, pagina));
+
                                             }
-                                            else {
-                                                await _repoElastic.ActualizarTextoCompleto(idExistente, parte.ParteAContenidoTextoCompleto(File.ReadAllText(resultadoImagen.Ruta), elemento.PuntoMontajeId, elemento.CarpetaId));
+                                            else
+                                            {
+                                                await _repoElastic.ActualizarTextoCompleto(idExistente, parte.ParteAContenidoTextoCompleto(File.ReadAllText(t), elemento.PuntoMontajeId, elemento.CarpetaId, pagina));
                                             }
-                                                
-                                            parte.Indexada = true;
+
+                                            pagina++;
+                                        }
+                                        x.ElimninaArchivosOCR(nombreTemporal);
+                                        parte.Indexada = true;
+                                    }
+                                    else
+                                    {
+                                        parte.Indexada = false;
+                                    }
+
+                                    break;
+
+                                default:
+                                    var resultadoImagen = await x.TextoImagen(parte, nombreTemporal);
+                                    if (resultadoImagen.Exito)
+                                    {
+                                        if (string.IsNullOrEmpty(idExistente))
+                                        {
+                                            await _repoElastic.IndexarTextoCompleto(parte.ParteAContenidoTextoCompleto(File.ReadAllText(resultadoImagen.Ruta), elemento.PuntoMontajeId, elemento.CarpetaId));
                                         }
                                         else
                                         {
-                                            parte.Indexada = false;
+                                            await _repoElastic.ActualizarTextoCompleto(idExistente, parte.ParteAContenidoTextoCompleto(File.ReadAllText(resultadoImagen.Ruta), elemento.PuntoMontajeId, elemento.CarpetaId));
                                         }
-                                        x.ElimninaArchivosOCR(nombreTemporal);
-                                        break;
-                                }
 
+                                        parte.Indexada = true;
+                                    }
+                                    else
+                                    {
+                                        parte.Indexada = false;
+                                    }
+                                    x.ElimninaArchivosOCR(nombreTemporal);
+                                    break;
                             }
- 
+
                         }
 
 

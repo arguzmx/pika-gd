@@ -98,7 +98,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             entity.Id = Guid.NewGuid().ToString();
             entity.Nombre = entity.Nombre.Trim();
             entity.Clave = entity.Clave.Trim();
-            entity.Descripcion = entity.Descripcion.Trim();
+            entity.Descripcion = string.IsNullOrEmpty(entity.Descripcion) ? "" : entity.Descripcion.Trim();
             if (!String.IsNullOrEmpty(entity.ElementoClasificacionId))
                 entity.ElementoClasificacionId = entity.ElementoClasificacionId.Trim();
             if (!String.IsNullOrEmpty(entity.CuadroClasifiacionId))
@@ -168,7 +168,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 {
                     throw new ExElementoExistente(entity.Clave);
                 }
-                logger.LogError(entity.Descripcion);
+                
                 o.Nombre = entity.Nombre.Trim();
                 o.Clave = entity.Clave.Trim();
                 o.DisposicionEntrada = entity.DisposicionEntrada;
@@ -176,7 +176,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 o.VigenciaTramite = entity.VigenciaTramite;
                 o.Posicion = entity.Posicion;
                 o.TipoDisposicionDocumentalId = entity.TipoDisposicionDocumentalId;
-                o.Descripcion = entity.Descripcion.Trim();
+                o.Descripcion = string.IsNullOrEmpty(entity.Descripcion) ? "" : entity.Descripcion.Trim();
 
                 UDT.Context.Entry(o).State = EntityState.Modified;
 

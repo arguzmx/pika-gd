@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Contenido;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Contenido.Interfaces;
@@ -27,13 +28,16 @@ namespace PIKA.GD.API.Controllers.Contenido
         private ILogger<PuntoMontajeController> logger;
         private IServicioPuntoMontaje servicioEntidad;
         private IProveedorMetadatos<PuntoMontaje> metadataProvider;
+        private readonly IServicioTokenSeguridad ServicioTokenSeguridad;
         public PuntoMontajeController(ILogger<PuntoMontajeController> logger,
             IProveedorMetadatos<PuntoMontaje> metadataProvider,
-            IServicioPuntoMontaje servicioEntidad)
+            IServicioPuntoMontaje servicioEntidad,
+            IServicioTokenSeguridad ServicioTokenSeguridad)
         {
             this.logger = logger;
             this.servicioEntidad = servicioEntidad;
             this.metadataProvider = metadataProvider;
+            this.ServicioTokenSeguridad = ServicioTokenSeguridad;
         }
 
 
@@ -103,10 +107,17 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Paginado<PuntoMontaje>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
         {
-            
+            var permiso = await ServicioTokenSeguridad.PermisosModuloId(this.UsuarioId, this.DominioId, "PERMISOS-CONTENIDO")
+            .ConfigureAwait(false);
+
+ 
             servicioEntidad.usuario = this.usuario;
+            servicioEntidad.permisos = permiso;
+
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidadSinDominio());
+            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(query.Filtros));
+
             var data = await servicioEntidad.ObtenerPaginadoAsync(query).ConfigureAwait(false);
             return Ok(data);
         }

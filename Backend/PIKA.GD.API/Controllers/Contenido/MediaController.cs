@@ -33,7 +33,7 @@ namespace PIKA.GD.API.Controllers.Contenido
             this.logger = logger;
         }
 
-        [ResponseCache(Duration = 300)]
+        // [ResponseCache(Duration = 300)]
         [HttpGet("pagina/{VolumenId}/{ElementoId}/{VersionId}/{ParteId}/{Extension}", Name = "getPagina")]
         public async Task<IActionResult> GetPage(string VolumenId, string ElementoId, 
             string VersionId, string ParteId, string Extension)
@@ -50,7 +50,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         }
 
 
-        [ResponseCache(Duration = 300)]
+        // [ResponseCache(Duration = 300)]
         [HttpGet("mini/{VolumenId}/{ElementoId}/{VersionId}/{ParteId}/{Extension}", Name = "getPaginaMiniature")]
         public async Task<IActionResult> GetPageMini(string VolumenId, string ElementoId,
             string VersionId, string ParteId, string Extension)

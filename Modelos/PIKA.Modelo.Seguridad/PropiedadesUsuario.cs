@@ -31,7 +31,7 @@ namespace PIKA.Modelo.Seguridad
         /// </summary>
         [Prop(Required: true, OrderIndex: 10)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
-        [ValidString(minlen: 2, maxlen: 200)]
+        [ValidString(minlen: 6, maxlen: 200, regexp: ValidStringAttribute.REGEXP_EMAIL)]
         public string username{ get; set; }
 
 
@@ -43,14 +43,6 @@ namespace PIKA.Modelo.Seguridad
         [VistaUI(ControlUI: ControlUI.HTML_PASSWORD_CONFIRM, Accion: Acciones.add)]
         [ValidString(minlen: 6, maxlen: 50, regexp: ValidStringAttribute.REGEXP_USERPASS)]
         public string password { get; set; }
-
-        /// <summary>
-        ///  OIDC Claims se alamcenana en la tabla AspNetUserClaims
-        /// </summary>
-        [Prop(Required: true, OrderIndex: 30)]
-        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
-        [ValidString(minlen: 2, maxlen: 200, regexp: ValidStringAttribute.REGEXP_EMAIL)]
-        public string email { get; set; }
 
         /// <summary>
         /// Especifica si la cuenta se encuentra inactiva
@@ -106,8 +98,14 @@ namespace PIKA.Modelo.Seguridad
         [JsonPropertyName("EstadoId")]
         public string estadoid { get; set; }
 
-     
 
+        /// <summary>
+        ///  OIDC Claims se alamcenana en la tabla AspNetUserClaims
+        /// </summary>
+        [Prop(Required: true, OrderIndex: 150)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.none)]
+        [ValidString(minlen: 2, maxlen: 200, regexp: ValidStringAttribute.REGEXP_EMAIL)]
+        public string email { get; set; }
         /// <summary>
         /// Especifica si la cuenta ha sido marcada para eliminar
         /// </summary>

@@ -89,7 +89,7 @@ namespace PIKA.GD.API.Servicios
         public async Task<DefinicionSeguridadUsuario> ObtenerSeguridadUsuario(string UserId, string DomainId)
         {
 
-            // Logger.LogError(UserId + "---------");
+            Logger.LogError(UserId + "---------");
             string key = ObtieneClaveCachePermisosUsuario(UserId);
             // Obtiene la entrada en cache de los permisos del usuario
 
@@ -186,8 +186,11 @@ namespace PIKA.GD.API.Servicios
             return p?.ToList();
         }
 
-
-
-
+        public async Task<PermisoAplicacion> PermisosModuloId(string UserId, string DomainId, string ModuloId)
+        {
+            var acl = await  this.ObtenerSeguridadUsuario(UserId, DomainId);
+            var permiso = acl.Permisos.Where(x => x.ModuloId == ModuloId && x.DominioId == DomainId ).FirstOrDefault();
+            return permiso;
+        }
     }
 }

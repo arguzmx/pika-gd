@@ -11,6 +11,7 @@ namespace PIKA.Servicio.Contenido.Interfaces
    public interface IServicioPuntoMontaje : IServicioRepositorioAsync<PuntoMontaje, string>,
         IServicioValorTextoAsync<PuntoMontaje>
     {
+        PermisoAplicacion permisos { get; set; }
         UsuarioAPI usuario { get; set; }
         Task<List<string>> Purgar();
     }

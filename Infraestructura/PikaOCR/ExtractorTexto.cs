@@ -164,7 +164,7 @@ namespace PikaOCR
 
         public void ElimninaArchivosOCR(string file)
         {
-            Console.WriteLine(file);
+     
             FileInfo fi = new FileInfo(file);
             if (File.Exists(file))
             {
