@@ -201,7 +201,7 @@ namespace PIKA.Servicio.Contenido.Servicios
                     }
                 }
 
-                if (this.permisos.Admin)
+                if (this.permisos !=null && this.permisos.Admin)
                 {
                     esAdmin = true;
                 }
