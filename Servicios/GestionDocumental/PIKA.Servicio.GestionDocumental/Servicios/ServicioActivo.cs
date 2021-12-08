@@ -453,9 +453,6 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
                 logger.LogInformation("Reporte");
                 ActivoAcervo g = new ActivoAcervo
                 {
-                    Activo = await repo.UnicoAsync(x => x.Id == ActivoId, null,
-                    y => y.Include(z => z.EntradaClasificacion)
-                    .ThenInclude(a => a.DisposicionEntrada)),
                     Dominio = Dominio,
                     FechaApertura = "",
                     FechaCierre = "",
@@ -466,7 +463,28 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
                     Valoraciones = new List<TipoValoracionDocumental>()
                 };
 
+
+                g.Activo = await repo.UnicoAsync(x => x.Id == ActivoId);
+
                 if (g.Activo == null) throw new EXNoEncontrado(ActivoId);
+
+                var ec = await this.UDT.Context.EntradaClasificacion.Where(x => x.Id == g.Activo.EntradaClasificacionId).FirstOrDefaultAsync();
+                if (ec == null)
+                {
+                    Console.WriteLine($"Entrada clasificacion nula");
+                    if (ec == null) throw new EXNoEncontrado($"EntradaClasificacion: {g.Activo.EntradaClasificacionId}");
+                }
+                
+
+                var di = await this.UDT.Context.TipoDisposicionDocumental.Where(x => x.Id == ec.TipoDisposicionDocumentalId).FirstOrDefaultAsync();
+                if (di == null)
+                {
+                    Console.WriteLine($"Disposición nula");
+                    if (ec == null) throw new EXNoEncontrado($"TipoDisposicionDocumental: {ec.TipoValoracionDocumentalId}");
+                }
+
+                g.Activo.EntradaClasificacion = ec;
+                g.Activo.EntradaClasificacion.DisposicionEntrada = di;
 
                 var r = await ServicioReporteEntidad.UnicoAsync(x => x.Id == "caratulaactivo");
                 if (r == null) throw new EXNoEncontrado("reporte: caratulaactivo");
