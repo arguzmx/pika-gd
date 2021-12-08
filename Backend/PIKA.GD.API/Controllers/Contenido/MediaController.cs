@@ -46,7 +46,9 @@ namespace PIKA.GD.API.Controllers.Contenido
             Byte[] contenido = await gestor.LeeBytes(ElementoId, ParteId, VersionId, VolumenId, Extension).ConfigureAwait(false);
 
             if (contenido == null) return NotFound();
-            return File(contenido, MimeTypes.GetMimeType($"file{Extension}"));
+
+            this.HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+            return File(contenido, MimeTypes.GetMimeType($"{ParteId}{Extension}"), $"{ParteId}{Extension}");
         }
 
 
@@ -63,7 +65,8 @@ namespace PIKA.GD.API.Controllers.Contenido
             Byte[] contenido = await gestor.LeeThumbnailBytes(ElementoId, ParteId, VersionId, VolumenId, Extension).ConfigureAwait(false);
 
             if (contenido == null) return NotFound();
-            return File(contenido, MimeTypes.GetMimeType($"file{Extension}"));
+            this.HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+            return File(contenido, MimeTypes.GetMimeType($"{ParteId}{Extension}"), $"{ParteId}{Extension}");
         }
 
      }

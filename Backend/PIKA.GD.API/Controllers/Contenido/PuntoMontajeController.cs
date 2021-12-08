@@ -54,6 +54,16 @@ namespace PIKA.GD.API.Controllers.Contenido
         }
 
 
+        [HttpGet("permisos/{id}", Name = "PermisosPuntoMontaje")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<PermisosPuntoMontaje>> GetPermisos(string id)
+        {
+            servicioEntidad.usuario = this.usuario;
+            var permisos = await this.servicioEntidad.ObtienePerrmisos(id, TenantId).ConfigureAwait(false);
+            return Ok(permisos);
+        }
+
         /// <summary>
         ///  Añade un nuevo punto montaje 
         /// </summary>

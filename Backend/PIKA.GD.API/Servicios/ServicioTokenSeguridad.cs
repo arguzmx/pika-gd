@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PIKA.GD.API.Servicios
@@ -76,7 +77,7 @@ namespace PIKA.GD.API.Servicios
             {
                 cache.Remove(key);
             }
-            cache.Add<UsuarioAPI>(key, usuario, TimeSpan.FromMinutes(Config.seguridad_cache_segundos));
+            cache.Add<UsuarioAPI>(key, usuario, DateTimeOffset.UtcNow.AddSeconds(Config.seguridad_cache_segundos));
         }
 
         public async Task<UsuarioAPI> DatosUsuarioGet(string Id)
@@ -89,7 +90,6 @@ namespace PIKA.GD.API.Servicios
         public async Task<DefinicionSeguridadUsuario> ObtenerSeguridadUsuario(string UserId, string DomainId)
         {
 
-            Logger.LogError(UserId + "---------");
             string key = ObtieneClaveCachePermisosUsuario(UserId);
             // Obtiene la entrada en cache de los permisos del usuario
 
@@ -98,49 +98,50 @@ namespace PIKA.GD.API.Servicios
             List<PermisoAplicacion> permisos = new List<PermisoAplicacion>();
             
             if (Config.seguridad_almacenar_cache) cacheUcuario = await cache.GetAsync<DefinicionSeguridadUsuario>(key).ConfigureAwait(false);
-            cacheUcuario = null;
+
             // NO hay permisos en el cache
             if (cacheUcuario == null)
             {
-                List <PermisoAplicacion> permisosU = await ObtienePermisosUsuario(DomainId, UserId).ConfigureAwait(false);
+                List<PermisoAplicacion> permisosU = await ObtienePermisosUsuario(DomainId, UserId).ConfigureAwait(false);
+
+
                 if (permisosU != null) permisos.AddRange(permisosU);
 
                 // Obtiene los roles del usuario y sus permisos
                 string keyroles = ObtieneClaveCacheRolesUsuario(UserId);
-                List<string> roles = null;
-                if (Config.seguridad_almacenar_cache)  roles = await cache.GetAsync<List<string>>(keyroles).ConfigureAwait(false);
-
+                List<string> roles = await cache.GetAsync<List<string>>(keyroles).ConfigureAwait(false);
+                
                 // Los roles no estan en el cache;
                 if (roles == null)
                 {
-                    
+
                     // Instenta obtenerlos del repositorio
                     roles = await this.ServicioUsuariosRol.IdentificadoresRolesUsuario(UserId).ConfigureAwait(false);
 
-                    if (Config.seguridad_almacenar_cache && (roles != null ))
+                    if (Config.seguridad_almacenar_cache && (roles != null))
                     {
-                        cache.Add<List<string>>(keyroles, roles, TimeSpan.FromMinutes(Config.seguridad_cache_segundos));
+                        cache.Add<List<string>>(keyroles, roles, DateTimeOffset.UtcNow.AddSeconds(Config.seguridad_cache_segundos));
                     }
                 }
 
                 if (roles != null)
                 {
-                    
+
                     // Revisa los permisos para cada rol
                     foreach (var r in roles)
                     {
 
-                         // Logger.LogError(r + " RRR-------");
+                        // Logger.LogError(r + " RRR-------");
                         // Verifica si está en cache
                         string rolkey = this.ObtieneClaveCachePermisosRol(r);
                         List<PermisoAplicacion> prol = null;
                         if (Config.seguridad_almacenar_cache) prol = await cache.GetAsync<List<PermisoAplicacion>>(rolkey).ConfigureAwait(false);
-                        
+
                         if (prol == null)
                         {
                             prol = await ObtienePermisosRol(DomainId, r).ConfigureAwait(false);
                             // Logger.LogError($"{r}, {prol.Count}");
-                            if (Config.seguridad_almacenar_cache && (prol != null ))
+                            if (Config.seguridad_almacenar_cache && (prol != null))
                             {
                                 cache.Add<List<PermisoAplicacion>>(rolkey, prol, TimeSpan.FromMinutes(Config.seguridad_cache_segundos));
                             }
@@ -155,17 +156,20 @@ namespace PIKA.GD.API.Servicios
                 {
                     UsuarioId = UserId,
                     EsAdmin = esAdmin,
-                    Permisos = permisos, 
-                    DominioId = DomainId, 
+                    Permisos = permisos,
+                    DominioId = DomainId,
                     OUId = ""
                 };
 
                 if (Config.seguridad_almacenar_cache && (permisos.Count > 0))
                 {
-                    cache.Add<DefinicionSeguridadUsuario>(key, cacheUcuario, TimeSpan.FromMinutes(Config.seguridad_cache_segundos));
+                    Logger.LogDebug($"Cache permisos usuario {UserId }");
+                    cache.Add<DefinicionSeguridadUsuario>(key, cacheUcuario, DateTimeOffset.UtcNow.AddSeconds(Config.seguridad_cache_segundos));
                 }
             }
-     
+
+           // Logger.LogError(JsonSerializer.Serialize(permisos, new JsonSerializerOptions() { WriteIndented = true }));
+
             return cacheUcuario;
 
         }

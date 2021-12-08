@@ -15,7 +15,7 @@ using RepositorioEntidades;
 
 namespace PIKA.GD.API.Controllers.Seguridad
 {
-    
+
     [Authorize]
     [ApiVersion("1.0")]
     [ApiController]
@@ -48,6 +48,15 @@ namespace PIKA.GD.API.Controllers.Seguridad
             return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
         }
 
+
+        [HttpPost("contrasena", Name = "ActualizaContrasena")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        public async Task<ActionResult<MetadataInfo>> ActualizaContrasena([FromBody] ActualizaContrasenaUsuario data)
+        {
+            int valor = await servicioEntidad.ActualizarContrasena(data.Id, data.Nueva).ConfigureAwait(false);
+            return StatusCode(valor);
+        }
 
         /// <summary>
         /// Crea un nuevo usuario

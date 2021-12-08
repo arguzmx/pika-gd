@@ -138,6 +138,25 @@ namespace PIKA.Modelo.Contenido
         [LinkViewParameter(Vista: "visorcontenido")]
         public string VersionId { get; set; }
 
+        /// <summary>
+        /// Identifica el tipo del elemento mostrado, nulo para tipo defautl
+        /// o un tipo asociado al visor por ejemplo, expediente, cfdi, entro otros
+        /// puede utilizarse también para determinarl el ícono del elemento
+        /// </summary>
+        [Prop(Required: false, OrderIndex: 1022, Visible: false, ShowInTable: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+        public string TipoElemento { get; set; }
+
+
+        /// <summary>
+        /// Esta Identificador permite asociar el elemento a un sistema externo
+        /// como clave de búsqueda
+        /// </summary>
+        [Prop(Required: false, OrderIndex: 1023, Visible: false, ShowInTable: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+        public string IdExterno { get; set; }
+
+
 
         public string TipoOrigenDefault =>  "";
 

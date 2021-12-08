@@ -5,6 +5,8 @@ using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace PIKA.Modelo.Contenido
 {
@@ -76,7 +78,8 @@ namespace PIKA.Modelo.Contenido
         [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
         public bool GestionMetadatos { get; set; }
 
-
+        [JsonIgnore]
+        [XmlIgnore]
         public PuntoMontaje PuntoMontaje { get; set; }
 
     }

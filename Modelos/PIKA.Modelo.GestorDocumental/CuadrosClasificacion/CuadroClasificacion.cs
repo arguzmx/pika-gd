@@ -74,7 +74,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// El tipo de orígen en para este modelo es el dominio a la que pertenece el cuadro de clasificacion
         /// </summary>
-        [Prop(Required: true, OrderIndex: 1000, Contextual: true, ShowInTable: false, Searchable: false, DefaultValue: ConstantesModelo.IDORIGEN_DOMINIO)]
+        [Prop(Required: true, Visible: false,  OrderIndex: 1000, Contextual: true, ShowInTable: false, Searchable: false, DefaultValue: ConstantesModelo.IDORIGEN_DOMINIO)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string TipoOrigenId { get; set; }
 

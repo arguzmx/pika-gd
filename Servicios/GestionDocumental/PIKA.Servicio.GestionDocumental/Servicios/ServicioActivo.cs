@@ -396,7 +396,7 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
                 List<EntradaClasificacion> l = await repoEC.ObtenerAsync(x => idsEntrada.Contains(x.Id.Trim()));
                 foreach (var ec in l)
                 {
-                    cache.Add<EntradaClasificacion>($"ec-{ec.Id}", ec, TimeSpan.FromMinutes(5));
+                    cache.Add<EntradaClasificacion>($"ec-{ec.Id}", ec, DateTimeOffset.UtcNow.AddSeconds(60));
                 }
             }
 

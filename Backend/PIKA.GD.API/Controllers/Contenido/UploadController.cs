@@ -175,43 +175,53 @@ namespace PIKA.GD.API.Controllers.Contenido
         [HttpPost()]
         public async Task<IActionResult> PostContenido([FromForm] ElementoCargaContenido model)
         {
-
-            if (tamanoValido(model.file.Length, FiltroArchivos.minimo, FiltroArchivos.maximo))
+            try
             {
-                if (extensionValida(model.file, FiltroArchivos.extensionesValidas))
+                var entrada = await servicioTransaccionCarga.CrearAsync(model.ConvierteETC()).ConfigureAwait(false);
+
+                string ruta = Path.Combine(configuracionServidor.ruta_cache_fisico, model.TransaccionId);
+                if (!Directory.Exists(ruta)) Directory.CreateDirectory(ruta);
+                string filePath = Path.Combine(ruta, entrada.Id + Path.GetExtension(model.file.FileName));
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-
-                    var entrada = await servicioTransaccionCarga.CrearAsync(model.ConvierteETC()).ConfigureAwait(false);
-
-                    string ruta = Path.Combine(configuracionServidor.ruta_cache_fisico, model.TransaccionId);
-                    if (!Directory.Exists(ruta)) Directory.CreateDirectory(ruta);
-                    string filePath = Path.Combine(ruta, entrada.Id + Path.GetExtension(model.file.FileName));
-
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await model.file.CopyToAsync(stream).ConfigureAwait(false);
-                    }
-
-                    if (System.IO.File.Exists(filePath))
-                    {
-                        return Ok();
-
-                    }
-                    else
-                    {
-                        return StatusCode((int)HttpStatusCode.InternalServerError, "Error de escritura");
-                    }
-
+                    await model.file.CopyToAsync(stream).ConfigureAwait(false);
                 }
-                else
-                    ModelState.AddModelError(model.file.Name, "extensión inválida");
-            }
-            else
-            {
-                ModelState.AddModelError(model.file.Name, "tamaño inválido");
-            }
 
-            return BadRequest(ModelState);
+                if (System.IO.File.Exists(filePath))
+                {
+                    return Ok();
+
+                } else
+                {
+                    return StatusCode((int)HttpStatusCode.InternalServerError, "Error de escritura");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+
+            }
+           
+
+            //if (tamanoValido(model.file.Length, FiltroArchivos.minimo, FiltroArchivos.maximo))
+            //{
+            //    if (extensionValida(model.file, FiltroArchivos.extensionesValidas))
+            //    {
+
+
+
+            //    }
+            //    else
+            //        ModelState.AddModelError(model.file.Name, "extensión inválida");
+            //}
+            //else
+            //{
+            //    ModelState.AddModelError(model.file.Name, "tamaño inválido");
+            //}
+
+            //return BadRequest(ModelState);
         }
 
         private bool extensionValida(IFormFile file, ICollection<string> extensionesV)

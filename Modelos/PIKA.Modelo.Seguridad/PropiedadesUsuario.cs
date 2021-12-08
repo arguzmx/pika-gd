@@ -16,6 +16,7 @@ namespace PIKA.Modelo.Seguridad
     [Entidad(EliminarLogico: true, 
         TokenApp: ConstantesAppSeguridad.APP_ID, 
         TokenMod: ConstantesAppSeguridad.MODULO_USUARIOS)]
+    [LinkView(Titulo: "cambiarcontrasena", Icono: "vpn_key", Vista: "cambiarcontrasena", RequireSeleccion: true, Tipo: TipoVista.EventoApp)]
     public class PropiedadesUsuario
     {
 

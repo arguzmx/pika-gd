@@ -75,7 +75,7 @@ namespace PIKA.Modelo.Contenido
         /// Nombre original de la parte, corresponde con el nombre del archivo electrónico
         /// o un nombre especificado por el usuario para la parte
         /// </summary>
-        [Ignore]
+        [Keyword(Name = "n")]
         public string NombreOriginal { get; set; }
 
         /// <summary>

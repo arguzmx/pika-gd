@@ -21,6 +21,7 @@ namespace PIKA.Servicio.Seguridad.Interfaces
 
         Task<PropiedadesUsuario> CrearAsync(string dominioId, string UnidadOrgId, PropiedadesUsuario entity, CancellationToken cancellationToken = default);
         Task<int> ActutalizarContrasena(string UsuarioId, string Actual, string nueva);
+        Task<int>  ActualizarContrasena(string UsuarioId, string nueva);
 
         Task<IPaginado<PropiedadesUsuario>> ObtenerPaginadoIdsAsync(List<string> ids, Consulta Query,
             Func<IQueryable<PropiedadesUsuario>,

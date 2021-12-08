@@ -43,7 +43,58 @@ namespace PIKA.Servicio.Contenido.Servicios
         }
 
 
+        public async Task<PermisosPuntoMontaje> ObtienePerrmisos(string pmId, string uoId)
+        {
+            try
+            {
 
+
+            bool esAdminOU = false;
+            var acceso = usuario.Accesos.Where(x => x.OU == uoId).FirstOrDefault();
+            if (acceso != null)
+            {
+                esAdminOU = acceso.Admin;
+            }
+
+            PermisosPuntoMontaje p = new PermisosPuntoMontaje() { Crear = false,  Actualizar  = false,  Elminar = false,   Leer = false, 
+                GestionContenido = false, GestionMetadatos = false, PuntoMontajeId = pmId
+            };
+
+            if (usuario.AdminGlobal || esAdminOU)
+            {
+                p.Actualizar = true;
+                p.Elminar = true;
+                p.Leer = true;
+                p.GestionContenido = true;
+                p.GestionMetadatos = true;
+                p.Crear = true;
+
+            } else
+            {
+                foreach(var r in usuario.Roles)
+                {
+                    var pm = await this.UDT.Context.PermisosPuntoMontaje.Where(x => x.DestinatarioId == r && x.PuntoMontajeId == pmId).SingleOrDefaultAsync();
+                    if (pm != null)
+                    {
+                        p.Actualizar = p.Actualizar || pm.Actualizar;
+                        p.Elminar = p.Elminar || pm.Elminar;
+                        p.Leer = p.Leer || pm.Leer;
+                        p.GestionContenido = p.GestionContenido || pm.GestionContenido;
+                        p.GestionMetadatos = p.GestionMetadatos || pm.GestionMetadatos;
+                        p.Crear = p.Crear || pm.Crear;
+                    }
+                }
+            }
+
+            return p;
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.ToString());
+                throw (ex);
+            }
+        }
 
         public async Task<bool> Existe(Expression<Func<PuntoMontaje, bool>> predicado)
         {

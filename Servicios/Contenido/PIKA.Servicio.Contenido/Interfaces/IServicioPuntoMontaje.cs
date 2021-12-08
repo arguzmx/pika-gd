@@ -14,5 +14,6 @@ namespace PIKA.Servicio.Contenido.Interfaces
         PermisoAplicacion permisos { get; set; }
         UsuarioAPI usuario { get; set; }
         Task<List<string>> Purgar();
+        Task<PermisosPuntoMontaje> ObtienePerrmisos(string id, string uoId);
     }
 }

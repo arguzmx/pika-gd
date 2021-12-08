@@ -49,6 +49,11 @@ namespace PikaOCR
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            if(!Directory.Exists(_opciones.Value.ruta_temporal))
+            {
+                Directory.CreateDirectory(_opciones.Value.ruta_temporal);
+            }
+
             _logger.LogDebug("OCR inicializado");
             _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(5));
             return Task.CompletedTask;

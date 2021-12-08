@@ -10,6 +10,8 @@ namespace RepositorioEntidades
         public static int Nombre { get => 200; }
         public static int IDunico { get => 250; }
         public static int GUID { get => 128; }
+
+        public static int Tipo { get => 64; }
         public static int Descripcion { get => 500; }
 
         public static int RegExp { get => 1024; }
