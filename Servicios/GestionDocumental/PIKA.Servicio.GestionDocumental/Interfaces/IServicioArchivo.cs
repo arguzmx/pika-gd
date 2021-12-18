@@ -1,4 +1,5 @@
-﻿using PIKA.Modelo.GestorDocumental;
+﻿using PIKA.Infraestrctura.Reportes;
+using PIKA.Modelo.GestorDocumental;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace PIKA.Servicio.GestionDocumental.Interfaces
     {
         Task<ICollection<string>> Purgar();
 
-        Task<byte[]> ReporteGuiaSimpleArchivo(string ArchivoId);
+        Task<byte[]> ReporteGuiaSimpleArchivo(string ArchivoId, List<ElementoReporte> reportes);
 
         Task<string> ReporteGuiaInventario(string ArchivoId);
 

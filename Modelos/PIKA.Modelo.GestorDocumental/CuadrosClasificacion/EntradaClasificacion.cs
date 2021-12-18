@@ -144,5 +144,8 @@ namespace PIKA.Modelo.GestorDocumental
 
         public virtual TipoDisposicionDocumental DisposicionEntrada { get; set; }
 
+        [JsonIgnore]
+        [XmlIgnore]
+        public List<EstadisticaClasificacionAcervo> EstadisticasClasificacionAcervo { get; set; }
     }
 }

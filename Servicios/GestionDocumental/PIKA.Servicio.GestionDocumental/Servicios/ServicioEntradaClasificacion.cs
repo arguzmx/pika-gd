@@ -106,6 +106,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             if (!String.IsNullOrEmpty(entity.TipoDisposicionDocumentalId))
                 entity.TipoDisposicionDocumentalId = entity.TipoDisposicionDocumentalId.Trim();
             await this.repo.CrearAsync(entity);
+
             UDT.SaveChanges();
 
             if (entity.TipoValoracionDocumentalId != null
@@ -128,7 +129,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 }
             }
 
-            
+            UDT.SaveChanges();
 
             return entity.Copia();
         }
@@ -374,14 +375,13 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 }
             }
 
+            var r = await this.UDT.Context.EntradaClasificacion.Where(x => x.Eliminada == false && (x.Nombre.Contains(buscado) || x.Clave.Contains(buscado))).ToListAsync();
 
-            var resultados = await this.repo.ObtenerAsync(x => x.Eliminada == false && (x.Nombre.Contains(buscado) || x.Clave.Contains(buscado)));
-
-            List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
+            List<ValorListaOrdenada> l = r.Select(x => new ValorListaOrdenada()
             {
                 Id = x.Id,
                 Indice = 0,
-                Texto = x.NombreCompleto
+                Texto = $"{x.Clave} {x.Nombre}"
             }).ToList();
 
             return l.OrderBy(x => x.Texto).ToList();
@@ -394,7 +394,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                 Id = x.Id,
                 Indice = 0,
-                Texto = x.NombreCompleto
+                Texto = $"{x.Clave} {x.Nombre}"
             }).ToList();
 
             return l.OrderBy(x => x.Texto).ToList();

@@ -32,13 +32,31 @@ namespace PIKA.Modelo.Reportes
         public string Descripcion { get; set; }
         // # tamaño Descripcion requerido
 
+        /// <summary>
+        /// DEtermina si es un subreporte
+        /// </summary>
+        public bool SubReporte { get; set; }
+
+        /// <summary>
+        /// Identificador del reporte padre en el caso de los subreportes
+        /// </summary>
+        public string GrupoReportes { get; set; }
 
         /// <summary>
         /// Archivo de plantilla para la generación del reporte
         /// Es un archivo de word serializado en base 64
         /// </summary>
         public string Plantilla { get; set; }
-        // # tamaño LongText de MySQL  requerido
+
+        /// <summary>
+        /// Determina si es el reporte puede actualizarse
+        /// </summary>
+        public bool Bloqueado { get; set; }
+
+        /// <summary>
+        /// Formato electronico de salida del reporte en base a la plantilla: DOCX, CSV, PDF, etc.
+        /// </summary>
+        public string ExtensionSalida { get; set; }
 
 
         [NotMapped]
@@ -48,16 +66,14 @@ namespace PIKA.Modelo.Reportes
         public string TipoOrigenDefault => ConstantesModelo.GLOBAL_DOMINIOID;
 
         /// <summary>
-        /// Identificador único del origen por defecto el dominio
+        /// Dominio del reporte, default = * significa cualquier dominio se utiliza en ausencia del específico
         /// </summary>
         public string TipoOrigenId { get; set; }
-        // # tamaño GUID requerido INDEXAR con OrigenId
 
         /// <summary>
-        /// Identificador único del objeto contenedor del reporte por default el Id del dominio en sesión
+        /// Unidad organizacional del reporte, default = * significa cualquier UO se utiliza en ausencia del específico
         /// </summary>
         public string OrigenId { get ; set ; }
-        // # tamaño GUID requerido INDEXAR con TipoOrigenId
 
     }
 }

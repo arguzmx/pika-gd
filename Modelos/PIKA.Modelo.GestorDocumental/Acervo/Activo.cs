@@ -39,7 +39,7 @@ namespace PIKA.Modelo.GestorDocumental
             this.Reportes.Add(new ReporteCaratulaActivo());
         }
 
-        [Prop(Required: false, isId: true, Visible: false, OrderIndex: 0)]
+        [Prop(Required: false, isId: true, Visible: false, OrderIndex: 5000)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.update)]
         [LinkViewParameter(Vista: "visorcontenido")]
         public override string Id { get => base.Id; set => base.Id = value; }
@@ -49,7 +49,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// Identificador único del cuadro de clasificación, 
         /// Este se llena del lado del servidor
         /// </summary>
-        [Prop(Required: false, OrderIndex: 0, Visible: false)]
+        [Prop(Required: false, OrderIndex: 1, Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
         public string CuadroClasificacionId { get; set; }
 
@@ -152,17 +152,26 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         [Prop(Required: false, OrderIndex: 6 , Visible:false)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.none)]
+        [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false)]
         public string ArchivoOrigenId { get; set; }
-
 
         /// <summary>
         /// Identificador único del archivo actual del activo
         /// ESTOS VALORES SE CALCULAR POR SISTEMA  EN BASE AL LOS PROCESOS DE TRASNFENRENCIA
         /// </summary>
-        [Prop(Required: true, OrderIndex: 600, Visible: false, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "ArchivoId")]
+        [Prop(Required: false, OrderIndex: 600, Visible: false, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "ArchivoId")]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
+        [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false)]
         public string ArchivoId { get; set; }
-        //# la relacion del actuivo con archovo es de 1 a 1, un activo puede estar en un sólo archivo al mismo tiempo
+
+
+        /// <summary>
+        /// Establece la undiad administrativa a la que pertenece el activo
+        /// </summary>
+        [Prop(Required: false, OrderIndex: 0, Visible: true)]
+        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
+        [List("UnidadAdministrativaArchivo" ,DatosRemotos:true, TypeAhead: false, OrdenarAlfabetico:true)]
+        public string UnidadAdministrativaArchivoId { get; set; }
 
         /// <summary>
         /// ESTOS VALORES SE CALCULAR POR SISTEMA  EN BASE AL CONTROL DE PRESTAMO
@@ -305,6 +314,12 @@ namespace PIKA.Modelo.GestorDocumental
         [JsonIgnore]
         [XmlIgnore]
         public List<IProveedorReporte> Reportes { get; set; }
+
+
+        [NotMapped]
+        [JsonIgnore]
+        [XmlIgnore]
+        public UnidadAdministrativaArchivo UnidadAdministrativa { get; set; }
 
     }
 }

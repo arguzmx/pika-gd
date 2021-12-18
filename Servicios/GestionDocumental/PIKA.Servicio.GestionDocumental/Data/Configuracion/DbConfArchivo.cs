@@ -29,6 +29,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.HasMany(x => x.HistorialArchivosActivo).WithOne(y => y.Archivo).HasForeignKey(z => z.ArchivoId).OnDelete(DeleteBehavior.Restrict);
             builder.HasMany(x => x.Almacenes).WithOne(y => y.Archivo).HasForeignKey(z => z.ArchivoId);
 
+            builder.HasMany(x => x.UnidadesConcentracion).WithOne(y => y.ArchivoConcentracion).HasForeignKey(z => z.ArchivoConcentracionId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(x => x.UnidadesHistorico).WithOne(y => y.ArchivoHistorico).HasForeignKey(z => z.ArchivoHistoricoId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(x => x.UnidadesTramite).WithOne(y => y.ArchivoTramite).HasForeignKey(z => z.ArchivoTramiteId).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

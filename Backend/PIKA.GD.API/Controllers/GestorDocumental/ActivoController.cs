@@ -147,6 +147,25 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             return Ok(data);
         }
 
+        [HttpGet("page/unidadadministrativaarchivo/{Id}", Name = "GetPageActivoUAdminArchivo")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        public async Task<ActionResult<Paginado<Activo>>> GetPageActivoUnidadAdmin(string Id, [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        {
+            query.Filtros.Add(new FiltroConsulta()
+            {
+                Operador = FiltroConsulta.OP_EQ,
+                Propiedad = "UnidadAdministrativaArchivoId",
+                Valor = Id
+            });
+
+            var data = await servicioActivo.ObtenerPaginadoAsync(
+                Query: query,
+                include: null)
+                .ConfigureAwait(false);
+
+            return Ok(data);
+        }
+
         //----------------------------------------------------------------------------------------------------------
         //----------------------------------------------------------------------------------------------------------
         //----------------------------------------------------------------------------------------------------------

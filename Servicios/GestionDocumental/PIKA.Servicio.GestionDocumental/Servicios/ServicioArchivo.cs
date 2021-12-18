@@ -105,7 +105,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             o.VolumenDefaultId = entity.VolumenDefaultId;
             o.Nombre = entity.Nombre.Trim();
             o.Eliminada = entity.Eliminada;
-            o.TipoArchivoId = o.TipoArchivoId.Trim();
+            o.TipoArchivoId = entity.TipoArchivoId.Trim();
 
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
@@ -339,65 +339,151 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         /// </summary>
         /// <param name="ArchivoId">Identificador del archivo para el reporte</param>
         /// <returns></returns>
-        public async Task<byte[]> ReporteGuiaSimpleArchivo(string ArchivoId)
+        public async Task<byte[]> ReporteGuiaSimpleArchivo(string ArchivoId, List<ElementoReporte> reportes)
         {
-
             GuiaSimpleArchivo g = new GuiaSimpleArchivo
             {
-                Archivo = await repo.UnicoAsync(x => x.Id == ArchivoId)
+                Archivo = this.UDT.Context.Archivos.Find(ArchivoId)
             };
 
-            if (g.Archivo == null) throw new EXNoEncontrado(ArchivoId);
+            if (g.Archivo == null) return null;
 
-            var r = await ServicioReporteEntidad.UnicoAsync(x => x.Id == "guiasimplearchivo");
-            if (r == null) throw new EXNoEncontrado("reporte: guiasimplearchivo");
+            List<EstadisticaClasificacionAcervo> estadistica = await this.UDT.Context.EstadisticaClasificacionAcervo.Where(x => x.ArchivoId == ArchivoId && x.ConteoActivos > 0).ToListAsync();
+            List<string> cuadros = estadistica.Select(x => x.CuadroClasificacionId).Distinct().ToList();
+            List<string> unidades = estadistica.Select(x => x.UnidadAdministrativaArchivoId).Distinct().ToList();
+            List<ElementoClasificacion> elementos = OntieneElementosCuadros(cuadros);
+            List<EntradaClasificacion> entradas = OntieneEntradasActivas(ArchivoId);
+            List<UnidadAdministrativaArchivo> uas = UDT.Context.UnidadesAdministrativasArchivo.Where(x => unidades.Contains(x.Id)).ToList();
+            List<UnidadAdministrativaGuiaSimpleArchivo> uasguia = new List<UnidadAdministrativaGuiaSimpleArchivo>();
 
-            IRepositorioAsync<EstadisticaClasificacionAcervo> repoestadistica 
-                = UDT.ObtenerRepositoryAsync<EstadisticaClasificacionAcervo>(new QueryComposer<EstadisticaClasificacionAcervo>()); ;
-            
-            IRepositorioAsync<EntradaClasificacion> repoentradas
-                = UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>()); ;
-
-            //Lista de estadistica
-            var estadistica = await repoestadistica.ObtenerAsync(x => x.ArchivoId == ArchivoId);
-
-            // Ontiene las entradas para llenar el reporte
-            var cuadros = estadistica.Select(x => x.CuadroClasificacionId).Distinct();
-            List<EntradaClasificacion> entradas = new List<EntradaClasificacion>();
-            foreach (string id in cuadros)
+            estadistica.GroupBy(x => x.UnidadAdministrativaArchivoId).Select(c => new UnidadAdministrativaGuiaSimpleArchivo
             {
-                entradas.AddRange(
-                    await repoentradas.ObtenerAsync(x => x.CuadroClasifiacionId == id 
-                    && x.Eliminada == false));
-            }
-
-            // Añade las entradas al reporte con la cantidad adecuada
-            entradas = entradas.OrderBy(x => x.CuadroClasifiacionId).ThenBy(x => x.Posicion).ToList();
-            entradas.ForEach(e =>
+                Id = c.Key,
+                Expedientes = c.Sum(x => x.ConteoActivos)
+            }).ToList().ForEach(u =>
             {
-                var entrada = estadistica.Where(x => x.EntradaClasificacionId == e.Id).SingleOrDefault();
-                int cantidad = entrada == null? 0: entrada.ConteoActivos;
-                string fMinima = entrada == null ? "-" : entrada.FechaMinApertura.HasValue ? entrada.FechaMinApertura.Value.ToString("dd/MM/yyyy") : "";
-                string fMaxima = entrada == null ? "-" : entrada.FechaMinApertura.HasValue ? entrada.FechaMinApertura.Value.ToString("dd/MM/yyyy") : "";
-
-                g.Elementos.Add(new ElementoGuiaSimpleArchivo()
+                var ua = uas.Where(x => x.Id == u.Id).FirstOrDefault();
+                if (ua != null)
                 {
-                    Cantidad = cantidad,
-                    Clave = e.Clave,
-                    Nombre = e.Nombre,
-                    Descripcion = e.Descripcion ?? "" ,
-                    FechaMaximaCierre = fMaxima,
-                    FechaMinimaApertura = fMinima
-                });
+                    uasguia.Add(ua.AUnidadGuiaSimple(u.Expedientes));
+                }
             });
+            g.UnidadesAdministrativas = uasguia;
 
+
+
+            for (int i = 0; i < g.UnidadesAdministrativas.Count(); i++)
+            {
+                string uaId = g.UnidadesAdministrativas[i].Id;
+                foreach (var raiz in elementos.Where(x => x.EsRaiz == true).ToList())
+                {
+       
+                    SeccionGuiaSimpleArchivo s = new SeccionGuiaSimpleArchivo() {
+                        Nombre = raiz.Nombre,
+                        Elementos = new List<ElementoGuiaSimpleArchivo>()
+                    };
+
+                    var series = entradas.Where(c => c.ElementoClasificacionId == raiz.Id).ToList().Select(x => x.Id).ToList();
+
+                    // Obtiene las series
+                    foreach (var e in estadistica.Where(x => series.Contains(x.EntradaClasificacionId) 
+                    && x.UnidadAdministrativaArchivoId == uaId).ToList())
+                    {
+                        var entrada = entradas.Where(x => x.Id == e.EntradaClasificacionId).First();
+                        s.Elementos.Add(new ElementoGuiaSimpleArchivo()
+                        {
+                            Cantidad = e.ConteoActivos,
+                            Descripcion = entrada.Descripcion,
+                            FechasLimites = $"{(e.FechaMinApertura.HasValue ? e.FechaMinApertura.Value.ToString("yyyy") : "")}-{(e.FechaMaxCierre.HasValue ? e.FechaMaxCierre.Value.ToString("yyyy") : "")}".TrimEnd('-'),
+                            Serie = entrada.Clave,
+                            Subserie = ""
+                        }); ;
+                    };
+
+                    // Obtiene las sub-series
+                    var subseriesIds = ObtieneIdSubseries(raiz.Id, elementos, entradas, true);
+    
+                    var encontrados = estadistica.Where(x => subseriesIds.Contains(x.EntradaClasificacionId)
+                    && x.UnidadAdministrativaArchivoId == uaId).ToList();
+
+                    foreach (var e in encontrados)
+                    {
+                        var entrada = entradas.Where(x => x.Id == e.EntradaClasificacionId).First();
+                        var el = elementos.Where (x=>x.Id == entrada.ElementoClasificacionId).FirstOrDefault();
+                        var elc = new ElementoGuiaSimpleArchivo()
+                            {
+                                Cantidad = e.ConteoActivos,
+                                Descripcion = entrada.Descripcion,
+                                FechasLimites = $"{(e.FechaMinApertura.HasValue ? e.FechaMinApertura.Value.ToString("yyyy") : "")}-{(e.FechaMaxCierre.HasValue ? e.FechaMaxCierre.Value.ToString("yyyy") : "")}",
+                                Serie = el.Clave,
+                                Subserie = entrada.Clave
+                            };
+                        s.Elementos.Add(elc); 
+                    };
+
+                    if (s.Elementos.Count > 0)
+                    {
+                        g.UnidadesAdministrativas[i].Secciones.Add(s);
+                    }
+                };
+            }
+   
             string jsonString = JsonSerializer.Serialize(g);
+            return ReporteEntidades.ReportePlantilla( reportes, jsonString, Config.Value.ruta_cache_fisico, false, null, true);
 
-            byte[] data = Convert.FromBase64String(r.Plantilla);
-
-            return ReporteEntidades.ReportePlantilla( data , jsonString, Config.Value.ruta_cache_fisico, true);
         }
 
+        private List<string> ObtieneIdSubseries(string padreId, List<ElementoClasificacion> elementos, List<EntradaClasificacion> entradas, bool esRaiz)
+        {
+            List<string> l = new List<string>();
+
+            var hijos = elementos.Where(x => x.ElementoClasificacionId == padreId).ToList();
+            foreach (var el in hijos)
+            {
+                l.AddRange(ObtieneIdSubseries(el.Id, elementos, entradas, false));
+            }
+
+             if(!esRaiz)
+            {
+                var es = entradas.Where(x => x.ElementoClasificacionId == padreId).ToList();
+                foreach (var el in es)
+                {
+                    l.Add(el.Id);
+                }
+            }
+           
+
+            return l;
+        }
+
+        private List<EntradaClasificacion> OntieneEntradasActivas(string ArchivoId)
+        {
+            string sqls = $@"SELECT * FROM {DBContextGestionDocumental.TablaEntradaClasificacion} where Id in (
+                            SELECT EntradaClasificacionId FROM {DBContextGestionDocumental.TablaEstadisticaClasificacionAcervo} where ArchivoId = '{ArchivoId}' and ConteoActivos>0 );";
+
+            return this.UDT.Context.EntradaClasificacion.FromSqlRaw(sqls).ToList();
+        }
+
+        private List<ElementoClasificacion> OntieneElementosCuadros(List<string> cuadros)
+        {
+            List<ElementoClasificacion> l = new List<ElementoClasificacion>();
+            List<Task<List<ElementoClasificacion>>> telementos = new List<Task<List<ElementoClasificacion>>>();
+            foreach (var c in cuadros)
+            {
+                telementos.Add(this.UDT.Context.ElementosClasificacion.Where(x => x.CuadroClasifiacionId == c).ToListAsync());
+            }
+            Task.WaitAll(telementos.ToArray());
+
+            foreach(var t in telementos)
+            {
+                if(t.Result.Count() > 0)
+                {
+                    l.AddRange(t.Result);
+                }
+            }
+
+            return l;
+        }
 
 
         /// <summary>

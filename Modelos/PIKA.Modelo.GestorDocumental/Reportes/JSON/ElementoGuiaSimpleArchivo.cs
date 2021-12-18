@@ -6,11 +6,10 @@ namespace PIKA.Modelo.GestorDocumental.Reportes.JSON
 {
     public class ElementoGuiaSimpleArchivo
     {
-        public string Clave { get; set; }
-        public string Nombre { get; set; }
+        public string Serie { get; set; }
+        public string Subserie { get; set; }
         public string Descripcion { get; set; }
-        public string FechaMinimaApertura { get; set; }
-        public string FechaMaximaCierre { get; set; }
+        public string FechasLimites { get; set; }
         public int Cantidad { get; set; }
     }
 }

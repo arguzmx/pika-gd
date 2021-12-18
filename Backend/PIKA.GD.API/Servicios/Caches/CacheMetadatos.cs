@@ -1,5 +1,6 @@
 ﻿using LazyCache;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Interfaces;
 using System;
@@ -19,7 +20,10 @@ namespace PIKA.GD.API.Servicios.Caches
             return $"PLGEN-{id}";
         }
 
-        public async static Task<Plantilla> ObtienePlantillaPorId(string id, IAppCache cache, IServicioPlantilla servicio)
+        public async static Task<Plantilla> ObtienePlantillaPorId(string id, 
+            IAppCache cache, 
+            IServicioPlantilla servicio, 
+            int segundosExpiracion)
         {
 
             Plantilla p = await  cache.GetAsync<Plantilla>(ClavePlantilla(id)).ConfigureAwait(false);
@@ -40,8 +44,12 @@ namespace PIKA.GD.API.Servicios.Caches
                         i.ValoresLista = await servicio.ObtenerValores(i.Id).ConfigureAwait(false);
                     }
                 }
-
-                if (p != null) cache.Add<Plantilla>(ClavePlantilla(id), p);
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(segundosExpiracion)
+                };
+     
+                if (p != null) cache.Add<Plantilla>(ClavePlantilla(id), p, cacheEntryOptions);
             }
             return p;
         }

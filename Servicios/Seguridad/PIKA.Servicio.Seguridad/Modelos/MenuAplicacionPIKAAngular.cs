@@ -58,16 +58,22 @@ namespace PIKA.Servicio.Seguridad.Modelos
 
             ElementoMenu gd = CreaElemento(index, "archive-outline", "Gestión documental", "");
 
-            ElementoMenu el = CreaElemento(5, "", "Cuadros de clasificación", "/pages/tabular/");
-            el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "cuadroclasificacion" });
+            ElementoMenu el = CreaElemento(20, "", "Unidades Administrativas", "/pages/tabular/");
+            el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "unidadadministrativaarchivo" });
             el.TokenApp = ConstantesAppGestionDocumental.APP_ID;
-            el.TokenMod = ConstantesAppGestionDocumental.MODULO_CUADROCLASIF;
+            el.TokenMod = ConstantesAppGestionDocumental.MODULO_ARCHIVOS;
             gd.Hijos.Add(el);
 
             el = CreaElemento(20, "", "Unidades de Archivo", "/pages/tabular/");
             el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "archivo" });
             el.TokenApp = ConstantesAppGestionDocumental.APP_ID;
             el.TokenMod = ConstantesAppGestionDocumental.MODULO_ARCHIVOS;
+            gd.Hijos.Add(el);
+
+            el = CreaElemento(5, "", "Cuadros de clasificación", "/pages/tabular/");
+            el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "cuadroclasificacion" });
+            el.TokenApp = ConstantesAppGestionDocumental.APP_ID;
+            el.TokenMod = ConstantesAppGestionDocumental.MODULO_CUADROCLASIF;
             gd.Hijos.Add(el);
 
             ElementoMenu catalogos = CreaElemento(index, "book-outline", "Catálogos", "");

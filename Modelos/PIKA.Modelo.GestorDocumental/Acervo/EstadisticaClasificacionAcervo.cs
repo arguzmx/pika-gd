@@ -16,6 +16,11 @@ namespace PIKA.Modelo.GestorDocumental
 
 
         /// <summary>
+        /// Identificador único de la unidad administrativa del activo
+        /// </summary>
+        public string UnidadAdministrativaArchivoId { get; set; }
+
+        /// <summary>
         /// IDentifiacor únio del cuadro de clasificacion
         /// </summary>
         public string CuadroClasificacionId { get; set; }
@@ -25,7 +30,6 @@ namespace PIKA.Modelo.GestorDocumental
         /// Identificador de la entrada de clasificacion
         /// </summary>
         public string EntradaClasificacionId { get; set; }
-
 
         
         /// <summary>
@@ -46,6 +50,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// Fecha de máxima de cierre del activo del archivo
         /// </summary>
         public DateTime? FechaMaxCierre { get; set; }
+        
         [XmlIgnore]
         [JsonIgnore]
         public Archivo Archivo { get; set; }
@@ -57,6 +62,11 @@ namespace PIKA.Modelo.GestorDocumental
         [XmlIgnore]
         [JsonIgnore]
         public EntradaClasificacion EntradaClasificacion { get; set; }
+
+
+        [XmlIgnore]
+        [JsonIgnore]
+        public UnidadAdministrativaArchivo UnidadAdministrativaArchivo { get; set; }
 
     }
 }

@@ -481,34 +481,130 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
         {
             try
             {
+                var dataitem = data[$"P{p.IdNumericoPlantilla}"];
+                
                 switch (p.TipoDatoId)
-                {
+                { 
+
                     case TipoDato.tBoolean:
-                        bool b = (bool)data[$"P{p.IdNumericoPlantilla}"];
+                        bool b = dataitem == null ? p.ValorDefault == "true" : (bool)dataitem;
                         return new ValorPropiedad() { PropiedadId = p.Id, Valor = b? "true": "false" };
                         
 
                     case TipoDato.tTime:
                     case TipoDato.tDateTime:
                     case TipoDato.tDate:
-                        DateTime d = (DateTime)data[$"P{p.IdNumericoPlantilla}"];
-                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = d.ToString("o") };
+                        if(dataitem == null )
+                        {
+                            string valor = "";
+                            if(!string.IsNullOrEmpty( p.ValorDefault))
+                            {
+                                if (DateTime.TryParse(p.ValorDefault, out DateTime d))
+                                {
+                                    valor = d.ToString("o");
+                                }
+
+                            }
+                            
+                            return new ValorPropiedad() { PropiedadId = p.Id, Valor = valor };
+
+                        } else
+                        {
+                            try
+                            {
+                                DateTime d = (DateTime)dataitem;
+                                return new ValorPropiedad() { PropiedadId = p.Id, Valor = d.ToString("o") };
+                            }
+                            catch (Exception) {
+                                return new ValorPropiedad() { PropiedadId = p.Id, Valor = "" };
+                            }
+                        }
+                      
 
                     case TipoDato.tDouble:
-                        float dec = (float)data[$"P{p.IdNumericoPlantilla}"];
-                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = dec.ToString() };
+                        if( dataitem == null )
+                        {
+                            string valor = "";
+                            if (!string.IsNullOrEmpty(p.ValorDefault))
+                            {
+                                if (double.TryParse(p.ValorDefault, out double d))
+                                {
+                                    valor = d.ToString();
+                                }
+                            }
+                            return new ValorPropiedad() { PropiedadId = p.Id, Valor = valor };
+                        } else
+                        {
+                            try
+                            {
+                                float dec = (float)dataitem;
+                                return new ValorPropiedad() { PropiedadId = p.Id, Valor = dec.ToString() };
+                            }
+                            catch (Exception)
+                            {
+                                return new ValorPropiedad() { PropiedadId = p.Id, Valor = "" };
+                            }
+       
+                        }
+                      
 
 
                     case TipoDato.tInt32:
-                        int i = (int)data[$"P{p.IdNumericoPlantilla}"];
-                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = i.ToString() };
+                        if (dataitem == null)
+                        {
+                            string valor = "";
+                            if (!string.IsNullOrEmpty(p.ValorDefault))
+                            {
+                                if (int.TryParse(p.ValorDefault, out int d))
+                                {
+                                    valor = d.ToString();
+                                }
+                            }
+                            return new ValorPropiedad() { PropiedadId = p.Id, Valor = valor };
+                        }
+                        else
+                        {
+                            try
+                            {
+                                int entero = (int)dataitem;
+                                return new ValorPropiedad() { PropiedadId = p.Id, Valor = entero.ToString() };
+                            }
+                            catch (Exception)
+                            {
 
+                                return new ValorPropiedad() { PropiedadId = p.Id, Valor = "" };
+                            }
+
+                        }
 
 
                     case TipoDato.tInt64:
-                        long i64 = (long)data[$"P{p.IdNumericoPlantilla}"];
-                        return new ValorPropiedad() { PropiedadId = p.Id, Valor = i64.ToString() };
-                        
+                        if (dataitem == null)
+                        {
+                            string valor = "";
+                            if (!string.IsNullOrEmpty(p.ValorDefault))
+                            {
+                                if (long.TryParse(p.ValorDefault, out long d))
+                                {
+                                    valor = d.ToString();
+                                }
+                            }
+                            return new ValorPropiedad() { PropiedadId = p.Id, Valor = valor };
+                        }
+                        else
+                        {
+                            try
+                            {
+                                long dec = (long)dataitem;
+                                return new ValorPropiedad() { PropiedadId = p.Id, Valor = dec.ToString() };
+                            }
+                            catch (Exception)
+                            {
+                                return new ValorPropiedad() { PropiedadId = p.Id, Valor  = "" };
+                            }
+                          
+                        }
+
 
                     case TipoDato.tList:
                         return new ValorPropiedad() { PropiedadId = p.Id, Valor = string.IsNullOrEmpty((string)data[$"P{p.IdNumericoPlantilla}"])  ? "" : (string)data[$"P{p.IdNumericoPlantilla}"] };
@@ -527,7 +623,7 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                 
             }
 
-            return null;
+            return new ValorPropiedad() { PropiedadId = p.Id, Valor = "" };
 
         }
 

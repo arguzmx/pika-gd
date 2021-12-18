@@ -66,7 +66,7 @@ namespace PIKA.Infraestrctura.Reportes
         public static bool EsTokenTexto(this string token)
         {
 
-            if(token.StartsWith(PREFIJO_BARCODE1D) || 
+            if (token.StartsWith(PREFIJO_BARCODE1D) ||
                 token.StartsWith(PREFIJO_BARCODE2D) ||
                 token.StartsWith(PREFIJO_BOOLEANO))
             {
@@ -125,8 +125,6 @@ namespace PIKA.Infraestrctura.Reportes
 
         #endregion region
 
- 
-
 
         /// <summary>
         /// Devuelve el documento .docx medificdo en base a los parámetros recibidos
@@ -152,21 +150,77 @@ namespace PIKA.Infraestrctura.Reportes
                 }
             }
 
-            return result;
+            return result.bytes;
 
-            
+
         }
 
 
+        private static bool CopiaReporteDesdePlantilla(ElementoReporte r, string rutaPlantillas, string rutaTemporal)
+        {
+            string NombrePlantilla = $"{r.Id}{r.ExtensionSalida}";
+            string destino = Path.Combine(rutaTemporal, NombrePlantilla);
+            string RutaReporte = Path.Combine(rutaPlantillas, NombrePlantilla);
+            if (File.Exists(RutaReporte))
+            {
+                try
+                {
+                    if (File.Exists(destino))
+                    {
+                        File.Delete(destino);
+                    }
+                    File.Copy(RutaReporte, destino);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error al copiar el reporte {ex}");
+                    return false;
+                }
 
-        private static void ProcesadorParrafos(List<Paragraph> parrafos, dynamic data, 
+            }
+            else
+            {
+                Console.WriteLine($"El archivo para el reporte {r.Id} no existe");
+                return false;
+            }
+        }
+
+        private static bool GeneraPlantillaBase54(ElementoReporte r, string rutaTemporal)
+        {
+            string NombrePlantilla = $"{r.Id}{r.ExtensionSalida}";
+            string destino = Path.Combine(rutaTemporal, NombrePlantilla);
+
+
+            if(string.IsNullOrEmpty(r.Plantilla))
+            {
+                throw new Exception("Plantilla de reporte vacía");
+            }
+
+            try
+            {
+                if (File.Exists(destino))
+                {
+                    File.Delete(destino);
+                }
+                File.WriteAllBytes(destino, Convert.FromBase64String(r.Plantilla));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al exportar plantilla {ex.Message}");
+                throw;
+            }
+        }
+
+        private static void ProcesadorParrafos(List<Paragraph> parrafos, dynamic data,
             string rutaTemporales, WordprocessingDocument wpd, bool eliminar,
             bool useIndex = false, int index = 0, string TablaId = "")
         {
             List<ParteToken> tokens = new List<ParteToken>();
-            for(int p=0; p < parrafos.Count; p++)
+            for (int p = 0; p < parrafos.Count; p++)
             {
-                if(!string.IsNullOrEmpty(parrafos[p].InnerText))
+                if (!string.IsNullOrEmpty(parrafos[p].InnerText))
                 {
                     string innert = parrafos[p].InnerText;
                     if (innert.IndexOf('#') >= 0)
@@ -177,8 +231,13 @@ namespace PIKA.Infraestrctura.Reportes
                             var ts = runs[r].OfType<Text>().ToList();
                             for (int t = 0; t < ts.Count; t++)
                             {
-                                tokens.Add(new ParteToken() { Parrafo = p, Run = r, 
-                                    Text = t, Texto = ts[t].Text, TextoNuevo = ts[t].Text
+                                tokens.Add(new ParteToken()
+                                {
+                                    Parrafo = p,
+                                    Run = r,
+                                    Text = t,
+                                    Texto = ts[t].Text,
+                                    TextoNuevo = ts[t].Text
                                 });
                             }
                         }
@@ -187,13 +246,13 @@ namespace PIKA.Infraestrctura.Reportes
             }
 
 
-            var grupos =  tokens.GroupBy(x => x.Parrafo).Select(x => new { p = x.Key, c = x.Count() });
+            var grupos = tokens.GroupBy(x => x.Parrafo).Select(x => new { p = x.Key, c = x.Count() });
 
-            foreach(var g in grupos)
+            foreach (var g in grupos)
             {
 
                 var renglon = tokens.Where(x => x.Parrafo == g.p).ToList();
-                
+
                 for (int i = 0; i < renglon.Count(); i++)
                 {
 
@@ -214,15 +273,15 @@ namespace PIKA.Infraestrctura.Reportes
 
                         }
                     }
- 
+
                 }
             }
 
             foreach (var item in tokens)
             {
-               var runs  = parrafos[item.Parrafo].OfType<Run>().ToList();
-               var textos = runs[item.Run].OfType<Text>().ToList();
-               textos[item.Text].Text = item.TextoNuevo;
+                var runs = parrafos[item.Parrafo].OfType<Run>().ToList();
+                var textos = runs[item.Run].OfType<Text>().ToList();
+                textos[item.Text].Text = item.TextoNuevo;
 
                 if (item.TextoNuevo.IndexOf('#') >= 0)
                 {
@@ -230,23 +289,25 @@ namespace PIKA.Infraestrctura.Reportes
                     string token = "";
                     foreach (char c in item.TextoNuevo)
                     {
-                        
-                        if(c=='#')
+
+                        if (c == '#')
                         {
                             if (inicio)
                             {
                                 inicio = false;
                                 item.Tokens.Add(token);
                                 token = "";
-                            } else
+                            }
+                            else
                             {
                                 inicio = true;
                             }
-                        } else
+                        }
+                        else
                         {
                             if (inicio)
                             {
-                                token += c; 
+                                token += c;
                             }
                         }
                     };
@@ -260,11 +321,12 @@ namespace PIKA.Infraestrctura.Reportes
                         if (useIndex)
                         {
                             textos[item.Text].Text = ObtieneValorIndizado(TablaId, t, data, index);
-                        } else
+                        }
+                        else
                         {
                             textos[item.Text].Text = ObtieneValorDato(t, data);
                         }
-                        
+
                     }
 
                     if (t.EsCodigo1D())
@@ -285,19 +347,20 @@ namespace PIKA.Infraestrctura.Reportes
                                      CodigosOpticos.Cm2Pixeles(config.Alto), eliminar);
                                 }
                             }
-                            
+
                         }
-                        
+
                     }
 
-                    if(t.EsCodigoBooleano())
+                    if (t.EsCodigoBooleano())
                     {
                         TokenBooleano config = t.OntieneTokenBooleano();
                         string valor = ObtieneValorDato(config.Dato, data);
                         if ("1,true,t,v".IndexOf(valor.ToLower()) >= 0)
                         {
                             textos[item.Text].Text = config.Verdadero;
-                        } else
+                        }
+                        else
                         {
                             textos[item.Text].Text = config.Falso;
                         }
@@ -335,24 +398,26 @@ namespace PIKA.Infraestrctura.Reportes
         {
             List<string> partes = cadena.Split('.').ToList();
 
-            if(partes.Count == 1)
+            if (partes.Count == 1)
             {
 
                 return data[partes[0]] ?? "";
 
-            } else
+            }
+            else
             {
-                if(data[partes[0]] != null)
+                if (data[partes[0]] != null)
                 {
                     string t = cadena.Replace($"{partes[0]}.", "");
                     return ObtieneValorDato(t, data[partes[0]]);
 
-                } else
+                }
+                else
                 {
                     return "";
                 }
-                
-                
+
+
             }
         }
 
@@ -431,7 +496,7 @@ namespace PIKA.Infraestrctura.Reportes
                     for (int c = 0; c < celdas.Count; c++)
                     {
                         List<Paragraph> parrafos = celdas[c].OfType<Paragraph>().ToList();
-                        ProcesadorParrafos(parrafos, data, rutaTemporales, wpd, eliminarTemporal,  true, i-1, TablaId);
+                        ProcesadorParrafos(parrafos, data, rutaTemporales, wpd, eliminarTemporal, true, i - 1, TablaId);
                     }
                 }
 
@@ -446,6 +511,101 @@ namespace PIKA.Infraestrctura.Reportes
         }
 
 
+        public static List<Paragraph> ObtieneParrafos(string rutaArchivo)
+        {
+            using WordprocessingDocument doc =
+                      WordprocessingDocument.Open(rutaArchivo, true, new OpenSettings() { AutoSave = false });
+
+            Body b = doc.MainDocumentPart.Document.Body;
+            List<Paragraph> parrafos = b.OfType<Paragraph>().ToList();
+            return parrafos;
+        }
+
+        public static List<Table> ObtieneTablas(string rutaArchivo)
+        {
+            using WordprocessingDocument doc =
+                      WordprocessingDocument.Open(rutaArchivo, true, new OpenSettings() { AutoSave = false });
+
+            Body b = doc.MainDocumentPart.Document.Body;
+            List<Table> parrafos = b.OfType<Table>().ToList();
+            return parrafos;
+        }
+
+        public static DocumentFormat.OpenXml.OpenXmlElementList ObtieneElementos(string rutaArchivo)
+        {
+            using WordprocessingDocument doc =
+                      WordprocessingDocument.Open(rutaArchivo, true, new OpenSettings() { AutoSave = false });
+
+            Body b = doc.MainDocumentPart.Document.Body;
+            return b.ChildElements;
+        }
+
+        /// <summary>
+        /// Revuelve el documento  .docx medificdo en base a los parámetros recibidos
+        /// </summary>
+        /// <param name="reportes"></param>
+        /// <param name="propiedesJson">texto json para el llenado del reporte</param>
+        /// <param name="CargarPlantillas">La carga de las plantilla se realiza desde el proceso si el valor es true</param>
+        /// <param name="RutaPlantillas">Ruta de las plantillas</param>
+        /// <param name="rutaTemporales">Ruta al directorio de temporales</param>
+        /// <param name="eliminarTemporal">Elimina el archivo tempral automa´ticamente</param>
+        /// <returns></returns>
+        public static byte[] ReportePlantilla(List<ElementoReporte> reportes,
+            string propiedesJson, string rutaTemporales, bool CargarPlantillas, string RutaPlantillas, bool eliminarTemporal = true)
+        {
+
+            rutaTemporales = Path.Combine(rutaTemporales, Guid.NewGuid().ToString());
+
+            if (!Directory.Exists(rutaTemporales))
+            {
+                Directory.CreateDirectory(rutaTemporales);
+            }
+            else
+            {
+                Directory.Delete(rutaTemporales, true);
+                Directory.CreateDirectory(rutaTemporales);
+            }
+            reportes.ForEach(rep =>
+            {
+
+                if (CargarPlantillas)
+                {
+                    if (!CopiaReporteDesdePlantilla(rep, RutaPlantillas, rutaTemporales))
+                    {
+                        throw new Exception("Error al copiar reportes base");
+                    }
+                }
+                else
+                {
+                    GeneraPlantillaBase54(rep, rutaTemporales);
+                }
+
+                
+            });
+
+          
+
+            var inicial = reportes.Where(rep => rep.SubReporte == false).FirstOrDefault();
+            if (inicial == null)
+            {
+                throw new Exception("No existe reporte inicial");
+            }
+            string ArchivoTemporal = Path.Combine(rutaTemporales, $"{inicial.Id}{inicial.ExtensionSalida}");
+            var result = ReportePlantilla(ArchivoTemporal, propiedesJson, rutaTemporales, eliminarTemporal, reportes);
+
+            if (eliminarTemporal)
+            {
+                if (File.Exists(ArchivoTemporal))
+                {
+                    File.Delete(ArchivoTemporal);
+                }
+            }
+
+            return result.bytes;
+        }
+
+
+
         /// <summary>
         /// Devuelve el documento .docx medificdo en base a los parámetros recibidos
         /// </summary>
@@ -454,10 +614,10 @@ namespace PIKA.Infraestrctura.Reportes
         /// <param name="rutaTemporales">ruta al directorio de temporales</param>
         /// <param name="eliminarTemporal">elimina el archivo tempral automa´ticamente</param>
         /// <returns></returns>
-        public static byte[] ReportePlantilla(string rutaPlantilla,
-            string propiedesJson, string rutaTemporales, bool eliminarTemporal = true)
+        public static (byte[] bytes, string ruta) ReportePlantilla(string rutaPlantilla,
+            string propiedesJson, string rutaTemporales, bool eliminarTemporal = true, List<ElementoReporte> reportes = null)
         {
-            
+
             if (!File.Exists(rutaPlantilla)) throw new Exception("Plantilla inexistente");
 
             dynamic objeto = JsonConvert.DeserializeObject(propiedesJson);
@@ -466,30 +626,28 @@ namespace PIKA.Infraestrctura.Reportes
 
             File.Copy(rutaPlantilla, rutaArchivo);
 
-            using ( WordprocessingDocument doc =
-                    WordprocessingDocument.Open(rutaArchivo, true, new OpenSettings() {AutoSave = false})
+            using (WordprocessingDocument doc =
+                    WordprocessingDocument.Open(rutaArchivo, true, new OpenSettings() { AutoSave = false })
                   )
             {
 
                 Body b = doc.MainDocumentPart.Document.Body;
 
-
                 List<Paragraph> parrafos = b.OfType<Paragraph>().ToList();
-                //ProcesaParrafos(parrafos, objeto, rutaTemporales, doc);
                 ProcesadorParrafos(parrafos, objeto, rutaTemporales, doc, eliminarTemporal);
 
-                
                 b.OfType<Table>().ToList().ForEach(t =>
                 {
-                    
+
                     bool tablaEntidades = false;
+                    bool tablaSubreporte = false;
                     // VErifica si l atabla tiene 2 renglones
                     if (t.OfType<TableRow>().Count() == 2)
                     {
                         var clon = (TableRow)t.OfType<TableRow>().ElementAt(1).Clone();
                         List<TableCell> celdas = clon.Descendants<TableCell>().ToList();
                         // y si la primera celda tiene com oinicio el caracters especial *
-                        
+
                         if (celdas[0].InnerText.StartsWith("*"))
                         {
                             string clave = celdas[0].InnerText.TrimStart('*').Split('#')[0];
@@ -502,24 +660,82 @@ namespace PIKA.Infraestrctura.Reportes
                                 }
 
                             }
-                            
+
                         }
                     }
 
+                    if (t.OfType<TableRow>().Count() == 1)
+                    {
+                        var clon = (TableRow)t.OfType<TableRow>().ElementAt(0).Clone();
+                        List<TableCell> celdas = clon.Descendants<TableCell>().ToList();
+                        // y si la primera celda tiene com oinicio el caracters especial *
+
+                        if (celdas[0].InnerText.StartsWith(">"))
+                        {
+                            string clave = celdas[0].InnerText.TrimStart('>').Split('#')[0];
+                            string entidad = celdas[0].InnerText.TrimStart('>').Split('#')[1];
+                            if (clave != null)
+                            {
+                                tablaSubreporte = true;
+
+                                if (reportes != null)
+                                {
+                                    var r = reportes.Where(x => x.Id == clave).FirstOrDefault();
+                                    {
+                                        if (r != null && objeto[entidad] is JArray)
+                                        {
+                                            int total = ((JArray)objeto[entidad]).Count;
+
+                                            if (total > 0)
+                                            {
+                                                for (int i = 0; i < total; i++)
+                                                {
+                                                    string ArchivoTemporal = Path.Combine(rutaTemporales, $"{r.Id}{r.ExtensionSalida}");
+                                                    var json = JsonConvert.SerializeObject(((JArray)objeto[entidad])[i]);
+                                                    var (bytes, ruta) = ReportePlantilla(ArchivoTemporal, json, rutaTemporales, false, reportes);
+                                                    if (ruta != null)
+                                                    {
+                                                        var elements = ObtieneElementos(ruta);
+
+                                                        if (elements != null && elements.Count > 0)
+                                                        {
+                                                            foreach (var element in elements)
+                                                            {
+                                                                b.Last().InsertAfterSelf(element.CloneNode(true));
+                                                            }
+
+                                                        }
+                                                        File.Delete(ruta);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                t.Remove();
+                            }
+
+                        }
+
+                     
+                    }
+
                     // Si no es una tabla de entidades
-                    if (!tablaEntidades)
+                    if (!(tablaEntidades || tablaSubreporte))
                     {
                         t.OfType<TableRow>().ToList().ForEach(r =>
-                       {
-                           r.OfType<TableCell>().ToList().ForEach(c =>
-                           {
-                               List<Paragraph> parrafos = c.OfType<Paragraph>().ToList();
-                               ProcesadorParrafos(parrafos, objeto, rutaTemporales, doc, eliminarTemporal);
-                           });
-                       });
+                        {
+                            r.OfType<TableCell>().ToList().ForEach(c =>
+                            {
+                                List<Paragraph> parrafos = c.OfType<Paragraph>().ToList();
+                                ProcesadorParrafos(parrafos, objeto, rutaTemporales, doc, eliminarTemporal);
+                            });
+                        });
                     }
                 });
-                
+
+
                 doc.Save();
             }
 
@@ -533,12 +749,18 @@ namespace PIKA.Infraestrctura.Reportes
                         File.Delete(rutaArchivo);
                     }
                     catch (Exception) { }
+                    return (bytes, null);
+
+                }
+                else
+                {
+                    return (bytes, rutaArchivo);
                 }
 
-                return bytes;
+
             }
 
-            return null;
+            return (null, null);
         }
 
     }

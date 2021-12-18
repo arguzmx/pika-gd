@@ -8,9 +8,11 @@ namespace PIKA.Modelo.GestorDocumental.Reportes.JSON
     {
         public GuiaSimpleArchivo()
         {
-            Elementos = new List<ElementoGuiaSimpleArchivo>();
+            UnidadesAdministrativas = new List<UnidadAdministrativaGuiaSimpleArchivo>();
         }
+
         public Archivo Archivo { get; set; }
-        public List<ElementoGuiaSimpleArchivo> Elementos { get; set; } 
+        public List<UnidadAdministrativaGuiaSimpleArchivo> UnidadesAdministrativas { get; set; }
+
     }
 }

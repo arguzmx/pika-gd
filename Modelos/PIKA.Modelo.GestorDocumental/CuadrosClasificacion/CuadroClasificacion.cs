@@ -109,5 +109,8 @@ namespace PIKA.Modelo.GestorDocumental
         [XmlIgnore]
         public List<IProveedorReporte> Reportes { get; set; }
 
+        [JsonIgnore]
+        [XmlIgnore]
+        public List<EstadisticaClasificacionAcervo> EstadisticasClasificacionAcervo { get; set; }
     }
 }

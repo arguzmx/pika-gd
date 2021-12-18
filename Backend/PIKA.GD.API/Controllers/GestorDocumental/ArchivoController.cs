@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
+using PIKA.Infraestrctura.Reportes;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.GestionDocumental.Interfaces;
+using PIKA.Servicio.Reportes.Interfaces;
 using RepositorioEntidades;
 
 namespace PIKA.GD.API.Controllers.GestorDocumental
@@ -24,13 +26,19 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         private readonly ILogger<ArchivoController> logger;
         private IServicioArchivo servicioArchivo;
         private IProveedorMetadatos<Archivo> metadataProvider;
+        private readonly IServicioEstadisticaClasificacionAcervo servicioEstadistica;
+        private readonly IServicioReporteEntidad servicioReporte;
         public ArchivoController(ILogger<ArchivoController> logger,
             IProveedorMetadatos<Archivo> metadataProvider,
-            IServicioArchivo servicioArchivo)
+            IServicioArchivo servicioArchivo,
+            IServicioEstadisticaClasificacionAcervo servicioEstadistica,
+            IServicioReporteEntidad servicioReporte)
         {
             this.logger = logger;
             this.servicioArchivo = servicioArchivo;
             this.metadataProvider = metadataProvider;
+            this.servicioEstadistica = servicioEstadistica;
+            this.servicioReporte = servicioReporte;
         }
         /// <summary>
         /// Obtiene los metadatos relacionados con la entidad Archivo
@@ -226,13 +234,38 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         }
 
 
+        [HttpPost("estadistica/{id}", Name = "ActualizaEstadisticasArchivo")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> ActualizaEstadistica(string id) {
+            await servicioEstadistica.ActualizarConteos(id).ConfigureAwait(false);
+            return Ok();
+        }
+
+
         [HttpGet("reporte/guiasimple/{id}", Name = "GetReporteguiasimple")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<FileResult> GetReporteguiasimple(string id)
         {
 
-            byte[] bytes = await servicioArchivo.ReporteGuiaSimpleArchivo(id).ConfigureAwait(false);
+            
+            var reportes = await servicioReporte.ObtenerPaginadoAsync(x => x.GrupoReportes == "guiasimplearchivo").ConfigureAwait(false);
+            List<ElementoReporte> l = new List<ElementoReporte>();
+
+            reportes.Elementos.ToList().ForEach(el => l.Add(new ElementoReporte() {
+                Id = el.Id, 
+                GrupoReportes = el.GrupoReportes,   
+                Entidad = el.Entidad, 
+                Nombre = el.Nombre, 
+                Descripcion = el.Descripcion, 
+                ExtensionSalida = el.ExtensionSalida, 
+                Bloqueado = el.Bloqueado, 
+                Plantilla = el.Plantilla, 
+                SubReporte = el.SubReporte
+            }));
+
+            byte[] bytes = await servicioArchivo.ReporteGuiaSimpleArchivo(id,l).ConfigureAwait(false);
             var archivo = await servicioArchivo.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
 
             const string contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";

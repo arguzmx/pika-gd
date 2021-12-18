@@ -10,8 +10,10 @@ using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
 using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.GestorDocumental;
+using PIKA.Modelo.GestorDocumental.Reportes.JSON;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.GestionDocumental.Interfaces;
+using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
 
 
@@ -25,26 +27,57 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
     {
         private readonly ILogger<PrestamoController> logger;
         private IServicioPrestamo servicioPrestamo;
+        private IServicioUsuarios servicioUsuarios;
         private IProveedorMetadatos<Prestamo> metadataProvider;
 
         public PrestamoController(ILogger<PrestamoController> logger,
             IProveedorMetadatos<Prestamo> metadataProvider,
-            IServicioPrestamo servicioPrestamo)
+            IServicioPrestamo servicioPrestamo,
+            IServicioUsuarios servicioUsuarios)
         {
             this.logger = logger;
             this.servicioPrestamo = servicioPrestamo;
             this.metadataProvider = metadataProvider;
+            this.servicioUsuarios = servicioUsuarios;
         }
 
         [HttpPost("webcommand/{command}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<RespuestaComandoWeb>> Post(string command, [FromBody] object payload)
         {
-            RespuestaComandoWeb r = await servicioPrestamo.ComandoWeb(command, payload);
-            Console.WriteLine($"{command} {System.Text.Json.JsonSerializer.Serialize(payload)} o---------------------------");
+            RespuestaComandoWeb r = await servicioPrestamo.ComandoWeb(command, payload).ConfigureAwait(false);
             return Ok(r);
         }
 
+        [HttpGet("reporte/prestamo/{id}", Name = "GetReportePrestamo")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult> GetReportePrestamo(string id)
+        {
+  
+            var p = await servicioPrestamo.UnicoAsync(x=>x.Id == id).ConfigureAwait(false);
+            if (p == null)
+            {
+                return NotFound();
+            }
+
+            var prestador = await servicioUsuarios.UnicoAsync(x=>x.UsuarioId == p.UsuarioOrigenId).ConfigureAwait(false);
+            var prestatario = await servicioUsuarios.UnicoAsync(x => x.UsuarioId == p.UsuarioDestinoId).ConfigureAwait(false);
+
+
+            byte[] bytes = await servicioPrestamo.ReportePrestamo("", id, prestador.AUsuarioPrestamo(), prestatario.AUsuarioPrestamo()).ConfigureAwait(false);
+            
+            string contentType = MimeTypes.GetMimeType("x.docx");
+            string downloadName = $"Prestamo {p.Folio}.docx";
+            HttpContext.Response.ContentType = contentType;
+            HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+
+            var fileContentResult = new FileContentResult(bytes, contentType)
+            {
+                FileDownloadName = downloadName
+            };
+            return fileContentResult;
+        }
 
         #region Prestamos
 

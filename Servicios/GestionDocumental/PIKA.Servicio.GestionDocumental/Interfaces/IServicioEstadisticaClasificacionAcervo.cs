@@ -10,7 +10,12 @@ namespace PIKA.Servicio.GestionDocumental.Interfaces
    public interface IServicioEstadisticaClasificacionAcervo 
     {
         Task<byte[]> ReporteEstadisticaArchivoCuadro(string ArchivoId, string CuadroClasificacionId, bool IncluirCeros);
-        Task<bool> ActualizaConteoEstadistica(string CuadroClasificacionId, string EntradaClasificacionId,
-            string ArchivoId, int cantidadActivos, DateTime? fechaMinima, DateTime? fechaMaxima);
+        
+        Task ActualizarConteos(string ArchivoId);
+
+        Task ActualizaEstadistica(EstadisticaClasificacionAcervo estadistica, int adicionar, int eliminar);
+        Task AdicionaEstadistica(EstadisticaClasificacionAcervo estadistica);
+        Task EliminaEstadistica(EstadisticaClasificacionAcervo estadistica, bool CambioDocumental = false);
+
     }
 }

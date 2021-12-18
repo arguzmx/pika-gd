@@ -15,6 +15,9 @@ using PIKA.GD.API.Servicios.Caches;
 using RepositorioEntidades;
 using PIKA.Modelo.Metadatos.Instancias;
 using PIKA.Servicio.Metadatos.ElasticSearch.modelos;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using PIKA.Infraestructura.Comun;
 
 namespace PIKA.GD.API.Controllers.Metadatos
 {
@@ -28,7 +31,9 @@ namespace PIKA.GD.API.Controllers.Metadatos
         private readonly IRepositorioMetadatos repositorio;
         private readonly IAppCache appCache;
         private readonly IServicioPlantilla plantillas;
+        private readonly ConfiguracionServidor config;
         public MetadatosController(
+            IOptions<ConfiguracionServidor> config,
             IRepositorioMetadatos repositorio,
             IServicioPlantilla plantillas,
             ILogger<MetadatosController> logger,
@@ -39,6 +44,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
             this.repositorio = repositorio;
             this.logger = logger;
             this.appCache = cache;
+            this.config = config.Value;
         }
 
 
@@ -56,7 +62,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         public async Task<ActionResult<MetadataInfo>> ObtienePlantilla(string id)
         {
           
-                Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(id, appCache, plantillas)
+                Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(id, appCache, plantillas, config.seguridad_cache_segundos)
                 .ConfigureAwait(false);
 
                 if (plantilla == null) return NotFound(id);
@@ -105,7 +111,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
             [FromBody] RequestValoresPlantilla valores)
         {
 
-            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
+            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas, config.seguridad_cache_segundos)
                     .ConfigureAwait(false);
 
             if (plantilla == null) return NotFound(plantillaid);
@@ -144,7 +150,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         public async Task<ActionResult> InsertaEnLista(string plantillaid,
             string listaid, [FromBody] RequestValoresPlantilla valores)
         {
-            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
+            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas, config.seguridad_cache_segundos)
                     .ConfigureAwait(false);
 
             if (plantilla == null) return NotFound(plantillaid);
@@ -174,7 +180,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
             [FromBody] RequestValoresPlantilla valores)
         {
 
-            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
+            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas, config.seguridad_cache_segundos)
                      .ConfigureAwait(false);
 
             if (plantilla == null) return NotFound(plantillaid);
@@ -202,7 +208,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         public async Task<ActionResult<DocumentoPlantilla>> Unico(string id, string plantillaid)
         {
             DocumentoPlantilla p = new DocumentoPlantilla();
-            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
+            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas, config.seguridad_cache_segundos)
                      .ConfigureAwait(false);
 
             if (plantilla == null) return NotFound(plantillaid);
@@ -232,7 +238,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         public async Task<ActionResult<DocumentoPlantilla>> Lista(string id, string plantillaid)
         {
             DocumentoPlantilla p = new DocumentoPlantilla();
-            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
+            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas, config.seguridad_cache_segundos)
                      .ConfigureAwait(false);
 
             if (plantilla == null) return NotFound(plantillaid);
@@ -254,7 +260,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         public async Task<ActionResult<DocumentoPlantilla>> ListPorIdTpo(string plantillaid, string tipo, [FromBody]  RequestPlantillaTipo  request)
         {
 
-            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
+            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas, config.seguridad_cache_segundos)
                      .ConfigureAwait(false);
 
             if (plantilla == null) return NotFound(plantillaid);
@@ -277,7 +283,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [TypeFilter(typeof(AsyncIdentityFilter))]
         public async Task<ActionResult<Paginado<DocumentoPlantilla>>> PaginaPlantilla(string plantillaid, [FromBody] ConsultaAPI q)
         {
-            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas)
+            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas, config.seguridad_cache_segundos)
                      .ConfigureAwait(false);
 
             if (plantilla == null) return NotFound(plantillaid);

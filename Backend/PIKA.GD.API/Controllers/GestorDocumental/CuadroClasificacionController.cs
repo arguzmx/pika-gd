@@ -183,15 +183,17 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             byte[] bytes = await  servicioCuadro.ExportarCuadroCalsificacionExcel(id).ConfigureAwait(false);
             var cuadro = await servicioCuadro.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
 
-            const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            string contentType = MimeTypes.GetMimeType("x.xlsx");
+            string downloadName = $"Cuadro Clasificacion {cuadro.Nombre}.xlsx";
             HttpContext.Response.ContentType = contentType;
             HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
 
             var fileContentResult = new FileContentResult(bytes, contentType)
             {
-                FileDownloadName = cuadro.Nombre
+                FileDownloadName = downloadName
             };
             return fileContentResult;
+
         }
 
 

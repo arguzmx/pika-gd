@@ -22,6 +22,11 @@ namespace PIKA.Servicio.Reportes.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
+                    b.Property<bool>("Bloqueado")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("Descripcion")
                         .IsRequired()
                         .HasColumnType("varchar(500) CHARACTER SET utf8mb4")
@@ -31,6 +36,15 @@ namespace PIKA.Servicio.Reportes.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(500) CHARACTER SET utf8mb4")
                         .HasMaxLength(500);
+
+                    b.Property<string>("ExtensionSalida")
+                        .IsRequired()
+                        .HasColumnType("varchar(64) CHARACTER SET utf8mb4")
+                        .HasMaxLength(64);
+
+                    b.Property<string>("GrupoReportes")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -45,6 +59,11 @@ namespace PIKA.Servicio.Reportes.Migrations
                     b.Property<string>("Plantilla")
                         .IsRequired()
                         .HasColumnType("LONGTEXT");
+
+                    b.Property<bool>("SubReporte")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("TipoOrigenId")
                         .IsRequired()

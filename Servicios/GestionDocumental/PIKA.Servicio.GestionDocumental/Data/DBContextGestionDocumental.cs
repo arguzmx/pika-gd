@@ -60,6 +60,17 @@ namespace PIKA.Servicio.GestionDocumental.Data
 
 
         /// <summary>
+        /// Nombre de la tabla para las entidades del tipo Archivo
+        /// </summary>
+        public static string TablaUnidadAdministrativaArchivo { get => "gd$unidadadministrativaarchivo"; }
+
+        /// <summary>
+        /// Nombre de la tabla para las entidades del tipo Archivo
+        /// </summary>
+        public static string TablaPermisoUnidadAdministrativaArchivo { get => "gd$permunidadadministrativa"; }
+
+
+        /// <summary>
         /// Nombre de la tabla para las entidades del tipo Tipo archivo
         /// </summary>
         public static string TablaTiposArchivo { get => "gd$tipoarchivo"; }
@@ -322,6 +333,10 @@ namespace PIKA.Servicio.GestionDocumental.Data
 
         public DbSet<TemaActivos> TemasActivos { get; set; }
 
+
+        public DbSet<UnidadAdministrativaArchivo> UnidadesAdministrativasArchivo { get; set; }
+        public DbSet<PermisosUnidadAdministrativaArchivo> PermisosUnidadesAdministrativasArchivo { get; set; }
+
         public void AplicarMigraciones()
         {
             this.Database.Migrate();
@@ -347,6 +362,8 @@ namespace PIKA.Servicio.GestionDocumental.Data
 
             builder.ApplyConfiguration<Archivo>(new DbConfArchivo());
             builder.ApplyConfiguration<TipoArchivo>(new DbConfTipoArchivo());
+            builder.ApplyConfiguration<UnidadAdministrativaArchivo>(new DbConfUnidadAdminArchivo());
+            builder.ApplyConfiguration<PermisosUnidadAdministrativaArchivo>(new DbConfPermisoUnidadAdminArchivo());
 
             builder.ApplyConfiguration<Activo>(new DbConfActivo());
             builder.ApplyConfiguration<Asunto>(new DbConfAsunto());

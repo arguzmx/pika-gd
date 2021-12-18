@@ -60,7 +60,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         public async Task<ActionResult<PermisosPuntoMontaje>> GetPermisos(string id)
         {
             servicioEntidad.usuario = this.usuario;
-            var permisos = await this.servicioEntidad.ObtienePerrmisos(id, TenantId).ConfigureAwait(false);
+            var permisos = await this.servicioEntidad.ObtienePerrmisos(id,null, TenantId).ConfigureAwait(false);
             return Ok(permisos);
         }
 

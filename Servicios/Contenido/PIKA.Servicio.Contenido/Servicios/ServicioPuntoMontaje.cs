@@ -43,21 +43,21 @@ namespace PIKA.Servicio.Contenido.Servicios
         }
 
 
-        public async Task<PermisosPuntoMontaje> ObtienePerrmisos(string pmId, string uoId)
+        public async Task<PermisosPuntoMontaje> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
         {
             try
             {
 
 
             bool esAdminOU = false;
-            var acceso = usuario.Accesos.Where(x => x.OU == uoId).FirstOrDefault();
+            var acceso = usuario.Accesos.Where(x => x.OU == UnidaddOrganizacionalId).FirstOrDefault();
             if (acceso != null)
             {
                 esAdminOU = acceso.Admin;
             }
 
             PermisosPuntoMontaje p = new PermisosPuntoMontaje() { Crear = false,  Actualizar  = false,  Elminar = false,   Leer = false, 
-                GestionContenido = false, GestionMetadatos = false, PuntoMontajeId = pmId
+                GestionContenido = false, GestionMetadatos = false, PuntoMontajeId = EntidadId
             };
 
             if (usuario.AdminGlobal || esAdminOU)
@@ -73,7 +73,7 @@ namespace PIKA.Servicio.Contenido.Servicios
             {
                 foreach(var r in usuario.Roles)
                 {
-                    var pm = await this.UDT.Context.PermisosPuntoMontaje.Where(x => x.DestinatarioId == r && x.PuntoMontajeId == pmId).SingleOrDefaultAsync();
+                    var pm = await this.UDT.Context.PermisosPuntoMontaje.Where(x => x.DestinatarioId == r && x.PuntoMontajeId == EntidadId).SingleOrDefaultAsync();
                     if (pm != null)
                     {
                         p.Actualizar = p.Actualizar || pm.Actualizar;

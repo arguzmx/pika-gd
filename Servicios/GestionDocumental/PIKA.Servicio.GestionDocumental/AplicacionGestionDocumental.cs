@@ -56,7 +56,11 @@ namespace PIKA.Servicio.GestionDocumental
                     Descripcion = "Permite administrar los archivos para la localización del inventario",
                     Tipos = new List<Type> { typeof(Archivo) }
                 },
-
+                new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_ARCHIVOS ) {
+                    Titulo = "Gestión de unidades administrativas",
+                    Descripcion = "Permite gestionar las unidads administrativas para el archivo",
+                    Tipos = new List<Type> { typeof(UnidadAdministrativaArchivo) , typeof(PermisosUnidadAdministrativaArchivo) }
+                },
                 new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_CAT_ARCHIVO ) {
                     Titulo = "Catálogos archivo",
                     Descripcion = "Permite administrar los catálogos relacionados con los archivos",

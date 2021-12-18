@@ -18,7 +18,11 @@ namespace PIKA.Servicio.Reportes
                 TipoOrigenId = a.TipoOrigenId,
                 Descripcion = a.Descripcion,
                 Entidad = a.Entidad,
-                Plantilla=a.Plantilla
+                Plantilla = a.Plantilla,
+                Bloqueado = a.Bloqueado,
+                ExtensionSalida = a.ExtensionSalida,
+                GrupoReportes = a.GrupoReportes,
+                SubReporte = a.SubReporte,
             };
         }
     }

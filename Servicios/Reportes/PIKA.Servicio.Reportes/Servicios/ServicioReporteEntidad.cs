@@ -96,6 +96,13 @@ namespace PIKA.Servicio.Reportes.Servicios
 
             return respuesta;
         }
+
+
+        public Task<IPaginado<ReporteEntidad>> ObtenerPaginadoAsync(Expression<Func<ReporteEntidad, bool>> predicate = null, Func<IQueryable<ReporteEntidad>, IOrderedQueryable<ReporteEntidad>> orderBy = null, Func<IQueryable<ReporteEntidad>, IIncludableQueryable<ReporteEntidad, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
+        {
+            return this.repo.ObtenerPaginadoAsync(predicate);
+        }
+
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
             ReporteEntidad o;
@@ -166,10 +173,7 @@ namespace PIKA.Servicio.Reportes.Servicios
         }
 
 
-        public Task<IPaginado<ReporteEntidad>> ObtenerPaginadoAsync(Expression<Func<ReporteEntidad, bool>> predicate = null, Func<IQueryable<ReporteEntidad>, IOrderedQueryable<ReporteEntidad>> orderBy = null, Func<IQueryable<ReporteEntidad>, IIncludableQueryable<ReporteEntidad, object>> include = null, int index = 0, int size = 20, bool disableTracking = true, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+
 
         public Task<IEnumerable<string>> Restaurar(string[] ids)
         {

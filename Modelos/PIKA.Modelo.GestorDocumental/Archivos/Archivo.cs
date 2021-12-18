@@ -23,6 +23,7 @@ namespace PIKA.Modelo.GestorDocumental
         Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id",
         PropiedadHijo: "ArchivoId")]
 
+
     [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ACTIVOS,
         EntidadHijo: "Prestamo",
         Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id",
@@ -172,6 +173,24 @@ namespace PIKA.Modelo.GestorDocumental
         [JsonIgnore]
         [XmlIgnore]
         public List<IProveedorReporte> Reportes { get; set; }
+
+
+        [JsonIgnore]
+        [XmlIgnore]
+        public List<UnidadAdministrativaArchivo> UnidadesTramite { get; set; }
+
+        [JsonIgnore]
+        [XmlIgnore]
+        public List<UnidadAdministrativaArchivo> UnidadesConcentracion { get; set; }
+
+
+        [JsonIgnore]
+        [XmlIgnore]
+        public List<UnidadAdministrativaArchivo> UnidadesHistorico { get; set; }
+
+        [JsonIgnore]
+        [XmlIgnore]
+        public List<EstadisticaClasificacionAcervo> EstadisticasClasificacionAcervo { get; set; }
 
     }
 }

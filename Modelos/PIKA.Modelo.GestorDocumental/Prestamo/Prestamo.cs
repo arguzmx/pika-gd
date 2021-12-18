@@ -26,12 +26,18 @@ namespace PIKA.Modelo.GestorDocumental
         RequireSeleccion: true, Tipo: TipoVista.WebCommand, Condicion: "['Entregado']==0")]
     [LinkView(Titulo: "commandosweb.gd-prestamo-devolver", Icono: "assignment_turned_in", Vista: "gd-prestamo-devolver", 
         RequireSeleccion: true, Tipo: TipoVista.WebCommand, Condicion: "['Entregado']==1 && ['Devuelto']==0")]
-    public class Prestamo: Entidad<string>, IEntidadEliminada
+    public class Prestamo: Entidad<string>, IEntidadEliminada, IEntidadReportes
     {
+        [NotMapped]
+        [JsonIgnore]
+        [XmlIgnore]
+        public List<IProveedorReporte> Reportes { get; set; }
 
         public Prestamo() {
             ActivosRelacionados = new HashSet<ActivoPrestamo>();
             Comentarios = new HashSet<ComentarioPrestamo>();
+            this.Reportes = new List<IProveedorReporte>();
+            this.Reportes.Add(new ReportePrestamo());
         }
 
         [Prop(Required: false, isId: true, Visible: false, OrderIndex: 0)]

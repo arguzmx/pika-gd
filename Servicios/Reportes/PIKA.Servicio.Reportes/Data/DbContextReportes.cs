@@ -50,7 +50,8 @@ namespace PIKA.Servicio.Reportes.Data
 
         public void Inicializar(string contentPath, bool generarDatosdemo)
         {
-            InicializarDatos.Inicializar(this, contentPath);
+            InicializarDatos d = new InicializarDatos();
+            d.Inicializar(this, contentPath, null);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

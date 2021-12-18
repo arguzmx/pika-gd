@@ -9,10 +9,26 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Contenido\Reportes\caratulaactivo.docx" />
+    <None Remove="Contenido\Reportes\guiasimplearchivo-seccion.docx" />
+    <None Remove="Contenido\Reportes\guiasimplearchivo-ua.docx" />
     <None Remove="Contenido\Reportes\guiasimplearchivo.docx" />
+    <None Remove="Contenido\Reportes\reporte-prestamo.docx" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Contenido\Reportes\caratulaactivo.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Contenido\Reportes\guiasimplearchivo-seccion.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Contenido\Reportes\guiasimplearchivo-ua.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Contenido\Reportes\reporte-prestamo.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Contenido\Reportes\guiasimplearchivo.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -105,10 +105,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             
             await this.repo.CrearAsync(valido);
             UDT.SaveChanges();
-            
-            await servEstadisticas.ActualizaConteoEstadistica(valido.CuadroClasificacionId,
-                valido.EntradaClasificacionId, valido.ArchivoId, 1,
-                valido.FechaApertura, valido.FechaCierre);
+
+            var est = valido.AEstadistica();
+            await servEstadisticas.AdicionaEstadistica(est); 
 
             return valido.Copia();
 
@@ -116,28 +115,51 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task ActualizarAsync(Activo entity)
         {
+            Activo previo = await this.UnicoAsync(x => x.Id == entity.Id);
             Activo valido = await ActivoValidado(entity, true);
+            
+            valido.Eliminada = previo.Eliminada;
+
             UDT.Context.Entry(valido).State = EntityState.Modified;
             UDT.SaveChanges();
 
-            if(entity.EntradaClasificacionId != valido.EntradaClasificacionId)
+            if(previo.ArchivoId != valido.ArchivoId || previo.UnidadAdministrativaArchivoId != valido.UnidadAdministrativaArchivoId
+                || previo.CuadroClasificacionId != valido.CuadroClasificacionId || previo.EntradaClasificacionId != valido.EntradaClasificacionId)
             {
-                // Actualiza la entarda previa
-                await servEstadisticas.ActualizaConteoEstadistica(entity.CuadroClasificacionId,
-                entity.EntradaClasificacionId, entity.ArchivoId, -1, null, null);
+                Console.WriteLine("Cambio documental");
+                // Hay un cambio en los datos de clasificacion;
+                var estPrevio = previo.AEstadistica();
+                var estActual = valido.AEstadistica();
+                await servEstadisticas.EliminaEstadistica(estPrevio, true);
+                await servEstadisticas.AdicionaEstadistica(estActual);
 
-                // Actualiza la entrada nueva
-                await servEstadisticas.ActualizaConteoEstadistica(valido.CuadroClasificacionId,
-                valido.EntradaClasificacionId, entity.ArchivoId, 1,
-                valido.FechaApertura, valido.FechaCierre);
-            } 
-            else
+            } else
             {
-                // Solo actualiz a las fechas extremas
-                await servEstadisticas.ActualizaConteoEstadistica(valido.CuadroClasificacionId,
-                valido.EntradaClasificacionId, entity.ArchivoId, 0,
-                valido.FechaApertura, valido.FechaCierre);
+                Console.WriteLine("Sin Cambio documental");
+                // NO hay cambios en los datos de clasificación
+                var estActual = valido.AEstadistica();
+                if (previo.Eliminada != valido.Eliminada)
+                {
+                    // Cambió de eliminada a no eliminada
+                    if (previo.Eliminada && !valido.Eliminada)
+                    {
+                        await servEstadisticas.ActualizaEstadistica(estActual, 1, 0);
+                    }
+
+                    // Cambió de no eliminada a eliminada
+                    if (!previo.Eliminada && valido.Eliminada)
+                    {
+                        await servEstadisticas.ActualizaEstadistica(estActual, 0, 1);
+                    }
+
+                } else
+                {
+                    await servEstadisticas.ActualizaEstadistica(estActual, 0, 0);
+                }
+
+                
             }
+
         }
 
 
@@ -232,24 +254,10 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
                     c.Eliminada = true;
                     UDT.Context.Entry(c).State = EntityState.Modified;
                     eliminados.Add(c.Copia());
-
+                    await servEstadisticas.EliminaEstadistica(c.AEstadistica());
                 }
             }
             UDT.SaveChanges();
-
-            var actualizables = eliminados.GroupBy(x => new { x.CuadroClasificacionId, x.EntradaClasificacionId, x.ArchivoId })
-                .Select(y => new {
-                    CCId = y.Key.CuadroClasificacionId,
-                    ECId= y.Key.EntradaClasificacionId,
-                    AId= y.Key.ArchivoId,
-                    Conteo = (y.Count() * -1)
-             });
-
-
-            foreach( var item  in actualizables)
-            {
-                await servEstadisticas.ActualizaConteoEstadistica(item.CCId, item.ECId, item.AId, item.Conteo, null, null);
-            }
 
             return eliminados.Select(x=>x.Id).ToList();
 
@@ -269,26 +277,12 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
                     c.Nombre = await RestaurarNombre(c.Nombre, c.ArchivoId, c.Id, c.EntradaClasificacionId);
                     c.Eliminada = false;
                     UDT.Context.Entry(c).State = EntityState.Modified;
-
+                    await servEstadisticas.ActualizaEstadistica(c.AEstadistica() , 1, 0);
                     restaurados.Add(c.Copia());
-
                 }
             }
             UDT.SaveChanges();
-
-            var actualizables = restaurados.GroupBy(x => new { x.CuadroClasificacionId, x.EntradaClasificacionId, x.ArchivoId })
-                       .Select(y => new {
-                           CCId = y.Key.CuadroClasificacionId,
-                           ECId = y.Key.EntradaClasificacionId,
-                           AId = y.Key.ArchivoId,
-                           Conteo = y.Count() 
-                       });
-
-            foreach (var item in actualizables)
-            {
-                await servEstadisticas.ActualizaConteoEstadistica(item.CCId, item.ECId, item.AId, item.Conteo, null, null);
-            }
-
+ 
             return restaurados.Select(x=>x.Id).ToList();
         }
 
@@ -317,10 +311,53 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
         }
 
 
+        private async Task<string> ObtieneArchivoTramiteUnidadAdmin(string Id)
+        {
+            var ua = await UDT.Context.UnidadesAdministrativasArchivo.FindAsync(Id);
+            if (ua == null) return null;
+            if (ua.ArchivoTramiteId == null) return null;
+
+            var at = await UDT.Context.Archivos.FindAsync(ua.ArchivoTramiteId);
+            
+            return at?.Id;
+        }
+
+        private async Task<bool> ValidaArchivoTramiteUnidadAdmin(string UnidadId, string ArchivoId)
+        {
+            var archivo = await this.UDT.Context.Archivos.FindAsync(ArchivoId);
+            var unidad = await this.UDT.Context.UnidadesAdministrativasArchivo.FindAsync(UnidadId);
+            if(unidad != null && archivo != null)
+            {
+                return unidad.ArchivoConcentracionId == archivo.Id ||
+                    unidad.ArchivoHistoricoId == archivo.Id ||
+                    unidad.ArchivoTramiteId == archivo.Id;
+            }
+            return false;
+        }
 
         private async Task<Activo> ActivoValidado(Activo activo, bool actualizar)
         {
             Activo a = activo.Copia();
+
+            if (string.IsNullOrEmpty(a.ArchivoId) && string.IsNullOrEmpty(a.UnidadAdministrativaArchivoId))
+            {
+                throw new ExDatosNoValidos("Identificadores de archivo y unidad nulos");
+            }
+
+            if (string.IsNullOrEmpty(a.ArchivoId))
+            {
+                string idAT = await ObtieneArchivoTramiteUnidadAdmin(a.UnidadAdministrativaArchivoId);
+                a.ArchivoId = idAT ?? throw new ExDatosNoValidos("La unidad administrativa no tiene archivo de trámite");
+            } else
+            {
+                if (a.UnidadAdministrativaArchivoId != null)
+                {
+                    if (! await ValidaArchivoTramiteUnidadAdmin(a.UnidadAdministrativaArchivoId, a.ArchivoId))
+                    {
+                        throw new ExDatosNoValidos("El archivo no coincide con La unidad administrativa");
+                    }
+                }
+            }
 
             IRepositorioAsync<EntradaClasificacion> repoEC = UDT.ObtenerRepositoryAsync<EntradaClasificacion>(new QueryComposer<EntradaClasificacion>());
             IRepositorioAsync<Archivo> repoA = UDT.ObtenerRepositoryAsync<Archivo>(new QueryComposer<Archivo>());

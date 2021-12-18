@@ -51,6 +51,14 @@
     <Compile Remove="Data\Migrations\20210724024742_MOdificacionPrestamo.Designer.cs" />
     <Compile Remove="Data\Migrations\20210724025219_MOdificacionPrestamo.cs" />
     <Compile Remove="Data\Migrations\20210724025219_MOdificacionPrestamo.Designer.cs" />
+    <Compile Remove="Data\Migrations\20211210034234_UnidadesAdminArchivos.cs" />
+    <Compile Remove="Data\Migrations\20211210034234_UnidadesAdminArchivos.Designer.cs" />
+    <Compile Remove="Data\Migrations\20211211201228_PermisosUAdmin.cs" />
+    <Compile Remove="Data\Migrations\20211211201228_PermisosUAdmin.Designer.cs" />
+    <Compile Remove="Data\Migrations\20211215232429_UAEnEstadisticasAcervo.cs" />
+    <Compile Remove="Data\Migrations\20211215232429_UAEnEstadisticasAcervo.Designer.cs" />
+    <Compile Remove="Data\Migrations\20211215233420_RecrearEstadisticasAcervo.cs" />
+    <Compile Remove="Data\Migrations\20211215233420_RecrearEstadisticasAcervo.Designer.cs" />
   </ItemGroup>
 
 

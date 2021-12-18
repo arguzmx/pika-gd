@@ -1,15 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PIKA.Infraestrctura.Reportes;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
+using PIKA.Modelo.GestorDocumental.Reportes.JSON;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.GestionDocumental.Interfaces;
+using PIKA.Servicio.Reportes.Interfaces;
+using PIKA.Servicio.Reportes.Servicios;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
@@ -31,12 +36,18 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
         private ILogger<ServicioActivoPrestamo> lap;
         private ILogger<ServicioComentarioPrestamo> lp;
-        
+        private ConfiguracionServidor Config;
+        private IServicioReporteEntidad ServicioReporteEntidad;
+
         public ServicioPrestamo(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioLog> Logger) : base(proveedorOpciones, Logger)
+           ILogger<ServicioLog> Logger,
+           IOptions<ConfiguracionServidor> Config,
+           IServicioReporteEntidad ServicioReporteEntidad) : base(proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Prestamo>(new QueryComposer<Prestamo>());
+            this.Config = Config.Value;
+            this.ServicioReporteEntidad = ServicioReporteEntidad;
         }
 
         public async Task<bool> Existe(Expression<Func<Prestamo, bool>> predicado)
@@ -365,6 +376,68 @@ on s.Id = a.Id where s.TemaId = '{TemaId}';";
             }
             return r;
         }
+
+
+
+        /// <summary>
+        /// Crea el reporte de guía simple de archivo
+        /// </summary>
+        /// <param name="ArchivoId">Identificador del archivo para el reporte</param>
+        /// <returns></returns>
+        public async Task<byte[]> ReportePrestamo(string ExtensionSalida, string PrestamoId, UsuarioPrestamo Prestador, UsuarioPrestamo Prestatario, string Dominio= "*", string UnidadOrganizacinal = "*")
+        {
+            try
+            {
+                logger.LogInformation("ReportePrestamo");
+                ReportePrestamoData g = new ReportePrestamoData
+                {
+                    Prestamo = await repo.UnicoAsync(x => x.Id == PrestamoId),
+                    Prestador = Prestador, 
+                    Prestatario = Prestatario
+                };
+
+                g.Fecha = DateTime.Now.ToString("dd/MM/yyyy");
+                g.FechaDevolucionPrevista = g.Prestamo.FechaProgramadaDevolucion.ToString("dd/MM/yyyy");
+                g.FechaDevolucionReal = g.Prestamo.FechaDevolucion.HasValue ? g.Prestamo.FechaDevolucion.Value.ToString("dd/MM/yyyy") : "";
+                g.Estado = g.Prestamo.Devuelto ? "Devuelto" : "Abierto";
+
+                if (g.Prestamo==null) throw new EXNoEncontrado(PrestamoId);
+
+                var r = await ServicioReporteEntidad.UnicoAsync(x => x.Id == "reporte-prestamo" && x.TipoOrigenId == Dominio && x.OrigenId == UnidadOrganizacinal);
+                if (r == null) throw new EXNoEncontrado("reporte: reporte-prestamo");
+
+                List<Activo> activos = await this.UDT.Context.ActivosPrestamo.Join(
+                    this.UDT.Context.Activos,
+                    activospretamo => activospretamo.ActivoId,
+                    activo => activo.Id,
+                    (activospretamo, activo) => activo).OrderBy(n=>n.Nombre).ToListAsync();
+
+                int indice = 1;
+                activos.ForEach(x => {
+                    g.Activos.Add(x.CopiaActivoPrestamo(indice));
+                    indice++;
+                });
+                
+
+                string jsonString = System.Text.Json.JsonSerializer.Serialize(g);
+                byte[] data = Convert.FromBase64String(r.Plantilla);
+                return ReporteEntidades.ReportePlantilla(data, jsonString, Config.ruta_cache_fisico, true);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.ToString());
+                throw;
+            }
+
+
+        }
+
+
+
+        // ---------------------------------------------------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------------------------------------------------
+
+
 
     }
 }

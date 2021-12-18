@@ -45,7 +45,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.FechaRetencionAT).IsRequired(false);
             builder.Property(x => x.TieneContenido).IsRequired().HasDefaultValue(false);
             builder.Property(x => x.ElementoId).IsRequired(false);
+            builder.Property(x => x.UnidadAdministrativaArchivoId).IsRequired(false);
 
+            builder.HasIndex(i => new { i.UnidadAdministrativaArchivoId });
             builder.HasIndex(i => new { i.ArchivoOrigenId });
             builder.HasIndex(i => new { i.TipoArchivoId });
             builder.HasIndex(i => new { i.EnPrestamo });

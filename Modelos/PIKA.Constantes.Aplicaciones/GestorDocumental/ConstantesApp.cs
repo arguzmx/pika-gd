@@ -8,6 +8,7 @@ namespace PIKA.Constantes.Aplicaciones.GestorDocumental
     {
         public const string APP_ID = "PIKA-GD-GDOCUMENTAL";
         public const string MODULO_CUADROCLASIF = "CUADROCLASIF";
+        public const string MODULO_UNIDADESADMIN = "UNIDADESADMIN";
         public const string MODULO_ACTIVOS = "ACTIVOS";
         public const string MODULO_CATALOGOSCC = "CATALOGOSCC";
         public const string MODULO_ARCHIVOS = "ARCHIVOS";
