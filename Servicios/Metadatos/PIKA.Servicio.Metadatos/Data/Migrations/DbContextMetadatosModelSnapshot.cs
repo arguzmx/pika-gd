@@ -303,7 +303,8 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PropiedadId");
+                    b.HasIndex("PropiedadId")
+                        .HasName("IX_m$valspropiedad_PropId");
 
                     b.ToTable("metadatos$valoreslistapropiedad");
                 });
@@ -363,6 +364,7 @@ namespace PIKA.Servicio.Metadatos.Data.Migrations
                     b.HasOne("PIKA.Modelo.Metadatos.PropiedadPlantilla", "Propiedad")
                         .WithMany("ValoresLista")
                         .HasForeignKey("PropiedadId")
+                        .HasConstraintName("FK_m$valoreslp_me$proppl")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
