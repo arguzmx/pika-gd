@@ -55,27 +55,27 @@ namespace PIKA.Modelo.Seguridad
 
         [Prop(Required: false, OrderIndex: 50)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
-        [ValidString(minlen: 2, maxlen: 200)]
+        [ValidString(minlen: 0, maxlen: 200)]
         public string name { get; set; }
 
         [Prop(Required: false, OrderIndex: 60)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
-        [ValidString(minlen: 2, maxlen: 200)]
+        [ValidString(minlen: 0, maxlen: 200)]
         public string family_name { get; set; }
 
         [Prop(Required: false, OrderIndex: 70)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
-        [ValidString(minlen: 2, maxlen: 200)]
+        [ValidString(minlen: 0, maxlen: 200)]
         public string given_name { get; set; }
 
         [Prop(Required: false, OrderIndex: 80)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
-        [ValidString(minlen: 2, maxlen: 200)]
+        [ValidString(minlen: 0, maxlen: 200)]
         public string middle_name { get; set; }
 
         [Prop(Required: false, OrderIndex: 90)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
-        [ValidString(minlen: 2, maxlen: 200)]
+        [ValidString(minlen: 0, maxlen: 200)]
         public string nickname { get; set; }
 
         [Prop(Required: false, OrderIndex: 100)]

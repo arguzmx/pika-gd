@@ -39,10 +39,10 @@ namespace PIKA.Modelo.GestorDocumental
         public override List<TipoArchivo> Seed()
         {
             List<TipoArchivo> l = new List<TipoArchivo>();
-            l.Add(new TipoArchivo() { Id = IDARCHIVO_CORRESPONDENCIA, Nombre = "Correspondencoia"});
+            // l.Add(new TipoArchivo() { Id = IDARCHIVO_CORRESPONDENCIA, Nombre = "Correspondencoia"});
             l.Add(new TipoArchivo() { Id = IDARCHIVO_TRAMITE, Nombre = "Trámite" });
             l.Add(new TipoArchivo() { Id = IDARCHIVO_HISTORICO  , Nombre = "Histórico"});
-            l.Add(new TipoArchivo() { Id = IDARCHIVO_CONSERVACION , Nombre = "Conservación"});
+            l.Add(new TipoArchivo() { Id = IDARCHIVO_CONSERVACION , Nombre = "Concentración"});
             return l;
         }
 

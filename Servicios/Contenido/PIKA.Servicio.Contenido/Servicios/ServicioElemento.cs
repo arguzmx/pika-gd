@@ -137,24 +137,29 @@ namespace PIKA.Servicio.Contenido.Servicios
                     throw new ExDatosNoValidos($"No es posible modificar el volumen de un elemento");
                 }
             }
-      
-            if((await repoPM.UnicoAsync(x=>x.Id == entity.PuntoMontajeId)) == null)
-            {
-                throw new ExDatosNoValidos($"Punto de montaje no válido");
-            }
 
-            var vol = await repoVol.UnicoAsync(x => x.Id == entity.VolumenId);
-            if (vol == null)
+            if(!esActualizacion)
             {
-                throw new ExDatosNoValidos($"Volumen {entity.VolumenId} inexistente");
-            }
-            else
-            {
-                if (vol.Eliminada || (!vol.ConfiguracionValida))
+                var pm = await repoPM.UnicoAsync(x => x.Id == entity.PuntoMontajeId);
+                if (pm == null)
                 {
-                    throw new ExDatosNoValidos($"Volumen {entity.VolumenId} eliminado o sin configuración válida");
+                    throw new ExDatosNoValidos($"Punto de montaje no válido");
+                }
+
+                var vol = await repoVol.UnicoAsync(x => x.Id == pm.VolumenDefaultId);
+                if (vol == null)
+                {
+                    throw new ExDatosNoValidos($"Volumen {entity.VolumenId} inexistente");
+                }
+                else
+                {
+                    if (vol.Eliminada || (!vol.ConfiguracionValida))
+                    {
+                        throw new ExDatosNoValidos($"Volumen {entity.VolumenId} eliminado o sin configuración válida");
+                    }
                 }
             }
+           
 
             if (await Existe(x => x.Nombre == entity.Nombre
                   && x.PuntoMontajeId == entity.PuntoMontajeId
@@ -205,6 +210,9 @@ namespace PIKA.Servicio.Contenido.Servicios
             try
             {
 
+                var pm = await repoPM.UnicoAsync(x => x.Id == entity.PuntoMontajeId);
+
+                entity.VolumenId = pm.VolumenDefaultId;
                 entity.Id = System.Guid.NewGuid().ToString();
                 entity.FechaCreacion = DateTime.Now;
                 entity.Eliminada = false;

@@ -56,6 +56,7 @@ namespace PIKA.Modelo.Contenido
         /// </summary>
         [Prop(Required: true, Visible: false, HieRoot: true, OrderIndex: 1010, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "PuntoMontaje")]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
+        [List(Entidad: "PuntoMontaje", DatosRemotos: true, TypeAhead: false)]
         [LinkViewParameter(Vista: "visorcontenido")]
         public string PuntoMontajeId { get; set; }
 
@@ -72,16 +73,16 @@ namespace PIKA.Modelo.Contenido
         /// <summary>
         /// Fecah de creación de la entidad en formato UTC
         /// </summary>
-        [Prop(Required: false, isId: true, Visible: false, OrderIndex: 1010)]
-        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.update)]
+        [Prop(Required: false, isId: true, Visible: true, OrderIndex: 1010)]
+        [VistaUI(ControlUI: ControlUI.HTML_DATETIME, Accion: Acciones.none)]
         public DateTime FechaCreacion { get; set; }
         //#Requerido
 
         ///// <summary>
         ///// Identificador único del volúmen para el contenido
         ///// </summary>
-        [Prop(Required: false, OrderIndex: 70)]
-        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.add)]
+        [Prop(Required: false, OrderIndex: 70, Visible: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
         [List(Entidad: "Volumen", DatosRemotos: true, TypeAhead: false)]
         [LinkViewParameter(Vista: "visorcontenido")]
         [LinkMetadatos(CampoMetadatos: LinkMetadatosAttribute.IndiceFiltrado)]

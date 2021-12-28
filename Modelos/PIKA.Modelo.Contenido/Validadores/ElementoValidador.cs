@@ -17,7 +17,6 @@ namespace PIKA.Modelo.Contenido
 
             RuleFor(x => x.PuntoMontajeId).NotNull().NotEmpty().MaximumLength(LongitudDatos.GUID);
                         
-            RuleFor(x => x.VolumenId).NotNull().NotEmpty().MaximumLength(LongitudDatos.GUID);
         }
     }
 }
