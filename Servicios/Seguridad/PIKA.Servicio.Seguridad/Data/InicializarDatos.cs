@@ -20,7 +20,6 @@ namespace PIKA.Servicio.Seguridad.Data
         private static void DatosIniciales(
            DbContextSeguridad dbContext)
         {
-
             UsuarioDominio u = new UsuarioDominio()
             {
                 ApplicationUserId = "admin",
@@ -29,13 +28,34 @@ namespace PIKA.Servicio.Seguridad.Data
                 UnidadOrganizacionalId = "principal"
             };
 
-            if (dbContext.UsuariosDominio.Where(x => x.ApplicationUserId == u.ApplicationUserId 
+            if (!dbContext.UsuariosDominio.Any(x => x.ApplicationUserId == u.ApplicationUserId 
                 && x.DominioId == u.DominioId
-                && x.UnidadOrganizacionalId == u.UnidadOrganizacionalId) == null)
+                && x.UnidadOrganizacionalId == u.UnidadOrganizacionalId))
             {
                 dbContext.UsuariosDominio.Add(u);
                 dbContext.SaveChanges();
             }
+
+            if(!dbContext.PropiedadesUsuario.Any(x=>x.UsuarioId == "admin"))
+            {
+                PropiedadesUsuario p = new PropiedadesUsuario()
+                {
+                    Eliminada = false,
+                    email = "admin",
+                    email_verified = true,
+                    family_name = "De sistema",
+                    given_name = ".",
+                    Inactiva = false,
+                    name = "Administrador",
+                    middle_name = ".",
+                    nickname = "admin",
+                    username = "admin",
+                    UsuarioId = "admin"
+                };
+                dbContext.PropiedadesUsuario.Add(p);
+                dbContext.SaveChanges();
+            }
+
 
         }
 

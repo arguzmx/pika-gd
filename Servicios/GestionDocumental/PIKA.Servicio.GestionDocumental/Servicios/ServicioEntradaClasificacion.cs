@@ -107,7 +107,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 entity.TipoDisposicionDocumentalId = entity.TipoDisposicionDocumentalId.Trim();
             await this.repo.CrearAsync(entity);
 
-            UDT.SaveChanges();
+            // UDT.SaveChanges();
 
             if (entity.TipoValoracionDocumentalId != null
                 && entity.TipoValoracionDocumentalId.Length > 0)

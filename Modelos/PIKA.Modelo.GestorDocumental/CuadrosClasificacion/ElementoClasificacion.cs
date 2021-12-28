@@ -98,7 +98,7 @@ namespace PIKA.Modelo.GestorDocumental
         [Prop(Required: false, Visible: false, OrderIndex: 1050,  ShowInTable: false, HieName: true)]
         [VistaUI()]
         public string NombreJerarquico { get {
-                return this.Clave + " " + this.Nombre;
+                return this.Nombre;
             } }
 
         /// <summary>
