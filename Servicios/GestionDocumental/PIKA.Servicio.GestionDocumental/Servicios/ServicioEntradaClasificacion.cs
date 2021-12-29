@@ -78,60 +78,70 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<EntradaClasificacion> CrearAsync(EntradaClasificacion entity, CancellationToken cancellationToken = default)
         {
-            if (await Existelemento(x => x.Id == entity.ElementoClasificacionId && x.Eliminada == true))
-                throw new EXNoEncontrado(entity.ElementoClasificacionId);
-            if (!await Existelemento(x => x.Id == entity.ElementoClasificacionId))
-                throw new EXNoEncontrado(entity.ElementoClasificacionId);
-            if (!String.IsNullOrEmpty(entity.TipoDisposicionDocumentalId))
-                if (!await ExisteTipoDisposicionDocumental(x => x.Id == entity.TipoDisposicionDocumentalId))
-                    throw new ExErrorRelacional(entity.TipoDisposicionDocumentalId);
-            if (!await ExisteCC(x => x.Id == entity.CuadroClasifiacionId))
-                throw new ExErrorRelacional(entity.CuadroClasifiacionId);
-            if (await Existe(x => x.Clave.Equals(entity.Clave.Trim(),
-                StringComparison.InvariantCultureIgnoreCase) && x.Eliminada != true
-                && x.ElementoClasificacionId == entity.ElementoClasificacionId
-                ))
+            try
             {
-                throw new ExElementoExistente(entity.Clave.Trim());
-            }
-
-            entity.Id = Guid.NewGuid().ToString();
-            entity.Nombre = entity.Nombre.Trim();
-            entity.Clave = entity.Clave.Trim();
-            entity.Descripcion = string.IsNullOrEmpty(entity.Descripcion) ? "" : entity.Descripcion.Trim();
-            if (!String.IsNullOrEmpty(entity.ElementoClasificacionId))
-                entity.ElementoClasificacionId = entity.ElementoClasificacionId.Trim();
-            if (!String.IsNullOrEmpty(entity.CuadroClasifiacionId))
-                entity.CuadroClasifiacionId = entity.CuadroClasifiacionId.Trim();
-            if (!String.IsNullOrEmpty(entity.TipoDisposicionDocumentalId))
-                entity.TipoDisposicionDocumentalId = entity.TipoDisposicionDocumentalId.Trim();
-            await this.repo.CrearAsync(entity);
-
-            // UDT.SaveChanges();
-
-            if (entity.TipoValoracionDocumentalId != null
-                && entity.TipoValoracionDocumentalId.Length > 0)
-            {
-
-
-                foreach (string id in entity.TipoValoracionDocumentalId)
+                if (await Existelemento(x => x.Id == entity.ElementoClasificacionId && x.Eliminada == true))
+                    throw new EXNoEncontrado(entity.ElementoClasificacionId);
+                if (!await Existelemento(x => x.Id == entity.ElementoClasificacionId))
+                    throw new EXNoEncontrado(entity.ElementoClasificacionId);
+                if (!String.IsNullOrEmpty(entity.TipoDisposicionDocumentalId))
+                    if (!await ExisteTipoDisposicionDocumental(x => x.Id == entity.TipoDisposicionDocumentalId))
+                        throw new ExErrorRelacional(entity.TipoDisposicionDocumentalId);
+                if (!await ExisteCC(x => x.Id == entity.CuadroClasifiacionId))
+                    throw new ExErrorRelacional(entity.CuadroClasifiacionId);
+                if (await Existe(x => x.Clave.Equals(entity.Clave.Trim(),
+                    StringComparison.InvariantCultureIgnoreCase) && x.Eliminada != true
+                    && x.ElementoClasificacionId == entity.ElementoClasificacionId
+                    ))
                 {
-                    var tipo = repoTEC.UnicoAsync(x => x.Id.Equals(id.Trim(), StringComparison.InvariantCultureIgnoreCase));
-                    if (tipo != null)
+                    throw new ExElementoExistente(entity.Clave.Trim());
+                }
+
+                entity.Id = Guid.NewGuid().ToString();
+                entity.Nombre = entity.Nombre.Trim();
+                entity.Clave = entity.Clave.Trim();
+                entity.Descripcion = string.IsNullOrEmpty(entity.Descripcion) ? "" : entity.Descripcion.Trim();
+                if (!String.IsNullOrEmpty(entity.ElementoClasificacionId))
+                    entity.ElementoClasificacionId = entity.ElementoClasificacionId.Trim();
+                if (!String.IsNullOrEmpty(entity.CuadroClasifiacionId))
+                    entity.CuadroClasifiacionId = entity.CuadroClasifiacionId.Trim();
+                if (!String.IsNullOrEmpty(entity.TipoDisposicionDocumentalId))
+                    entity.TipoDisposicionDocumentalId = entity.TipoDisposicionDocumentalId.Trim();
+                await this.repo.CrearAsync(entity);
+
+                // UDT.SaveChanges();
+
+                if (entity.TipoValoracionDocumentalId != null
+                    && entity.TipoValoracionDocumentalId.Length > 0)
+                {
+
+
+                    foreach (string id in entity.TipoValoracionDocumentalId)
                     {
-                        ValoracionEntradaClasificacion vec = new ValoracionEntradaClasificacion()
+                        var tipo = repoTEC.UnicoAsync(x => x.Id.Equals(id.Trim(), StringComparison.InvariantCultureIgnoreCase));
+                        if (tipo != null)
                         {
-                            EntradaClasificacionId = entity.Id,
-                            TipoValoracionDocumentalId = id.Trim()
-                        };
-                        await repoEC.CrearAsync(vec);
+                            ValoracionEntradaClasificacion vec = new ValoracionEntradaClasificacion()
+                            {
+                                EntradaClasificacionId = entity.Id,
+                                TipoValoracionDocumentalId = id.Trim()
+                            };
+                            await repoEC.CrearAsync(vec);
+                        }
                     }
                 }
+
+                UDT.SaveChanges();
+
+                return entity.Copia();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
             }
 
-            UDT.SaveChanges();
-
-            return entity.Copia();
+           
         }
 
         public async Task<bool> Existelemento(Expression<Func<ElementoClasificacion, bool>> predicadoelemento)

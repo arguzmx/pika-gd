@@ -250,6 +250,37 @@ namespace PIKA.GD.API.Controllers.Contenido
             return Ok(await servicioEntidad.Restaurar(lids).ConfigureAwait(false));
         }
 
+        [HttpDelete("paginas/{id}/eliminar/{csvidpaginas}", Name = "EliminaPaginasElemento")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> EliminaPaginasElemento(string id, string csvidpaginas)
+        {
+            //v = "";
+            var elemento = await this.servicioEntidad.UnicoAsync(x => x.Id == id);
+            if (elemento == null)
+            {
+                return NotFound();
+            }
+
+            //if (string.IsNullOrEmpty(v)) v = elemento.VersionId;
+            //IGestorES gestor = await servicioVol.ObtienInstanciaGestor(elemento.VolumenId)
+            //               .ConfigureAwait(false);
+
+            //Modelo.Contenido.Version vElemento = await this.repoContenido.ObtieneVersion(v).ConfigureAwait(false);
+            //if (vElemento == null)
+            //{
+            //    return NotFound();
+            //}
+            //var archivo = await gestor.ObtieneZIP(vElemento, null);
+
+            //if (string.IsNullOrEmpty(archivo)) return BadRequest();
+
+            //this.HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+            //return PhysicalFile(archivo, MimeTypes.GetMimeType($"{elemento.Nombre}.zip"), elemento.Nombre + ".zip");
+            Console.WriteLine(csvidpaginas);
+            return Ok();
+        }
+
         [HttpGet("zip/{id}/{v}", Name = "GeneraZip")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]

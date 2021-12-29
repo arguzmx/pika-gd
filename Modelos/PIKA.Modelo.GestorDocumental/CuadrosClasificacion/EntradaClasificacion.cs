@@ -69,6 +69,7 @@ namespace PIKA.Modelo.GestorDocumental
         [ValidNumeric(min: 0, max: 60, defaulvalue: 0)]
         public int VigenciaTramite { get; set; }
 
+
         /// <summary>
         /// Especifica los meses que debe permanecer el expediente o documento en el archivo de concentración una vez que ha sido cerrado
         /// </summary>
@@ -86,6 +87,29 @@ namespace PIKA.Modelo.GestorDocumental
         [VistaUI(ControlUI: ControlUI.HTML_TEXTAREA, Accion: Acciones.addupdate)]
         [ValidString(minlen: 2, maxlen: 1000)]
         public string Descripcion { get; set; }
+
+
+        [Prop(Required: false, OrderIndex: 66)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXTAREA, Accion: Acciones.addupdate)]
+        [ValidString(minlen: 2, maxlen: 200)]
+        public string AbreCon { get; set; }
+
+
+        [Prop(Required: false, OrderIndex: 67)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXTAREA, Accion: Acciones.addupdate)]
+        [ValidString(minlen: 2, maxlen: 200)]
+        public string CierraCon { get; set; }
+
+        [Prop(Required: false, OrderIndex: 68)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXTAREA, Accion: Acciones.addupdate)]
+        [ValidString(minlen: 2, maxlen: 500)]
+        public string Contiene { get; set; }
+
+
+        [Prop(Required: false, OrderIndex: 69)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXTAREA, Accion: Acciones.addupdate)]
+        [ValidString(minlen: 2, maxlen: 500)]
+        public string InstruccionFinal { get; set; }
 
         /// <summary>
         /// Identificador único del tipo de disposición documental para la entrada

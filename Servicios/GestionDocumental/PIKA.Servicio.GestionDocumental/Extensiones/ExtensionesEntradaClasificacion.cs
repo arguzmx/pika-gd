@@ -24,13 +24,17 @@ namespace PIKA.Servicio.GestionDocumental
                 TipoDisposicionDocumentalId = d.TipoDisposicionDocumentalId,
                 TipoValoracionDocumentalId = d.TipoValoracionDocumentalId,
                 CuadroClasifiacionId = d.CuadroClasifiacionId,
-                Descripcion = d.Descripcion
+                Descripcion = d.Descripcion,
+                AbreCon = d.AbreCon,
+                CierraCon = d.CierraCon,
+                Contiene = d.Contiene,
+                InstruccionFinal = d.InstruccionFinal,
             };
 
-          
+
 
             return c;
         }
     }
-   
+
 }
