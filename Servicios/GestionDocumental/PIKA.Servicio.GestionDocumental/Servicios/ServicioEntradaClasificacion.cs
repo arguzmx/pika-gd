@@ -188,6 +188,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 o.Posicion = entity.Posicion;
                 o.TipoDisposicionDocumentalId = entity.TipoDisposicionDocumentalId;
                 o.Descripcion = string.IsNullOrEmpty(entity.Descripcion) ? "" : entity.Descripcion.Trim();
+                o.AbreCon = entity.AbreCon;
+                o.CierraCon = entity.CierraCon;
+                o.Contiene = entity.Contiene;
+                o.InstruccionFinal = entity.InstruccionFinal;
 
                 UDT.Context.Entry(o).State = EntityState.Modified;
 

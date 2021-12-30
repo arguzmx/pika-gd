@@ -75,10 +75,16 @@ namespace PikaOCR
                     File.WriteAllBytes(filename, bytes);
                     Console.WriteLine($"img {filename}");
 
+                    string langconfig = "";
+                    if(File.Exists(Path.Combine(configuracion.ruta_tesseract, "tessdata", $"{lang.ToLower()}.traineddata")))
+                    {
+                        langconfig = $" -l {lang}";
+                    }
+
                     var info = new ProcessStartInfo
                     {
                         FileName = configuracion.ruta_tesseract,
-                        Arguments = $"{filename} {filename} -l {lang}",
+                        Arguments = $"{filename} {filename}{langconfig}".TrimEnd(),
                         RedirectStandardError = true,
                         RedirectStandardOutput = true,
                         CreateNoWindow = true,
