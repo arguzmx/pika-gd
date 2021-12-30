@@ -136,6 +136,7 @@ namespace PikaOCR
                                     break;
 
                                 default:
+                                    Console.WriteLine(nombreTemporal);
                                     var resultadoImagen = await x.TextoImagen(parte, nombreTemporal);
                                     if (resultadoImagen.Exito)
                                     {
