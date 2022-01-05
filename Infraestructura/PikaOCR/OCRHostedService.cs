@@ -63,15 +63,17 @@ namespace PikaOCR
         {
             if (!Procesando)
             {
+                Procesando = true;
                 var siguiente = Task.Run(async () => await this._repoElastic.SiguenteIndexar(null));
                 siguiente.Wait();
                 if (siguiente.Result != null)
                 {
-                    Procesando = true;
+                    
                     var task = Task.Run(async () => await ProcesaVersion(siguiente.Result));
                     task.Wait();
-                    Procesando = false;
-                } 
+                    
+                }
+                Procesando = false;
             }
         }
 
@@ -98,7 +100,7 @@ namespace PikaOCR
                             parte.Id = parte.IdentificadorExterno;
                         }
 
-                        var idExistente = await _repoElastic.ExisteTextoCompleto(new ContenidoTextoCompleto() { ElementoId = parte.ElementoId, ParteId = parte.Id, VersionId = parte.VersionId });
+                        
                         // la parte no jha sido indexada
                         string nombreTemporal = x.NombreArchivoTemporal(parte);
 
@@ -113,14 +115,15 @@ namespace PikaOCR
                                         int pagina = 1;
                                         foreach (var t in Rutas)
                                         {
-                                            if (string.IsNullOrEmpty(idExistente))
+                                            string idPaginaExistente = await _repoElastic.ExisteTextoCompleto(new ContenidoTextoCompleto() { ElementoId = parte.ElementoId, ParteId = parte.Id, VersionId = parte.VersionId, Pagina =pagina });
+                                            if (string.IsNullOrEmpty(idPaginaExistente))
                                             {
                                                 await _repoElastic.IndexarTextoCompleto(parte.ParteAContenidoTextoCompleto(File.ReadAllText(t), elemento.PuntoMontajeId, elemento.CarpetaId, pagina));
 
                                             }
                                             else
                                             {
-                                                await _repoElastic.ActualizarTextoCompleto(idExistente, parte.ParteAContenidoTextoCompleto(File.ReadAllText(t), elemento.PuntoMontajeId, elemento.CarpetaId, pagina));
+                                                await _repoElastic.ActualizarTextoCompleto(idPaginaExistente, parte.ParteAContenidoTextoCompleto(File.ReadAllText(t), elemento.PuntoMontajeId, elemento.CarpetaId, pagina));
                                             }
 
                                             pagina++;
@@ -136,7 +139,7 @@ namespace PikaOCR
                                     break;
 
                                 default:
-                                    Console.WriteLine(nombreTemporal);
+                                    string idExistente = await _repoElastic.ExisteTextoCompleto(new ContenidoTextoCompleto() { ElementoId = parte.ElementoId, ParteId = parte.Id, VersionId = parte.VersionId, Pagina = 1 });
                                     var resultadoImagen = await x.TextoImagen(parte, nombreTemporal);
                                     if (resultadoImagen.Exito)
                                     {

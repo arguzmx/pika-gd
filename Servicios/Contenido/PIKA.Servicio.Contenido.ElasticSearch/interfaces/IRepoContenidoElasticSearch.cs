@@ -1,4 +1,5 @@
 ﻿using PIKA.Modelo.Contenido;
+using PIKA.Servicio.Contenido.ElasticSearch.modelos;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,14 +9,17 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
 {
     public  interface IRepoContenidoElasticSearch
     {
+        Task<EstadisticaVolumen> ObtieneEstadisticasVolumen(string VolId);
         Task<bool> CreaRepositorio();
         Task<string> CreaVersion(Modelo.Contenido.Version version);
         Task<Modelo.Contenido.Version> ObtieneVersion(string Id);
-        Task<bool> ActualizaVersion(string Id, Modelo.Contenido.Version version);
+        Task<bool> ActualizaVersion(string Id, Modelo.Contenido.Version version, bool RealizarOCR);
         Task<bool> EliminaVersion(string Id);
+        Task<bool> EstadoVersion(string Id, bool Activa);
         Task<long> IndexadoPendiente(string volumenId);
         Task<Modelo.Contenido.Version> SiguenteIndexar(string volumenId);
         Task<bool> ActualizaEstadoOCR(string Id, Modelo.Contenido.Version version);
+        Task<bool> EliminaOCR(string Id, Modelo.Contenido.Version version);
         Task<string> IndexarTextoCompleto(Modelo.Contenido.ContenidoTextoCompleto contenido);
         Task<bool> ActualizarTextoCompleto(string Id, Modelo.Contenido.ContenidoTextoCompleto contenido);
         Task<long> ContarPorConsulta(string texto, string PuntoMontajeId, string IdJerarquico, int NivelFuzzy);

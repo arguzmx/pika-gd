@@ -142,6 +142,11 @@ namespace PIKA.Servicio.Contenido.Gestores
                     throw new Exception("El tamaño del contenido excede el disponible del volumen");
             }
         }
+
+        public Task EliminaBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

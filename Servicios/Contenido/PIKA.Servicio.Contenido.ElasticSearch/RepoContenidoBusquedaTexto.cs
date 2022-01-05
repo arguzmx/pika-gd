@@ -11,28 +11,45 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
 {
     public partial class RepoContenidoElasticSearch : IRepoContenidoElasticSearch
     {
+        public async Task<bool> EliminaOCR(string Id, Modelo.Contenido.Version version)
+        {
+
+    
+            var filters = new List<Func<QueryContainerDescriptor<ContenidoTextoCompleto>, QueryContainer>>();
+            filters.Add(fq => fq.Terms(t => t.Field(f => f.ParteId).Terms(Id)));
+            filters.Add(fq => fq.Terms(t => t.Field(f => f.ElementoId).Terms(version.ElementoId)));
+            filters.Add(fq => fq.Terms(t => t.Field(f => f.VersionId).Terms(version.Id)));
+           
+            var resultado = await cliente.DeleteByQueryAsync<ContenidoTextoCompleto>(x => x.Query(q => q
+            .Bool(bq => bq.Filter(filters)))
+            .Index(INDICECONTENIDO)
+            );
+
+            if (resultado.ApiCall.Success)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public async Task<string> ExisteTextoCompleto(Modelo.Contenido.ContenidoTextoCompleto contenido)
         {
-            var response = await cliente.SearchAsync<ContenidoTextoCompleto>(sd =>
-             sd.Index(INDICECONTENIDO)
-             .Query(
-                 q => q
-                 .Bool(bq => bq
-                   .Filter(f => f
-                     .Term(t => t.ElementoId, contenido.ElementoId)
-                   )
-                   .Filter(f => f
-                     .Term(t => t.ParteId, contenido.ParteId)
-                   )
-                   .Filter(f => f
-                     .Term(t => t.VersionId, contenido.VersionId)
-                   )
-                 )
-              )
-             );
+
+            var filters = new List<Func<QueryContainerDescriptor<ContenidoTextoCompleto>, QueryContainer>>();
+            filters.Add(fq => fq.Terms(t => t.Field(f => f.ParteId).Terms(contenido.ParteId)));
+            filters.Add(fq => fq.Terms(t => t.Field(f => f.ElementoId).Terms(contenido.ElementoId)));
+            filters.Add(fq => fq.Terms(t => t.Field(f => f.VersionId).Terms(contenido.VersionId)));
+            filters.Add(fq => fq.Terms(t => t.Field(f => f.Pagina).Terms(contenido.Pagina)));
+
+            var response = await cliente.SearchAsync<ContenidoTextoCompleto>(x => x.Query(q => q
+                    .Bool(bq => bq.Filter(filters)))
+                    .Index(INDICECONTENIDO)
+                );
 
             if (response.ApiCall.Success)
             {
+                Console.WriteLine($"{response.Hits.Count} ??");
                 return response.Hits.Count > 0 ?  response.Hits.ToList()[0].Id : null;
             }
             return null;

@@ -302,5 +302,43 @@ namespace PIKA.Servicio.Contenido.Gestores
             string rutaFinal = Path.Combine(rutaMiniaturas, nombreArchivo);
             return LeeArchivo(rutaFinal);
         }
+
+        public Task EliminaBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension)
+        {
+            Console.WriteLine($"{this.configGestor.Ruta} : {ElementoId} : {VersionId} ");
+            List<string> archivos = new List<string>();
+            string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
+            string nombreArchivo = ParteId + Extension.ToUpper();
+            string rutaFinal = Path.Combine(ruta, nombreArchivo);
+            
+            string rutaOCR = Path.Combine(ruta, "ocr");
+            string nombreArchivoOCR = ParteId + ".TXT";
+            string rutaFinalOCR = Path.Combine(rutaOCR, nombreArchivoOCR);
+
+            string rutaMini = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId, "thumbnails");
+            string nombreArchivoMini = ParteId + ".PNG";
+            string rutaFinalMini = Path.Combine(rutaMini, nombreArchivoMini);
+
+            archivos.Add(rutaFinalMini);
+            archivos.Add(rutaFinal);
+            archivos.Add(rutaFinalOCR);
+            archivos.ForEach(ruta =>
+            {
+                Console.WriteLine($"Del: {ruta}");
+                if (!string.IsNullOrEmpty(ruta) && File.Exists(ruta))
+                {
+                    try
+                    {
+                       // File.Delete(ruta);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                };
+            });
+
+
+            return Task.CompletedTask;
+        }
     }
 }

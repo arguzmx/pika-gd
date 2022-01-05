@@ -25,7 +25,7 @@
             <div class="nombre"> <b>  @nameUser</b></div>
         }
 
-        <div class="links">  <a href="~/">Regresar a la aplicación</a> </div>
+        <div class="links">  <a href="./">Regresar a la aplicación</a> </div>
         @if (Model.PostLogoutRedirectUri != null)
         {
             <form class="links">
@@ -44,7 +44,7 @@
     @section scripts
 {
 
-        <script src="~/js/signout-redirect.js"></script>
+        <script src="./js/signout-redirect.js"></script>
         @if (Model.AutomaticRedirectAfterSignOut)
         {
 

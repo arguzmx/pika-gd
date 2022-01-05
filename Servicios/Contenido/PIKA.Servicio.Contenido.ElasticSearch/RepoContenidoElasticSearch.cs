@@ -1,9 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Elasticsearch.Net;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Nest;
 using PIKA.Infraestructura.Comun;
+using PIKA.Servicio.Contenido.ElasticSearch.modelos;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using ES = Elasticsearch.Net;
 
@@ -34,9 +38,9 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
             Configuration.GetSection("Contenido").Bind(options);
 
             var settingsVersiones = new ConnectionSettings(new Uri(options.CadenaConexion()))
-                .DefaultIndex(INDICEVERSIONES);
+                .DefaultIndex(INDICEVERSIONES).DisableDirectStreaming(); 
             var settingsContenido = new ConnectionSettings(new Uri(options.CadenaConexion()))
-                .DefaultIndex(INDICECONTENIDO);
+                .DefaultIndex(INDICECONTENIDO).DisableDirectStreaming(); 
 
             cliente = new ElasticClient(settingsVersiones);
             clienteOCR = new ElasticClient(settingsContenido);
@@ -119,11 +123,13 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
             return null;
         }
 
-        public async Task<bool> ActualizaVersion(string Id, Modelo.Contenido.Version version)
+        public async Task<bool> ActualizaVersion(string Id, Modelo.Contenido.Version version, bool RealizarOCR = true)
         {
 
-            // Cada que se actualzia la versión hayq que marcarla para indexar
-            version.EstadoIndexado = Modelo.Contenido.EstadoIndexado.PorIndexar;
+            if(RealizarOCR)
+            {
+                version.EstadoIndexado = Modelo.Contenido.EstadoIndexado.PorIndexar;
+            }
             
             var resultado = await cliente.UpdateAsync<Modelo.Contenido.Version, object>(
                 new DocumentPath<Modelo.Contenido.Version>(Id),
@@ -152,6 +158,111 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
             }
 
             return false;
+        }
+
+        public Task<EstadisticaVolumen> ObtieneEstadisticasVolumen(string VolId)
+        {
+            EstadisticaVolumen estadisticaVolumen = new EstadisticaVolumen() { Id = VolId };
+
+            
+
+            Task<CountResponse> conteo = cliente.CountAsync<Modelo.Contenido.Version>(c => c
+                                            .Index(INDICEVERSIONES)
+                                         .Query(
+                    q => q
+                    .Bool(bq => bq
+                      .Filter(f => f
+                          .Term(t=> t 
+                            .Field("vol_id.keyword")
+                            .Value(VolId)
+                          )
+                      )
+                      .Must(mq => mq
+                       .Term(t => t
+                            .Field("act")
+                            .Value(true)
+                          )
+                      )
+                    )
+                 )
+            );
+
+            Task<ISearchResponse<Modelo.Contenido.Version>> cantidades = cliente.SearchAsync<Modelo.Contenido.Version>(c => c
+                                            .Index(INDICEVERSIONES)
+                .Aggregations(aggs => aggs
+                     .Stats("totales", st => st
+                       .Field("partes.l")
+                     )
+                )
+                .Query(
+                    q => q
+                    .Bool(bq => bq
+                      .Filter(f => f
+                          .Term(t => t
+                            .Field("vol_id.keyword")
+                            .Value(VolId)
+                          )
+                      )
+                      .Must(mq => mq
+                       .Term(t => t
+                            .Field("act")
+                            .Value(true)
+                          )
+                      )
+                    )
+                 )
+
+          );
+            
+            List<Task> tareas = new List<Task>() { conteo, cantidades };
+
+            Task.WaitAll(tareas.ToArray());
+            bool falla = false;
+
+            if (conteo.Result.IsValid)
+            {
+                estadisticaVolumen.ConteoElementos = conteo.Result.Count;
+            }  else
+            {
+                falla = true;
+            }
+
+            if (cantidades.Result.IsValid)
+            {
+                var commitStats = cantidades.Result.Aggregations.Stats("totales");
+                estadisticaVolumen.ConteoPartes = (long)(commitStats.Count);
+                estadisticaVolumen.TamanoBytes = (long)(commitStats.Sum); ;
+            } else
+            {
+                falla = true;
+            }
+
+
+            return falla ? null : Task.FromResult(estadisticaVolumen);
+        }
+
+        public async Task<bool> EstadoVersion(string Id, bool Activa)
+        {
+            string script = $"ctx._source.act = {(Activa? "true": "false")}";
+
+            var resultado = await cliente.UpdateByQueryAsync<Modelo.Contenido.Version>(u => u
+                   .Query(q => q
+                       .Term(f=> f
+                        .Name("id.keyword")
+                        .Value(Id)
+                       )
+                   )
+                   .Script(script)
+                   .Conflicts(Conflicts.Proceed)
+                   .Refresh(true)
+               );
+
+            if(!resultado.IsValid)
+            {
+                Console.WriteLine(resultado.ServerError.ToString());
+            }
+
+            return resultado.IsValid;
         }
 
     }

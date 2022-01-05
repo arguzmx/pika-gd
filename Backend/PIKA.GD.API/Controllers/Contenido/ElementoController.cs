@@ -109,7 +109,13 @@ namespace PIKA.GD.API.Controllers.Contenido
                 EstadoIndexado=  EstadoIndexado.FinalizadoOK
             };
 
-            var id = await this.repoContenido.CreaVersion(v).ConfigureAwait(false);
+            
+            List<Task> tasks = new List<Task>() { 
+                this.repoContenido.CreaVersion(v)
+             };
+
+            Task.WaitAll(tasks.ToArray());
+
             return Ok(CreatedAtAction("GetElemento", new { id = entidad.Id }, entidad).Value);
 
         }
@@ -128,9 +134,6 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Put(string id, [FromBody]Elemento entidad)
         {
-            var x = ObtieneFiltrosIdentidad();
-
-
             if (id != entidad.Id)
             {
                 return BadRequest();
@@ -208,6 +211,11 @@ namespace PIKA.GD.API.Controllers.Contenido
             string[] lids = IdsTrim.Split(',').ToList()
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
 
+            foreach(string id in  lids)
+            {
+                await repoContenido.EstadoVersion(id, false).ConfigureAwait(false);
+            }
+
             List<string> eliminados = (await servicioEntidad.Eliminar(lids).ConfigureAwait(false)).ToList();
             if (eliminados.Count==0)
             {
@@ -217,6 +225,8 @@ namespace PIKA.GD.API.Controllers.Contenido
                 return Ok(eliminados);
             }
         }
+
+
         /// <summary>
         /// Este metodo  puerga todos los elementos
         /// </summary>
@@ -247,6 +257,12 @@ namespace PIKA.GD.API.Controllers.Contenido
             }
             string[] lids = IdsTrim.Split(',').ToList()
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
+
+            foreach (string id in lids)
+            {
+                await repoContenido.EstadoVersion(id, true).ConfigureAwait(false);
+            }
+
             return Ok(await servicioEntidad.Restaurar(lids).ConfigureAwait(false));
         }
 
@@ -255,29 +271,41 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> EliminaPaginasElemento(string id, string csvidpaginas)
         {
-            //v = "";
-            var elemento = await this.servicioEntidad.UnicoAsync(x => x.Id == id);
-            if (elemento == null)
-            {
-                return NotFound();
-            }
+            //// Obtiene el elemento y su contraparte en elasticsearch
+            //string v = "";
+            //var elemento = await servicioEntidad.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            //if (elemento == null)
+            //{
+            //    return NotFound();
+            //}
 
             //if (string.IsNullOrEmpty(v)) v = elemento.VersionId;
-            //IGestorES gestor = await servicioVol.ObtienInstanciaGestor(elemento.VolumenId)
-            //               .ConfigureAwait(false);
 
             //Modelo.Contenido.Version vElemento = await this.repoContenido.ObtieneVersion(v).ConfigureAwait(false);
             //if (vElemento == null)
             //{
             //    return NotFound();
             //}
-            //var archivo = await gestor.ObtieneZIP(vElemento, null);
 
-            //if (string.IsNullOrEmpty(archivo)) return BadRequest();
 
-            //this.HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
-            //return PhysicalFile(archivo, MimeTypes.GetMimeType($"{elemento.Nombre}.zip"), elemento.Nombre + ".zip");
-            Console.WriteLine(csvidpaginas);
+            //IGestorES gestor = await servicioVol.ObtienInstanciaGestor(elemento.VolumenId)
+            //               .ConfigureAwait(false);
+
+            //List<string> paginas = csvidpaginas.Split(',').ToList();
+            //foreach (var p in paginas)
+            //{
+            //    var parte = vElemento.Partes.Where(x => x.Id == p).SingleOrDefault();
+            //    if (parte != null)
+            //    {
+            //        await repoContenido.EliminaOCR(p, vElemento).ConfigureAwait(false);
+            //        await gestor.EliminaBytes(elemento.Id, p, v, elemento.VolumenId, parte.Extension).ConfigureAwait(false);
+            //    }
+            //}
+
+            //vElemento.Partes = vElemento.Partes.Where((x) => !paginas.Contains(x.Id)).ToList();
+
+            //await repoContenido.ActualizaVersion(elemento.VersionId, vElemento, false).ConfigureAwait(false);
+
             return Ok();
         }
 

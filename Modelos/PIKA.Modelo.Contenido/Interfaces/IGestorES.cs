@@ -20,6 +20,8 @@ namespace PIKA.Modelo.Contenido
 
         Task<byte[]> LeeBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension );
 
+        Task EliminaBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension);
+
         Task<byte[]> LeeThumbnailBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension);
         Task<long> EscribeThumbnailBytes(string ParteId, string ElementoId, string VersionId,  byte[] contenido);
         Task<long> EscribeOCRBytes(string ParteId, string ElementoId, string VersionId, byte[] contenido);

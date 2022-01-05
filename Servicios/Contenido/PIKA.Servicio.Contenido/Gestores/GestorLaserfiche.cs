@@ -313,6 +313,50 @@ namespace PIKA.Servicio.Contenido.Gestores
             return ocr != null ? Encoding.UTF8.GetBytes(ocr) : null;
         }
 
+        public Task EliminaBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension)
+        {
+            string rutaFinal = RutaPorId(ParteId, Extension);
 
+
+            if (Extension.IndexOf("tif", StringComparison.InvariantCultureIgnoreCase) >= 0)
+            {
+                rutaFinal = TIFaJPEG(ParteId);
+            }
+
+            List<string> archivos = new List<string>();
+            string rutaMini = MiniPorId(ParteId);
+            string hex = int.Parse(ParteId).ToString("x").PadLeft(8, '0');
+            string rutaOCR = Path.Combine(Ruta(ParteId, ".tif"), $"{hex}.TXT");
+
+            archivos.Add(rutaMini);
+            archivos.Add(rutaFinal);
+            archivos.Add(rutaOCR);
+
+            archivos.ForEach(ruta =>
+            {
+                if (!string.IsNullOrEmpty(ruta) && File.Exists(ruta))
+                {
+                    try
+                    {
+                        File.Delete(ruta);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                };
+            });
+
+            if (!string.IsNullOrEmpty(rutaFinal) && File.Exists(rutaFinal)) { 
+                try
+                {
+                    File.Delete(rutaFinal);
+                }
+                catch (Exception)
+                {
+                }
+            };
+
+            return Task.CompletedTask;
+        }
     }
 }

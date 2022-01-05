@@ -107,7 +107,7 @@ namespace IdentityServer4.Quickstart.UI
                 else
                 {
                     // since we don't have a valid context, then we just go back to the home page
-                    return Redirect("~/");
+                    return Redirect("./");
                 }
             }
             if (ModelState.IsValid)
@@ -151,7 +151,7 @@ namespace IdentityServer4.Quickstart.UI
                     }
                     else if (string.IsNullOrEmpty(model.ReturnUrl))
                     {
-                        return Redirect("~/");
+                        return Redirect("./");
                     }
                     else
                     {

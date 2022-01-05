@@ -150,7 +150,7 @@ namespace PIKA.GD.API.Controllers.Contenido
                     v.MaxIndicePartes = indice - 1;
                     v.Partes.AddRange(partes);
 
-                    await this.repoContenido.ActualizaVersion(v.Id, v).ConfigureAwait(false);
+                    await this.repoContenido.ActualizaVersion(v.Id, v, true).ConfigureAwait(false);
 
                     try
                     {

@@ -97,7 +97,7 @@ namespace PIKA.GD.API.Controllers.Contenido
             {
                 return BadRequest();
             }
-            await this.repoContenido.ActualizaVersion(id, entidad).ConfigureAwait(false);
+            await this.repoContenido.ActualizaVersion(id, entidad, true).ConfigureAwait(false);
 
             // await servicioEntidad.ActualizarAsync(entidad).ConfigureAwait(false);
             return NoContent();

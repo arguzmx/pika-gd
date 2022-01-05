@@ -48,7 +48,6 @@ namespace PikaOCR
 
             try
             {
-                Console.WriteLine($"TextoImagen {gestor.AlmacenaOCR}");
                 if (gestor.AlmacenaOCR)
                 {
                     try
@@ -63,7 +62,6 @@ namespace PikaOCR
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"{ex}");
                         logger.LogError($"Error al leer OCR");
                         logger.LogError($"{ex}");
                     }
@@ -73,7 +71,6 @@ namespace PikaOCR
                 {
                     var bytes = await gestor.LeeBytes(p.ElementoId, gestor.UtilizaIdentificadorExterno ? p.IdentificadorExterno : p.Id, p.VersionId, p.VolumenId, p.Extension);
                     File.WriteAllBytes(filename, bytes);
-                    Console.WriteLine($"img {filename}");
 
                     string langconfig = "";
                     if(File.Exists(Path.Combine(configuracion.ruta_tesseract, "tessdata", $"{lang.ToLower()}.traineddata")))
@@ -110,7 +107,6 @@ namespace PikaOCR
                                 }
                                 catch (Exception ex)
                                 {
-                                    Console.WriteLine($"EscribeOCRBytes {ex}");
                                     logger.LogError($"Error al escribir OCR");
                                     logger.LogError($"{ex}");
                                 }
@@ -130,7 +126,6 @@ namespace PikaOCR
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"EscribeOCRBytes {ex}");
                 logger.LogError($"{ex}");
                 logger.LogError($"Error al obtener texto para {p.Id}@{p.VersionId}-{p.VolumenId}");
                 return (false, "");
