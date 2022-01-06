@@ -1,4 +1,4 @@
-@model LoggedOutViewModel
+ï»¿@model LoggedOutViewModel
 
 @{
     // set this so the layout rendering sees an anonymous user
@@ -25,11 +25,11 @@
             <div class="nombre"> <b>  @nameUser</b></div>
         }
 
-        <div class="links">  <a href="./">Regresar a la aplicación</a> </div>
+        <div class="links">  <a href="./">Regresar a la aplicaciÃ³n</a> </div>
         @if (Model.PostLogoutRedirectUri != null)
         {
             <form class="links">
-                <a class="PostLogoutRedirectUri" href="@Model.PostLogoutRedirectUri">Regresar a la aplicación</a>
+                <a class="PostLogoutRedirectUri" href="@Model.PostLogoutRedirectUri">Regresar a la aplicaciÃ³n</a>
                 <span>@Model.ClientName</span>.
             </form>
 

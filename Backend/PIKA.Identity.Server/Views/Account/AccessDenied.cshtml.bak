@@ -1,0 +1,23 @@
+@using IdentityServer4.Extensions
+@{ string nameUser = null;
+    if (!true.Equals(ViewData["signed-out"]))
+    {
+        nameUser = Context.User?.GetDisplayName();
+    } }
+
+
+<div class="formulario">
+    <div class="info">
+        <div class="thumbnail"><img src="../PIKA_PARROT.svg" /></div>
+        <h1>Acceso denegado</h1>
+        @if (!string.IsNullOrWhiteSpace(nameUser))
+        {
+            <div class="nombre"> <b>  @nameUser</b></div>
+        }
+
+
+
+
+        <b>No, se tiene acceso a está aplicación.</b>
+    </div>
+</div>

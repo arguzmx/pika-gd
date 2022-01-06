@@ -28,10 +28,11 @@ namespace PIKA.Servicio.Contenido.Data.Configuracion
             builder.Property(x => x.NombreOriginal).IsRequired().HasMaxLength(LongitudDatos.Nombre);
             builder.Property(x => x.TamanoBytes).IsRequired();
             builder.Property(x => x.FechaCarga).IsRequired();
+            builder.Property(x => x.Posicion).IsRequired();
+            builder.Property(x => x.PosicionInicio).IsRequired();
             builder.Property(x => x.Procesado).IsRequired().HasDefaultValue(false);
             builder.Property(x => x.Error).IsRequired().HasDefaultValue(false);
             builder.Property(x => x.Info).IsRequired(false).HasMaxLength(LongitudDatos.Descripcion);
-
             builder.HasIndex(x => x.TransaccionId);
         }
 

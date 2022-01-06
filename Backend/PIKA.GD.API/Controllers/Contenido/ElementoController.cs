@@ -271,40 +271,39 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> EliminaPaginasElemento(string id, string csvidpaginas)
         {
-            //// Obtiene el elemento y su contraparte en elasticsearch
-            //string v = "";
-            //var elemento = await servicioEntidad.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
-            //if (elemento == null)
-            //{
-            //    return NotFound();
-            //}
+            // Obtiene el elemento y su contraparte en elasticsearch
+            string v = "";
+            var elemento = await servicioEntidad.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            if (elemento == null)
+            {
+                return NotFound();
+            }
 
-            //if (string.IsNullOrEmpty(v)) v = elemento.VersionId;
+            if (string.IsNullOrEmpty(v)) v = elemento.VersionId;
 
-            //Modelo.Contenido.Version vElemento = await this.repoContenido.ObtieneVersion(v).ConfigureAwait(false);
-            //if (vElemento == null)
-            //{
-            //    return NotFound();
-            //}
+            Modelo.Contenido.Version vElemento = await this.repoContenido.ObtieneVersion(v).ConfigureAwait(false);
+            if (vElemento == null)
+            {
+                return NotFound();
+            }
 
+            IGestorES gestor = await servicioVol.ObtienInstanciaGestor(elemento.VolumenId)
+                           .ConfigureAwait(false);
 
-            //IGestorES gestor = await servicioVol.ObtienInstanciaGestor(elemento.VolumenId)
-            //               .ConfigureAwait(false);
+            List<string> paginas = csvidpaginas.Split(',').ToList();
+            foreach (var p in paginas)
+            {
+                var parte = vElemento.Partes.Where(x => x.Id == p).SingleOrDefault();
+                if (parte != null)
+                {
+                    await repoContenido.EliminaOCR(p, vElemento).ConfigureAwait(false);
+                    await gestor.EliminaBytes(elemento.Id, p, v, elemento.VolumenId, parte.Extension).ConfigureAwait(false);
+                }
+            }
 
-            //List<string> paginas = csvidpaginas.Split(',').ToList();
-            //foreach (var p in paginas)
-            //{
-            //    var parte = vElemento.Partes.Where(x => x.Id == p).SingleOrDefault();
-            //    if (parte != null)
-            //    {
-            //        await repoContenido.EliminaOCR(p, vElemento).ConfigureAwait(false);
-            //        await gestor.EliminaBytes(elemento.Id, p, v, elemento.VolumenId, parte.Extension).ConfigureAwait(false);
-            //    }
-            //}
+            vElemento.Partes = vElemento.Partes.Where((x) => !paginas.Contains(x.Id)).ToList();
 
-            //vElemento.Partes = vElemento.Partes.Where((x) => !paginas.Contains(x.Id)).ToList();
-
-            //await repoContenido.ActualizaVersion(elemento.VersionId, vElemento, false).ConfigureAwait(false);
+            await repoContenido.ActualizaVersion(elemento.VersionId, vElemento, false).ConfigureAwait(false);
 
             return Ok();
         }

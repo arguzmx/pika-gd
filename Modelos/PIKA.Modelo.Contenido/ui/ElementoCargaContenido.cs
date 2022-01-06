@@ -8,6 +8,11 @@ using System.Text;
 namespace PIKA.Modelo.Contenido.ui
 {
 
+    public enum PosicionCarga
+    {
+        al_inicio=0,  al_final=1, en_posicion=2
+    }
+
     public class ElementoCargaContenido
     {
         public ElementoCargaContenido()
@@ -54,7 +59,5 @@ namespace PIKA.Modelo.Contenido.ui
         ///  en la velocidad de trasnferencia
         /// </summary>
         public int Indice { get; set; }
-
-
     }
 }

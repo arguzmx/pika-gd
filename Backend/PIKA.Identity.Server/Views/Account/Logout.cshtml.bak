@@ -1,0 +1,28 @@
+@model LogoutViewModel
+@using IdentityServer4.Extensions
+@{ string nameUser = null;
+    if (!true.Equals(ViewData["signed-out"]))
+    {
+        nameUser = Context.User?.GetDisplayName();
+    } }
+<div class="container">
+    <div>
+        <h1>Salir</h1>
+    </div>
+
+
+</div>
+<div class="form">
+    <div class="thumbnail"><img src="../PIKA_PARROT.svg" /></div>
+    @if (!string.IsNullOrWhiteSpace(nameUser))
+    {
+        <div class="nombre"> <b>  @nameUser</b></div>
+    }
+        <p>Desea salir de la aplicación?</p>
+        <form asp-action="Logout">
+            <input type="hidden" name="logoutId" value="@Model.LogoutId" />
+            <div class="container">
+                <button name="button" href="./">Sí</button>
+            </div>
+        </form>
+</div>
