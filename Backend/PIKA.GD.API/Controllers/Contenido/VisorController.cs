@@ -56,7 +56,7 @@ namespace PIKA.GD.API.Controllers.Contenido
                 {
                     foreach (var p in v.Partes)
                     {
-                        d.Paginas.Add(p.APagina($"{p.Indice}"));
+                        d.Paginas.Add(p.APagina());
                     }
                 }
 

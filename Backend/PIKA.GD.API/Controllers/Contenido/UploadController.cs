@@ -15,6 +15,8 @@ using PIKA.Modelo.Contenido.Extensiones;
 using PIKA.Modelo.Contenido.ui;
 using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Contenido.Interfaces;
+using shortid;
+using shortid.Configuration;
 
 namespace PIKA.GD.API.Controllers.Contenido
 {
@@ -62,16 +64,17 @@ namespace PIKA.GD.API.Controllers.Contenido
         }
 
 
+        /// <summary>
+        /// Añade las nuevas páginas y devulve la lista de páginas actualizadas
+        /// </summary>
+        /// <param name="TransaccionId"></param>
+        /// <returns></returns>
         [RequestSizeLimit(long.MaxValue)]
         [HttpPost("completar/{TransaccionId}")]
         public async Task<ActionResult<List<Pagina>>> FinalizarLote(string TransaccionId)
         {
             await repoContenido.CreaRepositorio().ConfigureAwait(false);
-            List<Pagina> paginas = new List<Pagina>();
-            List<Parte> partes = new List<Parte>();
             string ruta = Path.Combine(configuracionServidor.ruta_cache_fisico, TransaccionId);
-
-            this.logger.LogDebug($"{TransaccionId}");
 
             try
             {
@@ -83,6 +86,9 @@ namespace PIKA.GD.API.Controllers.Contenido
                     string elementoId = elementos[0].ElementoId;
                     string VolId = elementos[0].VolumenId;
                     string version = elementos[0].VersionId;
+                    int PosicionInicio = elementos[0].PosicionInicio;
+                    PosicionCarga Posicion = elementos[0].Posicion;
+
                     long conteoBytes = 0;
                     IGestorES gestor = await servicioVol.ObtienInstanciaGestor(VolId)
                            .ConfigureAwait(false);
@@ -108,20 +114,63 @@ namespace PIKA.GD.API.Controllers.Contenido
                             VolumenId = VolId,
                             ConteoPartes = 0,
                             MaxIndicePartes = 0,
-                            TamanoBytes = 0
+                            TamanoBytes = 0, 
+                            EstadoIndexado = EstadoIndexado.PorIndexar,
                         };
 
                         var id = await this.repoContenido.CreaVersion(v).ConfigureAwait(false);
                     }
 
                     int indice = 1;
+                    int inicio = 1;
                     if (v.Partes == null) v.Partes = new List<Parte>();
-
-                    if (v.Partes.Count > 0)
+       
+                    switch (Posicion)
                     {
-                        indice = v.Partes.Max(x => x.Indice) + 1;
+                        case PosicionCarga.al_inicio:
+                            // recorre todos los indices en base al número de archivos intertados
+                            inicio = elementos.Count + 1;
+                            indice = 1;
+                            for (int i=0; i< v.Partes.Count;i++)
+                            {
+                                v.Partes[i].Indice = inicio + i;
+                            }
+                            break;
+
+
+                        case PosicionCarga.en_posicion:
+                            // crea un intervalo recorre los elementos a partir de la posición inicial N espacios
+                            inicio = PosicionInicio + elementos.Count + 1;
+                            indice = PosicionInicio;
+                            for (int i = 0; i < v.Partes.Count; i++)
+                            {
+                                if(v.Partes[i].Indice >= PosicionInicio)
+                                {
+                                    v.Partes[i].Indice = v.Partes[i].Indice + PosicionInicio;
+                                } 
+                            }
+                            break;
+
+                        // case PosicionCarga.al_final:
+                        // la posicion por default es al final 
+                        default:
+                            // incrementa el índice al final de los elementos
+                            indice = v.Partes.Count + 1;
+                            for (int i = 0; i < v.Partes.Count; i++)
+                            {
+                                v.Partes[i].Indice = i + 1;
+                            }
+                            break;
                     }
 
+                    var options = new GenerationOptions
+                    {
+                        UseNumbers = true, 
+                        UseSpecialCharacters = false, 
+                        Length =8
+                    };
+
+                    List<Parte> partes = new List<Parte>();
                     foreach (var el in elementos)
                     {
                         Parte p = el.ConvierteParte();
@@ -133,7 +182,13 @@ namespace PIKA.GD.API.Controllers.Contenido
                             FileInfo fi = new FileInfo(filePath);
                             
                             p.LongitudBytes = fi.Length;
-                            p.Id = $"{p.Indice}"; //El is se sustituye por el indice para minimizar el payload al salvar en Elasticsearch
+
+                            p.Id = ShortId.Generate(options).ToUpper(System.Globalization.CultureInfo.InvariantCulture);
+                            while  (v.Partes.Any(x=>x.Id == p.Id) ||  partes.Any(x=>x.Id == p.Id))
+                            {
+                                p.Id = ShortId.Generate(options).ToUpper(System.Globalization.CultureInfo.InvariantCulture);
+                            }
+                            
                             partes.Add(p);
 
                             await gestor.EscribeBytes(p.Id, p.ElementoId, p.VersionId, filePath, fi, false).ConfigureAwait(false);
@@ -141,13 +196,12 @@ namespace PIKA.GD.API.Controllers.Contenido
                             conteoBytes += p.LongitudBytes;
                             indice++;
                         }
-                        paginas.Add(p.APagina($"{p.Indice}"));
                     }
 
 
                     v.TamanoBytes = v.Partes.Sum(x => x.LongitudBytes);
                     v.ConteoPartes = v.Partes.Count;
-                    v.MaxIndicePartes = indice - 1;
+                    v.MaxIndicePartes = v.Partes.Count - 1;
                     v.Partes.AddRange(partes);
 
                     await this.repoContenido.ActualizaVersion(v.Id, v, true).ConfigureAwait(false);
@@ -159,7 +213,7 @@ namespace PIKA.GD.API.Controllers.Contenido
                     catch (Exception) { }
 
                     await this.servicioTransaccionCarga.EliminarTransaccion(TransaccionId, VolId, conteoBytes).ConfigureAwait(false);
-                    return Ok(paginas);
+                    return Ok(v.Partes.APaginas());
                 }
             }
 
@@ -177,7 +231,9 @@ namespace PIKA.GD.API.Controllers.Contenido
         {
             try
             {
-                var entrada = await servicioTransaccionCarga.CrearAsync(model.ConvierteETC()).ConfigureAwait(false);
+                var entradaCarga = model.ConvierteETC();
+
+                var entrada = await servicioTransaccionCarga.CrearAsync(entradaCarga).ConfigureAwait(false);
 
                 string ruta = Path.Combine(configuracionServidor.ruta_cache_fisico, model.TransaccionId);
                 if (!Directory.Exists(ruta)) Directory.CreateDirectory(ruta);

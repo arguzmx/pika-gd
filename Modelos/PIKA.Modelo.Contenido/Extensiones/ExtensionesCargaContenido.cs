@@ -23,7 +23,9 @@ namespace PIKA.Modelo.Contenido
                 Procesado = false,
                 Error = false,
                 FechaCarga = DateTime.UtcNow,
-                VersionId = el.VersionId
+                VersionId = el.VersionId,
+                PosicionInicio = el.PosicionInicio,
+                Posicion = el.Posicion
             };
             return etc;
 

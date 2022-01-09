@@ -8,7 +8,18 @@ namespace PIKA.Modelo.Contenido.Extensiones
 {
     public static class ExtensionesVisor
     {
-        public static Pagina APagina(this Parte parte, string Id)
+        public static List<Pagina> APaginas(this List<Parte> partes)
+        {
+            List<Pagina> paginas = new List<Pagina>();
+            partes.ForEach(parte =>
+            {
+                paginas.Add(parte.APagina());
+            });
+
+            return paginas;
+        }
+
+        public static Pagina APagina(this Parte parte)
         {
             Pagina p = new Pagina()
             {
@@ -16,7 +27,7 @@ namespace PIKA.Modelo.Contenido.Extensiones
                 Ancho = 0,
                 EsImagen = parte.EsImagen,
                 Extension = parte.Extension,
-                Id = !string.IsNullOrEmpty(parte.IdentificadorExterno) ? parte.IdentificadorExterno :  Id,  // POr ejemplo laserfiche
+                Id = !string.IsNullOrEmpty(parte.IdentificadorExterno) ? parte.IdentificadorExterno : parte.Id,  // POr ejemplo laserfiche
                 Indice = parte.Indice,
                 Nombre = parte.NombreOriginal,
                 Rotacion = 0,

@@ -59,5 +59,15 @@ namespace PIKA.Modelo.Contenido.ui
         ///  en la velocidad de trasnferencia
         /// </summary>
         public int Indice { get; set; }
+
+        /// <summary>
+        /// Indica la posición en el documento en la que inicia la carga del contenido
+        /// </summary>
+        public PosicionCarga Posicion { get; set; }
+
+        /// <summary>
+        /// En el caso de carga en una posición de inicio indica en índice de inicio 
+        /// </summary>
+        public int PosicionInicio { get; set; }
     }
 }
