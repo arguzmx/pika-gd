@@ -131,20 +131,26 @@ namespace PIKA.Modelo.Metadatos
 
             foreach (PropertyInfo prop in props)
             {
-                Propiedad foundProp = null;
+                
                 object[] attrs = prop.GetCustomAttributes(true);
+
+                List<PropAttribute> attrProps = new List<PropAttribute>();
                 foreach (object attr in attrs)
                 {
                     if (attr is PropAttribute)
                     {
-                        PropAttribute pa = (PropAttribute)attr;
-                        foundProp = pa.GetProperty<T>();
-                        foundProp.TipoDatoId = ReflectionMetadataExtractor<T>.ObtieneTipoDato(prop.PropertyType);
+                        attrProps.Add((PropAttribute)attr);
                     }
                 }
 
-                if (foundProp != null)
+
+                foreach(PropAttribute attrProp in attrProps)
                 {
+                    Propiedad foundProp = null;
+                    PropAttribute pa = (PropAttribute)attrProp;
+                    foundProp = pa.GetProperty<T>();
+                    foundProp.TipoDatoId = ReflectionMetadataExtractor<T>.ObtieneTipoDato(prop.PropertyType);
+
                     foreach (object attr in attrs)
                     {
 
@@ -154,7 +160,7 @@ namespace PIKA.Modelo.Metadatos
                             foundProp.VinculoMetadatos = mattr.CampoMetadatos;
                         }
 
-                         if (attr is JsonPropertyNameAttribute)
+                        if (attr is JsonPropertyNameAttribute)
                         {
                             JsonPropertyNameAttribute ea = (JsonPropertyNameAttribute)attr;
                             foundProp.Id = ea.Name;
@@ -165,7 +171,7 @@ namespace PIKA.Modelo.Metadatos
                         {
                             ListAttribute la = (ListAttribute)attr;
                             foundProp.AtributoLista = la.GetLista(prop.Name);
-                            
+
                         }
 
                         if (attr is EventAttribute)
@@ -177,7 +183,10 @@ namespace PIKA.Modelo.Metadatos
                         if (attr is VistaUIAttribute)
                         {
                             VistaUIAttribute va = (VistaUIAttribute)attr;
-                            foundProp.AtributosVistaUI.Add(va.GetUI(prop.Name));
+                            if (va.Entidad == pa.Entidad)
+                            {
+                                foundProp.AtributosVistaUI.Add(va.GetUI(prop.Name));
+                            }
                         }
 
                         if (attr is ValidStringAttribute)
@@ -237,7 +246,8 @@ namespace PIKA.Modelo.Metadatos
                 PropiedadId = Id,
                 Accion = a.Accion,
                 Control = a.Control, 
-                Plataforma = a.Plataforma
+                Plataforma = a.Plataforma,
+                Entidad = a.Entidad
             };
         }
 
@@ -283,7 +293,8 @@ namespace PIKA.Modelo.Metadatos
                 EsIdJerarquia = source.HieId,
                 EsTextoJerarquia = source.HIeName,
                 EsIdRaizJerarquia = source.HieRoot,
-                EsFiltroJerarquia = source.HieParent
+                EsFiltroJerarquia = source.HieParent,
+                Entidad = source.Entidad
             };
         }
 

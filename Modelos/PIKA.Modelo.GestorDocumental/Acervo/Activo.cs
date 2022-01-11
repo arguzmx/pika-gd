@@ -170,7 +170,11 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         [Prop(Required: false, OrderIndex: 0, Visible: true)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
-        [List("UnidadAdministrativaArchivo" ,DatosRemotos:true, TypeAhead: false, OrdenarAlfabetico:true)]
+        [List("UnidadAdministrativaArchivo", DatosRemotos: true, TypeAhead: false, OrdenarAlfabetico: true)]
+        // Para las unidades administrativas esta entidad no se despliega
+        [Prop(Entidad: "UnidadAdministrativaArchivo", Required: false, OrderIndex: 0, Visible: false, ShowInTable: false, 
+            Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "UnidadAdministrativaArchivoId")]
+        [VistaUI(Entidad: "UnidadAdministrativaArchivo", ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string UnidadAdministrativaArchivoId { get; set; }
 
         /// <summary>

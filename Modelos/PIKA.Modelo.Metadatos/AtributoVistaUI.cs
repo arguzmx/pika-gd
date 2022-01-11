@@ -24,5 +24,12 @@ namespace PIKA.Modelo.Metadatos
         ///  Plataforma destino de la vist
         /// </summary>
         public string Plataforma { get; set; }
+
+        /// <summary>
+        /// Especifica la entidad que despliega un tipo específico de componente, si se encuentra 
+        /// vació es el tipo por defecto de representación para las entidades no específicas
+        /// </summary>
+        public string Entidad { get; set; }
+
     }
 }

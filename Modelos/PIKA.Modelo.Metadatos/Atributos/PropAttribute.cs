@@ -7,7 +7,7 @@ using System.Text;
 
 namespace PIKA.Modelo.Metadatos
 {
-    [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = false)]
     public class PropAttribute : Attribute
     {
 
@@ -31,12 +31,17 @@ namespace PIKA.Modelo.Metadatos
         private string _DefaultValue;
         private int _TableOrderIndex;
 
+        /// <summary>
+        /// Especifica una representación específica para un tipo de entidad
+        /// </summary>
+        private string _Entidad;
+
         public PropAttribute(string Type = "",
             [CallerMemberName] string Id = null, string DefaultValue = "",
             int OrderIndex = 0, bool Searchable = true, bool Orderable = true, bool Visible = true,
             bool Required = false, bool isId = false, bool ShowInTable = true, bool ToggleInTable = true,
             int TableOrderIndex = 0, bool Contextual = false, string IdContextual = "" , bool IsLabel = false,
-            bool HieId = false, bool HieName = false, bool HieRoot = false, bool HieParent = false)
+            bool HieId = false, bool HieName = false, bool HieRoot = false, bool HieParent = false, string Entidad="")
         {
 
             this._Contextual = Contextual;
@@ -64,11 +69,23 @@ namespace PIKA.Modelo.Metadatos
             this._HieRoot = HieRoot;
             this._HieParent = HieParent;
             this._HieId = HieId;
-            if(this.Contextual)
+            this._Entidad = Entidad;
+
+            if (this.Contextual)
             {
                 this._IdContextual = IdContextual;
             }
 
+        }
+
+
+        /// <summary>
+        /// Especifica la entidad que despliega un tipo específico de componente, si se encuentra 
+        /// vació es el tipo por defecto de representación para las entidades no específicas
+        /// </summary>
+        public virtual string Entidad
+        {
+            get { return _Entidad; }
         }
 
         /// <summary>

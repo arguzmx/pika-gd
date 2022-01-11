@@ -187,6 +187,8 @@ namespace PIKA.Modelo.Metadatos
 
         public bool Etiqueta { get; set; }
 
+        public string Entidad { get; set; }
+
 
         /// <summary>
         /// Establece un identificador numérico unico para cada propiedad en una plantilla

@@ -14,11 +14,18 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         /// <param name="ControlUI">Tipo de control en base a las constante sde la clase ControlUI</param>
         /// <param name="Accion">Accion CRUD en la que participa la vista</param>
-        public VistaUIAttribute(string ControlUI= ControlUI.HTML_NONE, Acciones Accion =  Acciones.none, string Plataforma = ControlUI.PLATAFORMA_WEB) {
+        public VistaUIAttribute(string ControlUI= ControlUI.HTML_NONE, Acciones Accion =  Acciones.none, string Plataforma = ControlUI.PLATAFORMA_WEB, string Entidad="") {
             this.Control = ControlUI;
             this.Accion = Accion;
             this.Plataforma = Plataforma;
+            this.Entidad = Entidad;
         }
+        /// <summary>
+        /// Especifica la entidad que despliega un tipo específico de componente, si se encuentra 
+        /// vació es el tipo por defecto de representación para las entidades no específicas
+        /// </summary>
+        public string Entidad { get; }
+        
 
         /// <summary>
         /// Tiupo de control de visualización en base a la clase ControleUI
