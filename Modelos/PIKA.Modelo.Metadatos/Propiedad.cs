@@ -65,7 +65,7 @@ namespace PIKA.Modelo.Metadatos
         /// <summary>
         /// DEtermina si es requerido
         /// </summary>
-        [Prop(Required: true, OrderIndex: 30, DefaultValue: "true")]
+        [Prop(Required: true, OrderIndex: 30, DefaultValue: "false")]
         [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
         public bool Requerido { get; set; }
 
@@ -79,21 +79,21 @@ namespace PIKA.Modelo.Metadatos
         /// <summary>
         /// Determina si es posible realizar bpsuquedas sobre la propiedad
         /// </summary>
-        [Prop(Required: false, OrderIndex: 50)]
+        [Prop(Required: false, OrderIndex: 50, DefaultValue: "true")]
         [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
         public bool Buscable { get; set; }
 
         /// <summary>
         /// Determina si es posible realizar ordenamiento sobre la propiedad
         /// </summary>
-        [Prop(Required: false, OrderIndex: 60)]
+        [Prop(Required: false, OrderIndex: 60, DefaultValue: "true")]
         [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
         public bool Ordenable { get; set; }
 
         /// <summary>
         /// Determina si la propieda es vivisble
         /// </summary>
-        [Prop(Required: true, OrderIndex: 70, DefaultValue: "false")]
+        [Prop(Required: true, OrderIndex: 70, DefaultValue: "true")]
         [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.update)]
         public bool Visible { get; set; }
 
@@ -187,6 +187,7 @@ namespace PIKA.Modelo.Metadatos
 
         public bool Etiqueta { get; set; }
 
+        [NotMapped]
         public string Entidad { get; set; }
 
 
