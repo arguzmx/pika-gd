@@ -13,13 +13,13 @@ namespace PIKA.Servicio.AplicacionPlugin.Data.Configuracion
     {
         public void Configure(EntityTypeBuilder<PluginInstalado> builder)
         {
-            builder.ToTable(DbContextAplicacionPlugin.TablaPluginInstalado);
+            builder.ToTable(DbContextAplicacion.TablaPluginInstalado);
             builder.HasKey(x => new { x.PLuginId, x.VersionPLuginId });
 
             builder.Property(x => x.PLuginId).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x=>x.VersionPLuginId).HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.Activo).HasDefaultValue(false).IsRequired();
-            builder.Property(x => x.FechaInstalacion).HasDefaultValue(DateTime.Now).IsRequired();
+            builder.Property(x => x.FechaInstalacion).IsRequired(false);
             
 
             builder.HasOne(x => x.Plugin).WithMany(y=>y.PluginInstalados).HasForeignKey(z=>z.PLuginId);

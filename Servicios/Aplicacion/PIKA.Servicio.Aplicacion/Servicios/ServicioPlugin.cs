@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Aplicacion.Plugins;
 using PIKA.Servicio.AplicacionPlugin.Interfaces;
 using RepositorioEntidades;
@@ -29,18 +30,19 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
         private ICompositorConsulta<Plugin> compositor;
         private ICompositorConsulta<PluginInstalado> compositorPI;
         private ICompositorConsulta<VersionPlugin> compositorVP;
-        private UnidadDeTrabajo<DbContextAplicacionPlugin> UDT;
+        private UnidadDeTrabajo<DbContextAplicacion> UDT;
         public IServicioVersionPlugin ServicioVersionPlugin;
-        private IProveedorOpcionesContexto<DbContextAplicacionPlugin> DB;
+        private IProveedorOpcionesContexto<DbContextAplicacion> DB;
         private IServicioCache servicioCacheData;
-        private ILogger<ServicioPluginInstalado> Logger;
+        private ILogger<ServicioLog> Logger;
         public ServicioPlugin(
-         IProveedorOpcionesContexto<DbContextAplicacionPlugin> proveedorOpciones,
+         IProveedorOpcionesContexto<DbContextAplicacion> proveedorOpciones,
          ICompositorConsulta<Plugin> compositorConsulta,
-         ILogger<ServicioPlugin> Logger,
+         ILogger<ServicioLog> Logger,
          IServicioCache servicioCache) : base(proveedorOpciones, Logger, servicioCache)
+
         {
-            this.UDT = new UnidadDeTrabajo<DbContextAplicacionPlugin>(contexto);
+            this.UDT = new UnidadDeTrabajo<DbContextAplicacion>(contexto);
             this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<Plugin>(compositor);
         }

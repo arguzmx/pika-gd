@@ -21,6 +21,8 @@ namespace PIKA.Infraestructura.Comun.Seguridad
 
         public List<Acceso> Accesos { get; set; }
 
+        public int gmtOffset { get; set; }
+
     }
 
 

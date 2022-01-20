@@ -75,6 +75,16 @@ namespace PIKA.GD.API
             return l;
         }
 
+        protected FiltroConsulta FiltroDominio(string Propiedad)
+        {
+            return new FiltroConsulta() { Propiedad = Propiedad , Operador = FiltroConsulta.OP_EQ, Valor = DominioId };
+        }
+
+        protected FiltroConsulta FiltroUA(string Propiedad)
+        {
+            return new FiltroConsulta() { Propiedad = Propiedad, Operador = FiltroConsulta.OP_EQ, Valor = TenantId };
+        }
+
     } 
 
 }

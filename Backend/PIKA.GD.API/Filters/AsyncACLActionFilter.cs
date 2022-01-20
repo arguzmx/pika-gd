@@ -185,6 +185,7 @@ namespace PIKA.GD.API.Filters
                         ((ACLController)context.Controller).DominioId = DomainId;
 
                         var u = ObtieneUsuarioAPI(UserId, ((ACLController)context.Controller).Roles, true, ((ACLController)context.Controller).Accesos);
+                        u.gmtOffset = context.HttpContext.Request.Headers.Any(x=>x.Key== "gmtoffset") ?  int.Parse(context.HttpContext.Request.Headers.First(x => x.Key == "gmtoffset").Value) * -1 : 0;
                         ((ACLController)context.Controller).usuario = u;
 
                         await SecurityCache.DatosUsuarioSet(u).ConfigureAwait(false);

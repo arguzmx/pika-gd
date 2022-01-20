@@ -8,7 +8,7 @@ using PIKA.Servicio.AplicacionPlugin;
 
 namespace PIKA.Servicio.AplicacionPlugin.Data.Migrations
 {
-    [DbContext(typeof(DbContextAplicacionPlugin))]
+    [DbContext(typeof(DbContextAplicacion))]
     [Migration("20200428013744_InicialAplicacionPlugineLIMINADO")]
     partial class InicialAplicacionPlugineLIMINADO
     {

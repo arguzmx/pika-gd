@@ -17,7 +17,8 @@ namespace PIKA.Modelo.Aplicacion.Plugins
         public bool Activo { get; set; }
         //Default false
 
-        public DateTime FechaInstalacion { get; set; }
+        public DateTime? FechaInstalacion { get; set; }
+
         //Not null
         [XmlIgnore]
         [JsonIgnore]

@@ -6,10 +6,11 @@ using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Constantes;
 using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Aplicacion.Plugins;
+using PIKA.Modelo.Aplicacion.Tareas;
 
 namespace PIKA.Servicio.AplicacionPlugin
 {
-    public class AplicacionAplicacionPlugin : InformacionAplicacionBase, IInformacionAplicacion
+    public class AplicacionAplicaciones : InformacionAplicacionBase, IInformacionAplicacion
     {
         
      public override Aplicacion Info()
@@ -32,7 +33,7 @@ namespace PIKA.Servicio.AplicacionPlugin
                 new ElementoAplicacion(ConstantesAppAplicacionPlugin.APP_ID, ConstantesAppAplicacionPlugin.MODULO_APLICACIONES ) {
                     Titulo = "Configuración del sistema",
                     Descripcion = "Permite administrar la configuración del sistema",
-                    Tipos = new List<Type> { typeof(Aplicacion) }
+                    Tipos = new List<Type> { typeof(Aplicacion), typeof(TareaAutomatica), typeof(BitacoraTarea) }
                 },
 
                 //new ElementoAplicacion(ConstantesAppAplicacionPlugin.APP_ID, ConstantesAppAplicacionPlugin.MODULO_APLICACIONES ) {

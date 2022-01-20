@@ -10,14 +10,14 @@ namespace PIKA.Servicio.AplicacionPlugin.Data
 {
   public  class InicializarDatos
     {
-        public static void Inicializar(DbContextAplicacionPlugin dbContext, string contentPath)
+        public static void Inicializar(DbContextAplicacion dbContext, string contentPath)
         {
             InicializarPlugin(dbContext, contentPath);
             InicializarPluginInstalado(dbContext, contentPath);
             InicializarVesionPlugin(dbContext, contentPath);
         }
         private static void InicializarPlugin(
-     DbContextAplicacionPlugin dbContext, string contentPath)
+        DbContextAplicacion dbContext, string contentPath)
         {
             try
             {
@@ -80,7 +80,7 @@ namespace PIKA.Servicio.AplicacionPlugin.Data
         }
 
         private static void InicializarPluginInstalado(
-           DbContextAplicacionPlugin dbContext, string contentPath)
+           DbContextAplicacion dbContext, string contentPath)
         {
 
             try
@@ -144,7 +144,7 @@ namespace PIKA.Servicio.AplicacionPlugin.Data
         }
 
         private static void InicializarVesionPlugin(
-           DbContextAplicacionPlugin dbContext, string contentPath)
+           DbContextAplicacion dbContext, string contentPath)
         {
 
             try

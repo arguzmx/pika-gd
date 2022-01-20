@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Servicio.AplicacionPlugin;
 using RepositorioEntidades;
 
@@ -11,18 +12,27 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
     public class ContextoServicioAplicacion
     {
         protected IServicioCache cache;
-        protected ILogger logger;
+        ILogger<ServicioLog> logger;
 
-        protected DbContextAplicacionPlugin contexto;
+        protected DbContextAplicacion contexto;
         public ContextoServicioAplicacion(
-            IProveedorOpcionesContexto<DbContextAplicacionPlugin> proveedorOpciones,
-            ILogger Logger,
+            IProveedorOpcionesContexto<DbContextAplicacion> proveedorOpciones,
+            ILogger<ServicioLog> Logger,
             IServicioCache servicioCache)
         {
-            DbContextAplicacionPluginFactory cf = new DbContextAplicacionPluginFactory(proveedorOpciones);
-            this.contexto = cf.Crear();
-            this.cache = servicioCache;
-            this.logger = Logger;
+            try
+            {
+                DbContextAplicacionFactory cf = new DbContextAplicacionFactory(proveedorOpciones);
+                this.contexto = cf.Crear();
+                this.cache = servicioCache;
+                this.logger = Logger;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+            
         }
 
     }

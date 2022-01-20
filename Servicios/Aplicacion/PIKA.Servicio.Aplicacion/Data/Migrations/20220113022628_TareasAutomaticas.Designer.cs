@@ -9,8 +9,8 @@ using PIKA.Servicio.AplicacionPlugin;
 namespace PIKA.Servicio.AplicacionPlugin.Data.Migrations
 {
     [DbContext(typeof(DbContextAplicacion))]
-    [Migration("20200427213621_InicialAplicacionPlugin")]
-    partial class InicialAplicacionPlugin
+    [Migration("20220113022628_TareasAutomaticas")]
+    partial class TareasAutomaticas
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,11 +19,46 @@ namespace PIKA.Servicio.AplicacionPlugin.Data.Migrations
                 .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("PIKA.Modelo.Aplicacion.BitacoraTarea", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("BitacoraTareaId")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("CodigoError")
+                        .HasColumnType("varchar(250) CHARACTER SET utf8mb4")
+                        .HasMaxLength(250);
+
+                    b.Property<int>("Duracion")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Exito")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("UltimaEjecucion")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BitacoraTareaId");
+
+                    b.ToTable("aplicacion$bitacoratarea");
+                });
+
             modelBuilder.Entity("PIKA.Modelo.Aplicacion.Plugins.Plugin", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
+
+                    b.Property<bool>("Eliminada")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<bool>("Gratuito")
                         .ValueGeneratedOnAdd()
@@ -55,10 +90,8 @@ namespace PIKA.Servicio.AplicacionPlugin.Data.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false);
 
-                    b.Property<DateTime>("FechaInstalacion")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2020, 4, 27, 16, 36, 21, 40, DateTimeKind.Local).AddTicks(2788));
+                    b.Property<DateTime?>("FechaInstalacion")
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("PLuginId", "VersionPLuginId");
 
@@ -98,6 +131,66 @@ namespace PIKA.Servicio.AplicacionPlugin.Data.Migrations
                     b.HasIndex("PluginId");
 
                     b.ToTable("aplicacion$versionplugin");
+                });
+
+            modelBuilder.Entity("PIKA.Modelo.Aplicacion.TareaAutomatica", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("CodigoError")
+                        .HasColumnType("varchar(250) CHARACTER SET utf8mb4")
+                        .HasMaxLength(250);
+
+                    b.Property<int?>("Duracion")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Ensamblado")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<bool?>("Exito")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("FechaHoraEjecucion")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("Intervalo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("OrigenId")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<int>("Periodo")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ProximaEjecucion")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("TipoOrigenId")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<DateTime?>("UltimaEjecucion")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("aplicacion$autotarea");
+                });
+
+            modelBuilder.Entity("PIKA.Modelo.Aplicacion.BitacoraTarea", b =>
+                {
+                    b.HasOne("PIKA.Modelo.Aplicacion.TareaAutomatica", "Tarea")
+                        .WithMany("Bitacora")
+                        .HasForeignKey("BitacoraTareaId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("PIKA.Modelo.Aplicacion.Plugins.PluginInstalado", b =>

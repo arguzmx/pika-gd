@@ -13,7 +13,7 @@ namespace PIKA.Servicio.AplicacionPlugin.Data.Configuracion
     {
         public void Configure(EntityTypeBuilder<VersionPlugin> builder)
         {
-            builder.ToTable(DbContextAplicacionPlugin.TablaVersionPlugin);
+            builder.ToTable(DbContextAplicacion.TablaVersionPlugin);
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);

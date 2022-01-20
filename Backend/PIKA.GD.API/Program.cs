@@ -8,7 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
+using PIKA.Infraestructura.Comun.Tareas;
 using PIKA.Modelo.Metadatos;
+using PIKA.Servicio.AplicacionPlugin.Interfaces;
 using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Metadatos.Interfaces;
 using PIKA.ServicioBusqueda.Contenido;
@@ -52,11 +54,12 @@ namespace PIKA.GD.API
                 {
                     InicializarAplication(config, environment, demodb);
                     await InicializarAplicationAutoConfigurable(environment, host, demodb).ConfigureAwait(false);
+                    await InicializaTareasAutomaticas(config, environment, host, demodb).ConfigureAwait(false);
                     InicializaEslasticSearch(config, host);
                 }
                 else
                 {
-                    Log.Information("Saltando la configutracion de datos");
+                    Log.Information("Saltando la configuración de de datos de la aplicación");
                 }
 
 
@@ -150,6 +153,45 @@ namespace PIKA.GD.API
             }
         }
 
+
+        private static async Task InicializaTareasAutomaticas(IConfiguration configuracion, IWebHostEnvironment env, IWebHost host, bool demodb)
+        {
+            List<Type> tiposTareasAutomaticas = LocalizadorEnsamblados.ObtieneTiposTareasAutomaticas();
+            IConfiguration config = host.Services.GetRequiredService<IConfiguration>();
+            ILoggerFactory loggerFactory = host.Services.GetRequiredService<ILoggerFactory>();
+            string connectionString = configuracion.GetConnectionString("pika-gd");
+            var ServicioTareas = host.Services.GetRequiredService<IServicioTareaAutomatica>();
+            string dominioid = "principal";
+            Log.Information("Procesando tareas automáticas");
+
+
+            foreach (Type tipo in tiposTareasAutomaticas)
+            {
+                
+                var instancia = (IProveedorTareasAutomaticas)Activator.CreateInstance(tipo);
+                try
+                {
+                    var lista = instancia.ObtieneTareasAutomaticas();
+                    foreach(var item in lista)
+                    {
+                        Log.Information($"Tarea {item.Nombre}:{tipo.Name}@{dominioid}");
+                        if (!await ServicioTareas.Existe(t=>t.Id == item.Id && t.OrigenId == dominioid).ConfigureAwait(false))
+                        {
+                            await ServicioTareas.CrearAsync(new Modelo.Aplicacion.Tareas.TareaAutomatica() { 
+                             CodigoError = null, Id = item.Id, Duracion = null, Ensamblado = tipo.FullName, Exito = null,
+                             FechaHoraEjecucion = item.FechaHoraEjecucion, Intervalo = item.Intervalo, Nombre = item.Nombre, OrigenId = dominioid,
+                             Periodo = item.Periodo, ProximaEjecucion =null, TipoOrigenId = item.TipoOrigenDefault, UltimaEjecucion = null})
+                                .ConfigureAwait(false);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+
+            }
+        }
 
     }
 }

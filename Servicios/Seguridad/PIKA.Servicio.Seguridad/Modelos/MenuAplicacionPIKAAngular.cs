@@ -129,6 +129,12 @@ namespace PIKA.Servicio.Seguridad.Modelos
             el.TokenMod = ConstantesAppAplicacionPlugin.MODULO_APLICACIONES;
             gd.Hijos.Add(el);
 
+            el = CreaElemento(30, "", "Tareas automáticas", "/pages/tabular/");
+            el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "TareaAutomatica" });
+            el.TokenApp = ConstantesAppGestionDocumental.APP_ID;
+            el.TokenMod = ConstantesAppAplicacionPlugin.MODULO_APLICACIONES;
+            gd.Hijos.Add(el);
+
             return gd;
         }
 

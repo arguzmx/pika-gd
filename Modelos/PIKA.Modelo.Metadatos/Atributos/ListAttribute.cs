@@ -48,6 +48,9 @@ namespace PIKA.Modelo.Metadatos
             get { return _FiltroBusqueda; }
         }
 
+        /// <summary>
+        /// Lista de valores para la lista con el formato VALOR,VALOR o VALOR|Etiqueta,VALOR|Etiqueta
+        /// </summary>
         public virtual string ValoresCSV
         {
             get { return _ValoresCSV; }

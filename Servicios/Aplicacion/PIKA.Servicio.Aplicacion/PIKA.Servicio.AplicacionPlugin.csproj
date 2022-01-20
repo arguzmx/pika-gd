@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Migrations\20220113022317_TareasAutomaticas.cs" />
+    <Compile Remove="Data\Migrations\20220113022317_TareasAutomaticas.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
 
     <PackageReference Include="Bogus" Version="29.0.2" />
 

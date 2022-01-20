@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PIKA.GD.API.Model;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Tareas;
 using PIKA.Infrastructure.EventBus.Abstractions;
 using PIKA.Modelo.Metadatos;
 using RepositorioEntidades;
@@ -76,6 +77,38 @@ namespace PIKA.GD.API
                             .Where(t =>
                             !t.IsAbstract &&
                             typeof(IRepositorioInicializable).IsAssignableFrom(t))
+                            .ToArray();
+
+                    l.AddRange(Tipos);
+
+
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            return l;
+        }
+
+        public static List<Type> ObtieneTiposTareasAutomaticas()
+        {
+            List<Type> l = new List<Type>();
+            string Ruta = ObtieneRutaBin();
+
+            var assemblies = Directory.GetFiles(Ruta, "*.dll",
+                new EnumerationOptions() { RecurseSubdirectories = true });
+
+            foreach (var item in assemblies)
+            {
+                try
+                {
+                    var assembly = Assembly.LoadFile(item);
+                    var Tipos = assembly.GetTypes()
+                            .Where(t =>
+                            !t.IsAbstract &&
+                            typeof(IProveedorTareasAutomaticas).IsAssignableFrom(t))
                             .ToArray();
 
                     l.AddRange(Tipos);

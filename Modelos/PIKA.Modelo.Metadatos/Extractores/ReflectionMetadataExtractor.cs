@@ -37,6 +37,8 @@ namespace PIKA.Modelo.Metadatos
                 case Type boolType when boolType == typeof(bool):
                     return TipoDato.tBoolean;
 
+                case Type enumType when enumType.IsEnum:
+                     return TipoDato.tInt32;
 
                 case Type stringType when stringType == typeof(string):
                     return TipoDato.tString;

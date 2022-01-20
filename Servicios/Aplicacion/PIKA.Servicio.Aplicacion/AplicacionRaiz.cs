@@ -15,7 +15,7 @@ namespace PIKA.Servicio.AplicacionPlugin
             Aplicacion a = new Aplicacion()
             {
                 Id = ConstantesAppAplicacionPlugin.APP_ID,
-                Descripcion = "Permite la gestión de aplciaciones y plugins del sistema",
+                Descripcion = "Permite la gestión de aplicaciones y plugins del sistema",
                 Nombre = "Administrador de aplicaciones",
                 UICulture = "es-MX",
                 Version = Version,
