@@ -25,6 +25,9 @@ namespace PIKA.Servicio.AplicacionPlugin.Data.Configuracion
             builder.Property(x => x.Periodo).IsRequired(true);
             builder.Property(x => x.FechaHoraEjecucion).IsRequired(false);
             builder.Property(x => x.Intervalo).IsRequired(false);
+            builder.Property(x => x.TareaEjecucionContinua).IsRequired(true);
+            builder.Property(x => x.TareaEjecucionContinuaMinutos).IsRequired(true);
+            builder.Property(x => x.Estado).IsRequired(true);
 
             builder.HasMany(x=>x.Bitacora).WithOne(y=>y.Tarea).HasForeignKey(z=>z.TareaId)
                 .OnDelete(DeleteBehavior.Cascade);

@@ -165,7 +165,23 @@ namespace PIKA.Servicio.Contenido.Servicios
                   && x.PuntoMontajeId == entity.PuntoMontajeId
                  && x.CarpetaId == entity.CarpetaId && x.Eliminada == false && x.Id != entity.Id))
             {
-                throw new ExElementoExistente(entity.Nombre);
+                if(entity.AutoNombrar.HasValue && entity.AutoNombrar == true)
+                {
+                    int index = 1;
+                    entity.Nombre = $"{entity.Nombre}-{index}";
+                    while(
+                        await Existe(x => x.Nombre == entity.Nombre
+                            && x.PuntoMontajeId == entity.PuntoMontajeId
+                            && x.CarpetaId == entity.CarpetaId && x.Eliminada == false && x.Id != entity.Id)
+                        ){
+                        index++;
+                        entity.Nombre = $"{entity.Nombre}-{index}";
+                    }
+
+                } else
+                {
+                    throw new ExElementoExistente(entity.Nombre);
+                }
             }
 
             if (!string.IsNullOrEmpty(entity.CarpetaId))

@@ -76,8 +76,34 @@ namespace PIKA.Modelo.Aplicacion.Tareas
         //Unico =0 , Hora =1 , Diario=2, DiaSemana=3, DiaMes=4
         [Prop(Required: false, isId: false, Visible: false, ShowInTable: false, OrderIndex: 70)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.update)]
-        [List(Entidad: "", Default: "2", DatosRemotos: false, OrdenarAlfabetico: false, ValoresCSV: "0|listas.tareaautomatica.unico,1|listas.tareaautomatica.hora,2|listas.tareaautomatica.diario,3|listas.tareaautomatica.diasemana,4|listas.tareaautomatica.diames")]
+        [List(Entidad: "", Default: "2", DatosRemotos: false, OrdenarAlfabetico: false, ValoresCSV: "0|listas.tareaautomatica.unico,1|listas.tareaautomatica.hora,2|listas.tareaautomatica.diario,3|listas.tareaautomatica.diasemana,4|listas.tareaautomatica.diames,10|listas.tareaautomatica.continuo")]
         public Infraestructura.Comun.Tareas.PeriodoProgramacion Periodo { get; set; }
+
+
+
+        /// <summary>
+        /// El estado de la tarea sólo puede ser modificado por el sistema o en base a un comando no es parte de la captura del usaurio
+        /// </summary>
+        [Prop(Required: false, isId: false, Visible: true, ShowInTable: true, OrderIndex: 2070)]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+        [List(Entidad: "", Default: "0", DatosRemotos: false, OrdenarAlfabetico: false, ValoresCSV: "0|listas.tareaautomatica.habilidata,1|listas.tareaautomatica.enejecucion,2|listas.tareaautomatica.pausada,3|Error configuración")]
+        public Infraestructura.Comun.Tareas.EstadoTarea Estado { get; set; }
+
+
+        /// <summary>
+        /// Determina si la tarea se encuentra en ejjecución continua, es decir que no requiere programación
+        /// </summary>
+        [Prop(Required: false, isId: false, Visible: true, ShowInTable: true, OrderIndex: 2080)]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+        public bool TareaEjecucionContinua { get; set; }
+
+
+        /// <summary>
+        /// Minutos de espera para el relanzamiento de la tarea una vez finalizada la instancia previa
+        /// </summary>
+        [Prop(Required: false, isId: false, Visible: true, ShowInTable: true, OrderIndex: 2090)]
+        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+        public int TareaEjecucionContinuaMinutos { get; set; }
 
         /// <summary>
         /// Fecha u hora de ejecución de acuerdo al tipo programado

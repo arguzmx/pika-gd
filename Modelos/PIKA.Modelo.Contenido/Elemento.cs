@@ -157,9 +157,11 @@ namespace PIKA.Modelo.Contenido
         [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
         public string IdExterno { get; set; }
 
-
-
         public string TipoOrigenDefault =>  "";
+
+
+        [NotMapped]
+        public bool? AutoNombrar { get; set; }
 
 
         [JsonIgnore, XmlIgnore]

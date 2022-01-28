@@ -7,6 +7,8 @@
   <ItemGroup>
     <Compile Remove="Data\Migrations\20220113022317_TareasAutomaticas.cs" />
     <Compile Remove="Data\Migrations\20220113022317_TareasAutomaticas.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220121161044_ActualizacionTareaAT.cs" />
+    <Compile Remove="Data\Migrations\20220121161044_ActualizacionTareaAT.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -34,6 +34,7 @@ using PIKA.Servicio.Reportes.Data;
 using Microsoft.AspNetCore.HttpOverrides;
 using PIKA.ServicioBusqueda.Contenido;
 using Microsoft.IdentityModel.Logging;
+using PIKA.GD.API.Servicios.TareasAutomaticas;
 
 namespace PIKA.GD.API
 {
@@ -121,9 +122,7 @@ namespace PIKA.GD.API
             services.AddScoped<AsyncIdentityFilter>();
 
             services.AddTransient(typeof(IProveedorOpcionesContexto<>), typeof(ProveedorOpcionesContexto<>));
-
-
-
+            
 #if DEBUG
             services.AddDbContext<DbContextAplicacion>(options =>
             options.UseMySql(Configuration.GetConnectionString("pika-gd")));

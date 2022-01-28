@@ -8,7 +8,13 @@ namespace PIKA.Infraestructura.Comun.Tareas
 
     public enum PeriodoProgramacion
     {
-        Unico =0 , Hora =1 , Diario=2, DiaSemana=3, DiaMes=4
+        Unico =0 , Hora =1 , Diario=2, DiaSemana=3, DiaMes=4, Continuo=10
+    }
+
+
+    public enum EstadoTarea
+    {
+        Habilidata = 0, Enejecucion = 1, Pausada = 2, ErrorConfiguracion = 3
     }
 
     public abstract class ProgramacionTarea: Entidad<string>

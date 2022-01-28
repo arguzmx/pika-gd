@@ -2,14 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PIKA.Infraestructura.Comun.Tareas
 {
     public interface IProveedorTareasAutomaticas
     {
-        public List<TareaAutomatica> ObtieneTareasAutomaticas();
-        public Task<ResultadoTareaAutomatica> EjecutarTarea(string DominioId, string Id, IConfiguration configuracion, IServiceProvider serviceProvider);
+        List<TareaAutomatica> ObtieneTareasAutomaticas();
+        IInstanciaTareaAutomatica InstanciaTarea(string DominioId, string Id, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken);
 
     }
 }

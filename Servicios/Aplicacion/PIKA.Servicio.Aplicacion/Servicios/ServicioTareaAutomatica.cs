@@ -6,6 +6,7 @@ using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
+using PIKA.Modelo.Aplicacion;
 using PIKA.Modelo.Aplicacion.Tareas;
 using PIKA.Servicio.AplicacionPlugin.Interfaces;
 using RepositorioEntidades;
@@ -131,7 +132,9 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
 
         public async Task<TareaAutomatica> CrearAsync(TareaAutomatica entity, CancellationToken cancellationToken = default)
         {
+            
             var valido = PeriodoValido(entity);
+            entity.ProximaEjecucion = entity.SiguienteFechaEjecucion();
             if (!valido.valido)
             {
                 throw new ExDatosNoValidos(valido.error);
@@ -144,7 +147,24 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
 
             this.UDT.Context.TareasAutomaticas.Add(entity);
             this.UDT.SaveChanges();
-            return entity.EstableceEtiquetas(this.usuario.gmtOffset);
+
+
+
+            return entity.EstableceEtiquetas(this.usuario?.gmtOffset ?? 0);
+        }
+
+        public async Task ActualizaEjecucion(TareaAutomatica entity)
+        {
+            var tarea = await this.UDT.Context.TareasAutomaticas.Where(x => x.Id == entity.Id && x.OrigenId == entity.OrigenId).FirstOrDefaultAsync();
+            if(tarea != null)
+            {
+                tarea.Estado = entity.Estado;
+                tarea.Exito = entity.Exito;
+                tarea.UltimaEjecucion = entity.UltimaEjecucion;
+                tarea.ProximaEjecucion = entity.ProximaEjecucion;
+                tarea.CodigoError = entity.CodigoError;
+                this.UDT.Context.SaveChanges();
+            }
         }
 
 
@@ -192,6 +212,8 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
 
             }
 
+            tarea.ProximaEjecucion = entity.SiguienteFechaEjecucion();
+
             this.UDT.Context.SaveChanges();
         }
 
@@ -214,6 +236,11 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
                 o.EstableceEtiquetas(this.usuario.gmtOffset);
             });
             return respuesta;
+        }
+
+        public async Task<List<TareaAutomatica>> ObtenerAsync(Expression<Func<TareaAutomatica, bool>> predicado)
+        {
+            return await  this.repo.ObtenerAsync(predicado);
         }
 
 
@@ -244,14 +271,8 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
             throw new NotImplementedException();
         }
 
-        
 
-        public Task<List<TareaAutomatica>> ObtenerAsync(Expression<Func<TareaAutomatica, bool>> predicado)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<TareaAutomatica>> ObtenerAsync(string SqlCommand)
+           public Task<List<TareaAutomatica>> ObtenerAsync(string SqlCommand)
         {
             throw new NotImplementedException();
         }

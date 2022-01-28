@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29709.97
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIKA.GD.API", "Backend\PIKA.GD.API\PIKA.GD.API.csproj", "{9B884D2A-7A42-44FB-91BB-1FA2AE655075}"
 EndProject
@@ -84,7 +84,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metadatos", "Metadatos", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Organizacion", "Organizacion", "{71A25308-1CCE-4A00-BC40-451B1D78BED0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aplicacon", "Aplicacon", "{A5967CC5-FCA4-497E-A156-253C15AFBEB7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Aplicacion", "Aplicacion", "{A5967CC5-FCA4-497E-A156-253C15AFBEB7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contacto", "Contacto", "{0C68C1DA-1BC1-4919-8395-2B7DB6A1A059}"
 EndProject
@@ -100,9 +100,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PikaOCR", "Infraestructura\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CarpetaInteligente", "CarpetaInteligente", "{012750A9-4C99-4AB9-9F29-8BE928EA980D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIKA.Modelo.CarpetaInteligente", "Modelos\PIKA.Modelo.CarpetaInteligente\PIKA.Modelo.CarpetaInteligente.csproj", "{71A569B5-B28B-444E-8B9B-287A6FB5468C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIKA.Modelo.CarpetaInteligente", "Modelos\PIKA.Modelo.CarpetaInteligente\PIKA.Modelo.CarpetaInteligente.csproj", "{71A569B5-B28B-444E-8B9B-287A6FB5468C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIKA.Servicio.CarpetaInteligente", "Servicios\CarpetaInteligente\PIKA.Servicios.CarpetaInteligente\PIKA.Servicio.CarpetaInteligente.csproj", "{7AC16251-3B7B-4086-9D45-91E94EE73E08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIKA.Servicio.CarpetaInteligente", "Servicios\CarpetaInteligente\PIKA.Servicios.CarpetaInteligente\PIKA.Servicio.CarpetaInteligente.csproj", "{7AC16251-3B7B-4086-9D45-91E94EE73E08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

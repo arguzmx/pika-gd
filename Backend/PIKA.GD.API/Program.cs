@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using PIKA.GD.API.Servicios.TareasAutomaticas;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Tareas;
 using PIKA.Modelo.Metadatos;
@@ -88,13 +89,16 @@ namespace PIKA.GD.API
             })
             .ConfigureServices(services =>
             {
-                services.AddHostedService<OCRHostedService>();
+                services.AddHostedService<ServicioTareasAutomaticaBackgroud>();
+                services.AddScoped<ITareaAutomaticaBackgroud, TareaAutomaticaBackground>();
             })
             .UseStartup<Startup>()
             .UseContentRoot(Directory.GetCurrentDirectory())
             .UseSerilog()
             .Build();
 
+        //services.AddHostedService<ServicioTareasAutomaticaBackgroud>();
+        //    services.AddScoped<ITareaAutomaticaBackgroud, TareaAutomaticaBackground>();
 
         private static void InicializaEslasticSearch(IConfiguration configuracion, IWebHost host)
         {
@@ -178,9 +182,10 @@ namespace PIKA.GD.API
                         if (!await ServicioTareas.Existe(t=>t.Id == item.Id && t.OrigenId == dominioid).ConfigureAwait(false))
                         {
                             await ServicioTareas.CrearAsync(new Modelo.Aplicacion.Tareas.TareaAutomatica() { 
-                             CodigoError = null, Id = item.Id, Duracion = null, Ensamblado = tipo.FullName, Exito = null,
+                             CodigoError = null, Id = item.Id, Duracion = null, Ensamblado = tipo.AssemblyQualifiedName, Exito = null,
                              FechaHoraEjecucion = item.FechaHoraEjecucion, Intervalo = item.Intervalo, Nombre = item.Nombre, OrigenId = dominioid,
-                             Periodo = item.Periodo, ProximaEjecucion =null, TipoOrigenId = item.TipoOrigenDefault, UltimaEjecucion = null})
+                             Periodo = item.Periodo, ProximaEjecucion =null, TipoOrigenId = item.TipoOrigenDefault, UltimaEjecucion = null, TareaEjecucionContinua = item.TareaEjecucionContinua,
+                             TareaEjecucionContinuaMinutos = item.TareaEjecucionContinuaMinutos, Estado = item.Estado, DiaMes = item.DiaMes, DiaSemana = item.DiaSemana, HoraEjecucion = item.HoraEjecucion })
                                 .ConfigureAwait(false);
                         }
                     }

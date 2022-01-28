@@ -12,5 +12,8 @@ namespace PIKA.Servicio.AplicacionPlugin.Interfaces
     {
         PermisoAplicacion permisos { get; set; }
         UsuarioAPI usuario { get; set; }
+
+
+        Task ActualizaEjecucion(TareaAutomatica t);
     }
 }

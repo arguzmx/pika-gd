@@ -39,7 +39,27 @@ namespace PIKA.Infraestructura.Comun.Tareas
         public virtual string Ensamblado { get; set; }
 
 
- 
+        /// <summary>
+        /// Estado de la tarea
+        /// </summary>
+        public EstadoTarea Estado { get; set; }
+
+
+        /// <summary>
+        /// Determina si la tarea se encuentra en ejjecución continua, es decir que no requiere programación
+        /// </summary>
+        public bool TareaEjecucionContinua { get; set; }
+
+
+        /// <summary>
+        /// Minutos de espera para el relanzamiento de la tarea una vez finalizada la instancia previa
+        /// </summary>
+        public int TareaEjecucionContinuaMinutos { get; set; }
+
+        public DateTime? HoraEjecucion { get; set; }
+        public int? DiaSemana { get; set; }
+        public int? DiaMes { get; set; }
+
 
     }
 }
