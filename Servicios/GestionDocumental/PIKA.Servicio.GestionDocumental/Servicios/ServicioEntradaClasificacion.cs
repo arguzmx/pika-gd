@@ -82,13 +82,17 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                 if (await Existelemento(x => x.Id == entity.ElementoClasificacionId && x.Eliminada == true))
                     throw new EXNoEncontrado(entity.ElementoClasificacionId);
+                
                 if (!await Existelemento(x => x.Id == entity.ElementoClasificacionId))
                     throw new EXNoEncontrado(entity.ElementoClasificacionId);
-                if (!String.IsNullOrEmpty(entity.TipoDisposicionDocumentalId))
-                    if (!await ExisteTipoDisposicionDocumental(x => x.Id == entity.TipoDisposicionDocumentalId))
-                        throw new ExErrorRelacional(entity.TipoDisposicionDocumentalId);
+
+                //if (!String.IsNullOrEmpty(entity.TipoDisposicionDocumentalId))
+                //    if (!await ExisteTipoDisposicionDocumental(x => x.Id == entity.TipoDisposicionDocumentalId))
+                //        throw new ExErrorRelacional(entity.TipoDisposicionDocumentalId);
+                
                 if (!await ExisteCC(x => x.Id == entity.CuadroClasifiacionId))
                     throw new ExErrorRelacional(entity.CuadroClasifiacionId);
+                
                 if (await Existe(x => x.Clave.Equals(entity.Clave.Trim(),
                     StringComparison.InvariantCultureIgnoreCase) && x.Eliminada != true
                     && x.ElementoClasificacionId == entity.ElementoClasificacionId
@@ -107,9 +111,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                     entity.CuadroClasifiacionId = entity.CuadroClasifiacionId.Trim();
                 if (!String.IsNullOrEmpty(entity.TipoDisposicionDocumentalId))
                     entity.TipoDisposicionDocumentalId = entity.TipoDisposicionDocumentalId.Trim();
-                await this.repo.CrearAsync(entity);
-
+                // await this.repo.CrearAsync(entity);
                 // UDT.SaveChanges();
+                this.contexto.EntradaClasificacion.Add(entity);
+
 
                 if (entity.TipoValoracionDocumentalId != null
                     && entity.TipoValoracionDocumentalId.Length > 0)
@@ -118,7 +123,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
                     foreach (string id in entity.TipoValoracionDocumentalId)
                     {
-                        var tipo = repoTEC.UnicoAsync(x => x.Id.Equals(id.Trim(), StringComparison.InvariantCultureIgnoreCase));
+                        var tipo =this.UDT.Context.TipoValoracionDocumental.Where(x => x.Id.Equals(id.Trim(), StringComparison.InvariantCultureIgnoreCase)).FirstOrDefaultAsync();
                         if (tipo != null)
                         {
                             ValoracionEntradaClasificacion vec = new ValoracionEntradaClasificacion()
@@ -126,13 +131,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                                 EntradaClasificacionId = entity.Id,
                                 TipoValoracionDocumentalId = id.Trim()
                             };
-                            await repoEC.CrearAsync(vec);
+                            this.contexto.ValoracionEntradaClasificacion.Add(vec);
+                            //
                         }
                     }
                 }
-
-                UDT.SaveChanges();
-
+                this.contexto.SaveChanges();
                 return entity.Copia();
             }
             catch (Exception ex)
@@ -167,10 +171,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                         x.Eliminada == false)))
                     throw new EXNoEncontrado(entity.ElementoClasificacionId);
 
-                if (!(await ExisteTipoDisposicionDocumental(x => x.Id == entity.TipoDisposicionDocumentalId)))
-                        throw new ExErrorRelacional(entity.TipoDisposicionDocumentalId);
+                //if (!(await ExisteTipoDisposicionDocumental(x => x.Id == entity.TipoDisposicionDocumentalId)))
+                //        throw new ExErrorRelacional(entity.TipoDisposicionDocumentalId);
 
-        
                 if (await Existe(x => x.Id != entity.Id
                     && x.Clave.Equals(entity.Clave.Trim(), StringComparison.InvariantCultureIgnoreCase)
                     && x.Eliminada == false
@@ -201,6 +204,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 // Añade las faltantes
                 foreach (string id in entity.TipoValoracionDocumentalId)
                 {
+
                     if (!(lista.Where(x => x.TipoValoracionDocumentalId == id).Any()))
                     {
                         ValoracionEntradaClasificacion vec = new ValoracionEntradaClasificacion()
@@ -208,7 +212,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                             EntradaClasificacionId = entity.Id,
                             TipoValoracionDocumentalId = id.Trim()
                         };
-                        await repoEC.CrearAsync(vec);
+                        this.UDT.Context.ValoracionEntradaClasificacion.Add(vec);
+                        this.UDT.Context.SaveChanges();
                     }
                 }
 
@@ -221,7 +226,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                     }
                 }
 
-                UDT.SaveChanges();
+                this.UDT.Context.SaveChanges();
 
             }
             catch (Exception ex)

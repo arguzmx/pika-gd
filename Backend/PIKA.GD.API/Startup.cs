@@ -35,6 +35,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using PIKA.ServicioBusqueda.Contenido;
 using Microsoft.IdentityModel.Logging;
 using PIKA.GD.API.Servicios.TareasAutomaticas;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace PIKA.GD.API
 {
@@ -170,8 +171,14 @@ namespace PIKA.GD.API
 
             // Configura la autenticación con el servidor de identidad
             services.ConfiguraAutenticacionJWT(this.Configuration);
+            
+            services.AddHealthChecks()
+                .AddMySql(
+                    connectionString: Configuration["ConnectionStrings:pika-gd"],
+                    name: "mysql",
+                    failureStatus: HealthStatus.Unhealthy,
+                    tags: new string[] { "mysql" });
 
-            services.AddHealthChecks();
 
             // Registro de servicios vía Autofac, es necesario para Rabbit MQ
             var container = new ContainerBuilder();
