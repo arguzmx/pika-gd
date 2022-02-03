@@ -114,7 +114,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 // await this.repo.CrearAsync(entity);
                 // UDT.SaveChanges();
                 this.contexto.EntradaClasificacion.Add(entity);
-
+                this.contexto.SaveChanges();
 
                 if (entity.TipoValoracionDocumentalId != null
                     && entity.TipoValoracionDocumentalId.Length > 0)
@@ -136,6 +136,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                         }
                     }
                 }
+                await Task.Delay(250);
                 this.contexto.SaveChanges();
                 return entity.Copia();
             }

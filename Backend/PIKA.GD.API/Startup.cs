@@ -36,6 +36,8 @@ using PIKA.ServicioBusqueda.Contenido;
 using Microsoft.IdentityModel.Logging;
 using PIKA.GD.API.Servicios.TareasAutomaticas;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 namespace PIKA.GD.API
 {
@@ -66,7 +68,16 @@ namespace PIKA.GD.API
         public virtual IServiceProvider ConfigureServices(IServiceCollection services)
         {
 
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", p =>
+                {
+                    p.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
+
             services.AddMvc(setupAction =>
             {
                 setupAction.EnableEndpointRouting = false;
@@ -168,11 +179,28 @@ namespace PIKA.GD.API
             // Servicios de Swaggr OPEN API
             services.AddOpenApiDocument();
 
+            ConfiguracionRepoMetadatos elastic = new ConfiguracionRepoMetadatos();
+            Configuration.GetSection("RepositorioContenido").Bind(elastic);
 
             // Configura la autenticación con el servidor de identidad
             services.ConfiguraAutenticacionJWT(this.Configuration);
-            
+
             services.AddHealthChecks()
+                .AddUrlGroup(
+                    new Uri(Configuration.GetValue<string>("ConfiguracionServidor:jwtauth")), 
+                    name: "identityserver", 
+                    failureStatus: 
+                    HealthStatus.Unhealthy, 
+                    tags: new string[] { "identityserver" })
+                .AddElasticsearch(
+                    name: "elasticsearch", 
+                    elasticsearchUri: elastic.CadenaConexion(), 
+                    failureStatus: HealthStatus.Degraded, 
+                    tags: new string[] { "elasticsearch" } )
+                .AddRabbitMQ(name: "rabbitmq", 
+                    failureStatus: HealthStatus.Unhealthy, 
+                    rabbitConnectionString: CadenaRabbitMQ(),
+                    tags: new string[] { "rabbitmq" })
                 .AddMySql(
                     connectionString: Configuration["ConnectionStrings:pika-gd"],
                     name: "mysql",
@@ -187,6 +215,13 @@ namespace PIKA.GD.API
 
         }
 
+
+        private string CadenaRabbitMQ()
+        {
+            ConfiguracionRepoMetadatos rabbit = new ConfiguracionRepoMetadatos();
+            Configuration.GetSection("EventBus").Bind(rabbit);
+            return rabbit.CadenaConexion();
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -208,14 +243,15 @@ namespace PIKA.GD.API
             IdentityModelEventSource.ShowPII = true;
 #endif
 
-            app.UseHealthChecks("/health");
+            //app.UseHealthChecks("/api/v1.0/health",
+            //      );
 
 
             //app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            app.UseCors("AllowAll");
 
 
             app.UseAuthentication();
@@ -224,6 +260,10 @@ namespace PIKA.GD.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health", new HealthCheckOptions
+                {
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+                });
             });
 
             app.UseOpenApi();

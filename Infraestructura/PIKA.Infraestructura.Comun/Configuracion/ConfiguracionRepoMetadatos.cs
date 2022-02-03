@@ -12,10 +12,11 @@ namespace PIKA.Infraestructura.Comun
 
         public override string CadenaConexion()
         {
+            StringBuilder sb = new StringBuilder();
             switch (Tipo)
             {
                 case ELASTICSEARCH:
-                    StringBuilder sb = new StringBuilder();
+                    sb = new StringBuilder();
                     sb.Append(this.DatosConexion.Protocolo);
                     if(!(string.IsNullOrEmpty(this.DatosConexion.Usuario) &&
                         string.IsNullOrEmpty(this.DatosConexion.Contrasena)))
@@ -27,6 +28,21 @@ namespace PIKA.Infraestructura.Comun
                     sb.Append(":" + this.DatosConexion.Puerto);
 
                     return sb.ToString();
+
+                default:
+                    sb = new StringBuilder();
+                    sb.Append(this.DatosConexion.Protocolo);
+                    if (!(string.IsNullOrEmpty(this.DatosConexion.Usuario) &&
+                        string.IsNullOrEmpty(this.DatosConexion.Contrasena)))
+                    {
+                        sb.Append(this.DatosConexion.Usuario + ":" + this.DatosConexion.Contrasena + "@");
+                    }
+
+                    sb.Append(this.DatosConexion.Url);
+                    sb.Append(":" + this.DatosConexion.Puerto);
+
+                    return sb.ToString();
+
             }
 
             return "";
