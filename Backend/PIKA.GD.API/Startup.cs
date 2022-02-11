@@ -187,7 +187,7 @@ namespace PIKA.GD.API
 
             services.AddHealthChecks()
                 .AddUrlGroup(
-                    new Uri(Configuration.GetValue<string>("ConfiguracionServidor:jwtauth")), 
+                    new Uri(Configuration.GetValue<string>("ConfiguracionServidor:jwtauth").TrimEnd('/') + "/.well-known/openid-configuration"), 
                     name: "identityserver", 
                     failureStatus: 
                     HealthStatus.Unhealthy, 
@@ -219,6 +219,7 @@ namespace PIKA.GD.API
         private string CadenaRabbitMQ()
         {
             ConfiguracionRepoMetadatos rabbit = new ConfiguracionRepoMetadatos();
+            rabbit.Tipo = "rabbitmq";
             Configuration.GetSection("EventBus").Bind(rabbit);
             return rabbit.CadenaConexion();
         }
