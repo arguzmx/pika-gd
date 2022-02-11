@@ -229,7 +229,7 @@ namespace PIKA.GD.API
             ConfiguracionServidor servidor = new ConfiguracionServidor();
             Configuration.GetSection("ConfiguracionServidor").Bind(servidor);
 
-            if (string.IsNullOrEmpty(servidor.healthendpoint)) servidor.healthendpoint = "/servicios/health";
+            if (string.IsNullOrEmpty(servidor.healthendpoint)) servidor.healthendpoint = "/health";
 
             if (env.IsDevelopment())
             {
