@@ -41,8 +41,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             string sqls = $"delete from {DBContextGestionDocumental.TablaEstadisticaClasificacionAcervo} where ArchivoId = '{ArchivoId}';";
             await this.UDT.Context.Database.ExecuteSqlRawAsync(sqls);
 
-            Console.WriteLine(sqls);
-
             sqls = $@"insert into {DBContextGestionDocumental.TablaEstadisticaClasificacionAcervo} (ArchivoId, UnidadAdministrativaArchivoId, CuadroClasificacionId, EntradaClasificacionId, ConteoActivos, ConteoActivosEliminados, FechaMinApertura, FechaMaxCierre)
                       select ArchivoId, UnidadAdministrativaArchivoId, CuadroClasificacionId, EntradaClasificacionId, count(*) as ConteoActivos, 0 as ConteoActivosEliminados, min(FechaApertura) as FechaMinApertura, max(FechaCierre) as FechaMaxCierre 
                       from {DBContextGestionDocumental.TablaActivos} where ArchivoId = '{ArchivoId}' and Eliminada=false group by ArchivoId, UnidadAdministrativaArchivoId, CuadroClasificacionId, EntradaClasificacionId;";

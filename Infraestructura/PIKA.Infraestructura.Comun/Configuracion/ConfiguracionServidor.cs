@@ -20,6 +20,12 @@ namespace PIKA.Infraestructura.Comun
         public int tamanocache { get; set; }
 
         public string jwtauth { get; set; }
+
+        /// <summary>
+        /// Ruta para el enpoint de monitoreo de salud
+        /// </summary>
+        public string healthendpoint { get; set; }
+
         public string jwtaud { get; set; }
 
         public string header_dominio { get; set; }

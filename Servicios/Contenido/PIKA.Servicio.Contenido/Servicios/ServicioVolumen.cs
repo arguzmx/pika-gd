@@ -16,6 +16,7 @@ using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Contenido;
+using PIKA.Servicio.Contenido.ElasticSearch.modelos;
 using PIKA.Servicio.Contenido.Gestores;
 using PIKA.Servicio.Contenido.Interfaces;
 using RepositorioEntidades;
@@ -29,7 +30,7 @@ namespace PIKA.Servicio.Contenido.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<Volumen> repo;
-        private UnidadDeTrabajo<DbContextContenido> UDT;
+        public UnidadDeTrabajo<DbContextContenido> UDT;
         private static TimeSpan volCacheExpiry = new TimeSpan(0, 1, 0); 
         private readonly IAppCache lazycache;
         private IOptions<ConfiguracionServidor> opciones;
@@ -164,6 +165,7 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<List<ValorListaOrdenada>> ObtenerParesPorId(List<string> Lista)
         {
+            this.UDT.Context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
             var resultados = await this.repo.ObtenerAsync(x => Lista.Contains(x.Id));
             List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
             {
@@ -244,7 +246,7 @@ namespace PIKA.Servicio.Contenido.Servicios
                 throw new ExElementoExistente(entity.Nombre);
             }
 
-            if (o.Tamano > entity.TamanoMaximo)
+            if ((entity.TamanoMaximo> 0) && (o.Tamano > entity.TamanoMaximo))
             {
                 throw new ExDatosNoValidos("El tamaño máximo es menor al actual");
             }
@@ -411,7 +413,14 @@ namespace PIKA.Servicio.Contenido.Servicios
             throw new NotImplementedException();
         }
 
-      
+        public async Task ActualizaEstadisticas(EstadisticaVolumen s, string Id)
+        {
+            string x = $"update {DbContextContenido.TablaVolumen} set CanidadPartes={s.ConteoPartes}, CanidadElementos={s.ConteoElementos}, Tamano={s.TamanoBytes} where Id='{Id}'";
+            await this.UDT.Context.Database.ExecuteSqlRawAsync(x);
+
+        }
+
+
 
 
         #endregion

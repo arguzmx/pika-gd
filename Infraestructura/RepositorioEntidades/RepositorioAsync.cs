@@ -27,7 +27,7 @@ namespace RepositorioEntidades
             Func<IQueryable<T>, IOrderedQueryable<T>> ordenarPor = null,
             Func<IQueryable<T>, IIncludableQueryable<T, object>> incluir = null, bool inhabilitarSeuimiento = true)
         {
-            IQueryable<T> query = _dbSet;
+            IQueryable<T> query = _dbSet.AsNoTracking();
             if (inhabilitarSeuimiento) query = query.AsNoTracking();
 
             if (incluir != null) query = incluir(query);
@@ -48,7 +48,7 @@ namespace RepositorioEntidades
         {
 
 
-                IQueryable<T> query = _dbSet;
+                IQueryable<T> query = _dbSet.AsNoTracking();
 
 
                 if (inhabilitarSeguimiento) query = query.AsNoTracking();
@@ -75,7 +75,7 @@ namespace RepositorioEntidades
 
                 if (filtros == null) filtros = new List<Expression<Func<T, bool>>>();
 
-                IQueryable<T> query = _dbSet;
+                IQueryable<T> query = _dbSet.AsNoTracking();
 
 
                 if (inhabilitarSeguimiento) query = query.AsNoTracking();
@@ -133,7 +133,7 @@ namespace RepositorioEntidades
 
             if (filtros == null) filtros = new List<Expression<Func<T, bool>>>();
 
-            IQueryable<T> query = _dbSet;
+            IQueryable<T> query = _dbSet.AsNoTracking();
 
 
             if (inhabilitarSeguimiento) query = query.AsNoTracking();
@@ -235,7 +235,7 @@ namespace RepositorioEntidades
             bool inhabilitarSeguimiento = true,
             CancellationToken tokenCancelacion = default(CancellationToken))
         {
-            IQueryable<T> query = _dbSet;
+            IQueryable<T> query = _dbSet.AsNoTracking();
             if (inhabilitarSeguimiento) query = query.AsNoTracking();
 
             if (incluir != null) query = incluir(query);
@@ -274,7 +274,7 @@ namespace RepositorioEntidades
             Func<IQueryable<T>, IOrderedQueryable<T>> ordenarPor = null,
             Func<IQueryable<T>, IIncludableQueryable<T, object>> incluir = null)
         {
-            IQueryable<T> query = _dbSet;
+            IQueryable<T> query = _dbSet.AsNoTracking();
 
             if (incluir != null) query = incluir(query);
 

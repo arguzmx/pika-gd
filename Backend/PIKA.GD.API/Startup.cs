@@ -226,6 +226,11 @@ namespace PIKA.GD.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            ConfiguracionServidor servidor = new ConfiguracionServidor();
+            Configuration.GetSection("ConfiguracionServidor").Bind(servidor);
+
+            if (string.IsNullOrEmpty(servidor.healthendpoint)) servidor.healthendpoint = "/servicios/health";
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -243,9 +248,6 @@ namespace PIKA.GD.API
             IdentityModelEventSource.ShowPII = true;
 #endif
 
-            //app.UseHealthChecks("/api/v1.0/health",
-            //      );
-
 
             //app.UseHttpsRedirection();
 
@@ -260,7 +262,7 @@ namespace PIKA.GD.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHealthChecks("/health", new HealthCheckOptions
+                endpoints.MapHealthChecks(servidor.healthendpoint, new HealthCheckOptions
                 {
                     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
                 });

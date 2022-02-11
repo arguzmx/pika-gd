@@ -60,6 +60,7 @@
     <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.Contenido\PIKA.Modelo.Contenido.csproj" />
     <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.GestorDocumental\PIKA.Modelo.GestorDocumental.csproj" />
     <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.Metadatos\PIKA.Modelo.Metadatos.csproj" />
+    <ProjectReference Include="..\PIKA.Servicio.Contenido.ElasticSearch\PIKA.Servicio.Contenido.ElasticSearch.csproj" />
   </ItemGroup>
 
 

@@ -60,6 +60,7 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
                 {
                     tarea.ProximaEjecucion = tarea.SiguienteFechaEjecucion();
                 }
+                tarea.ProximaEjecucion = DateTime.UtcNow.AddMinutes(1);
                 await servicioTarea.ActualizaEjecucion(tarea).ConfigureAwait(false);
             }
         }
