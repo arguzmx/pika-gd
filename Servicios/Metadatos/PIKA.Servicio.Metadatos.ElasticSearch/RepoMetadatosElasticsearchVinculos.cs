@@ -195,8 +195,17 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
         public async Task<bool> ActualizaVinculos(VinculosObjetoPlantilla v)
         {
-            var response = await clienteVinculos.UpdateAsync<VinculosObjetoPlantilla>(v._Id, u => u.Doc(v));
-            return response.Result == Result.Updated;
+            try
+            {
+                var response = await clienteVinculos.UpdateAsync<VinculosObjetoPlantilla>(v.Id, u => u.Doc(v));
+                return response.Result == Result.Updated;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            
 
         }
 
