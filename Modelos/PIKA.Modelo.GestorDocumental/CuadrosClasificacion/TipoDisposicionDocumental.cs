@@ -41,7 +41,7 @@ namespace PIKA.Modelo.GestorDocumental
 
             lista.Add(new TipoDisposicionDocumental() { Id = SELECCION_COMPLETA, Nombre = "Selección completa para histórico" });
             lista.Add(new TipoDisposicionDocumental() { Id = ELIMINACION_COMPLETA, Nombre = "Eliminación completa del acervo" });
-            lista.Add(new TipoDisposicionDocumental() { Id = MUESTREO, Nombre = "Muestreo para caonservación histórica" });
+            lista.Add(new TipoDisposicionDocumental() { Id = MUESTREO, Nombre = "Muestreo para conservación histórica" });
             lista.Add(new TipoDisposicionDocumental() { Id = CAMBIO_SOPORTE, Nombre = "Cambio de medio de soporte, microfilmación o digitalización" });
 
             return lista;

@@ -15,6 +15,12 @@ namespace PIKA.Modelo.GestorDocumental.Reportes.JSON
 
         public string TecnicaSeleccion { get; set; }
 
+        public string Seccion { get; set; }
+        public string Serie { get; set; }
+
+        public string Subserie { get; set; }
+        public string UnidadAdministrativa { get; set; }
+
         public EntradaClasificacion EntradaClasificacion { get; set; }
 
         public List<TipoValoracionDocumental> Valoraciones { get; set; }

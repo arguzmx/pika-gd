@@ -36,7 +36,9 @@ namespace PIKA.Servicio.GestionDocumental
                 TipoArchivoId = a.TipoArchivoId,
                 TieneContenido = a.TieneContenido,
                 ElementoId = a.ElementoId,
-                UnidadAdministrativaArchivoId = a.UnidadAdministrativaArchivoId ,
+                UnidadAdministrativaArchivoId = a.UnidadAdministrativaArchivoId,
+                UbicacionCaja = a.UbicacionCaja,
+                 UbicacionRack = a.UbicacionRack
             };
         }
     }

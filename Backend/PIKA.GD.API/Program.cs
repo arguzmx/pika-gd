@@ -30,6 +30,7 @@ namespace PIKA.GD.API
 {
     public static class Program
     {
+        private static bool noocr = false;
         public static async Task Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
@@ -43,7 +44,7 @@ namespace PIKA.GD.API
 
             var nodb = args.Contains("/nodb");
             var demodb = args.Contains("/demodb");
-  
+            noocr = args.Contains("/noocr");
             try
             {
                 Log.Information("Iniciando PIKA-GD-API");
@@ -89,16 +90,17 @@ namespace PIKA.GD.API
             })
             .ConfigureServices(services =>
             {
-                services.AddHostedService<ServicioTareasAutomaticaBackgroud>();
-                services.AddScoped<ITareaAutomaticaBackgroud, TareaAutomaticaBackground>();
+                if(!noocr)
+                {
+                    services.AddHostedService<ServicioTareasAutomaticaBackgroud>();
+                    services.AddScoped<ITareaAutomaticaBackgroud, TareaAutomaticaBackground>();
+                }
             })
             .UseStartup<Startup>()
             .UseContentRoot(Directory.GetCurrentDirectory())
             .UseSerilog()
             .Build();
 
-        //services.AddHostedService<ServicioTareasAutomaticaBackgroud>();
-        //    services.AddScoped<ITareaAutomaticaBackgroud, TareaAutomaticaBackground>();
 
         private static void InicializaEslasticSearch(IConfiguration configuracion, IWebHost host)
         {

@@ -134,10 +134,10 @@ namespace PIKA.GD.API
             services.AddScoped<AsyncIdentityFilter>();
 
             services.AddTransient(typeof(IProveedorOpcionesContexto<>), typeof(ProveedorOpcionesContexto<>));
-            
+
 #if DEBUG
-            services.AddDbContext<DbContextAplicacion>(options =>
-            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+            //services.AddDbContext<DbContextAplicacion>(options =>
+            //options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
             //            services.AddDbContext<DbContextOrganizacion>(options =>
             //            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
@@ -154,8 +154,8 @@ namespace PIKA.GD.API
             //            services.AddDbContext<DbContextReportes>(options =>
             //options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
-            //            services.AddDbContext<DBContextGestionDocumental>(options =>
-            //options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+            services.AddDbContext<DBContextGestionDocumental>(options =>
+options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
 
             //services.AddDbContext<DbContextMetadatos>(options =>

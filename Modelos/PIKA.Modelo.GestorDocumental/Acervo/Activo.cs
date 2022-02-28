@@ -15,14 +15,14 @@ namespace PIKA.Modelo.GestorDocumental
     [Entidad(PaginadoRelacional: false, EliminarLogico: true, HabilitarSeleccion: true,
         TokenMod: ConstantesAppGestionDocumental.MODULO_ACTIVOS,
         TokenApp: ConstantesAppGestionDocumental.APP_ID)]
-    
-    [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ACTIVOS, 
+
+    [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ACTIVOS,
         EntidadHijo: "ampliacion", Cardinalidad: TipoCardinalidad.UnoVarios,
         PropiedadPadre: "Id", PropiedadHijo: "ActivoId")]
 
     [LinkView(Titulo: "crear-contenido-activo", Icono: "preview", Vista: "crearcontenidoactivo",
         RequireSeleccion: true, Tipo: TipoVista.Comando)]
-    public class Activo: Entidad<string>, IEntidadRelacionada, IEntidadIdElectronico, 
+    public class Activo : Entidad<string>, IEntidadRelacionada, IEntidadIdElectronico,
         IEntidadEliminada, IEntidadReportes
     {
 
@@ -69,7 +69,7 @@ namespace PIKA.Modelo.GestorDocumental
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
         [ValidString(minlen: 2, maxlen: 200)]
         public string Nombre { get; set; }
-       
+
         /// <summary>
         /// ID Unico de la entrada de inventario por ejemplo el número de expediente
         /// </summary>
@@ -146,6 +146,14 @@ namespace PIKA.Modelo.GestorDocumental
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.none)]
         public bool Eliminada { get; set; }
 
+
+        [Prop(Required: false, OrderIndex: 70, Visible: true, ShowInTable: true)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXTAREA, Accion: Acciones.addupdate)]
+        public string UbicacionCaja { get; set; }
+
+        [Prop(Required: false, OrderIndex: 80, Visible: true, ShowInTable: true)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXTAREA, Accion: Acciones.addupdate)]
+        public string UbicacionRack { get; set; }
 
         /// <summary>
         /// Establece el archivo en el que fue originado el activo

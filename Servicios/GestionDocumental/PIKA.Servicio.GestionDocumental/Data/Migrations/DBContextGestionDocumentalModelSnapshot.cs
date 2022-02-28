@@ -119,6 +119,14 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
+                    b.Property<string>("UbicacionCaja")
+                        .HasColumnType("varchar(100) CHARACTER SET utf8mb4")
+                        .HasMaxLength(100);
+
+                    b.Property<string>("UbicacionRack")
+                        .HasColumnType("varchar(100) CHARACTER SET utf8mb4")
+                        .HasMaxLength(100);
+
                     b.Property<string>("UnidadAdministrativaArchivoId")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
 
@@ -155,6 +163,10 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.HasIndex("TieneContenido");
 
                     b.HasIndex("TipoArchivoId");
+
+                    b.HasIndex("UbicacionCaja");
+
+                    b.HasIndex("UbicacionRack");
 
                     b.HasIndex("UnidadAdministrativaArchivoId");
 

@@ -395,6 +395,8 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
             a.TipoArchivoId = archivo.TipoArchivoId;
             a.EntradaClasificacionId = ec.Id;
             a.CuadroClasificacionId = ec.CuadroClasifiacionId;
+            a.UbicacionCaja = activo.UbicacionCaja;
+            a.UbicacionRack = activo.UbicacionRack;
 
             if (a.FechaCierre.HasValue)
             {
@@ -496,12 +498,28 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
                     FechaRetencionAC = "",
                     FechaRetencionAT = "",
                     TecnicaSeleccion = "",
+                    Seccion ="",
+                    Serie ="",
+                    Subserie="",
                     UnidadOrganizacional = UnidadOrganizacinal,
                     Valoraciones = new List<TipoValoracionDocumental>()
                 };
 
 
                 g.Activo = await repo.UnicoAsync(x => x.Id == ActivoId);
+
+                if (!string.IsNullOrEmpty(g.Activo.UnidadAdministrativaArchivoId))
+                {
+                    var ua = await UDT.Context.UnidadesAdministrativasArchivo.Where(u=>u.Id == g.Activo.UnidadAdministrativaArchivoId).SingleOrDefaultAsync();
+                    if(ua != null)
+                    {
+                        g.UnidadAdministrativa = ua.UnidadAdministrativa;
+                    }
+                }
+                else {
+                    g.UnidadAdministrativa = "";
+                }
+
 
                 if (g.Activo == null) throw new EXNoEncontrado(ActivoId);
 
@@ -510,6 +528,45 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
                 {
                     Console.WriteLine($"Entrada clasificacion nula");
                     if (ec == null) throw new EXNoEncontrado($"EntradaClasificacion: {g.Activo.EntradaClasificacionId}");
+                } else
+                {
+                    List<string> partes = ec.Clave.Split('.').ToList();
+                    int index = 0;
+                    string clave = "";
+                    foreach (string parte in partes)
+                    {
+                        string texto = "";
+                        clave += (clave.Length == 0 ? parte : $".{parte}");
+                        var elemento = await this.UDT.Context.ElementosClasificacion.Where(x => x.Clave.Equals(clave, StringComparison.InvariantCultureIgnoreCase)).SingleOrDefaultAsync();
+                        if (elemento != null)
+                        {
+                            texto = elemento.Nombre;
+                        } else
+                        {
+                            var entrada = await this.UDT.Context.EntradaClasificacion.Where(x => x.Clave.Equals(clave, StringComparison.InvariantCultureIgnoreCase)).SingleOrDefaultAsync();
+                            if(entrada != null)
+                            {
+                                texto = entrada.Nombre;
+                            }
+                        }
+
+                        switch (index)
+                        {
+                            case 0:
+                                g.Seccion = texto;
+                                break;
+
+                            case 1:
+                                g.Serie = texto;
+                                break;
+
+                            case 2:
+                                g.Subserie = texto;
+                                break;
+                        }
+                        index++;
+                    }
+
                 }
                 
 

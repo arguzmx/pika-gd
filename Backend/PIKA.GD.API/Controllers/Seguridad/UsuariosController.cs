@@ -277,6 +277,7 @@ namespace PIKA.GD.API.Controllers.Seguridad
 
             List<string> lids = ids.Split(',').ToList()
                .Where(x => !string.IsNullOrEmpty(x)).ToList();
+            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(lids));
             var data = await servicioEntidad.ObtenerParesPorId(lids)
                 .ConfigureAwait(false);
 
