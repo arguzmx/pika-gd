@@ -211,7 +211,7 @@ namespace PIKA.Servicio.Contenido.Gestores
                 version.Partes.ForEach(p =>
                 {
                     string ruta = Path.Combine(this.configGestor.Ruta, version.ElementoId, version.Id);
-                    string nombreArchivo = p.Indice.ToString() + p.Extension.ToUpper();
+                    string nombreArchivo = p.Id.ToString() + p.Extension.ToUpper();
                     string rutaFinal = Path.Combine(ruta, nombreArchivo);
 
                     if (File.Exists(rutaFinal))
@@ -246,7 +246,7 @@ namespace PIKA.Servicio.Contenido.Gestores
                     if(imgFormats.IndexOf(p.Extension.ToLower()) >= 0)
                     {
                         string ruta = Path.Combine(this.configGestor.Ruta, version.ElementoId, version.Id);
-                        string nombreArchivo = p.Indice.ToString() + p.Extension.ToUpper();
+                        string nombreArchivo = p.Id.ToString() + p.Extension.ToUpper();
                         string rutaFinal = Path.Combine(ruta, nombreArchivo);
 
                         if (File.Exists(rutaFinal))

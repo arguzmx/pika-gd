@@ -182,7 +182,7 @@ namespace PIKA.GD.API.Controllers.Contenido
                             FileInfo fi = new FileInfo(filePath);
                             
                             p.LongitudBytes = fi.Length;
-
+          
                             p.Id = ShortId.Generate(options).ToUpper(System.Globalization.CultureInfo.InvariantCulture);
                             while  (v.Partes.Any(x=>x.Id == p.Id) ||  partes.Any(x=>x.Id == p.Id))
                             {

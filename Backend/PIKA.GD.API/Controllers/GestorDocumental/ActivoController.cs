@@ -266,7 +266,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             if (d != null) dominio = d.Nombre;
             if (ou != null) unidad = ou.Nombre;
 
-            byte[] bytes = await servicioActivo.ReporteCaratulaActivo(dominio, unidad, id).ConfigureAwait(false);
+            byte[] bytes = await servicioActivo.ReporteCaratulaActivo(dominio, d.Nombre, id).ConfigureAwait(false);
 
             const string contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
             HttpContext.Response.ContentType = contentType;
