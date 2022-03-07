@@ -70,10 +70,16 @@ namespace PIKA.GD.API.Controllers.Contenido
         {
             await repoContenido.CreaRepositorio().ConfigureAwait(false);
             entidad.CreadorId = this.UsuarioId;
-            
+         
             var id = await this.repoContenido.CreaVersion(entidad).ConfigureAwait(false);
             await servicioElemento.ActualizaVersion(entidad.ElementoId, id).ConfigureAwait(false);
-            
+
+            if (entidad.Partes == null)
+            {
+                entidad.Partes = new List<Parte>();
+            }
+            await this.servicioElemento.ActualizaConteoPartes(entidad.ElementoId, entidad.Partes.Count).ConfigureAwait(false);
+
             // entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
 
             return Ok(CreatedAtAction("GetVersion", new { id }, entidad).Value);
@@ -98,6 +104,12 @@ namespace PIKA.GD.API.Controllers.Contenido
                 return BadRequest();
             }
             await this.repoContenido.ActualizaVersion(id, entidad, true).ConfigureAwait(false);
+
+            if (entidad.Partes == null)
+            {
+                entidad.Partes = new List<Parte>();
+            }
+            await this.servicioElemento.ActualizaConteoPartes(entidad.ElementoId, entidad.Partes.Count).ConfigureAwait(false);
 
             // await servicioEntidad.ActualizarAsync(entidad).ConfigureAwait(false);
             return NoContent();

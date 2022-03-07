@@ -11,6 +11,7 @@ using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -208,10 +209,10 @@ namespace PIKA.Servicio.Contenido.Gestores
             int cuenta = 0;
             using (ZipFile zip = new ZipFile() { CompressionLevel = Ionic.Zlib.CompressionLevel.None})
             {
-                version.Partes.ForEach(p =>
+                version.Partes.OrderBy(x => x.Indice).ToList().ForEach(p =>
                 {
                     string ruta = Path.Combine(this.configGestor.Ruta, version.ElementoId, version.Id);
-                    string nombreArchivo = p.Id.ToString() + p.Extension.ToUpper();
+                    string nombreArchivo = $"{p.Indice.ToString().PadLeft(4, '0')}-{p.NombreOriginal}" + p.Extension.ToUpper();
                     string rutaFinal = Path.Combine(ruta, nombreArchivo);
 
                     if (File.Exists(rutaFinal))
@@ -241,7 +242,7 @@ namespace PIKA.Servicio.Contenido.Gestores
 
             using (var collection = new MagickImageCollection())
             {
-                version.Partes.ForEach(p =>
+                version.Partes.OrderBy(x=>x.Indice).ToList().ForEach(p =>
                 {
                     if(imgFormats.IndexOf(p.Extension.ToLower()) >= 0)
                     {

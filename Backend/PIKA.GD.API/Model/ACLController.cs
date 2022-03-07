@@ -52,7 +52,6 @@ namespace PIKA.GD.API
             }
         }
 
-
         [ApiExplorerSettings(IgnoreApi = true)]
         [NonAction]
         protected List<FiltroConsulta> ObtieneFiltrosIdentidad() {

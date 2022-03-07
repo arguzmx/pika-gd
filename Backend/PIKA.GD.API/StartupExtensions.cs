@@ -45,7 +45,7 @@ namespace PIKA.GD.API
 
 
             Log.Logger.Information("Tipos validables registrados automáticamente");
-       
+
 
             services.AddMvc(options =>
             {
@@ -62,7 +62,7 @@ namespace PIKA.GD.API
                 foreach (string item in ensambladosValidables)
                 {
                     Log.Logger.Information("{Tipo}", item);
-                    opt.RegisterValidatorsFromAssembly( Assembly.LoadFrom(item));
+                    opt.RegisterValidatorsFromAssembly(Assembly.LoadFrom(item));
                 }
                 //opt.RegisterValidatorsFromAssemblies(ensambladosValidacion);
             });
@@ -124,7 +124,8 @@ namespace PIKA.GD.API
             if (repometadtosconf.Tipo == ConfiguracionRepoMetadatos.ELASTICSEARCH)
             {
                 Log.Logger.Information("Estableciendo el repositorio de contenido a {x}", "Elasticsearch");
-                services.AddTransient<IRepoContenidoElasticSearch>(provider => {
+                services.AddTransient<IRepoContenidoElasticSearch>(provider =>
+                {
                     var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
                     return new RepoContenidoElasticSearch(Configuration, loggerFactory);
                 });
@@ -139,7 +140,8 @@ namespace PIKA.GD.API
             if (repometadtosconf.Tipo == ConfiguracionRepoMetadatos.ELASTICSEARCH)
             {
                 Log.Logger.Information("Estableciendo el repositorio de búsqueda de contenido a {x}", "Elasticsearch");
-                services.AddTransient<IServicioBusquedaContenido>(provider => {
+                services.AddTransient<IServicioBusquedaContenido>(provider =>
+                {
                     var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
                     var IpOpciones = provider.GetRequiredService<IProveedorOpcionesContexto<DbContextBusquedaContenido>>();
                     var ICache = provider.GetRequiredService<IAppCache>();
@@ -159,7 +161,8 @@ namespace PIKA.GD.API
             {
 
                 Log.Logger.Information("Estableciendo el repositorio de metadatos a {x}", "Elasticsearch");
-                services.AddTransient<IRepositorioMetadatos>(provider => {
+                services.AddTransient<IRepositorioMetadatos>(provider =>
+                {
                     var loggerFactory = provider.GetRequiredService<ILoggerFactory>();
                     var appCache = provider.GetRequiredService<IAppCache>();
                     return new RepoMetadatosElasticSearch(appCache, Configuration, loggerFactory);
@@ -195,7 +198,8 @@ namespace PIKA.GD.API
         /// Configura el bus de eventos
         /// </summary>
         /// <param name="services"></param>
-        public static void ConfiguraBusEventos(this IServiceCollection services, IConfiguration Configuration) {
+        public static void ConfiguraBusEventos(this IServiceCollection services, IConfiguration Configuration)
+        {
             ConfiguracionEventBus configuracionEventBus = new ConfiguracionEventBus();
             Configuration.GetSection("EventBus").Bind(configuracionEventBus);
 
@@ -233,7 +237,7 @@ namespace PIKA.GD.API
 
         private static void RegisterEventBus(IServiceCollection services, IConfiguration Configuration)
         {
-            
+
             ConfiguracionEventBus configuracionEventBus = new ConfiguracionEventBus();
             Configuration.GetSection("EventBus").Bind(configuracionEventBus);
 
@@ -257,16 +261,16 @@ namespace PIKA.GD.API
 
             List<EnsambladosEvento> servicios = LocalizadorEnsamblados.ObtieneManejadoresEventosBus();
 
-            foreach(var item in servicios)
+            foreach (var item in servicios)
             {
-                
-                Log.Logger.Information("Añadiendo manejador {a} para  {b}", 
+
+                Log.Logger.Information("Añadiendo manejador {a} para  {b}",
                     item.NombreHandler.GetNombreCortoEnsamblado(),
                     item.NombreEvento.GetNombreCortoEnsamblado());
 
                 var ensamblado = Assembly.LoadFrom(item.RutaEnsambladoHandler);
                 services.AddTransient(ensamblado.GetType(item.NombreHandler));
-                
+
             }
 
 
@@ -292,12 +296,12 @@ namespace PIKA.GD.API
                     item.NombreEvento.GetNombreCortoEnsamblado());
 
                 var ensamblado = Assembly.LoadFrom(item.RutaEnsambladoHandler);
-                
+
                 eventBus.Subscribe(ensamblado.GetType(item.NombreEvento), ensamblado.GetType(item.NombreHandler));
 
             }
 
-           
+
 
         }
 
@@ -331,8 +335,8 @@ namespace PIKA.GD.API
     {
         OnTokenValidated = context =>
         {
-         // Add the access_token as a claim, as we may actually need it
-         var accessToken = context.SecurityToken as JwtSecurityToken;
+            // Add the access_token as a claim, as we may actually need it
+            var accessToken = context.SecurityToken as JwtSecurityToken;
             if (accessToken != null)
             {
                 ClaimsIdentity identity = context.Principal.Identity as ClaimsIdentity;
@@ -355,8 +359,9 @@ namespace PIKA.GD.API
 
 
 
-        public static string GetNombreCortoEnsamblado(this string nombre) {
-            return nombre.Split('.')[nombre.Split('.').Length -1];
+        public static string GetNombreCortoEnsamblado(this string nombre)
+        {
+            return nombre.Split('.')[nombre.Split('.').Length - 1];
         }
 
     }

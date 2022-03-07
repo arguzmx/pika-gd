@@ -15,5 +15,7 @@ namespace PIKA.Servicio.Contenido.Interfaces
         Task<List<string>> Purgar();
         Task<int> ACLPuntoMontaje(string PuntoMontajeId);
         Task ActualizaVersion(string Id, string VersionId);
+
+        Task ActualizaConteoPartes(string Id, int Conteo);
     }
 }

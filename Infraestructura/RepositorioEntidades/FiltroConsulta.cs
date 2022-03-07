@@ -4,12 +4,17 @@ using System.Text;
 
 namespace RepositorioEntidades
 {
+
+    /// <summary>
+    /// Establece un filtro para uan consulta, los valors por defecto son Negacion = false, NivelFuzzy = -1 y Operador = OP_EQ
+    /// </summary>
     public class FiltroConsulta
     {
         public FiltroConsulta()
         {
             Negacion = false;
             NivelFuzzy = -1;
+            Operador = OP_EQ;
         }
 
         /// <summary>

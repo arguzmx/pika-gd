@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -10,10 +11,13 @@ using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
 using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Modelo.Aplicacion.Tareas;
 using PIKA.Modelo.Contenido;
 using PIKA.Modelo.Metadatos;
+using PIKA.Servicio.AplicacionPlugin.Interfaces;
 using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Contenido.Interfaces;
+using PIKA.Servicio.Contenido.Servicios.TareasAutomaticas;
 using RepositorioEntidades;
 
 namespace PIKA.GD.API.Controllers.Contenido
@@ -30,19 +34,22 @@ namespace PIKA.GD.API.Controllers.Contenido
         private IProveedorMetadatos<Elemento> metadataProvider;
         private IRepoContenidoElasticSearch repoContenido;
         private IServicioVolumen servicioVol;
+        private IServicioTareaEnDemanda tareaEnDemanda;
 
         public ElementoController(
             IRepoContenidoElasticSearch repoContenido,
              IServicioVolumen servicioVol,
         ILogger<ElementoController> logger,
             IProveedorMetadatos<Elemento> metadataProvider,
-            IServicioElemento servicioEntidad)
+            IServicioElemento servicioEntidad,
+            IServicioTareaEnDemanda tareaEnDemanda)
         {
             this.logger = logger;
             this.servicioEntidad = servicioEntidad;
             this.metadataProvider = metadataProvider;
             this.repoContenido = repoContenido;
             this.servicioVol = servicioVol;
+            this.tareaEnDemanda = tareaEnDemanda;
         }
 
      
@@ -340,11 +347,37 @@ namespace PIKA.GD.API.Controllers.Contenido
         }
 
 
+        [HttpGet("pdfblob/{id}", Name = "RecogerPDF")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetPDF(string id)
+        {
+            if(!Guid.TryParse(id, out Guid tareaId))
+            {
+                return BadRequest();
+            }
+
+           var t = await tareaEnDemanda.UnicoAsync(x => x.Id == tareaId).ConfigureAwait(false);
+
+            if(t == null || !t.Completada)
+            {
+                return NotFound();
+            }
+
+            OtputPayloadTareaExportarPDF output = JsonSerializer.Deserialize<OtputPayloadTareaExportarPDF>(t.OutputPayload);
+            this.HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+            return PhysicalFile(output.RutaPDF, MimeTypes.GetMimeType($"{output.NombreElemento}.pdf"), output.NombreElemento + ".pdf");
+
+        }
+
+
         [HttpGet("pdf/{id}/{v}", Name = "GeneraPDF")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetPDF(string id, string v)
+        public async Task<ActionResult<string>> CrearPDF(string id, string v)
         {
+
             v = "";
             var elemento = await this.servicioEntidad.UnicoAsync(x => x.Id == id);
             if (elemento == null)
@@ -367,6 +400,38 @@ namespace PIKA.GD.API.Controllers.Contenido
 
             this.HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
             return PhysicalFile(archivo, MimeTypes.GetMimeType($"{elemento.Nombre}.pdf"), elemento.Nombre + ".pdf");
+
+            //Servicio.Contenido.TareasEnDemanda tareas = new Servicio.Contenido.TareasEnDemanda();
+            //var tpdf = tareas.ObtieneTarea(Servicio.Contenido.TareasEnDemanda.TAREA_EXPPORTAR_PDF);
+            //if(tpdf!= null)
+            //{
+            //    InputPayloadTareaExportarPDF input = new InputPayloadTareaExportarPDF() { ElementoId = id };
+            //    ColaTareaEnDemanda t = new ColaTareaEnDemanda()
+            //    {
+            //        Completada = false,
+            //        DominioId = this.DominioId,
+            //        FechaCreacion = DateTime.UtcNow,
+            //        Id = Guid.NewGuid(),
+            //        InputPayload = JsonSerializer.Serialize(input),
+            //        Prioridad = tpdf.Prioridad,
+            //        TenantId = this.TenantId,
+            //        Recogida = false,
+            //        TipoRespuesta = tpdf.TipoRespuesta,
+            //        UsuarioId = this.UsuarioId,
+            //        NombreEnsamblado = tpdf.Id,
+            //        TareaProcesoId = tpdf.Nombre,
+            //        FechaCaducidad = null,
+            //        FechaEjecucion = null,
+            //        Error = null,
+            //        URLRecoleccion = this.ControllerContext.HttpContext.Request.QueryString,
+            //        HorasCaducidad = tpdf.HorasCaducidad,
+            //        OutputPayload = null
+            //    };
+
+            //    return Ok(t.Id.ToString());
+            //}
+
+            //return BadRequest();
 
 
         }

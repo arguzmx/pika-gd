@@ -76,7 +76,13 @@ namespace PIKA.Modelo.Contenido
         [Prop(Required: false, isId: true, Visible: true, OrderIndex: 1010)]
         [VistaUI(ControlUI: ControlUI.HTML_DATETIME, Accion: Acciones.none)]
         public DateTime FechaCreacion { get; set; }
-        //#Requerido
+
+
+        [Prop(Required: false, isId: true, Visible: true, ShowInTable: true, OrderIndex: 70)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.none)]
+        public int ConteoAnexos { get; set; }
+
+
 
         ///// <summary>
         ///// Identificador único del volúmen para el contenido

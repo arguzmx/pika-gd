@@ -31,9 +31,11 @@ namespace PIKA.GD.API.Controllers.Contenido
         private ConfiguracionServidor configuracionServidor;
         private IServicioElementoTransaccionCarga servicioTransaccionCarga;
         private IRepoContenidoElasticSearch repoContenido;
+        private IServicioElemento servicioElemento;
         public UploadController(
             IRepoContenidoElasticSearch repoContenido,
             IServicioElementoTransaccionCarga servicioTransaccionCarga,
+            IServicioElemento servicioElemento,
             ILogger<UploadController> logger,
             IServicioVolumen servicioVol,
             IOptions<ConfiguracionServidor> opciones)
@@ -42,6 +44,7 @@ namespace PIKA.GD.API.Controllers.Contenido
             this.servicioTransaccionCarga = servicioTransaccionCarga;
             this.servicioVol = servicioVol;
             this.logger = logger;
+            this.servicioElemento = servicioElemento;
             this.configuracionServidor = opciones.Value;
             FiltroArchivos.minimo = 1; //1 KB
             FiltroArchivos.maximo = long.MaxValue; //10 MB
@@ -205,6 +208,7 @@ namespace PIKA.GD.API.Controllers.Contenido
                     v.Partes.AddRange(partes);
 
                     await this.repoContenido.ActualizaVersion(v.Id, v, true).ConfigureAwait(false);
+                    await this.servicioElemento.ActualizaConteoPartes(elementoId, v.Partes.Count).ConfigureAwait(false);
 
                     try
                     {

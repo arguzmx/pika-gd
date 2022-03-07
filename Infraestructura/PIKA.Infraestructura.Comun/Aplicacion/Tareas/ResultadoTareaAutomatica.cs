@@ -18,6 +18,9 @@ namespace PIKA.Infraestructura.Comun.Tareas
         public bool Exito { get; set; }
         public int SegundosDuracion { get; set; }
         public string Error { get; set; }
-  
+
+        public string PayloadOutput { get; set; }
+
     }
+
 }

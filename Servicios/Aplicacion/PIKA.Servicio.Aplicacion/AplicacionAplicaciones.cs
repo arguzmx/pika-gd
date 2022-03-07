@@ -35,7 +35,11 @@ namespace PIKA.Servicio.AplicacionPlugin
                     Descripcion = "Permite administrar la configuración del sistema",
                     Tipos = new List<Type> { typeof(Aplicacion), typeof(TareaAutomatica), typeof(BitacoraTarea) }
                 },
-
+                new ElementoAplicacion(ConstantesAppAplicacionPlugin.APP_ID, ConstantesAppAplicacionPlugin.MODULO_APLICACIONES ) {
+                    Titulo = "Servicios del usuario",
+                    Descripcion = "Permite el acceso a los servicios del usuario",
+                    Tipos = new List<Type> { typeof(ColaTareaEnDemanda)}
+                },
                 //new ElementoAplicacion(ConstantesAppAplicacionPlugin.APP_ID, ConstantesAppAplicacionPlugin.MODULO_APLICACIONES ) {
                 //    Titulo = "Aplicaciones del sistema",
                 //    Descripcion = "Permite administrar la configuración de las aplicaciones del sistema",

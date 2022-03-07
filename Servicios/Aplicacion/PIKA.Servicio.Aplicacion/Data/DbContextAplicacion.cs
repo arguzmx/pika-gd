@@ -57,7 +57,7 @@ namespace PIKA.Servicio.AplicacionPlugin
         public static string TablaTareaAutomatica { get => $"{prefijo}$autotarea"; }
         public static string TablaBitacoraTarea { get => $"{prefijo}$bitacoratarea"; }
 
-
+        public static string TablaTareasEnDemanda { get => $"{prefijo}$ondemandtarea"; }
 
         #endregion
 
@@ -89,6 +89,9 @@ namespace PIKA.Servicio.AplicacionPlugin
         /// </summary>
         public DbSet<BitacoraTarea> BitacoraTareas { get; set; }
 
+
+        public DbSet<ColaTareaEnDemanda> TareasEnDemanda { get; set; }
+
         public void AplicarMigraciones()
         {
             this.Database.Migrate();
@@ -107,6 +110,7 @@ namespace PIKA.Servicio.AplicacionPlugin
             builder.ApplyConfiguration<VersionPlugin>(new DbConfVersionPlugin());
             builder.ApplyConfiguration(new DbConfTareaAutomatica());
             builder.ApplyConfiguration(new DbConfBitacoraTarea());
+            builder.ApplyConfiguration(new DbConfTareaEnDemanda());
         }
 
     }
