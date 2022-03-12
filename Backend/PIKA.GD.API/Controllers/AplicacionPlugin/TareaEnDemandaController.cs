@@ -26,11 +26,11 @@ namespace PIKA.GD.API.Controllers.AplicacionColaTareaEnDemanda
     {
         private ILogger<TareaEnDemandaController> logger;
         private IServicioTareaEnDemanda servicioColaTareaEnDemanda;
-        private IProveedorMetadatos<ColaTareaEnDemanda> metadataProvider;
+        private IProveedorMetadatos<TareaEnDemanda> metadataProvider;
         private readonly IServicioTokenSeguridad ServicioTokenSeguridad;
         public TareaEnDemandaController(
             ILogger<TareaEnDemandaController> logger,
-            IProveedorMetadatos<ColaTareaEnDemanda> metadataProvider,
+            IProveedorMetadatos<TareaEnDemanda> metadataProvider,
             IServicioCache servicioCache,
             IServicioTareaEnDemanda servicioColaTareaEnDemanda,
             IServicioTokenSeguridad ServicioTokenSeguridad)
@@ -57,44 +57,60 @@ namespace PIKA.GD.API.Controllers.AplicacionColaTareaEnDemanda
             
         }
 
-
-
-        [HttpGet("page", Name = "GetPageColaTareaEnDemanda")]
-        public async Task<ActionResult<Paginado<ColaTareaEnDemanda>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
+        [HttpGet(Name = "GetTareasPorUsuario")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        public async Task<ActionResult<List<Infraestructura.Comun.Tareas.PostTareaEnDemanda>>> GetTareasPorUsuario()
         {
 
-
-            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-
-            ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
-            var data = await servicioColaTareaEnDemanda.ObtenerPaginadoAsync(
-                Query: query,
-                include: null)
-                .ConfigureAwait(false);
-
-            return Ok(data);
+            var l = await servicioColaTareaEnDemanda.TareasUsuario(this.UsuarioId, this.DominioId, this.TenantId).ConfigureAwait(false);
+            return Ok(l);
         }
 
 
-        [HttpGet("page", Name = "GetPageColaTareaEnDemandaFinalizadas")]
-        public async Task<ActionResult<Paginado<ColaTareaEnDemanda>>> GetPageFinalizadas([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        [HttpDelete("{Id}", Name = "EliminaTarea")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        public async Task<ActionResult> EliminaTareaUsuario(Guid Id)
         {
-
-            servicioColaTareaEnDemanda.usuario = this.usuario;
-
-
-            query.Filtros.AddRange(ObtieneFiltrosIdentidad());
-            query.Filtros.Add(new FiltroConsulta() { Propiedad = "Completada", Valor = "true", ValorString = "true" });
-            query.Filtros.Add(new FiltroConsulta() { Propiedad = "Recogida", Valor = "false", ValorString = "false" });
-
-            ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
-            var data = await servicioColaTareaEnDemanda.ObtenerPaginadoAsync(
-                Query: query,
-                include: null)
-                .ConfigureAwait(false);
-
-            return Ok(data);
+            var l = await servicioColaTareaEnDemanda.EliminaTareaUsuario(this.UsuarioId, this.DominioId, this.TenantId, Id).ConfigureAwait(false);
+            return Ok();
         }
+
+        //[HttpGet("page", Name = "GetPageColaTareaEnDemanda")]
+        //public async Task<ActionResult<Paginado<ColaTareaEnDemanda>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
+        //{
+
+
+        //    query.Filtros.AddRange(ObtieneFiltrosIdentidad());
+
+        //    ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
+        //    var data = await servicioColaTareaEnDemanda.ObtenerPaginadoAsync(
+        //        Query: query,
+        //        include: null)
+        //        .ConfigureAwait(false);
+
+        //    return Ok(data);
+        //}
+
+
+        //[HttpGet("page", Name = "GetPageColaTareaEnDemandaFinalizadas")]
+        //public async Task<ActionResult<Paginado<ColaTareaEnDemanda>>> GetPageFinalizadas([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        //{
+
+        //    servicioColaTareaEnDemanda.usuario = this.usuario;
+
+
+        //    query.Filtros.AddRange(ObtieneFiltrosIdentidad());
+        //    query.Filtros.Add(new FiltroConsulta() { Propiedad = "Completada", Valor = "true", ValorString = "true" });
+        //    query.Filtros.Add(new FiltroConsulta() { Propiedad = "Recogida", Valor = "false", ValorString = "false" });
+
+        //    ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
+        //    var data = await servicioColaTareaEnDemanda.ObtenerPaginadoAsync(
+        //        Query: query,
+        //        include: null)
+        //        .ConfigureAwait(false);
+
+        //    return Ok(data);
+        //}
 
 
     }

@@ -17,7 +17,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
     public class TareasAutomaticas : IProveedorTareasAutomaticas
     {
         public const string ESTDISTICA_ARCHIVO = "GestionDocumental.Estadistica";
-        public IInstanciaTareaAutomatica InstanciaTarea(string DominioId, string Id, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken)
+        public IInstanciaTareaBackground InstanciaTarea(string DominioId, string Id, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken)
         {
             switch (Id)
             {
@@ -30,7 +30,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         }
 
-        public IInstanciaTareaAutomatica InstanciaTareaEstadisticaArchivo(string DominioId, string Id, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken)
+        public IInstanciaTareaBackground InstanciaTareaEstadisticaArchivo(string DominioId, string Id, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken)
         {
             var scope = serviceProvider.CreateScope();
             var archivos = serviceProvider.GetRequiredService<IServicioArchivo>();

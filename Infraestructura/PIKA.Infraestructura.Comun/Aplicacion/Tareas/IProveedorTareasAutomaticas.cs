@@ -10,7 +10,7 @@ namespace PIKA.Infraestructura.Comun.Tareas
     public interface IProveedorTareasAutomaticas
     {
         List<TareaAutomatica> ObtieneTareasAutomaticas();
-        IInstanciaTareaAutomatica InstanciaTarea(string DominioId, string Id, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken);
+        IInstanciaTareaBackground InstanciaTarea(string DominioId, string Id, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken);
 
     }
 }

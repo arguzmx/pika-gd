@@ -10,9 +10,9 @@ namespace PIKA.Infraestructura.Comun.Tareas
     public interface IProveedorTareasEnDemanda
     {
         List<TareaEnDemanda> ObtieneTareasEnDemanda();
-
+        Task EliminaCaducos(string DominioId, string IdProceso, string IdTarea, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken, string InputPayload, string OutputPayload);
         TareaEnDemanda ObtieneTarea(string Id);
-        IInstanciaTareaEnDemanda InstanciaTarea(string DominioId, string Id, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken);
+        IInstanciaTareaBackground InstanciaTarea(string DominioId, string IdProceso, string IdTarea, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken);
 
     }
 }

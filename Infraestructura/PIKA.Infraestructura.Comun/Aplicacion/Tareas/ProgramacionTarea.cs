@@ -14,7 +14,7 @@ namespace PIKA.Infraestructura.Comun.Tareas
 
     public enum EstadoTarea
     {
-        Habilidata = 0, Enejecucion = 1, Pausada = 2, ErrorConfiguracion = 3
+        Habilidata = 0, Enejecucion = 1, Pausada = 2, ErrorConfiguracion = 3, Finalizada=100, Error=101
     }
 
     public abstract class ProgramacionTarea: Entidad<string>

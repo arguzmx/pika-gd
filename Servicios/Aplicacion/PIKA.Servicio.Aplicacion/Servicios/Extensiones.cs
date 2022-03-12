@@ -9,6 +9,25 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
     public static class ExtensionesAplicacion
     {
 
+        public static Infraestructura.Comun.Tareas.PostTareaEnDemanda ToPostTareEnDemanda(this TareaEnDemanda t)
+        {
+            if (t == null) return null;
+
+            return new Infraestructura.Comun.Tareas.PostTareaEnDemanda()
+            {
+                Completado = t.Completada,
+                ConError = t.Estado == Infraestructura.Comun.Tareas.EstadoTarea.Error,
+                Error = t.Error,
+                Fecha = t.FechaCreacion,
+                Tipo = t.TareaProcesoId,
+                Id = t.Id.ToString(),
+                PickupURL = t.URLRecoleccion,
+                TipoRespuesta = t.TipoRespuesta,
+                Etiqueta = t.Etiqueta
+            };
+        }
+
+
         public static DateTime? SiguienteFechaEjecucion(this TareaAutomatica entity)
         {
 

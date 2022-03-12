@@ -18,7 +18,7 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
         private IConfiguration configuracion;
         private IServiceProvider serviceProvider;
         private List<TareaAutomatica> tareas;
-        private List<ComunTareas.ProcesadorTareaAutomatica> InstanciaTareas;
+        private List<ComunTareas.ProcesadorTareaBackground> InstanciaTareas;
         private CancellationToken stoppingToken;
         private readonly object taskLock = new object();
 
@@ -36,7 +36,7 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
         public async Task DoWork(CancellationToken stoppingToken)
         {
             this.stoppingToken = stoppingToken;
-            InstanciaTareas = new List<ComunTareas.ProcesadorTareaAutomatica>();
+            InstanciaTareas = new List<ComunTareas.ProcesadorTareaBackground>();
             await Inicializacion().ConfigureAwait(false);
 
             while (!stoppingToken.IsCancellationRequested)
@@ -149,7 +149,7 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
             {
                 try
                 {
-                    ComunTareas.ProcesadorTareaAutomatica procesador = new ComunTareas.ProcesadorTareaAutomatica()
+                    ComunTareas.ProcesadorTareaBackground procesador = new ComunTareas.ProcesadorTareaBackground()
                     {
                         Id = t.Id,
                         Index = 0,

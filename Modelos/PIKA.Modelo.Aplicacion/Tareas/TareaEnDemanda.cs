@@ -8,7 +8,7 @@ namespace PIKA.Modelo.Aplicacion.Tareas
     /// <summary>
     /// Crea una cola de tareas en demanda que son atendidas por prioridad de manera secuencial
     /// </summary>
-    public class ColaTareaEnDemanda
+    public class TareaEnDemanda
     {
         /// <summary>
         /// Identificador único de la tarea
@@ -100,6 +100,18 @@ namespace PIKA.Modelo.Aplicacion.Tareas
         ///  Horas antes de que el contenido sea eliminado
         /// </summary>
         public int HorasCaducidad { get; set; }
+
+        /// <summary>
+        /// Esatdo de la tarea
+        /// </summary>
+        public EstadoTarea Estado { get; set; }
+
+
+        /// <summary>
+        /// Texto descriptivo para el usuario
+        /// </summary>
+        public string Etiqueta { get; set; }
+
     }
 
 

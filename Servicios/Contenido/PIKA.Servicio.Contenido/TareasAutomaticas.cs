@@ -18,7 +18,7 @@ namespace PIKA.Servicio.Contenido
     public class TareasAutomaticas : IProveedorTareasAutomaticas
     {
         public const string TAREA_ESTADISTICA_VOLUMEN = "ContenidoPIKA.EstadisticaVolumenes";
-        public IInstanciaTareaAutomatica InstanciaTarea(string DominioId, string Id, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken)
+        public IInstanciaTareaBackground InstanciaTarea(string DominioId, string Id, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken)
         {
             switch (Id)
             {
@@ -30,7 +30,7 @@ namespace PIKA.Servicio.Contenido
             }
 
         }
-        public IInstanciaTareaAutomatica InstanciaTareaEstadisticaVols(string DominioId, string Id, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken)
+        public IInstanciaTareaBackground InstanciaTareaEstadisticaVols(string DominioId, string Id, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken)
         {
             var scope = serviceProvider.CreateScope();
             var elasticserv = serviceProvider.GetRequiredService<IRepoContenidoElasticSearch>();

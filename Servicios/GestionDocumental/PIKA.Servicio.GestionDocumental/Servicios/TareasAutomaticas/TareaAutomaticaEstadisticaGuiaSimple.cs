@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.GestionDocumental.TareasAutomaticas
 {
-    public class TareaAutomaticaEstadisticaGuiaSimple : IInstanciaTareaAutomatica
+    public class TareaAutomaticaEstadisticaGuiaSimple : IInstanciaTareaBackground
     {
 
 
@@ -24,11 +24,11 @@ namespace PIKA.Servicio.GestionDocumental.TareasAutomaticas
         private readonly string TokenSeguimiento;
         private CancellationToken stoppingToken;
         public event EventHandler TareaFinalizada;
-        private ResultadoTareaAutomatica resultado;
+        private ResultadoTareaBackground resultado;
         private DateTime inicio;
         private DateTime fin;
 
-        protected virtual void OnTareaFinalizada(ResultadoTareaAutomatica t)
+        protected virtual void OnTareaFinalizada(ResultadoTareaBackground t)
         {
             TareaFinalizadaEventArgs e = new TareaFinalizadaEventArgs()
             {
@@ -59,11 +59,11 @@ namespace PIKA.Servicio.GestionDocumental.TareasAutomaticas
             this.DominioId = DominioId;
             this.TokenSeguimiento = TokenSeguimiento;
 
-            resultado = new ResultadoTareaAutomatica(DominioId) { Error = null, Exito = false, Id = Id, SegundosDuracion = 0 };
+            resultado = new ResultadoTareaBackground(DominioId) { Error = null, Exito = false, Id = Id, SegundosDuracion = 0 };
         }
 
 
-        public async Task<ResultadoTareaAutomatica> EjecutarTarea()
+        public async Task<ResultadoTareaBackground> EjecutarTarea(string inputPayload = null)
         {
             try
             {
@@ -118,6 +118,10 @@ namespace PIKA.Servicio.GestionDocumental.TareasAutomaticas
             return resultado;
         }
 
-
+        public async Task<ResultadoTareaBackground> CaducarTarea(string InputPayload = null, string OutputPayload = null)
+        {
+            await Task.Delay(10);
+            return null;
+        }
     }
 }

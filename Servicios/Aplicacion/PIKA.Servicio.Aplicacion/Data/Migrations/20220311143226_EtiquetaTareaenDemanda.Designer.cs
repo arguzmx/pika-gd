@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PIKA.Servicio.AplicacionPlugin;
 
 namespace PIKA.Servicio.AplicacionPlugin.Data.Migrations
 {
     [DbContext(typeof(DbContextAplicacion))]
-    partial class DbContextAplicacionModelSnapshot : ModelSnapshot
+    [Migration("20220311143226_EtiquetaTareaenDemanda")]
+    partial class EtiquetaTareaenDemanda
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

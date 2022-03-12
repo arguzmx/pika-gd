@@ -24,7 +24,7 @@ namespace PikaOCR
 
         }
 
-        public IInstanciaTareaAutomatica InstanciaTarea(string DominioId, string Id, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken)
+        public IInstanciaTareaBackground InstanciaTarea(string DominioId, string Id, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken)
         {
             switch(Id)
             {
@@ -39,7 +39,7 @@ namespace PikaOCR
 
     
 
-        public IInstanciaTareaAutomatica InstanciaTareaOCR(string DominioId, string Id, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken)
+        public IInstanciaTareaBackground InstanciaTareaOCR(string DominioId, string Id, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken)
         {
             var scope = serviceProvider.CreateScope();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<TareaAutomaticaOCR>>();

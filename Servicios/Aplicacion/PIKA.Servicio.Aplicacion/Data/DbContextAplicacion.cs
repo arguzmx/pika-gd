@@ -90,7 +90,7 @@ namespace PIKA.Servicio.AplicacionPlugin
         public DbSet<BitacoraTarea> BitacoraTareas { get; set; }
 
 
-        public DbSet<ColaTareaEnDemanda> TareasEnDemanda { get; set; }
+        public DbSet<TareaEnDemanda> TareasEnDemanda { get; set; }
 
         public void AplicarMigraciones()
         {

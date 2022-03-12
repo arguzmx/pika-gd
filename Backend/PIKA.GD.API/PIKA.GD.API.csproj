@@ -113,10 +113,6 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Servicios\TareasEnDemanda\" />
-  </ItemGroup>
-
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 

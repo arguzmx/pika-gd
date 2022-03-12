@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PIKA.Servicio.AplicacionPlugin;
 
 namespace PIKA.Servicio.AplicacionPlugin.Data.Migrations
 {
     [DbContext(typeof(DbContextAplicacion))]
-    partial class DbContextAplicacionModelSnapshot : ModelSnapshot
+    [Migration("20220309220238_EstadoTareaDemanda")]
+    partial class EstadoTareaDemanda
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,6 +135,88 @@ namespace PIKA.Servicio.AplicacionPlugin.Data.Migrations
                     b.ToTable("aplicacion$bitacoratarea");
                 });
 
+            modelBuilder.Entity("PIKA.Modelo.Aplicacion.Tareas.ColaTareaEnDemanda", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("char(128)")
+                        .HasMaxLength(128);
+
+                    b.Property<bool>("Completada")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("DominioId")
+                        .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("Error")
+                        .HasColumnType("varchar(500) CHARACTER SET utf8mb4")
+                        .HasMaxLength(500);
+
+                    b.Property<int>("Estado")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<DateTime?>("FechaCaducidad")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("FechaEjecucion")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("HorasCaducidad")
+                        .HasColumnType("int");
+
+                    b.Property<string>("InputPayload")
+                        .HasColumnType("varchar(2000) CHARACTER SET utf8mb4")
+                        .HasMaxLength(2000);
+
+                    b.Property<string>("NombreEnsamblado")
+                        .IsRequired()
+                        .HasColumnType("varchar(250) CHARACTER SET utf8mb4")
+                        .HasMaxLength(250);
+
+                    b.Property<string>("OutputPayload")
+                        .HasColumnType("varchar(2000) CHARACTER SET utf8mb4")
+                        .HasMaxLength(2000);
+
+                    b.Property<int>("Prioridad")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Recogida")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("TareaProcesoId")
+                        .IsRequired()
+                        .HasColumnType("varchar(250) CHARACTER SET utf8mb4")
+                        .HasMaxLength(250);
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<int>("TipoRespuesta")
+                        .HasColumnType("int");
+
+                    b.Property<string>("URLRecoleccion")
+                        .IsRequired()
+                        .HasColumnType("varchar(250) CHARACTER SET utf8mb4")
+                        .HasMaxLength(250);
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("aplicacion$ondemandtarea");
+                });
+
             modelBuilder.Entity("PIKA.Modelo.Aplicacion.Tareas.TareaAutomatica", b =>
                 {
                     b.Property<string>("Id")
@@ -192,93 +276,6 @@ namespace PIKA.Servicio.AplicacionPlugin.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("aplicacion$autotarea");
-                });
-
-            modelBuilder.Entity("PIKA.Modelo.Aplicacion.Tareas.TareaEnDemanda", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(128)")
-                        .HasMaxLength(128);
-
-                    b.Property<bool>("Completada")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("DominioId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("Error")
-                        .HasColumnType("varchar(500) CHARACTER SET utf8mb4")
-                        .HasMaxLength(500);
-
-                    b.Property<int>("Estado")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
-
-                    b.Property<string>("Etiqueta")
-                        .IsRequired()
-                        .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
-                        .HasMaxLength(200);
-
-                    b.Property<DateTime?>("FechaCaducidad")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("FechaEjecucion")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("HorasCaducidad")
-                        .HasColumnType("int");
-
-                    b.Property<string>("InputPayload")
-                        .HasColumnType("varchar(2000) CHARACTER SET utf8mb4")
-                        .HasMaxLength(2000);
-
-                    b.Property<string>("NombreEnsamblado")
-                        .IsRequired()
-                        .HasColumnType("varchar(250) CHARACTER SET utf8mb4")
-                        .HasMaxLength(250);
-
-                    b.Property<string>("OutputPayload")
-                        .HasColumnType("varchar(2000) CHARACTER SET utf8mb4")
-                        .HasMaxLength(2000);
-
-                    b.Property<int>("Prioridad")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Recogida")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("TareaProcesoId")
-                        .IsRequired()
-                        .HasColumnType("varchar(250) CHARACTER SET utf8mb4")
-                        .HasMaxLength(250);
-
-                    b.Property<string>("TenantId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<int>("TipoRespuesta")
-                        .HasColumnType("int");
-
-                    b.Property<string>("URLRecoleccion")
-                        .IsRequired()
-                        .HasColumnType("varchar(250) CHARACTER SET utf8mb4")
-                        .HasMaxLength(250);
-
-                    b.Property<string>("UsuarioId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("aplicacion$ondemandtarea");
                 });
 
             modelBuilder.Entity("PIKA.Modelo.Aplicacion.Plugins.PluginInstalado", b =>

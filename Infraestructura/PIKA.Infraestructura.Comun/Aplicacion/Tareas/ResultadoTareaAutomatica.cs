@@ -4,9 +4,9 @@ using System.Text;
 
 namespace PIKA.Infraestructura.Comun.Tareas
 {
-    public class ResultadoTareaAutomatica
+    public class ResultadoTareaBackground
     {
-        public ResultadoTareaAutomatica(string Id)
+        public ResultadoTareaBackground(string Id)
         {
             Exito = false;
             SegundosDuracion = 0;

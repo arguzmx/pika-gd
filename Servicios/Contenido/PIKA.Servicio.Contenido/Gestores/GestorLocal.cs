@@ -212,12 +212,14 @@ namespace PIKA.Servicio.Contenido.Gestores
                 version.Partes.OrderBy(x => x.Indice).ToList().ForEach(p =>
                 {
                     string ruta = Path.Combine(this.configGestor.Ruta, version.ElementoId, version.Id);
-                    string nombreArchivo = $"{p.Indice.ToString().PadLeft(4, '0')}-{p.NombreOriginal}" + p.Extension.ToUpper();
+                    string nombreArchivo = p.Id.ToString() + p.Extension.ToUpper();
                     string rutaFinal = Path.Combine(ruta, nombreArchivo);
 
                     if (File.Exists(rutaFinal))
                     {
-                        zip.AddFile(rutaFinal, "");
+                        string nombreZip = $"{p.Indice.ToString().PadLeft(8, '0')}-{p.NombreOriginal}" + p.Extension.ToUpper();
+                        zip.AddEntry(nombreZip, File.ReadAllBytes(rutaFinal));
+                        
                         cuenta ++;
                     }
 
@@ -304,6 +306,20 @@ namespace PIKA.Servicio.Contenido.Gestores
             return LeeArchivo(rutaFinal);
         }
 
+        public async Task<bool> Elimina(string RutaArchivo)
+        {
+            await Task.Delay(1);
+            try
+            {
+                File.Delete(RutaArchivo);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public Task EliminaBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension)
         {
             Console.WriteLine($"{this.configGestor.Ruta} : {ElementoId} : {VersionId} ");
@@ -325,12 +341,11 @@ namespace PIKA.Servicio.Contenido.Gestores
             archivos.Add(rutaFinalOCR);
             archivos.ForEach(ruta =>
             {
-                Console.WriteLine($"Del: {ruta}");
                 if (!string.IsNullOrEmpty(ruta) && File.Exists(ruta))
                 {
                     try
                     {
-                       // File.Delete(ruta);
+                       File.Delete(ruta);
                     }
                     catch (Exception)
                     {

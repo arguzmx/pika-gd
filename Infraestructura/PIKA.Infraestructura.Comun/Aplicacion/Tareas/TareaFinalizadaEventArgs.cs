@@ -7,6 +7,6 @@ namespace PIKA.Infraestructura.Comun.Tareas
     public class TareaFinalizadaEventArgs: EventArgs
     {
         public string TokenSeguimiento { get; set; }
-        public ResultadoTareaAutomatica Resultado { get; set; }
+        public ResultadoTareaBackground Resultado { get; set; }
     }
 }

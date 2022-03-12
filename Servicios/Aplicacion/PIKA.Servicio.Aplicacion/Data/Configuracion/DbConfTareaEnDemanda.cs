@@ -6,9 +6,9 @@ using System;
 
 namespace PIKA.Servicio.AplicacionPlugin.Data.Configuracion
 {
-    public class DbConfTareaEnDemanda : IEntityTypeConfiguration<ColaTareaEnDemanda>
+    public class DbConfTareaEnDemanda : IEntityTypeConfiguration<TareaEnDemanda>
     {
-        public void Configure(EntityTypeBuilder<ColaTareaEnDemanda> builder)
+        public void Configure(EntityTypeBuilder<TareaEnDemanda> builder)
         {
             builder.ToTable(DbContextAplicacion.TablaTareasEnDemanda);
             builder.HasKey(x => x.Id);
@@ -30,6 +30,8 @@ namespace PIKA.Servicio.AplicacionPlugin.Data.Configuracion
             builder.Property(x => x.URLRecoleccion).IsRequired(true).HasMaxLength(LongitudDatos.IDunico);
             builder.Property(x => x.UsuarioId).IsRequired(true).HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.Recogida).IsRequired(true);
+            builder.Property(x => x.Estado).IsRequired(true).HasDefaultValue(Infraestructura.Comun.Tareas.EstadoTarea.Habilidata);
+            builder.Property(x => x.Etiqueta).IsRequired(true).HasMaxLength(LongitudDatos.Nombre);
         }
     }
 

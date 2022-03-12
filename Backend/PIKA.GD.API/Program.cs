@@ -30,7 +30,7 @@ namespace PIKA.GD.API
 {
     public static class Program
     {
-        private static bool noocr = false;
+        private static bool nobgservices = false;
         public static async Task Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
@@ -44,7 +44,7 @@ namespace PIKA.GD.API
 
             var nodb = args.Contains("/nodb");
             var demodb = args.Contains("/demodb");
-            noocr = args.Contains("/noocr");
+            nobgservices = args.Contains("/noservices");
             try
             {
                 Log.Information("Iniciando PIKA-GD-API");
@@ -90,10 +90,13 @@ namespace PIKA.GD.API
             })
             .ConfigureServices(services =>
             {
-                if(!noocr)
+                if(!nobgservices)
                 {
                     services.AddHostedService<ServicioTareasAutomaticaBackgroud>();
                     services.AddScoped<ITareaAutomaticaBackgroud, TareaAutomaticaBackground>();
+
+                    services.AddHostedService<ServicioTareasEnDemandaBackgroud>();
+                    services.AddScoped<ITareaEnDemandaBackground, TareaEnDemandaBackground>();
                 }
             })
             .UseStartup<Startup>()

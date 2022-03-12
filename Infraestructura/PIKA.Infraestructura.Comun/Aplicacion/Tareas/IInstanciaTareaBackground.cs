@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace PIKA.Infraestructura.Comun.Tareas
 {
-    public interface IInstanciaTareaAutomatica
+    public interface IInstanciaTareaBackground
     {
 
         event EventHandler TareaFinalizada;
-        Task<ResultadoTareaAutomatica> EjecutarTarea();
+        Task<ResultadoTareaBackground> EjecutarTarea(string InputPayload = null);
+        Task<ResultadoTareaBackground> CaducarTarea(string InputPayload = null, string OutputPayload = null);
     }
 }

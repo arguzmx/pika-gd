@@ -358,5 +358,11 @@ namespace PIKA.Servicio.Contenido.Gestores
 
             return Task.CompletedTask;
         }
+
+        public async Task<bool> Elimina(string RutaArchivo)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

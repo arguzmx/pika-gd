@@ -38,7 +38,7 @@ namespace PIKA.Servicio.AplicacionPlugin
                 new ElementoAplicacion(ConstantesAppAplicacionPlugin.APP_ID, ConstantesAppAplicacionPlugin.MODULO_APLICACIONES ) {
                     Titulo = "Servicios del usuario",
                     Descripcion = "Permite el acceso a los servicios del usuario",
-                    Tipos = new List<Type> { typeof(ColaTareaEnDemanda)}
+                    Tipos = new List<Type> { typeof(TareaEnDemanda) }
                 },
                 //new ElementoAplicacion(ConstantesAppAplicacionPlugin.APP_ID, ConstantesAppAplicacionPlugin.MODULO_APLICACIONES ) {
                 //    Titulo = "Aplicaciones del sistema",

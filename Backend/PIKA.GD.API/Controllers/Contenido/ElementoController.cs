@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
+using PIKA.GD.API.Servicios;
 using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Aplicacion.Tareas;
 using PIKA.Modelo.Contenido;
@@ -19,6 +20,7 @@ using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Contenido.Interfaces;
 using PIKA.Servicio.Contenido.Servicios.TareasAutomaticas;
 using RepositorioEntidades;
+using ComunTreas = PIKA.Infraestructura.Comun.Tareas;
 
 namespace PIKA.GD.API.Controllers.Contenido
 {
@@ -35,6 +37,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         private IRepoContenidoElasticSearch repoContenido;
         private IServicioVolumen servicioVol;
         private IServicioTareaEnDemanda tareaEnDemanda;
+      
 
         public ElementoController(
             IRepoContenidoElasticSearch repoContenido,
@@ -315,39 +318,119 @@ namespace PIKA.GD.API.Controllers.Contenido
             return Ok();
         }
 
-        [HttpGet("zip/{id}/{v}", Name = "GeneraZip")]
+        [HttpPost("zip/{id}/{v}", Name = "GeneraZip")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetZIP(string id, string  v)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> CrearZIP(string id, string  v)
         {
-            v = "";
-            var elemento = await this.servicioEntidad.UnicoAsync(x => x.Id == id);
-            if (elemento == null)
+            string controller = "contenido/elemento";
+            string version = "";
+            if (this.ControllerContext.HttpContext.Request.RouteValues.ContainsKey("version"))
+            {
+                version = (string)this.ControllerContext.HttpContext.Request.RouteValues.GetValueOrDefault("version");
+            }
+
+            string Etiqueta = "";
+            var e = await this.servicioEntidad.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            if (e == null)
+            {
+                return NotFound("elemento-inexistente");
+            }
+
+            Etiqueta = $"ZIP {e.Nombre}";
+            Servicio.Contenido.TareasEnDemanda tareas = new Servicio.Contenido.TareasEnDemanda();
+            var tzip = tareas.ObtieneTarea(Servicio.Contenido.TareasEnDemanda.TAREA_EXPPORTAR_ZIP);
+            if (tzip != null)
+            {
+                InputPayloadTareaExportarZIP input = new InputPayloadTareaExportarZIP() { ElementoId = id };
+
+                var enEjecucion = (await tareaEnDemanda.TareasPendientesUsuario(this.UsuarioId, this.DominioId, this.TenantId).ConfigureAwait(false))
+                    .Where(x => x.TareaProcesoId == tzip.Id).ToList();
+
+                foreach (var tex in enEjecucion)
+                {
+                    if(tex.TareaProcesoId == tzip.Id)
+                    {
+                        var inputtex = JsonSerializer.Deserialize<InputPayloadTareaExportarZIP>(tex.InputPayload);
+                        if (inputtex.ElementoId == id)
+                        {
+                            return BadRequest("tarea-existente");
+                        }
+                    }
+                }
+
+
+                Guid Id = Guid.NewGuid();
+                TareaEnDemanda t = new TareaEnDemanda()
+                {
+                    Completada = false,
+                    DominioId = this.DominioId,
+                    FechaCreacion = DateTime.UtcNow,
+                    Id = Id,
+                    InputPayload = JsonSerializer.Serialize(input),
+                    Prioridad = tzip.Prioridad,
+                    TenantId = this.TenantId,
+                    Recogida = false,
+                    TipoRespuesta = tzip.TipoRespuesta,
+                    UsuarioId = this.UsuarioId,
+                    NombreEnsamblado = tzip.NombreEnsamblado,
+                    TareaProcesoId = tzip.Id,
+                    FechaCaducidad = null,
+                    FechaEjecucion = null,
+                    Error = null,
+                    URLRecoleccion = $"{this.ControllerContext.HttpContext.Request.EndpointURl(version, controller)}/zip/{Id}",
+                    HorasCaducidad = tzip.HorasCaducidad,
+                    OutputPayload = null,
+                    Etiqueta = Etiqueta
+                };
+
+                await this.tareaEnDemanda.CrearAsync(t).ConfigureAwait(false);
+
+                ComunTreas.PostTareaEnDemanda post = new ComunTreas.PostTareaEnDemanda()
+                {
+                    Fecha = DateTime.UtcNow,
+                    Id = t.Id.ToString(),
+                    PickupURL = t.URLRecoleccion,
+                    Tipo = Servicio.Contenido.TareasEnDemanda.TAREA_EXPPORTAR_ZIP,
+                    TipoRespuesta = t.TipoRespuesta,
+                    Etiqueta = Etiqueta
+                };
+
+                return Ok(post);
+            }
+
+            return BadRequest();
+
+        }
+
+        [HttpGet("zip/{id}", Name = "RecogerZIP")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetZIP(string id)
+        {
+            if (!Guid.TryParse(id, out Guid tareaId))
+            {
+                return BadRequest();
+            }
+
+            var t = await tareaEnDemanda.UnicoAsync(x => x.Id == tareaId).ConfigureAwait(false);
+
+            if (t == null || !t.Completada)
             {
                 return NotFound();
             }
 
-            if (string.IsNullOrEmpty(v)) v = elemento.VersionId;
-            IGestorES gestor = await servicioVol.ObtienInstanciaGestor(elemento.VolumenId)
-                           .ConfigureAwait(false);
-
-            Modelo.Contenido.Version vElemento = await this.repoContenido.ObtieneVersion(v).ConfigureAwait(false);
-            if(vElemento==null)
-            {
-                return NotFound();
-            }
-            var archivo = await gestor.ObtieneZIP(vElemento, null);
-
-            if (string.IsNullOrEmpty(archivo)) return BadRequest();
-
+            OtputPayloadTareaExportarZIP output = JsonSerializer.Deserialize<OtputPayloadTareaExportarZIP>(t.OutputPayload);
             this.HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
-            return PhysicalFile(archivo, MimeTypes.GetMimeType($"{elemento.Nombre}.zip"), elemento.Nombre + ".zip");
-
+            return PhysicalFile(output.RutaZIP, MimeTypes.GetMimeType($"{output.NombreElemento}.zip"), output.NombreElemento + ".zip");
 
         }
 
 
-        [HttpGet("pdfblob/{id}", Name = "RecogerPDF")]
+        [HttpGet("pdf/{id}", Name = "RecogerPDF")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -372,67 +455,89 @@ namespace PIKA.GD.API.Controllers.Contenido
         }
 
 
-        [HttpGet("pdf/{id}/{v}", Name = "GeneraPDF")]
+        [HttpPost("pdf/{id}/{v}", Name = "GeneraPDF")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<string>> CrearPDF(string id, string v)
         {
-
-            v = "";
-            var elemento = await this.servicioEntidad.UnicoAsync(x => x.Id == id);
-            if (elemento == null)
+            
+            string controller = "contenido/elemento";
+            string version = "";
+            if (this.ControllerContext.HttpContext.Request.RouteValues.ContainsKey("version"))
             {
-                return NotFound();
+                version= (string)this.ControllerContext.HttpContext.Request.RouteValues.GetValueOrDefault("version");
             }
 
-            if (string.IsNullOrEmpty(v)) v = elemento.VersionId;
-            IGestorES gestor = await servicioVol.ObtienInstanciaGestor(elemento.VolumenId)
-                           .ConfigureAwait(false);
-
-            Modelo.Contenido.Version vElemento = await this.repoContenido.ObtieneVersion(v).ConfigureAwait(false);
-            if (vElemento == null)
+            string Etiqueta = "";
+            var e = await this.servicioEntidad.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            if(e==null)
             {
-                return NotFound();
+                return NotFound("elemento-inexistente");
             }
-            var archivo = await gestor.ObtienePDF(vElemento, null);
 
-            if (string.IsNullOrEmpty(archivo)) return BadRequest();
+            Etiqueta = $"PDF {e.Nombre}";
+            Servicio.Contenido.TareasEnDemanda tareas = new Servicio.Contenido.TareasEnDemanda();
+            var tpdf = tareas.ObtieneTarea(Servicio.Contenido.TareasEnDemanda.TAREA_EXPPORTAR_PDF);
+            if (tpdf != null)
+            {
+                InputPayloadTareaExportarPDF input = new InputPayloadTareaExportarPDF() { ElementoId = id };
 
-            this.HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
-            return PhysicalFile(archivo, MimeTypes.GetMimeType($"{elemento.Nombre}.pdf"), elemento.Nombre + ".pdf");
+                var enEjecucion = (await tareaEnDemanda.TareasPendientesUsuario(this.UsuarioId, this.DominioId, this.TenantId).ConfigureAwait(false))
+                    .Where(x => x.TareaProcesoId == tpdf.Id).ToList();
 
-            //Servicio.Contenido.TareasEnDemanda tareas = new Servicio.Contenido.TareasEnDemanda();
-            //var tpdf = tareas.ObtieneTarea(Servicio.Contenido.TareasEnDemanda.TAREA_EXPPORTAR_PDF);
-            //if(tpdf!= null)
-            //{
-            //    InputPayloadTareaExportarPDF input = new InputPayloadTareaExportarPDF() { ElementoId = id };
-            //    ColaTareaEnDemanda t = new ColaTareaEnDemanda()
-            //    {
-            //        Completada = false,
-            //        DominioId = this.DominioId,
-            //        FechaCreacion = DateTime.UtcNow,
-            //        Id = Guid.NewGuid(),
-            //        InputPayload = JsonSerializer.Serialize(input),
-            //        Prioridad = tpdf.Prioridad,
-            //        TenantId = this.TenantId,
-            //        Recogida = false,
-            //        TipoRespuesta = tpdf.TipoRespuesta,
-            //        UsuarioId = this.UsuarioId,
-            //        NombreEnsamblado = tpdf.Id,
-            //        TareaProcesoId = tpdf.Nombre,
-            //        FechaCaducidad = null,
-            //        FechaEjecucion = null,
-            //        Error = null,
-            //        URLRecoleccion = this.ControllerContext.HttpContext.Request.QueryString,
-            //        HorasCaducidad = tpdf.HorasCaducidad,
-            //        OutputPayload = null
-            //    };
+                foreach(var tex in enEjecucion)
+                {
+                    if (tex.TareaProcesoId == tpdf.Id) {
+                        var inputtex = JsonSerializer.Deserialize<InputPayloadTareaExportarPDF>(tex.InputPayload);
+                        if (inputtex.ElementoId == id)
+                        {
+                            return BadRequest("tarea-existente");
+                        }
+                    }
+                }
+                
 
-            //    return Ok(t.Id.ToString());
-            //}
+                Guid Id = Guid.NewGuid();
+                TareaEnDemanda t = new TareaEnDemanda()
+                {
+                    Completada = false,
+                    DominioId = this.DominioId,
+                    FechaCreacion = DateTime.UtcNow,
+                    Id = Id,
+                    InputPayload = JsonSerializer.Serialize(input),
+                    Prioridad = tpdf.Prioridad,
+                    TenantId = this.TenantId,
+                    Recogida = false,
+                    TipoRespuesta = tpdf.TipoRespuesta,
+                    UsuarioId = this.UsuarioId,
+                    NombreEnsamblado = tpdf.NombreEnsamblado,
+                    TareaProcesoId = tpdf.Id,
+                    FechaCaducidad = null,
+                    FechaEjecucion = null,
+                    Error = null,
+                    URLRecoleccion = $"{this.ControllerContext.HttpContext.Request.EndpointURl(version, controller)}/pdf/{Id}",
+                    HorasCaducidad = tpdf.HorasCaducidad,
+                    OutputPayload = null,
+                    Etiqueta = Etiqueta
+                };
 
-            //return BadRequest();
+                await this.tareaEnDemanda.CrearAsync(t).ConfigureAwait(false);
 
+                ComunTreas.PostTareaEnDemanda post = new ComunTreas.PostTareaEnDemanda()
+                {
+                    Fecha = DateTime.UtcNow,
+                    Id = t.Id.ToString(),
+                    PickupURL = t.URLRecoleccion,
+                    Tipo = Servicio.Contenido.TareasEnDemanda.TAREA_EXPPORTAR_PDF, 
+                    TipoRespuesta = t.TipoRespuesta,
+                    Etiqueta = Etiqueta
+                };
+
+                return Ok(post);
+            }
+
+            return BadRequest();
 
         }
 

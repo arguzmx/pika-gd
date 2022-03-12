@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace PikaOCR
 {
-    public class TareaAutomaticaOCR: IInstanciaTareaAutomatica
+    public class TareaAutomaticaOCR: IInstanciaTareaBackground
     {
    
         private readonly ILogger<TareaAutomaticaOCR> _logger;
@@ -35,10 +35,10 @@ namespace PikaOCR
         };
 
         public event EventHandler TareaFinalizada;
-        private ResultadoTareaAutomatica resultado;
+        private ResultadoTareaBackground resultado;
         private DateTime inicio;
         private DateTime fin;
-        protected virtual void OnTareaFinalizada(ResultadoTareaAutomatica t)
+        protected virtual void OnTareaFinalizada(ResultadoTareaBackground t)
         {
             TareaFinalizadaEventArgs e = new TareaFinalizadaEventArgs() {
                 TokenSeguimiento = this.TokenSeguimiento,
@@ -71,11 +71,11 @@ namespace PikaOCR
             this.DominioId  = DominioId;
             this.TokenSeguimiento = TokenSeguimiento;
 
-            resultado = new ResultadoTareaAutomatica(DominioId) { Error = null, Exito =false, Id = Id, SegundosDuracion = 0 };
+            resultado = new ResultadoTareaBackground(DominioId) { Error = null, Exito =false, Id = Id, SegundosDuracion = 0 };
         }
 
 
-        public async Task<ResultadoTareaAutomatica> EjecutarTarea()
+        public async Task<ResultadoTareaBackground> EjecutarTarea(string inputPayload = null)
         {
             try
             {
@@ -230,5 +230,11 @@ namespace PikaOCR
             return version;
         }
 
+
+        public async Task<ResultadoTareaBackground> CaducarTarea(string InputPayload = null, string OutputPayload = null)
+        {
+            await Task.Delay(10);
+            return null;
+        }
     }
 }

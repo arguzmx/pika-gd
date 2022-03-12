@@ -14,23 +14,24 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Contenido.Servicios.TareasAutomaticas
 {
-    public class InputPayloadTareaExportarPDF {
+    public class InputPayloadTareaExportarZIP
+    {
         public string ElementoId { get; set; }
 
     }
 
-    public class OtputPayloadTareaExportarPDF
+    public class OtputPayloadTareaExportarZIP
     {
-        public string RutaPDF { get; set; }
+        public string RutaZIP { get; set; }
         public string NombreElemento { get; set; }
 
     }
 
-    public class TareaExportarPDF : IInstanciaTareaBackground
+    public class TareaExportarZIP : IInstanciaTareaBackground
     {
 
 
-        private readonly ILogger<TareaExportarPDF> _logger;
+        private readonly ILogger<TareaExportarZIP> _logger;
         private readonly IConfiguration _configuracion;
         private readonly IServicioVolumen _volumenes;
         private readonly IServicioElemento _elementos;
@@ -55,11 +56,11 @@ namespace PIKA.Servicio.Contenido.Servicios.TareasAutomaticas
             TareaFinalizada?.Invoke(this, e);
         }
 
-        public TareaExportarPDF(
+        public TareaExportarZIP(
         string DominioId,
         string Id,
         string TokenSeguimiento,
-        ILogger<TareaExportarPDF> logger,
+        ILogger<TareaExportarZIP> logger,
         IConfiguration configuracion,
         IServicioVolumen volumenes,
         IServicioElemento elementos,
@@ -86,15 +87,15 @@ namespace PIKA.Servicio.Contenido.Servicios.TareasAutomaticas
 
         public async Task<ResultadoTareaBackground> EjecutarTarea(string InputPayload)
         {
-            InputPayloadTareaExportarPDF input = null;
+            InputPayloadTareaExportarZIP input = null;
             try
             {
-                _logger.LogInformation("Iniciando proceso de generación de PDF");
+                _logger.LogInformation("Iniciando proceso de generación de ZIP");
                 inicio = DateTime.UtcNow;
 
                 string errores = "";
 
-                input = System.Text.Json.JsonSerializer.Deserialize<InputPayloadTareaExportarPDF>(InputPayload);
+                input = System.Text.Json.JsonSerializer.Deserialize<InputPayloadTareaExportarZIP>(InputPayload);
 
                 var elemento = await this._elementos.UnicoAsync(x => x.Id == input.ElementoId);
                 if (elemento != null)
@@ -109,19 +110,19 @@ namespace PIKA.Servicio.Contenido.Servicios.TareasAutomaticas
                        resultado.Error = $"No Content {input.ElementoId}";
                     } else
                     {
-                        var archivo = await gestor.ObtienePDF(vElemento, null);
+                        var archivo = await gestor.ObtieneZIP(vElemento, null);
                         if (archivo != null)
                         {
                             fin = DateTime.UtcNow;
                             resultado.Exito = string.IsNullOrEmpty(errores);
                             resultado.Error = errores;
-                            resultado.PayloadOutput = System.Text.Json.JsonSerializer.Serialize( new OtputPayloadTareaExportarPDF() { NombreElemento = elemento.Nombre, RutaPDF = archivo });
+                            resultado.PayloadOutput = System.Text.Json.JsonSerializer.Serialize( new OtputPayloadTareaExportarZIP() { NombreElemento = elemento.Nombre, RutaZIP = archivo });
                             resultado.SegundosDuracion = (int)((fin - inicio).TotalSeconds);
-                            _logger.LogInformation("Finalizando proceso de creación de PDF");
+                            _logger.LogInformation("Finalizando proceso de creación de ZIP");
                         }
                         else
                         {
-                            errores = $"Error al generar PDF {input.ElementoId}";
+                            errores = $"Error al generar ZIP {input.ElementoId}";
                         }
                     }
                    
@@ -135,14 +136,14 @@ namespace PIKA.Servicio.Contenido.Servicios.TareasAutomaticas
                 resultado.Exito = string.IsNullOrEmpty(errores);
                 resultado.Error = errores;
                 resultado.SegundosDuracion = (int)((fin - inicio).TotalSeconds);
-                _logger.LogInformation($"Finalizando proceso de generación de PDF para {input.ElementoId}");
+                _logger.LogInformation($"Finalizando proceso de generación de ZIP para {input.ElementoId}");
 
                 OnTareaFinalizada(resultado);
 
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"Error de proceso de generación de PDF para {input?.ElementoId} {ex}");
+                _logger.LogInformation($"Error de proceso de generación de ZIP para {input?.ElementoId} {ex}");
                 fin = DateTime.UtcNow;
                 resultado.Exito = false;
                 resultado.Error = ex.Message;
@@ -159,8 +160,8 @@ namespace PIKA.Servicio.Contenido.Servicios.TareasAutomaticas
             {
                 try
                 {
-                    var input = System.Text.Json.JsonSerializer.Deserialize<InputPayloadTareaExportarPDF>(InputPayload);
-                    var output = System.Text.Json.JsonSerializer.Deserialize<OtputPayloadTareaExportarPDF>(OutputPayload);
+                    var input = System.Text.Json.JsonSerializer.Deserialize<InputPayloadTareaExportarZIP>(InputPayload);
+                    var output = System.Text.Json.JsonSerializer.Deserialize<OtputPayloadTareaExportarZIP>(OutputPayload);
                     var elemento = await this._elementos.UnicoAsync(x => x.Id == input.ElementoId);
                     if (elemento != null)
                     {
@@ -169,7 +170,7 @@ namespace PIKA.Servicio.Contenido.Servicios.TareasAutomaticas
 
                         if (gestor != null)
                         {
-                            await gestor.Elimina(output.RutaPDF);
+                            await gestor.Elimina(output.RutaZIP);
                         }
                     }
                     resultado.Exito = true;

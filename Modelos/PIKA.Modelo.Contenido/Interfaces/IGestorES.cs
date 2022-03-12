@@ -27,6 +27,7 @@ namespace PIKA.Modelo.Contenido
         Task<long> EscribeOCRBytes(string ParteId, string ElementoId, string VersionId, byte[] contenido);
         Task<byte[]> LeeOCRBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension);
 
+        Task<bool> Elimina(string RutaArchivo);
 
         /// <summary>
         /// Determina si el gestort tiene la capacidad de almacenar OCR
