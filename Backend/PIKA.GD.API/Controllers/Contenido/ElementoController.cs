@@ -380,7 +380,7 @@ namespace PIKA.GD.API.Controllers.Contenido
                     FechaCaducidad = null,
                     FechaEjecucion = null,
                     Error = null,
-                    URLRecoleccion = $"{this.ControllerContext.HttpContext.Request.EndpointURl(version, controller)}/zip/{Id}",
+                    URLRecoleccion = $"{controller}/zip/{Id}",
                     HorasCaducidad = tzip.HorasCaducidad,
                     OutputPayload = null,
                     Etiqueta = Etiqueta
@@ -516,7 +516,7 @@ namespace PIKA.GD.API.Controllers.Contenido
                     FechaCaducidad = null,
                     FechaEjecucion = null,
                     Error = null,
-                    URLRecoleccion = $"{this.ControllerContext.HttpContext.Request.EndpointURl(version, controller)}/pdf/{Id}",
+                    URLRecoleccion = $"{controller}/pdf/{Id}",
                     HorasCaducidad = tpdf.HorasCaducidad,
                     OutputPayload = null,
                     Etiqueta = Etiqueta
