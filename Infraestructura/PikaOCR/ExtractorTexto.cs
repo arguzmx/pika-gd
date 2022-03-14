@@ -40,8 +40,9 @@ namespace PikaOCR
         /// <param name="p"></param>
         /// <param name="lang"></param>
         /// <returns></returns>
-        public async Task<(bool Exito,string Ruta)> TextoImagen(Parte p, string NombreTemporal, string lang = "spa")
+        public async Task<ResultadoOCR> TextoImagen(Parte p, string NombreTemporal, string lang = "spa")
         {
+            ResultadoOCR resultado = new ResultadoOCR() { Parte = p, NombreTemporal = NombreTemporal };
             bool doneOk = false;
             string ruta = null;
             string filename = NombreTemporal;
@@ -120,24 +121,26 @@ namespace PikaOCR
 
                 }
 
-
-
-                return (doneOk, ruta);
+                resultado.Exito = doneOk;
+                resultado.Rutas.Add(ruta);
+                return resultado;
             }
             catch (Exception ex)
             {
                 logger.LogError($"{ex}");
                 logger.LogError($"Error al obtener texto para {p.Id}@{p.VersionId}-{p.VolumenId}");
-                return (false, "");
+                resultado.Exito = false;
+                resultado.Rutas = new List<string>();
+                return resultado;
             }
             
         }
 
 
-        public async Task<(bool Exito, List<string> Rutas)> TextoPDF(Parte p, string NombreTemporal, string lang = "spa")
+        public async Task<ResultadoOCR> TextoPDF(Parte p, string NombreTemporal, string lang = "spa")
         {
+            ResultadoOCR resultado = new ResultadoOCR() { Parte = p, NombreTemporal = NombreTemporal };
             List<string> rutas = new List<string>();
-            bool doneOk = false;
             string filename = NombreTemporal;
             try
             {
@@ -158,16 +161,18 @@ namespace PikaOCR
                         rutas.Add(ocrName);
                     }
                 }
-                doneOk = true;
-
-                return (doneOk, rutas);
+                resultado.Exito = true;
+                resultado.Rutas = rutas;
+                return resultado;
 
             }
             catch (Exception ex)
             {
                 logger.LogError(ex.ToString());
                 logger.LogError($"Error al obtener texto para {p.Id}@{p.VersionId}-{p.VolumenId}");
-                return (false, new List<string>());
+                resultado.Exito = false;
+                resultado.Rutas = new List<string>();
+                return resultado;
             }
 
         }

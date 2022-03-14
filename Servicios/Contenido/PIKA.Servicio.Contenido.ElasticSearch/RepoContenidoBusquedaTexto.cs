@@ -49,7 +49,6 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
 
             if (response.ApiCall.Success)
             {
-                Console.WriteLine($"{response.Hits.Count} ??");
                 return response.Hits.Count > 0 ? response.Hits.ToList()[0].Id : null;
             }
             return null;

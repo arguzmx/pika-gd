@@ -19,7 +19,8 @@ namespace PikaOCR
 {
     public class TareaAutomaticaOCR: IInstanciaTareaBackground
     {
-   
+
+        
         private readonly ILogger<TareaAutomaticaOCR> _logger;
         private readonly IConfiguration _configuracion;
         private readonly IServicioVolumen _volumenes;
@@ -30,6 +31,7 @@ namespace PikaOCR
         private readonly string DominioId;
         private readonly string TokenSeguimiento;
         private CancellationToken stoppingToken;
+        private int maxThreads;
         private List<string> extensionesIndexado = new List<string>() {
             ".jpg", ".png", ".tif", ".bpm", ".gif", ".jpeg", ".jfif", ".pdf"
         };
@@ -81,6 +83,7 @@ namespace PikaOCR
             {
                 _logger.LogInformation("Iniciando proceso de OCR");
                 inicio = DateTime.UtcNow;
+                
                 var siguiente = await this._repoElastic.SiguenteIndexar(null);
 
                 while (!stoppingToken.IsCancellationRequested && siguiente != null)
@@ -116,6 +119,16 @@ namespace PikaOCR
         {
             try
             {
+                string tmp = _configuracion.GetValue<string>("TareasBackground:ocr:hilos");
+                if (!int.TryParse(tmp, out maxThreads))
+                {
+                    maxThreads = 1;
+                }
+                int count = 0;
+
+                _logger.LogInformation($"Procesando en  {maxThreads} hilos");
+                List<Task<ResultadoOCR>> TareasOCR = new List<Task<ResultadoOCR>>();
+
                 if (version.Partes != null && version.Partes.Count > 0)
                 {
                     Volumen v = await _volumenes.UnicoAsync(v => v.Id == version.VolumenId);
@@ -142,7 +155,7 @@ namespace PikaOCR
                         }
 
 
-                        // la parte no jha sido indexada
+                        // la parte no ha sido indexada
                         string nombreTemporal = x.NombreArchivoTemporal(parte);
 
                         if (extensionesIndexado.IndexOf(parte.Extension.ToLower()) >= 0)
@@ -150,65 +163,94 @@ namespace PikaOCR
                             switch (parte.Extension.ToLower())
                             {
                                 case ".pdf":
-                                    var (Exito, Rutas) = await x.TextoPDF(parte, nombreTemporal);
-                                    if (Exito)
-                                    {
-                                        int pagina = 1;
-                                        foreach (var t in Rutas)
-                                        {
-                                            string idPaginaExistente = await _repoElastic.ExisteTextoCompleto(new ContenidoTextoCompleto() { ElementoId = parte.ElementoId, ParteId = parte.Id, VersionId = parte.VersionId, Pagina = pagina });
-                                            if (string.IsNullOrEmpty(idPaginaExistente))
-                                            {
-                                                await _repoElastic.IndexarTextoCompleto(parte.ParteAContenidoTextoCompleto(File.ReadAllText(t), elemento.PuntoMontajeId, elemento.CarpetaId, pagina));
-
-                                            }
-                                            else
-                                            {
-                                                await _repoElastic.ActualizarTextoCompleto(idPaginaExistente, parte.ParteAContenidoTextoCompleto(File.ReadAllText(t), elemento.PuntoMontajeId, elemento.CarpetaId, pagina));
-                                            }
-
-                                            pagina++;
-                                        }
-                                        x.ElimninaArchivosOCR(nombreTemporal);
-                                        parte.Indexada = true;
-                                    }
-                                    else
-                                    {
-                                        parte.Indexada = false;
-                                    }
-
+                                    TareasOCR.Add(x.TextoPDF(parte, nombreTemporal));
                                     break;
 
                                 default:
-                                    string idExistente = await _repoElastic.ExisteTextoCompleto(new ContenidoTextoCompleto() { ElementoId = parte.ElementoId, ParteId = parte.Id, VersionId = parte.VersionId, Pagina = 1 });
-                                    var resultadoImagen = await x.TextoImagen(parte, nombreTemporal);
-                                    if (resultadoImagen.Exito)
-                                    {
-                                        if (string.IsNullOrEmpty(idExistente))
-                                        {
-                                            await _repoElastic.IndexarTextoCompleto(parte.ParteAContenidoTextoCompleto(File.ReadAllText(resultadoImagen.Ruta), elemento.PuntoMontajeId, elemento.CarpetaId));
-                                        }
-                                        else
-                                        {
-                                            await _repoElastic.ActualizarTextoCompleto(idExistente, parte.ParteAContenidoTextoCompleto(File.ReadAllText(resultadoImagen.Ruta), elemento.PuntoMontajeId, elemento.CarpetaId));
-                                        }
-
-                                        parte.Indexada = true;
-                                    }
-                                    else
-                                    {
-                                        parte.Indexada = false;
-                                    }
-                                    x.ElimninaArchivosOCR(nombreTemporal);
+                                    TareasOCR.Add(x.TextoImagen(parte, nombreTemporal));
                                     break;
                             }
 
                         }
 
+                        // Procesa por lotes de tamaño acorde al número máximo de hilos
+                        if(TareasOCR.Count >= maxThreads)
+                        {
+                            Task.WaitAll(TareasOCR.ToArray());
 
-                        // Elimina el espacio requerido en elasticsearch, esto mininmiza el tamaño del almacen
-                        parte.VersionId = null;
-                        parte.ElementoId = null;
+                            // Procesa los resultados
+                            foreach(var t in TareasOCR)
+                            {
+                                switch (t.Result.Parte.Extension.ToLower())
+                                    {
+                                        case ".pdf":
+                                        if (t.Result.Exito)
+                                        {
+                                            int pagina = 1;
+                                            foreach (var r in t.Result.Rutas)
+                                            {
+                                                string idPaginaExistente = await _repoElastic.ExisteTextoCompleto(new ContenidoTextoCompleto() { 
+                                                    ElementoId = t.Result.Parte.ElementoId, 
+                                                    ParteId = t.Result.Parte.Id, 
+                                                    VersionId = t.Result.Parte.VersionId, 
+                                                    Pagina = pagina });
+
+                                                if (string.IsNullOrEmpty(idPaginaExistente))
+                                                {
+                                                    await _repoElastic.IndexarTextoCompleto(t.Result.Parte.ParteAContenidoTextoCompleto(File.ReadAllText(r), elemento.PuntoMontajeId, elemento.CarpetaId, pagina));
+
+                                                }
+                                                else
+                                                {
+                                                    await _repoElastic.ActualizarTextoCompleto(idPaginaExistente, t.Result.Parte.ParteAContenidoTextoCompleto(File.ReadAllText(r), elemento.PuntoMontajeId, elemento.CarpetaId, pagina));
+                                                }
+
+                                                pagina++;
+                                            }
+                                            x.ElimninaArchivosOCR(t.Result.NombreTemporal);
+                                        }
+                                        var pocr = version.Partes.Where(p => p.Id == t.Result.Parte.Id).First();
+                                        pocr.Indexada = t.Result.Exito;
+                                        // Elimina el espacio requerido en elasticsearch, esto mininmiza el tamaño del almacen
+                                        pocr.VersionId = null;
+                                        pocr.ElementoId = null;
+                                        break;
+
+
+                                        default:
+                                        string idExistente = await _repoElastic.ExisteTextoCompleto(new ContenidoTextoCompleto() { 
+                                            ElementoId = t.Result.Parte.ElementoId, ParteId = t.Result.Parte.Id, 
+                                            VersionId = t.Result.Parte.VersionId, 
+                                            Pagina = 1 });
+
+                                        if (t.Result.Exito)
+                                        {
+
+                                            if (string.IsNullOrEmpty(idExistente))
+                                            {
+                                                await _repoElastic.IndexarTextoCompleto(parte.ParteAContenidoTextoCompleto(File.ReadAllText(t.Result.Rutas[0]), elemento.PuntoMontajeId, elemento.CarpetaId));
+                                            }
+                                            else
+                                            {
+                                                await _repoElastic.ActualizarTextoCompleto(idExistente, parte.ParteAContenidoTextoCompleto(File.ReadAllText(t.Result.Rutas[0]), elemento.PuntoMontajeId, elemento.CarpetaId));
+                                            }
+
+
+                                        }
+                                        x.ElimninaArchivosOCR(t.Result.NombreTemporal);
+                                        var pimg = version.Partes.Where(p => p.Id == t.Result.Parte.Id).First();
+                                        pimg.Indexada = t.Result.Exito;
+                                        // Elimina el espacio requerido en elasticsearch, esto mininmiza el tamaño del almacen
+                                        pimg.VersionId = null;
+                                        pimg.ElementoId = null;
+                                        break;
+                                    }
+
+                            }
+
+                            TareasOCR.Clear();
+                        }
+
                     }
                 }
 
@@ -222,14 +264,10 @@ namespace PikaOCR
                 version.EstadoIndexado = EstadoIndexado.FinalizadoError;
             }
 
-            if (!stoppingToken.IsCancellationRequested)
-            {
-                await _repoElastic.ActualizaEstadoOCR(version.Id, version);
-            }
+            await _repoElastic.ActualizaEstadoOCR(version.Id, version);
    
             return version;
         }
-
 
         public async Task<ResultadoTareaBackground> CaducarTarea(string InputPayload = null, string OutputPayload = null)
         {
