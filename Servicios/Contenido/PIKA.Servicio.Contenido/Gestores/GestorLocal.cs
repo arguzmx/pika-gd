@@ -311,12 +311,14 @@ namespace PIKA.Servicio.Contenido.Gestores
                 var info = new ProcessStartInfo
                 {
                     FileName = "gs",
-                    Arguments = $"- dNOPAUSE - sDEVICE = pdfwrite - sOUTPUTFILE = {finalPDF} - dBATCH {files.TrimEnd()}".TrimEnd(),
+                    Arguments = $" - dNOPAUSE - sDEVICE = pdfwrite - sOUTPUTFILE = {finalPDF} - dBATCH {files.TrimEnd()}".TrimEnd(),
                     RedirectStandardError = true,
                     RedirectStandardOutput = true,
                     CreateNoWindow = true,
                     UseShellExecute = false
                 };
+                Console.WriteLine($"-----------------------------------------------------");
+                Console.WriteLine($"{info.FileName}{info.Arguments}");
 
                 using (var ps = Process.Start(info))
                 {
