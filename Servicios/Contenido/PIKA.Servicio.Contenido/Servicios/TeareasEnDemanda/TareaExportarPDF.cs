@@ -184,5 +184,10 @@ namespace PIKA.Servicio.Contenido.Servicios.TareasAutomaticas
             }
             return resultado;
         }
+
+        public void Dispose()
+        {
+         
+        }
     }
 }

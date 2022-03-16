@@ -274,5 +274,10 @@ namespace PikaOCR
             await Task.Delay(10);
             return null;
         }
+
+        public void Dispose()
+        {
+   
+        }
     }
 }

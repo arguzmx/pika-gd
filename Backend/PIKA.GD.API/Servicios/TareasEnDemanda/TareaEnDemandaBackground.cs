@@ -338,6 +338,14 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
                     LogDebug($"Fin de proceso {et.Resultado.Id} {et.TokenSeguimiento} {et.Resultado.Exito}");
                     Task.Run(() => servicioTarea.CompletarTarea(Guid.Parse(et.Resultado.Id), et.Resultado.Exito, et.Resultado.PayloadOutput, et.Resultado.Error));
 
+                    var procesador = this.procesadores.Where(x => x.Id == et.Resultado.Id).SingleOrDefault();
+                    if(procesador != null)
+                    {
+                        procesador.Instancia.TareaFinalizada -= Instancia_TareaFinalizada;
+                        procesador.Dispose();
+                        procesador = null;
+                    }
+
                     var t = TareasEnEjecucion.Where(x => x.Id == et.Resultado.Id).FirstOrDefault();
                     if(t!= null)
                     {

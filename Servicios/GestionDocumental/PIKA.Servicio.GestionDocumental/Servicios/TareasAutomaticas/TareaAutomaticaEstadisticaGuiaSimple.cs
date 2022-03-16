@@ -123,5 +123,10 @@ namespace PIKA.Servicio.GestionDocumental.TareasAutomaticas
             await Task.Delay(10);
             return null;
         }
+
+        public void Dispose()
+        {
+            
+        }
     }
 }

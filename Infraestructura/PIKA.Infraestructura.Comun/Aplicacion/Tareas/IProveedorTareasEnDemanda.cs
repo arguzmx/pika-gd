@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Infraestructura.Comun.Tareas
 {
-    public interface IProveedorTareasEnDemanda
+    public interface IProveedorTareasEnDemanda: IDisposable
     {
         List<TareaEnDemanda> ObtieneTareasEnDemanda();
         Task EliminaCaducos(string DominioId, string IdProceso, string IdTarea, string TokenSegumiento, IConfiguration configuracion, IServiceProvider serviceProvider, CancellationToken stoppingToken, string InputPayload, string OutputPayload);

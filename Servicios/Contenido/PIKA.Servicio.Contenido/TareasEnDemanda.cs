@@ -139,5 +139,10 @@ namespace PIKA.Servicio.Contenido
             }
           
         }
+
+        public void Dispose()
+        {
+
+        }
     }
 }

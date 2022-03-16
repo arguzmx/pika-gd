@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Infraestructura.Comun.Tareas
 {
-    public interface IInstanciaTareaBackground
+    public interface IInstanciaTareaBackground: IDisposable
     {
 
         event EventHandler TareaFinalizada;

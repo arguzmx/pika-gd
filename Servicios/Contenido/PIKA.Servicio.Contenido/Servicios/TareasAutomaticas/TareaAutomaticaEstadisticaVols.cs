@@ -131,5 +131,10 @@ namespace PIKA.Servicio.Contenido.Servicios.TareasAutomaticas
             await Task.Delay(10);
             return null;
         }
+
+        public void Dispose()
+        {
+
+        }
     }
 }

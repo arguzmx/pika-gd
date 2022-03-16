@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PIKA.Infraestructura.Comun.Tareas
 {
-    public class ProcesadorTareaBackground
+    public class ProcesadorTareaBackground: IDisposable
     {
 
         public string Id { get; set; }
@@ -20,5 +20,13 @@ namespace PIKA.Infraestructura.Comun.Tareas
         public DateTime? SiguienteEjecucion { get; set; }
 
         public string TokenSeguimiento { get; set; }
+
+        public void Dispose()
+        {
+            if(Instancia!= null)
+            {
+                Instancia.Dispose(); ;
+            }
+        }
     }
 }
