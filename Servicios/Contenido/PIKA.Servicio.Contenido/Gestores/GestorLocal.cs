@@ -309,9 +309,15 @@ namespace PIKA.Servicio.Contenido.Gestores
                                     im.Resize(per);
                                 }
                                 collection.Add(im);
-                                im.Dispose();
                             }
+
                             collection.Write(pdfFile);
+
+                            foreach(var i in collection.ToList())
+                            {
+                                i.Dispose();
+                            }
+
                             collection.Clear();
                             collection.Dispose();
                             collection = null;
@@ -339,9 +345,12 @@ namespace PIKA.Servicio.Contenido.Gestores
                         im.Resize(per);
                     }
                     collection.Add(im);
-                    im.Dispose();
                 }
                 collection.Write(pdfFile);
+                foreach (var i in collection.ToList())
+                {
+                    i.Dispose();
+                }
                 collection.Clear();
                 collection.Dispose();
                 collection = null;
