@@ -428,7 +428,7 @@ namespace PIKA.Servicio.Contenido.Gestores
  
 
             await Task.Delay(1);
-            if (debug) logger.LogDebug($"Respuesta PDF = {finalPDF}");
+            if (debug) logger.LogDebug($"Respuesta final PDF = {finalPDF}");
             return finalPDF;
 
         }
