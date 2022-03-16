@@ -331,6 +331,7 @@ namespace PIKA.Servicio.Contenido.Gestores
                     }
                     else
                     {
+                        Console.WriteLine($"PDF ERROR > {finalPDF}");
                         finalPDF = "";
                         Console.WriteLine($"{ps.ExitCode} {ps.StandardOutput.ReadToEnd()}  {ps.StandardError.ReadToEnd()}");
                     }
