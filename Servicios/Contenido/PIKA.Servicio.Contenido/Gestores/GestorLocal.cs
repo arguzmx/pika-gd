@@ -303,20 +303,13 @@ namespace PIKA.Servicio.Contenido.Gestores
                             MagickImageCollection collection = new MagickImageCollection();
                             foreach (var i in imagenes)
                             {
-                                if (PorcientoEscala == 100)
+                                var im = new MagickImage(i);
+                                if (PorcientoEscala != 100)
                                 {
-                                    var im = new MagickImage(i);
-                                    collection.Add(new MagickImage(im));
-                                    im.Dispose();
-
-                                } else
-                                {
-                                    var im = new MagickImage(i);
                                     im.Resize(per);
-                                    collection.Add(im);
-                                    im.Dispose();
                                 }
-                                
+                                collection.Add(im);
+                                im.Dispose();
                             }
                             collection.Write(pdfFile);
                             collection.Clear();
@@ -340,20 +333,13 @@ namespace PIKA.Servicio.Contenido.Gestores
                 MagickImageCollection collection = new MagickImageCollection();
                 foreach (var i in imagenes)
                 {
-                    if (PorcientoEscala == 100)
+                    var im = new MagickImage(i);
+                    if (PorcientoEscala != 100)
                     {
-                        var im = new MagickImage(i);
-                        collection.Add(new MagickImage(im));
-                        im.Dispose();
-
-                    }
-                    else
-                    {
-                        var im = new MagickImage(i);
                         im.Resize(per);
-                        collection.Add(im);
-                        im.Dispose();
                     }
+                    collection.Add(im);
+                    im.Dispose();
                 }
                 collection.Write(pdfFile);
                 collection.Clear();
