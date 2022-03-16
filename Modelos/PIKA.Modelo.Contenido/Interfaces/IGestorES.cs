@@ -55,6 +55,6 @@ namespace PIKA.Modelo.Contenido
         /// <param name="version"></param>
         /// <param name="parteIds"></param>
         /// <returns></returns>
-        Task<string> ObtienePDF(Version version, List<string> parteIds);
+        Task<string> ObtienePDF(Version version, List<string> parteIds, int PorcientoEscala);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ImageMagick;
 using Ionic.Zip;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
@@ -25,7 +26,7 @@ namespace PIKA.Servicio.Contenido.Gestores
         private GestorLocalConfig configGestor;
         private ConfiguracionServidor configServidor;
         private ILogger logger;
-
+        private readonly IConfiguration configuration;
         public bool AlmacenaOCR { get => true; }
         public bool UtilizaIdentificadorExterno { get => false; }
 
@@ -38,11 +39,13 @@ namespace PIKA.Servicio.Contenido.Gestores
         public GestorLocal(
             ILogger logger,
             GestorLocalConfig configGestor,
+            IConfiguration configuration,
             IOptions<ConfiguracionServidor> opciones)
         {
             this.logger = logger;
             this.configGestor = configGestor;
             this.configServidor = opciones.Value;
+            this.configuration = configuration;
         }
 
         public bool ConexionValida()
@@ -179,7 +182,7 @@ namespace PIKA.Servicio.Contenido.Gestores
 
             string nombreArchivo = ParteId + informacion.Extension.ToUpper();
             string rutaFinal = Path.Combine(ruta, nombreArchivo);
-
+            
             if (File.Exists(rutaFinal))
             {
                 if (sobreescribir)
@@ -235,13 +238,44 @@ namespace PIKA.Servicio.Contenido.Gestores
             return cuenta > 0 ? zipFile : "";
         }
 
-        public async Task<string> ObtienePDF(Modelo.Contenido.Version version, List<string> parteIds)
+
+        public async Task<string> ObtienePDF(Modelo.Contenido.Version version, List<string> parteIds, int PorcientoEscala)
         {
             var tempDir = this.configServidor.ruta_cache_fisico;
             string fileId = Guid.NewGuid().ToString().Replace("-","");
             int cuenta = 0;
             int parte = 1;
             string finalPDF = "";
+            int tamanolote = 30;
+            string pdfJoiner = configuration.GetValue<string>("TareasBackground:pdf:convertidor");
+            bool debug = configuration.GetValue<bool>("TareasBackground:pdf:debug");
+
+            if (PorcientoEscala>100)
+            {
+                PorcientoEscala = 100;
+            }
+
+            if (PorcientoEscala < 10)
+            {
+                PorcientoEscala = 10;
+            }
+
+            string stamanolote = configuration.GetValue<string>("TareasBackground:pdf:tamanolote");
+            if (!string.IsNullOrEmpty(stamanolote))
+            {
+                if (int.TryParse(stamanolote, out tamanolote))
+                {
+                    if (tamanolote <= 20)
+                    {
+                        tamanolote = 20;
+                    }
+
+                } else
+                {
+                    tamanolote = 30;
+                }
+            }
+            
             List<string> imgFormats = new List<string>() { ".png", ".jpg", ".jpeg", ".bmp", ".tif", ".gif" };
 
             List<string> imagenes = new List<string>();
@@ -259,9 +293,12 @@ namespace PIKA.Servicio.Contenido.Gestores
                     {
                         imagenes.Add(rutaFinal);
                         cuenta++;
-                        if (cuenta >= 5)
+                        if (cuenta >= tamanolote)
                         {
                             var pdfFile = Path.Combine(tempDir, $"z{fileId}{parte}.pdf");
+                            
+                            if (debug) logger.LogDebug($"Creando temportal {pdfFile}@{cuenta}");
+
                             MagickImageCollection collection = new MagickImageCollection();
                             foreach (var i in imagenes)
                             {
@@ -283,6 +320,7 @@ namespace PIKA.Servicio.Contenido.Gestores
             if (cuenta > 0)
             {
                 var pdfFile = Path.Combine(tempDir, $"z{fileId}{parte}.pdf");
+                if (debug) logger.LogDebug($"Creando temportal {pdfFile}@{cuenta}");
                 MagickImageCollection collection = new MagickImageCollection();
                 foreach (var i in imagenes)
                 {
@@ -300,95 +338,84 @@ namespace PIKA.Servicio.Contenido.Gestores
 
             if (pdfs.Count > 0)
             {
-
                 finalPDF = Path.Combine(tempDir, $"z{fileId}.pdf");
-                string files = "";
-                foreach (var pdf in pdfs)
-                {
-                    files += $"{pdf} ";
-                }
-
-                //var info = new ProcessStartInfo
-                //{
-                //    FileName = "gs",
-                //    Arguments = $" - dNOPAUSE - sDEVICE = pdfwrite - sOUTPUTFILE = {finalPDF} - dBATCH {files.TrimEnd()}".TrimEnd(),
-                //    RedirectStandardError = true,
-                //    RedirectStandardOutput = true,
-                //    CreateNoWindow = true,
-                //    UseShellExecute = false
-                //};
-
-                var info = new ProcessStartInfo
-                {
-                    FileName = "gm",
-                    Arguments = $" convert {files.TrimEnd()} {finalPDF}".TrimEnd(),
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    CreateNoWindow = true,
-                    UseShellExecute = false
-                };
-                Console.WriteLine($"-----------------------------------------------------");
-                Console.WriteLine($"{info.FileName}{info.Arguments}");
-
-                using (var ps = Process.Start(info))
-                {
-                    ps.WaitForExit();
-                    var exitCode = ps.ExitCode;
-
-                    if (exitCode == 0)
-                    {
-                        Console.WriteLine($"PDF OK > {finalPDF}");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"PDF ERROR > {finalPDF}");
-                        finalPDF = "";
-                        Console.WriteLine($"{ps.ExitCode} {ps.StandardOutput.ReadToEnd()}  {ps.StandardError.ReadToEnd()}");
-                    }
-                }
-
-                foreach (var pdf in pdfs)
+                if (pdfs.Count ==1)
                 {
                     try
                     {
-                        Console.WriteLine($"Removing > {pdf}");
-                        File.Delete(pdf);
+                        File.Move(pdfs[0], finalPDF);
+                        if (debug) logger.LogDebug($"{finalPDF} Finalizado OK");
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        finalPDF = "";
+                        if (debug) logger.LogDebug($"Error al generar PDF {ex.Message}");
+                    }
+                    
+
+                } else
+                {
+                    string files = "";
+                    foreach (var pdf in pdfs)
+                    {
+                        files += $"{pdf} ";
+                    }
+
+
+                    var info = new ProcessStartInfo
+                    {
+                        FileName = "gm",
+                        Arguments = $" {(pdfJoiner == "gm" ? "convert" : "")} {files.TrimEnd()} {finalPDF}".TrimEnd(),
+                        RedirectStandardError = true,
+                        RedirectStandardOutput = true,
+                        CreateNoWindow = true,
+                        UseShellExecute = false
+                    };
+
+                    if (debug) logger.LogDebug($"Ejecutando: {info.FileName}{info.Arguments}");
+
+                    using (var ps = Process.Start(info))
+                    {
+                        ps.WaitForExit();
+                        var exitCode = ps.ExitCode;
+
+                        if (exitCode == 0)
+                        {
+                            if (debug) logger.LogDebug($"{finalPDF} Finalizado OK");
+                        }
+                        else
+                        {
+
+                            finalPDF = "";
+                            if (debug) logger.LogDebug($"Error al generar PDF {ps.ExitCode} {ps.StandardOutput.ReadToEnd()}  {ps.StandardError.ReadToEnd()}");
+                        }
+                    }
+
+                    foreach (var pdf in pdfs)
+                    {
+                        try
+                        {
+                            if (debug) logger.LogDebug($"Eliminando temporal {pdf}");
+                            File.Delete(pdf);
+                        }
+                        catch (Exception)
+                        {
+                        }
                     }
                 }
-                // gs - dNOPAUSE - sDEVICE = pdfwrite - sOUTPUTFILE = Merged.pdf - dBATCH 1.ps 2.pdf 3.pdf
+
+               
+              
+            } else
+            {
+                finalPDF = "";
             }
 
 
-            //using (var collection = new MagickImageCollection())
-            //{
-
-            //    version.Partes.OrderBy(x=>x.Indice).ToList().ForEach(p =>
-            //    {
-            //        if(imgFormats.IndexOf(p.Extension.ToLower()) >= 0)
-            //        {
-            //            string ruta = Path.Combine(this.configGestor.Ruta, version.ElementoId, version.Id);
-            //            string nombreArchivo = p.Id.ToString() + p.Extension.ToUpper();
-            //            string rutaFinal = Path.Combine(ruta, nombreArchivo);
-
-            //            if (File.Exists(rutaFinal))
-            //            {
-            //                collection.Add(new MagickImage(rutaFinal));
-            //                cuenta++;
-            //            }
-            //        }
-            //    });
-
-            //    if (cuenta > 0)
-            //    {
-            //        collection.Write(pdfFile);
-            //    }
-            //}
+ 
 
             await Task.Delay(1);
-            Console.WriteLine($"RETURNING > {finalPDF}");
+            if (debug) logger.LogDebug($"Respuesta PDF = {finalPDF}");
             return finalPDF;
 
         }

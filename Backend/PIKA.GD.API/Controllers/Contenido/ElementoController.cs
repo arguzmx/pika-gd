@@ -424,8 +424,16 @@ namespace PIKA.GD.API.Controllers.Contenido
             }
 
             OtputPayloadTareaExportarZIP output = JsonSerializer.Deserialize<OtputPayloadTareaExportarZIP>(t.OutputPayload);
-            this.HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
-            return PhysicalFile(output.RutaZIP, MimeTypes.GetMimeType($"{output.NombreElemento}.zip"), output.NombreElemento + ".zip");
+            if (!string.IsNullOrEmpty(output.RutaZIP) && System.IO.File.Exists(output.RutaZIP))
+            {
+                this.HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+                return PhysicalFile(output.RutaZIP, MimeTypes.GetMimeType($"{output.NombreElemento}.zip"), output.NombreElemento + ".zip");
+
+            }
+            else
+            {
+                return NotFound("no-localidazo");
+            }
 
         }
 
@@ -449,8 +457,15 @@ namespace PIKA.GD.API.Controllers.Contenido
             }
 
             OtputPayloadTareaExportarPDF output = JsonSerializer.Deserialize<OtputPayloadTareaExportarPDF>(t.OutputPayload);
-            this.HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
-            return PhysicalFile(output.RutaPDF, MimeTypes.GetMimeType($"{output.NombreElemento}.pdf"), output.NombreElemento + ".pdf");
+            if (!string.IsNullOrEmpty(output.RutaPDF) && System.IO.File.Exists(output.RutaPDF))
+            {
+                this.HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+                return PhysicalFile(output.RutaPDF, MimeTypes.GetMimeType($"{output.NombreElemento}.pdf"), output.NombreElemento + ".pdf");
+
+            } else
+            {
+                return NotFound("no-localidazo");
+            }
 
         }
 
