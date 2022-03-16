@@ -327,7 +327,7 @@ namespace PIKA.Servicio.Contenido.Gestores
 
                     if (exitCode == 0)
                     {
-
+                        Console.WriteLine($"PDF OK > {finalPDF}");
                     }
                     else
                     {
@@ -340,6 +340,7 @@ namespace PIKA.Servicio.Contenido.Gestores
                 {
                     try
                     {
+                        Console.WriteLine($"Removing > {pdf}");
                         File.Delete(pdf);
                     }
                     catch (Exception)
@@ -376,7 +377,8 @@ namespace PIKA.Servicio.Contenido.Gestores
             //}
 
             await Task.Delay(1);
-           return finalPDF;
+            Console.WriteLine($"RETURNING > {finalPDF}");
+            return finalPDF;
 
         }
 
