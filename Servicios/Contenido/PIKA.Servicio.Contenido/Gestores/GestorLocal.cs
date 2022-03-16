@@ -290,6 +290,7 @@ namespace PIKA.Servicio.Contenido.Gestores
             int Indice = 1;
             foreach (var p in version.Partes.OrderBy(x => x.Indice).ToList())
             {
+                if (debug) logger.LogDebug($"Procesando {Indice + 1}/{version.Partes.Count()}");
                 if (imgFormats.IndexOf(p.Extension.ToLower()) >= 0)
                 {
                     string ruta = Path.Combine(this.configGestor.Ruta, version.ElementoId, version.Id);
@@ -298,7 +299,9 @@ namespace PIKA.Servicio.Contenido.Gestores
 
                     if (File.Exists(rutaFinal))
                     {
+                        if (debug) logger.LogDebug($"Imagen {rutaFinal}");
                         FileInfo fi = new FileInfo(rutaFinal);
+                        
                         string rutaCopia = Path.Combine(tempDir, $"{Indice.ToString().PadLeft(8, '0')}{fi.Extension}");
                         var im = new MagickImage(rutaFinal);
                         if (PorcientoEscala != 100)
