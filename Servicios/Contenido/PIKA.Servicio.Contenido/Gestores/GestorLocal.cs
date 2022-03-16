@@ -324,6 +324,7 @@ namespace PIKA.Servicio.Contenido.Gestores
 
                             pdfs.Add(pdfFile);
                             imagenes.Clear();
+                            GC.Collect();
                             parte++;
                             cuenta = 0;
                         }
@@ -357,6 +358,7 @@ namespace PIKA.Servicio.Contenido.Gestores
 
                 pdfs.Add(pdfFile);
                 imagenes.Clear();
+                GC.Collect();
                 parte++;
                 cuenta = 0;
             }
