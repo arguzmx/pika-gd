@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
@@ -34,7 +35,10 @@ namespace PIKA.Servicio.Contenido.Servicios
         private IRepositorioAsync<Volumen> repoVol;
         private UnidadDeTrabajo<DbContextContenido> UDT;
         private IOptions<ConfiguracionServidor> configServer;
+        private IConfiguration configuration;
+
         public ServicioGestorLocalConfig(
+            IConfiguration configuration,
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
         ILogger<ServicioLog> Logger, 
         IOptions<ConfiguracionServidor> opciones) : base(proveedorOpciones, Logger)
@@ -43,6 +47,7 @@ namespace PIKA.Servicio.Contenido.Servicios
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<GestorLocalConfig>( new QueryComposer<GestorLocalConfig>());
             this.repoVol = UDT.ObtenerRepositoryAsync<Volumen>(new QueryComposer<Volumen>());
+            this.configuration = configuration;
         }
 
         public async Task<bool> Existe(Expression<Func<GestorLocalConfig, bool>> predicado)
@@ -66,7 +71,7 @@ namespace PIKA.Servicio.Contenido.Servicios
                 throw new ExDatosNoValidos($"Ruta: {entity.Ruta}");
             }
 
-            GestorLocal g = new GestorLocal(this.logger, entity,  configServer);
+            GestorLocal g = new GestorLocal(this.logger,  entity, configuration, configServer);
             if (!g.ConexionValida() )
             {
                 throw new ExDatosNoValidos($"Sin acceso a ruta: {entity.Ruta}");

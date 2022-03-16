@@ -496,7 +496,7 @@ namespace PIKA.GD.API.Controllers.Contenido
             var tpdf = tareas.ObtieneTarea(Servicio.Contenido.TareasEnDemanda.TAREA_EXPPORTAR_PDF);
             if (tpdf != null)
             {
-                InputPayloadTareaExportarPDF input = new InputPayloadTareaExportarPDF() { ElementoId = id };
+                InputPayloadTareaExportarPDF input = new InputPayloadTareaExportarPDF() { ElementoId = id, PorcentajePorcientoEscala = 100 };
 
                 var enEjecucion = (await tareaEnDemanda.TareasPendientesUsuario(this.UsuarioId, this.DominioId, this.TenantId).ConfigureAwait(false))
                     .Where(x => x.TareaProcesoId == tpdf.Id).ToList();

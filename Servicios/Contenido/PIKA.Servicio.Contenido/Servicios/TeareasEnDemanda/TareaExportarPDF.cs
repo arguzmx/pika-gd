@@ -16,7 +16,7 @@ namespace PIKA.Servicio.Contenido.Servicios.TareasAutomaticas
 {
     public class InputPayloadTareaExportarPDF {
         public string ElementoId { get; set; }
-
+        public int PorcentajePorcientoEscala { get; set; }
     }
 
     public class OtputPayloadTareaExportarPDF
@@ -109,7 +109,7 @@ namespace PIKA.Servicio.Contenido.Servicios.TareasAutomaticas
                        resultado.Error = $"No Content {input.ElementoId}";
                     } else
                     {
-                        var archivo = await gestor.ObtienePDF(vElemento, null);
+                        var archivo = await gestor.ObtienePDF(vElemento, null, input.PorcentajePorcientoEscala);
                         if (archivo != null)
                         {
                             fin = DateTime.UtcNow;

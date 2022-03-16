@@ -239,7 +239,7 @@ namespace PIKA.Servicio.Contenido.Gestores
         }
 
 
-        public async Task<string> ObtienePDF(Modelo.Contenido.Version version, List<string> parteIds, int PorcientoEscala)
+        public async Task<string> ObtienePDF(Modelo.Contenido.Version version, List<string> parteIds, int PorcientoEscala = 100)
         {
             var tempDir = this.configServidor.ruta_cache_fisico;
             string fileId = Guid.NewGuid().ToString().Replace("-","");
@@ -249,6 +249,7 @@ namespace PIKA.Servicio.Contenido.Gestores
             int tamanolote = 30;
             string pdfJoiner = configuration.GetValue<string>("TareasBackground:pdf:convertidor");
             bool debug = configuration.GetValue<bool>("TareasBackground:pdf:debug");
+            var per = new Percentage((double)PorcientoEscala);
 
             if (PorcientoEscala>100)
             {
@@ -302,7 +303,17 @@ namespace PIKA.Servicio.Contenido.Gestores
                             MagickImageCollection collection = new MagickImageCollection();
                             foreach (var i in imagenes)
                             {
-                                collection.Add(new MagickImage(i));
+                                if (PorcientoEscala == 100)
+                                {
+                                    collection.Add(new MagickImage(i));
+
+                                } else
+                                {
+                                    var im = new MagickImage(i);
+                                    im.Resize(per);
+                                    collection.Add(im);
+                                }
+                                
                             }
                             collection.Write(pdfFile);
                             collection.Dispose();

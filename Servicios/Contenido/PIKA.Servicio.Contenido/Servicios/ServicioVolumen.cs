@@ -9,6 +9,7 @@ using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
@@ -33,18 +34,21 @@ namespace PIKA.Servicio.Contenido.Servicios
         public UnidadDeTrabajo<DbContextContenido> UDT;
         private static TimeSpan volCacheExpiry = new TimeSpan(0, 1, 0); 
         private readonly IAppCache lazycache;
+        private readonly IConfiguration configuration;
         private IOptions<ConfiguracionServidor> opciones;
         public ServicioVolumen(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
             ILogger<ServicioLog> Logger,
             IAppCache lazycache,
-            IOptions<ConfiguracionServidor> opciones
+            IOptions<ConfiguracionServidor> opciones,
+            IConfiguration configuration
         ) : base(proveedorOpciones, Logger)
         {
             this.opciones = opciones;
             this.lazycache = lazycache;
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Volumen>(new QueryComposer<Volumen>());
+            this.configuration = configuration;
         }
 
         private string GetCacheVolKey(string VolumenId)
@@ -94,7 +98,7 @@ namespace PIKA.Servicio.Contenido.Servicios
 
                         if (config != null)
                         {
-                            gestor = new GestorLocal(logger, config, opciones);
+                            gestor = new GestorLocal(logger, config, configuration, opciones);
                         }
                         break;
 
@@ -365,7 +369,7 @@ namespace PIKA.Servicio.Contenido.Servicios
             ServicioParte sp = new ServicioParte(this.proveedorOpciones, this.logger);
             ServicioVersion sv = new ServicioVersion(this.proveedorOpciones, this.logger);
             ServicioGestorAzureConfig sgvc = new ServicioGestorAzureConfig(this.proveedorOpciones, this.logger);
-            ServicioGestorLocalConfig sglc = new ServicioGestorLocalConfig(this.proveedorOpciones, this.logger,opciones);
+            ServicioGestorLocalConfig sglc = new ServicioGestorLocalConfig(configuration, this.proveedorOpciones, this.logger,opciones);
             ServicioGestorSMBConfig sgsmb = new ServicioGestorSMBConfig(this.proveedorOpciones, this.logger);
             await sgvc.Eliminar(IdsEliminar);
             await sglc.Eliminar(IdsEliminar);

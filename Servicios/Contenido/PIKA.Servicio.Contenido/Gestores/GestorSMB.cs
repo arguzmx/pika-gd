@@ -111,7 +111,7 @@ namespace PIKA.Servicio.Contenido.Gestores
             throw new NotImplementedException();
         }
 
-        public Task<string> ObtienePDF(Modelo.Contenido.Version version, List<string> parteIds)
+        public Task<string> ObtienePDF(Modelo.Contenido.Version version, List<string> parteIds, int Porcentaje)
         {
             throw new NotImplementedException();
         }
