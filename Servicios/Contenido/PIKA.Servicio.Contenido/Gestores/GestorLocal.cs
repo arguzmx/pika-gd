@@ -241,8 +241,14 @@ namespace PIKA.Servicio.Contenido.Gestores
 
         public async Task<string> ObtienePDF(Modelo.Contenido.Version version, List<string> parteIds, int PorcientoEscala = 100)
         {
-            var tempDir = this.configServidor.ruta_cache_fisico;
+            
             string fileId = Guid.NewGuid().ToString().Replace("-","");
+            var tempDir = Path.Combine( this.configServidor.ruta_cache_fisico, fileId);
+            if(!Directory.Exists(tempDir))
+            {
+                Directory.CreateDirectory(tempDir);
+            }
+
             int cuenta = 0;
             int parte = 1;
             string finalPDF = "";
@@ -278,10 +284,10 @@ namespace PIKA.Servicio.Contenido.Gestores
             }
             
             List<string> imgFormats = new List<string>() { ".png", ".jpg", ".jpeg", ".bmp", ".tif", ".gif" };
-
             List<string> imagenes = new List<string>();
             List<string> pdfs = new List<string>();
 
+            int Indice = 1;
             foreach (var p in version.Partes.OrderBy(x => x.Indice).ToList())
             {
                 if (imgFormats.IndexOf(p.Extension.ToLower()) >= 0)
@@ -292,164 +298,222 @@ namespace PIKA.Servicio.Contenido.Gestores
 
                     if (File.Exists(rutaFinal))
                     {
-                        imagenes.Add(rutaFinal);
-                        cuenta++;
-                        if (cuenta >= tamanolote)
+                        FileInfo fi = new FileInfo(rutaFinal);
+                        string rutaCopia = Path.Combine(tempDir, $"{Indice.ToString().PadLeft(8, '0')}{fi.Extension}");
+                        var im = new MagickImage(rutaFinal);
+                        if (PorcientoEscala != 100)
                         {
-                            var pdfFile = Path.Combine(tempDir, $"z{fileId}{parte}.pdf");
-                            
-                            if (debug) logger.LogDebug($"Creando temportal {pdfFile}@{cuenta}");
+                            im.Resize(per);
+                        }
+                        im.Quality = 80;
+                        im.Write(rutaCopia, MagickFormat.Jpg);
+                        im.Dispose();
 
-                            MagickImageCollection collection = new MagickImageCollection();
-                            foreach (var i in imagenes)
+                        imagenes.Add(rutaCopia);
+                        Indice++;
+
+                    }
+                }
+            }
+
+            int conteo = 0;
+            string lista = "";
+            List<string> listaTemp = new List<string>();
+            for(int  i =0 ; i < imagenes.Count; i++)
+            {
+                lista += $"{imagenes[i]} ";
+                listaTemp.Add(imagenes[i]);
+                conteo++;
+                if (conteo >= tamanolote)
+                {
+
+                    var pdfFile = Path.Combine(tempDir, $"z{fileId}{parte}.pdf");
+                    if (debug) logger.LogDebug($"Creando temporal {pdfFile}@{cuenta}");
+
+                    int result = EjecutaPDFTemporal(pdfJoiner, lista, pdfFile, debug);
+                    if (result != 0)
+                    {
+                        pdfs.Clear();
+                        conteo = 0;
+                        break;
+
+                    } else
+                    {
+                        pdfs.Add(pdfFile);
+                        foreach (string f in listaTemp)
+                        {
+                            try
                             {
-                                var im = new MagickImage(i);
-                                if (PorcientoEscala != 100)
-                                {
-                                    im.Resize(per);
-                                }
-                                collection.Add(im);
+                                File.Delete(f);
                             }
-
-                            // collection.Write(pdfFile);
-                            
-                            foreach (var i in collection.ToList())
+                            catch (Exception)
                             {
-                                i.Dispose();
                             }
+                        }
+                    }
+                    lista = "";
+                    listaTemp.Clear();
+                    conteo = 0;
+                    parte++;
+                } 
+            }
 
-                            // collection.Clear();
-                            collection.Dispose();
+            if (conteo > 0)
+            {
+                var pdfFile = Path.Combine(tempDir, $"z{fileId}{parte}.pdf");
+                if (debug) logger.LogDebug($"Creando temporal {pdfFile}@{cuenta}");
 
-                            pdfs.Add(pdfFile);
-                            imagenes.Clear();
-                            GC.Collect();
-                            parte++;
-                            cuenta = 0;
+                int result = EjecutaPDFTemporal(pdfJoiner, lista, pdfFile, debug);
+                if (result != 0)
+                {
+                    return "";
+                }
+                else
+                {
+                    pdfs.Add(pdfFile);
+                    foreach (string f in listaTemp)
+                    {
+                        try
+                        {
+                            File.Delete(f);
+                        }
+                        catch (Exception)
+                        {
                         }
                     }
                 }
             }
 
-            // Procesa los elementos restantes
-            if (cuenta > 0)
+
+
+            if (pdfs.Count > 0)
             {
-                var pdfFile = Path.Combine(tempDir, $"z{fileId}{parte}.pdf");
-                if (debug) logger.LogDebug($"Creando temportal {pdfFile}@{cuenta}");
-                MagickImageCollection collection = new MagickImageCollection();
-                foreach (var i in imagenes)
+                finalPDF = Path.Combine(this.configServidor.ruta_cache_fisico, $"z{fileId}.pdf");
+                if (pdfs.Count == 1)
                 {
-                    var im = new MagickImage(i);
-                    if (PorcientoEscala != 100)
+                    try
                     {
-                        im.Resize(per);
+                        File.Move(pdfs[0], finalPDF);
+                        if (debug) logger.LogDebug($"{finalPDF} Finalizado OK");
                     }
-                    collection.Add(im);
+                    catch (Exception ex)
+                    {
+                        finalPDF = "";
+                        if (debug) logger.LogDebug($"Error al generar PDF {ex.Message}");
+                    }
+
+
                 }
-                // collection.Write(pdfFile);
-                
-                foreach (var i in collection.ToList())
+                else
                 {
-                    i.Dispose();
+                    string files = "";
+                    foreach (var pdf in pdfs)
+                    {
+                        files += $"{pdf} ";
+                    }
+
+
+                    var info = new ProcessStartInfo
+                    {
+                        FileName = "gm",
+                        Arguments = $" {(pdfJoiner == "gm" ? "convert" : "")} {files.TrimEnd()} {finalPDF}".TrimEnd(),
+                        RedirectStandardError = true,
+                        RedirectStandardOutput = true,
+                        CreateNoWindow = true,
+                        UseShellExecute = false
+                    };
+
+                    if (debug) logger.LogDebug($"Ejecutando: {info.FileName}{info.Arguments}");
+
+                    using (var ps = Process.Start(info))
+                    {
+                        ps.WaitForExit();
+                        var exitCode = ps.ExitCode;
+
+                        if (exitCode == 0)
+                        {
+                            if (debug) logger.LogDebug($"{finalPDF} Finalizado OK");
+                        }
+                        else
+                        {
+
+                            finalPDF = "";
+                            if (debug) logger.LogDebug($"Error al generar PDF {ps.ExitCode} {ps.StandardOutput.ReadToEnd()}  {ps.StandardError.ReadToEnd()}");
+                        }
+                    }
+
+                    //foreach (var pdf in pdfs)
+                    //{
+                    //    try
+                    //    {
+                    //        if (debug) logger.LogDebug($"Eliminando temporal {pdf}");
+                    //        File.Delete(pdf);
+                    //    }
+                    //    catch (Exception)
+                    //    {
+                    //    }
+                    //}
                 }
 
-                //collection.Clear();
-                
-                collection.Dispose();
-                // collection = null;
 
-                pdfs.Add(pdfFile);
-                imagenes.Clear();
-                GC.Collect();
-                parte++;
-                cuenta = 0;
+
+            }
+            else
+            {
+                finalPDF = "";
             }
 
 
-            //if (pdfs.Count > 0)
-            //{
-            //    finalPDF = Path.Combine(tempDir, $"z{fileId}.pdf");
-            //    if (pdfs.Count ==1)
-            //    {
-            //        try
-            //        {
-            //            File.Move(pdfs[0], finalPDF);
-            //            if (debug) logger.LogDebug($"{finalPDF} Finalizado OK");
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            finalPDF = "";
-            //            if (debug) logger.LogDebug($"Error al generar PDF {ex.Message}");
-            //        }
-                    
+            try
+            {
+                Directory.Delete(tempDir, true);
+            }
+            catch (Exception ex)
+            {
+                if (debug) logger.LogDebug($"Error al eliminar temporal = {tempDir}");
 
-            //    } else
-            //    {
-            //        string files = "";
-            //        foreach (var pdf in pdfs)
-            //        {
-            //            files += $"{pdf} ";
-            //        }
-
-
-            //        var info = new ProcessStartInfo
-            //        {
-            //            FileName = "gm",
-            //            Arguments = $" {(pdfJoiner == "gm" ? "convert" : "")} {files.TrimEnd()} {finalPDF}".TrimEnd(),
-            //            RedirectStandardError = true,
-            //            RedirectStandardOutput = true,
-            //            CreateNoWindow = true,
-            //            UseShellExecute = false
-            //        };
-
-            //        if (debug) logger.LogDebug($"Ejecutando: {info.FileName}{info.Arguments}");
-
-            //        using (var ps = Process.Start(info))
-            //        {
-            //            ps.WaitForExit();
-            //            var exitCode = ps.ExitCode;
-
-            //            if (exitCode == 0)
-            //            {
-            //                if (debug) logger.LogDebug($"{finalPDF} Finalizado OK");
-            //            }
-            //            else
-            //            {
-
-            //                finalPDF = "";
-            //                if (debug) logger.LogDebug($"Error al generar PDF {ps.ExitCode} {ps.StandardOutput.ReadToEnd()}  {ps.StandardError.ReadToEnd()}");
-            //            }
-            //        }
-
-            //        foreach (var pdf in pdfs)
-            //        {
-            //            try
-            //            {
-            //                if (debug) logger.LogDebug($"Eliminando temporal {pdf}");
-            //                File.Delete(pdf);
-            //            }
-            //            catch (Exception)
-            //            {
-            //            }
-            //        }
-            //    }
-
-               
-              
-            //} else
-            //{
-            //    finalPDF = "";
-            //}
-
-
- 
-
+            }
+            
             await Task.Delay(1);
             if (debug) logger.LogDebug($"Respuesta X PDF = {finalPDF}");
             return finalPDF;
 
         }
 
+
+        private int EjecutaPDFTemporal(string pdfJoiner, string ListaArchivos, string PDF, bool debug)
+        {
+            var info = new ProcessStartInfo
+            {
+                FileName = "gm",
+                Arguments = $" {(pdfJoiner == "gm" ? "convert" : "")} {ListaArchivos} {PDF}".TrimEnd(),
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true,
+                UseShellExecute = false
+            };
+
+            if (debug) logger.LogDebug($"Ejecutando: {info.FileName}{info.Arguments}");
+            int exitCode = -1;
+
+            using (var ps = Process.Start(info))
+            {
+                ps.WaitForExit();
+                exitCode = ps.ExitCode;
+
+                if (exitCode == 0)
+                {
+                    if (debug) logger.LogDebug($"{PDF} Finalizado OK");
+                }
+                else
+                {
+
+                    if (debug) logger.LogDebug($"Error al generar PDF {ps.ExitCode} {ps.StandardOutput.ReadToEnd()}  {ps.StandardError.ReadToEnd()}");
+                }
+            }
+
+            return exitCode;
+        }
         public async Task<long> EscribeThumbnailBytes(string ParteId, string ElementoId, string VersionId, byte[] contenido)
         {
             string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
