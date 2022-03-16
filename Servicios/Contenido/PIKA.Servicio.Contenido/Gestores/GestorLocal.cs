@@ -308,10 +308,20 @@ namespace PIKA.Servicio.Contenido.Gestores
                     files += $"{pdf} ";
                 }
 
+                //var info = new ProcessStartInfo
+                //{
+                //    FileName = "gs",
+                //    Arguments = $" - dNOPAUSE - sDEVICE = pdfwrite - sOUTPUTFILE = {finalPDF} - dBATCH {files.TrimEnd()}".TrimEnd(),
+                //    RedirectStandardError = true,
+                //    RedirectStandardOutput = true,
+                //    CreateNoWindow = true,
+                //    UseShellExecute = false
+                //};
+
                 var info = new ProcessStartInfo
                 {
-                    FileName = "gs",
-                    Arguments = $" - dNOPAUSE - sDEVICE = pdfwrite - sOUTPUTFILE = {finalPDF} - dBATCH {files.TrimEnd()}".TrimEnd(),
+                    FileName = "gm",
+                    Arguments = $" convert {files.TrimEnd()} {finalPDF}".TrimEnd(),
                     RedirectStandardError = true,
                     RedirectStandardOutput = true,
                     CreateNoWindow = true,
