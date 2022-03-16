@@ -10,6 +10,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -237,36 +238,143 @@ namespace PIKA.Servicio.Contenido.Gestores
         public async Task<string> ObtienePDF(Modelo.Contenido.Version version, List<string> parteIds)
         {
             var tempDir = this.configServidor.ruta_cache_fisico;
-            var pdfFile = Path.Combine(tempDir, $"z{Guid.NewGuid().ToString().Replace("-", "")}.pdf");
+            string fileId = Guid.NewGuid().ToString().Replace("-","");
             int cuenta = 0;
+            int parte = 1;
+            string finalPDF = "";
             List<string> imgFormats = new List<string>() { ".png", ".jpg", ".jpeg", ".bmp", ".tif", ".gif" };
 
-            using (var collection = new MagickImageCollection())
-            {
-                version.Partes.OrderBy(x=>x.Indice).ToList().ForEach(p =>
-                {
-                    if(imgFormats.IndexOf(p.Extension.ToLower()) >= 0)
-                    {
-                        string ruta = Path.Combine(this.configGestor.Ruta, version.ElementoId, version.Id);
-                        string nombreArchivo = p.Id.ToString() + p.Extension.ToUpper();
-                        string rutaFinal = Path.Combine(ruta, nombreArchivo);
+            List<string> imagenes = new List<string>();
+            List<string> pdfs = new List<string>();
 
-                        if (File.Exists(rutaFinal))
+            foreach (var p in version.Partes.OrderBy(x => x.Indice).ToList())
+            {
+                if (imgFormats.IndexOf(p.Extension.ToLower()) >= 0)
+                {
+                    string ruta = Path.Combine(this.configGestor.Ruta, version.ElementoId, version.Id);
+                    string nombreArchivo = p.Id.ToString() + p.Extension.ToUpper();
+                    string rutaFinal = Path.Combine(ruta, nombreArchivo);
+
+                    if (File.Exists(rutaFinal))
+                    {
+                        imagenes.Add(rutaFinal);
+                        cuenta++;
+                        if (cuenta >= 5)
                         {
-                            collection.Add(new MagickImage(rutaFinal));
-                            cuenta++;
+                            var pdfFile = Path.Combine(tempDir, $"z{fileId}{parte}.pdf");
+                            MagickImageCollection collection = new MagickImageCollection();
+                            foreach (var i in imagenes)
+                            {
+                                collection.Add(new MagickImage(i));
+                            }
+                            collection.Write(pdfFile);
+                            collection.Dispose();
+
+                            pdfs.Add(pdfFile);
+                            imagenes.Clear();
+                            parte++;
+                            cuenta = 0;
                         }
                     }
-                });
-
-                if (cuenta > 0)
-                {
-                    collection.Write(pdfFile);
                 }
             }
 
+            // Procesa los elementos restantes
+            if (cuenta > 0)
+            {
+                var pdfFile = Path.Combine(tempDir, $"z{fileId}{parte}.pdf");
+                MagickImageCollection collection = new MagickImageCollection();
+                foreach (var i in imagenes)
+                {
+                    collection.Add(new MagickImage(i));
+                }
+                collection.Write(pdfFile);
+                collection.Dispose();
+
+                pdfs.Add(pdfFile);
+                imagenes.Clear();
+                parte++;
+                cuenta = 0;
+            }
+
+
+            if (pdfs.Count > 0)
+            {
+
+                finalPDF = Path.Combine(tempDir, $"z{fileId}.pdf");
+                string files = "";
+                foreach (var pdf in pdfs)
+                {
+                    files += $"{pdf} ";
+                }
+
+                var info = new ProcessStartInfo
+                {
+                    FileName = "gs",
+                    Arguments = $"- dNOPAUSE - sDEVICE = pdfwrite - sOUTPUTFILE = {finalPDF} - dBATCH {files.TrimEnd()}".TrimEnd(),
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                    UseShellExecute = false
+                };
+
+                using (var ps = Process.Start(info))
+                {
+                    ps.WaitForExit();
+                    var exitCode = ps.ExitCode;
+
+                    if (exitCode == 0)
+                    {
+
+                    }
+                    else
+                    {
+                        finalPDF = "";
+                        Console.WriteLine($"{ps.ExitCode} {ps.StandardOutput.ReadToEnd()}  {ps.StandardError.ReadToEnd()}");
+                    }
+                }
+
+                foreach (var pdf in pdfs)
+                {
+                    try
+                    {
+                        File.Delete(pdf);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+                // gs - dNOPAUSE - sDEVICE = pdfwrite - sOUTPUTFILE = Merged.pdf - dBATCH 1.ps 2.pdf 3.pdf
+            }
+
+
+            //using (var collection = new MagickImageCollection())
+            //{
+
+            //    version.Partes.OrderBy(x=>x.Indice).ToList().ForEach(p =>
+            //    {
+            //        if(imgFormats.IndexOf(p.Extension.ToLower()) >= 0)
+            //        {
+            //            string ruta = Path.Combine(this.configGestor.Ruta, version.ElementoId, version.Id);
+            //            string nombreArchivo = p.Id.ToString() + p.Extension.ToUpper();
+            //            string rutaFinal = Path.Combine(ruta, nombreArchivo);
+
+            //            if (File.Exists(rutaFinal))
+            //            {
+            //                collection.Add(new MagickImage(rutaFinal));
+            //                cuenta++;
+            //            }
+            //        }
+            //    });
+
+            //    if (cuenta > 0)
+            //    {
+            //        collection.Write(pdfFile);
+            //    }
+            //}
+
             await Task.Delay(1);
-           return cuenta > 0 ? pdfFile : "";
+           return finalPDF;
 
         }
 
