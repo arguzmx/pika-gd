@@ -343,16 +343,16 @@ namespace PIKA.Servicio.Contenido.Gestores
                     } else
                     {
                         pdfs.Add(pdfFile);
-                        foreach (string f in listaTemp)
-                        {
-                            try
-                            {
-                                File.Delete(f);
-                            }
-                            catch (Exception)
-                            {
-                            }
-                        }
+                        //foreach (string f in listaTemp)
+                        //{
+                        //    try
+                        //    {
+                        //        File.Delete(f);
+                        //    }
+                        //    catch (Exception)
+                        //    {
+                        //    }
+                        //}
                     }
                     lista = "";
                     listaTemp.Clear();
