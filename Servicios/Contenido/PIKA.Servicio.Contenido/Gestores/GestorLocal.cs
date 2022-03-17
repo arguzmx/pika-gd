@@ -325,7 +325,11 @@ namespace PIKA.Servicio.Contenido.Gestores
             {
                 finalPDF = "";
             }
-           
+
+
+            // NO ELIMINAR ESTE CODIGO, PUEDE UTILZIARSE EN EL FUTURO
+            // ------------------------------------------------------------
+            // ------------------------------------------------------------
 
             //int conteo = 0;
             //List<string> listaTemp = new List<string>();
@@ -441,15 +445,15 @@ namespace PIKA.Servicio.Contenido.Gestores
             //}
 
 
-            //try
-            //{
-            //    Directory.Delete(tempDir, true);
-            //}
-            //catch (Exception ex)
-            //{
-            //    if (debug) logger.LogDebug($"Error al eliminar temporal = {tempDir}");
+            try
+            {
+                Directory.Delete(tempDir, true);
+            }
+            catch (Exception ex)
+            {
+                if (debug) logger.LogDebug($"Error al eliminar temporal = {tempDir}");
 
-            //}
+            }
 
             await Task.Delay(1);
             if (debug) logger.LogDebug($"Respuesta X PDF = {finalPDF}");
