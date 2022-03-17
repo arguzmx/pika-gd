@@ -319,129 +319,137 @@ namespace PIKA.Servicio.Contenido.Gestores
                 }
             }
 
-            int conteo = 0;
-            List<string> listaTemp = new List<string>();
-            for(int  i =0 ; i < imagenes.Count; i++)
-            {
-                listaTemp.Add(imagenes[i]);
-                conteo++;
-                if (conteo >= tamanolote)
-                {
-
-                    var pdfFile = Path.Combine(tempDir, $"z{fileId}{parte}.pdf");
-                    if (debug) logger.LogDebug($"Creando temporal {pdfFile}@{cuenta}");
-
-                    int result = EjecutaPDFTemporal(pdfJoiner, listaTemp, pdfFile, debug);
-                    if (result != 0)
-                    {
-                        pdfs.Clear();
-                        conteo = 0;
-                        break;
-
-                    } else
-                    {
-                        pdfs.Add(pdfFile);
-                        foreach (string f in listaTemp)
-                        {
-                            try
-                            {
-                                File.Delete(f);
-                            }
-                            catch (Exception)
-                            {
-                            }
-                        }
-                    }
-                    listaTemp.Clear();
-                    conteo = 0;
-                    parte++;
-                } 
-            }
-
-            if (conteo > 0)
-            {
-                var pdfFile = Path.Combine(tempDir, $"z{fileId}{parte}.pdf");
-                if (debug) logger.LogDebug($"Creando temporal {pdfFile}@{cuenta}");
-
-                int result = EjecutaPDFTemporal(pdfJoiner, listaTemp, pdfFile, debug);
-                if (result != 0)
-                {
-                    pdfs.Clear();
-                    conteo = 0;
-                }
-                else
-                {
-                    pdfs.Add(pdfFile);
-                    foreach (string f in listaTemp)
-                    {
-                        try
-                        {
-                            File.Delete(f);
-                        }
-                        catch (Exception)
-                        {
-                        }
-                    }
-                }
-            }
-
-
-
-            if (pdfs.Count > 0)
-            {
-                finalPDF = Path.Combine(this.configServidor.ruta_cache_fisico, $"z{fileId}.pdf");
-                string files = "";
-                foreach (var pdf in pdfs)
-                {
-                    files += $"{pdf} ";
-                }
-
-
-                var info = new ProcessStartInfo
-                {
-                    FileName = "gs",
-                    Arguments = $" -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE={finalPDF} -dBATCH {files}".TrimEnd(),
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    CreateNoWindow = true,
-                    UseShellExecute = false
-                };
-
-                if (debug) logger.LogDebug($"Ejecutando: {info.FileName}{info.Arguments}");
-
-                using (var ps = Process.Start(info))
-                {
-                    ps.WaitForExit();
-                    var exitCode = ps.ExitCode;
-
-                    if (exitCode == 0)
-                    {
-                        if (debug) logger.LogDebug($"{finalPDF} Finalizado OK");
-                    }
-                    else
-                    {
-
-                        finalPDF = "";
-                        if (debug) logger.LogDebug($"Error al generar PDF {ps.ExitCode} {ps.StandardOutput.ReadToEnd()}  {ps.StandardError.ReadToEnd()}");
-                    }
-                }
-
-            }
-            else
+            finalPDF = Path.Combine(this.configServidor.ruta_cache_fisico, $"z{fileId}.pdf");
+            int result = EjecutaPDFTemporal(pdfJoiner, imagenes, finalPDF, debug);
+            if (result != 0)
             {
                 finalPDF = "";
             }
+           
+
+            //int conteo = 0;
+            //List<string> listaTemp = new List<string>();
+            //for(int  i =0 ; i < imagenes.Count; i++)
+            //{
+            //    listaTemp.Add(imagenes[i]);
+            //    conteo++;
+            //    if (conteo >= tamanolote)
+            //    {
+
+            //        var pdfFile = Path.Combine(tempDir, $"z{fileId}{parte}.pdf");
+            //        if (debug) logger.LogDebug($"Creando temporal {pdfFile}@{cuenta}");
+
+            //        int result = EjecutaPDFTemporal(pdfJoiner, listaTemp, pdfFile, debug);
+            //        if (result != 0)
+            //        {
+            //            pdfs.Clear();
+            //            conteo = 0;
+            //            break;
+
+            //        } else
+            //        {
+            //            pdfs.Add(pdfFile);
+            //            foreach (string f in listaTemp)
+            //            {
+            //                try
+            //                {
+            //                    File.Delete(f);
+            //                }
+            //                catch (Exception)
+            //                {
+            //                }
+            //            }
+            //        }
+            //        listaTemp.Clear();
+            //        conteo = 0;
+            //        parte++;
+            //    } 
+            //}
+
+            //if (conteo > 0)
+            //{
+            //    var pdfFile = Path.Combine(tempDir, $"z{fileId}{parte}.pdf");
+            //    if (debug) logger.LogDebug($"Creando temporal {pdfFile}@{cuenta}");
+
+            //    int result = EjecutaPDFTemporal(pdfJoiner, listaTemp, pdfFile, debug);
+            //    if (result != 0)
+            //    {
+            //        pdfs.Clear();
+            //        conteo = 0;
+            //    }
+            //    else
+            //    {
+            //        pdfs.Add(pdfFile);
+            //        foreach (string f in listaTemp)
+            //        {
+            //            try
+            //            {
+            //                File.Delete(f);
+            //            }
+            //            catch (Exception)
+            //            {
+            //            }
+            //        }
+            //    }
+            //}
 
 
-            try
-            {
-                Directory.Delete(tempDir, true);
-            }
-            catch (Exception ex)
-            {
-                if (debug) logger.LogDebug($"Error al eliminar temporal = {tempDir}");
 
-            }
+            //if (pdfs.Count > 0)
+            //{
+            //    finalPDF = Path.Combine(this.configServidor.ruta_cache_fisico, $"z{fileId}.pdf");
+            //    string files = "";
+            //    foreach (var pdf in pdfs)
+            //    {
+            //        files += $"{pdf} ";
+            //    }
+
+
+            //    var info = new ProcessStartInfo
+            //    {
+            //        FileName = "gs",
+            //        Arguments = $" -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE={finalPDF} -dBATCH {files}".TrimEnd(),
+            //        RedirectStandardError = true,
+            //        RedirectStandardOutput = true,
+            //        CreateNoWindow = true,
+            //        UseShellExecute = false
+            //    };
+
+            //    if (debug) logger.LogDebug($"Ejecutando: {info.FileName}{info.Arguments}");
+
+            //    using (var ps = Process.Start(info))
+            //    {
+            //        ps.WaitForExit();
+            //        var exitCode = ps.ExitCode;
+
+            //        if (exitCode == 0)
+            //        {
+            //            if (debug) logger.LogDebug($"{finalPDF} Finalizado OK");
+            //        }
+            //        else
+            //        {
+
+            //            finalPDF = "";
+            //            if (debug) logger.LogDebug($"Error al generar PDF {ps.ExitCode} {ps.StandardOutput.ReadToEnd()}  {ps.StandardError.ReadToEnd()}");
+            //        }
+            //    }
+
+            //}
+            //else
+            //{
+            //    finalPDF = "";
+            //}
+
+
+            //try
+            //{
+            //    Directory.Delete(tempDir, true);
+            //}
+            //catch (Exception ex)
+            //{
+            //    if (debug) logger.LogDebug($"Error al eliminar temporal = {tempDir}");
+
+            //}
 
             await Task.Delay(1);
             if (debug) logger.LogDebug($"Respuesta X PDF = {finalPDF}");
