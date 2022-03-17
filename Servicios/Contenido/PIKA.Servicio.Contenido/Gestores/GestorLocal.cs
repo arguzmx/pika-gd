@@ -320,11 +320,9 @@ namespace PIKA.Servicio.Contenido.Gestores
             }
 
             int conteo = 0;
-            string lista = "";
             List<string> listaTemp = new List<string>();
             for(int  i =0 ; i < imagenes.Count; i++)
             {
-                lista += $"{imagenes[i]} ";
                 listaTemp.Add(imagenes[i]);
                 conteo++;
                 if (conteo >= tamanolote)
@@ -333,7 +331,7 @@ namespace PIKA.Servicio.Contenido.Gestores
                     var pdfFile = Path.Combine(tempDir, $"z{fileId}{parte}.pdf");
                     if (debug) logger.LogDebug($"Creando temporal {pdfFile}@{cuenta}");
 
-                    int result = EjecutaPDFTemporal(pdfJoiner, lista, pdfFile, debug);
+                    int result = EjecutaPDFTemporal(pdfJoiner, listaTemp, pdfFile, debug);
                     if (result != 0)
                     {
                         pdfs.Clear();
@@ -343,18 +341,17 @@ namespace PIKA.Servicio.Contenido.Gestores
                     } else
                     {
                         pdfs.Add(pdfFile);
-                        //foreach (string f in listaTemp)
-                        //{
-                        //    try
-                        //    {
-                        //        File.Delete(f);
-                        //    }
-                        //    catch (Exception)
-                        //    {
-                        //    }
-                        //}
+                        foreach (string f in listaTemp)
+                        {
+                            try
+                            {
+                                File.Delete(f);
+                            }
+                            catch (Exception)
+                            {
+                            }
+                        }
                     }
-                    lista = "";
                     listaTemp.Clear();
                     conteo = 0;
                     parte++;
@@ -366,10 +363,11 @@ namespace PIKA.Servicio.Contenido.Gestores
                 var pdfFile = Path.Combine(tempDir, $"z{fileId}{parte}.pdf");
                 if (debug) logger.LogDebug($"Creando temporal {pdfFile}@{cuenta}");
 
-                int result = EjecutaPDFTemporal(pdfJoiner, lista, pdfFile, debug);
+                int result = EjecutaPDFTemporal(pdfJoiner, listaTemp, pdfFile, debug);
                 if (result != 0)
                 {
-                    return "";
+                    pdfs.Clear();
+                    conteo = 0;
                 }
                 else
                 {
@@ -392,73 +390,41 @@ namespace PIKA.Servicio.Contenido.Gestores
             if (pdfs.Count > 0)
             {
                 finalPDF = Path.Combine(this.configServidor.ruta_cache_fisico, $"z{fileId}.pdf");
-                if (pdfs.Count == 1)
+                string files = "";
+                foreach (var pdf in pdfs)
                 {
-                    try
+                    files += $"{pdf} ";
+                }
+
+
+                var info = new ProcessStartInfo
+                {
+                    FileName = "gs",
+                    Arguments = $" -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE={finalPDF} -dBATCH {files}".TrimEnd(),
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                    UseShellExecute = false
+                };
+
+                if (debug) logger.LogDebug($"Ejecutando: {info.FileName}{info.Arguments}");
+
+                using (var ps = Process.Start(info))
+                {
+                    ps.WaitForExit();
+                    var exitCode = ps.ExitCode;
+
+                    if (exitCode == 0)
                     {
-                        File.Move(pdfs[0], finalPDF);
                         if (debug) logger.LogDebug($"{finalPDF} Finalizado OK");
                     }
-                    catch (Exception ex)
+                    else
                     {
+
                         finalPDF = "";
-                        if (debug) logger.LogDebug($"Error al generar PDF {ex.Message}");
+                        if (debug) logger.LogDebug($"Error al generar PDF {ps.ExitCode} {ps.StandardOutput.ReadToEnd()}  {ps.StandardError.ReadToEnd()}");
                     }
-
-
                 }
-                else
-                {
-                    string files = "";
-                    foreach (var pdf in pdfs)
-                    {
-                        files += $"{pdf} ";
-                    }
-
-
-                    var info = new ProcessStartInfo
-                    {
-                        FileName = "gm",
-                        Arguments = $" {(pdfJoiner == "gm" ? "convert" : "")} {files.TrimEnd()} {finalPDF}".TrimEnd(),
-                        RedirectStandardError = true,
-                        RedirectStandardOutput = true,
-                        CreateNoWindow = true,
-                        UseShellExecute = false
-                    };
-
-                    if (debug) logger.LogDebug($"Ejecutando: {info.FileName}{info.Arguments}");
-
-                    using (var ps = Process.Start(info))
-                    {
-                        ps.WaitForExit();
-                        var exitCode = ps.ExitCode;
-
-                        if (exitCode == 0)
-                        {
-                            if (debug) logger.LogDebug($"{finalPDF} Finalizado OK");
-                        }
-                        else
-                        {
-
-                            finalPDF = "";
-                            if (debug) logger.LogDebug($"Error al generar PDF {ps.ExitCode} {ps.StandardOutput.ReadToEnd()}  {ps.StandardError.ReadToEnd()}");
-                        }
-                    }
-
-                    //foreach (var pdf in pdfs)
-                    //{
-                    //    try
-                    //    {
-                    //        if (debug) logger.LogDebug($"Eliminando temporal {pdf}");
-                    //        File.Delete(pdf);
-                    //    }
-                    //    catch (Exception)
-                    //    {
-                    //    }
-                    //}
-                }
-
-
 
             }
             else
@@ -467,16 +433,16 @@ namespace PIKA.Servicio.Contenido.Gestores
             }
 
 
-            //try
-            //{
-            //    Directory.Delete(tempDir, true);
-            //}
-            //catch (Exception ex)
-            //{
-            //    if (debug) logger.LogDebug($"Error al eliminar temporal = {tempDir}");
+            try
+            {
+                Directory.Delete(tempDir, true);
+            }
+            catch (Exception ex)
+            {
+                if (debug) logger.LogDebug($"Error al eliminar temporal = {tempDir}");
 
-            //}
-            
+            }
+
             await Task.Delay(1);
             if (debug) logger.LogDebug($"Respuesta X PDF = {finalPDF}");
             return finalPDF;
@@ -484,12 +450,20 @@ namespace PIKA.Servicio.Contenido.Gestores
         }
 
 
-        private int EjecutaPDFTemporal(string pdfJoiner, string ListaArchivos, string PDF, bool debug)
+        private int EjecutaPDFTemporal(string pdfJoiner, List<string> Archivos, string PDF, bool debug)
         {
+
+            //gs -q -dNOSAFER -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=output.pdf viewjpeg.ps -c (00000001.JPG) viewJPEG showpage (00000002.JPG) viewJPEG showpage
+            string ListaArchivos = "";
+            Archivos.ForEach(a =>
+            {
+                ListaArchivos += $"({a}) viewJPEG showpage ";
+            });
+
             var info = new ProcessStartInfo
             {
-                FileName = "gm",
-                Arguments = $" {(pdfJoiner == "gm" ? "convert" : "")} {ListaArchivos} {PDF}".TrimEnd(),
+                FileName = "gs",
+                Arguments = $" -q -dNOSAFER -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile={PDF} viewjpeg.ps -c {ListaArchivos}".TrimEnd(),
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
                 CreateNoWindow = true,
