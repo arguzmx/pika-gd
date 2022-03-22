@@ -209,6 +209,7 @@ namespace PIKA.GD.API.Controllers.Contenido
 
                     await this.repoContenido.ActualizaVersion(v.Id, v, true).ConfigureAwait(false);
                     await this.servicioElemento.ActualizaConteoPartes(elementoId, v.Partes.Count).ConfigureAwait(false);
+                    await this.servicioElemento.ActualizaTamanoBytes(elementoId, v.Partes.Sum(x=>x.LongitudBytes)).ConfigureAwait(false);
 
                     try
                     {

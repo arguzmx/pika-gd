@@ -29,6 +29,7 @@ namespace PIKA.Modelo.Metadatos
         private string _IdContextual;
         private bool _ToggleInTable;
         private string _DefaultValue;
+        private string _Formato;
         private int _TableOrderIndex;
 
         /// <summary>
@@ -41,7 +42,8 @@ namespace PIKA.Modelo.Metadatos
             int OrderIndex = 0, bool Searchable = true, bool Orderable = true, bool Visible = true,
             bool Required = false, bool isId = false, bool ShowInTable = true, bool ToggleInTable = true,
             int TableOrderIndex = 0, bool Contextual = false, string IdContextual = "" , bool IsLabel = false,
-            bool HieId = false, bool HieName = false, bool HieRoot = false, bool HieParent = false, string Entidad="")
+            bool HieId = false, bool HieName = false, bool HieRoot = false, bool HieParent = false, string Entidad="",
+            string Formato = "")
         {
 
             this._Contextual = Contextual;
@@ -70,6 +72,7 @@ namespace PIKA.Modelo.Metadatos
             this._HieParent = HieParent;
             this._HieId = HieId;
             this._Entidad = Entidad;
+            this._Formato = Formato;
 
             if (this.Contextual)
             {
@@ -245,6 +248,16 @@ namespace PIKA.Modelo.Metadatos
         public virtual bool HieParent
         {
             get { return _HieParent; }
+        }
+
+
+
+        /// <summary>
+        /// Especifica el formato de salida de acuerdo al tipo 
+        /// </summary>
+        public virtual string Formato
+        {
+            get { return _Formato; }
         }
 
 

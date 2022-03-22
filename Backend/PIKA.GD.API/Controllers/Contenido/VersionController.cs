@@ -79,6 +79,7 @@ namespace PIKA.GD.API.Controllers.Contenido
                 entidad.Partes = new List<Parte>();
             }
             await this.servicioElemento.ActualizaConteoPartes(entidad.ElementoId, entidad.Partes.Count).ConfigureAwait(false);
+            await this.servicioElemento.ActualizaTamanoBytes(entidad.ElementoId, entidad.Partes.Sum(x=>x.LongitudBytes)).ConfigureAwait(false);
 
             // entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
 
@@ -110,7 +111,7 @@ namespace PIKA.GD.API.Controllers.Contenido
                 entidad.Partes = new List<Parte>();
             }
             await this.servicioElemento.ActualizaConteoPartes(entidad.ElementoId, entidad.Partes.Count).ConfigureAwait(false);
-
+            await this.servicioElemento.ActualizaTamanoBytes(entidad.ElementoId, entidad.Partes.Sum(x => x.LongitudBytes)).ConfigureAwait(false);
             // await servicioEntidad.ActualizarAsync(entidad).ConfigureAwait(false);
             return NoContent();
 

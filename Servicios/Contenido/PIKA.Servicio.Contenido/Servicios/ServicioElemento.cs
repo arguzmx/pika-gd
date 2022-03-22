@@ -66,6 +66,17 @@ namespace PIKA.Servicio.Contenido.Servicios
             
         }
 
+        public async Task ActualizaTamanoBytes(string Id, long Tamano)
+        {
+            Elemento o = await this.repo.UnicoAsync(x => x.Id == Id);
+            if (o != null)
+            {
+                o.TamanoBytes = Tamano;
+                UDT.Context.Entry(o).State = EntityState.Modified;
+                UDT.SaveChanges();
+            }
+        }
+
         public async Task ActualizaConteoPartes(string Id, int Conteo)
         {
             Elemento o = await this.repo.UnicoAsync(x => x.Id == Id);

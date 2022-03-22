@@ -17,5 +17,6 @@ namespace PIKA.Servicio.Contenido.Interfaces
         Task ActualizaVersion(string Id, string VersionId);
 
         Task ActualizaConteoPartes(string Id, int Conteo);
+        Task ActualizaTamanoBytes(string Id, long Tamano);
     }
 }

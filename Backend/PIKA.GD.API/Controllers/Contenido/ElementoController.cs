@@ -426,7 +426,9 @@ namespace PIKA.GD.API.Controllers.Contenido
             OtputPayloadTareaExportarZIP output = JsonSerializer.Deserialize<OtputPayloadTareaExportarZIP>(t.OutputPayload);
             if (!string.IsNullOrEmpty(output.RutaZIP) && System.IO.File.Exists(output.RutaZIP))
             {
-                this.HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+                System.IO.FileInfo fi = new System.IO.FileInfo(output.RutaZIP);
+                HttpContext.Response.Headers.Add("Content-Length", $"{fi.Length}");
+                HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
                 return PhysicalFile(output.RutaZIP, MimeTypes.GetMimeType($"{output.NombreElemento}.zip"), output.NombreElemento + ".zip");
 
             }
@@ -459,7 +461,9 @@ namespace PIKA.GD.API.Controllers.Contenido
             OtputPayloadTareaExportarPDF output = JsonSerializer.Deserialize<OtputPayloadTareaExportarPDF>(t.OutputPayload);
             if (!string.IsNullOrEmpty(output.RutaPDF) && System.IO.File.Exists(output.RutaPDF))
             {
-                this.HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+                System.IO.FileInfo fi = new System.IO.FileInfo(output.RutaPDF);
+                HttpContext.Response.Headers.Add("Content-Length", $"{fi.Length}");
+                HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
                 return PhysicalFile(output.RutaPDF, MimeTypes.GetMimeType($"{output.NombreElemento}.pdf"), output.NombreElemento + ".pdf");
 
             } else
@@ -470,11 +474,19 @@ namespace PIKA.GD.API.Controllers.Contenido
         }
 
 
-        [HttpPost("pdf/{id}/{v}", Name = "GeneraPDF")]
+
+        /// <summary>
+        /// Adiciona un trabajo de generacín de PDF
+        /// </summary>
+        /// <param name="id">Identificador del elemento de contenido</param>
+        /// <param name="v">Versión del elemento de contenido</param>
+        /// <param name="p">Porcentaje del escalamiento para las imágenes 20-100</param>
+        /// <returns></returns>
+        [HttpPost("pdf/{id}/{v}/{p}", Name = "GeneraPDF")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<string>> CrearPDF(string id, string v)
+        public async Task<ActionResult<string>> CrearPDF(string id, string v, int p)
         {
             
             string controller = "contenido/elemento";
@@ -491,12 +503,22 @@ namespace PIKA.GD.API.Controllers.Contenido
                 return NotFound("elemento-inexistente");
             }
 
+            if(p<20)
+            {
+                p = 20;
+            }
+
+            if(p>100)
+            {
+                p=100;
+            }
+
             Etiqueta = $"PDF {e.Nombre}";
             Servicio.Contenido.TareasEnDemanda tareas = new Servicio.Contenido.TareasEnDemanda();
             var tpdf = tareas.ObtieneTarea(Servicio.Contenido.TareasEnDemanda.TAREA_EXPPORTAR_PDF);
             if (tpdf != null)
             {
-                InputPayloadTareaExportarPDF input = new InputPayloadTareaExportarPDF() { ElementoId = id, PorcentajePorcientoEscala = 100 };
+                InputPayloadTareaExportarPDF input = new InputPayloadTareaExportarPDF() { ElementoId = id, PorcentajePorcientoEscala = p };
 
                 var enEjecucion = (await tareaEnDemanda.TareasPendientesUsuario(this.UsuarioId, this.DominioId, this.TenantId).ConfigureAwait(false))
                     .Where(x => x.TareaProcesoId == tpdf.Id).ToList();

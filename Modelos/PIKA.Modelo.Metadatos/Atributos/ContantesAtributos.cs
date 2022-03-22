@@ -28,6 +28,11 @@ namespace PIKA.Modelo.Metadatos.Atributos
         public const string HTML_LABEL = "label";
 
         public const string PLATAFORMA_WEB = "web";
+
+
+        public const string FORMATO_NUMBER_BYTES = "bytes";
+
+
     }
 
 

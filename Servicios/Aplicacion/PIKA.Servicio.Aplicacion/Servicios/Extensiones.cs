@@ -23,7 +23,8 @@ namespace PIKA.Servicio.AplicacionPlugin.Servicios
                 Id = t.Id.ToString(),
                 PickupURL = t.URLRecoleccion,
                 TipoRespuesta = t.TipoRespuesta,
-                Etiqueta = t.Etiqueta
+                Etiqueta = t.Etiqueta,
+                FechaCaducidad = t.FechaCaducidad
             };
         }
 

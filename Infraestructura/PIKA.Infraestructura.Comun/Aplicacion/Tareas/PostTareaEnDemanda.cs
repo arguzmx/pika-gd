@@ -16,6 +16,7 @@ namespace PIKA.Infraestructura.Comun.Tareas
         public string Id { get; set; }
         public string Tipo { get; set; }
         public DateTime Fecha { get; set; }
+        public DateTime? FechaCaducidad { get; set; }
         public string PickupURL { get; set; }
         public bool Completado { get; set; }
         public bool ConError { get; set; }

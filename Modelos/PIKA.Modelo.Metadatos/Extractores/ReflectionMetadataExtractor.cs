@@ -296,7 +296,8 @@ namespace PIKA.Modelo.Metadatos
                 EsTextoJerarquia = source.HIeName,
                 EsIdRaizJerarquia = source.HieRoot,
                 EsFiltroJerarquia = source.HieParent,
-                Entidad = source.Entidad
+                Entidad = source.Entidad,
+                Formato = source.Formato
             };
         }
 

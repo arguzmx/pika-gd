@@ -33,12 +33,16 @@ namespace PIKA.Servicio.Contenido.Data.Configuracion
             builder.Property(x => x.IdExterno).IsRequired(false).HasMaxLength(LongitudDatos.GUID);
 
             builder.Property(x => x.ConteoAnexos).IsRequired(true).HasDefaultValue(0);
+            builder.Property(x => x.TamanoBytes).IsRequired(true).HasDefaultValue(0);
 
             builder.Property(x => x.TipoOrigenId).IsRequired(true).HasDefaultValue("");
             builder.Property(x => x.OrigenId).IsRequired(true).HasDefaultValue("");
 
             builder.HasIndex(x => x.IdExterno);
             builder.HasIndex(x=> new { x.TipoOrigenId, x.OrigenId });
+            builder.HasIndex(x => x.TamanoBytes);
+            builder.HasIndex(x => x.ConteoAnexos);
+            builder.HasIndex(x => x.VolumenId);
 
             builder.HasOne(x => x.Permiso).WithMany(y => y.Elementos).HasForeignKey(z => z.PermisoId);
             builder.HasOne(x => x.Volumen).WithMany(y => y.Elementos).HasForeignKey(z => z.VolumenId);

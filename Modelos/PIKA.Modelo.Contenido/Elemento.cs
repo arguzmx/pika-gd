@@ -22,6 +22,8 @@ namespace PIKA.Modelo.Contenido
        
         public Elemento() {
             this.Versiones = new HashSet<Version>();
+            this.ConteoAnexos = 0;
+            this.TamanoBytes = 0;
         }
 
         /// <summary>
@@ -78,10 +80,13 @@ namespace PIKA.Modelo.Contenido
         public DateTime FechaCreacion { get; set; }
 
 
-        [Prop(Required: false, isId: true, Visible: true, ShowInTable: true, OrderIndex: 70)]
+        [Prop(Required: false, isId: false, Visible: true, ShowInTable: true, OrderIndex: 70)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.none)]
         public int ConteoAnexos { get; set; }
 
+        [Prop(Required: false, isId: true, Visible: true, ShowInTable: true, OrderIndex: 90, Formato: ControlUI.FORMATO_NUMBER_BYTES)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.none)]
+        public long TamanoBytes { get; set; }
 
 
         ///// <summary>

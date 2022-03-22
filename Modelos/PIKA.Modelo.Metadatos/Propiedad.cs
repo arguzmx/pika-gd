@@ -184,8 +184,15 @@ namespace PIKA.Modelo.Metadatos
         /// </summary>
         [Prop(Required: false, OrderIndex: 1000, ShowInTable: false)]
         [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
-
         public bool Etiqueta { get; set; }
+
+
+        /// <summary>
+        /// Especicifica el formato para el despliegue de valores
+        /// </summary>
+        [NotMapped]
+        public string Formato { get; set; }
+
 
         [NotMapped]
         public string Entidad { get; set; }
