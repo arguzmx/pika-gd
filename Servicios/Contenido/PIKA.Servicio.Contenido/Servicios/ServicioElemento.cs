@@ -68,34 +68,21 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task ActualizaTamanoBytes(string Id, long Tamano)
         {
-            Elemento o = await this.repo.UnicoAsync(x => x.Id == Id);
-            if (o != null)
-            {
-                o.TamanoBytes = Tamano;
-                UDT.Context.Entry(o).State = EntityState.Modified;
-                UDT.SaveChanges();
-            }
+
+            string sqls = $"UPDATE {DbContextContenido.TablaElemento} set TamanoBytes={Tamano} where Id='{Id}'";
+            await UDT.Context.Database.ExecuteSqlCommandAsync(sqls);
         }
 
         public async Task ActualizaConteoPartes(string Id, int Conteo)
         {
-            Elemento o = await this.repo.UnicoAsync(x => x.Id == Id);
-            if (o != null)
-            {
-                o.ConteoAnexos = Conteo;
-                UDT.Context.Entry(o).State = EntityState.Modified;
-                UDT.SaveChanges();
-            }
+            string sqls = $"UPDATE {DbContextContenido.TablaElemento} set ConteoAnexos={Conteo} where Id='{Id}'";
+            await UDT.Context.Database.ExecuteSqlCommandAsync(sqls);
         }
 
         public async Task ActualizaVersion(string Id, string VersionId) {
-            Elemento o = await this.repo.UnicoAsync(x => x.Id == Id);
-            if (o != null)
-            {
-                o.VersionId = VersionId;
-                UDT.Context.Entry(o).State = EntityState.Modified;
-                UDT.SaveChanges();
-            }
+
+            string sqls = $"UPDATE {DbContextContenido.TablaElemento} set VersionId='{VersionId}' where Id='{Id}'";
+            await UDT.Context.Database.ExecuteSqlCommandAsync(sqls);
         }
 
         public async Task<int> ACLPuntoMontaje(string PuntoMontajeId)

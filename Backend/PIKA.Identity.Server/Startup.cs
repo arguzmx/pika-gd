@@ -110,7 +110,7 @@ namespace PIKA.Identity.Server
 
             var builder = services.AddIdentityServer(options =>
                 {
-                    options.PublicOrigin = Configuration["PublicOrigin"];
+                    // options.PublicOrigin = Configuration["PublicOrigin"];
                     options.Events.RaiseErrorEvents = true;
                     options.Events.RaiseInformationEvents = true;
                     options.Events.RaiseFailureEvents = true;
@@ -154,6 +154,24 @@ namespace PIKA.Identity.Server
 
         public void Configure(IApplicationBuilder app)
         {
+            app.Use(async (ctx, next) =>
+            {
+                if (ctx.Request.Host.Host != "localhost") {
+               
+                    if (!string.IsNullOrEmpty(Configuration["PublicBaseURL"]))
+                    {
+                        if (
+                        (ctx.Request.PathBase.Value.IndexOf(Configuration["PublicBaseURL"]) < 0)
+                        && (ctx.Request.Path.Value.IndexOf(Configuration["PublicBaseURL"]) < 0))
+                        {
+                            ctx.Request.PathBase = new PathString($"/{Configuration["PublicBaseURL"].Trim().TrimStart('/')}");
+                        }
+                       
+                    }
+                }
+                await next();
+            });
+
             if (Environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

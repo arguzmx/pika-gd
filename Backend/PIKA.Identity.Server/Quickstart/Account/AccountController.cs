@@ -123,10 +123,10 @@ namespace IdentityServer4.Quickstart.UI
 
                     if (context != null)
                     {
-                        if (!string.IsNullOrEmpty(_config["PublicBaseURL"]))
-                        {
-                            model.ReturnUrl = "/" + _config["PublicBaseURL"] + model.ReturnUrl;
-                        }
+                        //if (!string.IsNullOrEmpty(_config["PublicBaseURL"]))
+                        //{
+                        //    model.ReturnUrl = "/" + _config["PublicBaseURL"] + model.ReturnUrl;
+                        //}
                         
                         if (await _clientStore.IsPkceClientAsync(context.ClientId))
                         {

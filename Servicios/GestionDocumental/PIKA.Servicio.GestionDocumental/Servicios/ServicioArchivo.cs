@@ -496,7 +496,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             string nombreArchivo = $"activos{Guid.NewGuid().ToString().Replace("-","")}.csv";
             string ruta = Path.Combine(Config.Value.ruta_cache_fisico, nombreArchivo);
-            string q = $"select *  from gd$activo where ArchivoId='{ArchivoId}'";
+            string q = $"select *  from {DBContextGestionDocumental.TablaActivos} where Eliminada=0 and ArchivoId='{ArchivoId}'";
             List<Activo> activos = await this.UDT.Context.Activos.FromSqlRaw(q).ToListAsync();
             List<EntradaClasificacion> entradas = UDT.Context.EntradaClasificacion.ToList();
 

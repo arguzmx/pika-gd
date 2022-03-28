@@ -12,7 +12,7 @@ namespace RepositorioEntidades
     public interface IRepositorioAsync<T>
     {
 
- 
+        void DetachAllEntities();
         Task<T> UnicoAsync(Expression<Func<T, bool>> predicado = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> ordenarPor = null,
             Func<IQueryable<T>, IIncludableQueryable<T, object>> incluir = null,

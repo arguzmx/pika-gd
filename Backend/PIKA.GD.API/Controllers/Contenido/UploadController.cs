@@ -213,9 +213,12 @@ namespace PIKA.GD.API.Controllers.Contenido
 
                     try
                     {
+                        Console.WriteLine($"----- Eliminando {ruta}");
                         Directory.Delete(ruta, true);
                     }
-                    catch (Exception) { }
+                    catch (Exception ex) {
+                        Console.WriteLine(ex.ToString());
+                    }
 
                     await this.servicioTransaccionCarga.EliminarTransaccion(TransaccionId, VolId, conteoBytes).ConfigureAwait(false);
                     return Ok(v.Partes.APaginas());

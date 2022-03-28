@@ -15,7 +15,17 @@ namespace RepositorioEntidades
         protected readonly DbContext _dbContext;
         protected readonly DbSet<T> _dbSet;
         private ICompositorConsulta<T> _compositor;
+        public void DetachAllEntities()
+        {
+            var changedEntriesCopy = this._dbContext.ChangeTracker.Entries()
+                .Where(e => e.State == EntityState.Added ||
+                            e.State == EntityState.Modified ||
+                            e.State == EntityState.Deleted)
+                .ToList();
 
+            foreach (var entry in changedEntriesCopy)
+                entry.State = EntityState.Detached;
+        }
         public RepositorioAsync(DbContext dbContext, ICompositorConsulta<T> compositor)
         {
             _dbContext = dbContext;

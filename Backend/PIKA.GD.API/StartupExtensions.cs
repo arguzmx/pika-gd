@@ -326,6 +326,12 @@ namespace PIKA.GD.API
             })
 .AddJwtBearer(options =>
 {
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateAudience = false,
+        ValidateIssuer = false
+    };
+
     options.SaveToken = true;
     // base-address of your identityserver
     options.Authority = configuracionServidor.jwtauth;
