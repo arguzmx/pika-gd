@@ -385,7 +385,7 @@ namespace PIKA.Servicio.Contenido.Servicios
                     {
                         c = new Carpeta()
                         {
-                            CarpetaPadreId = null,
+                            CarpetaPadreId = padre.Id,
                             CreadorId = entidad.UsuarioId,
                             Eliminada = false,
                             EsRaiz = true,
