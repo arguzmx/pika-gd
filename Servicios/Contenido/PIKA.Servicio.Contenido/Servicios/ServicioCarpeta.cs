@@ -380,7 +380,7 @@ namespace PIKA.Servicio.Contenido.Servicios
                 } else
                 {
 
-                    c = await this.UDT.Context.Carpetas.Where(x => x.Nombre == n && x.Eliminada == false && x.CarpetaPadreId == padre.CarpetaPadreId).FirstOrDefaultAsync();
+                    c = await this.UDT.Context.Carpetas.Where(x => x.Nombre == n && x.Eliminada == false && x.CarpetaPadreId == padre.Id).FirstOrDefaultAsync();
                     if (c == null)
                     {
                         c = new Carpeta()
