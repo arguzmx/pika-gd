@@ -388,7 +388,7 @@ namespace PIKA.Servicio.Contenido.Servicios
                             CarpetaPadreId = padre.Id,
                             CreadorId = entidad.UsuarioId,
                             Eliminada = false,
-                            EsRaiz = true,
+                            EsRaiz = false,
                             FechaCreacion = DateTime.UtcNow,
                             Id = Guid.NewGuid().ToString(),
                             Nombre = n,
