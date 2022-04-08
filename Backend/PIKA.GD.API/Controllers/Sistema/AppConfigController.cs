@@ -16,6 +16,7 @@ using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Organizacion.Estructura;
 using PIKA.Servicio.AplicacionPlugin;
 using PIKA.Servicio.AplicacionPlugin.Interfaces;
+using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Organizacion;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
@@ -32,15 +33,36 @@ namespace PIKA.GD.API.Controllers.Sistema
         private readonly IAppCache appCache;
         private ILogger<AppConfigController> logger;
         private IServicioDominio servDominio;
+        IRepoContenidoElasticSearch repoContenido;
 
         public AppConfigController(
             ILogger<AppConfigController> logger,
             IAppCache appCache,
-            IServicioDominio servDominio)
+            IServicioDominio servDominio,
+            IRepoContenidoElasticSearch repoContenido)
         {
             this.logger = logger;
             this.servDominio = servDominio;
             this.appCache = appCache;
+            this.repoContenido = repoContenido;
+        }
+
+        [HttpGet("estadoocr", Name = "ObtieneEstadoOCR")]
+        [TypeFilter(typeof(AsyncACLActionFilter),
+            Arguments = new object[] { ConstantesAppOrganizacion.APP_ID, ConstantesAppOrganizacion.MODULO_DOMINIO })]
+        public async Task<ActionResult> ObtieneEstadoOCR()
+        {
+            var data = await repoContenido.OntieneEstadoOCR().ConfigureAwait(false);
+            return Ok(data);
+        }
+
+        [HttpPost("ocrerroneos", Name = "ReiniciaOCRErroneos")]
+        [TypeFilter(typeof(AsyncACLActionFilter),
+        Arguments = new object[] { ConstantesAppOrganizacion.APP_ID, ConstantesAppOrganizacion.MODULO_DOMINIO })]
+        public async Task<ActionResult> ReiniciaOCRErroneos()
+        {
+            await repoContenido.ReiniciarOCRErroneos().ConfigureAwait(false);
+            return Ok();
         }
 
 

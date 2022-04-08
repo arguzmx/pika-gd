@@ -26,5 +26,7 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
         Task<List<string>> IdsPorConsulta(string texto, string PuntoMontajeId, string IdJerarquico, int NivelFuzzy);
         Task<List<HighlightHit>> SinopsisPorIDs(string texto, List<string> Ids, string HtmlTag, int Tamano);
         Task<string> ExisteTextoCompleto(Modelo.Contenido.ContenidoTextoCompleto contenido);
+        Task<EstadoOCR> OntieneEstadoOCR();
+        Task ReiniciarOCRErroneos();
     }
 }

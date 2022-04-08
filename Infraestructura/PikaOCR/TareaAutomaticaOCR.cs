@@ -136,6 +136,7 @@ namespace PikaOCR
                     IGestorES gestor = await _volumenes.ObtienInstanciaGestor(v.Id);
 
                     ExtractorTexto x = new ExtractorTexto(_logger, _opciones.Value, gestor);
+                    
                     foreach (var parte in version.Partes)
                     {
 
@@ -174,7 +175,7 @@ namespace PikaOCR
                         }
 
                         // Procesa por lotes de tamaño acorde al número máximo de hilos
-                        if(TareasOCR.Count >= maxThreads)
+                        if(TareasOCR.Count >= maxThreads || version.Partes.Count == TareasOCR.Count)
                         {
                             Task.WaitAll(TareasOCR.ToArray());
 

@@ -67,7 +67,7 @@ TokenApp: ConstantesAppContenido.APP_ID, TokenMod: ConstantesAppContenido.MODULO
         /// Identifica si la carpeta ha sido eliminada
         /// </summary>
         [Prop(OrderIndex: 60, DefaultValue: "false")]
-        [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.update)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.update)]
         public bool Eliminada { get; set; }
 
         /// <summary>
@@ -92,7 +92,7 @@ TokenApp: ConstantesAppContenido.APP_ID, TokenMod: ConstantesAppContenido.MODULO
         /// Determina si la carpeta es un nodo raíz, en esta caso la propiedad CarpetaPadreId debe ser nula
         /// </summary>
         [Prop(Required: true, Visible: false, OrderIndex: 1020, Contextual: true, IdContextual: ConstantesModelo.CONTEXTO_ESRAIZ)]
-        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.add)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public bool EsRaiz { get; set; }
 
 

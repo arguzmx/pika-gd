@@ -1,4 +1,5 @@
-﻿using Nest;
+﻿using Elasticsearch.Net;
+using Nest;
 using PIKA.Modelo.Contenido;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,57 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
             }
 
             return false;
+        }
+        public async Task<EstadoOCR> OntieneEstadoOCR()
+        {
+            EstadoOCR estado = new EstadoOCR();
+            
+            
+            var pendientesResponse = cliente.CountAsync<Modelo.Contenido.Version>(s =>
+              s.Query(q =>
+               q.Bool(b =>
+                   b.Filter(bf => bf.Term(t => t.EstadoIndexado,
+                   Modelo.Contenido.EstadoIndexado.PorIndexar)))
+           ));
+
+
+            var completosResponse = cliente.CountAsync<Modelo.Contenido.Version>(s =>
+              s.Query(q =>
+               q.Bool(b =>
+                   b.Filter(bf => bf.Term(t => t.EstadoIndexado,
+                   Modelo.Contenido.EstadoIndexado.FinalizadoOK)))
+           ));
+
+            var errorResponse = cliente.CountAsync<Modelo.Contenido.Version>(s =>
+              s.Query(q =>
+               q.Bool(b =>
+                   b.Filter(bf => bf.Term(t => t.EstadoIndexado,
+                   Modelo.Contenido.EstadoIndexado.FinalizadoError)))
+            ));
+
+
+            List<Task> conteos = new List<Task>() { pendientesResponse, completosResponse, errorResponse };
+            Task.WaitAll(conteos.ToArray());
+
+            estado.Completo = completosResponse.Result.Count;
+            estado.Pendiente = pendientesResponse.Result.Count;
+            estado.Error = errorResponse.Result.Count;
+
+            return estado;
+        }
+
+        public async Task ReiniciarOCRErroneos()
+        {
+          var data =  await  cliente.UpdateByQueryAsync<Modelo.Contenido.Version>(u => u
+            .Query(q =>
+                   q.Bool(b =>
+                   b.Filter(bf => bf.Term(t => t.EstadoIndexado,
+                   Modelo.Contenido.EstadoIndexado.FinalizadoError)))
+                )
+            .Script("ctx._source.eidx = 0")
+                .Conflicts(Conflicts.Proceed)
+            .Refresh(true)
+            );
         }
 
         public async Task<string> ExisteTextoCompleto(Modelo.Contenido.ContenidoTextoCompleto contenido)

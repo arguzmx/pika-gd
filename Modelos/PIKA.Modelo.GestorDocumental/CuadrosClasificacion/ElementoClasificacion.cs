@@ -90,7 +90,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// Indica si el elemento es un elemnto raiz
         /// </summary>
         [Prop(Required: true, Visible: false, OrderIndex: 1020, Contextual: true, IdContextual: ConstantesModelo.CONTEXTO_ESRAIZ)]
-        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.add)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public bool EsRaiz { get; set; }
 
 

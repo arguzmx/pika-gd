@@ -61,6 +61,32 @@ namespace PIKA.Servicio.Contenido.Gestores
             }
         }
 
+
+        //public Task<List<string>> PartesFaltantes(string ElementoId, List<string> PartesId, string VersionId, string VolumenId, string Extension)
+        //{
+        //    List<string> faltantes = new List<string>();
+        //    PartesId.ForEach(p =>
+        //    {
+        //        string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
+        //        string nombreArchivo = Id + Extension.ToUpper();
+        //        string rutaFinal = Path.Combine(ruta, nombreArchivo);
+        //        if(!File.Exists(rutaFinal))
+        //        {
+        //            faltantes.Add(Id);
+        //        }
+        //    });
+            
+        //    return Task.FromResult(faltantes);
+        //}
+
+        public Task<bool> ExisteParte(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension)
+        {
+            string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
+            string nombreArchivo = ParteId + Extension.ToUpper();
+            string rutaFinal = Path.Combine(ruta, nombreArchivo);
+            return Task.FromResult(File.Exists(rutaFinal));
+        }
+
         public Task<byte[]> LeeBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension)
         {
             string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);

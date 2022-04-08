@@ -151,6 +151,31 @@ namespace PIKA.GD.API.Controllers.Contenido
             return NotFound(id);
         }
 
+        //[HttpPost("VerificarFisico/{id}")]
+        //[TypeFilter(typeof(AsyncACLActionFilter))]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //public async Task<ActionResult<bool>> VerificarFisico(string id)
+        //{
+        //    var o = await this.repoContenido.ObtieneVersion(id).ConfigureAwait(false);
+        //    // var o = await servicioEntidad.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+        //    if (o != null) {
+        //        IGestorES gestor = await servicioVol.ObtienInstanciaGestor(o.VolumenId)
+        //                   .ConfigureAwait(false);
+
+        //        if(gestor!= null)
+        //        {
+        //            await gestor.EscribeBytes(p.Id, p.ElementoId, p.VersionId, filePath, fi, false).ConfigureAwait(false);
+
+        //            return Ok();
+        //        }
+
+        //        return Conflict(id);
+                
+        //    }
+        //    return NotFound(id);
+        //}
+
 
         /// <summary>
         /// Elimina de manera lógica una Version de contenido en base al arreglo de identificadores recibidos
