@@ -128,9 +128,10 @@ namespace PikaOCR
 
                 _logger.LogInformation($"Procesando en  {maxThreads} hilos");
                 List<Task<ResultadoOCR>> TareasOCR = new List<Task<ResultadoOCR>>();
-
+                
                 if (version.Partes != null && version.Partes.Count > 0)
                 {
+                    int AProcesar = version.Partes.Count;
                     Volumen v = await _volumenes.UnicoAsync(v => v.Id == version.VolumenId);
                     Elemento elemento = await _elementos.UnicoAsync(x => x.Id == version.ElementoId);
                     IGestorES gestor = await _volumenes.ObtienInstanciaGestor(v.Id);
@@ -144,7 +145,7 @@ namespace PikaOCR
                         {
                             break;
                         }
-
+                        AProcesar--;
                         // Estos datos no estan en la parte para economizr espacio en el documento de ElasticSearch
                         parte.VersionId = version.Id;
                         parte.ElementoId = version.ElementoId;
@@ -175,7 +176,7 @@ namespace PikaOCR
                         }
 
                         // Procesa por lotes de tamaño acorde al número máximo de hilos
-                        if(TareasOCR.Count >= maxThreads || version.Partes.Count == TareasOCR.Count)
+                        if(TareasOCR.Count >= maxThreads || AProcesar == 0)
                         {
                             Task.WaitAll(TareasOCR.ToArray());
 
@@ -256,7 +257,7 @@ namespace PikaOCR
                 }
 
                 version.EstadoIndexado = version.Partes.Any(p => p.Indexada == false) ? EstadoIndexado.FinalizadoError : EstadoIndexado.FinalizadoOK;
-
+                TareasOCR.Clear();
 
             }
             catch (Exception ex)
