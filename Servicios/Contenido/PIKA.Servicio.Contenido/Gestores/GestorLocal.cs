@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -122,26 +123,74 @@ namespace PIKA.Servicio.Contenido.Gestores
         private void CreaMiniatura(string rutaMinuaturas, 
          string imagenFuente, int tamanoCuadro, string ParteId)
         {
-            using (Image image = Image.Load(imagenFuente))
+            try
             {
-                if(image.Width > image.Height)
+                using (Image image = Image.Load(imagenFuente))
                 {
-                    int h = (int)((((float)image.Height) / ((float)image.Width)) * tamanoCuadro);
-                    // Landscape
-                    image.Mutate(x => x.Resize(tamanoCuadro, h));
+                    if (image.Width > image.Height)
+                    {
+                        int h = (int)((((float)image.Height) / ((float)image.Width)) * tamanoCuadro);
+                        // Landscape
+                        image.Mutate(x => x.Resize(tamanoCuadro, h));
 
-                } else
-                {
-                    //Portrait
-                    int w = (int)((((float)image.Width) / ((float)image.Height)) * tamanoCuadro);
-                    // Landscape
-                    image.Mutate(x => x.Resize(w, tamanoCuadro));
+                    }
+                    else
+                    {
+                        //Portrait
+                        int w = (int)((((float)image.Width) / ((float)image.Height)) * tamanoCuadro);
+                        // Landscape
+                        image.Mutate(x => x.Resize(w, tamanoCuadro));
 
+                    }
+
+                    string nombreArchivo = ParteId + ".PNG";
+                    string rutaFinal = Path.Combine(rutaMinuaturas, nombreArchivo);
+                    image.Save(rutaFinal);
                 }
 
-                string nombreArchivo = ParteId + ".PNG";
-                string rutaFinal = Path.Combine(rutaMinuaturas, nombreArchivo);
-                image.Save(rutaFinal); 
+            }
+            catch (Exception ex)
+            {
+                try
+                {
+                    using (Image image = Image.Load(Path.Combine(AssemblyDirectory, "Contenido", "Imagenes", "img-error.png")))
+                    {
+                        if (image.Width > image.Height)
+                        {
+                            int h = (int)((((float)image.Height) / ((float)image.Width)) * tamanoCuadro);
+                            // Landscape
+                            image.Mutate(x => x.Resize(tamanoCuadro, h));
+
+                        }
+                        else
+                        {
+                            //Portrait
+                            int w = (int)((((float)image.Width) / ((float)image.Height)) * tamanoCuadro);
+                            // Landscape
+                            image.Mutate(x => x.Resize(w, tamanoCuadro));
+
+                        }
+
+                        string nombreArchivo = ParteId + ".PNG";
+                        string rutaFinal = Path.Combine(rutaMinuaturas, nombreArchivo);
+                        image.Save(rutaFinal);
+                    }
+
+                }
+                catch (Exception)
+                {
+                }
+            }
+        }
+
+        private static string AssemblyDirectory
+        {
+            get
+            {
+                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                UriBuilder uri = new UriBuilder(codeBase);
+                string path = Uri.UnescapeDataString(uri.Path);
+                return Path.GetDirectoryName(path);
             }
         }
 
@@ -157,6 +206,7 @@ namespace PIKA.Servicio.Contenido.Gestores
         /// <returns></returns>
         public async Task<long> EscribeBytes(string ParteId, string ElementoId, string VersionId, byte[] contenido, FileInfo informacion, bool sobreescribir)
         {
+
             string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
             string rutaMiniaturas = Path.Combine(ruta, "thumbnails");
 

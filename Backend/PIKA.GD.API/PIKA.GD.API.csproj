@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Contenido\Imagenes\img-error.png" />
     <None Remove="Contenido\Reportes\caratulaactivo.docx" />
     <None Remove="Contenido\Reportes\guiasimplearchivo-seccion.docx" />
     <None Remove="Contenido\Reportes\guiasimplearchivo-ua.docx" />
@@ -17,6 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Contenido\Imagenes\img-error.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Contenido\Reportes\caratulaactivo.docx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

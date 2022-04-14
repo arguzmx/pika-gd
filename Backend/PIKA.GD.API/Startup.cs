@@ -38,6 +38,8 @@ using PIKA.GD.API.Servicios.TareasAutomaticas;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using System.Reflection;
+using System.IO;
 
 namespace PIKA.GD.API
 {
@@ -47,6 +49,16 @@ namespace PIKA.GD.API
         public IConfiguration Configuration { get; }
         public IWebHostEnvironment Environment { get; }
 
+        private static string AssemblyDirectory
+        {
+            get
+            {
+                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                UriBuilder uri = new UriBuilder(codeBase);
+                string path = Uri.UnescapeDataString(uri.Path);
+                return Path.GetDirectoryName(path);
+            }
+        }
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
