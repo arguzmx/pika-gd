@@ -120,13 +120,11 @@ namespace PIKA.GD.API.Controllers.Contenido
             var permiso = await ServicioTokenSeguridad.PermisosModuloId(this.UsuarioId, this.DominioId, "PERMISOS-CONTENIDO")
             .ConfigureAwait(false);
 
- 
             servicioEntidad.usuario = this.usuario;
             servicioEntidad.permisos = permiso;
 
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
             query.Filtros.AddRange(ObtieneFiltrosIdentidadSinDominio());
-            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(query.Filtros));
 
             var data = await servicioEntidad.ObtenerPaginadoAsync(query).ConfigureAwait(false);
             return Ok(data);

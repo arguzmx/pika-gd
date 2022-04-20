@@ -47,25 +47,23 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
             int cantidad = 0;
 
-            foreach (var tipo in entities.ToList()
-                .GroupBy(x => x.AplicacionId)
-                .Select(g => new { cantidad = g.Count(), key = g.Key }).ToList())
+            foreach(string key in  entities.ToList().Select(x => x.EntidadAccesoId).Distinct())
             {
+                string sqls = $"DELETE FROM {DbContextSeguridad.TablaPermisosApp} where EntidadAccesoId='{key}'";
+                await this.UDT.Context.Database.ExecuteSqlRawAsync(sqls).ConfigureAwait(false);
+            }
 
+            List<PermisoAplicacion> adicionadas = new List<PermisoAplicacion>();
+            foreach (var p in entities)
+            {
+                PermisoAplicacion permisoAdicionado = adicionadas.Where(x => x.DominioId == DominioId
+                && x.AplicacionId == p.AplicacionId
+                && x.ModuloId == p.ModuloId
+                && x.TipoEntidadAcceso == p.TipoEntidadAcceso
+                && x.EntidadAccesoId == p.EntidadAccesoId).SingleOrDefault();
 
-                var lista = await repo.ObtenerAsync(x => x.DominioId == DominioId
-                                && x.AplicacionId == tipo.key);
-
-                var grupo = entities.Where(x => x.AplicacionId == tipo.key);
-
-                foreach (var p in grupo)
+                if (permisoAdicionado == null)
                 {
-                    cantidad++;
-                    PermisoAplicacion permisoExistente = lista.Where(x => x.DominioId == DominioId
-                    && x.AplicacionId == p.AplicacionId
-                    && x.ModuloId == p.ModuloId
-                    && x.TipoEntidadAcceso == p.TipoEntidadAcceso
-                    && x.EntidadAccesoId == p.EntidadAccesoId).SingleOrDefault();
 
                     p.DominioId = DominioId;
                     if (p.NegarAcceso)
@@ -77,30 +75,26 @@ namespace PIKA.Servicio.Seguridad.Servicios
                         p.Leer = false;
                     }
 
-                    if (permisoExistente == null)
+                    cantidad++;
+                    var permiso = new PermisoAplicacion()
                     {
-
-
-                        if (p.Leer || p.Escribir || p.Ejecutar || p.Eliminar || p.Admin || p.NegarAcceso)
-                            await repo.CrearAsync(new PermisoAplicacion() { 
-                             Admin = p.Admin, AplicacionId = p.AplicacionId, DominioId = p.DominioId , Ejecutar = p.Ejecutar ,
-                             Eliminar = p.Eliminar, EntidadAccesoId = p.EntidadAccesoId, Escribir =p.Escribir, Leer = p.Leer, ModuloId = p.ModuloId,
-                             NegarAcceso = p.NegarAcceso, TipoEntidadAcceso = p.TipoEntidadAcceso});
-                    }
-                    else
-                    {
-                        permisoExistente.Admin = p.Admin;
-                        permisoExistente.Ejecutar = p.Ejecutar;
-                        permisoExistente.Eliminar = p.Eliminar;
-                        permisoExistente.Escribir = p.Escribir;
-                        permisoExistente.Leer = p.Leer;
-                        permisoExistente.NegarAcceso = p.NegarAcceso;
-                        this.UDT.Context.Entry(permisoExistente).State = EntityState.Modified;
-                    }
+                        Admin = p.Admin,
+                        AplicacionId = p.AplicacionId,
+                        DominioId = p.DominioId,
+                        Ejecutar = p.Ejecutar,
+                        Eliminar = p.Eliminar,
+                        EntidadAccesoId = p.EntidadAccesoId,
+                        Escribir = p.Escribir,
+                        Leer = p.Leer,
+                        ModuloId = p.ModuloId,
+                        NegarAcceso = p.NegarAcceso,
+                        TipoEntidadAcceso = p.TipoEntidadAcceso
+                    };
+                    await repo.CrearAsync(permiso);
+                    adicionadas.Add(permiso);
                 }
-
-
             }
+
 
             UDT.SaveChanges();
             return cantidad;

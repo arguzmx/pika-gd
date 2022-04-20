@@ -50,7 +50,8 @@ namespace PIKA.Servicio.Contenido
                         typeof(Version),
                         typeof(Permiso),
                         typeof(DestinatarioPermiso),
-                        typeof(Elemento)
+                        typeof(Elemento),
+                        typeof(PuntoMontaje)
                     }
                 },
                      new ElementoAplicacion(ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_VISOR_CONTENIDO ) {

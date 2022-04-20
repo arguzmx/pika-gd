@@ -87,6 +87,7 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
 
                     if (tarea.ProximaEjecucion.HasValue)
                     {
+                        // La tarea se inicia cuando la hora del sistema rebasa la de programación
                         if(tarea.ProximaEjecucion < DateTime.UtcNow)
                         {
                             var procesador = InstanciaTareas.FirstOrDefault(x => x.Id == tarea.Id);

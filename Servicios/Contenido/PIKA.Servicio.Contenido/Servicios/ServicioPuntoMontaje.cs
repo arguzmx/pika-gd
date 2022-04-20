@@ -290,7 +290,8 @@ namespace PIKA.Servicio.Contenido.Servicios
                 sqls += $" LIMIT {offset},{Query.tamano}";
 
                 sqls = sqls.Replace("COUNT(*)", "DISTINCT *");
-                
+                Console.WriteLine(sqlsCount);
+                Console.WriteLine(sqls);
                 using (var command = UDT.Context.Database.GetDbConnection().CreateCommand())
                 {
                     command.CommandText = sqlsCount;

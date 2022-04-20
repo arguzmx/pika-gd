@@ -15,7 +15,7 @@ namespace PIKA.Modelo.Contenido
     ///  Esta clase permite defiir puntos de montaje para una estructira jerarquica de carpetas
     /// </summary>
     [Entidad(PaginadoRelacional: false, EliminarLogico: true, 
-    TokenApp: ConstantesAppContenido.APP_ID, TokenMod: ConstantesAppContenido.MODULO_ADMIN_CONFIGURACION)]
+    TokenApp: ConstantesAppContenido.APP_ID, TokenMod: ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO)]
     
     [EntidadVinculada(TokenSeguridad: ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO, 
         EntidadHijo: "Carpeta,Elemento",

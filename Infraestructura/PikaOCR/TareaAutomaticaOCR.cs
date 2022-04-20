@@ -49,7 +49,9 @@ namespace PikaOCR
             TareaFinalizada?.Invoke(this, e);
         }
 
-
+        private string logsDirectory;
+        private string OCRLogFile;
+        private bool debug;
         public TareaAutomaticaOCR(
              string DominioId,
              string Id,
@@ -73,22 +75,60 @@ namespace PikaOCR
             this.DominioId  = DominioId;
             this.TokenSeguimiento = TokenSeguimiento;
 
+            if (_configuracion.GetValue<bool>("TareasBackground:ocr:debug"))
+            {
+                debug = true;
+                logsDirectory = Path.Combine(Environment.CurrentDirectory, "logs");
+                OCRLogFile = Path.Combine(logsDirectory, "ocr-log.txt");
+                try
+                {
+                    if (!Directory.Exists(logsDirectory))
+                    {
+                        Directory.CreateDirectory(logsDirectory);
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+            Log("Creando tarea OCR");
+
             resultado = new ResultadoTareaBackground(DominioId) { Error = null, Exito =false, Id = Id, SegundosDuracion = 0 };
         }
 
+
+        private void Log(string data)
+        {
+            _logger.LogInformation(data);
+            if(debug)
+            {
+                try
+                {
+                    System.IO.File.AppendAllText(this.OCRLogFile, $"{DateTime.Now.ToString("dd/MM/yy HH:mm:ss")}\t{data}");
+                }
+                catch (Exception)
+                {
+
+
+                }
+            }
+         
+
+        }
 
         public async Task<ResultadoTareaBackground> EjecutarTarea(string inputPayload = null)
         {
             try
             {
-                _logger.LogInformation("Iniciando proceso de OCR");
+                Log("Iniciando proceso de OCR");
                 inicio = DateTime.UtcNow;
                 
                 var siguiente = await this._repoElastic.SiguenteIndexar(null);
 
                 while (!stoppingToken.IsCancellationRequested && siguiente != null)
                 {
-                    _logger.LogInformation($"Procesando OCR {siguiente.Id}@{siguiente.Partes.Count}");
+                    Log($"Procesando OCR {siguiente.Id}@{siguiente.Partes.Count}");
                     await ProcesaVersion(siguiente);
                     siguiente = await this._repoElastic.SiguenteIndexar(null);
                 }
@@ -97,14 +137,14 @@ namespace PikaOCR
 
                 resultado.Exito = true;
                 resultado.SegundosDuracion = (int)((fin - inicio).TotalSeconds);
-                _logger.LogInformation("Finalizando proceso de OCR");
+                Log("Finalizando proceso de OCR");
                 
                 OnTareaFinalizada(resultado);
 
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"Error de proceso de OCR {ex}");
+                Log($"Error de proceso de OCR {ex}");
                 fin = DateTime.UtcNow;
                 resultado.Exito = false;
                 resultado.Error = ex.Message;
@@ -124,9 +164,8 @@ namespace PikaOCR
                 {
                     maxThreads = 1;
                 }
-                int count = 0;
 
-                _logger.LogInformation($"Procesando en  {maxThreads} hilos");
+                Log($"Procesando en  {maxThreads} hilos");
                 List<Task<ResultadoOCR>> TareasOCR = new List<Task<ResultadoOCR>>();
                 
                 if (version.Partes != null && version.Partes.Count > 0)
@@ -165,19 +204,25 @@ namespace PikaOCR
                             switch (parte.Extension.ToLower())
                             {
                                 case ".pdf":
+                                    Log($"Procesando parte PDF {parte.Indice}");
                                     TareasOCR.Add(x.TextoPDF(parte, nombreTemporal));
                                     break;
 
                                 default:
+                                    Log($"Procesando parte Imagen {parte.Indice}");
                                     TareasOCR.Add(x.TextoImagen(parte, nombreTemporal));
                                     break;
                             }
 
                         }
 
+                        Log($"Verificar {TareasOCR.Count} >= {maxThreads} || {AProcesar} == 0");
+                        
                         // Procesa por lotes de tamaño acorde al número máximo de hilos
-                        if(TareasOCR.Count >= maxThreads || AProcesar == 0)
+                        if (TareasOCR.Count >= maxThreads || AProcesar == 0)
                         {
+
+                            Log($"Ejecutando {TareasOCR.Count} tareas OCR");
                             Task.WaitAll(TareasOCR.ToArray());
 
                             // Procesa los resultados
@@ -188,6 +233,7 @@ namespace PikaOCR
                                         case ".pdf":
                                         if (t.Result.Exito)
                                         {
+                                            Log($"Indexando PDF {t.Result.Parte.Id}");
                                             int pagina = 1;
                                             foreach (var r in t.Result.Rutas)
                                             {
@@ -227,7 +273,7 @@ namespace PikaOCR
 
                                         if (t.Result.Exito)
                                         {
-
+                                            Log($"Indexando imagen {t.Result.Parte.Id}");
                                             if (string.IsNullOrEmpty(idExistente))
                                             {
                                                 await _repoElastic.IndexarTextoCompleto(parte.ParteAContenidoTextoCompleto(File.ReadAllText(t.Result.Rutas[0]), elemento.PuntoMontajeId, elemento.CarpetaId));
@@ -249,13 +295,14 @@ namespace PikaOCR
                                     }
 
                             }
-
+                            Log($"Limpiando tareas de OCR");
                             TareasOCR.Clear();
                         }
 
                     }
                 }
 
+                Log($"Fin de proceso para el documento");
                 version.EstadoIndexado = version.Partes.Any(p => p.Indexada == false) ? EstadoIndexado.FinalizadoError : EstadoIndexado.FinalizadoOK;
                 TareasOCR.Clear();
 
@@ -263,9 +310,11 @@ namespace PikaOCR
             catch (Exception ex)
             {
                 _logger.LogError(ex.ToString());
+                Log(ex.ToString());
                 version.EstadoIndexado = EstadoIndexado.FinalizadoError;
             }
 
+            Log($"Actualizando estado indexado");
             await _repoElastic.ActualizaEstadoOCR(version.Id, version);
    
             return version;

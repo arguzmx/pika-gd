@@ -55,7 +55,7 @@ namespace PIKA.Identity.Server.Services
             {
                 d.UnidadesOrganizacionales.ForEach(u =>
                 {
-                    var value = u.DominioId + '-' + u.Id + (d.EsAdmin ? "-admin" : "-user");
+                    var value = u.DominioId + ':' + u.Id + (d.EsAdmin ? ":admin" : ":user");
                     claims.Add(new Claim(JwtClaimTypes.Role, value));
 
                 });

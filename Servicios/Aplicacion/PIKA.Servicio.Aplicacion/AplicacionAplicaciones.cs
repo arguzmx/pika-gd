@@ -36,8 +36,8 @@ namespace PIKA.Servicio.AplicacionPlugin
                     Tipos = new List<Type> { typeof(Aplicacion), typeof(TareaAutomatica), typeof(BitacoraTarea) }
                 },
                 new ElementoAplicacion(ConstantesAppAplicacionPlugin.APP_ID, ConstantesAppAplicacionPlugin.MODULO_APLICACIONES ) {
-                    Titulo = "Servicios del usuario",
-                    Descripcion = "Permite el acceso a los servicios del usuario",
+                    Titulo = "Servicios en demanda del usuario",
+                    Descripcion = "Permite el acceso a los servicios en demanda del usuario",
                     Tipos = new List<Type> { typeof(TareaEnDemanda) }
                 },
                 //new ElementoAplicacion(ConstantesAppAplicacionPlugin.APP_ID, ConstantesAppAplicacionPlugin.MODULO_APLICACIONES ) {
