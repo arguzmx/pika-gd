@@ -105,7 +105,7 @@ namespace PikaOCR
             {
                 try
                 {
-                    System.IO.File.AppendAllText(this.OCRLogFile, $"{DateTime.Now.ToString("dd/MM/yy HH:mm:ss")}\t{data}");
+                    System.IO.File.AppendAllText(this.OCRLogFile, $"{DateTime.Now.ToString("dd/MM/yy HH:mm:ss")}\t{data}\r\n");
                 }
                 catch (Exception)
                 {

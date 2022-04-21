@@ -7,20 +7,21 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 
 namespace PikaOCR
 {
-    public class  ExtractorTexto
+    public class ExtractorTexto
     {
         private readonly ConfiguracionServidor configuracion;
         private readonly IGestorES gestor;
         private readonly ILogger logger;
-        public ExtractorTexto (
+        public ExtractorTexto(
             ILogger logger,
-            ConfiguracionServidor configuracion, 
+            ConfiguracionServidor configuracion,
             IGestorES gestor)
         {
             this.logger = logger;
@@ -68,56 +69,73 @@ namespace PikaOCR
                     }
                 }
 
-                if(!doneOk)
+                if (!doneOk)
                 {
                     var bytes = await gestor.LeeBytes(p.ElementoId, gestor.UtilizaIdentificadorExterno ? p.IdentificadorExterno : p.Id, p.VersionId, p.VolumenId, p.Extension);
                     File.WriteAllBytes(filename, bytes);
 
                     string langconfig = "";
-                    if(File.Exists(Path.Combine(configuracion.ruta_tesseract, "tessdata", $"{lang.ToLower()}.traineddata")))
+                    if (File.Exists(Path.Combine(configuracion.ruta_tesseract, "tessdata", $"{lang.ToLower()}.traineddata")))
                     {
                         langconfig = $" -l {lang}";
                     }
 
-                    var info = new ProcessStartInfo
-                    {
-                        FileName = configuracion.ruta_tesseract,
-                        Arguments = $"{filename} {filename}{langconfig}".TrimEnd(),
-                        RedirectStandardError = true,
-                        RedirectStandardOutput = true,
-                        CreateNoWindow = true,
-                        UseShellExecute = false
-                    };
 
-                    using (var ps = Process.Start(info))
-                    {
-                        ps.WaitForExit();
 
-                        var exitCode = ps.ExitCode;
-                        
-                        if (exitCode == 0)
+                    using var outputWaitHandle = new AutoResetEvent(false);
+                    using var errorWaitHandle = new AutoResetEvent(false);
+                    try
+                    {
+
+                        var info = new ProcessStartInfo
                         {
-                            ruta = filename + ".txt";
-                            doneOk = true;
+                            FileName = configuracion.ruta_tesseract,
+                            Arguments = $"{filename} {filename}{langconfig}".TrimEnd(),
+                            RedirectStandardError = true,
+                            RedirectStandardOutput = true,
+                            CreateNoWindow = true,
+                            UseShellExecute = false
+                        };
+                        info.EnvironmentVariables.Add("OMP_THREAD_LIMIT", "1");
 
-                            if (gestor.AlmacenaOCR)
+
+                        using (var ps = Process.Start(info))
+                        {
+                            ps.WaitForExit();
+
+                            var exitCode = ps.ExitCode;
+
+                            if (exitCode == 0)
                             {
-                                try
+                                ruta = filename + ".txt";
+                                doneOk = true;
+
+                                if (gestor.AlmacenaOCR)
                                 {
-                                    await gestor.EscribeOCRBytes(gestor.UtilizaIdentificadorExterno ? p.IdentificadorExterno : p.Id, p.ElementoId, p.VersionId, File.ReadAllBytes(ruta));
+                                    try
+                                    {
+                                        await gestor.EscribeOCRBytes(gestor.UtilizaIdentificadorExterno ? p.IdentificadorExterno : p.Id, p.ElementoId, p.VersionId, File.ReadAllBytes(ruta));
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        logger.LogError($"Error al escribir OCR");
+                                        logger.LogError($"{ex}");
+                                    }
+
                                 }
-                                catch (Exception ex)
-                                {
-                                    logger.LogError($"Error al escribir OCR");
-                                    logger.LogError($"{ex}");
-                                }
-                                
                             }
-                        } else
-                        {
-                            Console.WriteLine($"{ps.ExitCode} {ps.StandardOutput.ReadToEnd()}  {ps.StandardError.ReadToEnd()}");
+                            else
+                            {
+                                Console.WriteLine($"{ps.ExitCode} {ps.StandardOutput.ReadToEnd()}  {ps.StandardError.ReadToEnd()}");
+                            }
                         }
                     }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
+
 
                 }
 
@@ -133,7 +151,7 @@ namespace PikaOCR
                 resultado.Rutas = new List<string>();
                 return resultado;
             }
-            
+
         }
 
 
@@ -144,7 +162,7 @@ namespace PikaOCR
             string filename = NombreTemporal;
             try
             {
-                var bytes = await gestor.LeeBytes(p.ElementoId, gestor.UtilizaIdentificadorExterno? p.IdentificadorExterno :  p.Id, p.VersionId, p.VolumenId, p.Extension);
+                var bytes = await gestor.LeeBytes(p.ElementoId, gestor.UtilizaIdentificadorExterno ? p.IdentificadorExterno : p.Id, p.VersionId, p.VolumenId, p.Extension);
                 File.WriteAllBytes(filename, bytes);
 
                 using (PdfDocument document = PdfDocument.Open(filename))
@@ -157,7 +175,7 @@ namespace PikaOCR
                         Page page = document.GetPage(i);
                         string ocrName = $"{filename}{i}.txt";
                         string text = page.Text;
-                        File.WriteAllText(ocrName , text);
+                        File.WriteAllText(ocrName, text);
                         rutas.Add(ocrName);
                     }
                 }
@@ -179,7 +197,7 @@ namespace PikaOCR
 
         public void ElimninaArchivosOCR(string file)
         {
-     
+
             FileInfo fi = new FileInfo(file);
             if (File.Exists(file))
             {
@@ -193,7 +211,8 @@ namespace PikaOCR
             }
 
             List<string> files = Directory.GetFiles(fi.DirectoryName, $"{fi.Name}*.txt").ToList();
-            files.ForEach(f => {
+            files.ForEach(f =>
+            {
                 try
                 {
                     File.Delete(f);
@@ -202,7 +221,7 @@ namespace PikaOCR
                 {
                 }
             });
-            
+
         }
     }
 }
