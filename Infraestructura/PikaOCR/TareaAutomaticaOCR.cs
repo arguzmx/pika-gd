@@ -128,6 +128,9 @@ namespace PikaOCR
 
                 while (!stoppingToken.IsCancellationRequested && siguiente != null)
                 {
+                    if (siguiente.Partes == null) {
+                        siguiente.Partes = new List<Parte>();
+                    }
                     Log($"Procesando OCR {siguiente.Id}@{siguiente.Partes.Count}");
                     await ProcesaVersion(siguiente);
                     siguiente = await this._repoElastic.SiguenteIndexar(null);
