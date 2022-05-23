@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.GestorDocumental.Temas;
-using PIKA.Modelo.GestorDocumental.Topologia;
 using PIKA.Servicio.GestionDocumental.Data.Configuracion;
 using RepositorioEntidades;
 using System;
@@ -129,16 +128,12 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// </summary>
         public static string TablaAlmacenesArchivo { get => "gd$almacen"; }
 
-        /// <summary>
-        /// Nombre de la tabla para las entidades del tipo Asunto 
-        /// </summary>
-        public static string TablaEstantes { get => "gd$estantes"; }
 
-        /// <summary>
-        /// Nombre de la tabla para las entidades del tipo Asunto 
-        /// </summary>
-        public static string TablaEspaciosEstante { get => "gd$espacioestante"; }
+        public static string TablaZonasAlmacen { get => "gd$zonasalmacen"; }
 
+        public static string TablaPosicionAlmacen { get => "gd$posalmacen"; }
+        public static string TablaContenedorAlmacen { get => "gd$contalmacen"; }
+        public static string TablaEventoContenedorAlmacen { get => "gd$evtcontalmacen"; }
 
         /// <summary>
         /// Nombre de la tabla para las entidades del tipo Transferencia 
@@ -253,14 +248,23 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// Almacenes de archivo existentes en la aplicación
         /// </summary>
         public DbSet<AlmacenArchivo> AlmacenesArchivo { get; set; }
+
         /// <summary>
-        /// Estantes existentes en la aplicación
+        /// Zonas de Almacen existentes en la aplicación
         /// </summary>
-        public DbSet<Estante> Estantes { get; set; }
+        public DbSet<ZonaAlmacen> ZonasAlmacen { get; set; }
+
+
         /// <summary>
-        /// Espacios de estante de prestamo existentes en la aplicación
+        /// Zonas de Almacen existentes en la aplicación
         /// </summary>
-        public DbSet<EspacioEstante> EspaciosEstante { get; set; }
+        public DbSet<ContenedorAlmacen> ContenedoresAlmacen { get; set; }
+
+
+        /// <summary>
+        /// Posiciones de Almacen existentes en la aplicación
+        /// </summary>
+        public DbSet<PosicionAlmacen> PosicionesAlmacen { get; set; }
 
         /// <summary>
         /// Prestamos existentes en la aplicación
@@ -375,8 +379,10 @@ namespace PIKA.Servicio.GestionDocumental.Data
             builder.ApplyConfiguration<HistorialArchivoActivo>(new DbConfHistorialArchivoActivo());
 
             builder.ApplyConfiguration<AlmacenArchivo>(new DbConfAlmacenArchivo());
-            builder.ApplyConfiguration<Estante>(new DbConfEstante());
-            builder.ApplyConfiguration<EspacioEstante>(new DbConfEspacioEstante());
+            builder.ApplyConfiguration<ZonaAlmacen>(new DbConfZonaAlmacen());
+            builder.ApplyConfiguration<PosicionAlmacen>(new DbConfPosicionalmacen());
+            builder.ApplyConfiguration<ContenedorAlmacen>(new DbConfContenedorAlmacen());
+            builder.ApplyConfiguration<EventoContenedorAlmacen>(new DbConfEventoContenedoAlmacen());
 
             builder.ApplyConfiguration<Prestamo>(new DbConfPrestamo());
             builder.ApplyConfiguration<ActivoPrestamo>(new DbConfActivoPrestamo());

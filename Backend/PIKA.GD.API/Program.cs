@@ -42,13 +42,23 @@ namespace PIKA.GD.API
           .WriteTo.Console()
           .CreateLogger();
 
+            var tempConfig = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false)
+                .Build();
+            Log.Information("Iniciando PIKA-GD-API");
+            long? maxMB = tempConfig.GetValue<long?>("MaxUploadSizeMb");
+            if (!maxMB.HasValue) maxMB = 500;
+            Log.Information($"Tamaño máximo carga {maxMB}");
+            maxMB = maxMB * 1024 * 1024;
+
+
+
             var nodb = args.Contains("/nodb");
             var demodb = args.Contains("/demodb");
             nobgservices = args.Contains("/noservices");
             try
             {
-                Log.Information("Iniciando PIKA-GD-API");
-                var host = BuildWebHost(args);
+                var host = BuildWebHost(args, maxMB.Value);
                 var environment = host.Services.GetService<IWebHostEnvironment>();
                 var config = host.Services.GetRequiredService<IConfiguration>();
 
@@ -81,7 +91,7 @@ namespace PIKA.GD.API
 
         }
 
-        private static IWebHost BuildWebHost(string[] args) =>
+        private static IWebHost BuildWebHost(string[] args, long MaxUPloadBytes) =>
         WebHost.CreateDefaultBuilder(args)
             .CaptureStartupErrors(false)
             .ConfigureAppConfiguration(config =>
@@ -100,6 +110,10 @@ namespace PIKA.GD.API
                 }
             })
             .UseStartup<Startup>()
+             .UseKestrel(options =>
+             {
+                 options.Limits.MaxRequestBodySize = MaxUPloadBytes; //50MB
+             })
             .UseContentRoot(Directory.GetCurrentDirectory())
             .UseSerilog()
             .Build();

@@ -59,6 +59,12 @@
     <Compile Remove="Data\Migrations\20211215232429_UAEnEstadisticasAcervo.Designer.cs" />
     <Compile Remove="Data\Migrations\20211215233420_RecrearEstadisticasAcervo.cs" />
     <Compile Remove="Data\Migrations\20211215233420_RecrearEstadisticasAcervo.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220517023152_EventosContenedor.cs" />
+    <Compile Remove="Data\Migrations\20220517023152_EventosContenedor.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220517023537_EventosContenedor.cs" />
+    <Compile Remove="Data\Migrations\20220517023537_EventosContenedor.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220517023941_EventosContenedor.cs" />
+    <Compile Remove="Data\Migrations\20220517023941_EventosContenedor.Designer.cs" />
   </ItemGroup>
 
 

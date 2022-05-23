@@ -20,12 +20,12 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
     [ApiVersion("1.0")]
     [ApiController]
     [Route("api/v{version:apiVersion}/gd/[controller]")]
-    public class AlmacenController : ACLController
+    public class AlmacenArchivoController : ACLController
     {
-        private readonly ILogger<AlmacenController> logger;
+        private readonly ILogger<AlmacenArchivoController> logger;
         private IServicioAlmacenArchivo servicioEntidad;
         private IProveedorMetadatos<AlmacenArchivo> metadataProvider;
-        public AlmacenController(ILogger<AlmacenController> logger,
+        public AlmacenArchivoController(ILogger<AlmacenArchivoController> logger,
             IProveedorMetadatos<AlmacenArchivo> metadataProvider,
             IServicioAlmacenArchivo servicioEntidad)
         {

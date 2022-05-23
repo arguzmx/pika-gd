@@ -116,7 +116,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task ActualizarAsync(Activo entity)
         {
             Activo previo = await this.UnicoAsync(x => x.Id == entity.Id);
-            Activo valido = await ActivoValidado(entity, true);
+            Activo valido = await ActivoValidado(entity, true, previo);
             
             valido.Eliminada = previo.Eliminada;
 
@@ -335,7 +335,7 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
             return false;
         }
 
-        private async Task<Activo> ActivoValidado(Activo activo, bool actualizar)
+        private async Task<Activo> ActivoValidado(Activo activo, bool actualizar, Activo Previo =null)
         {
             Activo a = activo.Copia();
 
@@ -392,11 +392,30 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
                 a.Id = Guid.NewGuid().ToString();
             }
 
-            a.TipoArchivoId = archivo.TipoArchivoId;
-            a.EntradaClasificacionId = ec.Id;
-            a.CuadroClasificacionId = ec.CuadroClasifiacionId;
-            a.UbicacionCaja = activo.UbicacionCaja;
-            a.UbicacionRack = activo.UbicacionRack;
+            if(Previo==null)
+            {
+                a.TipoArchivoId = archivo.TipoArchivoId;
+                a.EntradaClasificacionId = ec.Id;
+                a.CuadroClasificacionId = ec.CuadroClasifiacionId;
+                a.UbicacionCaja = activo.UbicacionCaja;
+                a.UbicacionRack = activo.UbicacionRack;
+                a.ElementoId = activo.ElementoId;
+                a.TieneContenido = activo.TieneContenido;
+                a.UnidadAdministrativaArchivoId = activo.UnidadAdministrativaArchivoId;
+
+            } else
+            {
+                a.TipoArchivoId = Previo.TipoArchivoId;
+                a.EntradaClasificacionId = ec.Id;
+                a.CuadroClasificacionId = ec.CuadroClasifiacionId;
+                a.UbicacionCaja = Previo.UbicacionCaja;
+                a.UbicacionRack = Previo.UbicacionRack;
+                a.ElementoId = Previo.ElementoId;
+                a.TieneContenido = Previo.TieneContenido;
+                a.UnidadAdministrativaArchivoId = Previo.UnidadAdministrativaArchivoId;
+            }
+            
+
 
             if (a.FechaCierre.HasValue)
             {

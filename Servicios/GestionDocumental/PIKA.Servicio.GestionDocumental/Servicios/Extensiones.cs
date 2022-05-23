@@ -1,6 +1,5 @@
 ﻿using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.GestorDocumental.Reportes.JSON;
-using PIKA.Modelo.GestorDocumental.Topologia;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -135,35 +134,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             };
         }
 
-        #region Almacens
-
-
-        public static Estante CopiaEstante(this Estante e)
-        {
-            return new Estante()
-            {
-                Id = e.Id,
-                Nombre = e.Nombre,
-                CodigoElectronico = e.CodigoElectronico,
-                CodigoOptico = e.CodigoOptico,
-                AlmacenArchivoId = e.AlmacenArchivoId
-            };
-        }
-
-        public static EspacioEstante CopiaEspaciosEstante(this EspacioEstante ee)
-        {
-            return new EspacioEstante()
-            {
-                Id = ee.Id,
-                Nombre = ee.Nombre,
-                EstanteId = ee.EstanteId,
-                CodigoElectronico = ee.CodigoElectronico,
-                CodigoOptico = ee. CodigoOptico,
-                Posicion = ee.Posicion
-            };
-        }
-        #endregion
-
+    
         #region TRansferencias
         public static Transferencia CopiaTransferencia(this Transferencia t)
         {

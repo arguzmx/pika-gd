@@ -8,7 +8,6 @@ using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
-using PIKA.Modelo.GestorDocumental.Topologia;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.GestionDocumental.Interfaces;
 using RepositorioEntidades;
@@ -193,12 +192,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             if (ids.Count > 0)
             {
-                ServicioEstante se = new ServicioEstante(this.proveedorOpciones, this.logger);
-                ServicioEspacioEstante see = new ServicioEspacioEstante(this.proveedorOpciones, this.logger);
-                List<Estante> ListaEstante = await se.ObtenerAsync(x => x.AlmacenArchivoId.Contains(ids.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
-                List<EspacioEstante> ListaEspacioEstante = await see.ObtenerAsync(x => x.EstanteId.Contains(ListaEstante.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
-                await see.Eliminar(ListaIdEliminar(ListaEspacioEstante.Select(x=>x.Id).ToArray())).ConfigureAwait(false);
-                await se.Eliminar(ListaIdEliminar(ListaEstante.Select(x=>x.Id).ToArray()));
+                //ServicioEstante se = new ServicioEstante(this.proveedorOpciones, this.logger);
+                //ServicioEspacioEstante see = new ServicioEspacioEstante(this.proveedorOpciones, this.logger);
+                //List<Estante> ListaEstante = await se.ObtenerAsync(x => x.AlmacenArchivoId.Contains(ids.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
+                //List<EspacioEstante> ListaEspacioEstante = await see.ObtenerAsync(x => x.EstanteId.Contains(ListaEstante.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
+                //await see.Eliminar(ListaIdEliminar(ListaEspacioEstante.Select(x=>x.Id).ToArray())).ConfigureAwait(false);
+                //await se.Eliminar(ListaIdEliminar(ListaEstante.Select(x=>x.Id).ToArray()));
 
             }
         }

@@ -1,7 +1,6 @@
 ﻿using PIKA.Constantes.Aplicaciones.GestorDocumental;
 using PIKA.Infraestructura.Comun;
 using PIKA.Modelo.GestorDocumental;
-using PIKA.Modelo.GestorDocumental.Topologia;
 using System;
 using System.Collections.Generic;
 
@@ -71,11 +70,11 @@ namespace PIKA.Servicio.GestionDocumental
                     Descripcion = "Permite realizar la getsión del préstamo físico de los activos del acervo",
                     Tipos = new List<Type> { typeof(Prestamo), typeof(ActivoPrestamo), typeof(ComentarioPrestamo) }
                 },
-                new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_ALMACENARCHIVO ) {
-                    Titulo = "Gestión de almacenes de archivos",
-                    Descripcion = "Permite realizar la gestión de almacenes físicos para el archivo",
-                    Tipos = new List<Type> { typeof(AlmacenArchivo), typeof(Estante), typeof(EspacioEstante) }
-                },
+                //new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_ALMACENARCHIVO ) {
+                //    Titulo = "Gestión de almacenes de archivos",
+                //    Descripcion = "Permite realizar la gestión de almacenes físicos para el archivo",
+                //    Tipos = new List<Type> { typeof(AlmacenArchivo), typeof(Estante), typeof(EspacioEstante) }
+                //},
                 new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_TRANSFERENCIA ) {
                     Titulo = "Gestión de trasnferencias entre archivos",
                     Descripcion = "Permite realizar la gestión de las trasnferencias de invetarios entre archivos",

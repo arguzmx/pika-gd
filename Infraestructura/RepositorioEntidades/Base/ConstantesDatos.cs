@@ -25,6 +25,7 @@ namespace RepositorioEntidades
 
         public static int TEXTO_INDEXABLE_LARGO { get => 512; }
 
+        public static int PAYLOAD_EVENTO { get => 2048; }
 
         public static int CadenaConexion { get => 2000; }
 

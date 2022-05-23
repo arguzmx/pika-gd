@@ -50,6 +50,10 @@ namespace PIKA.Modelo.GestorDocumental
             Prestamos = new HashSet<Prestamo>();
             TransferenciasOrigen = new HashSet<Transferencia>();
             TransferenciasDestino = new HashSet<Transferencia>();
+            ZonasAlmacen = new List<ZonaAlmacen>();
+            PosicionesAlmacen = new List<PosicionAlmacen>();
+            Contenedores = new List<ContenedorAlmacen>();
+
             this.Reportes = new List<IProveedorReporte>();
             this.Reportes.Add(new ReporteGuiaSimpleArchivo());
             this.Reportes.Add(new ReporteInventario());
@@ -192,5 +196,17 @@ namespace PIKA.Modelo.GestorDocumental
         [XmlIgnore]
         public List<EstadisticaClasificacionAcervo> EstadisticasClasificacionAcervo { get; set; }
 
+
+        [JsonIgnore]
+        [XmlIgnore]
+        public List<ZonaAlmacen> ZonasAlmacen { get; set; }
+
+        [JsonIgnore]
+        [XmlIgnore]
+        public List<PosicionAlmacen> PosicionesAlmacen { get; set; }
+
+        [XmlIgnore]
+        [JsonIgnore]
+        public List<ContenedorAlmacen> Contenedores { get; set; }
     }
 }

@@ -19,8 +19,17 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
 
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.Clave).HasMaxLength(LongitudDatos.Nombre).IsRequired();
+            builder.Property(x => x.HabilitarFoliado).IsRequired();
+            builder.Property(x => x.FolioActualContenedor).IsRequired();
+            builder.Property(x => x.MacroFolioContenedor).HasMaxLength(250).IsRequired(false);
+            
+            builder.HasIndex(x => x.ArchivoId);
+            builder.HasIndex(x => x.Nombre);
+            builder.HasIndex(x => x.Clave);
 
-            builder.HasMany(x => x.Estantes).WithOne(y => y.Almacen).HasForeignKey(z => z.AlmacenArchivoId);
+            builder.HasMany(x=>x.Zonas).WithOne(y=>y.Almacen).HasForeignKey(z=>z.AlmacenArchivoId).OnDelete( DeleteBehavior.Restrict);
+            builder.HasMany(x => x.Posiciones).WithOne(y => y.Almacen).HasForeignKey(z => z.AlmacenArchivoId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(x => x.Contenedores).WithOne(y => y.Almacen).HasForeignKey(z => z.AlmacenArchivoId).OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
