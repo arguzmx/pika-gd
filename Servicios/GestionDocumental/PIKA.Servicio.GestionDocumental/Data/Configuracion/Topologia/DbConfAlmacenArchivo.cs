@@ -22,7 +22,8 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.HabilitarFoliado).IsRequired();
             builder.Property(x => x.FolioActualContenedor).IsRequired();
             builder.Property(x => x.MacroFolioContenedor).HasMaxLength(250).IsRequired(false);
-            
+            builder.Property(x => x.Ubicacion).HasMaxLength(LongitudDatos.Nombre).IsRequired();
+
             builder.HasIndex(x => x.ArchivoId);
             builder.HasIndex(x => x.Nombre);
             builder.HasIndex(x => x.Clave);

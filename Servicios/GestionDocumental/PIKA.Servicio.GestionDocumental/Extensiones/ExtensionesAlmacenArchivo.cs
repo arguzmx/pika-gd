@@ -15,7 +15,25 @@ namespace PIKA.Servicio.GestionDocumental
                 Id = a.Id,
                 Nombre = a.Nombre,
                 Clave = a.Clave,
-                ArchivoId = a.ArchivoId
+                ArchivoId = a.ArchivoId,
+                HabilitarFoliado = a.HabilitarFoliado,
+                FolioActualContenedor = a.FolioActualContenedor,
+                MacroFolioContenedor = a.MacroFolioContenedor,
+                Ubicacion = a.Ubicacion
+
+            };
+        }
+
+        public static ZonaAlmacen Copia(this ZonaAlmacen a)
+        {
+            if (a == null) return null;
+            return new ZonaAlmacen()
+            {
+                Id = a.Id,
+                Nombre = a.Nombre,
+                Clave = a.Clave,
+                ArchivoId = a.ArchivoId,
+                AlmacenArchivoId = a.AlmacenArchivoId,
             };
         }
     }

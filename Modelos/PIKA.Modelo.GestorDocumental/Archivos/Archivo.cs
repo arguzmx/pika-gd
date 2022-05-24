@@ -29,6 +29,12 @@ namespace PIKA.Modelo.GestorDocumental
         Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id",
         PropiedadHijo: "ArchivoId")]
 
+
+    [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ALMACENARCHIVO,
+        EntidadHijo: "AlmacenArchivo",
+        Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id",
+        PropiedadHijo: "ArchivoId")]
+
     public class Archivo : Entidad<string>, IEntidadNombrada, IEntidadEliminada, 
         IEntidadRelacionada, IEntidadReportes
     {

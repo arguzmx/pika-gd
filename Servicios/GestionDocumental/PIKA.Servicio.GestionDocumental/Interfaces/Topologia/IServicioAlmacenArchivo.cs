@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.GestionDocumental.Interfaces
 {
-    public interface IServicioAlmacenArchivo : IServicioRepositorioAsync<AlmacenArchivo, string>
+    public interface IServicioAlmacenArchivo : IServicioRepositorioAsync<AlmacenArchivo, string>,
+        IServicioValorTextoAsync<AlmacenArchivo>
     {
         Task EliminarRelaciones(List<AlmacenArchivo> ids);
     }
