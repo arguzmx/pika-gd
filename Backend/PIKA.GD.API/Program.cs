@@ -98,21 +98,21 @@ namespace PIKA.GD.API
             {
                 config.AddJsonFile("appsettings.local.json", optional: true);
             })
-            .ConfigureServices(services =>
-            {
-                if(!nobgservices)
-                {
-                    services.AddHostedService<ServicioTareasAutomaticaBackgroud>();
-                    services.AddScoped<ITareaAutomaticaBackgroud, TareaAutomaticaBackground>();
+            //.ConfigureServices(services =>
+            //{
+            //    if(!nobgservices)
+            //    {
+            //        services.AddHostedService<ServicioTareasAutomaticaBackgroud>();
+            //        services.AddScoped<ITareaAutomaticaBackgroud, TareaAutomaticaBackground>();
 
-                    services.AddHostedService<ServicioTareasEnDemandaBackgroud>();
-                    services.AddScoped<ITareaEnDemandaBackground, TareaEnDemandaBackground>();
-                }
-            })
+            //        services.AddHostedService<ServicioTareasEnDemandaBackgroud>();
+            //        services.AddScoped<ITareaEnDemandaBackground, TareaEnDemandaBackground>();
+            //    }
+            //})
             .UseStartup<Startup>()
              .UseKestrel(options =>
              {
-                 options.Limits.MaxRequestBodySize = MaxUPloadBytes; //50MB
+                 options.Limits.MaxRequestBodySize = MaxUPloadBytes; 
              })
             .UseContentRoot(Directory.GetCurrentDirectory())
             .UseSerilog()

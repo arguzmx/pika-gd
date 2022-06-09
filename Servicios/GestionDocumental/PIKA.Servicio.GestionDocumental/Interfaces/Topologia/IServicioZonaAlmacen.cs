@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.GestionDocumental.Interfaces
 {
-    public interface IServicioZonaAlmacen : IServicioRepositorioAsync<ZonaAlmacen, string>
+    public interface IServicioZonaAlmacen : IServicioRepositorioAsync<ZonaAlmacen, string>, IServicioValorTextoAsync<ZonaAlmacen>
     {
     }
 }

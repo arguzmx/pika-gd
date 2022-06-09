@@ -48,7 +48,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<AlmacenArchivo> CrearAsync(AlmacenArchivo entity, CancellationToken cancellationToken = default)
         {
 
-            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
+            if (await Existe(x => x.ArchivoId == entity.ArchivoId && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
@@ -70,7 +70,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
 
             if (await Existe(x =>
-            x.Id != entity.Id & x.ArchivoId == entity.ArchivoId
+            x.Id != entity.Id && x.ArchivoId == o.ArchivoId
             && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
@@ -217,6 +217,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 if (Query.Filtros[i].Propiedad.ToLower() == "texto")
                 {
                     Query.Filtros[i].Propiedad = "Nombre";
+                    Query.Filtros[i].Operador = FiltroConsulta.OP_CONTAINS;
                 }
             }
 

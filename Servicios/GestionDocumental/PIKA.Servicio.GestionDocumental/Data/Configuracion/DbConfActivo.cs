@@ -49,6 +49,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.UbicacionCaja).IsRequired(false).HasMaxLength(100);
             builder.Property(x => x.UbicacionRack).IsRequired(false).HasMaxLength(100);
 
+            builder.Property(x => x.AlmacenArchivoId).IsRequired(false).HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.ZonaAlmacenId).IsRequired(false).HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.ContenedorAlmacenId).IsRequired(false).HasMaxLength(LongitudDatos.GUID);
 
             builder.HasIndex(i => new { i.UbicacionCaja });
             builder.HasIndex(i => new { i.UbicacionRack });

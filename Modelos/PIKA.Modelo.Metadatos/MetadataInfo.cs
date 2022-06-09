@@ -99,7 +99,7 @@ namespace PIKA.Modelo.Metadatos
         public virtual List<CatalogoVinculado> CatalogosVinculados { get; set; }
 
         public virtual List<LinkVista> VistasVinculadas { get; set; }
-
+        
         public ICollection<IProveedorReporte> Reportes { get; set; }
     }
 }

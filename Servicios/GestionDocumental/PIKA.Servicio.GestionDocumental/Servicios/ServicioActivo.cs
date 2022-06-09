@@ -33,13 +33,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
-
-        //private IRepositorioAsync<CuadroClasificacion> repoCC;
-        //private IRepositorioAsync<ElementoClasificacion> repoEL;
-        //private IRepositorioAsync<EntradaClasificacion> repoEC;
-        //private IRepositorioAsync<Archivo> repoA;
-
-
         private IRepositorioAsync<Activo> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
         private IServicioEstadisticaClasificacionAcervo servEstadisticas;
@@ -650,6 +643,7 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
                 if (Query.Filtros[i].Propiedad.ToLower() == "texto")
                 {
                     Query.Filtros[i].Propiedad = "Nombre";
+                    Query.Filtros[i].Operador = FiltroConsulta.OP_CONTAINS;
                 }
             }
             if (Query.Filtros.Where(x => x.Propiedad.ToLower() == "eliminada").Count() == 0)

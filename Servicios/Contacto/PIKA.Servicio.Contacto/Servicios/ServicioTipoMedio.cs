@@ -144,7 +144,7 @@ namespace PIKA.Servicio.Contacto
                 {
                     Propiedad = "Eliminada",
                     Negacion = true,
-                    Operador = "eq",
+                    Operador = FiltroConsulta.OP_CONTAINS,
                     Valor = "true"
                 });
             }

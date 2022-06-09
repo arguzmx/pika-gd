@@ -392,6 +392,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 if (Query.Filtros[i].Propiedad.ToLower() == "texto")
                 {
                     buscado = Query.Filtros[i].Valor;
+                    Query.Filtros[i].Operador = FiltroConsulta.OP_CONTAINS;
                 }
             }
 

@@ -652,6 +652,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
                 if (Query.Filtros[i].Propiedad.ToLower() == "texto")
                 {
                     nombre = Query.Filtros[i].Valor;
+                    Query.Filtros[i].Operador = FiltroConsulta.OP_CONTAINS;
                 }
             }
 

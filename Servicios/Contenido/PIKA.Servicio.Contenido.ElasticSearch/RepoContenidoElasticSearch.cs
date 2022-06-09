@@ -77,9 +77,16 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
             else
             {
 
-                Console.WriteLine("Actualizando repositorio contenido");
+                logger.LogInformation("Actualizando repositorio contenido");
                 var body = ES.PostData.String("{\"properties\": {\"partes\": {\"properties\": {\"xid\": {\"type\":\"keyword\" }}}}}");
                 var r = cliente.LowLevel.Indices.PutMapping<PutMappingResponse>(INDICEVERSIONES, body);
+
+                body = ES.PostData.String("{\"properties\": {\"ocr_id\": {\"type\":\"keyword\" }}}");
+                r = cliente.LowLevel.Indices.PutMapping<PutMappingResponse>(INDICEVERSIONES, body);
+
+                body = ES.PostData.String("{\"properties\": {\"ocr_f\": {\"type\":\"date\" }}}");
+                r = cliente.LowLevel.Indices.PutMapping<PutMappingResponse>(INDICEVERSIONES, body);
+
                 Console.WriteLine($"{r.Acknowledged}");
 
                 logger.LogInformation($"Repositorio de contenido configurado");
@@ -123,10 +130,10 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
             return null;
         }
 
-        public async Task<bool> ActualizaVersion(string Id, Modelo.Contenido.Version version, bool RealizarOCR = true)
+        public async Task<bool> ActualizaVersion(string Id, Modelo.Contenido.Version version, bool MarcarPorIndexar = true)
         {
 
-            if(RealizarOCR)
+            if(MarcarPorIndexar)
             {
                 version.EstadoIndexado = Modelo.Contenido.EstadoIndexado.PorIndexar;
             }

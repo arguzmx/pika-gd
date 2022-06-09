@@ -124,7 +124,7 @@ namespace PikaOCR
                 Log("Iniciando proceso de OCR");
                 inicio = DateTime.UtcNow;
                 
-                var siguiente = await this._repoElastic.SiguenteIndexar(null);
+                var siguiente = await this._repoElastic.SiguenteIndexar(null, true, "local");
 
                 while (!stoppingToken.IsCancellationRequested && siguiente != null)
                 {
@@ -133,7 +133,7 @@ namespace PikaOCR
                     }
                     Log($"Procesando OCR {siguiente.Id}@{siguiente.Partes.Count}");
                     await ProcesaVersion(siguiente);
-                    siguiente = await this._repoElastic.SiguenteIndexar(null);
+                    siguiente = await this._repoElastic.SiguenteIndexar(null, true, "local");
                 }
 
                 fin = DateTime.UtcNow;

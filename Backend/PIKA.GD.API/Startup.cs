@@ -167,7 +167,7 @@ namespace PIKA.GD.API
             //options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
             services.AddDbContext<DBContextGestionDocumental>(options =>
-options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+                options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
 
             //services.AddDbContext<DbContextMetadatos>(options =>
@@ -189,7 +189,10 @@ options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
 
             // Servicios de Swaggr OPEN API
-            services.AddOpenApiDocument();
+            services.AddOpenApiDocument( op=>
+            {
+                op.Title = "PIKA GD API";
+            } );
 
             ConfiguracionRepoMetadatos elastic = new ConfiguracionRepoMetadatos();
             Configuration.GetSection("RepositorioContenido").Bind(elastic);

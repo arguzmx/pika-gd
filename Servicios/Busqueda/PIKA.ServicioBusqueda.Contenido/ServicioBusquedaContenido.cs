@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using ES = Elasticsearch.Net;
 
 namespace PIKA.ServicioBusqueda.Contenido
 {
@@ -23,6 +24,7 @@ namespace PIKA.ServicioBusqueda.Contenido
         private ElasticClient cliente;
         private const string INDICEBUSQUEDA = "contenido-busqueda";
         private const string INDICECONTENIDO = "contenido-indexado";
+        private const string INDICEVERSIONES = "contenido-versiones";
         private ILogger logger;
         private HashSet<Elemento> elementos;
         private IAppCache cache;
@@ -691,6 +693,19 @@ namespace PIKA.ServicioBusqueda.Contenido
             }
             else
             {
+                logger.LogInformation("Actualizando repositorio contenido");
+                var body = ES.PostData.String("{\"properties\": {\"partes\": {\"properties\": {\"xid\": {\"type\":\"keyword\" }}}}}");
+                var r = cliente.LowLevel.Indices.PutMapping<PutMappingResponse>(INDICEVERSIONES, body);
+
+                body = ES.PostData.String("{\"properties\": {\"ocr_id\": {\"type\":\"keyword\" }}}");
+                r = cliente.LowLevel.Indices.PutMapping<PutMappingResponse>(INDICEVERSIONES, body);
+
+                body = ES.PostData.String("{\"properties\": {\"ocr_f\": {\"type\":\"date\" }}}");
+                r = cliente.LowLevel.Indices.PutMapping<PutMappingResponse>(INDICEVERSIONES, body);
+
+                Console.WriteLine($"{r.Acknowledged}");
+
+                
                 logger.LogInformation($"Repositorio de contenido configurado");
             }
 

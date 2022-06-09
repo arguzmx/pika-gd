@@ -85,7 +85,7 @@ namespace PIKA.Servicio.Organizacion.Servicios
             }
 
             if (await Existe(x =>
-            x.Id != entity.Id & x.Id == entity.Id
+            x.Id != entity.Id && x.Id == entity.Id
             && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);

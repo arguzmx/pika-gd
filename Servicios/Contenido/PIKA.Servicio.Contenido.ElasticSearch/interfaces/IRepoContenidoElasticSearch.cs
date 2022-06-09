@@ -13,13 +13,17 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
         Task<bool> CreaRepositorio();
         Task<string> CreaVersion(Modelo.Contenido.Version version);
         Task<Modelo.Contenido.Version> ObtieneVersion(string Id);
-        Task<bool> ActualizaVersion(string Id, Modelo.Contenido.Version version, bool RealizarOCR);
+        Task<bool> ActualizaVersion(string Id, Modelo.Contenido.Version version, bool MarcarPorIndexar);
         Task<bool> EliminaVersion(string Id);
         Task<bool> EstadoVersion(string Id, bool Activa);
         Task<long> IndexadoPendiente(string volumenId);
-        Task<Modelo.Contenido.Version> SiguenteIndexar(string volumenId);
+        Task<Modelo.Contenido.Version> SiguenteIndexar(string volumenId, bool EstablacerEnproceso, string IdProcesador);
         Task<bool> ActualizaEstadoOCR(string Id, Modelo.Contenido.Version version);
+        
+        Task<bool> ActualizaEstadoOCR(string Id, string ProcesadorId, EstadoIndexado Estado);
+
         Task<bool> EliminaOCR(string Id, Modelo.Contenido.Version version);
+        Task<bool> EliminaOCRVersion(Modelo.Contenido.Version version);
         Task<string> IndexarTextoCompleto(Modelo.Contenido.ContenidoTextoCompleto contenido);
         Task<bool> ActualizarTextoCompleto(string Id, Modelo.Contenido.ContenidoTextoCompleto contenido);
         Task<long> ContarPorConsulta(string texto, string PuntoMontajeId, string IdJerarquico, int NivelFuzzy);

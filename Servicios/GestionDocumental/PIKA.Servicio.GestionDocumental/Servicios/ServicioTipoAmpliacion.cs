@@ -166,6 +166,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 if (Query.Filtros[i].Propiedad.ToLower() == "texto")
                 {
                     Query.Filtros[i].Propiedad = "Nombre";
+                    Query.Filtros[i].Operador = FiltroConsulta.OP_CONTAINS;
                 }
             }
             if (Query.Filtros.Where(x => x.Propiedad.ToLower() == "eliminada").Count() == 0)

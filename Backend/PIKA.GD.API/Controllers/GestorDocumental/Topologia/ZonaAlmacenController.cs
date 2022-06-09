@@ -168,7 +168,37 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             return Ok(await servicioEntidad.Restaurar(lids).ConfigureAwait(false));
         }
 
-       
+        [HttpGet("pares", Name = "GetParesZonaAlmacen")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ValorListaOrdenada>>> GetPares(
+        [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        {
+            var data = await servicioEntidad.ObtenerParesAsync(query)
+                .ConfigureAwait(false);
+
+            return Ok(data);
+        }
+        /// <summary>
+        /// Obtiene una lista de archivs en base a con el parámetro ID de consulta
+        /// </summary>
+        /// <param name="ids">parametro Id para consulta a la base de datos</param>
+        /// <returns></returns>
+
+        [HttpGet("pares/{ids}", Name = "GetParesZonaAlmacenporId")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ValorListaOrdenada>>> GetParesporId(
+              string ids)
+        {
+
+            List<string> lids = ids.Split(',').ToList()
+               .Where(x => !string.IsNullOrEmpty(x)).ToList();
+            var data = await servicioEntidad.ObtenerParesPorId(lids)
+                .ConfigureAwait(false);
+
+            return Ok(data);
+        }
 
     }
 }

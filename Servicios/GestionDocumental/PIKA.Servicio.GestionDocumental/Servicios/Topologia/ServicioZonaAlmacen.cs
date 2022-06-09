@@ -55,7 +55,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new ExErrorRelacional("El almacén no existe");
             }
 
-            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
+            if (await Existe(x => x.AlmacenArchivoId == entity.AlmacenArchivoId && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
@@ -79,14 +79,13 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
 
             if (await Existe(x =>
-            x.Id != entity.Id & x.ArchivoId == entity.ArchivoId
+            x.Id != entity.Id && x.AlmacenArchivoId == o.AlmacenArchivoId
             && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
 
             o.Nombre = entity.Nombre;
-            o.Clave= entity.Clave;
 
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
@@ -207,6 +206,46 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private string[] ListaIdEliminar(string[] ids) 
         {
             return ids;
+        }
+
+
+        public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
+        {
+            for (int i = 0; i < Query.Filtros.Count; i++)
+            {
+                if (Query.Filtros[i].Propiedad.ToLower() == "texto")
+                {
+                    Query.Filtros[i].Propiedad = "Nombre";
+                    Query.Filtros[i].Operador = FiltroConsulta.OP_CONTAINS;
+                }
+            }
+
+            Query = GetDefaultQuery(Query);
+            var resultados = await this.repo.ObtenerPaginadoAsync(Query);
+            List<ValorListaOrdenada> l = resultados.Elementos.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            logger.LogInformation($"{l.Count}");
+
+
+            return l.OrderBy(x => x.Texto).ToList();
+        }
+
+        public async Task<List<ValorListaOrdenada>> ObtenerParesPorId(List<string> Lista)
+        {
+            var resultados = await this.repo.ObtenerAsync(x => Lista.Contains(x.Id.Trim()));
+            List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
+            {
+                Id = x.Id,
+                Indice = 0,
+                Texto = x.Nombre
+            }).ToList();
+
+            return l.OrderBy(x => x.Texto).ToList();
         }
     }
 }

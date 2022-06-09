@@ -18,6 +18,10 @@ namespace PIKA.Modelo.GestorDocumental
     Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id",
     PropiedadHijo: "AlmacenArchivoId")]
 
+    [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ACTIVOS,
+    EntidadHijo: "ContenedorAlmacen",
+    Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id",
+    PropiedadHijo: "AlmacenArchivoId")]
 
     /// <summary>
     /// Define un espacio físico asociado al archivo donde se almacenan los activo físicos

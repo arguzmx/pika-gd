@@ -20,18 +20,18 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.ZonaAlmacenId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.PosicionPadreId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired(false);
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
-            builder.Property(x => x.Clave).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.Indice).IsRequired();
+            builder.Property(x => x.Localizacion).HasMaxLength(LongitudDatos.TEXTO_INDEXABLE_LARGO).IsRequired(false);
             builder.Property(x => x.CodigoBarras).HasMaxLength(LongitudDatos.TEXTO_INDEXABLE_LARGO).IsRequired(false);
             builder.Property(x => x.CodigoElectronico).HasMaxLength(LongitudDatos.TEXTO_INDEXABLE_LARGO).IsRequired(false);
             builder.Property(x => x.Ocupacion).IsRequired();
+            builder.Property(x => x.IncrementoContenedor).IsRequired();
 
             builder.HasIndex(x => x.ArchivoId);
             builder.HasIndex(x => x.AlmacenArchivoId);
             builder.HasIndex(x => x.ZonaAlmacenId);
             builder.HasIndex(x => x.PosicionPadreId);
             builder.HasIndex(x => x.Nombre);
-            builder.HasIndex(x => x.Clave);
             builder.HasIndex(x => x.CodigoBarras);
             builder.HasIndex(x => x.CodigoElectronico);
 

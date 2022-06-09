@@ -159,7 +159,7 @@ on s.Id = a.Id where s.TemaId = '{TemaId}';";
             }
 
             if (await Existe(x =>
-            x.Id != entity.Id & x.Folio == entity.Folio))
+            x.Id != entity.Id && x.Folio == entity.Folio))
             {
                 throw new ExElementoExistente(entity.Folio);
             }

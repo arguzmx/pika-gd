@@ -13,6 +13,11 @@ using System.Xml.Serialization;
 namespace PIKA.Modelo.GestorDocumental
 {
 
+    [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ALMACENARCHIVO,
+        EntidadHijo: "PosicionAlmacen",
+        Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id",
+        PropiedadHijo: "ZonaAlmacenId")]
+
     [Entidad(PaginadoRelacional: false, EliminarLogico: true,
        TokenMod: ConstantesAppGestionDocumental.MODULO_ALMACENARCHIVO,
        TokenApp: ConstantesAppGestionDocumental.APP_ID)]
@@ -36,14 +41,6 @@ namespace PIKA.Modelo.GestorDocumental
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
         [ValidString(minlen: 2, maxlen: 200)]
         public string Nombre { get; set; }
-
-        /// <summary>
-        /// Clave asociada al arhchvi en la organización
-        /// </summary>
-        [Prop(Required: true, OrderIndex: 20)]
-        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
-        [ValidString(minlen: 0, maxlen: 200)]
-        public string Clave { get; set; }
 
         [Prop(Required: false, OrderIndex: 600, Visible: false, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "ArchivoId")]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]

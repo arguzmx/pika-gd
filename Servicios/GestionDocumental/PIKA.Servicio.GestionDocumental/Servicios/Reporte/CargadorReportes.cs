@@ -83,6 +83,25 @@ namespace PIKA.Servicio.GestionDocumental.Servicios.Reporte
             };
         }
 
+        private ReporteEntidad CaratulaActivoContenedorAlmacen()
+        {
+            return new ReporteEntidad()
+            {
+                Descripcion = "Reporte caratula de la caja",
+                Entidad = "ContenedorAlmacen",
+                Id = "caratula-cont-almacen",
+                Nombre = "Reporte caratula de la caja",
+                OrigenId = "*",
+                TipoOrigenId = "*",
+                Plantilla = "",
+                ExtensionSalida = ".docx",
+                Bloqueado = false,
+                GrupoReportes = null,
+                SubReporte = false
+            };
+        }
+
+
         private ReporteEntidad ReportePrestamo()
         {
             return new ReporteEntidad()
@@ -106,6 +125,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios.Reporte
             List<ReporteEntidad> l = new List<ReporteEntidad>();
             l.Add(CaratulaActivoAcervo());
             l.Add(ReportePrestamo());
+            l.Add(CaratulaActivoContenedorAlmacen());
             l.AddRange(GuiaSimpleArchivo());
             return l;
         }

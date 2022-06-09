@@ -12,6 +12,27 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
 {
     public partial class RepoContenidoElasticSearch : IRepoContenidoElasticSearch
     {
+        public async Task<bool> EliminaOCRVersion(Modelo.Contenido.Version version)
+        {
+
+
+            var filters = new List<Func<QueryContainerDescriptor<ContenidoTextoCompleto>, QueryContainer>>();
+            filters.Add(fq => fq.Terms(t => t.Field(f => f.ElementoId).Terms(version.ElementoId)));
+            filters.Add(fq => fq.Terms(t => t.Field(f => f.VersionId).Terms(version.Id)));
+
+            var resultado = await cliente.DeleteByQueryAsync<ContenidoTextoCompleto>(x => x.Query(q => q
+            .Bool(bq => bq.Filter(filters)))
+            .Index(INDICECONTENIDO)
+            );
+
+            if (resultado.ApiCall.Success)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         public async Task<bool> EliminaOCR(string Id, Modelo.Contenido.Version version)
         {
 
@@ -432,7 +453,7 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
 
             return false;
         }
-        public async Task<Modelo.Contenido.Version> SiguenteIndexar(string volumenId)
+        public async Task<Modelo.Contenido.Version> SiguenteIndexar(string volumenId, bool EstablacerEnproceso, string IdProcesador)
         {
             var searchResponse = await cliente.SearchAsync<Modelo.Contenido.Version>(s =>
             s.Size(1)
@@ -444,9 +465,35 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
 
             if (searchResponse.IsValid)
             {
-                return searchResponse.Documents.FirstOrDefault();
+                var doc = searchResponse.Documents.FirstOrDefault();
+                if (doc!=null && EstablacerEnproceso)
+                {
+
+                    doc.EstadoIndexado = EstadoIndexado.EnProceso;
+                    doc.IdPRocesadorOCR = IdProcesador;
+                    doc.FechaOCR = DateTime.UtcNow;
+                    await ActualizaVersion(doc.Id, doc, false);
+                }
+                return doc;
             }
             return null;
         }
+
+
+        public async Task<bool> ActualizaEstadoOCR(string Id, string ProcesadorId, EstadoIndexado Estado)
+        {
+            var version = await ObtieneVersion(Id);
+            if (version != null)
+            {
+                if(version.IdPRocesadorOCR == ProcesadorId)
+                {
+                    version.EstadoIndexado = Estado;
+                    await ActualizaVersion(Id, version, false);
+                    return true;
+                }
+            }
+            return false;
+        }
+
     }
 }

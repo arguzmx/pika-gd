@@ -71,7 +71,7 @@ namespace PIKA.Servicio.Organizacion.Servicios
             }
 
             if (await Existe(x =>
-            x.Id != entity.Id & x.Id == entity.Id
+            x.Id != entity.Id && x.Id == entity.Id
             && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
@@ -222,6 +222,7 @@ namespace PIKA.Servicio.Organizacion.Servicios
                 if (Query.Filtros[i].Propiedad.ToLower() == "texto")
                 {
                     Query.Filtros[i].Propiedad = "Nombre";
+                    Query.Filtros[i].Operador = FiltroConsulta.OP_CONTAINS;
                 }
             }
            

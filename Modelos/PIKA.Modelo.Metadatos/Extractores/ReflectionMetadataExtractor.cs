@@ -76,6 +76,7 @@ namespace PIKA.Modelo.Metadatos
 
             object[] TypeAttrs = t.GetCustomAttributes(true);
             foreach (object attr in TypeAttrs) {
+
                 if (attr is EntidadAttribute)
                 {
                     
@@ -144,9 +145,8 @@ namespace PIKA.Modelo.Metadatos
                         attrProps.Add((PropAttribute)attr);
                     }
                 }
-
-
-                foreach(PropAttribute attrProp in attrProps)
+             
+                foreach (PropAttribute attrProp in attrProps)
                 {
                     Propiedad foundProp = null;
                     PropAttribute pa = (PropAttribute)attrProp;

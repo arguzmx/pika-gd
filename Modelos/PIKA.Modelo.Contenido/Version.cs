@@ -73,6 +73,19 @@ namespace PIKA.Modelo.Contenido
         public long TamanoBytes { get; set; }
 
 
+
+        /// <summary>
+        /// Identificador único del equipó procesador de OCR 
+        /// </summary>
+        [Keyword(Name = "ocr_id")]
+        public string IdPRocesadorOCR { get; set; }
+
+        /// <summary>
+        /// Fecha UTC de procesamiento de OCR, se utilzia para reiniciar procesos no finalizados
+        /// </summary>
+        [Date(Name = "ocr_f")]
+        public DateTime? FechaOCR { get; set; }
+
         /// <summary>
         /// Identificador único del volumen para la version
         /// </summary>

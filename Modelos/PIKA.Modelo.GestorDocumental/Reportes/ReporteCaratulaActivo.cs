@@ -8,8 +8,8 @@ namespace PIKA.Modelo.GestorDocumental.Reportes
 {
     public class ReporteCaratulaActivo: IProveedorReporte
     {
-        private const string nombre = "Carátula del acervo";
-        private const string url = "reporte/caractula/{id}";
+        private const string nombre = "Carátula del activo";
+        private const string url = "reporte/caratula/{id}";
         private const string id = "caratulaactivo";
         private List<ParametroReporte> parametroes;
         private List<FormatoReporte> formatos;

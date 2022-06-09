@@ -25,6 +25,11 @@ namespace PIKA.Servicio.GestionDocumental.Data
     }
     public class DBContextGestionDocumental : DbContext, IRepositorioInicializable
     {
+        public DBContextGestionDocumental()
+        {
+
+        }
+
         public DBContextGestionDocumental(DbContextOptions options)
      : base(options)
         {
@@ -127,6 +132,8 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// Nombre de la tabla para las entidades del tipo Asunto 
         /// </summary>
         public static string TablaAlmacenesArchivo { get => "gd$almacen"; }
+
+        public static string TablaActivoContenedorAlmacen { get => "gd$activocontalmacen"; }
 
 
         public static string TablaZonasAlmacen { get => "gd$zonasalmacen"; }
@@ -352,6 +359,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            //optionsBuilder.UseMySql("Server=localhost;Port=3306;Database=pika-ca;Uid=pika;Pwd=Pa$$w0rd;");
             optionsBuilder.EnableSensitiveDataLogging();
             base.OnConfiguring(optionsBuilder);
         }
@@ -383,6 +391,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
             builder.ApplyConfiguration<PosicionAlmacen>(new DbConfPosicionalmacen());
             builder.ApplyConfiguration<ContenedorAlmacen>(new DbConfContenedorAlmacen());
             builder.ApplyConfiguration<EventoContenedorAlmacen>(new DbConfEventoContenedoAlmacen());
+            builder.ApplyConfiguration<ActivoContenedorAlmacen>(new DBActivoContenedorAlmacen() );
 
             builder.ApplyConfiguration<Prestamo>(new DbConfPrestamo());
             builder.ApplyConfiguration<ActivoPrestamo>(new DbConfActivoPrestamo());

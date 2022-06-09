@@ -158,7 +158,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Establece el archivo en el que fue originado el activo
         /// </summary>
-        [Prop(Required: false, OrderIndex: 6 , Visible:false)]
+        [Prop(Required: false, OrderIndex: 6, Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.none)]
         [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false)]
         public string ArchivoOrigenId { get; set; }
@@ -180,7 +180,7 @@ namespace PIKA.Modelo.GestorDocumental
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
         [List("UnidadAdministrativaArchivo", DatosRemotos: true, TypeAhead: false, OrdenarAlfabetico: true)]
         // Para las unidades administrativas esta entidad no se despliega
-        [Prop(Entidad: "UnidadAdministrativaArchivo", Required: false, OrderIndex: 0, Visible: false, ShowInTable: false, 
+        [Prop(Entidad: "UnidadAdministrativaArchivo", Required: false, OrderIndex: 0, Visible: false, ShowInTable: false,
             Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "UnidadAdministrativaArchivoId")]
         [VistaUI(Entidad: "UnidadAdministrativaArchivo", ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string UnidadAdministrativaArchivoId { get; set; }
@@ -217,6 +217,20 @@ namespace PIKA.Modelo.GestorDocumental
         [VistaUI(ControlUI: ControlUI.HTML_DATE, Accion: Acciones.none)]
         public DateTime? FechaRetencionAC { get; set; }
 
+        [Prop(Required: false, OrderIndex: 65, Visible: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
+        [List(Entidad: "AlmacenArchivo", DatosRemotos: true, TypeAhead: false)]
+        public string AlmacenArchivoId { get; set; }
+
+        [Prop(Required: false, OrderIndex: 66, Visible: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
+        [List(Entidad: "ZonaAlmacen", DatosRemotos: true, TypeAhead: false)]
+        public string ZonaAlmacenId { get; set; }
+
+        [Prop(Required: false, OrderIndex: 67, Visible: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
+        [List(Entidad: "ContenedorAlmacen", DatosRemotos: true, TypeAhead: false)]
+        public string ContenedorAlmacenId { get; set; }
 
         /// <summary>
         /// Los activos del inventario son propiedad de las unidades oragnizacionales

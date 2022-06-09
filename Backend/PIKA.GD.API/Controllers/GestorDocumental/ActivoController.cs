@@ -254,7 +254,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
 
 
-        [HttpGet("reporte/caractula/{id}", Name = "GetReporteCaratuaActivo")]
+        [HttpGet("reporte/caratula/{id}", Name = "GetReporteCaratuaActivo")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<FileResult> GetReporteCaratuaActivo(string id)

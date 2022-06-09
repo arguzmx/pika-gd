@@ -69,7 +69,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
 
             if (await Existe(x =>
-            x.Id != entity.Id & x.Comentario == entity.Comentario))
+            x.Id != entity.Id && x.Comentario == entity.Comentario))
             {
                 throw new ExElementoExistente(entity.Id);
             }

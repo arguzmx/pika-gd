@@ -10,6 +10,7 @@ namespace PIKA.Infraestructura.Comun
         public ConfiguracionServidor()
         {
             tamanocache = 1024;
+            activo_desasociar_total = true;
         }
 
 
@@ -58,5 +59,11 @@ namespace PIKA.Infraestructura.Comun
         public string ruta_temporal { get; set; }
         
         public string ruta_tesseract { get; set; }
+
+        /// <summary>
+        /// DEtermina si al remover un activo del contenedor de almacen también se remueve
+        /// su asociacion al almacén y la zona o sólo del contenedor
+        /// </summary>
+        public bool? activo_desasociar_total { get; set; }
     }
 }

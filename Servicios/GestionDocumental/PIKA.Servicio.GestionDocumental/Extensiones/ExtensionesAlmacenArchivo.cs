@@ -31,11 +31,48 @@ namespace PIKA.Servicio.GestionDocumental
             {
                 Id = a.Id,
                 Nombre = a.Nombre,
-                Clave = a.Clave,
                 ArchivoId = a.ArchivoId,
                 AlmacenArchivoId = a.AlmacenArchivoId,
             };
         }
+
+
+        public static PosicionAlmacen Copia(this PosicionAlmacen a)
+        {
+            if (a == null) return null;
+            return new PosicionAlmacen()
+            {
+                Id = a.Id,
+                Nombre = a.Nombre,
+                ArchivoId = a.ArchivoId,
+                AlmacenArchivoId = a.AlmacenArchivoId,
+                CodigoBarras = a.CodigoBarras,
+                CodigoElectronico = a.CodigoElectronico,
+                Indice = a.Indice,
+                PosicionPadreId = a.PosicionPadreId,
+                ZonaAlmacenId = a.ZonaAlmacenId,
+                Ocupacion = a.Ocupacion,
+
+            };
+        }
+
+        public static ContenedorAlmacen Copia(this ContenedorAlmacen a)
+        {
+            if (a == null) return null;
+            return new ContenedorAlmacen()
+            {
+                Id = a.Id,
+                Nombre = a.Nombre,
+                ArchivoId = a.ArchivoId,
+                AlmacenArchivoId = a.AlmacenArchivoId,
+                CodigoBarras = a.CodigoBarras,
+                CodigoElectronico = a.CodigoElectronico,
+                ZonaAlmacenId = a.ZonaAlmacenId,
+                Ocupacion = a.Ocupacion,
+                PosicionAlmacenId = a.PosicionAlmacenId,
+            };
+        }
+
     }
 
 }
