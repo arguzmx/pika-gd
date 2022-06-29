@@ -63,23 +63,6 @@ namespace PIKA.Servicio.Contenido.Gestores
         }
 
 
-        //public Task<List<string>> PartesFaltantes(string ElementoId, List<string> PartesId, string VersionId, string VolumenId, string Extension)
-        //{
-        //    List<string> faltantes = new List<string>();
-        //    PartesId.ForEach(p =>
-        //    {
-        //        string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
-        //        string nombreArchivo = Id + Extension.ToUpper();
-        //        string rutaFinal = Path.Combine(ruta, nombreArchivo);
-        //        if(!File.Exists(rutaFinal))
-        //        {
-        //            faltantes.Add(Id);
-        //        }
-        //    });
-            
-        //    return Task.FromResult(faltantes);
-        //}
-
         public Task<bool> ExisteParte(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension)
         {
             string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
@@ -103,6 +86,15 @@ namespace PIKA.Servicio.Contenido.Gestores
             string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId, "thumbnails");
             string nombreArchivo = ParteId + ".PNG";
             string rutaFinal = Path.Combine(ruta, nombreArchivo);
+            if (!File.Exists(rutaFinal))
+            {
+                string rutaOriginal = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
+                string nombreArchivoOriginal = ParteId + Extension.ToUpper();
+                string rutaFinalOriginal = Path.Combine(rutaOriginal, nombreArchivoOriginal);
+
+                CreaMiniatura(ruta, rutaFinalOriginal, 200, ParteId);
+            }
+
             return LeeArchivo(rutaFinal);
         }
 
@@ -120,11 +112,16 @@ namespace PIKA.Servicio.Contenido.Gestores
         /// <param name="imagenFuente"></param>
         /// <param name="tamanoCuadro"></param>
         /// <param name="ParteId"></param>
-        private void CreaMiniatura(string rutaMinuaturas, 
-         string imagenFuente, int tamanoCuadro, string ParteId)
+        private void CreaMiniatura(string rutaMinuaturas, string imagenFuente, int tamanoCuadro, string ParteId)
         {
             try
             {
+
+                if (!Directory.Exists(rutaMinuaturas))
+                {
+                    Directory.CreateDirectory(rutaMinuaturas);
+                }
+
                 using (Image image = Image.Load(imagenFuente))
                 {
                     if (image.Width > image.Height)
