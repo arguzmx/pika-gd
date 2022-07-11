@@ -14,6 +14,8 @@ namespace PIKA.Identity.Server.Services
     using IdentityServer4;
     using PIKA.Modelo.Seguridad;
     using PIKA.Servicio.Usuarios;
+    using System.IO;
+    using System.Text.Json;
 
     public class PikaProfileService : IProfileService
     {
@@ -31,42 +33,58 @@ namespace PIKA.Identity.Server.Services
 
         public async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
-            var sub = context.Subject.GetSubjectId();
-            var user = await _userManager.FindByIdAsync(sub);
-            var principal = await _claimsFactory.CreateAsync(user);
-
-            var claims = principal.Claims.ToList();
-            claims = claims.Where(claim => context.RequestedClaimTypes.Contains(claim.Type)).ToList();
-            claims.Add(new Claim(JwtClaimTypes.GivenName, user.UserName));
-            
-
-            List<string> roles = await perfil.ObtieneRoles(sub);
-            roles.ForEach(r => {
-                claims.Add(new Claim(JwtClaimTypes.Role, r));
-            });
-
-            if(await perfil.EsAdmin(sub,""))
+            try
             {
-                claims.Add(new Claim(JwtClaimTypes.Role, "adminglobal"));
-            }
+                File.AppendAllText("log.txt", $"{1}");
+                var sub = context.Subject.GetSubjectId();
+                var user = await _userManager.FindByIdAsync(sub);
+                var principal = await _claimsFactory.CreateAsync(user);
 
-            var dominios = await perfil.Dominios(sub);
-            dominios.ForEach(d =>
-            {
-                d.UnidadesOrganizacionales.ForEach(u =>
+                File.AppendAllText("log.txt", $"{2}");
+
+                var claims = principal.Claims.ToList();
+                claims = claims.Where(claim => context.RequestedClaimTypes.Contains(claim.Type)).ToList();
+                claims.Add(new Claim(JwtClaimTypes.GivenName, user.UserName));
+
+                File.AppendAllText("log.txt", $"{3}");
+                List<string> roles = await perfil.ObtieneRoles(sub);
+                roles.ForEach(r => {
+                    File.AppendAllText("log.txt", $"{r}");
+                    claims.Add(new Claim(JwtClaimTypes.Role, r));
+                });
+
+                if (await perfil.EsAdmin(sub, ""))
                 {
-                    var value = u.DominioId + ':' + u.Id + (d.EsAdmin ? ":admin" : ":user");
-                    claims.Add(new Claim(JwtClaimTypes.Role, value));
+                    claims.Add(new Claim(JwtClaimTypes.Role, "adminglobal"));
+                }
+
+                var dominios = await perfil.Dominios(sub);
+                dominios.ForEach(d =>
+                {
+                    File.AppendAllText("log.txt", $"{JsonSerializer.Serialize(d)}");
+                    d.UnidadesOrganizacionales.ForEach(u =>
+                    {
+                        var value = u.DominioId + ':' + u.Id + (d.EsAdmin ? ":admin" : ":user");
+                        File.AppendAllText("log.txt", $"{value}");
+                        claims.Add(new Claim(JwtClaimTypes.Role, value));
+
+                    });
 
                 });
-                
-            });
 
-            //    claims.Add(new Claim(JwtClaimTypes.Scope, "dataEventRecords"));
+                //    claims.Add(new Claim(JwtClaimTypes.Scope, "dataEventRecords"));
 
-            claims.Add(new Claim(IdentityServerConstants.StandardScopes.Email, user.Email ?? "" ));
+                claims.Add(new Claim(IdentityServerConstants.StandardScopes.Email, user.Email ?? ""));
 
-            context.IssuedClaims = claims;
+                context.IssuedClaims = claims;
+            }
+            catch (Exception ex)
+            {
+                File.AppendAllText("log.txt" , $"{ex}");
+                throw;
+            }
+
+           
         }
 
         public async Task IsActiveAsync(IsActiveContext context)

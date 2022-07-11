@@ -355,7 +355,7 @@ namespace PIKA.Servicio.Contenido.Servicios
             {
                 if(primera)
                 {
-                    c = await this.UDT.Context.Carpetas.Where(x => x.Nombre == n && x.Eliminada == false && x.EsRaiz == true).FirstOrDefaultAsync();
+                    c = await this.UDT.Context.Carpetas.Where(x => x.Nombre == n && x.Eliminada == false && x.EsRaiz == true && x.PuntoMontajeId == entidad.PuntoMontajeId).FirstOrDefaultAsync();
                     if (c == null)
                     {
                         c = new Carpeta()
@@ -380,7 +380,7 @@ namespace PIKA.Servicio.Contenido.Servicios
                 } else
                 {
 
-                    c = await this.UDT.Context.Carpetas.Where(x => x.Nombre == n && x.Eliminada == false && x.CarpetaPadreId == padre.Id).FirstOrDefaultAsync();
+                    c = await this.UDT.Context.Carpetas.Where(x => x.Nombre == n && x.Eliminada == false && x.CarpetaPadreId == padre.Id && x.PuntoMontajeId == entidad.PuntoMontajeId).FirstOrDefaultAsync();
                     if (c == null)
                     {
                         c = new Carpeta()
