@@ -1,0 +1,640 @@
+1
+2
+3
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": false,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": false
+    }
+  ]
+}
+principal:principal:user
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": false,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": false
+    }
+  ]
+}
+principal:principal:user
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": false,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": false
+    }
+  ]
+}
+principal:principal:user
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": false,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": false
+    }
+  ]
+}
+principal:principal:user
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": false,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": false
+    }
+  ]
+}
+principal:principal:user
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": false,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": false
+    }
+  ]
+}
+principal:principal:user
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": false,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": false
+    }
+  ]
+}
+principal:principal:user
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": false,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": false
+    }
+  ]
+}
+principal:principal:user
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": false,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": false
+    }
+  ]
+}
+principal:principal:user
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": false,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": false
+    }
+  ]
+}
+principal:principal:user
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": false,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": false
+    }
+  ]
+}
+principal:principal:user
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": false,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": false
+    }
+  ]
+}
+principal:principal:user
+1
+2
+3
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": true,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": true
+    }
+  ]
+}
+principal:principal:admin
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": false,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": false
+    }
+  ]
+}
+principal:principal:user
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": false,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": false
+    }
+  ]
+}
+principal:principal:user
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": false,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": false
+    }
+  ]
+}
+principal:principal:user
+1
+2
+3
+27ec4bf1-3d8f-4689-9f3d-b17bdec67377
+{
+  "Id": "principal",
+  "Nombre": "Fiscalia General de Justicia del Estado de M\u00E9xico",
+  "EsAdmin": false,
+  "UnidadesOrganizacionales": [
+    {
+      "Id": "principal",
+      "Nombre": "Archivo Central",
+      "DominioId": "principal",
+      "EsAdmin": false
+    }
+  ]
+}
+principal:principal:user
