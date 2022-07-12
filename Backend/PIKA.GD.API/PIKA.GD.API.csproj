@@ -16,6 +16,7 @@
     <None Remove="Contenido\Reportes\guiasimplearchivo-ua.docx" />
     <None Remove="Contenido\Reportes\guiasimplearchivo.docx" />
     <None Remove="Contenido\Reportes\reporte-prestamo.docx" />
+    <None Remove="upgrade.sh" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,6 +39,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Contenido\Reportes\guiasimplearchivo.docx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="upgrade.sh">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
