@@ -14,7 +14,7 @@
 }
 
     .formPermisos .thumbnail {
-        background: #EF3B3A;
+        background: #FFFFFF;
         width: 150px;
         height: 150px;
         margin: 10px auto 10px;
@@ -69,7 +69,7 @@
 
     .formPermisos .contenidoChecked input {
         outline: 0;
-        background: #EF3B3A;
+        background: #FFFFFF;
         margin: 15px auto 25px;
         padding: 25px 15px 25px 15px; 
         border-top-left-radius: 3px;
@@ -93,7 +93,7 @@
 
     .formPermisos button {
         outline: 0;
-        background: #EF3B3A;
+        background: #FFFFFF;
         width: 100%;
         border: 0;
         padding: 10px 15px 10px 15px;
@@ -144,13 +144,13 @@
         padding: 10px 2px 5px 2px;
     }
     .formPermisos .Permisosdenegados a {
-        color: #EF3B3A;
+        color: #FFFFFF;
         text-decoration: none;
         font-family: Roboto, sans-serif;
     }
 
     .formPermisos .Permisosdenegados {
-        color: #EF3B3A;
+        color: #FFFFFF;
         text-decoration: none;
         font-family: Roboto, sans-serif;
         text-align:justify;
@@ -232,7 +232,7 @@
         font-family: Roboto, sans-serif;
     }
     .formlogin .thumbnail {
-        background: #EF3B3A;
+        background: #FFFFFF;
         width: 150px;
         height: 150px;
         margin: 0 auto 10px;
@@ -270,7 +270,7 @@
 
     .formlogin .contenidoChecked input {
         outline: 0;
-        background: #EF3B3A;
+        background: #FFFFFF;
         width: 10%;
         border: 0;
         margin: 10px auto 0px;
@@ -296,7 +296,7 @@
 
     .formlogin button {
         outline: 0;
-        background: #EF3B3A;
+        background: #FFFFFF;
         width: 90%;
         border: 0;
         padding: 10px 15px 10px 15px;
@@ -321,7 +321,7 @@
     }
 
         .formlogin .message a {
-            color: #EF3B3A;
+            color: #FFFFFF;
             text-decoration: none;
             font-family: Roboto, sans-serif;
         }
@@ -377,7 +377,7 @@
             }
 
             .container .info span .fa {
-                color: #EF3B3A;
+                color: #FFFFFF;
                 font-family: Roboto, sans-serif;
             }
     .container .info .Contenido {
@@ -457,7 +457,7 @@
         text-align:center;
     }
     .formulario .thumbnail {
-        background: #EF3B3A;
+        background: #FFFFFF;
         width: 150px;
         height: 150px;
         margin: 0 auto 30px;
@@ -503,7 +503,7 @@
  
     .formulario button {
         outline: 0;
-        background: #EF3B3A;
+        background: #FFFFFF;
         width: 100%;
         border: 0;
         padding: 15px 15px 15px 15px;

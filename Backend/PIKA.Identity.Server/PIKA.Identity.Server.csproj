@@ -141,7 +141,7 @@
     <Content Update="wwwroot\Pika.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-logo-pika.png  </ItemGroup>
+  </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 </Project>
