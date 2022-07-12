@@ -14,7 +14,7 @@
 }
 
     .formPermisos .thumbnail {
-        background: #EF3B3A;
+        background: #FFFFFF;
         width: 150px;
         height: 150px;
         margin: 10px auto 10px;
@@ -231,22 +231,26 @@
         text-align: center;
         font-family: Roboto, sans-serif;
     }
-    .formlogin .thumbnail {
-        background: #FFFFFF;
-        width: 150px;
-        height: 150px;
-        margin: 0 auto 10px;
-        padding: 15px 30px 35px 35px;
-        border-top-left-radius: 100%;
-        border-top-right-radius: 100%;
-        border-bottom-left-radius: 100%;
-        border-bottom-right-radius: 100%;
-        box-sizing: border-box;
-        font-family: Roboto, sans-serif;
-    }
+        .formlogin .thumbnail {
+            background: #FFFFFF;
+            width: 250px;
+            height: 250px;
+            margin: 0 auto 10px;
+            padding: 15px 30px 35px 35px;
+            border-top-left-radius: 100%;
+            border-top-right-radius: 100%;
+            border-bottom-left-radius: 100%;
+            border-bottom-right-radius: 100%;
+            box-sizing: border-box;
+            font-family: Roboto, sans-serif;
+            /*border-color: dimgray;
+            border-style: solid;
+            border-width: 5px;*/
+        }
 
         .formlogin .thumbnail img {
             display: block;
+            padding-top: 15px;
             width: 100%;
             font-family: Roboto, sans-serif;
         }
@@ -294,24 +298,24 @@
         background-color: #ff0000;
     }
 
-    .formlogin button {
-        outline: 0;
-        background: #FFFFFF;
-        width: 90%;
-        border: 0;
-        padding: 10px 15px 10px 15px;
-        border-top-left-radius: 3px;
-        border-top-right-radius: 3px;
-        border-bottom-left-radius: 3px;
-        border-bottom-right-radius: 3px;
-        color: #FFFFFF;
-        font-size: 14px;
-        -webkit-transition: all 0.3 ease;
-        transition: all 0.3 ease;
-        cursor: pointer;
-        font-family: Roboto, sans-serif;
-        text-align:center;
-    }
+        .formlogin button {
+            outline: 0;
+            background: #4d4d4d;
+            width: 90%;
+            border: 0;
+            padding: 10px 15px 10px 15px;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+            border-bottom-left-radius: 3px;
+            border-bottom-right-radius: 3px;
+            color: #FFFFFF;
+            font-size: 14px;
+            -webkit-transition: all 0.3 ease;
+            transition: all 0.3 ease;
+            cursor: pointer;
+            font-family: Roboto, sans-serif;
+            text-align: center;
+        }
 
     .formlogin .message {
         margin: 10px 0 0;
