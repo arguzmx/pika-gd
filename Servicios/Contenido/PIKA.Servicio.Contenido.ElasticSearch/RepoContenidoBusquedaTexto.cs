@@ -247,11 +247,33 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
 
             if (IdJerarquico == "") IdJerarquico = null;
             List<string> l = new List<string>();
-
+            ISearchResponse<ContenidoTextoCompleto> response = null;
             if (NivelFuzzy == 0)
             {
+                if (string.IsNullOrEmpty(IdJerarquico))
+                {
+                    response = await cliente.SearchAsync<ContenidoTextoCompleto>(sd =>
+                               sd.Index(INDICECONTENIDO)
+                               .Query(
+                                   q => q
+                                   .Bool(bq => bq
+                                     .Filter(f => f
+                                       .Term(t => t.PuntoMontajeId, PuntoMontajeId)
+                                     )
+                                     .Must(mq => mq
+                                        .Term(t => t
+                                            .Field("t")
+                                            .Value(texto)
+                                        )
+                                    )
+                                   )
+                                )
+                           );
 
-                var response = await cliente.SearchAsync<ContenidoTextoCompleto>(sd =>
+                }
+                else
+                {
+                    response = await cliente.SearchAsync<ContenidoTextoCompleto>(sd =>
                                sd.Index(INDICECONTENIDO)
                                .Query(
                                    q => q
@@ -272,61 +294,77 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
                                 )
                            );
 
-                if (response.ApiCall.Success)
-                {
-                    response.Hits.ToList().ForEach(h =>
-                    {
-                        if (!l.Any(x => x.StartsWith(h.Source.ElementoId)))
-                        {
-                            if (l.IndexOf($"{h.Source.ElementoId}|{h.Id}") < 0)
-                            {
-                                l.Add($"{h.Source.ElementoId}|{h.Id}");
-                            }
-                        }
-                    });
                 }
+
 
             } else
             {
-                var response = await cliente.SearchAsync<ContenidoTextoCompleto>(sd =>
-               sd.Index(INDICECONTENIDO)
-               .Query(
-                   q => q
-                   .Bool(bq => bq
-                     .Filter(f => f
-                       .Term(t => t.PuntoMontajeId, PuntoMontajeId)
-                     )
-                     .Filter(f => f
-                       .Term(t => t.CarpetaId, IdJerarquico)
-                     )
-                     .Must(mq => mq
-                        .Match(m => m
-                          .Field("t").Query(texto)
-                          .Operator(Operator.And)
-                          .Fuzziness(Fuzziness.Auto)
-                        )
 
-                     )
-                   )
-                )
-           );
-
-                if (response.ApiCall.Success)
+                if (string.IsNullOrEmpty(IdJerarquico))
                 {
-                    response.Hits.ToList().ForEach(h =>
-                    {
-                        if (!l.Any(x => x.StartsWith(h.Source.ElementoId)))
-                        {
-                            if (l.IndexOf($"{h.Source.ElementoId}|{h.Id}") < 0)
-                            {
-                                l.Add($"{h.Source.ElementoId}|{h.Id}");
-                            }
-                        }
-                    });
+                    response = await cliente.SearchAsync<ContenidoTextoCompleto>(sd =>
+                         sd.Index(INDICECONTENIDO)
+                         .Query(
+                             q => q
+                             .Bool(bq => bq
+                               .Filter(f => f
+                                 .Term(t => t.PuntoMontajeId, PuntoMontajeId)
+                               )
+                               .Must(mq => mq
+                                  .Match(m => m
+                                    .Field("t").Query(texto)
+                                    .Operator(Operator.And)
+                                    .Fuzziness(Fuzziness.Auto)
+                                  )
+
+                               )
+                             )
+                          )
+                     );
+                } else
+                {
+                    response = await cliente.SearchAsync<ContenidoTextoCompleto>(sd =>
+                         sd.Index(INDICECONTENIDO)
+                         .Query(
+                             q => q
+                             .Bool(bq => bq
+                               .Filter(f => f
+                                 .Term(t => t.PuntoMontajeId, PuntoMontajeId)
+                               )
+                               .Filter(f => f
+                                 .Term(t => t.CarpetaId, IdJerarquico)
+                               )
+                               .Must(mq => mq
+                                  .Match(m => m
+                                    .Field("t").Query(texto)
+                                    .Operator(Operator.And)
+                                    .Fuzziness(Fuzziness.Auto)
+                                  )
+
+                               )
+                             )
+                          )
+                     );
                 }
             }
 
-           
+            Console.WriteLine(System.Text.Encoding.Default.GetString(response.ApiCall.RequestBodyInBytes));
+
+            if (response.ApiCall.Success)
+            {
+                response.Hits.ToList().ForEach(h =>
+                {
+                    if (!l.Any(x => x.StartsWith(h.Source.ElementoId)))
+                    {
+                        if (l.IndexOf($"{h.Source.ElementoId}|{h.Id}") < 0)
+                        {
+                            l.Add($"{h.Source.ElementoId}|{h.Id}");
+                        }
+                    }
+                });
+            }
+
+
             return l;
         }
 
@@ -334,7 +372,7 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
         {
 
             if (IdJerarquico == "") IdJerarquico = null;
-
+            CountResponse response = null;
             Fuzziness f = new Fuzziness();
 
             switch (NivelFuzzy)
@@ -351,66 +389,108 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
             if (NivelFuzzy == 0)
             {
 
-
-                var response = await cliente.CountAsync<ContenidoTextoCompleto>(sd =>
-                sd.Index(INDICECONTENIDO)
-               .Query(
-                    q => q
-                    .Bool(bq => bq
-                        .Must(mq => mq
-                            .Term(t =>  t
-                                .Field("t")
-                                .Value(texto)
-                            )
-                        )
-                        .Filter(fq => fq
-                            .Term(t => t.PuntoMontajeId, PuntoMontajeId)
-                        )
-                        .Filter(f => f
-                            .Term(t => t.CarpetaId, IdJerarquico)
-                        )
-                     )
-
-                )
-                );
-
-                if (response.ApiCall.Success)
+                if(string.IsNullOrEmpty(IdJerarquico))
                 {
-                    return response.Count;
+                    response = await cliente.CountAsync<ContenidoTextoCompleto>(sd =>
+                    sd.Index(INDICECONTENIDO)
+                   .Query(
+                        q => q
+                        .Bool(bq => bq
+                            .Must(mq => mq
+                                .Term(t => t
+                                    .Field("t")
+                                    .Value(texto)
+                                )
+                            )
+                            .Filter(fq => fq
+                                .Term(t => t.PuntoMontajeId, PuntoMontajeId)
+                            )
+                         )
+                    )
+                    );
+                }
+                else
+                {
+                    response = await cliente.CountAsync<ContenidoTextoCompleto>(sd =>
+                    sd.Index(INDICECONTENIDO)
+                   .Query(
+                        q => q
+                        .Bool(bq => bq
+                            .Must(mq => mq
+                                .Term(t => t
+                                    .Field("t")
+                                    .Value(texto)
+                                )
+                            )
+                            .Filter(fq => fq
+                                .Term(t => t.PuntoMontajeId, PuntoMontajeId)
+                            )
+                            .Filter(f => f
+                                .Term(t => t.CarpetaId, IdJerarquico)
+                            )
+                         )
+
+                    )
+                    );
                 }
 
             }
             else
             {
-                var response = await cliente.CountAsync<ContenidoTextoCompleto>(sd =>
-                sd.Index(INDICECONTENIDO)
-               .Query(
-                    q => q
-                    .Bool(bq => bq
-                        .Must(mq => mq
-                            .Match(m => m
-                           .Field("t").Query(texto)
-                           .Operator(Operator.And)
-                           .Fuzziness(f)
-                         )
-                        )
-                        .Filter(fq => fq
-                            .Term(t => t.PuntoMontajeId, PuntoMontajeId)
-                        )
-                        .Filter(f => f
-                            .Term(t => t.CarpetaId, IdJerarquico)
-                        )
-                     )
-
-                )
-            );
-                if (response.ApiCall.Success)
+                if (string.IsNullOrEmpty(IdJerarquico))
                 {
-                    return response.Count;
+                    response = await cliente.CountAsync<ContenidoTextoCompleto>(sd =>
+                        sd.Index(INDICECONTENIDO)
+                       .Query(
+                            q => q
+                            .Bool(bq => bq
+                                .Must(mq => mq
+                                    .Match(m => m
+                                   .Field("t").Query(texto)
+                                   .Operator(Operator.And)
+                                   .Fuzziness(f)
+                                 )
+                                )
+                                .Filter(fq => fq
+                                    .Term(t => t.PuntoMontajeId, PuntoMontajeId)
+                                )
+                             )
+
+                        )
+                    );
                 }
+                else
+                {
+                    response = await cliente.CountAsync<ContenidoTextoCompleto>(sd =>
+                        sd.Index(INDICECONTENIDO)
+                       .Query(
+                            q => q
+                            .Bool(bq => bq
+                                .Must(mq => mq
+                                    .Match(m => m
+                                   .Field("t").Query(texto)
+                                   .Operator(Operator.And)
+                                   .Fuzziness(f)
+                                 )
+                                )
+                                .Filter(fq => fq
+                                    .Term(t => t.PuntoMontajeId, PuntoMontajeId)
+                                )
+                                .Filter(f => f
+                                    .Term(t => t.CarpetaId, IdJerarquico)
+                                )
+                             )
+
+                        )
+                    );
+                }
+
             }
-
-
+            Console.WriteLine(System.Text.Encoding.Default.GetString(response.ApiCall.RequestBodyInBytes));
+            if (response.ApiCall.Success)
+            {
+                return response.Count;
+            }
 
 
             return 0;
