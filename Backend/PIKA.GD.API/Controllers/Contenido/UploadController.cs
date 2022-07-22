@@ -126,7 +126,13 @@ namespace PIKA.GD.API.Controllers.Contenido
 
                     int indice = 1;
                     int inicio = 1;
-                    if (v.Partes == null) v.Partes = new List<Parte>();
+                    if (v.Partes == null)
+                    {
+                        v.Partes = new List<Parte>();
+                    } else
+                    {
+                        v.Partes = v.Partes.OrderBy(p => p.Indice).ToList();
+                    }
        
                     switch (Posicion)
                     {

@@ -142,6 +142,10 @@ namespace PIKA.Servicio.Contenido.Gestores
 
                     string nombreArchivo = ParteId + ".PNG";
                     string rutaFinal = Path.Combine(rutaMinuaturas, nombreArchivo);
+                    if (File.Exists(rutaFinal))
+                    {
+                        File.Delete(rutaFinal);
+                    }
                     image.Save(rutaFinal);
                 }
 
@@ -611,6 +615,21 @@ namespace PIKA.Servicio.Contenido.Gestores
             return LeeArchivo(rutaFinal);
         }
 
+        public Task<bool> EliminaOCRBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension)
+        {
+            string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
+            string rutaMiniaturas = Path.Combine(ruta, "ocr");
+            string nombreArchivo = ParteId + ".TXT";
+            string rutaFinal = Path.Combine(rutaMiniaturas, nombreArchivo);
+            if (File.Exists(rutaFinal))
+            {
+                File.Delete(rutaFinal);
+                // return Task.FromResult(true);
+            }
+
+            return Task.FromResult(true);
+        }
+
         public async Task<bool> Elimina(string RutaArchivo)
         {
             await Task.Delay(1);
@@ -660,6 +679,145 @@ namespace PIKA.Servicio.Contenido.Gestores
 
 
             return Task.CompletedTask;
+        }
+
+        public Task<string> RotarImagen(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension, int Angulo)
+        {
+            string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
+            string nombreArchivo = ParteId + Extension.ToUpper();
+            string rutaFinal = Path.Combine(ruta, nombreArchivo);
+            if(File.Exists(rutaFinal))
+            {
+                if (File.Exists($"{rutaFinal}.modificada"))
+                {
+                    File.Delete($"{rutaFinal}.modificada");
+                }
+
+                bool exito = false;
+                if (".JPG.JPEG".IndexOf(Extension.ToUpper()) >= 0)
+                {
+                    exito = JPEGLoseless.Rotar(configServidor.ruta_jpegtran, rutaFinal, $"{rutaFinal}.modificada", Angulo);
+                    if (!exito)
+                    {
+                        // Fallback en caso de una conversion no existosa por ejemplo de una imagen corrompida
+                        using (Image image = Image.Load(rutaFinal))
+                        {
+                            image.Mutate(x => x.Rotate(Angulo));
+                            image.SaveAsJpeg($"{rutaFinal}.modificada", new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder() { Quality = 90 });
+                            exito = true;
+                        }
+                    }
+                } else
+                {
+                    using (Image image = Image.Load(rutaFinal))
+                    {
+                        image.Mutate(x => x.Rotate(Angulo));
+                        image.SaveAsJpeg($"{rutaFinal}.modificada", new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder() { Quality = 90 });
+                        exito = true;
+                    }
+                }
+
+                if (exito)
+                {
+                    
+                    File.Move(rutaFinal, $"{rutaFinal}.old");
+                    File.Move($"{rutaFinal}.modificada", rutaFinal);
+                    File.Delete($"{rutaFinal}.old");
+
+                    EliminaOCRBytes(ElementoId, ParteId, VersionId, VolumenId, Extension);
+                    RegeneraMiniatura(ElementoId, ParteId, VersionId, VolumenId, Extension);
+                    return Task.FromResult(ElementoId);
+                }
+            }
+
+            return Task.FromResult("");
+        }
+
+
+        private void RegeneraMiniatura(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension)
+        {
+            string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId, "thumbnails");
+            string nombreArchivo = ParteId + ".PNG";
+            string rutaFinal = Path.Combine(ruta, nombreArchivo);
+            string rutaOriginal = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
+            string nombreArchivoOriginal = ParteId + Extension.ToUpper();
+            string rutaFinalOriginal = Path.Combine(rutaOriginal, nombreArchivoOriginal);
+            CreaMiniatura(ruta, rutaFinalOriginal, 200, ParteId);
+        }
+
+        public Task<string> ReflejarImagen(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension, string Direccion)
+        {
+            string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
+            string nombreArchivo = ParteId + Extension.ToUpper();
+            string rutaFinal = Path.Combine(ruta, nombreArchivo);
+            if (File.Exists(rutaFinal))
+            {
+                if (File.Exists($"{rutaFinal}.modificada"))
+                {
+                    File.Delete($"{rutaFinal}.modificada");
+                }
+
+                bool exito = false;
+                if (".JPG.JPEG".IndexOf(Extension.ToUpper()) >= 0)
+                {
+                    exito = JPEGLoseless.Reflejar(configServidor.ruta_jpegtran, rutaFinal, $"{rutaFinal}.modificada", Direccion.ToUpper() == "H");
+                    if(!exito)
+                    {
+
+                        // Fallback en caso de una conversion no existosa por ejemplo de una imagen corrompida
+                        using (Image image = Image.Load(rutaFinal))
+                        {
+                            if (Direccion.ToUpper() == "H")
+                            {
+                                image.Mutate(x => x.Flip(FlipMode.Horizontal));
+                            }
+                            else
+                            {
+                                image.Mutate(x => x.Flip(FlipMode.Vertical));
+                            }
+                            try
+                            {
+                                image.SaveAsJpeg($"{rutaFinal}.modificada", new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder() {  Quality =90} );
+                                exito = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"{ex}");
+                                throw;
+                            }
+                            
+                        }
+                    }
+                }
+                else
+                {
+                    using (Image image = Image.Load(rutaFinal))
+                    {
+                        if(Direccion.ToUpper() == "H")
+                        {
+                            image.Mutate(x => x.Flip(FlipMode.Horizontal));
+                        } else
+                        {
+                            image.Mutate(x => x.Flip(FlipMode.Vertical));
+                        }
+                        image.SaveAsJpeg($"{rutaFinal}.modificada", new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder() { Quality = 90 });
+                        exito = true;
+                    }
+                }
+
+                if (exito)
+                {
+                    File.Move(rutaFinal, $"{rutaFinal}.old");
+                    File.Move($"{rutaFinal}.modificada", rutaFinal);
+                    File.Delete($"{rutaFinal}.old");
+
+                    EliminaOCRBytes(ElementoId, ParteId, VersionId, VolumenId, Extension);
+                    RegeneraMiniatura(ElementoId, ParteId, VersionId, VolumenId, Extension);
+                    return Task.FromResult(ElementoId);
+                }
+            }
+
+            return Task.FromResult("");
         }
     }
 }

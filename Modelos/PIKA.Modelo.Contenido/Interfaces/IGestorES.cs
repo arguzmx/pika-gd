@@ -56,5 +56,30 @@ namespace PIKA.Modelo.Contenido
         /// <param name="parteIds"></param>
         /// <returns></returns>
         Task<string> ObtienePDF(Version version, List<string> parteIds, int PorcientoEscala);
+
+        /// <summary>
+        /// Rota una imagen en un elemento de contenido
+        /// </summary>
+        /// <param name="ElementoId">elemento que contiene la parte</param>
+        /// <param name="ParteId">Identificador de la parte</param>
+        /// <param name="VersionId">Versión del elemento</param>
+        /// <param name="VolumenId">Volumen del elemento</param>
+        /// <param name="Extension">Extensión de la parte</param>
+        /// <param name="Angulo">Ángulo a rotar</param>
+        /// <returns></returns>
+        Task<string> RotarImagen(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension, int Angulo);
+
+        /// <summary>
+        /// Refleja una imagen en un elemento de contenido
+        /// </summary>
+        /// <param name="ElementoId">elemento que contiene la parte</param>
+        /// <param name="ParteId">Identificador de la parte</param>
+        /// <param name="VersionId">Versión del elemento</param>
+        /// <param name="VolumenId">Volumen del elemento</param>
+        /// <param name="Extension">Extensión de la parte</param>
+        /// <param name="Direccion">Dirección de refleho V o H</param>
+        /// <returns></returns>
+        Task<string> ReflejarImagen(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension, string Direccion);
+
     }
 }

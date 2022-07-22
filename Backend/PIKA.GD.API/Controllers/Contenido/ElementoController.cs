@@ -37,7 +37,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         private IRepoContenidoElasticSearch repoContenido;
         private IServicioVolumen servicioVol;
         private IServicioTareaEnDemanda tareaEnDemanda;
-      
+
 
         public ElementoController(
             IRepoContenidoElasticSearch repoContenido,
@@ -55,7 +55,7 @@ namespace PIKA.GD.API.Controllers.Contenido
             this.tareaEnDemanda = tareaEnDemanda;
         }
 
-     
+
         [HttpGet("acl/{id}", Name = "ACLCarpetaContenido")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -65,16 +65,17 @@ namespace PIKA.GD.API.Controllers.Contenido
             int permisos = 0;
             if (this.usuario.AdminGlobal)
             {
-                permisos = int.MaxValue - MascaraPermisos.PDenegarAcceso; 
+                permisos = int.MaxValue - MascaraPermisos.PDenegarAcceso;
 
-            } else
+            }
+            else
             {
                 servicioEntidad.Usuario = this.usuario;
                 permisos = await servicioEntidad.ACLPuntoMontaje(id).ConfigureAwait(false);
             }
 
-            
-            return Ok( permisos);
+
+            return Ok(permisos);
         }
 
         /// <summary>
@@ -98,7 +99,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         [HttpPost]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Elemento>> Post([FromBody]Elemento entidad)
+        public async Task<ActionResult<Elemento>> Post([FromBody] Elemento entidad)
         {
             entidad.CreadorId = this.UsuarioId;
             entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
@@ -115,12 +116,12 @@ namespace PIKA.GD.API.Controllers.Contenido
                 VolumenId = entidad.VolumenId,
                 ConteoPartes = 0,
                 MaxIndicePartes = 0,
-                TamanoBytes = 0, 
-                EstadoIndexado=  EstadoIndexado.FinalizadoOK
+                TamanoBytes = 0,
+                EstadoIndexado = EstadoIndexado.FinalizadoOK
             };
 
-            
-            List<Task> tasks = new List<Task>() { 
+
+            List<Task> tasks = new List<Task>() {
                 this.repoContenido.CreaVersion(v)
              };
 
@@ -142,7 +143,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> Put(string id, [FromBody]Elemento entidad)
+        public async Task<IActionResult> Put(string id, [FromBody] Elemento entidad)
         {
             if (id != entidad.Id)
             {
@@ -162,7 +163,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         [HttpGet("page", Name = "GetPageElemento")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<Paginado<Elemento>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery]Consulta query = null)
+        public async Task<ActionResult<Paginado<Elemento>>> GetPage([ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
 
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
@@ -221,16 +222,17 @@ namespace PIKA.GD.API.Controllers.Contenido
             string[] lids = IdsTrim.Split(',').ToList()
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
 
-            foreach(string id in  lids)
+            foreach (string id in lids)
             {
                 await repoContenido.EstadoVersion(id, false).ConfigureAwait(false);
             }
 
             List<string> eliminados = (await servicioEntidad.Eliminar(lids).ConfigureAwait(false)).ToList();
-            if (eliminados.Count==0)
+            if (eliminados.Count == 0)
             {
                 return Conflict();
-            } else
+            }
+            else
             {
                 return Ok(eliminados);
             }
@@ -276,6 +278,220 @@ namespace PIKA.GD.API.Controllers.Contenido
             return Ok(await servicioEntidad.Restaurar(lids).ConfigureAwait(false));
         }
 
+        [HttpPost("paginas/{id}/ordernar/alfabetico")]
+        public async Task<ActionResult> OrdenarContenidoAlfabetico(string id)
+        {
+            // Obtiene el elemento y su contraparte en elasticsearch
+            string v = "";
+            var elemento = await servicioEntidad.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            if (elemento == null)
+            {
+                return NotFound();
+            }
+
+            if (string.IsNullOrEmpty(v)) v = elemento.VersionId;
+
+            Modelo.Contenido.Version vElemento = await this.repoContenido.ObtieneVersion(v).ConfigureAwait(false);
+            if (vElemento == null)
+            {
+                return NotFound();
+            }
+
+            if (vElemento != null)
+            {
+                vElemento.Partes = vElemento.Partes.OrderBy(p => p.NombreOriginal).ToList();
+                int idx = 1;
+                foreach (var p in vElemento.Partes)
+                {
+                    p.Indice = idx;
+                    idx++;
+                }
+
+                await repoContenido.EliminaOCRVersion(vElemento).ConfigureAwait(false);
+                await repoContenido.ActualizaVersion(vElemento.Id, vElemento, true).ConfigureAwait(false);
+            }
+
+            return Ok();
+        }
+
+        [HttpPost("paginas/{id}/rotar/{angulo}")]
+        public async Task<ActionResult> RotarPagina(string id, int angulo, [FromBody] string[] ids)
+        {
+
+            if(ids == null || ids.Length ==0)
+            {
+                return BadRequest("Los ids de las partes son obligatorios");
+            }
+
+            var elemento = await servicioEntidad.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            if (elemento == null)
+            {
+                return NotFound();
+            }
+
+            Modelo.Contenido.Version vElemento = await this.repoContenido.ObtieneVersion(elemento.VersionId).ConfigureAwait(false);
+            if (vElemento == null)
+            {
+                return NotFound();
+            }
+
+            foreach(var parteId in  ids.ToList())
+            {
+                var parte = vElemento.Partes.Where(x => x.Id == parteId).SingleOrDefault();
+                if (parte != null)
+                {
+                    IGestorES gestor = await servicioVol.ObtienInstanciaGestor(elemento.VolumenId)
+                   .ConfigureAwait(false);
+
+                    var resultado = await gestor.RotarImagen(elemento.Id, parte.Id, vElemento.Id, elemento.VolumenId, parte.Extension, angulo).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(resultado))
+                    {
+                        parte.Indexada = false;
+                        vElemento.EstadoIndexado = EstadoIndexado.PorIndexar;
+                    }
+
+                }
+            }
+
+            await repoContenido.ActualizaVersion(vElemento.Id, vElemento, true).ConfigureAwait(false);
+
+            return Ok();
+
+        }
+
+        [HttpPost("paginas/{id}/reflejar/{direccion}")]
+        public async Task<ActionResult> ReflejarPagina(string id, string direccion, [FromBody] string[] ids)
+        {
+            if (ids == null || ids.Length == 0)
+            {
+                return BadRequest("Los ids de las partes son obligatorios");
+            }
+
+            if ("VH".IndexOf(direccion.ToUpper()) < 0) {
+                return BadRequest("Lo valores válidos para la dirección son V|H");
+            }
+
+            var elemento = await servicioEntidad.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            if (elemento == null)
+            {
+                return NotFound();
+            }
+
+            Modelo.Contenido.Version vElemento = await this.repoContenido.ObtieneVersion(elemento.VersionId).ConfigureAwait(false);
+            if (vElemento == null)
+            {
+                return NotFound();
+            }
+
+            foreach (var parteId in ids.ToList())
+            {
+                var parte = vElemento.Partes.Where(x => x.Id == parteId).SingleOrDefault();
+                if (parte != null)
+                {
+                    IGestorES gestor = await servicioVol.ObtienInstanciaGestor(elemento.VolumenId)
+                   .ConfigureAwait(false);
+
+                    var resultado = await gestor.ReflejarImagen(elemento.Id, parte.Id, vElemento.Id, elemento.VolumenId, parte.Extension, direccion).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(resultado))
+                    {
+                        parte.Indexada = false;
+                        vElemento.EstadoIndexado = EstadoIndexado.PorIndexar;
+                    }
+                }
+            }
+            
+            await repoContenido.ActualizaVersion(vElemento.Id, vElemento, true).ConfigureAwait(false);
+
+            return Ok();
+        }
+
+
+        [HttpPost("paginas/{id}/mover/{posicion}")]
+        public async Task<ActionResult> MoverPaginas(string id, int posicion, [FromBody] int[] paginas)
+        {
+
+            string v = "";
+            List<int> ps = paginas.ToList();
+            var elemento = await servicioEntidad.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
+            if (elemento == null)
+            {
+                return NotFound();
+            }
+
+            if (string.IsNullOrEmpty(v)) v = elemento.VersionId;
+
+            Modelo.Contenido.Version vElemento = await this.repoContenido.ObtieneVersion(v).ConfigureAwait(false);
+            if (vElemento == null)
+            {
+                return NotFound();
+            }
+
+            List<Parte> Fijas = new List<Parte>();
+            List<Parte> AMover = new List<Parte>();
+            vElemento.Partes = vElemento.Partes.OrderBy(p => p.Indice).ToList();
+            foreach (var p in vElemento.Partes)
+            {
+                if (ps.IndexOf(p.Indice) >= 0)
+                {
+                    AMover.Add(p);
+                }
+                else
+                {
+                    Fijas.Add(p);
+                }
+            }
+
+            int total = Fijas.Count;
+            bool inserted = false;
+            if (posicion >= vElemento.Partes.Max(x => x.Indice))
+            {
+                inserted = true;
+                for (int j = 0; j < AMover.Count; j++)
+                {
+                    Fijas.Insert(Fijas.Count, AMover[j]);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < total; i++)
+                {
+                    if (Fijas[i].Indice == posicion)
+                    {
+                        inserted = true;
+                        for (int j = AMover.Count - 1; j >= 0; j--)
+                        {
+                            Fijas.Insert(i, AMover[j]);
+                        }
+                        break;
+                    }
+                }
+            }
+
+
+            if (!inserted)
+            {
+                int i = Fijas.Count;
+                for (int j = AMover.Count - i; j >= 0; j--)
+                {
+                    Fijas.Insert(i, AMover[j]);
+                }
+            }
+
+            int newIndex = 1;
+            foreach (var f in Fijas)
+            {
+                f.Indice = newIndex;
+                newIndex++;
+            }
+
+            vElemento.Partes = Fijas;
+            // await repoContenido.EliminaOCRVersion(vElemento).ConfigureAwait(false);
+            await repoContenido.ActualizaVersion(vElemento.Id, vElemento, true).ConfigureAwait(false);
+
+            return Ok();
+        }
+
+
         [HttpDelete("paginas/{id}/eliminar/{csvidpaginas}", Name = "EliminaPaginasElemento")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -313,6 +529,13 @@ namespace PIKA.GD.API.Controllers.Contenido
 
             vElemento.Partes = vElemento.Partes.Where((x) => !paginas.Contains(x.Id)).ToList();
 
+            int idx = 1;
+            foreach(var p in vElemento.Partes)
+            {
+                p.Indice = idx;
+                idx++;
+            }
+
             await repoContenido.ActualizaVersion(elemento.VersionId, vElemento, false).ConfigureAwait(false);
 
             return Ok();
@@ -323,7 +546,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> CrearZIP(string id, string  v)
+        public async Task<IActionResult> CrearZIP(string id, string v)
         {
             string controller = "contenido/elemento";
             string version = "";
@@ -351,7 +574,7 @@ namespace PIKA.GD.API.Controllers.Contenido
 
                 foreach (var tex in enEjecucion)
                 {
-                    if(tex.TareaProcesoId == tzip.Id)
+                    if (tex.TareaProcesoId == tzip.Id)
                     {
                         var inputtex = JsonSerializer.Deserialize<InputPayloadTareaExportarZIP>(tex.InputPayload);
                         if (inputtex.ElementoId == id)
@@ -446,14 +669,14 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetPDF(string id)
         {
-            if(!Guid.TryParse(id, out Guid tareaId))
+            if (!Guid.TryParse(id, out Guid tareaId))
             {
                 return BadRequest();
             }
 
-           var t = await tareaEnDemanda.UnicoAsync(x => x.Id == tareaId).ConfigureAwait(false);
+            var t = await tareaEnDemanda.UnicoAsync(x => x.Id == tareaId).ConfigureAwait(false);
 
-            if(t == null || !t.Completada)
+            if (t == null || !t.Completada)
             {
                 return NotFound();
             }
@@ -466,7 +689,8 @@ namespace PIKA.GD.API.Controllers.Contenido
                 HttpContext.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
                 return PhysicalFile(output.RutaPDF, MimeTypes.GetMimeType($"{output.NombreElemento}.pdf"), output.NombreElemento + ".pdf");
 
-            } else
+            }
+            else
             {
                 return NotFound("no-localidazo");
             }
@@ -488,29 +712,29 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<string>> CrearPDF(string id, string v, int p)
         {
-            
+
             string controller = "contenido/elemento";
             string version = "";
             if (this.ControllerContext.HttpContext.Request.RouteValues.ContainsKey("version"))
             {
-                version= (string)this.ControllerContext.HttpContext.Request.RouteValues.GetValueOrDefault("version");
+                version = (string)this.ControllerContext.HttpContext.Request.RouteValues.GetValueOrDefault("version");
             }
 
             string Etiqueta = "";
             var e = await this.servicioEntidad.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
-            if(e==null)
+            if (e == null)
             {
                 return NotFound("elemento-inexistente");
             }
 
-            if(p<20)
+            if (p < 20)
             {
                 p = 20;
             }
 
-            if(p>100)
+            if (p > 100)
             {
-                p=100;
+                p = 100;
             }
 
             Etiqueta = $"PDF {e.Nombre}";
@@ -523,9 +747,10 @@ namespace PIKA.GD.API.Controllers.Contenido
                 var enEjecucion = (await tareaEnDemanda.TareasPendientesUsuario(this.UsuarioId, this.DominioId, this.TenantId).ConfigureAwait(false))
                     .Where(x => x.TareaProcesoId == tpdf.Id).ToList();
 
-                foreach(var tex in enEjecucion)
+                foreach (var tex in enEjecucion)
                 {
-                    if (tex.TareaProcesoId == tpdf.Id) {
+                    if (tex.TareaProcesoId == tpdf.Id)
+                    {
                         var inputtex = JsonSerializer.Deserialize<InputPayloadTareaExportarPDF>(tex.InputPayload);
                         if (inputtex.ElementoId == id)
                         {
@@ -533,7 +758,7 @@ namespace PIKA.GD.API.Controllers.Contenido
                         }
                     }
                 }
-                
+
 
                 Guid Id = Guid.NewGuid();
                 TareaEnDemanda t = new TareaEnDemanda()
@@ -566,7 +791,7 @@ namespace PIKA.GD.API.Controllers.Contenido
                     Fecha = DateTime.UtcNow,
                     Id = t.Id.ToString(),
                     PickupURL = t.URLRecoleccion,
-                    Tipo = Servicio.Contenido.TareasEnDemanda.TAREA_EXPPORTAR_PDF, 
+                    Tipo = Servicio.Contenido.TareasEnDemanda.TAREA_EXPPORTAR_PDF,
                     TipoRespuesta = t.TipoRespuesta,
                     Etiqueta = Etiqueta
                 };

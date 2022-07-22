@@ -12,6 +12,12 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
 {
     public partial class RepoContenidoElasticSearch : IRepoContenidoElasticSearch
     {
+
+        /// <summary>
+        /// Elimina el OCR de una versión de contenido
+        /// </summary>
+        /// <param name="version"></param>
+        /// <returns></returns>
         public async Task<bool> EliminaOCRVersion(Modelo.Contenido.Version version)
         {
 
@@ -33,12 +39,18 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
             return false;
         }
 
-        public async Task<bool> EliminaOCR(string Id, Modelo.Contenido.Version version)
+        /// <summary>
+        /// Eliminar el OCR de una parte del contenido
+        /// </summary>
+        /// <param name="IdParte"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        public async Task<bool> EliminaOCR(string IdParte, Modelo.Contenido.Version version)
         {
 
 
             var filters = new List<Func<QueryContainerDescriptor<ContenidoTextoCompleto>, QueryContainer>>();
-            filters.Add(fq => fq.Terms(t => t.Field(f => f.ParteId).Terms(Id)));
+            filters.Add(fq => fq.Terms(t => t.Field(f => f.ParteId).Terms(IdParte)));
             filters.Add(fq => fq.Terms(t => t.Field(f => f.ElementoId).Terms(version.ElementoId)));
             filters.Add(fq => fq.Terms(t => t.Field(f => f.VersionId).Terms(version.Id)));
 

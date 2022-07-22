@@ -364,5 +364,14 @@ namespace PIKA.Servicio.Contenido.Gestores
             throw new NotImplementedException();
         }
 
+        public Task<string> RotarImagen(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension, int Angulo)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> ReflejarImagen(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension, string Direccion)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
