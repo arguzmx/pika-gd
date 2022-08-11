@@ -163,13 +163,15 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                await EjecutaTareas(stoppingToken).ConfigureAwait(false);
+                LogDebug($"Ejecutando tareas en demanda");
+
+                await EjecutaTareas(stoppingToken);
 
                 int milis = WaitingGaps == 0 ? 500 : WaitingGaps * 1000;
 
                 LogDebug($"Tareas en demanda esperando {milis}ms");
 
-                await Task.Delay(milis, stoppingToken).ConfigureAwait(false);
+                await Task.Delay(milis, stoppingToken);
                 EliminaTareasZombie();
 
                 if((DateTime.UtcNow - VerificacionCaducidad).TotalMinutes> minutoscaducidad)
@@ -177,7 +179,7 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
                     // Elimina la posibilidad lanzar más de un proceso
                     VerificacionCaducidad = DateTime.Now.AddYears(1);
 
-                    await CaducaTareas(stoppingToken).ConfigureAwait(false);
+                    await CaducaTareas(stoppingToken);
                 } 
             }
         }
@@ -187,7 +189,7 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
             LogDebug($"Ejecutando Búsqueda Tareas On Demand caducas");
             if (!stoppingToken.IsCancellationRequested)
             {
-                var tareas = (await servicioTarea.ObtenerAsync(x => x.Completada == true).ConfigureAwait(false)).ToList();
+                var tareas = (await servicioTarea.ObtenerAsync(x => x.Completada == true)).ToList();
                 LogDebug($"Tareas On Demand caducas encontradas {tareas.Count}");
                 foreach (var tarea in tareas)
                 {
@@ -201,7 +203,7 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
                             _ = Task.Run(() => procesador.Instancia.CaducarTarea(tarea.InputPayload, tarea.OutputPayload));
 
                         }
-                        await servicioTarea.EliminarTarea(tarea.Id).ConfigureAwait(false);
+                        await servicioTarea.EliminarTarea(tarea.Id);
                     }
                     
                     if (stoppingToken.IsCancellationRequested)
@@ -234,12 +236,12 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
             LogDebug($"Ejecutando Búsqueda Tareas On Demand");
             if (!stoppingToken.IsCancellationRequested)
             {
-                LogDebug($"No hay taoken de cancelación");
+                LogDebug($"No hay taoken de cancelación {this.TareasEnEjecucion.Count} < {MaxThreads}");
                 if (this.TareasEnEjecucion.Count < MaxThreads)
                 {
                     LogDebug($"Existen {(MaxThreads- this.TareasEnEjecucion.Count)} hilos disponibles");
 
-                    tareas = (await servicioTarea.ObtenerAsync(x => x.Completada == false && x.Estado == ComunTareas.EstadoTarea.Habilidata).ConfigureAwait(false)).ToList();
+                    tareas = (await servicioTarea.ObtenerAsync(x => x.Completada == false && x.Estado == ComunTareas.EstadoTarea.Habilidata)).ToList();
                     LogDebug($"Ejecutando {tareas.Count} tareas");
                     if (tareas.Count > 0)
                     {
@@ -249,7 +251,7 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
                             var (programada, procesador, errror) = ProgramaTarea(tarea);
                             if (programada)
                             {
-                                await servicioTarea.ActualizaEstadoTarea(tarea.Id, ComunTareas.EstadoTarea.Enejecucion).ConfigureAwait(false);
+                                await servicioTarea.ActualizaEstadoTarea(tarea.Id, ComunTareas.EstadoTarea.Enejecucion);
                                 lock (taskLock)
                                 {
                                     // Añade a la cola para mantener el número de threads
@@ -266,7 +268,7 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
                             {
                                 tarea.Error = errror;
                                 tarea.Completada = true;
-                                await servicioTarea.CompletarTarea(tarea.Id, false, null, errror).ConfigureAwait(false);
+                                await servicioTarea.CompletarTarea(tarea.Id, false, null, errror);
                                 LogDebug($"Error al programar la tarea {tarea.TareaProcesoId} {errror}");
                             }
 
