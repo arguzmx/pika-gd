@@ -152,9 +152,9 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
             CreaDiccionario();
         }
 
-        private void LogDebug(string Msg)
+        private void LogDebug(string Msg, bool force = false)
         {
-            if (this.debug) _logger.LogInformation(Msg);
+            if (this.debug || force) _logger.LogInformation(Msg);
         }
 
         public async Task DoWork(CancellationToken stoppingToken)
@@ -236,7 +236,7 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
             LogDebug($"Ejecutando Búsqueda Tareas On Demand");
             if (!stoppingToken.IsCancellationRequested)
             {
-                LogDebug($"No hay taoken de cancelación {this.TareasEnEjecucion.Count} < {MaxThreads}");
+                LogDebug($"No hay token de cancelación {this.TareasEnEjecucion.Count} < {MaxThreads}");
                 if (this.TareasEnEjecucion.Count < MaxThreads)
                 {
                     LogDebug($"Existen {(MaxThreads- this.TareasEnEjecucion.Count)} hilos disponibles");
@@ -247,7 +247,7 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
                     {
                         foreach (var tarea in tareas)
                         {
-                            LogDebug($"Ejecutando {tarea.Id}@{tarea.TareaProcesoId}");
+                            LogDebug($"Ejecutando {tarea.Id}@{tarea.TareaProcesoId}", true);
                             var (programada, procesador, errror) = ProgramaTarea(tarea);
                             if (programada)
                             {
@@ -269,7 +269,7 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
                                 tarea.Error = errror;
                                 tarea.Completada = true;
                                 await servicioTarea.CompletarTarea(tarea.Id, false, null, errror);
-                                LogDebug($"Error al programar la tarea {tarea.TareaProcesoId} {errror}");
+                                LogDebug($"Error al programar la tarea {tarea.TareaProcesoId} {errror}", true);
                             }
 
 
@@ -337,7 +337,7 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
 
                 lock (taskLock)
                 {
-                    LogDebug($"Fin de proceso {et.Resultado.Id} {et.TokenSeguimiento} {et.Resultado.Exito}");
+                    LogDebug($"Fin de proceso {et.Resultado.Id} {et.TokenSeguimiento} {et.Resultado.Exito}", true);
                     Task.Run(() => servicioTarea.CompletarTarea(Guid.Parse(et.Resultado.Id), et.Resultado.Exito, et.Resultado.PayloadOutput, et.Resultado.Error));
 
                     var procesador = this.procesadores.Where(x => x.Id == et.Resultado.Id).SingleOrDefault();
