@@ -67,77 +67,97 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
         
         private async Task EjecutaTareas(CancellationToken stoppingToken)
         {
-            if (!stoppingToken.IsCancellationRequested)
+            try
             {
-                tareas = (await servicioTarea.ObtenerAsync(x => x.Estado == ComunTareas.EstadoTarea.Habilidata).ConfigureAwait(false)).ToList();
-                foreach(var tarea in tareas)
+                _logger.LogInformation($"Ejecución de tareas programdas");
+                if (!stoppingToken.IsCancellationRequested)
                 {
-
-                    // Excluye tareas de ejecución única que ya hayan sido ejecutadas
-                    if(tarea.Periodo == ComunTareas.PeriodoProgramacion.Unico && tarea.UltimaEjecucion.HasValue)
+                    tareas = (await servicioTarea.ObtenerAsync(x => x.Estado == ComunTareas.EstadoTarea.Habilidata).ConfigureAwait(false)).ToList();
+                    _logger.LogInformation($"Reprogramando {tareas.Count} Tareas");
+                    foreach (var tarea in tareas)
                     {
-                        break;
-                    } 
+                        _logger.LogInformation($"Verificando {tarea.Id} Tareas");
 
-                    if(!tarea.ProximaEjecucion.HasValue)
-                    {
-                        tarea.ProximaEjecucion = tarea.SiguienteFechaEjecucion();
-                        await servicioTarea.ActualizaEjecucion(tarea).ConfigureAwait(false);
-                    }
-
-                    if (tarea.ProximaEjecucion.HasValue)
-                    {
-                        // La tarea se inicia cuando la hora del sistema rebasa la de programación
-                        if(tarea.ProximaEjecucion < DateTime.UtcNow)
+                        // Excluye tareas de ejecución única que ya hayan sido ejecutadas
+                        if (tarea.Periodo == ComunTareas.PeriodoProgramacion.Unico && tarea.UltimaEjecucion.HasValue)
                         {
-                            var procesador = InstanciaTareas.FirstOrDefault(x => x.Id == tarea.Id);
-                            if (procesador != null)
+                            break;
+                        }
+
+                        if (!tarea.ProximaEjecucion.HasValue)
+                        {
+                            _logger.LogInformation($"Actualizando estado de {tarea.Id}");
+                            tarea.ProximaEjecucion = tarea.SiguienteFechaEjecucion();
+                            await servicioTarea.ActualizaEjecucion(tarea).ConfigureAwait(false);
+                        }
+
+                        _logger.LogInformation($"¨Proxima Ejecución {tarea.ProximaEjecucion}");
+
+                        if (tarea.ProximaEjecucion.HasValue)
+                        {
+                            _logger.LogInformation($"¨Programando {tarea.Id} {tarea.ProximaEjecucion}");
+                            // La tarea se inicia cuando la hora del sistema rebasa la de programación
+                            if (tarea.ProximaEjecucion < DateTime.UtcNow)
                             {
-                                _logger.LogInformation($"Reprogramando {tarea.Nombre}");
-                                if (!procesador.EnEjecucion)
+                                _logger.LogInformation($"¨Preparando {tarea.Id} {tarea.ProximaEjecucion}");
+                                var procesador = InstanciaTareas.FirstOrDefault(x => x.Id == tarea.Id);
+                                if (procesador != null)
                                 {
-                                    tarea.Estado = ComunTareas.EstadoTarea.Enejecucion;
-                                    await servicioTarea.ActualizaEjecucion(tarea).ConfigureAwait(false);
-                                    _ = Task.Run(() => procesador.Instancia.EjecutarTarea());
+                                    _logger.LogInformation($"Reprogramando {tarea.Nombre}");
+                                    if (!procesador.EnEjecucion)
+                                    {
+                                        tarea.Estado = ComunTareas.EstadoTarea.Enejecucion;
+                                        await servicioTarea.ActualizaEjecucion(tarea).ConfigureAwait(false);
+                                        _ = Task.Run(() => procesador.Instancia.EjecutarTarea());
+                                    }
+                                    else
+                                    {
+                                        _logger.LogInformation($"Error al programar la tarea {tarea.Nombre} aún se encuentra en ejecución");
+                                    }
+
                                 }
                                 else
                                 {
-                                    _logger.LogInformation($"Error al programar la tarea {tarea.Nombre} aún se encuentra en ejecución");
+                                    _logger.LogInformation($"Programando {tarea.Nombre}");
+                                    var (programada, errror) = ProgramaTarea(tarea);
+                                    if (programada)
+                                    {
+                                        procesador = InstanciaTareas.First(x => x.Id == tarea.Id);
+                                        tarea.Estado = ComunTareas.EstadoTarea.Enejecucion;
+                                        _logger.LogInformation($"Actualizando {tarea.Nombre}");
+                                        await servicioTarea.ActualizaEjecucion(tarea).ConfigureAwait(false);
+                                        _logger.LogInformation($"Ejecutando {tarea.Nombre}");
+                                        _ = Task.Run(() => procesador.Instancia.EjecutarTarea());
+                                    }
+                                    else
+                                    {
+                                        tarea.Estado = ComunTareas.EstadoTarea.ErrorConfiguracion;
+                                        await servicioTarea.ActualizaEjecucion(tarea).ConfigureAwait(false);
+                                        _logger.LogInformation($"Error al programar la tarea {tarea.Nombre} {errror}");
+                                    }
                                 }
 
                             }
                             else
                             {
-                                _logger.LogInformation($"Programando {tarea.Nombre}");
-                                var (programada, errror) = ProgramaTarea(tarea);
-                                if (programada)
-                                {
-                                    procesador = InstanciaTareas.First(x => x.Id == tarea.Id);
-                                    tarea.Estado = ComunTareas.EstadoTarea.Enejecucion;
-                                    await servicioTarea.ActualizaEjecucion(tarea).ConfigureAwait(false);
-                                    _ = Task.Run(() => procesador.Instancia.EjecutarTarea());
-                                }
-                                else
-                                {
-                                    tarea.Estado = ComunTareas.EstadoTarea.ErrorConfiguracion;
-                                    await servicioTarea.ActualizaEjecucion(tarea).ConfigureAwait(false);
-                                    _logger.LogInformation($"Error al programar la tarea {tarea.Nombre} {errror}");
-                                }
+                                _logger.LogInformation($"Intervalo espera {tarea.Nombre} {(DateTime.UtcNow - tarea.ProximaEjecucion.Value).TotalSeconds}");
                             }
 
-                        } else
+                        }
+                        else
                         {
-                            _logger.LogInformation($"Intervalo espera {tarea.Nombre} {(DateTime.UtcNow - tarea.ProximaEjecucion.Value).TotalSeconds}");
+                            _logger.LogInformation($"No hay fecha de ejecución para {tarea.Nombre}");
                         }
 
-                    } else
-                    {
-                        _logger.LogInformation($"No hay fecha de ejecución para {tarea.Nombre}");
                     }
 
                 }
-
             }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"Error de procesamiento de tareas\r\n{ex}");
+            }
+            
         }
 
    
@@ -175,6 +195,7 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogInformation($"Error de programación de tareas\r\n{ex}");
                     errror = ex.Message;
                 }
                 
