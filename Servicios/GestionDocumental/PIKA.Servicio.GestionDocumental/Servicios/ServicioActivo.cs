@@ -114,7 +114,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             // Evita que se pierda el contenido asociado prwviamente al elemento actualizado
             if (!string.IsNullOrEmpty( previo.ElementoId))
             {
-                if(string.IsNullOrEmpty( valido.ElementoId))
+                valido.TieneContenido = true;
+                if(string.IsNullOrEmpty(valido.ElementoId))
                 {
                     valido.ElementoId = previo.ElementoId;
                 }
