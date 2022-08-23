@@ -251,20 +251,20 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
         public async Task<bool> EstadoVersion(string Id, bool Activa)
         {
             string script = $"ctx._source.act = {(Activa? "true": "false")}";
-
             var resultado = await cliente.UpdateByQueryAsync<Modelo.Contenido.Version>(u => u
                    .Query(q => q
-                       .Term(f=> f
-                        .Name("id.keyword")
-                        .Value(Id)
-                       )
+                       .Ids(c => c
+                        .Name("update_query")
+                        .Boost(1.1)
+                        .Values(new List<string>() { Id })
+                    )
                    )
                    .Script(script)
                    .Conflicts(Conflicts.Proceed)
                    .Refresh(true)
                );
 
-            if(!resultado.IsValid)
+            if (!resultado.IsValid)
             {
                 Console.WriteLine(resultado.ServerError.ToString());
             }

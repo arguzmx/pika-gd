@@ -51,19 +51,25 @@ namespace PIKA.GD.API.Servicios.TareasAutomaticas
             {
                 LogDebug($"Adicionando {tipo.FullName}");
                 var instancia = (ComunTareas.IProveedorTareasEnDemanda)Activator.CreateInstance(tipo);
-                try
+                if (instancia != null)
                 {
-                    var lista = instancia.ObtieneTareasEnDemanda();
-                    foreach (var item in lista)
+
+                    try
                     {
-                        LogDebug($"{item.Id} {tipo.FullName}");
-                        Proveedores.Add(item.Id, tipo.FullName);
+                        var lista = instancia.ObtieneTareasEnDemanda();
+                        foreach (var item in lista)
+                        {
+                            LogDebug($"{item.Id} {tipo.FullName}");
+                            Proveedores.Add(item.Id, tipo.FullName);
+                        }
                     }
+                    catch (Exception ex)
+                    {
+                        LogDebug(ex.ToString());
+                    }
+                    instancia.Dispose();
                 }
-                catch (Exception ex)
-                {
-                    
-                }
+                
             }
         }
 

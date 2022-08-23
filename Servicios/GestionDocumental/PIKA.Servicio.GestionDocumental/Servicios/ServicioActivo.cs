@@ -111,6 +111,15 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             Activo previo = await this.UnicoAsync(x => x.Id == entity.Id);
             Activo valido = await ActivoValidado(entity, true);
 
+            // Evita que se pierda el contenido asociado prwviamente al elemento actualizado
+            if (!string.IsNullOrEmpty( previo.ElementoId))
+            {
+                if(string.IsNullOrEmpty( valido.ElementoId))
+                {
+                    valido.ElementoId = previo.ElementoId;
+                }
+            }
+
             valido.TieneContenido = entity.TieneContenido;
             valido.ElementoId = entity.ElementoId;
             
