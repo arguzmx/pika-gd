@@ -119,10 +119,13 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 {
                     valido.ElementoId = previo.ElementoId;
                 }
+            } else
+            {
+
+                valido.TieneContenido = entity.TieneContenido;
+                valido.ElementoId = entity.ElementoId;
             }
 
-            valido.TieneContenido = entity.TieneContenido;
-            valido.ElementoId = entity.ElementoId;
             
 
             UDT.Context.Entry(valido).State = EntityState.Modified;
