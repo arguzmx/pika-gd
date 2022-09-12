@@ -36,13 +36,17 @@ namespace PIKA.Identity.Server
 
         public ILifetimeScope AutofacContainer { get; private set; }
 
-        private string extensionsPath; 
+        private string extensionsPath;
+
+        private string localhosts = null;
 
         public Startup(IWebHostEnvironment environment, IConfiguration configuration)
         {
             Environment = environment;
             Configuration = configuration;
             this.extensionsPath = environment.ContentRootPath + configuration["Extensions:Path"];
+            localhosts = Configuration["interservicio:hosts"];
+            localhosts = string.IsNullOrEmpty(localhosts) ? "localhost" : localhosts;
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
@@ -154,9 +158,10 @@ namespace PIKA.Identity.Server
 
         public void Configure(IApplicationBuilder app)
         {
+
             app.Use(async (ctx, next) =>
             {
-                if (ctx.Request.Host.Host != "localhost") {
+                if (!this.localhosts.Contains(ctx.Request.Host.Host, System.StringComparison.InvariantCultureIgnoreCase)) {
                
                     if (!string.IsNullOrEmpty(Configuration["PublicBaseURL"]))
                     {
