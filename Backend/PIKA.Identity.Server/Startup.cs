@@ -36,13 +36,17 @@ namespace PIKA.Identity.Server
 
         public ILifetimeScope AutofacContainer { get; private set; }
 
-        private string extensionsPath; 
+        private string extensionsPath;
+
+        private string localhosts = null;
 
         public Startup(IWebHostEnvironment environment, IConfiguration configuration)
         {
             Environment = environment;
             Configuration = configuration;
             this.extensionsPath = environment.ContentRootPath + configuration["Extensions:Path"];
+            localhosts = Configuration["interservicio:hosts"];
+            localhosts = string.IsNullOrEmpty(localhosts) ? "localhost" : localhosts;
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
@@ -56,9 +60,9 @@ namespace PIKA.Identity.Server
             //builder.RegisterModule(new AutofacModule());
         }
 
-        public  void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
-          services.AddLocalization(options => options.ResourcesPath = "Resources");
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             services.AddCors();
 
@@ -66,8 +70,8 @@ namespace PIKA.Identity.Server
         .AddMvc()
             .AddViewLocalization(
             LanguageViewLocationExpanderFormat.Suffix,
-            opts => { 
-                opts.ResourcesPath = "Resources"; 
+            opts => {
+                opts.ResourcesPath = "Resources";
             })
             .AddDataAnnotationsLocalization(options =>
             {
@@ -79,7 +83,7 @@ namespace PIKA.Identity.Server
             });
 
 
-           services.Configure<RequestLocalizationOptions>(options =>
+            services.Configure<RequestLocalizationOptions>(options =>
             {
                 var cultures = new[]
                 {
@@ -105,23 +109,23 @@ namespace PIKA.Identity.Server
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-            
+
             services.AddHealthChecks();
 
             var builder = services.AddIdentityServer(options =>
+            {
+                // options.PublicOrigin = Configuration["PublicOrigin"];
+                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseInformationEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseSuccessEvents = true;
+                options.UserInteraction = new UserInteractionOptions()
                 {
-                    // options.PublicOrigin = Configuration["PublicOrigin"];
-                    options.Events.RaiseErrorEvents = true;
-                    options.Events.RaiseInformationEvents = true;
-                    options.Events.RaiseFailureEvents = true;
-                    options.Events.RaiseSuccessEvents = true;
-                    options.UserInteraction = new UserInteractionOptions()
-                    {
-                        LogoutUrl = "/account/logout",
-                        LoginUrl = "/account/login",
-                        LoginReturnUrlParameter = "returnUrl"
-                    };
-                })
+                    LogoutUrl = "/account/logout",
+                    LoginUrl = "/account/login",
+                    LoginReturnUrlParameter = "returnUrl"
+                };
+            })
                  .AddConfigurationStore(options =>
                  {
                      options.ConfigureDbContext = b => b.UseMySql(dbconnstr,
@@ -138,26 +142,28 @@ namespace PIKA.Identity.Server
 
             builder.Services.ConfigureExternalCookie(options => {
                 options.Cookie.IsEssential = true;
-                options.Cookie.SameSite = SameSiteMode.Unspecified; 
+                options.Cookie.SameSite = SameSiteMode.Unspecified;
             });
 
             builder.Services.ConfigureApplicationCookie(options => {
                 options.Cookie.IsEssential = true;
-                options.Cookie.SameSite = SameSiteMode.Unspecified; 
+                options.Cookie.SameSite = SameSiteMode.Unspecified;
             });
 
             // not recommended for production - you need to store your key material somewhere secure
             builder.AddDeveloperSigningCredential();
 
- 
+
         }
 
         public void Configure(IApplicationBuilder app)
         {
+
             app.Use(async (ctx, next) =>
             {
-                if (ctx.Request.Host.Host != "localhost") {
-               
+                if (!this.localhosts.Contains(ctx.Request.Host.Host, System.StringComparison.InvariantCultureIgnoreCase))
+                {
+
                     if (!string.IsNullOrEmpty(Configuration["PublicBaseURL"]))
                     {
                         if (
@@ -166,7 +172,7 @@ namespace PIKA.Identity.Server
                         {
                             ctx.Request.PathBase = new PathString($"/{Configuration["PublicBaseURL"].Trim().TrimStart('/')}");
                         }
-                       
+
                     }
                 }
                 await next();
@@ -177,7 +183,7 @@ namespace PIKA.Identity.Server
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
-            
+
 
             this.AutofacContainer = app.ApplicationServices.GetAutofacRoot();
 
@@ -221,7 +227,7 @@ namespace PIKA.Identity.Server
             });
 
 
-          
+
         }
     }
 }
