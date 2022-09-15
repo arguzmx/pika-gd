@@ -26,6 +26,7 @@ using IdentityServer4.Hosting;
 using PIKA.Identity.Server.Services;
 using PIKA.Servicio.Usuarios;
 using RepositorioEntidades;
+using System;
 
 namespace PIKA.Identity.Server
 {
@@ -161,16 +162,30 @@ namespace PIKA.Identity.Server
 
             app.Use(async (ctx, next) =>
             {
+                Console.WriteLine($"================================");
+                Console.WriteLine($"Scheme {ctx.Request.Scheme}");
+                Console.WriteLine($"Host {ctx.Request.Host}");
+                Console.WriteLine($"Port {ctx.Request.Host.Port}");
+                Console.WriteLine($"PathBase {ctx.Request.PathBase}");
+                Console.WriteLine($"Path {ctx.Request.Path}");
+                Console.WriteLine($"QueryString {ctx.Request.QueryString}");
+
                 if (!this.localhosts.Contains(ctx.Request.Host.Host, System.StringComparison.InvariantCultureIgnoreCase))
                 {
-
+                    Console.WriteLine($"No es interservicio");
                     if (!string.IsNullOrEmpty(Configuration["PublicBaseURL"]))
                     {
+                        Console.WriteLine($"No contiene {Configuration["PublicBaseURL"]}");
                         if (
                         (ctx.Request.PathBase.Value.IndexOf(Configuration["PublicBaseURL"]) < 0)
                         && (ctx.Request.Path.Value.IndexOf(Configuration["PublicBaseURL"]) < 0))
                         {
+                            if (!string.IsNullOrEmpty(Configuration["esquema"]))
+                            {
+                                ctx.Request.Scheme = Configuration["esquema"];
+                            }
                             ctx.Request.PathBase = new PathString($"/{Configuration["PublicBaseURL"].Trim().TrimStart('/')}");
+                            Console.WriteLine($"Nuevo Pathbase  {ctx.Request.PathBase}");
                         }
 
                     }
