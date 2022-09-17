@@ -27,6 +27,7 @@ using PIKA.Identity.Server.Services;
 using PIKA.Servicio.Usuarios;
 using RepositorioEntidades;
 using System;
+using System.Linq;
 
 namespace PIKA.Identity.Server
 {
@@ -71,7 +72,8 @@ namespace PIKA.Identity.Server
         .AddMvc()
             .AddViewLocalization(
             LanguageViewLocationExpanderFormat.Suffix,
-            opts => {
+            opts =>
+            {
                 opts.ResourcesPath = "Resources";
             })
             .AddDataAnnotationsLocalization(options =>
@@ -141,12 +143,14 @@ namespace PIKA.Identity.Server
                 .AddProfileService<PikaProfileService>();
 
 
-            builder.Services.ConfigureExternalCookie(options => {
+            builder.Services.ConfigureExternalCookie(options =>
+            {
                 options.Cookie.IsEssential = true;
                 options.Cookie.SameSite = SameSiteMode.Unspecified;
             });
 
-            builder.Services.ConfigureApplicationCookie(options => {
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
                 options.Cookie.IsEssential = true;
                 options.Cookie.SameSite = SameSiteMode.Unspecified;
             });
@@ -157,35 +161,41 @@ namespace PIKA.Identity.Server
 
         }
 
+        private bool ForceHttps(HttpContext cx) {
+            string ProtoHeaders = "X-Forwarded-Proto,X-Url-Scheme,X-Scheme,X-Forwarded-Ssl,Front-End-Https";
+
+            foreach(var h in cx.Request.Headers.ToList())
+            {
+                if(ProtoHeaders.Contains(h.Key, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    if(h.Value == "on" || h.Value == "https")
+                    {
+                        return true;
+                    } 
+                }
+            }
+
+            return false;
+        }
+
         public void Configure(IApplicationBuilder app)
         {
 
             app.Use(async (ctx, next) =>
             {
-                Console.WriteLine($"================================");
-                Console.WriteLine($"Scheme {ctx.Request.Scheme}");
-                Console.WriteLine($"Host {ctx.Request.Host}");
-                Console.WriteLine($"Port {ctx.Request.Host.Port}");
-                Console.WriteLine($"PathBase {ctx.Request.PathBase}");
-                Console.WriteLine($"Path {ctx.Request.Path}");
-                Console.WriteLine($"QueryString {ctx.Request.QueryString}");
-
                 if (!this.localhosts.Contains(ctx.Request.Host.Host, System.StringComparison.InvariantCultureIgnoreCase))
                 {
-                    Console.WriteLine($"No es interservicio");
                     if (!string.IsNullOrEmpty(Configuration["PublicBaseURL"]))
                     {
-                        Console.WriteLine($"No contiene {Configuration["PublicBaseURL"]}");
                         if (
                         (ctx.Request.PathBase.Value.IndexOf(Configuration["PublicBaseURL"]) < 0)
                         && (ctx.Request.Path.Value.IndexOf(Configuration["PublicBaseURL"]) < 0))
                         {
-                            if (!string.IsNullOrEmpty(Configuration["esquema"]))
+                            if (ForceHttps(ctx) || (Configuration["esquema"] == "https"))
                             {
-                                ctx.Request.Scheme = Configuration["esquema"];
+                                ctx.Request.Scheme = "https";
                             }
                             ctx.Request.PathBase = new PathString($"/{Configuration["PublicBaseURL"].Trim().TrimStart('/')}");
-                            Console.WriteLine($"Nuevo Pathbase  {ctx.Request.PathBase}");
                         }
 
                     }
