@@ -71,9 +71,6 @@ namespace PIKA.Identity.Server
                             contextConfiguration.SaveChanges();
                         } 
                     }
-                    
-
-                    
 
                     if (!contextConfiguration.IdentityResources.Any())
                     {
