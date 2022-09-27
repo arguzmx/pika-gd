@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\lib\jqold\jquery.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac" Version="5.2.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="ExtCore.Mvc" Version="5.1.0" />
@@ -114,25 +118,22 @@
     <Content Update="wwwroot\lib\bootstrap\js\bootstrap.min.js.map">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\lib\jquery\core.js">
+    <Content Update="wwwroot\lib\jqold\core.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\lib\jquery\jquery.js">
+    <Content Update="wwwroot\lib\jqold\jquery.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\lib\jquery\jquery.min.js">
+    <Content Update="wwwroot\lib\jqold\jquery.min.map">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\lib\jquery\jquery.min.map">
+    <Content Update="wwwroot\lib\jqold\jquery.slim.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\lib\jquery\jquery.slim.js">
+    <Content Update="wwwroot\lib\jqold\jquery.slim.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\lib\jquery\jquery.slim.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\lib\jquery\jquery.slim.min.map">
+    <Content Update="wwwroot\lib\jqold\jquery.slim.min.map">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\ok.ico">
@@ -141,6 +142,10 @@
     <Content Update="wwwroot\Pika.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\jquery\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
