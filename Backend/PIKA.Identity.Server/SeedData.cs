@@ -61,15 +61,23 @@ namespace PIKA.Identity.Server
                     var contextConfiguration = scope.ServiceProvider.GetService<ConfigurationDbContext>();
                     contextConfiguration.Database.Migrate();
 
-
+                    
                     foreach (var client in Config.Clients)
                     {
+                        
                         Console.WriteLine(client.ClientId);
                         if (!contextConfiguration.Clients.Any(x=>x.ClientId == client.ClientId))
                         {
                             contextConfiguration.Clients.Add(client.ToEntity());
                             contextConfiguration.SaveChanges();
-                        } 
+                        }
+                    }
+
+                    var cl = contextConfiguration.Clients.Where(x=>x.ClientId == "api-pika-gd-angular").SingleOrDefault();
+                    if (cl != null)
+                    {
+                        string update = $"update clientgranttypes set GrantType='authorization_code' where Id={cl.Id}";
+                        contextConfiguration.Database.ExecuteSqlRaw(update, new object[] { });
                     }
 
                     if (!contextConfiguration.IdentityResources.Any())
