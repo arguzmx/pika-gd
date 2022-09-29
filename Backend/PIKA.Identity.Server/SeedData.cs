@@ -76,10 +76,10 @@ namespace PIKA.Identity.Server
                     var cl = contextConfiguration.Clients.Where(x=>x.ClientId == "api-pika-gd-angular").SingleOrDefault();
                     if (cl != null)
                     {
-                        string update = $"update clientgranttypes set GrantType='authorization_code' where Id={cl.Id}";
+                        string update = $"update ClientGrantTypes set GrantType='authorization_code' where Id={cl.Id}";
                         contextConfiguration.Database.ExecuteSqlRaw(update, new object[] { });
 
-                        update = $"update clients set AllowOfflineAccess=1 where Id={cl.Id}";
+                        update = $"update Clients set AllowOfflineAccess=1 where Id={cl.Id}";
                         contextConfiguration.Database.ExecuteSqlRaw(update, new object[] { });
                     }
 
