@@ -78,6 +78,9 @@ namespace PIKA.Identity.Server
                     {
                         string update = $"update clientgranttypes set GrantType='authorization_code' where Id={cl.Id}";
                         contextConfiguration.Database.ExecuteSqlRaw(update, new object[] { });
+
+                        update = $"update clients set AllowOfflineAccess=1 where Id={cl.Id}";
+                        contextConfiguration.Database.ExecuteSqlRaw(update, new object[] { });
                     }
 
                     if (!contextConfiguration.IdentityResources.Any())

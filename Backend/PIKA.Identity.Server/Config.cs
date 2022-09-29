@@ -95,6 +95,7 @@ new Client
         IdentityServerConstants.StandardScopes.OfflineAccess,
         PIKAGDNAME
     },
+    AllowOfflineAccess = true,
     AllowedCorsOrigins = { "http://localhost:4200" },
     RequireClientSecret = false,
     PostLogoutRedirectUris = new List<string> { "http://localhost:4200/signout-callback" },
@@ -107,9 +108,9 @@ new Client
                     ClientName = "Cliente PIKA Gestión Documental Web",
                     ClientId = "api-pika-gd-angular",
     AccessTokenType = AccessTokenType.Jwt,
-    AccessTokenLifetime = 3600,// 330 seconds, default 60 minutes
-    IdentityTokenLifetime = 3600,
-
+    AccessTokenLifetime = 600,// 330 seconds, default 60 minutes
+    IdentityTokenLifetime = 600,
+    AllowOfflineAccess = true,
     RequireClientSecret = false,
     AllowedGrantTypes = GrantTypes.Code,
     RequirePkce = true,
