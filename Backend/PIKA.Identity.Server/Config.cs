@@ -80,18 +80,39 @@ new Client {
                             }
                         },
 
+new Client
+{
+    ClientName = "Cliente PIKA Gestión Documental Web (Code)",
+    ClientId = "api-pika-gd-angular-code",
+    AllowedGrantTypes = GrantTypes.Code,
+    RedirectUris = new List<string>{ "http://localhost:4200/signin-callback", "http://localhost:4200/assets/silent-callback.html" },
+    RequirePkce = true,
+    AllowAccessTokensViaBrowser = true,
+    AllowedScopes =
+    {
+        IdentityServerConstants.StandardScopes.OpenId,
+        IdentityServerConstants.StandardScopes.Profile,
+        IdentityServerConstants.StandardScopes.OfflineAccess,
+        PIKAGDNAME
+    },
+    AllowOfflineAccess = true,
+    AllowedCorsOrigins = { "http://localhost:4200" },
+    RequireClientSecret = false,
+    PostLogoutRedirectUris = new List<string> { "http://localhost:4200/signout-callback" },
+    RequireConsent = false,
+    AccessTokenLifetime = 600
+},
                 // Cliente aplicacion angular
                 new Client
 {
-                    ClientId = "api-pika-gd-angular",
                     ClientName = "Cliente PIKA Gestión Documental Web",
-
+                    ClientId = "api-pika-gd-angular",
     AccessTokenType = AccessTokenType.Jwt,
-    AccessTokenLifetime = 3600,// 330 seconds, default 60 minutes
-    IdentityTokenLifetime = 3600,
-
+    AccessTokenLifetime = 600,// 330 seconds, default 60 minutes
+    IdentityTokenLifetime = 600,
+    AllowOfflineAccess = true,
     RequireClientSecret = false,
-    AllowedGrantTypes = GrantTypes.Implicit,
+    AllowedGrantTypes = GrantTypes.Code,
     RequirePkce = true,
     RequireConsent =false,
     AllowAccessTokensViaBrowser = true,
