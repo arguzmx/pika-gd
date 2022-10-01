@@ -82,7 +82,7 @@ namespace PIKA.Identity.Server
                         update = "UPDATE ClientRedirectUris SET RedirectUri = CONCAT(RedirectUri, '/') where ClientId=4 AND RedirectUri NOT LIKE '%html' AND RedirectUri NOT LIKE '%/'";
                         contextConfiguration.Database.ExecuteSqlRaw(update, new object[] { });
 
-                        update = "UPDATE ClientPostLogoutRedirectUris SET PostLogoutRedirectUri = CONCAT(PostLogoutRedirectUri, '/') where ClientId=4 AND PostLogoutRedirectUri NOT LIKE '%html' PostLogoutRedirectUri RedirectUri NOT LIKE '%/'";
+                        update = "UPDATE ClientPostLogoutRedirectUris SET PostLogoutRedirectUri = CONCAT(PostLogoutRedirectUri, '/') where ClientId=4 AND PostLogoutRedirectUri NOT LIKE '%html' AND PostLogoutRedirectUri NOT LIKE '%/'";
                         contextConfiguration.Database.ExecuteSqlRaw(update, new object[] { });
 
 
