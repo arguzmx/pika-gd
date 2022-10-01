@@ -79,6 +79,9 @@ namespace PIKA.Identity.Server
                         string update = $"update ClientGrantTypes set GrantType='authorization_code' where Id={cl.Id}";
                         contextConfiguration.Database.ExecuteSqlRaw(update, new object[] { });
 
+                        update = "UPDATE ClientRedirectUris SET RedirectUri = CONCAT(RedirectUri, '/') where ClientId=4 AND RedirectUri NOT LIKE '%html' AND RedirectUri NOT LIKE '%/'";
+                        contextConfiguration.Database.ExecuteSqlRaw(update, new object[] { });
+
                         update = $"update Clients set AllowOfflineAccess=1 where Id={cl.Id}";
                         contextConfiguration.Database.ExecuteSqlRaw(update, new object[] { });
                     }
