@@ -200,6 +200,7 @@ namespace PIKA.Identity.Server
 
                     }
                 }
+
                 await next();
             });
 
