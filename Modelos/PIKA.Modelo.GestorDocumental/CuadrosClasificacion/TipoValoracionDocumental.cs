@@ -21,9 +21,9 @@ namespace PIKA.Modelo.GestorDocumental
         public const string ADMINISTRATIVA = "admin";
         public const string LEGAL = "legal";
         public const string FISCAL = "fiscal";
-        public const string TESTIMONIAL = "testimonial";
-        public const string EVIDENCIAL = "evidencial";
-        public const string INFORMATIVA = "evidencial";
+        //public const string TESTIMONIAL = "testimonial";
+        //public const string EVIDENCIAL = "evidencial";
+        //public const string INFORMATIVA = "evidencial";
 
 
         public TipoValoracionDocumental()
@@ -46,9 +46,9 @@ namespace PIKA.Modelo.GestorDocumental
             lista.Add(new TipoValoracionDocumental() { Id = ADMINISTRATIVA, Nombre = "Administrativa" });
             lista.Add(new TipoValoracionDocumental() { Id = LEGAL, Nombre = "Legal" });
             lista.Add(new TipoValoracionDocumental() { Id = FISCAL, Nombre = "Fiscal" });
-            lista.Add(new TipoValoracionDocumental() { Id = TESTIMONIAL, Nombre = "Testimonial" });
-            lista.Add(new TipoValoracionDocumental() { Id = EVIDENCIAL, Nombre = "Evidencial" });
-            lista.Add(new TipoValoracionDocumental() { Id = INFORMATIVA, Nombre = "Informativa" });
+            //lista.Add(new TipoValoracionDocumental() { Id = TESTIMONIAL, Nombre = "Testimonial" });
+            //lista.Add(new TipoValoracionDocumental() { Id = EVIDENCIAL, Nombre = "Evidencial" });
+            //lista.Add(new TipoValoracionDocumental() { Id = INFORMATIVA, Nombre = "Informativa" });
             
 
 
