@@ -166,6 +166,11 @@ namespace PIKA.Modelo.GestorDocumental
         [JsonIgnore]
         public virtual ICollection<Activo> Activos { get; set; }
 
+
+        [NotMapped]
+        [JsonIgnore]
+        [XmlIgnore]
+        public List<Transferencia> Transferencias { get; set; }
         public virtual TipoDisposicionDocumental DisposicionEntrada { get; set; }
 
         [JsonIgnore]

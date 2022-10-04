@@ -21,6 +21,10 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.UsuarioId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
             builder.Property(x => x.FechaCreacion).IsRequired();
+            builder.Property(x => x.CantidadActivos).IsRequired();
+            builder.Property(x => x.EntradaClasificacionId).IsRequired(false);
+            builder.Property(x => x.CuadroClasificacionId).IsRequired(false);
+            builder.Property(x => x.Folio).IsRequired(false).HasMaxLength(LongitudDatos.NombreLargo);
 
             builder.HasOne(x => x.Estado).WithMany(y => y.Transferencias).HasForeignKey(z => z.EstadoTransferenciaId);
             builder.HasMany(x => x.Eventos).WithOne(y => y.Transferencia).HasForeignKey(z => z.TransferenciaId);

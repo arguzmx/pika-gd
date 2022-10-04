@@ -60,6 +60,10 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         public async Task<ActionResult<Transferencia>> Post([FromBody]Transferencia entidad)
         {
+            entidad.UsuarioId = this.UsuarioId;
+            entidad.EstadoTransferenciaId = EstadoTransferencia.ESTADO_NUEVA;
+            entidad.FechaCreacion = DateTime.UtcNow;
+            entidad.CantidadActivos = 0;
             entidad = await servicioTransferencia.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetTransferencia", new { id = entidad.Id.Trim() }, entidad).Value);
         }
@@ -98,11 +102,13 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         /// <param name="query">Consulta para la paginación y búsqueda</param>
         /// <returns></returns>
 
-        [HttpGet("page", Name = "GetPageTransferencia")]
+        [HttpGet("page/archivo/{id}", Name = "GetPageTransferencia")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Transferencia>>> GetPage([FromQuery] Consulta query = null)
+        public async Task<ActionResult<IEnumerable<Transferencia>>> GetPage(string id, [FromQuery] Consulta query = null)
         {
+
+            query.Filtros.Add(new FiltroConsulta() { Operador = "eq", Propiedad = "ArchivoOrigenId", Valor = id });
             var data = await servicioTransferencia.ObtenerPaginadoAsync(
                     Query: query,
                     include: null)

@@ -102,6 +102,12 @@ namespace PIKA.Modelo.GestorDocumental
         [NotMapped]
         [JsonIgnore]
         [XmlIgnore]
+        public List<Transferencia> Transferencias { get; set; }
+
+
+        [NotMapped]
+        [JsonIgnore]
+        [XmlIgnore]
         public List<Activo> Activos { get; set; }
 
         [NotMapped]

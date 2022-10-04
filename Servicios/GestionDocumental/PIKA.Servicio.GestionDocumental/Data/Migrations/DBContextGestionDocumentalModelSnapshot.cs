@@ -1200,6 +1200,15 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
+                    b.Property<int>("CantidadActivos")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CuadroClasificacionId")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("EntradaClasificacionId")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4");
+
                     b.Property<string>("EstadoTransferenciaId")
                         .IsRequired()
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
@@ -1207,6 +1216,10 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
 
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Folio")
+                        .HasColumnType("varchar(500) CHARACTER SET utf8mb4")
+                        .HasMaxLength(500);
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -1223,6 +1236,10 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.HasIndex("ArchivoDestinoId");
 
                     b.HasIndex("ArchivoOrigenId");
+
+                    b.HasIndex("CuadroClasificacionId");
+
+                    b.HasIndex("EntradaClasificacionId");
 
                     b.HasIndex("EstadoTransferenciaId");
 
@@ -1701,6 +1718,16 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasForeignKey("ArchivoOrigenId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("PIKA.Modelo.GestorDocumental.CuadroClasificacion", "CuadroClasificacion")
+                        .WithMany("Transferencias")
+                        .HasForeignKey("CuadroClasificacionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("PIKA.Modelo.GestorDocumental.EntradaClasificacion", "EntradaClasificacion")
+                        .WithMany("Transferencias")
+                        .HasForeignKey("EntradaClasificacionId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("PIKA.Modelo.GestorDocumental.EstadoTransferencia", "Estado")
                         .WithMany("Transferencias")

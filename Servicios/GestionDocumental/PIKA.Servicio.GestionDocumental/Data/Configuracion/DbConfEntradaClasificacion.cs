@@ -34,6 +34,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
 
             builder.Ignore(x => x.NombreCompleto);
 
+            builder.HasMany(x => x.Transferencias).WithOne(y => y.EntradaClasificacion).HasForeignKey(z => z.EntradaClasificacionId).OnDelete(DeleteBehavior.Restrict);
             builder.HasMany(x => x.Activos).WithOne(y => y.EntradaClasificacion).HasForeignKey(z => z.EntradaClasificacionId).OnDelete(DeleteBehavior.Restrict);
             builder.HasMany(x => x.ValoracionesEntrada).WithOne(y => y.EntradaClasificacion).HasForeignKey(z => z.EntradaClasificacionId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(x => x.DisposicionEntrada).WithMany(y => y.EntradaClasificacion).HasForeignKey(z=>z.TipoDisposicionDocumentalId).OnDelete(DeleteBehavior.Cascade);

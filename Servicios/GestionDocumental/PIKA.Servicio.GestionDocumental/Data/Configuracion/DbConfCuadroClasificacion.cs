@@ -26,6 +26,8 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.EstadoCuadroClasificacionId).HasMaxLength(LongitudDatos.GUID)
                 .HasDefaultValue(ConstantesEstado.ESTADO_ACTIVO).IsRequired();
 
+            builder.HasMany(x => x.Transferencias).WithOne(y => y.CuadroClasificacion).HasForeignKey(z => z.CuadroClasificacionId).OnDelete(DeleteBehavior.Restrict);
+
             builder.HasMany(x => x.Activos).WithOne(y => y.CuadroClasificacion).HasForeignKey(z => z.CuadroClasificacionId).OnDelete(DeleteBehavior.Restrict);
             builder.HasMany(x => x.Elementos).WithOne(y=>y.CuadroClasificacion).HasForeignKey(z=>z.CuadroClasifiacionId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(x => x.Estado).WithMany(x => x.Cuadros).HasForeignKey(x => x.EstadoCuadroClasificacionId).OnDelete(DeleteBehavior.Restrict);
