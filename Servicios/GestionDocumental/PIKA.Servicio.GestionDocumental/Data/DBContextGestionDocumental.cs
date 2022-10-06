@@ -314,11 +314,6 @@ namespace PIKA.Servicio.GestionDocumental.Data
         public DbSet<ActivoTransferencia> ActivosTransferencia { get; set; }
 
         /// <summary>
-        /// Comentarios de prestamo existentes en la aplicación
-        /// </summary>
-        public DbSet<ActivoDeclinado> ActivosDeclinados { get; set; }
-
-        /// <summary>
         /// Variable de Entrada Clasificacion
         /// </summary>
         public DbSet<EntradaClasificacion> EntradaClasificacion{ get; set; }
@@ -359,7 +354,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseMySql("Server=localhost;Port=3306;Database=pika-ca;Uid=pika;Pwd=Pa$$w0rd;");
+            // optionsBuilder.UseMySql("Server=localhost;Port=3306;Database=pika-ca;Uid=pika;Pwd=Pa$$w0rd;");
             optionsBuilder.EnableSensitiveDataLogging();
             base.OnConfiguring(optionsBuilder);
         }
@@ -402,7 +397,6 @@ namespace PIKA.Servicio.GestionDocumental.Data
             builder.ApplyConfiguration<EventoTransferencia>(new DbConfEventoTransferencia());
             builder.ApplyConfiguration<ComentarioTransferencia>(new DbConfComentarioTransferencia());
             builder.ApplyConfiguration<ActivoTransferencia>(new DbConfActivoTransferencia());
-            builder.ApplyConfiguration<ActivoDeclinado>(new DbConfActivoDeclinado());
             builder.ApplyConfiguration<EntradaClasificacion>(new DbConfEntradaClasificacion());
             builder.ApplyConfiguration<TipoDisposicionDocumental>(new DbConfTipoDisposicionDocumental());
             builder.ApplyConfiguration<ValoracionEntradaClasificacion>(new DbConfValoracionEntradaClasificacion());

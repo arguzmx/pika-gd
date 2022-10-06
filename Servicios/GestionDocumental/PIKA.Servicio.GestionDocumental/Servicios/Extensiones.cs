@@ -193,18 +193,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             };
         }
 
-        public static ActivoDeclinado CopiaActivoDeclinado(this ActivoDeclinado c)
-        {
-            return new ActivoDeclinado()
-            {
-                ActivoId = c.ActivoId,
-                TransferenciaId = c.TransferenciaId,
-                Motivo = c.Motivo,
-            };
-        }
-
-
-
+ 
 
         #endregion
 

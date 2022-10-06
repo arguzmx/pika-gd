@@ -19,6 +19,14 @@ namespace PIKA.Modelo.GestorDocumental
     [Entidad(PaginadoRelacional: false, EliminarLogico: true,
         TokenMod: ConstantesAppGestionDocumental.MODULO_TRANSFERENCIA,
         TokenApp: ConstantesAppGestionDocumental.APP_ID)]
+
+
+    [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_TRANSFERENCIA,
+        EntidadHijo: "ActivoTransferencia",
+        Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id",
+        PropiedadHijo: "TransferenciaId")]
+
+
     public class Transferencia : Entidad<string>, IEntidadNombrada, IEntidadUsuario
     {
 
@@ -26,7 +34,6 @@ namespace PIKA.Modelo.GestorDocumental
         {
             Eventos = new HashSet<EventoTransferencia>();
             Comentarios = new HashSet<ComentarioTransferencia>();
-            ActivosDeclinados = new HashSet<ActivoDeclinado>();
             ActivosIncluidos = new HashSet<ActivoTransferencia>();
         }
 
@@ -54,56 +61,54 @@ namespace PIKA.Modelo.GestorDocumental
         [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false)]
         public string ArchivoDestinoId { get; set; }
 
-        [Prop(Required: false, OrderIndex: 20)]
+        [Prop(Required: false, OrderIndex: 30)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
-        [List(Entidad: "CuadroClasificacion", DatosRemotos: true, TypeAhead: false)]
+        [List(Entidad: "CuadroClasificacion", DatosRemotos: true, TypeAhead: false, Default: "")]
         public string CuadroClasificacionId { get; set; }
 
 
-        [Prop(Required: false, OrderIndex: 20)]
+        [Prop(Required: false, OrderIndex: 40)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
         [List(Entidad: "EntradaClasificacion", DatosRemotos: true, TypeAhead: false)]
-        [Event(Entidad: "CuadroClasificacionId", Evento: Metadatos.Atributos.Eventos.AlCambiar, Operacion: Operaciones.Mostrar, "CuadroClasificacionId")]
+        [Event(Entidad: "CuadroClasificacionId", Evento: Metadatos.Atributos.Eventos.AlCambiar, Operacion: Operaciones.Actualizar, "CuadroClasificacionId")]
         public string EntradaClasificacionId { get; set; }
 
-
-        
 
         
         /// <summary>
         /// Número de fplio de la trasnferenci
         /// </summary>
-        [Prop(Required: true, isId: false, Visible: true, OrderIndex: 20)]
+        [Prop(Required: true, isId: false, Visible: true, OrderIndex: 15)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
         public string Folio { get; set; }
 
         /// <summary>
         ///  Número de elementos involucrados en la trasnferencia
         /// </summary>
-        [Prop(Required: false, isId: false, Visible: true, OrderIndex: 25)]
-        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+        [Prop(Required: false, isId: false, Visible: true, OrderIndex: 210)]
+        [VistaUI(ControlUI: ControlUI.HTML_NUMBER, Accion: Acciones.none)]
         public int CantidadActivos { get; set; }
 
         /// <summary>
         /// Fechas de creación de la trasnfenrecia
         /// </summary>
-        [Prop(Required: false, OrderIndex: 30, IsLabel: true)]
-        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+        [Prop(Required: false, OrderIndex: 220, IsLabel: true)]
+        [VistaUI(ControlUI: ControlUI.HTML_DATE, Accion: Acciones.none)]
         public DateTime FechaCreacion { get; set; }
         // Debe ser .Now en formato UTC
 
         /// <summary>
         /// Esatdo actual de la trasnferencia
         /// </summary>
-        [Prop(Required: false, OrderIndex: 40, IsLabel: true)]
-        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+        [Prop(Required: false, OrderIndex: 230, IsLabel: true)]
+        [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.none)]
         public string EstadoTransferenciaId { get; set; }
         //Obligatorios
 
         /// <summary>
         /// Identificador único del árchivo origen
         /// </summary>
-        [Prop(Required: true, OrderIndex: 50, Visible: false, Contextual: true, ShowInTable: false,
+        [Prop(Required: true, OrderIndex: 240, Visible: false, Contextual: true, ShowInTable: false,
         ToggleInTable: false, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "ArchivoId")]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
         public string ArchivoOrigenId { get; set; }
@@ -112,7 +117,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Identificador único del usuario que la creó
         /// </summary>
-        [Prop(Required: true, Visible: true, OrderIndex: 60)]
+        [Prop(Required: true, Visible: true, OrderIndex: 250)]
         [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
         public string UsuarioId { get; set; }
         
@@ -120,12 +125,11 @@ namespace PIKA.Modelo.GestorDocumental
         [XmlIgnore]
         [JsonIgnore]
         public virtual ICollection<EventoTransferencia> Eventos { get; set; }
+
         [XmlIgnore]
         [JsonIgnore]
         public virtual ICollection<ActivoTransferencia> ActivosIncluidos { get; set; }
-        [XmlIgnore]
-        [JsonIgnore]
-        public virtual ICollection<ActivoDeclinado> ActivosDeclinados { get; set; }
+
         [XmlIgnore]
         [JsonIgnore]
         public virtual  ICollection<ComentarioTransferencia> Comentarios { get; set; }

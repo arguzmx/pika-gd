@@ -30,7 +30,6 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.HasMany(x => x.Eventos).WithOne(y => y.Transferencia).HasForeignKey(z => z.TransferenciaId);
             builder.HasMany(x => x.Comentarios).WithOne(y => y.Transferencia).HasForeignKey(z => z.TransferenciaId);
             builder.HasMany(x => x.ActivosIncluidos).WithOne(y => y.Transferencia).HasForeignKey(z => z.TransferenciaId);
-            builder.HasMany(x => x.ActivosDeclinados).WithOne(y => y.Transferencia).HasForeignKey(z => z.TransferenciaId);
             builder.HasOne(x => x.ArchivoOrigen).WithMany(y => y.TransferenciasOrigen).HasForeignKey(z => z.ArchivoOrigenId);
             builder.HasOne(x => x.ArchivoDestino).WithMany(y => y.TransferenciasDestino).HasForeignKey(z => z.ArchivoDestinoId);
         }

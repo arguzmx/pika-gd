@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -174,6 +175,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         public async Task<ActionResult<List<ValorListaOrdenada>>> GetPares(
         [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
+            Console.WriteLine("---" + JsonSerializer.Serialize(query));
             var data = await servicioCuadro.ObtenerParesAsync(query)
                 .ConfigureAwait(false);
 

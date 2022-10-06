@@ -77,6 +77,19 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             { throw new ExElementoExistente(entity.Nombre); }
 
+            if(entity.ArchivoOrigenId == entity.ArchivoDestinoId)
+            {
+                throw new ExDatosNoValidos("APICODE-TRANSFERENCIAS-ODIDENTICO"); 
+            }
+
+            if(!string.IsNullOrEmpty(entity.CuadroClasificacionId) &&  !string.IsNullOrEmpty(entity.EntradaClasificacionId))
+            {
+                if (!this.UDT.Context.EntradaClasificacion.Any(x => x.CuadroClasifiacionId == entity.CuadroClasificacionId && x.Id == entity.EntradaClasificacionId))
+                {
+                    throw new ExDatosNoValidos("APICODE-TRANSFERENCIAS-ERRORCCEC");
+                }
+            }
+
             entity.Nombre = entity.Nombre.Trim();
             entity.Id = System.Guid.NewGuid().ToString();
             entity.FechaCreacion = DateTime.UtcNow;
@@ -86,31 +99,55 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
         public async Task ActualizarAsync(Transferencia entity)
         {
-            Transferencia o = await this.repo.UnicoAsync(x => x.Id.Trim() == entity.Id.Trim());
-
-            if (o == null)
+            try
             {
-                throw new EXNoEncontrado(entity.Id);
+                Transferencia o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+
+                if (o == null)
+                {
+                    throw new EXNoEncontrado(entity.Id);
+                }
+                
+                if (!await ExisteA(x => x.Id.Equals(entity.ArchivoOrigenId, StringComparison.InvariantCultureIgnoreCase)))
+                { throw new ExErrorRelacional(entity.ArchivoOrigenId); }
+                
+                if (!await ExisteA(x => x.Id.Equals(entity.ArchivoDestinoId, StringComparison.InvariantCultureIgnoreCase)))
+                { throw new ExErrorRelacional(entity.ArchivoDestinoId); }
+                
+                if (await Existe(x => x.Id != entity.Id
+                && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    throw new ExElementoExistente(entity.Nombre);
+                }
+
+                if (entity.ArchivoOrigenId == entity.ArchivoDestinoId)
+                {
+                    throw new ExDatosNoValidos("APICODE-TRANSFERENCIAS-ODIDENTICO");
+                }
+
+                if (!string.IsNullOrEmpty(entity.CuadroClasificacionId) && !string.IsNullOrEmpty(entity.EntradaClasificacionId))
+                {
+                    if (!this.UDT.Context.EntradaClasificacion.Any(x => x.CuadroClasifiacionId == entity.CuadroClasificacionId && x.Id == entity.EntradaClasificacionId))
+                    {
+                        throw new ExDatosNoValidos("APICODE-TRANSFERENCIAS-ERRORCCEC");
+                    }
+                }
+
+                o.Nombre = entity.Nombre.Trim();
+                o.Folio = entity.Folio;
+                o.ArchivoDestinoId = entity.ArchivoDestinoId;
+                o.EntradaClasificacionId = entity.EntradaClasificacionId;
+                o.CuadroClasificacionId = entity.CuadroClasificacionId;
+
+                UDT.Context.Entry(o).State = EntityState.Modified;
+                UDT.SaveChanges();
             }
-            if (!await ExisteA(x => x.Id.Equals(entity.ArchivoOrigenId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
-            { throw new ExErrorRelacional(entity.ArchivoOrigenId.Trim()); }
-            if (!await ExisteA(x => x.Id.Equals(entity.ArchivoDestinoId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
-            { throw new ExErrorRelacional(entity.ArchivoDestinoId.Trim()); }
-            if (!await ExisteET(x => x.Id.Equals(entity.EstadoTransferenciaId.Trim(), StringComparison.InvariantCultureIgnoreCase)))
-            { throw new ExErrorRelacional(entity.EstadoTransferenciaId.Trim()); }
-            if (await Existe(x =>
-            x.Id.Trim() != entity.Id.Trim()
-            && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
+            catch (Exception ex)
             {
-                throw new ExElementoExistente(entity.Nombre);
+                Console.WriteLine(ex.ToString());
+                throw;
             }
 
-            entity.Id = entity.Id.Trim();
-            o.Nombre = entity.Nombre.Trim();
-            o.FechaCreacion = DateTime.UtcNow;
-
-            UDT.Context.Entry(o).State = EntityState.Modified;
-            UDT.SaveChanges();
         }
         private Consulta GetDefaultQuery(Consulta query)
         {
@@ -178,7 +215,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             ServicioEventoTransferencia set = new ServicioEventoTransferencia(this.proveedorOpciones, this.logger);
             ServicioComentarioTransferencia cct = new ServicioComentarioTransferencia(this.proveedorOpciones,this.logger);
-            ServicioActivoDeclinado sad = new ServicioActivoDeclinado(this.proveedorOpciones,this.logger);
             ServicioActivoTransferencia sat = new ServicioActivoTransferencia(this.proveedorOpciones, this.logger);
             
             List<Transferencia> ListaTranferencia = await repo.ObtenerAsync(x => x.ArchivoOrigenId.Contains(listaArchivos.Select(x => x.Id).FirstOrDefault())).ConfigureAwait(false);
@@ -189,7 +225,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             await set.Eliminar(IdsEliminados(ListaEvento.Select(x=>x.Id).ToArray())).ConfigureAwait(false);
             await cct.Eliminar(IdsEliminados(ListaComentarioTransferencia.Select(x=>x.Id).ToArray())).ConfigureAwait(false);
-            await sad.EliminarTranferencia(IdsEliminados(ListaTranferencia.Select(x=>x.Id).ToArray())).ConfigureAwait(false);
             await sat.EliminarTransferencia(IdsEliminados(ListaTranferencia.Select(x => x.Id).ToArray())).ConfigureAwait(false);
 
 

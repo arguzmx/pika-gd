@@ -12,7 +12,8 @@ using System.Xml.Serialization;
 namespace PIKA.Modelo.GestorDocumental
 {
     [Entidad(EliminarLogico: false, PaginadoRelacional: false, PermiteCambios: false,
-        TokenApp: ConstantesAppGestionDocumental.MODULO_PRESTAMO, TokenMod: ConstantesAppGestionDocumental.APP_ID)]
+        TokenApp: ConstantesAppGestionDocumental.MODULO_PRESTAMO, 
+        TokenMod: ConstantesAppGestionDocumental.APP_ID)]
 
     public class ActivoPrestamo
     {

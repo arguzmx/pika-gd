@@ -82,7 +82,7 @@ namespace PIKA.Servicio.GestionDocumental
                     Descripcion = "Permite realizar la gestión de las trasnferencias de invetarios entre archivos",
                     Tipos = new List<Type> { typeof(Transferencia), typeof(EventoTransferencia),
                         typeof(ComentarioTransferencia),typeof(ActivoTransferencia),
-                    typeof(ActivoDeclinado), typeof(HistorialArchivoActivo)}
+                    typeof(HistorialArchivoActivo)}
                 },
                 new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_CAT_TRANSFERENCIA ) {
                     Titulo = "Catálogos transferencias",

@@ -33,8 +33,6 @@ namespace PIKA.Modelo.GestorDocumental
             Ampliaciones = new HashSet<Ampliacion>();
             PrestamosRelacionados = new HashSet<ActivoPrestamo>();
             TransferenciasRelacionados = new HashSet<ActivoTransferencia>();
-            DeclinadosTransferenciaRelacionados = new HashSet<ActivoDeclinado>();
-
             this.Reportes = new List<IProveedorReporte>();
             this.Reportes.Add(new ReporteCaratulaActivo());
         }
@@ -325,11 +323,6 @@ namespace PIKA.Modelo.GestorDocumental
         [XmlIgnore]
         [JsonIgnore]
         public virtual ICollection<ActivoTransferencia> TransferenciasRelacionados { get; set; }
-
-        [XmlIgnore]
-        [JsonIgnore]
-        public virtual ICollection<ActivoDeclinado> DeclinadosTransferenciaRelacionados { get; set; }
-
 
 
         [XmlIgnore]

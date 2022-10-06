@@ -162,19 +162,21 @@ namespace PIKA.Identity.Server
         }
 
         private bool ForceHttps(HttpContext cx) {
-            string ProtoHeaders = "X-Forwarded-Proto,X-Url-Scheme,X-Scheme,X-Forwarded-Ssl,Front-End-Https";
+            string ProtoHeaders = "X-Forwarded-Proto,X-Url-Scheme,X-Scheme,X-Forwarded-Ssl,Front-End-Https,X-Forwarded-Scheme";
 
             foreach(var h in cx.Request.Headers.ToList())
             {
-                if(ProtoHeaders.Contains(h.Key, StringComparison.InvariantCultureIgnoreCase))
+                Console.WriteLine($"{h.Key} = {h.Value}");
+                if (ProtoHeaders.Contains(h.Key, StringComparison.InvariantCultureIgnoreCase))
                 {
                     if(h.Value == "on" || h.Value == "https")
                     {
+                        Console.WriteLine($"on");
                         return true;
                     } 
                 }
             }
-
+            Console.WriteLine($"off");
             return false;
         }
 
@@ -187,8 +189,11 @@ namespace PIKA.Identity.Server
                 {
                     if (!string.IsNullOrEmpty(Configuration["PublicBaseURL"]))
                     {
+                        Console.WriteLine(ctx.Request.PathBase);
+                        Console.WriteLine(ctx.Request.Path);
+                        Console.WriteLine(ctx.Request.Scheme);
                         if (
-                        (ctx.Request.PathBase.Value.IndexOf(Configuration["PublicBaseURL"]) < 0)
+                           (ctx.Request.PathBase.Value.IndexOf(Configuration["PublicBaseURL"]) < 0)
                         && (ctx.Request.Path.Value.IndexOf(Configuration["PublicBaseURL"]) < 0))
                         {
                             if (ForceHttps(ctx) || (Configuration["esquema"] == "https"))
@@ -196,6 +201,10 @@ namespace PIKA.Identity.Server
                                 ctx.Request.Scheme = "https";
                             }
                             ctx.Request.PathBase = new PathString($"/{Configuration["PublicBaseURL"].Trim().TrimStart('/')}");
+                            Console.WriteLine(">" + ctx.Request.PathBase);
+                            Console.WriteLine(">" + ctx.Request.Path);
+                            Console.WriteLine(">" + ctx.Request.Scheme);
+                            Console.WriteLine(">" + ctx.Request.Host);
                         }
 
                     }
