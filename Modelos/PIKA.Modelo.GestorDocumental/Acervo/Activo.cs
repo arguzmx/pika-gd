@@ -12,7 +12,7 @@ using PIKA.Modelo.GestorDocumental.Reportes;
 
 namespace PIKA.Modelo.GestorDocumental
 {
-    [Entidad(PaginadoRelacional: false, EliminarLogico: true, HabilitarSeleccion: true,
+    [Entidad(PaginadoRelacional: false, EliminarLogico: true, HabilitarSeleccion: true, BuscarPorTexto: true,
         TokenMod: ConstantesAppGestionDocumental.MODULO_ACTIVOS,
         TokenApp: ConstantesAppGestionDocumental.APP_ID)]
 

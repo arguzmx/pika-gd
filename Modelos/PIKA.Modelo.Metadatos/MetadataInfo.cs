@@ -89,7 +89,12 @@ namespace PIKA.Modelo.Metadatos
         /// Dtermina  si ela entidad acepta comandos para Cambios
         /// </summary>
         public bool PermiteCambios { get; set; }
-  
+
+        /// <summary>
+        /// Determina si la entidad permite la búsqueda de elementos en base a texto 
+        /// </summary>
+        public bool BuscarPorTexto { get; set; }
+
         public  TipoSeguridad TipoSeguridad { get; set; }
   
         public virtual List<Propiedad> Propiedades { get; set; }

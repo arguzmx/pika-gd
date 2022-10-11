@@ -46,7 +46,7 @@ namespace PIKA.Modelo.Metadatos
         private bool _PermiteBajas;
         private bool _PermiteCambios;
         public TipoSeguridad _TipoSeguridad;
-
+        private bool _BuscarPorTexto;
 
         public EntidadAttribute( bool PaginadoRelacional=false, 
             bool EliminarLogico = false, 
@@ -60,8 +60,11 @@ namespace PIKA.Modelo.Metadatos
            bool PermiteAltas = true,
            bool PermiteBajas = true,
            bool PermiteCambios = true,
+           bool BuscarPorTexto = false,
            TipoSeguridad TipoSeguridad = TipoSeguridad.Default)
         {
+
+            this._BuscarPorTexto = BuscarPorTexto;
             this._TipoSeguridad = TipoSeguridad;
             this._Columna = EliminarLogico ? Columna :"";
             this._EliminarLogico = EliminarLogico;
@@ -78,10 +81,17 @@ namespace PIKA.Modelo.Metadatos
 
         }
 
-
         public virtual bool PermiteCambios
         {
             get { return _PermiteCambios; }
+        }
+
+        /// <summary>
+        /// Determina si la entidad soporta la búsqueda por texto
+        /// </summary>
+        public virtual bool BuscarPorTexto
+        {
+            get { return _BuscarPorTexto; }
         }
 
         public virtual bool PermiteBajas

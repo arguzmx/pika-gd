@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MySql.Data.MySqlClient;
 using Nest;
 using PIKA.Infraestrctura.Reportes;
 using PIKA.Infraestructura.Comun;
@@ -20,6 +21,7 @@ using PIKA.Servicio.Reportes.Interfaces;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.Json;
@@ -169,6 +171,63 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 
             }
 
+        }
+
+
+        public async Task<IPaginado<Activo>> ObtenerPaginadoAsync(string Texto, Consulta Query,
+         Func<IQueryable<Activo>, IIncludableQueryable<Activo, object>> include = null,
+         bool disableTracking = true,
+         CancellationToken cancellationToken = default(CancellationToken))
+        {
+            Query = this.GetDefaultQuery(Query);
+
+            var filtro = Query.Filtros.Where(f => f.Propiedad == "ArchivoId").FirstOrDefault();
+            string archivoId = filtro != null ? filtro.Valor : "-";
+
+            Paginado<Activo> p = new Paginado<Activo>();
+            string sqls = $"select * from {DBContextGestionDocumental.TablaActivos} where ArchivoId = '{archivoId}' " +
+                $"and concat(COALESCE(`Nombre`,''), COALESCE(`CodigoOptico`,''), COALESCE(`CodigoElectronico`,'')) like '%{Texto}%' " +
+                $"order by {Query.ord_columna} {Query.ord_direccion} " +
+                $"limit {Query.indice * Query.tamano},{Query.tamano};";
+            
+            string sqlsCount = $"select count(*) from {DBContextGestionDocumental.TablaActivos} where ArchivoId = '{archivoId}' " +
+                $"and concat(COALESCE(`Nombre`,''), COALESCE(`CodigoOptico`,''), COALESCE(`CodigoElectronico`,'')) like '%{Texto}%';";
+
+            Console.WriteLine(this.UDT.Context.Database.GetDbConnection().ConnectionString);
+
+            var connection = new MySqlConnection(this.UDT.Context.Database.GetDbConnection().ConnectionString);
+            await connection.OpenAsync();
+            int conteo = 0;
+            MySqlCommand cmd = new MySqlCommand(sqlsCount, connection);
+            DbDataReader dr = await cmd.ExecuteReaderAsync();
+            if (dr.Read())
+            {
+                conteo = dr.GetInt32(0);
+            }
+            dr.Close();
+            await connection.CloseAsync();
+
+            Console.WriteLine(sqls);
+
+
+            try
+            {
+                p.Elementos = await this.UDT.Context.Activos.FromSqlRaw(sqls, new object[] { }).ToListAsync();
+                p.ConteoFiltrado = 0;
+                p.ConteoTotal = conteo;
+
+                p.Indice = Query.indice;
+                p.Paginas = 0;
+                p.Tamano = Query.tamano;
+                p.Desde = Query.indice * Query.tamano;
+
+                return p;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
         }
 
 
