@@ -84,7 +84,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
 
             string sql = @$"SELECT count(*) FROM  {DBContextGestionDocumental.TablaActivoSelecionado} s inner join {DBContextGestionDocumental.TablaActivos} a 
-                    on s.Id = a.Id where s.TemaId = '{TemaId}' and a.EnPrestamo =0;";
+                    on s.Id = a.Id where s.TemaId = '{TemaId}' and a.EnPrestamo =0 and a.EnTransferencia=0;";
 
 
             this.UDT.Context.Database.GetDbConnection().Open();

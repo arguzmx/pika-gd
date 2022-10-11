@@ -12,6 +12,6 @@ namespace PIKA.Servicio.GestionDocumental.Interfaces
 {
     public interface IServicioActivoTransferencia : IServicioRepositorioAsync<ActivoTransferencia, string>
     {
-        Task<ICollection<string>> EliminarActivoTransferencia(string TransferenciaId, string[] ids);
+        Task<ICollection<string>> EliminarActivoTransferencia(string[] ids);
     }
 }

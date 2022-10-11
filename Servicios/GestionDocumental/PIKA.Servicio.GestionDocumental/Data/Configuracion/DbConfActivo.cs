@@ -38,6 +38,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.Reservado).IsRequired();
             builder.Property(x => x.Confidencial).IsRequired();
             builder.Property(x => x.Ampliado).IsRequired();
+            builder.Property(x => x.Ampliado).IsRequired().HasDefaultValue(false);
             builder.Property(x => x.ArchivoOrigenId).IsRequired().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.ArchivoId).IsRequired().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.TipoArchivoId).IsRequired().HasMaxLength(LongitudDatos.GUID);
@@ -72,6 +73,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.HasIndex(i => new { i.CodigoOptico });
             builder.HasIndex(i => new { i.ArchivoId });
             builder.HasIndex(i => new { i.TieneContenido });
+            builder.HasIndex(i => new { i.EnTransferencia });
 
             builder.HasMany(x => x.HistorialArchivosActivo).WithOne(y => y.Activo).HasForeignKey(z => z.ActivoId).OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(x => x.Asuntos).WithOne(y => y.Activo).HasForeignKey<Asunto>(z=>z.ActivoId).OnDelete(DeleteBehavior.Cascade);

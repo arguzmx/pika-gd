@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Nest;
 using PIKA.Infraestrctura.Reportes;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
@@ -649,28 +650,49 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
 
         }
 
+
+   
         public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
         {
-            for (int i = 0; i < Query.Filtros.Count; i++)
+
+            Paginado<Activo> resultados = new Paginado<Activo>() { Elementos = new List<Activo>() };
+            var trans= Query.GetQueryTransferibles();
+
+            if (trans.Transferible)
             {
-                if (Query.Filtros[i].Propiedad.ToLower() == "texto")
+                if(!string.IsNullOrEmpty( trans.plantilla))
                 {
-                    Query.Filtros[i].Propiedad = "Nombre";
-                    Query.Filtros[i].Operador = FiltroConsulta.OP_CONTAINS;
+                    Console.WriteLine(trans.plantilla);
+                    resultados.Elementos = await this.UDT.Context.Activos.FromSqlRaw(trans.plantilla).ToListAsync();
                 }
-            }
-            if (Query.Filtros.Where(x => x.Propiedad.ToLower() == "eliminada").Count() == 0)
+
+            } else
             {
-                Query.Filtros.Add(new FiltroConsulta()
+                for (int i = 0; i < Query.Filtros.Count; i++)
                 {
-                    Propiedad = "Eliminada",
-                    Negacion = false,
-                    Operador = "eq",
-                    Valor = "false"
-                });
+                    if (Query.Filtros[i].Propiedad.ToLower() == "texto")
+                    {
+                        Query.Filtros[i].Propiedad = "Nombre";
+                        Query.Filtros[i].Operador = FiltroConsulta.OP_CONTAINS;
+                    }
+                }
+
+                if (Query.Filtros.Where(x => x.Propiedad.ToLower() == "eliminada").Count() == 0)
+                {
+                    Query.Filtros.Add(new FiltroConsulta()
+                    {
+                        Propiedad = "Eliminada",
+                        Negacion = false,
+                        Operador = "eq",
+                        Valor = "false"
+                    });
+                }
+
+                Query = GetDefaultQuery(Query);
+                resultados = (Paginado<Activo>)await this.repo.ObtenerPaginadoAsync(Query);
             }
-            Query = GetDefaultQuery(Query);
-            var resultados = await this.repo.ObtenerPaginadoAsync(Query);
+
+
             List<ValorListaOrdenada> l = resultados.Elementos.Select(x => new ValorListaOrdenada()
             {
                 Id = x.Id,

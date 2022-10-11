@@ -1,12 +1,18 @@
 ﻿
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
+using DocumentFormat.OpenXml.Vml.Office;
+using Microsoft.AspNetCore.JsonPatch.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using Nest;
+using Nest.Specification.TransformApi;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
+using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.GestionDocumental.Interfaces;
 using RepositorioEntidades;
@@ -49,74 +55,47 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             if (l.Count() == 0) return false;
             return true;
         }
-        private async Task<bool> ValidarReglas(ActivoTransferencia activoT)
-        {
-            Transferencia t = await this.repoT.UnicoAsync(x => x.Id.Equals(activoT.TransferenciaId, StringComparison.InvariantCultureIgnoreCase)
-            );
-            if (t != null)
-            {
-                Activo a = await this.repoAct.UnicoAsync(x => x.ArchivoId.Equals(t.ArchivoOrigenId, StringComparison.InvariantCultureIgnoreCase)
-                && x.EnPrestamo != false
-                && x.Ampliado != false
-                && x.Id.Equals(activoT.ActivoId, StringComparison.InvariantCultureIgnoreCase));
-                if (a != null)
-                    return true;
-                a = await this.repoAct.UnicoAsync(x => x.Id.Equals(activoT.ActivoId, StringComparison.InvariantCultureIgnoreCase));
-                if (a != null)
-                {
-                    t = await this.repoT.UnicoAsync(x => x.ArchivoOrigenId.Equals(a.ArchivoId, StringComparison.InvariantCultureIgnoreCase)
-                    && x.EstadoTransferenciaId != EstadoTransferencia.ESTADO_RECIBIDA
-                    && x.EstadoTransferenciaId != EstadoTransferencia.ESTADO_RECIBIDA_PARCIAL
-                    && x.EstadoTransferenciaId != EstadoTransferencia.ESTADO_CANCELADA
-                    && x.EstadoTransferenciaId != EstadoTransferencia.ESTADO_DECLINADA
-                    );
-                    if (t != null)
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
+ 
+      
 
         public async Task<ActivoTransferencia> CrearAsync(ActivoTransferencia entity, CancellationToken cancellationToken = default)
         {
-            if (await ValidarReglas(entity))
-            {
-                throw new ExDatosNoValidos(entity.ActivoId);
-            }
             if (await Existe(x => x.ActivoId == entity.ActivoId && x.TransferenciaId ==entity.TransferenciaId))
             {
                 throw new ExElementoExistente(entity.ActivoId);
             }
 
-            await this.repo.CrearAsync(entity);
-            UDT.SaveChanges();
-            return entity.Copia();
+            var t = await this.UDT.Context.Transferencias.Where(x => x.Id == entity.TransferenciaId).FirstOrDefaultAsync();
+            if(t==null)
+            {
+                throw new EXNoEncontrado();
+            }
+
+
+            List<string> validos = await this.UDT.Context.ActivosValidosTransferencia( new List<string>() { entity.ActivoId }, t.ArchivoOrigenId);
+            if(validos.Count>0)
+            {
+                entity.Id = Guid.NewGuid().ToString();
+                entity.Declinado = false;
+                await this.repo.CrearAsync(entity);
+                UDT.SaveChanges();
+
+                await this.UDT.Context.ActualizaConteoActivosTrasnferencia(1, entity.TransferenciaId);
+                await this.UDT.Context.ActualizaActivosEnTrasnferencia(new List<string>() {  entity.ActivoId }, false);
+                return entity.Copia();
+            } else
+            {
+                throw new ExErrorRelacional("APICODE-ACTIVOTRANSFERENCIA-DATOSINCORRECTOS");
+            }
+
+
         }
 
         public async Task ActualizarAsync(ActivoTransferencia entity)
         {
-
-            ActivoTransferencia o = await this.repo.UnicoAsync(x => x.ActivoId == entity.ActivoId && x.TransferenciaId == entity.TransferenciaId);
-
-            if (o == null)
-            {
-                throw new EXNoEncontrado(entity.ActivoId);
-            }
-
-            if (await Existe(x => x.ActivoId == entity.ActivoId && x.TransferenciaId == entity.TransferenciaId))
-            {
-                throw new ExElementoExistente(entity.ActivoId);
-            }
-
-            o.ActivoId = entity.ActivoId;
-            o.TransferenciaId = entity.TransferenciaId;
-
-            UDT.Context.Entry(o).State = EntityState.Modified;
-            UDT.SaveChanges();
+            throw new NotImplementedException();
         }
+
         private Consulta GetDefaultQuery(Consulta query)
         {
             if (query != null)
@@ -175,38 +154,43 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return t.Copia();
         }
 
-        public async Task<ICollection<string>> EliminarActivoTransferencia(string TransferenciaId, string[] ids)
+        public async Task<ICollection<string>> EliminarActivoTransferencia(string[] ids)
         {
             ActivoTransferencia a;
-            ICollection<string> listaEliminados = new HashSet<string>();
+            int conteo = 0;
+            string txId = "";
+            List<string> listaEliminados = new List<string>();
             foreach (var Id in ids)
             {
-                a = await this.repo.UnicoAsync(x => x.ActivoId == Id && x.TransferenciaId == TransferenciaId);
+                a = await this.repo.UnicoAsync(x => x.Id == Id);
                 if (a != null)
                 {
+                    txId = a.TransferenciaId;
                     UDT.Context.Entry(a).State = EntityState.Deleted;
                     listaEliminados.Add(a.ActivoId);
+                    conteo--;
                 }
             }
             UDT.SaveChanges();
+            await this.UDT.Context.ActualizaActivosEnTrasnferencia(listaEliminados, false);
+            await this.UDT.Context.ActualizaConteoActivosTrasnferencia(conteo, txId);
+
             return listaEliminados;
         }
-        public async Task<ICollection<string>> EliminarTransferencia( string[] ids)
+        
+        
+        public async Task EliminarActivosTransferencia( string TransferenciaId)
         {
             ActivoTransferencia a;
-            ICollection<string> listaEliminados = new HashSet<string>();
-            foreach (var Id in ids)
+            var listaEliminados = await this.UDT.Context.ActivosTransferencia.Where(x => x.TransferenciaId == TransferenciaId).ToListAsync();
+            if(listaEliminados.Count>0)
             {
-                a = await this.repo.UnicoAsync(x =>  x.TransferenciaId == Id);
-                if (a != null)
-                {
-                    UDT.Context.Entry(a).State = EntityState.Deleted;
-                    listaEliminados.Add(a.ActivoId);
-                }
+                this.UDT.Context.RemoveRange(listaEliminados);
+                UDT.SaveChanges();
             }
-            UDT.SaveChanges();
-            return listaEliminados;
         }
+
+
         #region Sin Implementar
         public Task<IEnumerable<string>> Restaurar(string[] ids)
         {

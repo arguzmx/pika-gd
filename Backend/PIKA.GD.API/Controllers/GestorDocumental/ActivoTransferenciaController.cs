@@ -26,16 +26,19 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         private readonly ILogger<ActivoTransferenciaController> logger;
         private IServicioActivoTransferencia servicioActivoTransferencia;
         private IServicioTransferencia ServicioTransferencia;
+        private IServicioArchivo ServicioArchivo;
         private IProveedorMetadatos<ActivoTransferencia> metadataProvider;
         public ActivoTransferenciaController(ILogger<ActivoTransferenciaController> logger,
             IProveedorMetadatos<ActivoTransferencia> metadataProvider,
             IServicioActivoTransferencia servicioActivoTransferencia,
-            IServicioTransferencia ServicioTransferencia)
+            IServicioTransferencia ServicioTransferencia,
+            IServicioArchivo servicioArchivo)
         {
             this.logger = logger;
             this.servicioActivoTransferencia = servicioActivoTransferencia;
             this.metadataProvider = metadataProvider;
             this.ServicioTransferencia = ServicioTransferencia;
+            this.ServicioArchivo = servicioArchivo;
         }
 
         // <summary>
@@ -65,6 +68,8 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
             List<FiltroConsulta> filtros = new List<FiltroConsulta>();
             var transferencia = await this.ServicioTransferencia.UnicoAsync(x => x.Id == id);
+            var archivo = await this.ServicioArchivo.UnicoAsync(x => x.Id == transferencia.ArchivoOrigenId);
+
             filtros.Add(new FiltroConsulta()
             {
                 Negacion = false,
@@ -75,25 +80,60 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 ValorString = transferencia.ArchivoOrigenId
             });
 
-            filtros.Add(new FiltroConsulta()
+            if(transferencia.CuadroClasificacionId!=null)
             {
-                Negacion = false,
-                NivelFuzzy = 0,
-                Operador = FiltroConsulta.OP_EQ,
-                Propiedad = "Eliminada",
-                Valor = "false",
-                ValorString = "false"
-            });
+                filtros.Add(new FiltroConsulta()
+                {
+                    Negacion = false,
+                    NivelFuzzy = 0,
+                    Operador = FiltroConsulta.OP_EQ,
+                    Propiedad = "CuadroClasificacionId",
+                    Valor = transferencia.CuadroClasificacionId,
+                    ValorString = transferencia.CuadroClasificacionId
+                });
+            }
 
-            filtros.Add(new FiltroConsulta()
+
+            if (transferencia.EntradaClasificacionId != null)
             {
-                Negacion = false,
-                NivelFuzzy = 0,
-                Operador = FiltroConsulta.OP_EQ,
-                Propiedad = "EnPrestamo",
-                Valor = "false",
-                ValorString = "false"
-            });
+                filtros.Add(new FiltroConsulta()
+                {
+                    Negacion = false,
+                    NivelFuzzy = 0,
+                    Operador = FiltroConsulta.OP_EQ,
+                    Propiedad = "EntradaClasificacionId",
+                    Valor = transferencia.EntradaClasificacionId,
+                    ValorString = transferencia.EntradaClasificacionId
+                });
+            }
+
+            // Parametro dummy para forzar un tipo de búsqueda
+            if (archivo.TipoArchivoId == TipoArchivo.IDARCHIVO_TRAMITE)
+            {
+                filtros.Add(new FiltroConsulta()
+                {
+                    Negacion = false,
+                    NivelFuzzy = 0,
+                    Operador = FiltroConsulta.OP_EQ,
+                    Propiedad = "PSEUDO_TRANSFERIBLE_TRAMITE",
+                    Valor = "true",
+                    ValorString = "true"
+                });
+
+            } else
+            {
+                filtros.Add(new FiltroConsulta()
+                {
+                    Negacion = false,
+                    NivelFuzzy = 0,
+                    Operador = FiltroConsulta.OP_EQ,
+                    Propiedad = "PSEUDO_TRANSFERIBLE_OTRO",
+                    Valor = "true",
+                    ValorString = "true"
+                });
+            }
+
+            
 
             f.Filtros = filtros;
             propiedades.Add(f);
@@ -108,18 +148,12 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         /// <param name="entidad"></param>
         /// <returns></returns>
 
-        [HttpPost("{ActivoId}", Name ="PostActivoTransferencia")]
+        [HttpPost(Name ="PostActivoTransferencia")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
 
-        public async Task<ActionResult<ActivoTransferencia>> Post(string TransferenciaId,string ActivoId, [FromBody]ActivoTransferencia entidad)
+        public async Task<ActionResult<ActivoTransferencia>> Post([FromBody]ActivoTransferencia entidad)
         {
-            if (TransferenciaId.Trim() != entidad.TransferenciaId.Trim() && ActivoId.Trim() != entidad.ActivoId.Trim())
-            {
-                return BadRequest();
-            }
-
-
             entidad = await servicioActivoTransferencia.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetActivoTransferencia", new { ActivoId = entidad.ActivoId }, entidad).Value);
         }
@@ -152,17 +186,17 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [HttpDelete("{Ids}", Name = "DeleteActivoTransferencia")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult> Delete(string TransferenciaId, string ids)
+        public async Task<ActionResult> Delete(string ids)
         {
             string IdsTrim = "";
-            TransferenciaId = TransferenciaId.Trim();
+
             foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
             {
                 IdsTrim += item.Trim() + ",";
             }
             string[] lids = IdsTrim.Split(',').ToList()
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            return Ok(await servicioActivoTransferencia.EliminarActivoTransferencia(TransferenciaId, lids).ConfigureAwait(false));
+            return Ok(await servicioActivoTransferencia.EliminarActivoTransferencia(lids).ConfigureAwait(false));
         }
     }
 }

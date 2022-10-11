@@ -64,7 +64,14 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             entidad.EstadoTransferenciaId = EstadoTransferencia.ESTADO_NUEVA;
             entidad.FechaCreacion = DateTime.UtcNow;
             entidad.CantidadActivos = 0;
-            entidad = await servicioTransferencia.CrearAsync(entidad).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(entidad.TemaId))
+            {
+                entidad = await servicioTransferencia.CrearAsync(entidad).ConfigureAwait(false);
+
+            } else
+            {
+                entidad = await servicioTransferencia.CrearDesdeTemaAsync(entidad, entidad.TemaId, entidad.EliminarTema).ConfigureAwait(false);
+            }
             return Ok(CreatedAtAction("GetTransferencia", new { id = entidad.Id.Trim() }, entidad).Value);
         }
         /// <summary>

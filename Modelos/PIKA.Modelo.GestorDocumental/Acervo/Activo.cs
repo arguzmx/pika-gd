@@ -192,6 +192,14 @@ namespace PIKA.Modelo.GestorDocumental
 
 
         /// <summary>
+        /// Especifica si el activo se encuentra marcado como en reserva
+        /// </summary>
+        [Prop(Required: false, OrderIndex: 120, DefaultValue: "false", Visible: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.none)]
+        public bool EnTransferencia { get; set; }
+
+
+        /// <summary>
         /// Especifica si el activo tiene ampliaciones vigentes
         /// ESTOS VALORES SE CALCULAR POR SISTEMA  EN BASE A SI TIENE AMPLIACIONES ACTIVAS
         /// </summary>

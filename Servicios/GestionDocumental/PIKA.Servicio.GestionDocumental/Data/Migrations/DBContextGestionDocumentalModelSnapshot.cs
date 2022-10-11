@@ -29,7 +29,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasMaxLength(128);
 
                     b.Property<bool>("Ampliado")
-                        .HasColumnType("tinyint(1)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("ArchivoId")
                         .IsRequired()
@@ -74,6 +76,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasDefaultValue(false);
 
                     b.Property<bool>("EnPrestamo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("EnTransferencia")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("EntradaClasificacionId")
@@ -160,6 +165,8 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.HasIndex("Eliminada");
 
                     b.HasIndex("EnPrestamo");
+
+                    b.HasIndex("EnTransferencia");
 
                     b.HasIndex("EntradaClasificacionId");
 

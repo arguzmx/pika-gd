@@ -12,6 +12,10 @@ namespace PIKA.Servicio.GestionDocumental.Interfaces
 {
     public interface IServicioTransferencia : IServicioRepositorioAsync<Transferencia, string>
     {
+
+
+        Task<Transferencia> CrearDesdeTemaAsync(Transferencia entity, string TemaId, bool EliminarTema = true, CancellationToken cancellationToken = default);
+
         Task<byte[]> ReporteTransferencia(string TransferenciaId, string[] Columnas);
 
         Task<string[]> EliminarRelaciones(List<Archivo>listaArchivos);

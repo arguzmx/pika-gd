@@ -18,7 +18,11 @@ namespace PIKA.Servicio.GestionDocumental
                 ArchivoOrigenId = t.ArchivoOrigenId,
                 ArchivoDestinoId = t.ArchivoDestinoId,
                 EstadoTransferenciaId = t.EstadoTransferenciaId,
-                UsuarioId = t.UsuarioId
+                UsuarioId = t.UsuarioId,
+                CuadroClasificacionId = t.CuadroClasificacionId,
+                EntradaClasificacionId = t.EntradaClasificacionId,
+                Folio = t.Folio,
+                CantidadActivos = t.CantidadActivos
             };
         }
     }

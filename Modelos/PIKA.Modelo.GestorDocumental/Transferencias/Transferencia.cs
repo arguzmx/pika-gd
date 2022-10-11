@@ -5,6 +5,7 @@ using PIKA.Modelo.Metadatos.Atributos;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 
@@ -120,8 +121,21 @@ namespace PIKA.Modelo.GestorDocumental
         [Prop(Required: true, Visible: true, OrderIndex: 250)]
         [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
         public string UsuarioId { get; set; }
-        
-        
+
+        [NotMapped]
+        [Prop(Required: false, Visible: true, OrderIndex: 100)]
+        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.add)]
+        [List(Entidad: "Activo", DatosRemotos: true, TypeAhead: false, EsListaTemas: true)]
+        public string TemaId { get; set; }
+
+
+        [NotMapped]
+        [Prop(Required: false, Visible: true, OrderIndex: 110)]
+        [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.add)]
+        public bool EliminarTema { get; set; }
+
+
+
         [XmlIgnore]
         [JsonIgnore]
         public virtual ICollection<EventoTransferencia> Eventos { get; set; }
