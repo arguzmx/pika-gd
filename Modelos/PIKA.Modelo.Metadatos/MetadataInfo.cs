@@ -27,6 +27,10 @@ namespace PIKA.Modelo.Metadatos
         public string TokenApp { get; set; }
         public string TokenMod { get; set; }
 
+        /// <summary>
+        /// Determina si exist ela opción eliminar todo para la entidad
+        /// </summary>
+        public virtual bool PermiteEliminarTodo { get; set; }
 
         /// <summary>
         /// Tipo de elemento basado en el nombre del ensamblado

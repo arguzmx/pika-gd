@@ -96,7 +96,6 @@ namespace PIKA.ServicioBusqueda.Contenido
                 }
              
                 
-                Console.WriteLine(sqls);
                 HashSet<ElementoBusqueda> Lista = this.UDT.Context.Elementos.FromSqlRaw(sqls).ToHashSet();
 
                 return Lista;
@@ -104,8 +103,6 @@ namespace PIKA.ServicioBusqueda.Contenido
             }
             catch (Exception ex)
             {
-
-                Console.WriteLine(ex.ToString());
                 throw;
             }
         }
@@ -132,7 +129,6 @@ namespace PIKA.ServicioBusqueda.Contenido
                     sqls += $" and ({s})";
                 }
 
-                Console.WriteLine(sqls);
                 MySqlCommand cmd = new MySqlCommand(sqls, cn);
                 DbDataReader dr = await cmd.ExecuteReaderAsync();
                 if (dr.Read())
@@ -163,7 +159,6 @@ namespace PIKA.ServicioBusqueda.Contenido
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
                 throw;
             }
         }

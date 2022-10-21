@@ -97,7 +97,6 @@ namespace PIKA.GD.API.Filters
                     {
 
                         Type t = LocalizadorEnsamblados.ObtieneTipoMetadata(context.Controller.GetType());
-                        Console.WriteLine($"{t}");
                         foreach (var m in ServicioAplicacion.ModulosAdministrados)
                         {
                             foreach (var ta in m.TiposAdministrados)
@@ -204,7 +203,6 @@ namespace PIKA.GD.API.Filters
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
                 throw;
             }
 

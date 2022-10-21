@@ -11,8 +11,8 @@ using System.Xml.Serialization;
 namespace PIKA.Modelo.GestorDocumental
 {
     [Entidad(PaginadoRelacional: false, EliminarLogico: false,
-       TokenApp: ConstantesAppGestionDocumental.APP_ID, TokenMod: ConstantesAppGestionDocumental.MODULO_UNIDADESADMIN)]
-    public class PermisosUnidadAdministrativaArchivo : Entidad<string>
+       TokenApp: ConstantesAppGestionDocumental.APP_ID, TokenMod: ConstantesAppGestionDocumental.MODULO_TRANSFERENCIA)]
+    public class PermisosArchivo : Entidad<string>
     {
         /// <summary>
         /// Indetificador único del permiso
@@ -24,7 +24,7 @@ namespace PIKA.Modelo.GestorDocumental
 
         [Prop(Required: false, isId: false, Visible: false, OrderIndex: 0)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
-        public string UnidadAdministrativaArchivoId { get; set; }
+        public string ArchivoId { get; set; }
 
         /// <summary>
         /// Identificador único del ROL destinatario del permiso
@@ -64,9 +64,33 @@ namespace PIKA.Modelo.GestorDocumental
         public bool ElminarAcervo { get; set; }
 
 
+        [Prop(OrderIndex: 50, DefaultValue: "false")]
+        [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
+        public bool CrearTrasnferencia { get; set; }
+
+        [Prop(OrderIndex: 60, DefaultValue: "false")]
+        [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
+        public bool EliminarTrasnferencia { get; set; }
+
+
+        [Prop(OrderIndex: 70, DefaultValue: "false")]
+        [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
+        public bool EnviarTrasnferencia { get; set; }
+
+
+        [Prop(OrderIndex: 80, DefaultValue: "false")]
+        [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
+        public bool CancelarTrasnferencia { get; set; }
+
+
+        [Prop(OrderIndex: 90, DefaultValue: "false")]
+        [VistaUI(ControlUI: ControlUI.HTML_TOGGLE, Accion: Acciones.addupdate)]
+        public bool RecibirTrasnferencia { get; set; }
+
+
         [JsonIgnore]
         [XmlIgnore]
-        public UnidadAdministrativaArchivo UnidadAdministrativaArchivo { get; set; }
+        public Archivo Archivo { get; set; }
 
     }
 }

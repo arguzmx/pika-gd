@@ -212,9 +212,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<string[]> Purgar()
         {
-            Console.WriteLine($"Metodo Purgar del Elemento");
-
-            ServicioElementoClasificacion sec = new ServicioElementoClasificacion(this.proveedorOpciones, this.logger, Config);
+                        ServicioElementoClasificacion sec = new ServicioElementoClasificacion(this.proveedorOpciones, this.logger, Config);
 
             ServicioEntradaClasificacion se = new ServicioEntradaClasificacion(this.proveedorOpciones, this.logger, Config);
 

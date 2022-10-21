@@ -333,8 +333,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             sqls += $" order by {Query.ord_columna} {Query.ord_direccion} ";
             sqls = sqls.Replace("COUNT(*)", "DISTINCT *");
 
-            Console.WriteLine(sqls);
-
             var resultados = this.UDT.Context.UnidadesAdministrativasArchivo.FromSqlRaw(sqls).ToList();
             List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
             {

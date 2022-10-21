@@ -16,7 +16,6 @@ namespace PIKA.Infraestrctura.Reportes
 
             string nombreArchivo = System.Guid.NewGuid().ToString() + ".png";
             string rutaArchivo = Path.Combine(rutaTemporales, nombreArchivo);
-            Console.WriteLine(rutaArchivo);
             if (config != null)
             {
                 NetBarcode.Type tipo = NetBarcode.Type.Code39;
@@ -77,7 +76,6 @@ namespace PIKA.Infraestrctura.Reportes
 
             string nombreArchivo = System.Guid.NewGuid().ToString() + ".png";
             string rutaArchivo = Path.Combine(rutaTemporales, nombreArchivo);
-            Console.WriteLine(rutaArchivo);
             if (config != null)
             {
                 try

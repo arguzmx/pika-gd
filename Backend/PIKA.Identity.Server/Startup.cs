@@ -166,17 +166,14 @@ namespace PIKA.Identity.Server
 
             foreach(var h in cx.Request.Headers.ToList())
             {
-                Console.WriteLine($"{h.Key} = {h.Value}");
                 if (ProtoHeaders.Contains(h.Key, StringComparison.InvariantCultureIgnoreCase))
                 {
                     if(h.Value == "on" || h.Value == "https")
                     {
-                        Console.WriteLine($"on");
                         return true;
                     } 
                 }
             }
-            Console.WriteLine($"off");
             return false;
         }
 
@@ -189,9 +186,6 @@ namespace PIKA.Identity.Server
                 {
                     if (!string.IsNullOrEmpty(Configuration["PublicBaseURL"]))
                     {
-                        Console.WriteLine(ctx.Request.PathBase);
-                        Console.WriteLine(ctx.Request.Path);
-                        Console.WriteLine(ctx.Request.Scheme);
                         if (
                            (ctx.Request.PathBase.Value.IndexOf(Configuration["PublicBaseURL"]) < 0)
                         && (ctx.Request.Path.Value.IndexOf(Configuration["PublicBaseURL"]) < 0))
@@ -201,10 +195,6 @@ namespace PIKA.Identity.Server
                                 ctx.Request.Scheme = "https";
                             }
                             ctx.Request.PathBase = new PathString($"/{Configuration["PublicBaseURL"].Trim().TrimStart('/')}");
-                            Console.WriteLine(">" + ctx.Request.PathBase);
-                            Console.WriteLine(">" + ctx.Request.Path);
-                            Console.WriteLine(">" + ctx.Request.Scheme);
-                            Console.WriteLine(">" + ctx.Request.Host);
                         }
 
                     }

@@ -40,6 +40,10 @@ namespace PIKA.Modelo.GestorDocumental
         Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id",
         PropiedadHijo: "ArchivoOrigenId")]
 
+    [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_TRANSFERENCIA,
+        EntidadHijo: "PermisosArchivo",
+        Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id",
+        PropiedadHijo: "ArchivoId", TipoDespliegueVinculo: TipoDespliegueVinculo.Tabular)]
 
     public class Archivo : Entidad<string>, IEntidadNombrada, IEntidadEliminada, 
         IEntidadRelacionada, IEntidadReportes
@@ -220,5 +224,10 @@ namespace PIKA.Modelo.GestorDocumental
         [XmlIgnore]
         [JsonIgnore]
         public List<ContenedorAlmacen> Contenedores { get; set; }
+
+
+        [XmlIgnore]
+        [JsonIgnore]
+        public List<PermisosArchivo> PermisosArchivo { get; set; }
     }
 }

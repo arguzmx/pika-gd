@@ -28,7 +28,11 @@ namespace PIKA.Modelo.GestorDocumental
         /// Comentarios relacionados con el estado
         /// </summary>
         public string Comentario { get; set; }
-        // opcional, 2048 bytes
+
+        /// <summary>
+        /// Identificador del usuario responsable del evento
+        /// </summary>
+        public string UsuarioId { get; set; }
 
         [XmlIgnore]
         [JsonIgnore]

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using Json.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
@@ -54,11 +57,21 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             return Ok(await metadataProvider.Obtener().ConfigureAwait(false));
         }
 
+        [HttpPost("webcommand/{command}")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        public async Task<ActionResult<RespuestaComandoWeb>> Post(string command, [FromBody] object payload)
+        {
+            servicioActivoTransferencia.usuario = this.usuario;
+            RespuestaComandoWeb r = await servicioActivoTransferencia.ComandoWeb(command, payload).ConfigureAwait(false);
+            return Ok(r);
+        }
+
         [HttpGet()]
         [Route("filtrobusqueda/{id}")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<List<FiltroConsultaPropiedad>>> OntieneFiltroBusqueda(string id)
         {
+            servicioActivoTransferencia.usuario = this.usuario;
 
             List<FiltroConsultaPropiedad> propiedades = new List<FiltroConsultaPropiedad>();
             FiltroConsultaPropiedad f = new FiltroConsultaPropiedad()
@@ -80,7 +93,17 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 ValorString = transferencia.ArchivoOrigenId
             });
 
-            if(transferencia.CuadroClasificacionId!=null)
+            filtros.Add(new FiltroConsulta()
+            {
+                Negacion = false,
+                NivelFuzzy = 0,
+                Operador = FiltroConsulta.OP_EQ,
+                Propiedad = "RangoDias",
+                Valor = transferencia.RangoDias.ToString(),
+                ValorString = transferencia.RangoDias.ToString()
+            });
+
+            if (transferencia.CuadroClasificacionId != null)
             {
                 filtros.Add(new FiltroConsulta()
                 {
@@ -120,7 +143,8 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                     ValorString = "true"
                 });
 
-            } else
+            }
+            else
             {
                 filtros.Add(new FiltroConsulta()
                 {
@@ -133,7 +157,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 });
             }
 
-            
+
 
             f.Filtros = filtros;
             propiedades.Add(f);
@@ -148,15 +172,43 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         /// <param name="entidad"></param>
         /// <returns></returns>
 
-        [HttpPost(Name ="PostActivoTransferencia")]
+        [HttpPost(Name = "PostActivoTransferencia")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
 
-        public async Task<ActionResult<ActivoTransferencia>> Post([FromBody]ActivoTransferencia entidad)
+        public async Task<ActionResult<ActivoTransferencia>> Post([FromBody] ActivoTransferencia entidad)
         {
+            servicioActivoTransferencia.usuario = this.usuario;
             entidad = await servicioActivoTransferencia.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetActivoTransferencia", new { ActivoId = entidad.ActivoId }, entidad).Value);
         }
+
+
+        [HttpPut(Name = "PutActivoTransferencia")]
+        [Route("{id}")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
+        public async Task<ActionResult<ActivoTransferencia>> Put(string id, [FromBody] ActivoTransferencia entidad)
+        {
+            if (entidad.Id != id) return BadRequest();
+            servicioActivoTransferencia.usuario = this.usuario;
+            await servicioActivoTransferencia.ActualizarAsync(entidad).ConfigureAwait(false);
+            return Ok();
+        }
+
+        [HttpDelete(Name = "EliminaTodosActivosTransferencia")]
+        [RouteAttribute("vinculos/todos/{id}")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
+        public async Task<ActionResult> EliminaTodosActivosTransferencia(string id)
+        {
+            servicioActivoTransferencia.usuario = this.usuario;
+            await servicioActivoTransferencia.EliminarVinculosTodos(id).ConfigureAwait(false);
+            return Ok();
+        }
+
 
         [HttpGet("ActivoTrasnferenciaPage", Name = "GetPageActivoTransferencia")]
         [Route("page/transferencia/{TransferenciaId}")]
@@ -170,6 +222,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 Valor = TransferenciaId
             });
             ///Añade las propiedaes del contexto para el filtro de ACL vía ACL Controller
+            servicioActivoTransferencia.usuario = this.usuario;
             var data = await servicioActivoTransferencia.ObtenerPaginadoAsync(
                        Query: query,
                        include: null)
@@ -177,6 +230,24 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
             return Ok(data);
         }
+
+
+        [HttpGet("page/transferencia/{Id}/texto/{texto}", Name = "GetPageActivoTransferenciaPorTexto")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        public async Task<ActionResult<Paginado<Activo>>> GetPageActivoTransferenciaPorTexto(string Id, string texto, [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        {
+            query.Filtros.Add(new FiltroConsulta()
+            {
+                Operador = FiltroConsulta.OP_EQ,
+                Propiedad = "TransferenciaId",
+                Valor = Id
+            });
+
+            var data = await servicioActivoTransferencia.ObtenerPaginadoAsync(WebUtility.UrlDecode(texto), Query: query, include: null).ConfigureAwait(false);
+
+            return Ok(data);
+        }
+
 
         /// <summary>
         /// Elimina de manera permanente un Activo Transferencia en base al arreglo de identificadores recibidos
@@ -188,6 +259,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete(string ids)
         {
+            servicioActivoTransferencia.usuario = this.usuario;
             string IdsTrim = "";
 
             foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())

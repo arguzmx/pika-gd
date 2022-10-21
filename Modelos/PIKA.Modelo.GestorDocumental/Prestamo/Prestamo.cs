@@ -23,9 +23,9 @@ namespace PIKA.Modelo.GestorDocumental
         PropiedadHijo: "PrestamoId")]
 
     [LinkView(Titulo: "commandosweb.gd-prestamo-entregar", Icono: "assignment_ind", Vista: "gd-prestamo-entregar", 
-        RequireSeleccion: true, Tipo: TipoVista.WebCommand, Condicion: "['Entregado']==0")]
+        RequireSeleccion: true, Tipo: TipoVista.WebCommand, Condicion: "entidad.['Entregado']==0")]
     [LinkView(Titulo: "commandosweb.gd-prestamo-devolver", Icono: "assignment_turned_in", Vista: "gd-prestamo-devolver", 
-        RequireSeleccion: true, Tipo: TipoVista.WebCommand, Condicion: "['Entregado']==1 && ['Devuelto']==0")]
+        RequireSeleccion: true, Tipo: TipoVista.WebCommand, Condicion: "entidad.['Entregado']==1 && entidad.['Devuelto']==0")]
     public class Prestamo: Entidad<string>, IEntidadEliminada, IEntidadReportes
     {
         [NotMapped]

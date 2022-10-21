@@ -171,7 +171,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             Query = GetDefaultQuery(Query);
             var resultados = await this.repo.ObtenerPaginadoAsync(Query);
-            List<ValorListaOrdenada> l = resultados.Elementos.Select(x => new ValorListaOrdenada()
+            List<ValorListaOrdenada> l = resultados.Elementos.Where(e=> 
+                e.Id == EstadoTransferencia.ESTADO_RECIBIDA
+            || e.Id == EstadoTransferencia.ESTADO_RECIBIDA_PARCIAL
+            || e.Id == EstadoTransferencia.ESTADO_DECLINADA
+            || e.Id == EstadoTransferencia.ESTADO_ESPERA_APROBACION
+            || e.Id == EstadoTransferencia.ESTADO_NUEVA).Select(x => new ValorListaOrdenada()
             {
                 Id = x.Id,
                 Indice = 0,

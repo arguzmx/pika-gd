@@ -14,6 +14,17 @@ namespace PIKA.Servicio.GestionDocumental
             {
                 ActivoId = c.ActivoId,
                 TransferenciaId = c.TransferenciaId,
+                Declinado = c.Declinado,
+                CuadroClasificacionId = c.CuadroClasificacionId,
+                EntradaClasificacionId = c.EntradaClasificacionId,
+                Id = c.Id,
+                Aceptado = c.Aceptado,
+                FechaRetencion = c.FechaRetencion,
+                FechaVoto = c.FechaVoto,
+                MotivoDeclinado = c.MotivoDeclinado,
+                Notas = c.Notas,
+                UsuarioId = c.UsuarioId,
+                UsuarioReceptorId = c.UsuarioReceptorId,
             };
         }
 

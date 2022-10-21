@@ -48,7 +48,6 @@ namespace PIKA.Servicio.Metadatos.Servicios
         private PropiedadPlantilla ValidaPropiedadPlantilla(PropiedadPlantilla p , bool esActualizar)
         {
 
-            Console.WriteLine(JsonSerializer.Serialize(p, new JsonSerializerOptions() { WriteIndented = true }));
             
             if (!this.contexto.Plantilla.Where(x => x.Id.Equals(p.PlantillaId)).Any())
                 throw new ExErrorRelacional(p.PlantillaId);
@@ -156,7 +155,6 @@ namespace PIKA.Servicio.Metadatos.Servicios
                     }
 
                 }
-                Console.WriteLine($"ActualizarIndice pre {this.repositorioMetadatos ==null}");
                 await this.repositorioMetadatos.ActualizarIndice(p);
 
             }

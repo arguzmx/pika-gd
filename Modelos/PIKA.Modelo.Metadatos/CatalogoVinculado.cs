@@ -54,7 +54,8 @@ namespace PIKA.Modelo.Metadatos
             return new ParametroLinkVista()
             {
                 Vista = link.Vista,
-                ParamName = link.ParamName
+                ParamName = link.ParamName,
+                Multiple = link.Multiple
             };
         }
     }

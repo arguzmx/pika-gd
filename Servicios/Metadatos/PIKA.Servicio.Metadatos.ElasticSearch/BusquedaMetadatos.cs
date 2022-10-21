@@ -201,14 +201,13 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
 
                 } else
                 {
-                    Console.WriteLine(response.OriginalException.Message);
+                    // Console.WriteLine(response.OriginalException.Message);
                 }
                 return null;
 
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
                 throw;
             }
         }

@@ -18,6 +18,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.TransferenciaId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.EstadoTransferenciaId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
             builder.Property(x => x.Fecha).IsRequired();
+            builder.Property(x => x.UsuarioId).IsRequired().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.Comentario).HasMaxLength(2048).IsRequired(false);
 
             builder.HasOne(x => x.Estado).WithMany(y => y.Eventos).HasForeignKey(z => z.EstadoTransferenciaId);

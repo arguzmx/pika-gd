@@ -8,13 +8,19 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using PIKA.Infraestructura.Comun;
+
 namespace PIKA.Servicio.GestionDocumental.Interfaces
 {
-    public interface IServicioTransferencia : IServicioRepositorioAsync<Transferencia, string>
+    public interface IServicioTransferencia : IServicioRepositorioAsync<Transferencia, string>, 
+        IServicioAutenticado<Transferencia>, IServicioBuscarTexto<Transferencia>
     {
-
-
         Task<Transferencia> CrearDesdeTemaAsync(Transferencia entity, string TemaId, bool EliminarTema = true, CancellationToken cancellationToken = default);
+
+        Task EstadoTrasnferencia(string TransferenciaId, string EstadoId);
+
+        Task<RespuestaComandoWeb> ComandoWeb(string command, object payload);
+
 
         Task<byte[]> ReporteTransferencia(string TransferenciaId, string[] Columnas);
 

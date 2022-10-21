@@ -265,8 +265,17 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
+                    b.Property<bool>("Aceptado")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint(1)")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("ActivoId")
                         .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("CuadroClasificacionId")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
@@ -275,7 +284,21 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasColumnType("tinyint(1)")
                         .HasDefaultValue(false);
 
+                    b.Property<string>("EntradaClasificacionId")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<DateTime>("FechaRetencion")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("FechaVoto")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("MotivoDeclinado")
+                        .HasColumnType("varchar(500) CHARACTER SET utf8mb4")
+                        .HasMaxLength(500);
+
+                    b.Property<string>("Notas")
                         .HasColumnType("varchar(500) CHARACTER SET utf8mb4")
                         .HasMaxLength(500);
 
@@ -284,7 +307,11 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
-                    b.Property<string>("UsuarioIdDeclinadoId")
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<string>("UsuarioReceptorId")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
@@ -292,7 +319,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
 
                     b.HasIndex("TransferenciaId");
 
-                    b.HasIndex("UsuarioIdDeclinadoId");
+                    b.HasIndex("UsuarioId");
+
+                    b.HasIndex("UsuarioReceptorId");
 
                     b.HasIndex("ActivoId", "TransferenciaId", "Declinado");
 
@@ -880,6 +909,11 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
                     b.HasKey("Id");
 
                     b.HasIndex("EstadoTransferenciaId");
@@ -918,6 +952,56 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                     b.HasIndex("ArchivoId");
 
                     b.ToTable("gd$historialarchivoactivo");
+                });
+
+            modelBuilder.Entity("PIKA.Modelo.GestorDocumental.PermisosArchivo", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<bool>("ActualizarAcervo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("ArchivoId")
+                        .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<bool>("CancelarTrasnferencia")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("CrearAcervo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("CrearTrasnferencia")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("DestinatarioId")
+                        .IsRequired()
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
+                    b.Property<bool>("EliminarTrasnferencia")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("ElminarAcervo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("EnviarTrasnferencia")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("LeerAcervo")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("RecibirTrasnferencia")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ArchivoId");
+
+                    b.ToTable("gd$permisosrchivo");
                 });
 
             modelBuilder.Entity("PIKA.Modelo.GestorDocumental.PermisosUnidadAdministrativaArchivo", b =>
@@ -1232,6 +1316,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(200) CHARACTER SET utf8mb4")
                         .HasMaxLength(200);
+
+                    b.Property<int>("RangoDias")
+                        .HasColumnType("int");
 
                     b.Property<string>("UsuarioId")
                         .IsRequired()
@@ -1648,6 +1735,15 @@ namespace PIKA.Servicio.GestionDocumental.Data.Migrations
 
                     b.HasOne("PIKA.Modelo.GestorDocumental.Archivo", "Archivo")
                         .WithMany("HistorialArchivosActivo")
+                        .HasForeignKey("ArchivoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PIKA.Modelo.GestorDocumental.PermisosArchivo", b =>
+                {
+                    b.HasOne("PIKA.Modelo.GestorDocumental.Archivo", "Archivo")
+                        .WithMany("PermisosArchivo")
                         .HasForeignKey("ArchivoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();

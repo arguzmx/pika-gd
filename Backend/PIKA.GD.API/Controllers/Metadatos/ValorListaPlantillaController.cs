@@ -56,7 +56,6 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<ValorListaPlantilla>> Post([FromBody] ValorListaPlantilla entidad)
         {
-            Console.WriteLine(JsonSerializer.Serialize(entidad));
             entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetValorListaPlantilla", new { id = entidad.Id }, entidad).Value);
         }
@@ -107,8 +106,6 @@ namespace PIKA.GD.API.Controllers.Metadatos
                 Propiedad = "PropiedadId",
                 Valor = propiedadid
             });
-
-            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(query));
 
             var data = await servicioEntidad.ObtenerPaginadoAsync(
                 Query: query,

@@ -175,7 +175,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         public async Task<ActionResult<List<ValorListaOrdenada>>> GetPares(
         [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
-            Console.WriteLine("---" + JsonSerializer.Serialize(query));
             var data = await servicioCuadro.ObtenerParesAsync(query)
                 .ConfigureAwait(false);
 

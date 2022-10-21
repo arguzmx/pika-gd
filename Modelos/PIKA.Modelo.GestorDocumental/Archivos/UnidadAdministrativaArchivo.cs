@@ -12,7 +12,7 @@ using System.Xml.Serialization;
 namespace PIKA.Modelo.GestorDocumental
 {
     [Entidad(PaginadoRelacional: false, EliminarLogico: true, HabilitarSeleccion: true,
-       TokenMod: ConstantesAppGestionDocumental.MODULO_ARCHIVOS,
+       TokenMod: ConstantesAppGestionDocumental.MODULO_UNIDADESADMIN,
        TokenApp: ConstantesAppGestionDocumental.APP_ID)]
 
     [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ACTIVOS,

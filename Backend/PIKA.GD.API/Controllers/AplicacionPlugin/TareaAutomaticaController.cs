@@ -51,7 +51,6 @@ namespace PIKA.GD.API.Controllers.AplicacionTareaAutomatica
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{ex}");
                 throw;
             }
             

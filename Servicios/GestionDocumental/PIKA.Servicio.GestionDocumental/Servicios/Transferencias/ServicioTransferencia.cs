@@ -1,24 +1,25 @@
 ﻿
-using DocumentFormat.OpenXml.Vml.Office;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MySql.Data.MySqlClient;
+using Newtonsoft.Json.Linq;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
-using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.GestionDocumental.Interfaces;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,6 +38,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private readonly ConfiguracionServidor ConfiguracionServidor;
         private IOTransferencia ioT;
         private ILogger<ServicioCuadroClasificacion> LoggerCC;
+
+        public UsuarioAPI usuario { get; set; }
+        public PermisoAplicacion permisos { get; set; }
+
         public ServicioTransferencia(
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
             ILogger<ServicioLog> Logger,
@@ -50,6 +55,36 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             this.ioT = new IOTransferencia(Logger, proveedorOpciones);
 
         }
+
+        public async Task<RespuestaComandoWeb> ComandoWeb(string command, object payload)
+        {
+            RespuestaComandoWeb r = new RespuestaComandoWeb() { Estatus = false, MensajeId = RespuestaComandoWeb.Novalido, Payload = null };
+
+            dynamic d = JObject.Parse(System.Text.Json.JsonSerializer.Serialize(payload));
+            switch (command)
+            {
+                case "enviar-transferencia":
+                    await this.EstadoTrasnferencia((string)d.Id, EstadoTransferencia.ESTADO_ESPERA_APROBACION);
+                    r.MensajeId = $"{command}-ok";
+                    r.Estatus = true;
+                    break;
+
+                case "aceptar-transferencia":
+                    await this.EstadoTrasnferencia((string)d.Id, EstadoTransferencia.ESTADO_RECIBIDA);
+                    r.MensajeId = $"{command}-ok";
+                    r.Estatus = true;
+                    break;
+
+                case "declinar-transferencia":
+                    await this.EstadoTrasnferencia((string)d.Id, EstadoTransferencia.ESTADO_DECLINADA);
+                    r.MensajeId = $"{command}-ok";
+                    r.Estatus = true;
+                    break;
+
+            }
+            return r;
+        }
+
         public async Task<bool> Existe(Expression<Func<Transferencia, bool>> predicado)
         {
             List<Transferencia> l = await this.repo.ObtenerAsync(predicado);
@@ -70,6 +105,57 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
 
 
+        public async Task<IPaginado<Transferencia>> ObtenerPaginadoAsync(string Texto, Consulta Query, Func<IQueryable<Transferencia>, IIncludableQueryable<Transferencia, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
+        {
+
+            Query = this.GetDefaultQuery(Query);
+
+            var filtro = Query.Filtros.Where(f => f.Propiedad == "ArchivoId").FirstOrDefault();
+            string ArchivoId = filtro != null ? filtro.Valor : "-";
+
+
+            Paginado<Transferencia> p = new Paginado<Transferencia>();
+            string sqlbase = $"SELECT t.*  FROM {DBContextGestionDocumental.TablaTransferencias} t " +
+                $"WHERE t.ArchivoOrigenId = '{ArchivoId}' or t.ArchivoDestinoId= '{ArchivoId}' " +
+                $"AND CONCAT(COALESCE(t.Nombre,''), COALESCE(t.Folio,'')) like '%{Texto}%' ";
+
+            string sqls = sqlbase
+                + $"order by {Query.ord_columna} {Query.ord_direccion} "
+                + $"limit {Query.indice * Query.tamano},{Query.tamano};";
+
+            string sqlsCount = sqlbase.Replace("t.*", "count(*)");
+
+            var connection = new MySqlConnection(this.UDT.Context.Database.GetDbConnection().ConnectionString);
+            await connection.OpenAsync();
+            int conteo = 0;
+            MySqlCommand cmd = new MySqlCommand(sqlsCount, connection);
+            DbDataReader dr = await cmd.ExecuteReaderAsync();
+            if (dr.Read())
+            {
+                conteo = dr.GetInt32(0);
+            }
+            dr.Close();
+            await connection.CloseAsync();
+
+            try
+            {
+                p.Elementos = await this.UDT.Context.Transferencias.FromSqlRaw(sqls, new object[] { }).ToListAsync();
+                p.ConteoFiltrado = 0;
+                p.ConteoTotal = conteo;
+
+                p.Indice = Query.indice;
+                p.Paginas = 0;
+                p.Tamano = Query.tamano;
+                p.Desde = Query.indice * Query.tamano;
+
+                return p;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
         public async Task<Transferencia> CrearDesdeTemaAsync(Transferencia entity, string TemaId, bool EliminarTema = false, CancellationToken cancellationToken = default)
         {
 
@@ -79,8 +165,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 await VerificaDatosCreacion(entity);
                 List<string> activos = (await this.UDT.Context.ActivosSeleccionados.Where(x => x.TemaId == TemaId).ToListAsync())
                     .Select(a => a.Id).ToList();
-                List<string> validos = await this.UDT.Context.ActivosValidosTransferencia(activos, entity.ArchivoOrigenId, entity.CuadroClasificacionId, entity.EntradaClasificacionId);
+                List<string> validos = await this.UDT.Context.ActivosValidosTransferencia(activos, entity.RangoDias, entity.ArchivoOrigenId, entity.CuadroClasificacionId, entity.EntradaClasificacionId);
 
+                var archivo = this.UDT.Context.Archivos.Where(x => x.Id == entity.ArchivoOrigenId).First();
 
                 entity.Nombre = entity.Nombre.Trim();
                 entity.Id = System.Guid.NewGuid().ToString();
@@ -93,8 +180,19 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
                 foreach(string id in validos )
                 {
+                    var activo = this.UDT.Context.Activos.Where(x => x.Id == id).First();
+                    var r = (archivo.TipoArchivoId == TipoArchivo.IDARCHIVO_TRAMITE) ? activo.FechaRetencionAT.Value : activo.FechaRetencionAC.Value;
+
                     this.UDT.Context.ActivosTransferencia.Add(
-                        new ActivoTransferencia() { Id = Guid.NewGuid().ToString(), ActivoId = id, Declinado = false, TransferenciaId = entity.Id }
+                        new ActivoTransferencia() { Id = Guid.NewGuid().ToString(), ActivoId = id, 
+                            Declinado = false,
+                            Aceptado = false,
+                            CuadroClasificacionId = activo.CuadroClasificacionId,
+                            EntradaClasificacionId = activo.EntradaClasificacionId,
+                            TransferenciaId = entity.Id,
+                            FechaRetencion = r,
+                            UsuarioId = this.usuario.Id
+                        }
                         );
                 }
                 this.UDT.SaveChanges();
@@ -115,17 +213,18 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                     }
                 }
 
+                this.UDT.Context.AdicionaEventoTransferencia(entity.Id, EstadoTransferencia.ESTADO_NUEVA, usuario.Id);
+                
                 return entity.Copia();
 
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
                 throw;
             }
         }
 
-
+ 
 
         private async Task VerificaDatosCreacion(Transferencia entity)
         {
@@ -201,18 +300,45 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                     }
                 }
 
+                bool reset = false;
+                if (o.CuadroClasificacionId != entity.CuadroClasificacionId
+                    || o.EntradaClasificacionId != entity.EntradaClasificacionId
+                    || o.RangoDias != entity.RangoDias)
+                {
+                    var elementos = this.UDT.Context.ActivosTransferencia.Where(t => t.TransferenciaId == entity.Id).ToList();
+                    if (elementos.Count > 0)
+                    {
+                        string ids = elementos.Select(x => x.Id).ToList().MergeSQLStringList();
+                        string sqls = $"update {DBContextGestionDocumental.TablaActivos} set EnTransferencia=0 where Id in ({ids})";
+
+                        UDT.Context.Database.ExecuteSqlRaw(sqls);
+
+                        reset = true;
+                        this.UDT.Context.ActivosTransferencia.RemoveRange(elementos);
+                        this.UDT.Context.SaveChanges();
+                    }
+                }
+
+
                 o.Nombre = entity.Nombre.Trim();
                 o.Folio = entity.Folio;
                 o.ArchivoDestinoId = entity.ArchivoDestinoId;
                 o.EntradaClasificacionId = entity.EntradaClasificacionId;
                 o.CuadroClasificacionId = entity.CuadroClasificacionId;
+                o.RangoDias = entity.RangoDias;
+                if(reset)
+                {
+                    o.CantidadActivos = 0;
+                }
 
                 UDT.Context.Entry(o).State = EntityState.Modified;
                 UDT.SaveChanges();
+
+                this.UDT.Context.AdicionaEventoTransferencia(entity.Id, entity.EstadoTransferenciaId, usuario.Id, "Datos actualizados");
+
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
                 throw;
             }
 
@@ -234,8 +360,32 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
         public async Task<IPaginado<Transferencia>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Transferencia>, IIncludableQueryable<Transferencia, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
+
+            var qArchivo = Query.Filtros.First(p => p.Propiedad == "ArchivoOrigenId");
+            var qRecibidas = Query.Filtros.FirstOrDefault(p => p.Propiedad == "Recibidas");
+            Query.Filtros.Remove(qArchivo);
+            string archivo = qArchivo.Valor;
+            List<Expression<Func<Transferencia, bool>>> filtros = new List<Expression<Func<Transferencia, bool>>>();
+            if(qRecibidas == null)
+            {
+                filtros.Add(x => x.ArchivoOrigenId == archivo || x.ArchivoDestinoId == archivo);
+
+            } else
+            {
+                Query.Filtros.Remove(qRecibidas);
+                if (qRecibidas.Valor.Equals("true", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    filtros.Add(x =>  x.ArchivoDestinoId == archivo);
+
+                } else
+                {
+                    filtros.Add(x => x.ArchivoOrigenId == archivo);
+                }
+            }
+            
+
             Query = GetDefaultQuery(Query);
-            var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
+            var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null, filtros);
             return respuesta;
         }
         public async Task<ICollection<string>> Eliminar(string[] ids)
@@ -244,14 +394,32 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
             {
-                a = await this.repo.UnicoAsync(x => x.Id == Id);
-                if (a != null)
+                var tx = this.UDT.Context.Transferencias.FirstOrDefault(t => t.Id == Id);
+                if(tx!=null)
                 {
-                    UDT.Context.Entry(a).State = EntityState.Deleted;
-                    listaEliminados.Add(a.Id);
+                    string sqls;
+
+                    // SI la trasnferencia tiene activos en proceso remover el estado
+                    if ((new List<string>() { EstadoTransferencia.ESTADO_NUEVA, 
+                        EstadoTransferencia.ESTADO_ESPERA_APROBACION }).IndexOf(tx.EstadoTransferenciaId) >=0)
+                    {
+                        sqls = @$"UPDATE {DBContextGestionDocumental.TablaActivos} SET EnTransferencia=0 WHERE 
+Id IN (SELECT ActivoId FROM {DBContextGestionDocumental.TablaActivosTransferencia} WHERE  TransferenciaId='{tx.Id}')";
+                        UDT.Context.Database.ExecuteSqlRaw(sqls);
+                    }
+
+                    sqls = $"DELETE FROM {DBContextGestionDocumental.TablaEventosTransferencia} WHERE TransferenciaId='{Id}'";
+                    UDT.Context.Database.ExecuteSqlRaw(sqls);
+
+                    sqls = $"DELETE FROM {DBContextGestionDocumental.TablaActivosTransferencia} WHERE TransferenciaId='{Id}'";
+                    UDT.Context.Database.ExecuteSqlRaw(sqls);
+
+                    sqls = $"DELETE FROM {DBContextGestionDocumental.TablaTransferencias} WHERE Id='{Id}'";
+                    UDT.Context.Database.ExecuteSqlRaw(sqls);
+
+                    listaEliminados.Add(Id);
                 }
             }
-            UDT.SaveChanges();
             return listaEliminados;
         }
         public Task<List<Transferencia>> ObtenerAsync(Expression<Func<Transferencia, bool>> predicado)
@@ -337,6 +505,125 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public Task EjecutarSqlBatch(List<string> sqlCommand)
         {
             throw new NotImplementedException();
+        }
+
+        public Task<Transferencia> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task EstadoTrasnferencia(string TransferenciaId, string EstadoId)
+        {
+
+            var tx = await this.UnicoAsync(t => t.Id.Equals(TransferenciaId, StringComparison.InvariantCultureIgnoreCase));
+            if (tx == null)
+            {
+                throw new EXNoEncontrado();
+            }
+
+            List<PermisosArchivo> permisos;
+
+            bool estadoValido = false;
+            bool permisoValido = false;
+
+            // Sólo puede ir a aprobada o declinda si esta en estado de espera
+            if (EstadoId.Equals(EstadoTransferencia.ESTADO_RECIBIDA) || EstadoId.Equals(EstadoTransferencia.ESTADO_DECLINADA))
+            {
+
+                if (tx.EstadoTransferenciaId == EstadoTransferencia.ESTADO_ESPERA_APROBACION)
+                {
+                    estadoValido = true;
+                    permisos = this.contexto.PermisosArchivo(this.usuario.Id, tx.ArchivoDestinoId);
+                    if (permisos.Any(p => p.RecibirTrasnferencia))
+                    {
+                        permisoValido = true;
+                    }
+                }
+            }
+
+
+            // Sólo puede ir a espera si es nueva
+            if (EstadoId.Equals(EstadoTransferencia.ESTADO_ESPERA_APROBACION))
+            {
+
+                if (tx.EstadoTransferenciaId == EstadoTransferencia.ESTADO_NUEVA)
+                {
+                    estadoValido = true;
+                    permisos = this.contexto.PermisosArchivo(this.usuario.Id, tx.ArchivoOrigenId);
+                    if (permisos.Any(p => p.EnviarTrasnferencia))
+                    {
+                        permisoValido = true;
+                    }
+                }
+            }
+
+
+            //// sólo se puede cancelar si es nueva o esta en revisión
+            //if (EstadoId.Equals(EstadoTransferencia.ESTADO_CANCELADA))
+            //{
+            //    if (tx.EstadoTransferenciaId == EstadoTransferencia.ESTADO_ESPERA_APROBACION
+            //        || tx.EstadoTransferenciaId == EstadoTransferencia.ESTADO_NUEVA)
+            //    {
+            //        estadoValido = true;
+            //        permisos = this.contexto.PermisosArchivo(this.usuario.Id, tx.ArchivoOrigenId);
+            //        if (permisos.Any(p => p.CancelarTrasnferencia))
+            //        {
+            //            permisoValido = true;
+            //        }
+            //    }
+            //}
+
+            if (!permisoValido)
+            {
+                throw new ExDatosNoValidos("APICODE-TX-PERMISO-INVALIDO");
+            }
+
+            if (!estadoValido)
+            {
+                throw new ExDatosNoValidos("APICODE-TX-ESTADO-INVALIDO");
+            }
+
+       
+            tx.EstadoTransferenciaId = EstadoId;
+            switch(EstadoId)
+            {
+                case EstadoTransferencia.ESTADO_DECLINADA:
+                    // Todos los activos se desmarcan
+                    string sqls = @$"UPDATE {DBContextGestionDocumental.TablaActivos} SET EnTransferencia=0 WHERE 
+Id IN (SELECT ActivoId FROM {DBContextGestionDocumental.TablaActivosTransferencia} WHERE  TransferenciaId='{tx.Id}')";
+                    await UDT.Context.Database.ExecuteSqlRawAsync(sqls);
+                    await UDT.Context.ActualizaActivosEnTrasnferencia(false, tx.Id);
+                    break;
+
+                case EstadoTransferencia.ESTADO_RECIBIDA:
+                    List<string> aceptados = UDT.Context.ActivosTransferencia.Where(x => x.TransferenciaId == tx.Id && x.Aceptado == true).Select(x => x.ActivoId).ToList();
+                    List<string> declinados = UDT.Context.ActivosTransferencia.Where(x => x.TransferenciaId == tx.Id && x.Declinado == true).Select(x => x.ActivoId).ToList();
+
+                    if(aceptados.Count == 0)
+                    {
+                        throw new ExDatosNoValidos("APICODE-TX-SIN-ACPTADOS");
+                    }
+
+                    if(aceptados.Count + declinados.Count != tx.CantidadActivos)
+                    {
+                        throw new ExDatosNoValidos("APICODE-TX-SIN-VALIDAR");
+                    }
+
+                    // los activos se desmarcan
+                    await UDT.Context.ActualizaActivosEnTrasnferencia(false, tx.Id);
+
+                    //Los aceptados se mueven al nuevo arvico
+                    await UDT.Context.MueveActivosArchivo(aceptados, tx.ArchivoDestinoId);
+
+                    tx.EstadoTransferenciaId = declinados.Count > 0 ? EstadoTransferencia.ESTADO_RECIBIDA_PARCIAL : EstadoTransferencia.ESTADO_RECIBIDA;
+                    break;
+            }
+
+            UDT.Context.Entry(tx).State = EntityState.Modified;
+            UDT.SaveChanges();
+
+            this.UDT.Context.AdicionaEventoTransferencia(tx.Id, tx.EstadoTransferenciaId, usuario.Id);
+
         }
 
 

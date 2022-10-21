@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Microsoft.EntityFrameworkCore;
+using MySql.Data.MySqlClient;
 using Nest;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.GestorDocumental.Reportes.JSON;
@@ -7,6 +8,8 @@ using PIKA.Servicio.GestionDocumental.Data;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,15 +19,75 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
     public static class ExtensionesGestionDocumental
     {
 
+        public static List<PermisosArchivo> PermisosArchivo(this DBContextGestionDocumental c, string UsuarioId, string ArchivoId=null)
+      { 
+            string sqls = @$"select p.*  from {DBContextGestionDocumental.TablaPermisosArchivo} p
+inner join org$rol r on p.DestinatarioId = r.Id
+inner join gd$archivo a on p.ArchivoId = a.Id
+inner join org$usuarios_rol u on r.Id = u.RolId where
+{(ArchivoId != null ? $"p.ArchivoId = '{ArchivoId}' AND" : "")}
+ u.ApplicationUserId='{UsuarioId}';";
+
+           return  c.PermisosArchivo.FromSqlRaw(sqls).ToList();
+        }
+
+        public static void AdicionaEventoTransferencia(this DBContextGestionDocumental c, string TxId, string EstadoID, string UsuarioId, string comentario = "")
+        {
+            try
+            {
+                c.EventosTransferencia.Add(new EventoTransferencia()
+                {
+                    Comentario = comentario,
+                    EstadoTransferenciaId = EstadoID,
+                    Fecha = DateTime.UtcNow,
+                    Id = Guid.NewGuid().ToString(),
+                    TransferenciaId = TxId,
+                    UsuarioId = UsuarioId
+                });
+                c.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{ex}");
+                throw;
+            }
+
+        }
+
+
+        public static async Task MueveActivosArchivo(this DBContextGestionDocumental c, List<string> ActivoIds, string ArchivoId)
+        {
+            string sqls = $"update {DBContextGestionDocumental.TablaActivos} set EnTransferencia = 0, ArchivoId='{ArchivoId}', UbicacionCaja='', UbicacionRack='' where Id in ({ActivoIds.MergeSQLStringList()})";
+            await c.Database.ExecuteSqlRawAsync(sqls);
+        }
+
+        public static async Task EliminaActivosEnTrasnferencia(this DBContextGestionDocumental c, List<string> ActivoIds)
+        {
+            string sqls = $"delete from {DBContextGestionDocumental.TablaActivosTransferencia} where ActivoId in ({ActivoIds.MergeSQLStringList()})";
+            await c.Database.ExecuteSqlRawAsync(sqls);
+        }
+
         public static async Task ActualizaActivosEnTrasnferencia(this DBContextGestionDocumental c, List<string> ActivoIds, bool EnTransferencia)
         {
             string sqls = $"update {DBContextGestionDocumental.TablaActivos} set EnTransferencia = {(EnTransferencia ? "1": "0")} where Id in ({ActivoIds.MergeSQLStringList()})";
             await c.Database.ExecuteSqlRawAsync(sqls);
         }
 
+        public static async Task ActualizaActivosEnTrasnferencia(this DBContextGestionDocumental c, bool EnTransferencia, string TransferenciaId)
+        {
+            string sqls = $"update {DBContextGestionDocumental.TablaActivos} set EnTransferencia = {(EnTransferencia ? "1" : "0")} where Id in (select Id  from gd$activotransferencia a where a.TransferenciaId = '{TransferenciaId}')";
+            await c.Database.ExecuteSqlRawAsync(sqls);
+        }
+
         public static async Task ActualizaConteoActivosTrasnferencia(this DBContextGestionDocumental c, int delta, string TransferenciaId)
         {
             string sqls = $"update {DBContextGestionDocumental.TablaTransferencias} set CantidadActivos = CantidadActivos + {delta} where Id='{TransferenciaId}'";
+            await c.Database.ExecuteSqlRawAsync(sqls);
+        }
+
+        public static async Task EstableceConteoActivosTrasnferencia(this DBContextGestionDocumental c, int cantidad, string TransferenciaId)
+        {
+            string sqls = $"update {DBContextGestionDocumental.TablaTransferencias} set CantidadActivos = {cantidad} where Id='{TransferenciaId}'";
             await c.Database.ExecuteSqlRawAsync(sqls);
         }
 
@@ -39,7 +102,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             return Ids.ToString().TrimEnd(',');
         }
 
-        public static async Task<List<string>> ActivosValidosTransferencia(this DBContextGestionDocumental c, List<string> ActivosIds, string ArchivoOrigenId, string CuadroClasificacionId=null, string EntradaClasificacionId=null)
+        public static async Task<List<string>> ActivosValidosTransferencia(this DBContextGestionDocumental c, List<string> ActivosIds, int RangoDias, string ArchivoOrigenId, string CuadroClasificacionId=null, string EntradaClasificacionId=null)
         {
             var archivo = await c.Archivos.Where(t => t.Id == ArchivoOrigenId).FirstOrDefaultAsync();
             string plantilla = null;
@@ -58,7 +121,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                
 
-
                 plantilla =
 $@"select a.*  from {DBContextGestionDocumental.TablaActivos} a 
 where 
@@ -67,10 +129,9 @@ a.FechaCierre is not null and a.Reservado=0 and a.Eliminada=0 and a.EnPrestamo=0
 a.Id in ({ActivosIds.MergeSQLStringList()}) 
 {((CuadroClasificacionId != null) ? $"and a.CuadroClasificacionId = '{CuadroClasificacionId}' " : "")} 
 {((EntradaClasificacionId != null) ? $"and a.EntradaClasificacionId = '{EntradaClasificacionId}' " : "")} 
-and a.{retencion} <= now();";
+and a.{retencion} <= DATE_ADD(now() , INTERVAL {RangoDias} DAY);";
             }
 
-            Console.WriteLine(plantilla);
             List<string> transferibles = c.Activos.FromSqlRaw(plantilla).ToList().Select(a => a.Id).ToList();
             return transferibles;
 
@@ -100,7 +161,7 @@ and a.{retencion} <= now();";
 
             if (!string.IsNullOrEmpty(retencion))
             {
-
+                var RangoDias = Query.Filtros.Where(x => x.Propiedad.Equals("RangoDias", StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
                 var qarchivo = Query.Filtros.Where(x => x.Propiedad.Equals("ArchivoId", StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
                 var qcuadro = Query.Filtros.Where(x => x.Propiedad.Equals("CuadroClasificacionId", StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
                 var qentrada = Query.Filtros.Where(x => x.Propiedad.Equals("EntradaClasificacionId", StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
@@ -116,7 +177,7 @@ and a.FechaCierre is not null and a.Reservado=0 and a.Eliminada=0 and a.EnPresta
 and (a.Nombre like '%{qtexto.Valor}%' or a.CodigoOptico like '%{qtexto.Valor}%' or a.CodigoElectronico like '%{qtexto.Valor}%')
 {((qcuadro != null) ? $"and a.CuadroClasificacionId = '{qcuadro.Valor}' " : "")} 
 {((qentrada != null) ? $"and a.EntradaClasificacionId = '{qentrada.Valor}' " : "")} 
-and a.{retencion} <= now() 
+and a.{retencion} <= DATE_ADD(now() , INTERVAL {RangoDias.Valor} DAY)  
 order by a.Nombre
 LIMIT {Query.indice * Query.tamano}, {Query.tamano};";
 
@@ -164,6 +225,25 @@ LIMIT {Query.indice * Query.tamano}, {Query.tamano};";
                 FechaMaxCierre = a.FechaCierre,
                 FechaMinApertura = a.FechaApertura,
                 UnidadAdministrativaArchivoId = a.UnidadAdministrativaArchivoId
+            };
+        }
+
+        public static PermisosArchivo Copia(this PermisosArchivo ap)
+        {
+            return new PermisosArchivo()
+            {
+                ActualizarAcervo = ap.ActualizarAcervo,
+                CrearAcervo = ap.CrearAcervo,
+                DestinatarioId = ap.DestinatarioId,
+                ElminarAcervo = ap.ElminarAcervo,
+                Id = ap.Id,
+                LeerAcervo = ap.LeerAcervo,
+                ArchivoId = ap.ArchivoId,
+                CancelarTrasnferencia = ap.CancelarTrasnferencia,
+                CrearTrasnferencia = ap.CrearTrasnferencia,
+                EliminarTrasnferencia = ap.EliminarTrasnferencia,
+                EnviarTrasnferencia = ap.EnviarTrasnferencia,
+                RecibirTrasnferencia = ap.RecibirTrasnferencia
             };
         }
 

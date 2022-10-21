@@ -65,7 +65,6 @@ namespace PIKA.Identity.Server
                     foreach (var client in Config.Clients)
                     {
                         
-                        Console.WriteLine(client.ClientId);
                         if (!contextConfiguration.Clients.Any(x=>x.ClientId == client.ClientId))
                         {
                             contextConfiguration.Clients.Add(client.ToEntity());

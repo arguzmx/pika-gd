@@ -58,7 +58,6 @@ namespace PIKA.GD.API.Controllers.Contenido
                     p.Indice = idx;
                     idx++;
                 }
-                Console.WriteLine($"{JsonSerializer.Serialize(v)}");
                 await repoContenido.EliminaOCRVersion(v).ConfigureAwait(false);
                 await repoContenido.ActualizaVersion(v.Id, v, true).ConfigureAwait(false);
             }

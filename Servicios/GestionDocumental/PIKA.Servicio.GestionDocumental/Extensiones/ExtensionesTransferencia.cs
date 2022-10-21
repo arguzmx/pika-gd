@@ -22,7 +22,9 @@ namespace PIKA.Servicio.GestionDocumental
                 CuadroClasificacionId = t.CuadroClasificacionId,
                 EntradaClasificacionId = t.EntradaClasificacionId,
                 Folio = t.Folio,
-                CantidadActivos = t.CantidadActivos
+                CantidadActivos = t.CantidadActivos,
+                RangoDias = t.RangoDias,
+                FechaCorte = t.FechaCorte
             };
         }
     }

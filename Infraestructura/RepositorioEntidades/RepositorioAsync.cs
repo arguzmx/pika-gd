@@ -126,6 +126,7 @@ namespace RepositorioEntidades
                     }
                 }
 
+            
                 query = query.OrdenarPor(consulta.ord_columna, consulta.ord_direccion.ToLower() == "desc" ? false : true);
 
                 return query.PaginadoAsync(consulta.indice, consulta.tamano,  tokenCancelacion);

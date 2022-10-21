@@ -137,7 +137,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             if(previo.ArchivoId != valido.ArchivoId || previo.UnidadAdministrativaArchivoId != valido.UnidadAdministrativaArchivoId
                 || previo.CuadroClasificacionId != valido.CuadroClasificacionId || previo.EntradaClasificacionId != valido.EntradaClasificacionId)
             {
-                Console.WriteLine("Cambio documental");
                 // Hay un cambio en los datos de clasificacion;
                 var estPrevio = previo.AEstadistica();
                 var estActual = valido.AEstadistica();
@@ -146,7 +145,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             } else
             {
-                Console.WriteLine("Sin Cambio documental");
                 // NO hay cambios en los datos de clasificación
                 var estActual = valido.AEstadistica();
                 if (previo.Eliminada != valido.Eliminada)
@@ -193,8 +191,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             string sqlsCount = $"select count(*) from {DBContextGestionDocumental.TablaActivos} where ArchivoId = '{archivoId}' " +
                 $"and concat(COALESCE(`Nombre`,''), COALESCE(`CodigoOptico`,''), COALESCE(`CodigoElectronico`,'')) like '%{Texto}%';";
 
-            Console.WriteLine(this.UDT.Context.Database.GetDbConnection().ConnectionString);
-
             var connection = new MySqlConnection(this.UDT.Context.Database.GetDbConnection().ConnectionString);
             await connection.OpenAsync();
             int conteo = 0;
@@ -206,9 +202,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
             dr.Close();
             await connection.CloseAsync();
-
-            Console.WriteLine(sqls);
-
 
             try
             {
@@ -284,7 +277,6 @@ where p.TemaId='{Query.IdSeleccion}'
 order by {Query.ord_columna} {Query.ord_direccion} 
 limit {Query.indice *  Query.tamano}, {Query.tamano};";
 
-            Console.WriteLine(sqls);
             try
             {
                 p.Elementos = await this.UDT.Context.Activos.FromSqlRaw(sqls, new object[] { }).ToListAsync();
@@ -599,7 +591,6 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
                 var ec = await this.UDT.Context.EntradaClasificacion.Where(x => x.Id == g.Activo.EntradaClasificacionId).FirstOrDefaultAsync();
                 if (ec == null)
                 {
-                    Console.WriteLine($"Entrada clasificacion nula");
                     if (ec == null) throw new EXNoEncontrado($"EntradaClasificacion: {g.Activo.EntradaClasificacionId}");
                 } else
                 {
@@ -646,7 +637,6 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
                 var di = await this.UDT.Context.TipoDisposicionDocumental.Where(x => x.Id == ec.TipoDisposicionDocumentalId).FirstOrDefaultAsync();
                 if (di == null)
                 {
-                    Console.WriteLine($"Disposición nula");
                     if (ec == null) throw new EXNoEncontrado($"TipoDisposicionDocumental: {ec.TipoValoracionDocumentalId}");
                 }
 
@@ -721,7 +711,6 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
             {
                 if(!string.IsNullOrEmpty( trans.plantilla))
                 {
-                    Console.WriteLine(trans.plantilla);
                     resultados.Elementos = await this.UDT.Context.Activos.FromSqlRaw(trans.plantilla).ToListAsync();
                 }
 
@@ -799,7 +788,6 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
                     UsuarioId = UsuarioId,
                     Id = Id
                 };
-                Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(item));
                 this.UDT.Context.ActivosSeleccionados.Add(item);
 
 

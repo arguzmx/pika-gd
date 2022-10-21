@@ -28,7 +28,7 @@ namespace PIKA.Modelo.Contenido
         public bool ConvertirTiff { get; set; }
 
 
-        [Prop(Required: true, OrderIndex: 20, DefaultValue: "false")]
+        [Prop(Required: true, OrderIndex: 20, DefaultValue: "JPG")]
         [List(Entidad:"", Default:"JPG",  ValoresCSV:"JPG,PNG")]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
         [ValidString(minlen: 2, maxlen: 200)]

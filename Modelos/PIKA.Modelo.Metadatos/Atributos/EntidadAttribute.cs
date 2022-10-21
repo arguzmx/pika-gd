@@ -45,22 +45,24 @@ namespace PIKA.Modelo.Metadatos
         private bool _PermiteAltas;
         private bool _PermiteBajas;
         private bool _PermiteCambios;
+        private bool _PermiteEliminarTodo;
         public TipoSeguridad _TipoSeguridad;
         private bool _BuscarPorTexto;
 
-        public EntidadAttribute( bool PaginadoRelacional=false, 
-            bool EliminarLogico = false, 
+        public EntidadAttribute(bool PaginadoRelacional = false,
+            bool EliminarLogico = false,
             bool OpcionActivar = false,
-           string ColumnaActivar = "", 
-           string Columna = "Eliminada", 
-           string TokenMod = "", 
-           string TokenApp = "", 
+           string ColumnaActivar = "",
+           string Columna = "Eliminada",
+           string TokenMod = "",
+           string TokenApp = "",
            bool AsociadoMetadatos = false,
            bool HabilitarSeleccion = false,
            bool PermiteAltas = true,
            bool PermiteBajas = true,
            bool PermiteCambios = true,
            bool BuscarPorTexto = false,
+           bool PermiteEliminarTodo = false,
            TipoSeguridad TipoSeguridad = TipoSeguridad.Default)
         {
 
@@ -78,7 +80,15 @@ namespace PIKA.Modelo.Metadatos
             _PermiteAltas = PermiteAltas;
             _PermiteBajas = PermiteBajas;
             _PermiteCambios = PermiteCambios;
+            _PermiteEliminarTodo = PermiteEliminarTodo;
+        }
 
+        /// <summary>
+        /// Determina si exist ela opción eliminar todo para la entidad
+        /// </summary>
+        public virtual bool PermiteEliminarTodo
+        {
+            get { return _PermiteEliminarTodo; }
         }
 
         public virtual bool PermiteCambios

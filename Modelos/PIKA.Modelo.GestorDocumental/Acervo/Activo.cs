@@ -49,13 +49,14 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         [Prop(Required: false, OrderIndex: 1, Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+        [List(Entidad: "CuadroClasificacion", DatosRemotos: true, TypeAhead: false, Default: "")]
         public string CuadroClasificacionId { get; set; }
 
 
         /// <summary>
         /// Identificador único de la etraada de clasificación
         /// </summary>
-        [Prop(Required: true, OrderIndex: 5)]
+        [Prop(Required: true, OrderIndex: 5, Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
         [List(Entidad: "EntradaClasificacion", DatosRemotos: true, TypeAhead: true)]
         public string EntradaClasificacionId { get; set; }

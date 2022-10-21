@@ -53,11 +53,11 @@ namespace PIKA.Servicio.GestionDocumental
                 new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_ARCHIVOS ) {
                     Titulo = "Gestión de archivos",
                     Descripcion = "Permite administrar los archivos para la localización del inventario",
-                    Tipos = new List<Type> { typeof(Archivo), typeof(AlmacenArchivo), 
+                    Tipos = new List<Type> { typeof(Archivo), typeof(AlmacenArchivo), typeof(PermisosArchivo),
                         typeof(ZonaAlmacen), typeof(PosicionAlmacen), typeof(ContenedorAlmacen), 
                         typeof(ActivoContenedorAlmacen) }
                 },
-                new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_ARCHIVOS ) {
+                new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_UNIDADESADMIN ) {
                     Titulo = "Gestión de unidades administrativas",
                     Descripcion = "Permite gestionar las unidads administrativas para el archivo",
                     Tipos = new List<Type> { typeof(UnidadAdministrativaArchivo) , typeof(PermisosUnidadAdministrativaArchivo) }
@@ -79,7 +79,7 @@ namespace PIKA.Servicio.GestionDocumental
                 //},
                 new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_TRANSFERENCIA ) {
                     Titulo = "Gestión de trasnferencias entre archivos",
-                    Descripcion = "Permite realizar la gestión de las trasnferencias de invetarios entre archivos",
+                    Descripcion = "Permite realizar la gestión de las trasnferencias de inventarios entre archivos",
                     Tipos = new List<Type> { typeof(Transferencia), typeof(EventoTransferencia),
                         typeof(ComentarioTransferencia),typeof(ActivoTransferencia),
                     typeof(HistorialArchivoActivo)}
