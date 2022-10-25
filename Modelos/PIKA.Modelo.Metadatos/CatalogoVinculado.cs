@@ -44,11 +44,23 @@ namespace PIKA.Modelo.Metadatos
                 Vista = link.Vista,
                 RequiereSeleccion = link.RequireSeleccion,
                 Tipo = link.Tipo,
-                Condicion = link.Condicion
+                Condicion = link.Condicion,
+                MenuId = link.MenuId,
+                MenuIndex = link.MenuIndex
             };
         }
 
-
+        public static Menu Copia(this MenuAttribute menu)
+        {
+            return new Menu()
+            {
+                Condicion = menu.Condicion,
+                Icono = menu.Icono,
+                MenuId = menu.MenuId,
+                MenuIndex = menu.MenuIndex,
+                Titulo = menu.Titulo
+            };
+        }
         public static ParametroLinkVista Copia(this LinkViewParameterAttribute link)
         {
             return new ParametroLinkVista()

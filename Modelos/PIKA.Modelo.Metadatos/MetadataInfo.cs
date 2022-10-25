@@ -18,6 +18,7 @@ namespace PIKA.Modelo.Metadatos
             EntidadesVinculadas = new List<EntidadVinculada>();
             CatalogosVinculados = new List<CatalogoVinculado>();
             VistasVinculadas = new List<LinkVista>();
+            Menus = new List<Menu>();
         }
 
 
@@ -108,6 +109,8 @@ namespace PIKA.Modelo.Metadatos
         public virtual List<CatalogoVinculado> CatalogosVinculados { get; set; }
 
         public virtual List<LinkVista> VistasVinculadas { get; set; }
+
+        public virtual List<Menu> Menus { get; set; }
         
         public ICollection<IProveedorReporte> Reportes { get; set; }
     }

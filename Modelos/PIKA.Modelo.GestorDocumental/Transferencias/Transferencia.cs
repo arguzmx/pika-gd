@@ -28,14 +28,20 @@ namespace PIKA.Modelo.GestorDocumental
         Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id",
         PropiedadHijo: "TransferenciaId")]
 
-    [LinkView(Titulo: "commandosweb.enviar-transferencia", Icono: "forward_to_inbox", Vista: "enviar-transferencia",
+    [Menu(Titulo: "commandosweb.gestionar-transferencia", Icono: "published_with_changes", MenuId: "gestionar-transferencia")]
+
+    [LinkView(Titulo: "commandosweb.enviar-transferencia", Icono: "forward_to_inbox", Vista: "enviar-transferencia", MenuId: "gestionar-transferencia", menuIndex: 0,
         RequireSeleccion: true, Tipo: TipoVista.WebCommand, Condicion: "entidad['EstadoTransferenciaId'] == 'nueva'")]
 
-    [LinkView(Titulo: "commandosweb.aceptar-transferencia", Icono: "mark_email_read", Vista: "aceptar-transferencia",
+    [LinkView(Titulo: "commandosweb.aceptar-transferencia", Icono: "mark_email_read", Vista: "aceptar-transferencia", MenuId: "gestionar-transferencia", menuIndex: 1,
         RequireSeleccion: true, Tipo: TipoVista.WebCommand, Condicion: "entidad['EstadoTransferenciaId'] == 'espera'")]
 
-    [LinkView(Titulo: "commandosweb.declinar-transferencia", Icono: "unsubscribe", Vista: "declinar-transferencia",
+    [LinkView(Titulo: "commandosweb.declinar-transferencia", Icono: "unsubscribe", Vista: "declinar-transferencia", MenuId: "gestionar-transferencia", menuIndex: 2,
         RequireSeleccion: true, Tipo: TipoVista.WebCommand, Condicion: "entidad['EstadoTransferenciaId'] == 'espera'")]
+
+
+    [LinkView(Titulo: "commandosweb.filtro-recibidas", Icono: "download_for_offline", Vista: "filtro-recibidas", 
+        RequireSeleccion: true, Tipo: TipoVista.WebFilter, Condicion: "")]
 
     public class Transferencia : Entidad<string>, IEntidadNombrada, IEntidadUsuario
     {
@@ -162,15 +168,6 @@ namespace PIKA.Modelo.GestorDocumental
         [List(Entidad: "PropiedadesUsuario", DatosRemotos: true)]
         public string UsuarioId { get; set; }
 
-
-
-        /// <summary>
-        /// Valor para filtrar en la UI entre amitidas y recibidas
-        /// </summary>
-        [Prop(Required: false, Visible: false, OrderIndex: 250, Searchable: true, ShowInTable: false)]
-        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
-        [NotMapped]
-        public bool Recibidas { get; set; }
 
         [XmlIgnore]
         [JsonIgnore]

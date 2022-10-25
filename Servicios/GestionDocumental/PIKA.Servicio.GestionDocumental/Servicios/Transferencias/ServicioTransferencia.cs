@@ -362,7 +362,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
 
             var qArchivo = Query.Filtros.First(p => p.Propiedad == "ArchivoOrigenId");
-            var qRecibidas = Query.Filtros.FirstOrDefault(p => p.Propiedad == "Recibidas");
+            var qRecibidas = Query.Filtros.FirstOrDefault(p => p.Propiedad == "filtro-recibidas");
             Query.Filtros.Remove(qArchivo);
             string archivo = qArchivo.Valor;
             List<Expression<Func<Transferencia, bool>>> filtros = new List<Expression<Func<Transferencia, bool>>>();
@@ -376,10 +376,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 if (qRecibidas.Valor.Equals("true", StringComparison.InvariantCultureIgnoreCase))
                 {
                     filtros.Add(x =>  x.ArchivoDestinoId == archivo);
-
-                } else
-                {
-                    filtros.Add(x => x.ArchivoOrigenId == archivo);
                 }
             }
             

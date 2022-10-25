@@ -128,6 +128,11 @@ namespace PIKA.Modelo.Metadatos
                 {
                     info.VistasVinculadas.Add(((LinkViewAttribute)attr).Copia());
                 }
+
+                if (attr is MenuAttribute)
+                {
+                    info.Menus.Add(((MenuAttribute)attr).Copia());
+                }
             }
 
             List<Propiedad> properties = new List<Propiedad>();
@@ -210,6 +215,8 @@ namespace PIKA.Modelo.Metadatos
                         {
                             foundProp.ParametroLinkVista = ((LinkViewParameterAttribute)attr).Copia();
                         }
+
+
                     }
 
                     properties.Add(foundProp);

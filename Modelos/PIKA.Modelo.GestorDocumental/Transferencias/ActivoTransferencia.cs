@@ -15,9 +15,11 @@ namespace PIKA.Modelo.GestorDocumental
         TokenMod: ConstantesAppGestionDocumental.APP_ID)]
 
 
-    [LinkView(Titulo: "commandosweb.activotransferencias-aceptar", Icono: "thumb_up", Vista: "aceptar-activos-tx",
+    [Menu(Titulo: "commandosweb.gestionar-activostransferencia", Icono: "verified", MenuId: "gestionar-activostransferencia")]
+
+    [LinkView(Titulo: "commandosweb.activotransferencias-aceptar", Icono: "thumb_up", Vista: "aceptar-activos-tx", MenuId: "gestionar-activostransferencia", menuIndex: 0,
         RequireSeleccion: true, Tipo: TipoVista.WebCommand, Condicion: "")]
-    [LinkView(Titulo: "commandosweb.activotransferencias-declinar", Icono: "thumb_down", Vista: "declinar-activos-tx",
+    [LinkView(Titulo: "commandosweb.activotransferencias-declinar", Icono: "thumb_down", Vista: "declinar-activos-tx", MenuId: "gestionar-activostransferencia", menuIndex: 1,
         RequireSeleccion: true, Tipo: TipoVista.WebCommand, Condicion: "")]
     /// <summary>
     /// Mantien las relaciómn da activos incluidos en una transferenci
