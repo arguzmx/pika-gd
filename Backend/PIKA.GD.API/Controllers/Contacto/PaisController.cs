@@ -184,6 +184,7 @@ namespace PIKA.GD.API.Controllers.Contacto
         /// <returns></returns>
 
         [HttpGet("pares", Name = "GetParesPais")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ValorListaOrdenada>>> GetPares(
         [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)

@@ -40,6 +40,7 @@ using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using System.Reflection;
 using System.IO;
+using PIKA.GD.API.Servicios.Registro;
 
 namespace PIKA.GD.API
 {
@@ -174,6 +175,8 @@ namespace PIKA.GD.API
             //options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
 #endif
+
+            services.AddSingleton<IRegistroPIKA, RegistroPIKA>();
 
             //registra los ensamblados validables
             services.RegistraValidables();
