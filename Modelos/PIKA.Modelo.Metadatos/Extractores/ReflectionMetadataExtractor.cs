@@ -94,6 +94,8 @@ namespace PIKA.Modelo.Metadatos
                     info.PermiteBajas = ea.PermiteBajas;
                     info.PermiteCambios = ea.PermiteCambios;
                     info.TipoSeguridad = ea.TipoSeguridad;
+                    info.BuscarPorTexto = ea.BuscarPorTexto;
+                    info.PermiteEliminarTodo = ea.PermiteEliminarTodo;
                 }
 
                 if (attr is EntidadVinculadaAttribute)
@@ -125,6 +127,11 @@ namespace PIKA.Modelo.Metadatos
                 if (attr is LinkViewAttribute)
                 {
                     info.VistasVinculadas.Add(((LinkViewAttribute)attr).Copia());
+                }
+
+                if (attr is MenuAttribute)
+                {
+                    info.Menus.Add(((MenuAttribute)attr).Copia());
                 }
             }
 
@@ -208,6 +215,8 @@ namespace PIKA.Modelo.Metadatos
                         {
                             foundProp.ParametroLinkVista = ((LinkViewParameterAttribute)attr).Copia();
                         }
+
+
                     }
 
                     properties.Add(foundProp);

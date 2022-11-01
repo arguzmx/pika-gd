@@ -11,6 +11,11 @@ namespace PIKA.Modelo.Metadatos
             get; set;
         }
 
+        public virtual bool Multiple
+        {
+            get; set;
+        }
+
         public virtual string Vista
         {
             get; set;

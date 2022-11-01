@@ -60,7 +60,6 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<GestorLaserficheConfig>> Post([FromBody]GestorLaserficheConfig entidad)
         {
-            Console.WriteLine(JsonSerializer.Serialize(entidad));
             entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
             return Ok(CreatedAtAction("GetGestorLaserficheConfig", new { id = entidad.VolumenId }, entidad).Value);
         }

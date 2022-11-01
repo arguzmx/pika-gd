@@ -12,7 +12,7 @@ using PIKA.Modelo.GestorDocumental.Reportes;
 
 namespace PIKA.Modelo.GestorDocumental
 {
-    [Entidad(PaginadoRelacional: false, EliminarLogico: true, HabilitarSeleccion: true,
+    [Entidad(PaginadoRelacional: false, EliminarLogico: true, HabilitarSeleccion: true, BuscarPorTexto: true,
         TokenMod: ConstantesAppGestionDocumental.MODULO_ACTIVOS,
         TokenApp: ConstantesAppGestionDocumental.APP_ID)]
 
@@ -33,8 +33,6 @@ namespace PIKA.Modelo.GestorDocumental
             Ampliaciones = new HashSet<Ampliacion>();
             PrestamosRelacionados = new HashSet<ActivoPrestamo>();
             TransferenciasRelacionados = new HashSet<ActivoTransferencia>();
-            DeclinadosTransferenciaRelacionados = new HashSet<ActivoDeclinado>();
-
             this.Reportes = new List<IProveedorReporte>();
             this.Reportes.Add(new ReporteCaratulaActivo());
         }
@@ -51,13 +49,14 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         [Prop(Required: false, OrderIndex: 1, Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+        [List(Entidad: "CuadroClasificacion", DatosRemotos: true, TypeAhead: false, Default: "")]
         public string CuadroClasificacionId { get; set; }
 
 
         /// <summary>
         /// Identificador único de la etraada de clasificación
         /// </summary>
-        [Prop(Required: true, OrderIndex: 5)]
+        [Prop(Required: true, OrderIndex: 5, Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
         [List(Entidad: "EntradaClasificacion", DatosRemotos: true, TypeAhead: true)]
         public string EntradaClasificacionId { get; set; }
@@ -194,6 +193,14 @@ namespace PIKA.Modelo.GestorDocumental
 
 
         /// <summary>
+        /// Especifica si el activo se encuentra marcado como en reserva
+        /// </summary>
+        [Prop(Required: false, OrderIndex: 120, DefaultValue: "false", Visible: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.none)]
+        public bool EnTransferencia { get; set; }
+
+
+        /// <summary>
         /// Especifica si el activo tiene ampliaciones vigentes
         /// ESTOS VALORES SE CALCULAR POR SISTEMA  EN BASE A SI TIENE AMPLIACIONES ACTIVAS
         /// </summary>
@@ -325,11 +332,6 @@ namespace PIKA.Modelo.GestorDocumental
         [XmlIgnore]
         [JsonIgnore]
         public virtual ICollection<ActivoTransferencia> TransferenciasRelacionados { get; set; }
-
-        [XmlIgnore]
-        [JsonIgnore]
-        public virtual ICollection<ActivoDeclinado> DeclinadosTransferenciaRelacionados { get; set; }
-
 
 
         [XmlIgnore]

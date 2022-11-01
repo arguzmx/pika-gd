@@ -25,6 +25,14 @@ namespace PIKA.Servicio.GestionDocumental.Data
     }
     public class DBContextGestionDocumental : DbContext, IRepositorioInicializable
     {
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            // optionsBuilder.UseMySql("Server=localhost;Port=3306;Database=pika-ca;Uid=pika;Pwd=Pa$$w0rd;");
+            optionsBuilder.EnableSensitiveDataLogging();
+            base.OnConfiguring(optionsBuilder);
+        }
+
         public DBContextGestionDocumental()
         {
 
@@ -37,6 +45,9 @@ namespace PIKA.Servicio.GestionDocumental.Data
 
 
         #region Constantes de configuración
+
+        public static string TablaPermisosArchivo { get => "gd$permisosrchivo"; }
+
 
 
         /// <summary>
@@ -314,11 +325,6 @@ namespace PIKA.Servicio.GestionDocumental.Data
         public DbSet<ActivoTransferencia> ActivosTransferencia { get; set; }
 
         /// <summary>
-        /// Comentarios de prestamo existentes en la aplicación
-        /// </summary>
-        public DbSet<ActivoDeclinado> ActivosDeclinados { get; set; }
-
-        /// <summary>
         /// Variable de Entrada Clasificacion
         /// </summary>
         public DbSet<EntradaClasificacion> EntradaClasificacion{ get; set; }
@@ -344,6 +350,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
 
         public DbSet<TemaActivos> TemasActivos { get; set; }
 
+        public DbSet<PermisosArchivo> PermisosArchivo { get; set; }
 
         public DbSet<UnidadAdministrativaArchivo> UnidadesAdministrativasArchivo { get; set; }
         public DbSet<PermisosUnidadAdministrativaArchivo> PermisosUnidadesAdministrativasArchivo { get; set; }
@@ -356,12 +363,6 @@ namespace PIKA.Servicio.GestionDocumental.Data
         public void Inicializar(string ContentPath, bool generarDatosdemo)
         {
             InicializarDatos.Inicializar(this, ContentPath);
-        }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            //optionsBuilder.UseMySql("Server=localhost;Port=3306;Database=pika-ca;Uid=pika;Pwd=Pa$$w0rd;");
-            optionsBuilder.EnableSensitiveDataLogging();
-            base.OnConfiguring(optionsBuilder);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -381,6 +382,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
             builder.ApplyConfiguration<Asunto>(new DbConfAsunto());
             builder.ApplyConfiguration<ActivoSeleccionado>(new DbConfActivoSeleccionado());
             builder.ApplyConfiguration<TemaActivos>(new DbConfTemaActivoSeleccionado());
+            builder.ApplyConfiguration<PermisosArchivo>(new DbConfPermisoschivo());
 
             builder.ApplyConfiguration<Ampliacion>(new DbConfAmpliacion());
             builder.ApplyConfiguration<TipoAmpliacion>(new DbConfTipoAmpliacion());
@@ -402,7 +404,6 @@ namespace PIKA.Servicio.GestionDocumental.Data
             builder.ApplyConfiguration<EventoTransferencia>(new DbConfEventoTransferencia());
             builder.ApplyConfiguration<ComentarioTransferencia>(new DbConfComentarioTransferencia());
             builder.ApplyConfiguration<ActivoTransferencia>(new DbConfActivoTransferencia());
-            builder.ApplyConfiguration<ActivoDeclinado>(new DbConfActivoDeclinado());
             builder.ApplyConfiguration<EntradaClasificacion>(new DbConfEntradaClasificacion());
             builder.ApplyConfiguration<TipoDisposicionDocumental>(new DbConfTipoDisposicionDocumental());
             builder.ApplyConfiguration<ValoracionEntradaClasificacion>(new DbConfValoracionEntradaClasificacion());

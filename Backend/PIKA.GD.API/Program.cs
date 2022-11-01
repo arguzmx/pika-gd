@@ -53,9 +53,16 @@ namespace PIKA.GD.API
 
 
 
-            var nodb = args.Contains("/nodb");
-            var demodb = args.Contains("/demodb");
+            bool nodb = args.Contains("/nodb");
+            bool demodb = args.Contains("/demodb");
             nobgservices = args.Contains("/noservices");
+
+#if DEBUG
+            Log.Error("Modo DEBUG, no ejecutar servicios");
+            nodb = true;
+            nobgservices = true;
+#endif
+
             try
             {
                 var host = BuildWebHost(args, maxMB.Value);

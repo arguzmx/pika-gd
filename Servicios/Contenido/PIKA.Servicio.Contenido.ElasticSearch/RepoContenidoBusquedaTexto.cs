@@ -360,8 +360,7 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
                 }
             }
 
-            Console.WriteLine(System.Text.Encoding.Default.GetString(response.ApiCall.RequestBodyInBytes));
-
+            
             if (response.ApiCall.Success)
             {
                 response.Hits.ToList().ForEach(h =>
@@ -498,7 +497,6 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
                 }
 
             }
-            Console.WriteLine(System.Text.Encoding.Default.GetString(response.ApiCall.RequestBodyInBytes));
             if (response.ApiCall.Success)
             {
                 return response.Count;

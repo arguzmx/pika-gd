@@ -400,9 +400,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             foreach (var Id in ids)
             {
-                Console.WriteLine($"Eliminaod {Id}");
                 bool done = await EliminarJerarquia(Id);
-                Console.WriteLine($"done = {done}");
                 if (!done)
                 {
                     return null;

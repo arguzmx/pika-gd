@@ -243,7 +243,6 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<List<Carpeta>>> ObtenerRaicesAsync(string jerarquiaid)
         {
-            Console.WriteLine("CARPETA -----------------------------------");
             var l = await servicioEntidad.ObtenerRaicesAsync(jerarquiaid).ConfigureAwait(false);
             return Ok(l.ToList());
         }

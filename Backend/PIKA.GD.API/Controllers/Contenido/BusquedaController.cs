@@ -35,7 +35,6 @@ namespace PIKA.GD.API.Controllers.Contenido
             catch (Exception ex)
             {
 
-                Console.WriteLine(ex.ToString());
                 throw;
             }
         }
@@ -51,8 +50,6 @@ namespace PIKA.GD.API.Controllers.Contenido
             }
             catch (Exception ex)
             {
-
-                Console.WriteLine(ex.ToString());
                 throw;
             }
         }

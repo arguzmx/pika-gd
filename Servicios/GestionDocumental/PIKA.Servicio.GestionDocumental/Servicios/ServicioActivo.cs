@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MySql.Data.MySqlClient;
+using Nest;
 using PIKA.Infraestrctura.Reportes;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
@@ -19,6 +21,7 @@ using PIKA.Servicio.Reportes.Interfaces;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text.Json;
@@ -134,7 +137,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             if(previo.ArchivoId != valido.ArchivoId || previo.UnidadAdministrativaArchivoId != valido.UnidadAdministrativaArchivoId
                 || previo.CuadroClasificacionId != valido.CuadroClasificacionId || previo.EntradaClasificacionId != valido.EntradaClasificacionId)
             {
-                Console.WriteLine("Cambio documental");
                 // Hay un cambio en los datos de clasificacion;
                 var estPrevio = previo.AEstadistica();
                 var estActual = valido.AEstadistica();
@@ -143,7 +145,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             } else
             {
-                Console.WriteLine("Sin Cambio documental");
                 // NO hay cambios en los datos de clasificación
                 var estActual = valido.AEstadistica();
                 if (previo.Eliminada != valido.Eliminada)
@@ -168,6 +169,58 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 
             }
 
+        }
+
+
+        public async Task<IPaginado<Activo>> ObtenerPaginadoAsync(string Texto, Consulta Query,
+         Func<IQueryable<Activo>, IIncludableQueryable<Activo, object>> include = null,
+         bool disableTracking = true,
+         CancellationToken cancellationToken = default(CancellationToken))
+        {
+            Query = this.GetDefaultQuery(Query);
+
+            var filtro = Query.Filtros.Where(f => f.Propiedad == "ArchivoId").FirstOrDefault();
+            string archivoId = filtro != null ? filtro.Valor : "-";
+
+            Paginado<Activo> p = new Paginado<Activo>();
+            string sqls = $"select * from {DBContextGestionDocumental.TablaActivos} where ArchivoId = '{archivoId}' " +
+                $"and concat(COALESCE(`Nombre`,''), COALESCE(`CodigoOptico`,''), COALESCE(`CodigoElectronico`,'')) like '%{Texto}%' " +
+                $"order by {Query.ord_columna} {Query.ord_direccion} " +
+                $"limit {Query.indice * Query.tamano},{Query.tamano};";
+            
+            string sqlsCount = $"select count(*) from {DBContextGestionDocumental.TablaActivos} where ArchivoId = '{archivoId}' " +
+                $"and concat(COALESCE(`Nombre`,''), COALESCE(`CodigoOptico`,''), COALESCE(`CodigoElectronico`,'')) like '%{Texto}%';";
+
+            var connection = new MySqlConnection(this.UDT.Context.Database.GetDbConnection().ConnectionString);
+            await connection.OpenAsync();
+            int conteo = 0;
+            MySqlCommand cmd = new MySqlCommand(sqlsCount, connection);
+            DbDataReader dr = await cmd.ExecuteReaderAsync();
+            if (dr.Read())
+            {
+                conteo = dr.GetInt32(0);
+            }
+            dr.Close();
+            await connection.CloseAsync();
+
+            try
+            {
+                p.Elementos = await this.UDT.Context.Activos.FromSqlRaw(sqls, new object[] { }).ToListAsync();
+                p.ConteoFiltrado = 0;
+                p.ConteoTotal = conteo;
+
+                p.Indice = Query.indice;
+                p.Paginas = 0;
+                p.Tamano = Query.tamano;
+                p.Desde = Query.indice * Query.tamano;
+
+                return p;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
         }
 
 
@@ -224,7 +277,6 @@ where p.TemaId='{Query.IdSeleccion}'
 order by {Query.ord_columna} {Query.ord_direccion} 
 limit {Query.indice *  Query.tamano}, {Query.tamano};";
 
-            Console.WriteLine(sqls);
             try
             {
                 p.Elementos = await this.UDT.Context.Activos.FromSqlRaw(sqls, new object[] { }).ToListAsync();
@@ -539,7 +591,6 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
                 var ec = await this.UDT.Context.EntradaClasificacion.Where(x => x.Id == g.Activo.EntradaClasificacionId).FirstOrDefaultAsync();
                 if (ec == null)
                 {
-                    Console.WriteLine($"Entrada clasificacion nula");
                     if (ec == null) throw new EXNoEncontrado($"EntradaClasificacion: {g.Activo.EntradaClasificacionId}");
                 } else
                 {
@@ -586,7 +637,6 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
                 var di = await this.UDT.Context.TipoDisposicionDocumental.Where(x => x.Id == ec.TipoDisposicionDocumentalId).FirstOrDefaultAsync();
                 if (di == null)
                 {
-                    Console.WriteLine($"Disposición nula");
                     if (ec == null) throw new EXNoEncontrado($"TipoDisposicionDocumental: {ec.TipoValoracionDocumentalId}");
                 }
 
@@ -649,28 +699,48 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
 
         }
 
+
+   
         public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
         {
-            for (int i = 0; i < Query.Filtros.Count; i++)
+
+            Paginado<Activo> resultados = new Paginado<Activo>() { Elementos = new List<Activo>() };
+            var trans= Query.GetQueryTransferibles();
+
+            if (trans.Transferible)
             {
-                if (Query.Filtros[i].Propiedad.ToLower() == "texto")
+                if(!string.IsNullOrEmpty( trans.plantilla))
                 {
-                    Query.Filtros[i].Propiedad = "Nombre";
-                    Query.Filtros[i].Operador = FiltroConsulta.OP_CONTAINS;
+                    resultados.Elementos = await this.UDT.Context.Activos.FromSqlRaw(trans.plantilla).ToListAsync();
                 }
-            }
-            if (Query.Filtros.Where(x => x.Propiedad.ToLower() == "eliminada").Count() == 0)
+
+            } else
             {
-                Query.Filtros.Add(new FiltroConsulta()
+                for (int i = 0; i < Query.Filtros.Count; i++)
                 {
-                    Propiedad = "Eliminada",
-                    Negacion = false,
-                    Operador = "eq",
-                    Valor = "false"
-                });
+                    if (Query.Filtros[i].Propiedad.ToLower() == "texto")
+                    {
+                        Query.Filtros[i].Propiedad = "Nombre";
+                        Query.Filtros[i].Operador = FiltroConsulta.OP_CONTAINS;
+                    }
+                }
+
+                if (Query.Filtros.Where(x => x.Propiedad.ToLower() == "eliminada").Count() == 0)
+                {
+                    Query.Filtros.Add(new FiltroConsulta()
+                    {
+                        Propiedad = "Eliminada",
+                        Negacion = false,
+                        Operador = "eq",
+                        Valor = "false"
+                    });
+                }
+
+                Query = GetDefaultQuery(Query);
+                resultados = (Paginado<Activo>)await this.repo.ObtenerPaginadoAsync(Query);
             }
-            Query = GetDefaultQuery(Query);
-            var resultados = await this.repo.ObtenerPaginadoAsync(Query);
+
+
             List<ValorListaOrdenada> l = resultados.Elementos.Select(x => new ValorListaOrdenada()
             {
                 Id = x.Id,
@@ -718,7 +788,6 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
                     UsuarioId = UsuarioId,
                     Id = Id
                 };
-                Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(item));
                 this.UDT.Context.ActivosSeleccionados.Add(item);
 
 

@@ -162,11 +162,11 @@ namespace PIKA.Identity.Server
         }
 
         private bool ForceHttps(HttpContext cx) {
-            string ProtoHeaders = "X-Forwarded-Proto,X-Url-Scheme,X-Scheme,X-Forwarded-Ssl,Front-End-Https";
+            string ProtoHeaders = "X-Forwarded-Proto,X-Url-Scheme,X-Scheme,X-Forwarded-Ssl,Front-End-Https,X-Forwarded-Scheme";
 
             foreach(var h in cx.Request.Headers.ToList())
             {
-                if(ProtoHeaders.Contains(h.Key, StringComparison.InvariantCultureIgnoreCase))
+                if (ProtoHeaders.Contains(h.Key, StringComparison.InvariantCultureIgnoreCase))
                 {
                     if(h.Value == "on" || h.Value == "https")
                     {
@@ -174,7 +174,6 @@ namespace PIKA.Identity.Server
                     } 
                 }
             }
-
             return false;
         }
 
@@ -188,7 +187,7 @@ namespace PIKA.Identity.Server
                     if (!string.IsNullOrEmpty(Configuration["PublicBaseURL"]))
                     {
                         if (
-                        (ctx.Request.PathBase.Value.IndexOf(Configuration["PublicBaseURL"]) < 0)
+                           (ctx.Request.PathBase.Value.IndexOf(Configuration["PublicBaseURL"]) < 0)
                         && (ctx.Request.Path.Value.IndexOf(Configuration["PublicBaseURL"]) < 0))
                         {
                             if (ForceHttps(ctx) || (Configuration["esquema"] == "https"))

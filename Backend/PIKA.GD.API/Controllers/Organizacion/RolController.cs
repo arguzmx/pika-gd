@@ -208,10 +208,7 @@ namespace PIKA.GD.API.Controllers.Organizacion
                 ValorString = this.DominioId
             });
 
-            Console.WriteLine(
-            System.Text.Json.JsonSerializer.Serialize(query.Filtros)
-            );
-
+            
             var data = await servicioRol.ObtenerParesAsync(query)
                 .ConfigureAwait(false);
 

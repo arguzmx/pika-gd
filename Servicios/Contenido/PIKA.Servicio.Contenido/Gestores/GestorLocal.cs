@@ -646,7 +646,6 @@ namespace PIKA.Servicio.Contenido.Gestores
 
         public Task EliminaBytes(string ElementoId, string ParteId, string VersionId, string VolumenId, string Extension)
         {
-            Console.WriteLine($"{this.configGestor.Ruta} : {ElementoId} : {VersionId} ");
             List<string> archivos = new List<string>();
             string ruta = Path.Combine(this.configGestor.Ruta, ElementoId, VersionId);
             string nombreArchivo = ParteId + Extension.ToUpper();

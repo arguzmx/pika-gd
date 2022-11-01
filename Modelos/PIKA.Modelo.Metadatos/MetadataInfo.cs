@@ -18,6 +18,7 @@ namespace PIKA.Modelo.Metadatos
             EntidadesVinculadas = new List<EntidadVinculada>();
             CatalogosVinculados = new List<CatalogoVinculado>();
             VistasVinculadas = new List<LinkVista>();
+            Menus = new List<Menu>();
         }
 
 
@@ -27,6 +28,10 @@ namespace PIKA.Modelo.Metadatos
         public string TokenApp { get; set; }
         public string TokenMod { get; set; }
 
+        /// <summary>
+        /// Determina si exist ela opción eliminar todo para la entidad
+        /// </summary>
+        public virtual bool PermiteEliminarTodo { get; set; }
 
         /// <summary>
         /// Tipo de elemento basado en el nombre del ensamblado
@@ -89,7 +94,12 @@ namespace PIKA.Modelo.Metadatos
         /// Dtermina  si ela entidad acepta comandos para Cambios
         /// </summary>
         public bool PermiteCambios { get; set; }
-  
+
+        /// <summary>
+        /// Determina si la entidad permite la búsqueda de elementos en base a texto 
+        /// </summary>
+        public bool BuscarPorTexto { get; set; }
+
         public  TipoSeguridad TipoSeguridad { get; set; }
   
         public virtual List<Propiedad> Propiedades { get; set; }
@@ -99,6 +109,8 @@ namespace PIKA.Modelo.Metadatos
         public virtual List<CatalogoVinculado> CatalogosVinculados { get; set; }
 
         public virtual List<LinkVista> VistasVinculadas { get; set; }
+
+        public virtual List<Menu> Menus { get; set; }
         
         public ICollection<IProveedorReporte> Reportes { get; set; }
     }

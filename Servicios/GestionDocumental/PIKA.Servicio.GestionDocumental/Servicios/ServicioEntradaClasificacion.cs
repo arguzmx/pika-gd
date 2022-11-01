@@ -396,8 +396,20 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 }
             }
 
-            var r = await this.UDT.Context.EntradaClasificacion.Where(x => x.Eliminada == false && (x.Nombre.Contains(buscado) || x.Clave.Contains(buscado))).ToListAsync();
+            List<EntradaClasificacion> r;
+            var cc = Query.Filtros.Where(x => x.Propiedad.Equals( "CuadroClasificacionId", StringComparison.InvariantCultureIgnoreCase)).SingleOrDefault();
+            if (cc != null)
+            {
+                r = await this.UDT.Context.EntradaClasificacion.Where(x => x.CuadroClasifiacionId == cc.Valor &&  x.Eliminada == false && (x.Nombre.Contains(buscado) || x.Clave.Contains(buscado))).ToListAsync();
 
+            }
+            else
+            {
+                r = await this.UDT.Context.EntradaClasificacion.Where(x => x.Eliminada == false && (x.Nombre.Contains(buscado) || x.Clave.Contains(buscado))).ToListAsync();
+            }
+
+
+            
             List<ValorListaOrdenada> l = r.Select(x => new ValorListaOrdenada()
             {
                 Id = x.Id,

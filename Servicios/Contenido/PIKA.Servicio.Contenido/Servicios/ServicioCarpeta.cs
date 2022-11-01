@@ -337,7 +337,6 @@ namespace PIKA.Servicio.Contenido.Servicios
         }
         public async Task<List<Carpeta>> ObtenerRaicesAsync(string JerquiaId)
         {
-            Console.WriteLine(JerquiaId);
             var l = await this.repo.ObtenerAsync(x => x.PuntoMontajeId == JerquiaId
             && x.EsRaiz == true && x.Eliminada == false);
             return l.ToList().OrderBy(x => x.NombreJerarquico).ToList();

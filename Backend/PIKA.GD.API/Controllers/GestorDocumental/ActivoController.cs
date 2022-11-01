@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -143,6 +144,22 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
                 Query: query,
                 include: null)
                 .ConfigureAwait(false);
+
+            return Ok(data);
+        }
+
+        [HttpGet("page/archivo/{Id}/texto/{texto}", Name = "GetPageActivoArchivoPorTexto")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        public async Task<ActionResult<Paginado<Activo>>> GetPageActivoArchivoPorTexto(string Id, string texto, [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        {
+            query.Filtros.Add(new FiltroConsulta()
+            {
+                Operador = FiltroConsulta.OP_EQ,
+                Propiedad = "ArchivoId",
+                Valor = Id
+            });
+            
+            var data = await servicioActivo.ObtenerPaginadoAsync(WebUtility.UrlDecode(texto), Query: query, include: null).ConfigureAwait(false);
 
             return Ok(data);
         }
@@ -388,7 +405,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> CreaActivoSeleccionadoLista(string temaid, [FromBody] ListaStringIds lista)
         {
-            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(lista));
             await servicioActivo.CrearSeleccion(lista.Ids, temaid, this.GetUserId());
             return Ok();
         }
@@ -432,8 +448,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         public async Task<ActionResult<List<ValorListaOrdenada>>> GetParesActivos(
 [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
         {
-            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(query, new System.Text.Json.JsonSerializerOptions()
-            { WriteIndented = true }));
             var data = await servicioActivo.ObtenerParesAsync(query)
                 .ConfigureAwait(false);
 

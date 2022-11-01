@@ -35,5 +35,15 @@ namespace PIKA.Modelo.Metadatos
         {
             get; set;
         }
+
+        public virtual string MenuId
+        {
+            get; set;
+        }
+
+        public virtual int MenuIndex
+        {
+            get; set;
+        }
     }
 }

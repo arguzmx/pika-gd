@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.GestionDocumental.Interfaces
 {
-    public interface IServicioCuadroClasificacion: IServicioRepositorioAsync<CuadroClasificacion, string>
+    public interface IServicioCuadroClasificacion: IServicioRepositorioAsync<CuadroClasificacion, string>,
+          IServicioValorTextoAsync<CuadroClasificacion>
     {
         Task<byte[]> ExportarCuadroCalsificacionExcel(string CuadroClasificacionId);
         Task<string[]> Purgar();

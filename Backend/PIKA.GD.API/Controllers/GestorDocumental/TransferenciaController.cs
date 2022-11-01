@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +13,7 @@ using PIKA.GD.API.Model;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.GestionDocumental.Interfaces;
+using PIKA.Servicio.GestionDocumental.Servicios;
 using RepositorioEntidades;
 
 namespace PIKA.GD.API.Controllers.GestorDocumental
@@ -33,6 +35,25 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             this.servicioTransferencia = servicioTransferencia;
             this.metadataProvider = metadataProvider;
         }
+
+
+        //http://localhost:5000/api/v1.0/gd/transferencia/page/archivo/c3b72639-b060-4632-bead-12079a5b3aa4/texto/002?i=0&t=10&ordc=&ordd=&idcache=
+        [HttpGet("page/archivo/{Id}/texto/{texto}", Name = "GetPageTransferenciaPorTexto")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        public async Task<ActionResult<Paginado<Activo>>> GetPageTransferenciaPorTexto(string Id, string texto, [ModelBinder(typeof(GenericDataPageModelBinder))][FromQuery] Consulta query = null)
+        {
+            query.Filtros.Add(new FiltroConsulta()
+            {
+                Operador = FiltroConsulta.OP_EQ,
+                Propiedad = "ArchivoId",
+                Valor = Id
+            });
+
+            var data = await servicioTransferencia.ObtenerPaginadoAsync(WebUtility.UrlDecode(texto), Query: query, include: null).ConfigureAwait(false);
+
+            return Ok(data);
+        }
+
 
         /// <summary>
         /// Obtiene los metadatos relacionados con la 
@@ -58,11 +79,35 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
 
-        public async Task<ActionResult<Transferencia>> Post([FromBody]Transferencia entidad)
+        public async Task<ActionResult<Transferencia>> Post([FromBody] Transferencia entidad)
         {
-            entidad = await servicioTransferencia.CrearAsync(entidad).ConfigureAwait(false);
+            servicioTransferencia.usuario = this.usuario;
+
+            entidad.UsuarioId = this.UsuarioId;
+            entidad.EstadoTransferenciaId = EstadoTransferencia.ESTADO_NUEVA;
+            entidad.FechaCreacion = DateTime.UtcNow;
+            entidad.CantidadActivos = 0;
+            if (string.IsNullOrEmpty(entidad.TemaId))
+            {
+                entidad = await servicioTransferencia.CrearAsync(entidad).ConfigureAwait(false);
+
+            } else
+            {
+                entidad = await servicioTransferencia.CrearDesdeTemaAsync(entidad, entidad.TemaId, entidad.EliminarTema).ConfigureAwait(false);
+            }
             return Ok(CreatedAtAction("GetTransferencia", new { id = entidad.Id.Trim() }, entidad).Value);
         }
+
+        [HttpPost("webcommand/{command}")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
+        public async Task<ActionResult<RespuestaComandoWeb>> Post(string command, [FromBody] object payload)
+        {
+            servicioTransferencia.usuario = this.usuario;
+            RespuestaComandoWeb r = await servicioTransferencia.ComandoWeb(command, payload).ConfigureAwait(false);
+            return Ok(r);
+        }
+
+
         /// <summary>
         /// Actualiza unq entidad Transferencia,
         /// el Id debe incluirse en el Querystring así como en 
@@ -79,8 +124,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Put(string id, [FromBody]Transferencia entidad)
         {
-            var x = ObtieneFiltrosIdentidad();
-
+            servicioTransferencia.usuario = this.usuario;
 
             if (id.Trim() != entidad.Id.Trim())
             {
@@ -98,11 +142,13 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         /// <param name="query">Consulta para la paginación y búsqueda</param>
         /// <returns></returns>
 
-        [HttpGet("page", Name = "GetPageTransferencia")]
+        [HttpGet("page/archivo/{id}", Name = "GetPageTransferencia")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<Transferencia>>> GetPage([FromQuery] Consulta query = null)
+        public async Task<ActionResult<IEnumerable<Transferencia>>> GetPage(string id, [FromQuery] Consulta query = null)
         {
+            servicioTransferencia.usuario = this.usuario;
+            query.Filtros.Add(new FiltroConsulta() { Operador = "eq", Propiedad = "ArchivoOrigenId", Valor = id });
             var data = await servicioTransferencia.ObtenerPaginadoAsync(
                     Query: query,
                     include: null)
@@ -122,6 +168,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         public async Task<ActionResult<Transferencia>> Get(string id)
         {
+            servicioTransferencia.usuario = this.usuario;
             var o = await servicioTransferencia.UnicoAsync(x => x.Id.Trim() == id.Trim()).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
@@ -136,6 +183,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Transferencia>> GetReporte(string TransferenciaId,string? columnas)
         {
+            servicioTransferencia.usuario = this.usuario;
             string[] Cols;
             if (!String.IsNullOrEmpty(columnas))
                Cols = columnas.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray();
@@ -155,6 +203,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete(string ids)
         {
+            servicioTransferencia.usuario = this.usuario;
             string IdsTrim = "";
             foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
             {

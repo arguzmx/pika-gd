@@ -87,8 +87,7 @@ namespace PIKA.Servicio.Contenido.ElasticSearch
                 body = ES.PostData.String("{\"properties\": {\"ocr_f\": {\"type\":\"date\" }}}");
                 r = cliente.LowLevel.Indices.PutMapping<PutMappingResponse>(INDICEVERSIONES, body);
 
-                Console.WriteLine($"{r.Acknowledged}");
-
+                
                 logger.LogInformation($"Repositorio de contenido configurado");
             }
 

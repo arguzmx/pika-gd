@@ -9,7 +9,8 @@ namespace PIKA.Modelo.Metadatos
         Vista = 0,
         Comando = 1,
         EventoApp = 2,
-        WebCommand = 3
+        WebCommand = 3,
+        WebFilter = 4
     }
 
 
@@ -22,6 +23,8 @@ namespace PIKA.Modelo.Metadatos
         private string _Titulo;
         private bool _RequireSeleccion;
         private string _Condicion;
+        private string _MenuId;
+        private int _MenuIndex;
 
         /// <summary>
         /// Vínculo a vista en el frontend
@@ -29,7 +32,7 @@ namespace PIKA.Modelo.Metadatos
         /// <param name="Vista">id único de lavista</param>
         /// <param name="Icono">icono de la librería material</param>
         /// <param name="Titulo">titulo o id de traducción</param>
-        public LinkViewAttribute(string Vista, string Icono, string Titulo, bool RequireSeleccion = true, TipoVista Tipo = TipoVista.Vista, string Condicion = "")
+        public LinkViewAttribute(string Vista, string Icono, string Titulo, bool RequireSeleccion = true, TipoVista Tipo = TipoVista.Vista, string Condicion = "", string MenuId = null, int menuIndex = 0)
         {
             this._Vista = Vista;
             this._Icono = Icono;
@@ -37,6 +40,24 @@ namespace PIKA.Modelo.Metadatos
             this._RequireSeleccion = RequireSeleccion;
             this._TipoVista = Tipo;
             this._Condicion = Condicion;
+            _MenuId = MenuId;
+            _MenuIndex = menuIndex;
+        }
+
+        /// <summary>
+        /// POsición del elemento en el menú
+        /// </summary>
+        public virtual int MenuIndex
+        {
+            get { return _MenuIndex; }
+        }
+
+        /// <summary>
+        /// Identificador único del menú al que pertenece la opcion
+        /// </summary>
+        public virtual string MenuId
+        {
+            get { return _MenuId; }
         }
 
         public virtual string Condicion

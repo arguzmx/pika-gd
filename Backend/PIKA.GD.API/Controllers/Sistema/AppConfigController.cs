@@ -1,25 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using LazyCache;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.Constantes.Aplicaciones.Organizacion;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
-using PIKA.Infraestructura.Comun;
-using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.GD.API.Servicios.Registro;
 using PIKA.Modelo.Organizacion.Estructura;
-using PIKA.Servicio.AplicacionPlugin;
-using PIKA.Servicio.AplicacionPlugin.Interfaces;
 using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Organizacion;
-using PIKA.Servicio.Seguridad.Interfaces;
-using RepositorioEntidades;
 
 namespace PIKA.GD.API.Controllers.Sistema
 {
@@ -33,19 +26,69 @@ namespace PIKA.GD.API.Controllers.Sistema
         private readonly IAppCache appCache;
         private ILogger<AppConfigController> logger;
         private IServicioDominio servDominio;
-        IRepoContenidoElasticSearch repoContenido;
+        private IRepoContenidoElasticSearch repoContenido;
+        private IRegistroPIKA registroPIKA;
 
         public AppConfigController(
             ILogger<AppConfigController> logger,
             IAppCache appCache,
+            IRegistroPIKA registroPIKA,
             IServicioDominio servDominio,
             IRepoContenidoElasticSearch repoContenido)
         {
+            this.registroPIKA = registroPIKA;
             this.logger = logger;
             this.servDominio = servDominio;
             this.appCache = appCache;
             this.repoContenido = repoContenido;
         }
+
+        [HttpGet("fingerprint")]
+        [AllowAnonymous]
+        public async Task<ActionResult<string>> ObtenerFingerprint()
+        {
+            var fp = await this.registroPIKA.ObtenerFingerprint();
+            return Ok(fp);
+        }
+
+        [HttpGet("activado")]
+        [AllowAnonymous]
+        public async Task<ActionResult<bool>> AplicacionActivada()
+        {
+            var valida = await this.registroPIKA.LicenciaValida();
+            return Ok(valida);
+        }
+
+
+        [HttpPost("activar")]
+        [AllowAnonymous]
+        public async Task<ActionResult> ActivarAplicacion()
+        {
+            string mylic = "";
+            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
+            {
+                mylic = await reader.ReadToEndAsync();
+            }
+
+            var valida = await this.registroPIKA.LicenciaValida();
+            if(!valida)
+            {
+                var resultado = await this.registroPIKA.ActivarLicencia(mylic);
+                if (resultado)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            } else
+            {
+                return Ok();
+            }
+        }
+
+
 
         [HttpGet("estadoocr", Name = "ObtieneEstadoOCR")]
         [TypeFilter(typeof(AsyncACLActionFilter),
