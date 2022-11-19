@@ -23,6 +23,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
+using PIKA.Infraestructura.Comun.Seguridad;
 
 namespace PIKA.Servicio.GestionDocumental.Servicios
 {
@@ -39,11 +40,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
-        public ServicioArchivo(
+        public ServicioArchivo(IRegistroAuditoria registroAuditoria,
             IServicioReporteEntidad ServicioReporteEntidad,
             IOptions<ConfiguracionServidor> Config,
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-            ILogger<ServicioLog> Logger) : base(proveedorOpciones, Logger)
+            ILogger<ServicioLog> Logger) : base(registroAuditoria, proveedorOpciones, Logger)
         {
             this.ServicioReporteEntidad = ServicioReporteEntidad;
             this.Config = Config;

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using PIKA.Constantes.Aplicaciones.Seguridad;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 using PIKA.Modelo.Seguridad;
 
 namespace PIKA.Servicio.Seguridad
 {
     public class AplicacionSeguridad : InformacionAplicacionBase, IInformacionAplicacion
     {
-        
         public override Aplicacion Info()
         {
             Aplicacion a = AplicacionRaiz.ObtieneAplicacionRaiz();
@@ -49,11 +49,21 @@ namespace PIKA.Servicio.Seguridad
                         typeof(TipoAdministradorModulo),
                         typeof(TraduccionAplicacionModulo)
                     }
-                }
+                },
+                new ElementoAplicacion(ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_AUDITORIA) {
+                    Titulo = "Bitácoras del sistema",
+                    Descripcion = "Permite la consulta de la bitácora de auditoria",
+                    Tipos = new List<Type> { typeof(EventoAuditoria) }
+                },
+                new ElementoAplicacion(ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_CONFIG_AUDITORIA) {
+                    Titulo = "Configuración de auditoría",
+                    Descripcion = "Permite definir configuración de los eventos de auditoría a registrar",
+                    Tipos = new List<Type> { typeof(EventoAuditoriaActivo) }
+                },
             };
             return m;
         }
-       
+
     }
 
 }

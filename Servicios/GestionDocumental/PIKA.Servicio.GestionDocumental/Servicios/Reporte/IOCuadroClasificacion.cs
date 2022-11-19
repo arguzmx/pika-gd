@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
@@ -33,8 +34,8 @@ namespace PIKA.Servicio.GestionDocumental
         private IRepositorioAsync<TipoValoracionDocumental> repoTVD;
         private IRepositorioAsync<ValoracionEntradaClasificacion> repoTV;
         private IRepositorioAsync<ElementoClasificacion> RepoElemento;
-        public IOCuadroClasificacion(ILogger<ServicioLog> Logger, IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones) 
-            : base(proveedorOpciones, Logger)
+        public IOCuadroClasificacion(IRegistroAuditoria regisstroAuditoria, ILogger<ServicioLog> Logger, IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones) 
+            : base(regisstroAuditoria, proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<CuadroClasificacion>(new QueryComposer<CuadroClasificacion>());

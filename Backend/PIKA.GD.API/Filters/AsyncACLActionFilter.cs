@@ -143,7 +143,7 @@ namespace PIKA.GD.API.Filters
                     string Method = context.HttpContext.Request.Method;
                     allow = await SecurityCache.AllowMethod(UserId, DomainId, AppId, ModuleId, Method).ConfigureAwait(false);
 
-                    // Console.WriteLine($"-------------------------------> + {allow}");
+
                     if (allow)
                     {
                         ((ACLController)context.Controller).Roles = new List<string>();
@@ -185,6 +185,20 @@ namespace PIKA.GD.API.Filters
                         var u = ObtieneUsuarioAPI(UserId, ((ACLController)context.Controller).Roles, ((ACLController)context.Controller).AdminGlobal, ((ACLController)context.Controller).Accesos);
                         u.gmtOffset = context.HttpContext.Request.Headers.Any(x=>x.Key== "gmtoffset") ?  int.Parse(context.HttpContext.Request.Headers.First(x => x.Key == "gmtoffset").Value) * -1 : 0;
                         ((ACLController)context.Controller).usuario = u;
+                        Console.WriteLine(
+                        System.Text.Json.JsonSerializer.Serialize(u));
+                        ContextoRegistroActividad a = new ContextoRegistroActividad()
+                        {
+                            DominioId = DomainId,
+                            UnidadOrgId = UOid,
+                            DireccionInternet = context.HttpContext.Connection.RemoteIpAddress.ToString(),
+                            FechaUTC = DateTime.UtcNow,
+                            IdConexion = context.HttpContext.Connection.Id,
+                            UsuarioId = UserId
+                        };
+
+                        ((ACLController)context.Controller).contextoRegistro = a;
+
 
                         await SecurityCache.DatosUsuarioSet(u).ConfigureAwait(false);
 

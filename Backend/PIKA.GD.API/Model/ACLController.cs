@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
 using PIKA.GD.API.Model;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Seguridad;
@@ -35,8 +36,7 @@ namespace PIKA.GD.API
         public List<string> Accesos { get; set; }
         public bool AdminGlobal { get; set; }
         public UsuarioAPI usuario { get; set; }
-
-
+        public ContextoRegistroActividad contextoRegistro { get; set; }
         public List<string> Universos
         {
             get
@@ -51,6 +51,23 @@ namespace PIKA.GD.API
                 return us;
             }
         }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [NonAction]
+        public void EstableceContextoSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad)
+        {
+            this.usuario = usuario;
+            this.contextoRegistro = RegistroActividad;
+            EmiteConfiguracionSeguridad(usuario, RegistroActividad);
+        }
+
+        [OpenApiIgnore]
+        [NonAction]
+        public virtual void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad)
+        {
+
+        }
+
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [NonAction]

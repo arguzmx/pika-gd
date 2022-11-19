@@ -31,6 +31,7 @@ namespace PIKA.Servicio.Contenido.Servicios
         private UnidadDeTrabajo<DbContextContenido> UDT;
         public UsuarioAPI usuario { get; set; }
         public PermisoAplicacion permisos { get; set; }
+        public ContextoRegistroActividad RegistroActividad { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public ServicioPuntoMontaje(
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
@@ -467,7 +468,12 @@ namespace PIKA.Servicio.Contenido.Servicios
             throw new NotImplementedException();
         }
 
-       
+        public void EstableceContextoSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad)
+        {
+            throw new NotImplementedException();
+        }
+
+
 
 
 

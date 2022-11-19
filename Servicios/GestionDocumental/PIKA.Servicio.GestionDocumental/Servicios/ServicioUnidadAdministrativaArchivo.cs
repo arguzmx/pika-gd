@@ -42,12 +42,14 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public UsuarioAPI usuario { get; set; }
         public PermisoAplicacion permisos { get ; set ; }
+        public ContextoRegistroActividad RegistroActividad { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public ServicioUnidadAdministrativaArchivo(
+            IRegistroAuditoria registroAuditoria,
             IServicioReporteEntidad ServicioReporteEntidad,
             IOptions<ConfiguracionServidor> Config,
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-            ILogger<ServicioLog> Logger) : base(proveedorOpciones, Logger)
+            ILogger<ServicioLog> Logger) : base(registroAuditoria, proveedorOpciones, Logger)
         {
             this.ServicioReporteEntidad = ServicioReporteEntidad;
             this.Config = Config;
@@ -445,6 +447,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
 
         public Task<IEnumerable<string>> Restaurar(string[] ids)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void EstableceContextoSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad)
         {
             throw new NotImplementedException();
         }

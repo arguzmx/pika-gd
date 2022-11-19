@@ -40,11 +40,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
-        public ServicioPermisosUnidadAdministrativaArchivo(
+        public ServicioPermisosUnidadAdministrativaArchivo(IRegistroAuditoria registroAuditoria,
             IServicioReporteEntidad ServicioReporteEntidad,
             IOptions<ConfiguracionServidor> Config,
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-            ILogger<ServicioLog> Logger) : base(proveedorOpciones, Logger)
+            ILogger<ServicioLog> Logger) : base(registroAuditoria, proveedorOpciones, Logger)
         {
             this.ServicioReporteEntidad = ServicioReporteEntidad;
             this.Config = Config;

@@ -1,14 +1,18 @@
 ﻿
+using DocumentFormat.OpenXml.Bibliography;
+using FluentValidation.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json.Linq;
+using PIKA.Constantes.Aplicaciones.GestorDocumental;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
@@ -28,6 +32,46 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
     public class ServicioTransferencia : ContextoServicioGestionDocumental,
         IServicioInyectable, IServicioTransferencia
     {
+
+        public enum EventosAuditables { 
+            CrearTransferencia=1
+        }
+
+        public static List<TipoEventoAuditoria> EventosAuditoria()
+        {
+            return new List<TipoEventoAuditoria>()
+                     {
+                         new TipoEventoAuditoria() {
+                             TipoEvento = (int)EventosAuditables.CrearTransferencia,
+                             Desripción ="Creación de trasnsferecias",
+                             PlantillaEvento = "Trasnferencia {{Nombre}}"
+                         },
+                     };
+        }
+
+
+        public ServicioTransferencia(
+    IRegistroAuditoria registroAuditoria,
+    IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
+    ILogger<ServicioLog> Logger,
+    IOptions<ConfiguracionServidor> Config) : base(registroAuditoria, proveedorOpciones, Logger )
+        {
+
+            this.ConfiguracionServidor = Config.Value;
+            this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
+            this.repo = UDT.ObtenerRepositoryAsync<Transferencia>(new QueryComposer<Transferencia>());
+            this.repoET = UDT.ObtenerRepositoryAsync<EstadoTransferencia>(new QueryComposer<EstadoTransferencia>());
+            this.repoA = UDT.ObtenerRepositoryAsync<Archivo>(new QueryComposer<Archivo>());
+            this.ioT = new IOTransferencia(registroAuditoria, Logger, proveedorOpciones);
+
+        }
+
+
+        public Task<Transferencia> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
+
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
@@ -38,23 +82,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private readonly ConfiguracionServidor ConfiguracionServidor;
         private IOTransferencia ioT;
         private ILogger<ServicioCuadroClasificacion> LoggerCC;
-
-        public UsuarioAPI usuario { get; set; }
-        public PermisoAplicacion permisos { get; set; }
-
-        public ServicioTransferencia(
-            IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-            ILogger<ServicioLog> Logger,
-            IOptions<ConfiguracionServidor> Config) : base(proveedorOpciones, Logger)
-        {
-            this.ConfiguracionServidor = Config.Value;
-            this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
-            this.repo = UDT.ObtenerRepositoryAsync<Transferencia>(new QueryComposer<Transferencia>());
-            this.repoET = UDT.ObtenerRepositoryAsync<EstadoTransferencia>(new QueryComposer<EstadoTransferencia>());
-            this.repoA = UDT.ObtenerRepositoryAsync<Archivo>(new QueryComposer<Archivo>());
-            this.ioT = new IOTransferencia(Logger, proveedorOpciones);
-
-        }
 
         public async Task<RespuestaComandoWeb> ComandoWeb(string command, object payload)
         {
@@ -105,6 +132,15 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
 
 
+        /// <summary>
+        /// Obtiene una pagina de trasnferencias
+           /// </summary>
+        /// <param name="Texto"></param>
+        /// <param name="Query"></param>
+        /// <param name="include"></param>
+        /// <param name="disableTracking"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<IPaginado<Transferencia>> ObtenerPaginadoAsync(string Texto, Consulta Query, Func<IQueryable<Transferencia>, IIncludableQueryable<Transferencia, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
 
@@ -503,10 +539,6 @@ Id IN (SELECT ActivoId FROM {DBContextGestionDocumental.TablaActivosTransferenci
             throw new NotImplementedException();
         }
 
-        public Task<Transferencia> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task EstadoTrasnferencia(string TransferenciaId, string EstadoId)
         {
@@ -621,8 +653,6 @@ Id IN (SELECT ActivoId FROM {DBContextGestionDocumental.TablaActivosTransferenci
             this.UDT.Context.AdicionaEventoTransferencia(tx.Id, tx.EstadoTransferenciaId, usuario.Id);
 
         }
-
-
 
 
         #endregion

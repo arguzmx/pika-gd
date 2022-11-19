@@ -8,6 +8,7 @@ using PIKA.Infraestrctura.Reportes;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.GestorDocumental.Reportes.JSON;
@@ -38,10 +39,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IServicioReporteEntidad ServicioReporteEntidad;
         private IOptions<ConfiguracionServidor> Config;
 
-        public ServicioContenedorAlmacen(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
+        public ServicioContenedorAlmacen(IRegistroAuditoria registroAuditoria, IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
             IOptions<ConfiguracionServidor> Config,
             IServicioReporteEntidad ServicioReporteEntidad,
-            ILogger<ServicioLog> Logger) : base(proveedorOpciones, Logger)
+            ILogger<ServicioLog> Logger) : base(registroAuditoria, proveedorOpciones, Logger)
         {
             this.Config = Config;
             this.ServicioReporteEntidad = ServicioReporteEntidad;

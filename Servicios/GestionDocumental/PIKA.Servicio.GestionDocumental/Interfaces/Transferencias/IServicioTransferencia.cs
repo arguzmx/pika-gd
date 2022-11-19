@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using PIKA.Infraestructura.Comun;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 
 namespace PIKA.Servicio.GestionDocumental.Interfaces
 {

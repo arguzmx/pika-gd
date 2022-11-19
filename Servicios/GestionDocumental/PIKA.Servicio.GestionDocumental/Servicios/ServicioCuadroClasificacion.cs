@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
@@ -37,17 +38,17 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private ILogger<ServicioEntradaClasificacion> LoggerEntrada;
         IOptions<ConfiguracionServidor> Config;
 
-        public ServicioCuadroClasificacion(
+        public ServicioCuadroClasificacion(IRegistroAuditoria registroAuditoria,
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
            ILogger<ServicioLog> Logger,
            IOptions<ConfiguracionServidor> Config
-           ) : base(proveedorOpciones, Logger)
+           ) : base(registroAuditoria, proveedorOpciones, Logger)
         {
             this.ConfiguracionServidor = Config.Value;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<CuadroClasificacion>(new QueryComposer<CuadroClasificacion>());
             this.repoec = UDT.ObtenerRepositoryAsync<EstadoCuadroClasificacion>(new QueryComposer<EstadoCuadroClasificacion>());
-            this.ioCuadroClasificacion = new IOCuadroClasificacion(Logger, proveedorOpciones);
+            this.ioCuadroClasificacion = new IOCuadroClasificacion(registroAuditoria, Logger, proveedorOpciones);
             this.Config = Config;
         }
 
@@ -205,18 +206,18 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<byte[]> ExportarCuadroCalsificacionExcel(string CuadroClasificacionId)
         {
-            IOCuadroClasificacion iocuadro = new IOCuadroClasificacion(this.logger, this.proveedorOpciones);
+            IOCuadroClasificacion iocuadro = new IOCuadroClasificacion(this.registroAuditoria, this.logger, this.proveedorOpciones);
 
             return await iocuadro.ExportarCuadroCalsificacionExcel(CuadroClasificacionId, ConfiguracionServidor.ruta_cache_fisico, ConfiguracionServidor.separador_ruta);
         }
 
         public async Task<string[]> Purgar()
         {
-                        ServicioElementoClasificacion sec = new ServicioElementoClasificacion(this.proveedorOpciones, this.logger, Config);
+                        ServicioElementoClasificacion sec = new ServicioElementoClasificacion(this.registroAuditoria, this.proveedorOpciones, this.logger, Config);
 
-            ServicioEntradaClasificacion se = new ServicioEntradaClasificacion(this.proveedorOpciones, this.logger, Config);
+            ServicioEntradaClasificacion se = new ServicioEntradaClasificacion(this.registroAuditoria, this.proveedorOpciones, this.logger, Config);
 
-            ServicioEstadisticaClasificacionAcervo seca = new ServicioEstadisticaClasificacionAcervo(this.proveedorOpciones,Config, this.logger);
+            ServicioEstadisticaClasificacionAcervo seca = new ServicioEstadisticaClasificacionAcervo(this.registroAuditoria, this.proveedorOpciones,Config, this.logger);
 
             List<CuadroClasificacion> ListaCuadroClasificacions = await this.repo.ObtenerAsync(x => x.Eliminada == true).ConfigureAwait(false);
             if (ListaCuadroClasificacions.Count > 0)

@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
@@ -47,10 +48,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
         IOptions<ConfiguracionServidor> Config;
 
-        public ServicioEntradaClasificacion(
+        public ServicioEntradaClasificacion(IRegistroAuditoria registroAuditoria,
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
            ILogger<ServicioLog> Logger, IOptions<ConfiguracionServidor> Config
-           ) : base(proveedorOpciones, Logger)
+           ) : base(registroAuditoria, proveedorOpciones, Logger)
         {
             this.ConfiguracionServidor = Config.Value;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
@@ -60,7 +61,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             this.repoTD = UDT.ObtenerRepositoryAsync<TipoDisposicionDocumental>(new QueryComposer<TipoDisposicionDocumental>());
             this.repoTEC = UDT.ObtenerRepositoryAsync<TipoValoracionDocumental>(new QueryComposer<TipoValoracionDocumental>());
             this.repoCC = UDT.ObtenerRepositoryAsync<CuadroClasificacion>(new QueryComposer<CuadroClasificacion>());
-            this.ioCuadroClasificacion = new IOCuadroClasificacion(this.logger, proveedorOpciones);
+            this.ioCuadroClasificacion = new IOCuadroClasificacion(this.registroAuditoria, this.logger, proveedorOpciones);
             this.Config = Config;
         }
         public async Task<bool> Existe(Expression<Func<EntradaClasificacion, bool>> predicado)

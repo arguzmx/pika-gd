@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
@@ -25,10 +26,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private readonly ConfiguracionServidor configuracion;
         public ServicioEstadisticaClasificacionAcervo
             (
+            IRegistroAuditoria registroAuditoria,
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
             IOptions<ConfiguracionServidor> Confi,
             ILogger<ServicioLog> l)
-            : base(proveedorOpciones, l)
+            : base(registroAuditoria, proveedorOpciones, l)
         {
             this.configuracion = Confi.Value;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);

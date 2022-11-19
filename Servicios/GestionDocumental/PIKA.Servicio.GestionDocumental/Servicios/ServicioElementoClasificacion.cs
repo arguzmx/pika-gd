@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
@@ -41,8 +42,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IOCuadroClasificacion ioCuadroClasificacion;
         IOptions<ConfiguracionServidor> Config;
 
-        public ServicioElementoClasificacion(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-           ILogger<ServicioLog> Logger, IOptions<ConfiguracionServidor> Config) : base(proveedorOpciones, Logger)
+        public ServicioElementoClasificacion(IRegistroAuditoria registroAuditoria, IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
+           ILogger<ServicioLog> Logger, IOptions<ConfiguracionServidor> Config) : base(registroAuditoria, proveedorOpciones, Logger)
         {
             this.ConfiguracionServidor = Config.Value;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
@@ -52,7 +53,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             this.repoTA = UDT.ObtenerRepositoryAsync<TipoArchivo>(new QueryComposer<TipoArchivo>());
             this.repoTD = UDT.ObtenerRepositoryAsync<TipoDisposicionDocumental>(new QueryComposer<TipoDisposicionDocumental>());
             this.repoTVD = UDT.ObtenerRepositoryAsync<TipoValoracionDocumental>(new QueryComposer<TipoValoracionDocumental>());
-            this.ioCuadroClasificacion = new IOCuadroClasificacion(this.logger, proveedorOpciones);
+            this.ioCuadroClasificacion = new IOCuadroClasificacion(this.registroAuditoria, this.logger, proveedorOpciones);
             this.Config = Config;
         }
         public async Task<bool> Existe(Expression<Func<ElementoClasificacion, bool>> predicado)
@@ -379,7 +380,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             if (elemento.Count>0) 
             {
 
-                ServicioEntradaClasificacion servicioEntrada = new ServicioEntradaClasificacion(this.proveedorOpciones, this.logger, Config);
+                ServicioEntradaClasificacion servicioEntrada = new ServicioEntradaClasificacion(this.registroAuditoria, this.proveedorOpciones, this.logger, Config);
 
                 List<EntradaClasificacion> ListaEntradas = await servicioEntrada.ObtenerAsync(x=>x.ElementoClasificacionId.Contains(elemento.Select(x=>x.Id).FirstOrDefault())).ConfigureAwait(false);
                 List<ElementoClasificacion> ListaHijos = await this.repo.ObtenerAsync(x=>x.ElementoClasificacionId.Contains(elemento.Select(x=>x.ElementoClasificacionId).FirstOrDefault())).ConfigureAwait(false);

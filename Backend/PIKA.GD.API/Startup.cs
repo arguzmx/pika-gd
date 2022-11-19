@@ -141,7 +141,7 @@ namespace PIKA.GD.API
             services.AddTransient<IServicioPerfilUsuario, ServicioPerfilUsuario>();
             services.AddTransient(typeof(IProveedorMetadatos<>), typeof(ReflectionMetadataExtractor<>));
             services.AddTransient<IServicioBusquedaContenido, ServicioBusquedaContenido>();
-
+            services.AddTransient<IRegistroAuditoria, ServicioEventoAuditoria>();
             services.AddTransient<IServicioInfoAplicacion, ServicioInfoAplicacionReflectivo>();
             services.AddScoped<AsyncACLActionFilter>();
             services.AddScoped<AsyncIdentityFilter>();
@@ -158,8 +158,8 @@ namespace PIKA.GD.API
             //            services.AddDbContext<DbContextContacto>(options => 
             //            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
-            //            services.AddDbContext<DbContextSeguridad>(options =>
-            //            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+            services.AddDbContext<DbContextSeguridad>(options =>
+            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
             //services.AddDbContext<DbContextContenido>(options =>
             //options.UseMySql(Configuration.GetConnectionString("pika-gd")));
@@ -167,8 +167,8 @@ namespace PIKA.GD.API
             //            services.AddDbContext<DbContextReportes>(options =>
             //options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
-            services.AddDbContext<DBContextGestionDocumental>(options =>
-                options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+            //services.AddDbContext<DBContextGestionDocumental>(options =>
+            //    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
 
             //services.AddDbContext<DbContextMetadatos>(options =>

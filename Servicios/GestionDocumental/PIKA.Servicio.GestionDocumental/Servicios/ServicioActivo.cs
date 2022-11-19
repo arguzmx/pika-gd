@@ -11,6 +11,7 @@ using PIKA.Infraestrctura.Reportes;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.GestorDocumental.Reportes.JSON;
@@ -44,12 +45,13 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IServicioReporteEntidad ServicioReporteEntidad;
 
         public ServicioActivo(
+            IRegistroAuditoria regisstroAuditoria,
             IAppCache cache,
             IServicioReporteEntidad ServicioReporteEntidad,
             IServicioEstadisticaClasificacionAcervo servEstadisticas,
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
             ILogger<ServicioLog> Logger, IOptions<ConfiguracionServidor> Config
-           ) : base(proveedorOpciones, Logger)
+           ) : base(regisstroAuditoria, proveedorOpciones, Logger)
         {
             this.ServicioReporteEntidad = ServicioReporteEntidad;
             this.servEstadisticas = servEstadisticas;

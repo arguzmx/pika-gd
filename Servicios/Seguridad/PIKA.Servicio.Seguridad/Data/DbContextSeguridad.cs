@@ -35,11 +35,27 @@ namespace PIKA.Servicio.Seguridad
         {
         }
 
+        public DbContextSeguridad()
+        {
+
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            // optionsBuilder.UseMySql("Server=localhost;Port=3306;Database=pika-ca;Uid=pika;Pwd=Pa$$w0rd;");
+            optionsBuilder.EnableSensitiveDataLogging();
+            base.OnConfiguring(optionsBuilder);
+        }
 
         #region Contantes de configutación
 
         public static string TablaSeguridad= "seguridad$";
+        public static string TablaEventoAuditoria { get => $"{TablaSeguridad}eventosaud"; }
 
+        public static string TablaEventoAuditoriaActivo { get => $"{TablaSeguridad}eventosaudconf"; }
+
+        public static string TablaTipoEventoAuditoria { get => $"{TablaSeguridad}tipoeventosaud"; }
+        
         public static string TablaApplicationUser { get => "AspNetUsers"; }
 
         public static string TablaApplicationUserClaims { get => "AspNetUserClaims"; }
@@ -81,6 +97,9 @@ namespace PIKA.Servicio.Seguridad
 
 
         #endregion
+
+        public DbSet<EventoAuditoria> EventosAuditoria { get; set; }
+
 
 
         /// <summary>
@@ -152,18 +171,20 @@ namespace PIKA.Servicio.Seguridad
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.ApplyConfiguration<Aplicacion>(new DbConfAplicacion());
-            builder.ApplyConfiguration<ValorClaveUsuario>(new DbConfValorClaveUsuario());
-            builder.ApplyConfiguration<PermisoAplicacion>(new DbConfPermisosAplicacion());
-            builder.ApplyConfiguration<ApplicationUser>(new DBConfigApplicationUser());
-            builder.ApplyConfiguration<UsuarioDominio>(new DbConfigUsuariosDominio());
-            builder.ApplyConfiguration<UserClaim>(new DbConfigUserClaims());
-            builder.ApplyConfiguration<Genero>(new DbConfiggeneros());
-            builder.ApplyConfiguration<PropiedadesUsuario>(new DbConfPropiedadesUsuario());
-            builder.ApplyConfiguration<ModuloAplicacion>(new DbConfModuloAplicacion());
-            builder.ApplyConfiguration<TipoAdministradorModulo>(new DbConfTipoAdministradorModulo());
-            builder.ApplyConfiguration<TraduccionAplicacionModulo>(new DbConfTraduccionAplicacionModulo());
-
+            builder.ApplyConfiguration(new DbConfAplicacion());
+            builder.ApplyConfiguration(new DbConfValorClaveUsuario());
+            builder.ApplyConfiguration(new DbConfPermisosAplicacion());
+            builder.ApplyConfiguration(new DBConfigApplicationUser());
+            builder.ApplyConfiguration(new DbConfigUsuariosDominio());
+            builder.ApplyConfiguration(new DbConfigUserClaims());
+            builder.ApplyConfiguration(new DbConfiggeneros());
+            builder.ApplyConfiguration(new DbConfPropiedadesUsuario());
+            builder.ApplyConfiguration(new DbConfModuloAplicacion());
+            builder.ApplyConfiguration(new DbConfTipoAdministradorModulo());
+            builder.ApplyConfiguration(new DbConfTraduccionAplicacionModulo());
+            builder.ApplyConfiguration(new DbConfEventoAuditoria());
+            builder.ApplyConfiguration(new DbConfEventoAuditoriaActivo());
+            builder.ApplyConfiguration(new DbConfTipoEventoAuditoria());
         }
 
     }

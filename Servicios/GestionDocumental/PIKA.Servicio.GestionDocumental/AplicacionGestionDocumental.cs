@@ -1,6 +1,8 @@
 ﻿using PIKA.Constantes.Aplicaciones.GestorDocumental;
 using PIKA.Infraestructura.Comun;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 using PIKA.Modelo.GestorDocumental;
+using PIKA.Servicio.GestionDocumental.Servicios;
 using System;
 using System.Collections.Generic;
 
@@ -8,7 +10,12 @@ namespace PIKA.Servicio.GestionDocumental
 {
     public class AplicacionGestionDocumental : InformacionAplicacionBase, IInformacionAplicacion
     {
-    
+        public List<TipoEventoAuditoria> EventosAuditables()
+        {
+            var l = new List<TipoEventoAuditoria>();
+
+            return l;
+        }
 
         public override Aplicacion Info()
         {
@@ -54,7 +61,7 @@ namespace PIKA.Servicio.GestionDocumental
                     Titulo = "Gestión de archivos",
                     Descripcion = "Permite administrar los archivos para la localización del inventario",
                     Tipos = new List<Type> { typeof(Archivo), typeof(AlmacenArchivo), typeof(PermisosArchivo),
-                        typeof(ZonaAlmacen), typeof(PosicionAlmacen), typeof(ContenedorAlmacen), 
+                        typeof(ZonaAlmacen), typeof(PosicionAlmacen), typeof(ContenedorAlmacen),
                         typeof(ActivoContenedorAlmacen) }
                 },
                 new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_UNIDADESADMIN ) {
@@ -82,7 +89,8 @@ namespace PIKA.Servicio.GestionDocumental
                     Descripcion = "Permite realizar la gestión de las trasnferencias de inventarios entre archivos",
                     Tipos = new List<Type> { typeof(Transferencia), typeof(EventoTransferencia),
                         typeof(ComentarioTransferencia),typeof(ActivoTransferencia),
-                    typeof(HistorialArchivoActivo)}
+                    typeof(HistorialArchivoActivo)},
+                     EventosAuditables = EventosAuditablesModuloTransferencias()
                 },
                 new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_CAT_TRANSFERENCIA ) {
                     Titulo = "Catálogos transferencias",
@@ -98,6 +106,14 @@ namespace PIKA.Servicio.GestionDocumental
               };
             return m;
         }
-       
+
+
+        public static List<TipoEventoAuditoria> EventosAuditablesModuloTransferencias()
+        {
+            var l = new List<TipoEventoAuditoria>();
+            l.AddRange(ServicioTransferencia.EventosAuditoria());
+            return l;
+        }
+
     }
 }

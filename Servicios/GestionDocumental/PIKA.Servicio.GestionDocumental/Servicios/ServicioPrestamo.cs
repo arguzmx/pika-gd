@@ -8,6 +8,7 @@ using PIKA.Infraestrctura.Reportes;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.GestorDocumental.Reportes.JSON;
@@ -40,9 +41,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IServicioReporteEntidad ServicioReporteEntidad;
 
         public ServicioPrestamo(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
+            IRegistroAuditoria registroAuditoria,
            ILogger<ServicioLog> Logger,
            IOptions<ConfiguracionServidor> Config,
-           IServicioReporteEntidad ServicioReporteEntidad) : base(proveedorOpciones, Logger)
+           IServicioReporteEntidad ServicioReporteEntidad) : base(registroAuditoria, proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Prestamo>(new QueryComposer<Prestamo>());
@@ -284,13 +286,13 @@ on s.Id = a.Id where s.TemaId = '{TemaId}';";
             List<Prestamo> ListaPrestamo = await this.repo.ObtenerAsync(x=>x.Eliminada==true);
             if (ListaPrestamo.Count > 0)
             {
-                ServicioActivoPrestamo sap = new ServicioActivoPrestamo(this.proveedorOpciones, this.logger);
-                ServicioComentarioPrestamo scp = new ServicioComentarioPrestamo(this.proveedorOpciones, this.logger);
+                ServicioActivoPrestamo sap = new ServicioActivoPrestamo(this.registroAuditoria, this.proveedorOpciones, this.logger);
+                ServicioComentarioPrestamo scp = new ServicioComentarioPrestamo(this.registroAuditoria, this.proveedorOpciones, this.logger);
                 string[] IdPrestamoeliminados = ListaPrestamo.Select(x => x.Id).ToArray();
                 await sap.EliminarActivosPrestamos(1, IdPrestamoeliminados);
                 List<ComentarioPrestamo> cp = await scp.ObtenerAsync(x => x.PrestamoId.Contains(ListaPrestamo.Select(x => x.Id).FirstOrDefault()));
                 string[] ComentariosPrestamosId = cp.Select(x => x.Id).ToArray();
-                scp = new ServicioComentarioPrestamo(this.proveedorOpciones,this.logger);
+                scp = new ServicioComentarioPrestamo(this.registroAuditoria, this.proveedorOpciones,this.logger);
                 await scp.Eliminar(ComentariosPrestamosId);
             }
             return ListaPrestamo.Select(x=>x.Id).ToList();

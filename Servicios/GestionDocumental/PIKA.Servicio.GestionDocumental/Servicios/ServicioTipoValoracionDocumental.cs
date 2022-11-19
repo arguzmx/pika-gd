@@ -12,6 +12,7 @@ using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
@@ -34,10 +35,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         
 
         public ServicioTipoValoracionDocumental(
+            IRegistroAuditoria registroAuditoria,
          IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
          ILogger<ServicioLog> Logger,
          IOptions<ConfiguracionServidor> Config) :
-            base(proveedorOpciones, Logger)
+            base(registroAuditoria, proveedorOpciones, Logger)
         {
             this.ConfiguracionServidor = Config.Value;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);

@@ -36,7 +36,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public UsuarioAPI usuario { get; set ; }
         public PermisoAplicacion permisos { get; set; }
-
+        public ContextoRegistroActividad RegistroActividad { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public async Task<RespuestaComandoWeb> ComandoWeb(string command, object payload)
         {
@@ -104,9 +104,9 @@ where Id In ({ids.MergeSQLStringList()})";
 
 
 
-        public ServicioActivoTransferencia(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
+        public ServicioActivoTransferencia(IRegistroAuditoria registroAuditoria, IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
             ILogger<ServicioLog> Logger) 
-            : base(proveedorOpciones,Logger)
+            : base(registroAuditoria, proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<ActivoTransferencia>(new QueryComposer<ActivoTransferencia>());
@@ -418,6 +418,11 @@ where Id In ({ids.MergeSQLStringList()})";
         }
 
         public Task<ActivoTransferencia> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void EstableceContextoSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad)
         {
             throw new NotImplementedException();
         }

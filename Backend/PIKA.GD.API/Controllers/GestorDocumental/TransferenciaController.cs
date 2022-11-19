@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Drawing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.GestionDocumental.Interfaces;
@@ -36,6 +38,10 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
             this.metadataProvider = metadataProvider;
         }
 
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad)
+        {
+            servicioTransferencia.EstableceContextoSeguridad(usuario, RegistroActividad);
+        }
 
         //http://localhost:5000/api/v1.0/gd/transferencia/page/archivo/c3b72639-b060-4632-bead-12079a5b3aa4/texto/002?i=0&t=10&ordc=&ordd=&idcache=
         [HttpGet("page/archivo/{Id}/texto/{texto}", Name = "GetPageTransferenciaPorTexto")]
@@ -81,9 +87,7 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         public async Task<ActionResult<Transferencia>> Post([FromBody] Transferencia entidad)
         {
-            servicioTransferencia.usuario = this.usuario;
-
-            entidad.UsuarioId = this.UsuarioId;
+           entidad.UsuarioId = this.UsuarioId;
             entidad.EstadoTransferenciaId = EstadoTransferencia.ESTADO_NUEVA;
             entidad.FechaCreacion = DateTime.UtcNow;
             entidad.CantidadActivos = 0;
@@ -102,7 +106,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<RespuestaComandoWeb>> Post(string command, [FromBody] object payload)
         {
-            servicioTransferencia.usuario = this.usuario;
             RespuestaComandoWeb r = await servicioTransferencia.ComandoWeb(command, payload).ConfigureAwait(false);
             return Ok(r);
         }
@@ -124,8 +127,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         public async Task<IActionResult> Put(string id, [FromBody]Transferencia entidad)
         {
-            servicioTransferencia.usuario = this.usuario;
-
             if (id.Trim() != entidad.Id.Trim())
             {
                 return BadRequest();
@@ -147,7 +148,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Transferencia>>> GetPage(string id, [FromQuery] Consulta query = null)
         {
-            servicioTransferencia.usuario = this.usuario;
             query.Filtros.Add(new FiltroConsulta() { Operador = "eq", Propiedad = "ArchivoOrigenId", Valor = id });
             var data = await servicioTransferencia.ObtenerPaginadoAsync(
                     Query: query,
@@ -168,7 +168,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
 
         public async Task<ActionResult<Transferencia>> Get(string id)
         {
-            servicioTransferencia.usuario = this.usuario;
             var o = await servicioTransferencia.UnicoAsync(x => x.Id.Trim() == id.Trim()).ConfigureAwait(false);
             if (o != null) return Ok(o);
             return NotFound(id);
@@ -183,7 +182,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Transferencia>> GetReporte(string TransferenciaId,string? columnas)
         {
-            servicioTransferencia.usuario = this.usuario;
             string[] Cols;
             if (!String.IsNullOrEmpty(columnas))
                Cols = columnas.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray();
@@ -203,7 +201,6 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Delete(string ids)
         {
-            servicioTransferencia.usuario = this.usuario;
             string IdsTrim = "";
             foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
             {
