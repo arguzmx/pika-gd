@@ -28,7 +28,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // optionsBuilder.UseMySql("Server=localhost;Port=3306;Database=pika-ca;Uid=pika;Pwd=Pa$$w0rd;");
+            //optionsBuilder.UseMySql("Server=localhost;Port=3306;Database=pika-ca;Uid=pika;Pwd=Pa$$w0rd;");
             optionsBuilder.EnableSensitiveDataLogging();
             base.OnConfiguring(optionsBuilder);
         }
@@ -112,17 +112,12 @@ namespace PIKA.Servicio.GestionDocumental.Data
         public static string TablaTipoAmpliacion { get => "gd$tipoampliacion"; }
 
         /// <summary>
-        /// Nombre de la tabla para las entidades del tipo Asunto 
-        /// </summary>
-        public static string TablaAsuntos { get => "gd$asunto"; }
-
-        /// <summary>
-        /// Nombre de la tabla para las entidades del tipo Asunto 
+        /// Nombre de la tabla para las entidades del tipo Historial de activos 
         /// </summary>
         public static string TablaHistorialArchivoActivos { get => "gd$historialarchivoactivo"; }
 
         /// <summary>
-        /// Nombre de la tabla para las entidades del tipo Asunto 
+        /// Nombre de la tabla para las entidades del tipo Prestamos
         /// </summary>
         public static string TablaPrestamos { get => "gd$prestamo"; }
 
@@ -213,7 +208,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// <summary>
         /// Cuadros clasificacion existentes en la aplicación
         /// </summary>
-        public DbSet<ElementoClasificacion> CuadrosClasificacion { get; set; }
+        public DbSet<CuadroClasificacion> CuadrosClasificacion { get; set; }
 
         /// <summary>
         /// Elementos de clasificacion en la aplicación
@@ -241,10 +236,6 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// </summary>
         public DbSet<Activo> Activos { get; set; }
 
-        /// <summary>
-        /// asuntos existentes en la aplicación
-        /// </summary>
-        public DbSet<Asunto> Asuntos { get; set; }
 
         /// <summary>
         /// Activos existentes en la amplacion
@@ -278,6 +269,10 @@ namespace PIKA.Servicio.GestionDocumental.Data
         /// </summary>
         public DbSet<ContenedorAlmacen> ContenedoresAlmacen { get; set; }
 
+        /// <summary>
+        /// Ubicaciones de activos en los contenedores
+        /// </summary>
+        public DbSet<ActivoContenedorAlmacen> ActivoContenedorAlmacen { get; set; }
 
         /// <summary>
         /// Posiciones de Almacen existentes en la aplicación
@@ -379,7 +374,6 @@ namespace PIKA.Servicio.GestionDocumental.Data
             builder.ApplyConfiguration<PermisosUnidadAdministrativaArchivo>(new DbConfPermisoUnidadAdminArchivo());
 
             builder.ApplyConfiguration<Activo>(new DbConfActivo());
-            builder.ApplyConfiguration<Asunto>(new DbConfAsunto());
             builder.ApplyConfiguration<ActivoSeleccionado>(new DbConfActivoSeleccionado());
             builder.ApplyConfiguration<TemaActivos>(new DbConfTemaActivoSeleccionado());
             builder.ApplyConfiguration<PermisosArchivo>(new DbConfPermisoschivo());

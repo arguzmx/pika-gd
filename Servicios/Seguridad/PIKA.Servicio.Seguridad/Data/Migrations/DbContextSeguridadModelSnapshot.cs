@@ -143,6 +143,9 @@ namespace PIKA.Servicio.Seguridad.Data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
+                    b.Property<string>("Delta")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<string>("DireccionRed")
                         .IsRequired()
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
@@ -167,6 +170,10 @@ namespace PIKA.Servicio.Seguridad.Data.Migrations
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
+                    b.Property<string>("IdEntidad")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
+                        .HasMaxLength(128);
+
                     b.Property<string>("IdSesion")
                         .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
@@ -180,7 +187,14 @@ namespace PIKA.Servicio.Seguridad.Data.Migrations
                         .HasColumnType("longtext CHARACTER SET utf8mb4")
                         .HasMaxLength(2048);
 
+                    b.Property<string>("TipoEntidad")
+                        .HasColumnType("varchar(64) CHARACTER SET utf8mb4")
+                        .HasMaxLength(64);
+
                     b.Property<int>("TipoEvento")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TipoFalla")
                         .HasColumnType("int");
 
                     b.Property<string>("UAId")
@@ -197,7 +211,7 @@ namespace PIKA.Servicio.Seguridad.Data.Migrations
 
                     b.HasIndex("DominioId", "UAId");
 
-                    b.HasIndex("UsuarioId", "Fecha", "FuenteEventoId", "ModuloId");
+                    b.HasIndex("UsuarioId", "Fecha", "FuenteEventoId", "ModuloId", "Exitoso");
 
                     b.ToTable("seguridad$eventosaud");
                 });

@@ -657,12 +657,23 @@ namespace PIKA.Servicio.Seguridad.Servicios
             }
 
             Query = GetDefaultQuery(Query);
-            //Console.WriteLine($"--->>{nombre}");
 
-            //var resultados = await this.repo.ObtenerAsync(x => ((x.name ?? "") + (x.nickname ?? "") + (x.email ?? "") +
-            //(x.family_name ?? "") + (x.given_name ?? "") + (x.username ?? "")).Contains(nombre));
+            var d = Query.Filtros.FirstOrDefault(x => x.Propiedad == "DominioId");
+            string sqls = "";
+            if (d != null)
+            {
+                sqls = $@"select p.*   from seguridad$usuarioprops p
+ inner join seguridad$usuariosdominio d on p.UsuarioId = d.ApplicationUserId
+ where d.DominioId='{d.Valor}' and 
+concat(COALESCE(p.username,''), COALESCE(p.name,''), COALESCE(p.family_name,''), COALESCE(p.given_name,'')) like '{nombre}%'";
+            } else
+            {
+                sqls = $@"select p.*   from seguridad$usuarioprops p
+ inner join seguridad$usuariosdominio d on p.UsuarioId = d.ApplicationUserId
+ where concat(COALESCE(p.username,''), COALESCE(p.name,''), COALESCE(p.family_name,''), COALESCE(p.given_name,'')) like '{nombre}%'";
+            }
 
-            var usuarios = UDT.Context.PropiedadesUsuario.Where(x=>x.username.Contains(nombre, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            var usuarios = UDT.Context.PropiedadesUsuario.FromSqlRaw(sqls);
             List<ValorListaOrdenada> l = usuarios.Select(x => new ValorListaOrdenada()
             {
                 Id = x.UsuarioId,

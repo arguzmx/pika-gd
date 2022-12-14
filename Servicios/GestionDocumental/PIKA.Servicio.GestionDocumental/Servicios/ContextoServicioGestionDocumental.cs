@@ -1,65 +1,77 @@
-﻿using Microsoft.Extensions.Logging;
-using PIKA.Infraestructura.Comun;
+﻿using LazyCache;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
+using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PIKA.Servicio.GestionDocumental.Servicios
 {
     public class ContextoServicioGestionDocumental
     {
+        protected SeguridadGestionDocumental seguridad;
         protected ILogger<ServicioLog> logger;
         protected IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones;
         protected IRegistroAuditoria registroAuditoria;
         protected DBContextGestionDocumental contexto;
+        protected UnidadDeTrabajo<DBContextGestionDocumental> UDT;
+        protected IAppCache cache;
+        protected string APP_ID;
+        protected string MODULO_ID;
         public ContextoServicioGestionDocumental(
             IRegistroAuditoria registroAuditoria,
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
-            ILogger<ServicioLog> Logger)
+            ILogger<ServicioLog> Logger,
+            IAppCache cache  =null, string APP_ID =null, string MODULO_ID = null)
         {
             DbContextGestionDocumentalFactory cf = new DbContextGestionDocumentalFactory(proveedorOpciones);
+            this.APP_ID = APP_ID;
+            this.MODULO_ID = MODULO_ID;
             this.contexto = cf.Crear();
             this.logger = Logger;
             this.proveedorOpciones = proveedorOpciones;
             this.registroAuditoria = registroAuditoria;
+            this.cache = cache;
+            UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
         }
 
 
         public UsuarioAPI usuario { get; set; }
         public ContextoRegistroActividad RegistroActividad { get; set; }
         public PermisoAplicacion permisos { get; set; }
+        public List<EventoAuditoriaActivo> EventosAuditoriaActivos { get; set; }
 
-        public void EstableceContextoSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad)
+        public async void EstableceContextoSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
         {
             this.usuario = usuario;
             this.RegistroActividad = RegistroActividad;
+            this.EventosAuditoriaActivos = Eventos;
+            seguridad = new SeguridadGestionDocumental(APP_ID, MODULO_ID, usuario, RegistroActividad, Eventos, registroAuditoria,
+                cache, UDT, DiccionarioEntidadTabla());
         }
 
-        private async Task<EventoAuditoria> RegistraEvento(int tipoEvento, string AppId, string ModuloId, bool Exitoso = true, string TextoAdicional = null)
+        public static Dictionary<string, string> DiccionarioEntidadTabla()
         {
-            EventoAuditoria ev = new EventoAuditoria()
+            return new Dictionary<string, string>
             {
-                DireccionRed = RegistroActividad.DireccionInternet,
-                DominioId = RegistroActividad.DominioId,
-                EsError = !Exitoso,
-                Exitoso = Exitoso,
-                Fecha = DateTime.UtcNow,
-                FuenteEventoId = AppId,
-                IdSesion = RegistroActividad.IdConexion,
-                ModuloId = ModuloId,
-                TipoEvento = tipoEvento,
-                UAId = RegistroActividad.UnidadOrgId,
-                UsuarioId = usuario.Id,
-                Texto = TextoAdicional
+                { typeof(CuadroClasificacion).Name, DBContextGestionDocumental.TablaCuadrosClasificacion },
+                { typeof(ElementoClasificacion).Name, DBContextGestionDocumental.TablaElementosClasificacion },
+                { typeof(EntradaClasificacion).Name, DBContextGestionDocumental.TablaEntradaClasificacion }
             };
+        }
 
-            ev = await registroAuditoria.InsertaEvento(ev);
-            return ev;
+        public TipoArchivo TipoArchivoDeArchivo(string Id)
+        {
+
+            string sqls = $"select t.*  from gd$tipoarchivo t inner join gd$archivo a on t.Id = a.TipoArchivoId where a.Id = '{Id}'";
+            TipoArchivo t = UDT.Context.TiposArchivo.FromSqlRaw(sqls).FirstOrDefault();
+            return t;
         }
 
 

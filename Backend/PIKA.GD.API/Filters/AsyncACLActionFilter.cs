@@ -33,10 +33,12 @@ namespace PIKA.GD.API.Filters
         private readonly ICacheSeguridad SecurityCache;
         private readonly ConfiguracionServidor Config;
         private readonly ILogger<AsyncACLActionFilter> Logger;
+        
         private  string ModuleId;
         private  string AppId;
 
         public AsyncACLActionFilter(
+            IRegistroAuditoria registroAuditoria,
             ILogger<AsyncACLActionFilter> Logger,
             ICacheSeguridad SecurityCache, IOptions<ConfiguracionServidor> Config, 
             string AppId="", string ModuleId="", string[] ids = null )
@@ -142,7 +144,7 @@ namespace PIKA.GD.API.Filters
 
                     string Method = context.HttpContext.Request.Method;
                     allow = await SecurityCache.AllowMethod(UserId, DomainId, AppId, ModuleId, Method).ConfigureAwait(false);
-
+                    var eventos = await SecurityCache.EventosAuditables(DomainId, UOid);
 
                     if (allow)
                     {
@@ -185,8 +187,7 @@ namespace PIKA.GD.API.Filters
                         var u = ObtieneUsuarioAPI(UserId, ((ACLController)context.Controller).Roles, ((ACLController)context.Controller).AdminGlobal, ((ACLController)context.Controller).Accesos);
                         u.gmtOffset = context.HttpContext.Request.Headers.Any(x=>x.Key== "gmtoffset") ?  int.Parse(context.HttpContext.Request.Headers.First(x => x.Key == "gmtoffset").Value) * -1 : 0;
                         ((ACLController)context.Controller).usuario = u;
-                        Console.WriteLine(
-                        System.Text.Json.JsonSerializer.Serialize(u));
+   
                         ContextoRegistroActividad a = new ContextoRegistroActividad()
                         {
                             DominioId = DomainId,
@@ -199,6 +200,7 @@ namespace PIKA.GD.API.Filters
 
                         ((ACLController)context.Controller).contextoRegistro = a;
 
+                        ((ACLController)context.Controller).EstableceContextoSeguridad(u, a, eventos);
 
                         await SecurityCache.DatosUsuarioSet(u).ConfigureAwait(false);
 

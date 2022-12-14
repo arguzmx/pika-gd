@@ -158,8 +158,8 @@ namespace PIKA.GD.API
             //            services.AddDbContext<DbContextContacto>(options => 
             //            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
-            services.AddDbContext<DbContextSeguridad>(options =>
-            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+            //services.AddDbContext<DbContextSeguridad>(options =>
+            //options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
             //services.AddDbContext<DbContextContenido>(options =>
             //options.UseMySql(Configuration.GetConnectionString("pika-gd")));
@@ -167,8 +167,8 @@ namespace PIKA.GD.API
             //            services.AddDbContext<DbContextReportes>(options =>
             //options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
-            //services.AddDbContext<DBContextGestionDocumental>(options =>
-            //    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+            services.AddDbContext<DBContextGestionDocumental>(options =>
+                options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
 
             //services.AddDbContext<DbContextMetadatos>(options =>
@@ -213,7 +213,7 @@ namespace PIKA.GD.API
                 .AddElasticsearch(
                     name: "elasticsearch", 
                     elasticsearchUri: elastic.CadenaConexion(), 
-                    failureStatus: HealthStatus.Degraded, 
+                    failureStatus: HealthStatus.Unhealthy, 
                     tags: new string[] { "elasticsearch" } )
                 .AddRabbitMQ(name: "rabbitmq", 
                     failureStatus: HealthStatus.Unhealthy, 

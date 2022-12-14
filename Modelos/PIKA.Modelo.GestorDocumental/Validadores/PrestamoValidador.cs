@@ -12,10 +12,10 @@ namespace PIKA.Modelo.GestorDocumental.Validadores
         public PrestamoValidador(IStringLocalizer<Prestamo> localizer)
         {
             RuleFor(x => x.Folio)
-                .NotNull().WithMessage(x => localizer["El folio es obligatorio"])
-                .NotEmpty().WithMessage(x => localizer["El folio es obligatorio"])
-                .MinimumLength(1).WithMessage(x => localizer["El folio debe tener entre {0} y {1} caracteres", 1, 100])
-                .MaximumLength(100).WithMessage(x => localizer["El folio debe tener entre {0} y {1} caracteres", 1, 100]);
+                .NotNull().When(x=>x.Id ==null).WithMessage(x => localizer["El folio es obligatorio"])
+                .NotEmpty().When(x => x.Id == null).WithMessage(x => localizer["El folio es obligatorio"])
+                .MinimumLength(1).When(x => x.Id == null).WithMessage(x => localizer["El folio debe tener entre {0} y {1} caracteres", 1, 100])
+                .MaximumLength(100).When(x => x.Id == null).WithMessage(x => localizer["El folio debe tener entre {0} y {1} caracteres", 1, 100]);
 
             RuleFor(x => x.ArchivoId)
                 .NotNull().WithMessage(x => localizer["El archivo es obligatorio"])

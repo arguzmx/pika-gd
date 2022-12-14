@@ -215,7 +215,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
                         break;
                     case "FechaCierre":
                         string fecha = "";
-                        if (!String.IsNullOrEmpty(act.FechaCierre.ToString()))
+                        if (!string.IsNullOrEmpty(act.FechaCierre.ToString()))
                             fecha = act.FechaCierre.ToString();
                          LlenadoExcel(li, fecha, GetAbecedario(columna), columna, renglon);
                         break;

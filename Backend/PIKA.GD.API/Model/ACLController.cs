@@ -36,6 +36,9 @@ namespace PIKA.GD.API
         public List<string> Accesos { get; set; }
         public bool AdminGlobal { get; set; }
         public UsuarioAPI usuario { get; set; }
+
+        public List<EventoAuditoriaActivo> EventosAuditables { get; set; }
+
         public ContextoRegistroActividad contextoRegistro { get; set; }
         public List<string> Universos
         {
@@ -54,16 +57,17 @@ namespace PIKA.GD.API
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [NonAction]
-        public void EstableceContextoSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad)
+        public void EstableceContextoSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
         {
             this.usuario = usuario;
             this.contextoRegistro = RegistroActividad;
-            EmiteConfiguracionSeguridad(usuario, RegistroActividad);
+            EventosAuditables = Eventos;
+            EmiteConfiguracionSeguridad(usuario, RegistroActividad, Eventos);
         }
 
         [OpenApiIgnore]
         [NonAction]
-        public virtual void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad)
+        public virtual void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
         {
 
         }

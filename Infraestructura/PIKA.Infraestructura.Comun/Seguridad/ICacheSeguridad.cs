@@ -22,6 +22,7 @@ namespace PIKA.Infraestructura.Comun.Seguridad
         /// <returns></returns>
         Task<bool> AllowMethod(string UserId, string DomainId, string AppId, string ModuleId, string Method);
 
+        Task<List<EventoAuditoriaActivo>> EventosAuditables(string DomainId, string OUId);
         Task DatosUsuarioSet(UsuarioAPI Usuario);
 
         Task<UsuarioAPI> DatosUsuarioGet(string Id);

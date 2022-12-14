@@ -13,7 +13,9 @@ namespace PIKA.Servicio.GestionDocumental
             return new TipoAmpliacion()
             {
                 Id = a.Id,
-                Nombre = a.Nombre
+                Nombre = a.Nombre,
+                DominioId = a.DominioId,
+                UOId = a.UOId,
             };
         }
     }

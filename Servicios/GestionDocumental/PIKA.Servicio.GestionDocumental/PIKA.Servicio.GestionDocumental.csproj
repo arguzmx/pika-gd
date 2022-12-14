@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Configuracion\Archivo\**" />
+    <EmbeddedResource Remove="Data\Configuracion\Archivo\**" />
+    <None Remove="Data\Configuracion\Archivo\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Data\Migrations\20200731161327_AdicionRaizElemento.cs" />
     <Compile Remove="Data\Migrations\20200731161327_AdicionRaizElemento.Designer.cs" />
     <Compile Remove="Data\Migrations\20200803182030_AgregarIdAmpliacion.cs" />
@@ -88,10 +94,6 @@
     <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.Metadatos\PIKA.Modelo.Metadatos.csproj" />
     <ProjectReference Include="..\..\..\Modelos\PIKA.Modelo.Reportes\PIKA.Modelo.Reportes.csproj" />
     <ProjectReference Include="..\..\Reportes\PIKA.Servicio.Reportes\PIKA.Servicio.Reportes.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Data\Configuracion\Archivo\" />
   </ItemGroup>
 
 

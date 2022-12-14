@@ -14,6 +14,8 @@ namespace PIKA.Servicio.GestionDocumental
             {
                 Id = a.Id,
                 Nombre = a.Nombre,
+                DominioId = a.DominioId,
+                UOId = a.UOId
             };
         }
     }

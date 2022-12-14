@@ -47,8 +47,8 @@ namespace PIKA.Modelo.GestorDocumental
         /// Identificador único del cuadro de clasificación, 
         /// Este se llena del lado del servidor
         /// </summary>
-        [Prop(Required: false, OrderIndex: 1, Visible: false)]
-        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+        [Prop(Required: false, OrderIndex: 1)]
+        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
         [List(Entidad: "CuadroClasificacion", DatosRemotos: true, TypeAhead: false, Default: "")]
         public string CuadroClasificacionId { get; set; }
 
@@ -56,9 +56,10 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Identificador único de la etraada de clasificación
         /// </summary>
-        [Prop(Required: true, OrderIndex: 5, Visible: false)]
+        [Prop(Required: true, OrderIndex: 5)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
-        [List(Entidad: "EntradaClasificacion", DatosRemotos: true, TypeAhead: true)]
+        [List(Entidad: "EntradaClasificacion", DatosRemotos: true, TypeAhead: false)]
+        [Event(Entidad: "CuadroClasificacionId", Evento: Eventos.AlCambiar, Operacion: Operaciones.Actualizar, "CuadroClasificacionId")]
         public string EntradaClasificacionId { get; set; }
 
         /// <summary>
@@ -168,7 +169,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         [Prop(Required: false, OrderIndex: 600, Visible: false, Contextual: true, IdContextual: ConstantesModelo.PREFIJO_CONEXTO + "ArchivoId")]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
-        [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false)]
+        [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false, FiltroBusqueda: true)]
         public string ArchivoId { get; set; }
 
 
@@ -239,6 +240,17 @@ namespace PIKA.Modelo.GestorDocumental
         [List(Entidad: "ContenedorAlmacen", DatosRemotos: true, TypeAhead: false)]
         public string ContenedorAlmacenId { get; set; }
 
+
+        [Prop(Required: false, OrderIndex: 900, Visible: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_DATETIME, Accion: Acciones.none)]
+        public DateTime?  FechaCreacion { get; set; }
+
+
+        [Prop(Required: false, OrderIndex: 900, Visible: false)]
+        [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.none)]
+        [List(Entidad: "PropiedadesUsuario", DatosRemotos: true, TypeAhead: false)]
+        public string UsuarioId { get; set; }
+
         /// <summary>
         /// Los activos del inventario son propiedad de las unidades oragnizacionales
         /// y éstas a su vez pertenecen a un dominio lo que garantiza la cobertura de movivimentos
@@ -303,10 +315,6 @@ namespace PIKA.Modelo.GestorDocumental
         [XmlIgnore]
         [JsonIgnore]
         public Archivo ArchivoOrigen { get; set; }
-
-        [XmlIgnore]
-        [JsonIgnore]
-        public Asunto Asuntos { get; set; }
 
         /// <summary>
         /// Historial de archivos por los que ha pasado el activo

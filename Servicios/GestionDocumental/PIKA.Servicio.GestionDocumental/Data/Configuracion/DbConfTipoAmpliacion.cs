@@ -15,10 +15,12 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.ToTable(DBContextGestionDocumental.TablaTipoAmpliacion);
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired();
-
+            builder.Property(x => x.DominioId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired(false);
+            builder.Property(x => x.UOId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired(false);
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
 
             builder.HasMany(x => x.Ampliaciones).WithOne(y => y.TipoAmpliacion).HasForeignKey(z => z.TipoAmpliacionId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasIndex(x => x.DominioId);
         }
     }
 }

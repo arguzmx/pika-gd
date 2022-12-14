@@ -188,5 +188,10 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             EventoTransferencia t = await this.repo.UnicoAsync(predicado);
             return t.Copia();
         }
+
+        public Task<EstadoTransferencia> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

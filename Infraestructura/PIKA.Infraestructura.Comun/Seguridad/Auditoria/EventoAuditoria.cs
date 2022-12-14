@@ -7,14 +7,9 @@ namespace PIKA.Infraestructura.Comun.Seguridad
     public class EventoAuditoria
     {
         /// <summary>
-        /// Identificador único del evento
+        /// Identificador único del evento, es la fecha expresada como ticks
         /// </summary>
-        public string Id { get; set; }
-
-        /// <summary>
-        /// Fecha del evento
-        /// </summary>
-        public DateTime Fecha { get; set; }
+        public long Id { get; set; }
 
         /// <summary>
         /// Dirección de red desde la que se registró la llamada que ocasiona el evento
@@ -48,14 +43,14 @@ namespace PIKA.Infraestructura.Comun.Seguridad
 
 
         /// <summary>
-        /// Indica si el evento es un error de la aplicación
+        /// Clase y método ejecutado
         /// </summary>
-        public bool EsError { get; set; }
+        public string Fuente { get; set; }
 
         /// <summary>
         /// Identificador único de la fuente del evanto por ejemplo un servicio o controlado
         /// </summary>
-        public string FuenteEventoId { get; set; }
+        public string AppId { get; set; }
 
 
         /// <summary>
@@ -70,10 +65,30 @@ namespace PIKA.Infraestructura.Comun.Seguridad
         public int TipoEvento { get; set; }
 
         /// <summary>
-        /// Texto asociado al evento, es colocado por la fuente cuando los datos deben ampliarse, 
-        /// normalmente es nulo
+        /// Especifica el tipo de falla para un evento ejecutado con error
         /// </summary>
-        public string Texto { get; set; }
-    }
+        public int? TipoFalla { get; set; }
 
+        /// <summary>
+        /// Tipo de la entidad involucrada
+        /// </summary>
+        public string TipoEntidad { get; set; }
+
+        /// <summary>
+        /// Identificador único de la entidad asociada
+        /// </summary>
+        public string IdEntidad { get; set; }
+
+
+        /// <summary>
+        /// Nombre para identificar la entidad en el resumen presentado al usuario
+        /// </summary>
+        public string NombreEntidad { get; set; }
+
+        /// <summary>
+        /// Cambios realizados al comparar la entidad serializada
+        /// </summary>
+        public string Delta { get; set; }
+
+    }
 }

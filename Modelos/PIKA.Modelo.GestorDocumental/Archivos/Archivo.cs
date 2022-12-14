@@ -104,7 +104,7 @@ namespace PIKA.Modelo.GestorDocumental
         public string TipoOrigenId { get; set; }
 
         /// <summary>
-        /// Identificador de la organización a la que pertenece el cuadro de clasificación
+        /// Identificador de la organización a la que pertenece el archivo
         /// </summary>
         [Prop(Required: true, Visible: false, OrderIndex: 1010, Contextual: true, IdContextual: ConstantesModelo.GLOBAL_UOID)]
         [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]

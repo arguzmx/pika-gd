@@ -17,25 +17,23 @@ namespace PIKA.Servicio.Seguridad.Data.Configuracion
             builder.ToTable(DbContextSeguridad.TablaEventoAuditoria);
             builder.HasKey(x => x.Id);
 
-            builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
-
-            builder.Property(x => x.Fecha).IsRequired();
-            builder.Property(x => x.EsError).IsRequired();
-            builder.Property(x => x.Exitoso).IsRequired();
-            builder.Property(x => x.UsuarioId).IsRequired().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.Id).ValueGeneratedNever();
             builder.Property(x => x.DireccionRed).IsRequired().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.IdSesion).IsRequired(false).HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.UsuarioId).IsRequired().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.DominioId).IsRequired().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.UAId).IsRequired().HasMaxLength(LongitudDatos.GUID);
-            builder.Property(x => x.FuenteEventoId).IsRequired().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.Exitoso).IsRequired();
+            builder.Property(x => x.Fuente).IsRequired().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.AppId).IsRequired().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.ModuloId).IsRequired().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.TipoEntidad).IsRequired(false).HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.IdEntidad).IsRequired(false).HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.NombreEntidad).IsRequired(false).HasMaxLength(LongitudDatos.NombreLargo);
             builder.Property(x => x.TipoEvento).IsRequired();
-            builder.Property(x => x.Texto).IsRequired(false).HasMaxLength(LongitudDatos.PAYLOAD_EVENTO);
-
-            builder.HasIndex(i => new { i.DominioId, i.UAId});
-            builder.HasIndex(i => new { i.UsuarioId, i.Fecha, i.FuenteEventoId, i.ModuloId });
-
-
+            builder.Property(x => x.TipoFalla).IsRequired(false);
+            builder.Property(x => x.Delta).IsRequired(false);
+            builder.HasIndex(i => new { i.DominioId, i.UAId, i.AppId, i.ModuloId, i.UsuarioId});
         }
     
     }

@@ -12,6 +12,21 @@ namespace PIKA.Infraestructura.Comun.Seguridad
 {
     public interface IRegistroAuditoria
     {
+
+        /// <summary>
+        /// Añade un evento al registro de auditoría
+        /// </summary>
+        /// <param name="ev"></param>
+        /// <returns></returns>
         Task<EventoAuditoria> InsertaEvento(EventoAuditoria ev);
+
+        /// <summary>
+        /// Obtiene la lista de los eventos auditables para el dominio y unidad organizacional
+        /// </summary>
+        /// <param name="DominioId"></param>
+        /// <param name="OUId"></param>
+        /// <returns></returns>
+        Task<List<EventoAuditoriaActivo>> EventosAuditables(string DominioId, string OUId);
+
     }
 }

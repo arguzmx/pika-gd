@@ -23,7 +23,7 @@ namespace PIKA.Infraestructura.Comun
         /// </summary>
         /// <param name="usuario"></param>
         /// <param name="RegistroActividad"></param>
-        void EstableceContextoSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad);
+        void EstableceContextoSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos);
 
         /// <summary>
         /// Sobre el controlador de acuerdo al usuario en sesión

@@ -13,7 +13,7 @@ using PIKA.Modelo.GestorDocumental.Reportes;
 namespace PIKA.Modelo.GestorDocumental
 {
 
-    [Entidad(PaginadoRelacional: false, EliminarLogico: true, HabilitarSeleccion: true,
+    [Entidad(PaginadoRelacional: false, EliminarLogico: false, HabilitarSeleccion: true,
         TokenMod: ConstantesAppGestionDocumental.MODULO_PRESTAMO,
         TokenApp: ConstantesAppGestionDocumental.APP_ID)]
 
@@ -23,9 +23,9 @@ namespace PIKA.Modelo.GestorDocumental
         PropiedadHijo: "PrestamoId")]
 
     [LinkView(Titulo: "commandosweb.gd-prestamo-entregar", Icono: "assignment_ind", Vista: "gd-prestamo-entregar", 
-        RequireSeleccion: true, Tipo: TipoVista.WebCommand, Condicion: "entidad.['Entregado']==0")]
+        RequireSeleccion: true, Tipo: TipoVista.WebCommand, Condicion: "entidad['Entregado']==0")]
     [LinkView(Titulo: "commandosweb.gd-prestamo-devolver", Icono: "assignment_turned_in", Vista: "gd-prestamo-devolver", 
-        RequireSeleccion: true, Tipo: TipoVista.WebCommand, Condicion: "entidad.['Entregado']==1 && entidad.['Devuelto']==0")]
+        RequireSeleccion: true, Tipo: TipoVista.WebCommand, Condicion: "entidad['Entregado']==1 && entidad['Devuelto']==0")]
     public class Prestamo: Entidad<string>, IEntidadEliminada, IEntidadReportes
     {
         [NotMapped]
@@ -56,7 +56,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Número de fplio del préstamo
         /// </summary>
-        [Prop(Required: true, isId: false, Visible: true, OrderIndex: 20)]
+        [Prop(Required: true, isId: false, Visible: true, OrderIndex: 20, IsLabel: true)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.add)]
         public string Folio { get; set; }
 
@@ -73,14 +73,14 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         [Prop(Required: true, Visible: true, OrderIndex: 30)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT_MULTI, Accion: Acciones.addupdate)]
-        [List(Entidad: "PropiedadesUsuario", DatosRemotos: true, TypeAhead: true)]
+        [List(Entidad: "PropiedadesUsuario", DatosRemotos: true, TypeAhead: true, FiltroBusqueda: true)]
         public string UsuarioDestinoId { get; set; }
 
 
         /// <summary>
         /// Fecha programda parala devolucion del preátsmo en formato UTC
         /// </summary>
-        [Prop(Required: false, isId: false, Visible: true, OrderIndex: 40)]
+        [Prop(Required: true, isId: false, Visible: true, OrderIndex: 40)]
         [VistaUI(ControlUI: ControlUI.HTML_DATE, Accion: Acciones.addupdate)]
         public DateTime FechaProgramadaDevolucion { get; set; }
 
@@ -88,10 +88,10 @@ namespace PIKA.Modelo.GestorDocumental
         /// Fecha de devolución real del préstamo, este valor se establece sin intervención del  usuario 
         /// </summary>
         [Prop(Required: false, isId: false, Visible: true, OrderIndex: 50)]
-        [VistaUI(ControlUI: ControlUI.HTML_NONE, Accion: Acciones.none)]
+        [VistaUI(ControlUI: ControlUI.HTML_DATE, Accion: Acciones.none)]
         public DateTime? FechaDevolucion { get; set; }
 
-        [Prop(Required: true, isId: false, Visible: false, OrderIndex: 60)]
+        [Prop(Required: false, isId: false, Visible: false, OrderIndex: 60)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXTAREA, Accion: Acciones.addupdate)]
         public string Descripcion { get; set; }
 
@@ -128,7 +128,7 @@ namespace PIKA.Modelo.GestorDocumental
 
 
         [NotMapped]
-        [Prop(Required: true, Visible: true, OrderIndex: 100)]
+        [Prop(Required: false, Visible: true, OrderIndex: 100)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.add)]
         [List(Entidad: "Activo", DatosRemotos: true, TypeAhead: false, EsListaTemas: true)]
         public string TemaId { get; set; }

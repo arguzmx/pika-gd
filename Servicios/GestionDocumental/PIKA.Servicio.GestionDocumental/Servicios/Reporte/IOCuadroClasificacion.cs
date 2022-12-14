@@ -304,7 +304,7 @@ namespace PIKA.Servicio.GestionDocumental
         /// <returns></returns>
         private async Task ObtnerHijosElmentos(List<RegionElementoClasificacion> lr1, int Indicecolumna, string CuadroClasificacionId, string? ElementoClasificacionId)
         {
-            if (String.IsNullOrEmpty(ElementoClasificacionId))
+            if (string.IsNullOrEmpty(ElementoClasificacionId))
             {
                 Indicecolumna = Indicecolumna - 1;
                 

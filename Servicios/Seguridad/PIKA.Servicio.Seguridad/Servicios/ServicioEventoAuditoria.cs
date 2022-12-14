@@ -2,19 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
-using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Seguridad;
-using PIKA.Modelo.Seguridad;
-using PIKA.Modelo.Seguridad.Validadores;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
 
@@ -58,7 +53,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             EventoAuditoria tmp = await this.repo.UnicoAsync(x => x.Id == entity.Id);
             if (tmp != null)
             {
-                throw new ExElementoExistente(entity.Id);
+                throw new ExElementoExistente(entity.Id.ToString());
             }
 
             await this.repo.CrearAsync(entity);
@@ -163,10 +158,14 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
         public async Task<EventoAuditoria> InsertaEvento(EventoAuditoria ev)
         {
-            throw new NotImplementedException();
+            await Task.Delay(0);
+
+            Console.WriteLine("A+");
+            ev.Id =  DateTime.UtcNow.Ticks;
+            return ev;
         }
 
-        public void EstableceContextoSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad)
+        public void EstableceContextoSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
         {
             throw new NotImplementedException();
         }
@@ -174,6 +173,12 @@ namespace PIKA.Servicio.Seguridad.Servicios
         public Task<EventoAuditoria> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<List<EventoAuditoriaActivo>> EventosAuditables(string DominioId, string OUId)
+        {
+            var r = await this.UDT.Context.EventosActivosAuditoria.Where(e=>e.DominioId == DominioId && e.UAId == OUId && e.Auditable == true).ToListAsync();
+            return r;
         }
 
 

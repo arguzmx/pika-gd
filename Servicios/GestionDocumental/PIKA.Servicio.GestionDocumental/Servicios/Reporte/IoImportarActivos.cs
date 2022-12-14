@@ -115,7 +115,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios.Reporte
         private async Task<string> ValorColumnas(string columna, string valorColumna, int fila,string nombredocumento,Activo a,string formatofecha) 
         {
             int longitud = 0;
-            if (!String.IsNullOrEmpty(valorColumna))
+            if (!string.IsNullOrEmpty(valorColumna))
                  longitud = valorColumna.Length;
             switch (columna)
             {
@@ -193,35 +193,35 @@ namespace PIKA.Servicio.GestionDocumental.Servicios.Reporte
                         a.CodigoElectronico = valorColumna;
                     break;
                 case "H":
-                    if (!String.IsNullOrEmpty(valorColumna))
+                    if (!string.IsNullOrEmpty(valorColumna))
                         a.EsElectronico = true;
                     else
                         a.EsElectronico = false;
 
                     break;
                 case "I":
-                    if (!String.IsNullOrEmpty(valorColumna))
+                    if (!string.IsNullOrEmpty(valorColumna))
                         a.EnPrestamo = true;
                     else
                         a.EnPrestamo = false;
 
                     break;
                 case "J":
-                    if (!String.IsNullOrEmpty(valorColumna))
+                    if (!string.IsNullOrEmpty(valorColumna))
                         a.Reservado = true;
                     else
                         a.Reservado = false;
 
                     break;
                 case "K":
-                    if (!String.IsNullOrEmpty(valorColumna))
+                    if (!string.IsNullOrEmpty(valorColumna))
                         a.Confidencial = true;
                     else
                         a.Confidencial = false;
 
                     break;
                 case "L":
-                    if (!String.IsNullOrEmpty(valorColumna))
+                    if (!string.IsNullOrEmpty(valorColumna))
                         a.Ampliado = true;
                     else
                         a.Ampliado = false;

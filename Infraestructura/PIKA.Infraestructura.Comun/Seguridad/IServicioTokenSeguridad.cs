@@ -16,5 +16,9 @@ namespace PIKA.Infraestructura.Comun.Seguridad
         Task<UsuarioAPI> DatosUsuarioGet(string Id);
         Task<PermisoAplicacion> PermisosModuloId(string UserId, string DomainId, string ModuloId);
 
+        Task EventosAuditablesSet(string dominioId, string OUid, List<EventoAuditoriaActivo> eventos);
+
+        Task<List<EventoAuditoriaActivo>> EventosAuditablesGet(string dominioId, string OUid);
+
     }
 }

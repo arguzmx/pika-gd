@@ -42,7 +42,7 @@ namespace PIKA.Servicio.Seguridad
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // optionsBuilder.UseMySql("Server=localhost;Port=3306;Database=pika-ca;Uid=pika;Pwd=Pa$$w0rd;");
+            //optionsBuilder.UseMySql("Server=localhost;Port=3306;Database=pika-ca;Uid=pika;Pwd=Pa$$w0rd;");
             optionsBuilder.EnableSensitiveDataLogging();
             base.OnConfiguring(optionsBuilder);
         }
@@ -100,7 +100,7 @@ namespace PIKA.Servicio.Seguridad
 
         public DbSet<EventoAuditoria> EventosAuditoria { get; set; }
 
-
+        public DbSet<EventoAuditoriaActivo> EventosActivosAuditoria { get; set; }
 
         /// <summary>
         /// Aplicacion existentes en la aplicación

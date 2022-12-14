@@ -16,12 +16,15 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.ToTable(DBContextGestionDocumental.TablaTiposArchivo);
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
-
+            builder.Property(x => x.Tipo).IsRequired(false);
             builder.Property(x => x.Nombre).HasMaxLength(LongitudDatos.Nombre).IsRequired();
 
             builder.HasMany(x => x.Archivos).WithOne(y => y.Tipo).HasForeignKey(z => z.TipoArchivoId).OnDelete(DeleteBehavior.Restrict);
             builder.HasMany(x => x.Activos).WithOne(y => y.TipoArchivo).HasForeignKey(z => z.TipoArchivoId).OnDelete(DeleteBehavior.Restrict);
 
+            builder.Property(x => x.DominioId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired(false);
+            builder.Property(x => x.UOId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID).IsRequired(false);
+            builder.HasIndex(x => x.DominioId);
         }
     }
 }
