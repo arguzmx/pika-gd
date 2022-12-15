@@ -10,12 +10,6 @@ namespace PIKA.Servicio.GestionDocumental
 {
     public class AplicacionGestionDocumental : InformacionAplicacionBase, IInformacionAplicacion
     {
-        public List<TipoEventoAuditoria> EventosAuditables()
-        {
-            var l = new List<TipoEventoAuditoria>();
-
-            return l;
-        }
 
         public override Aplicacion Info()
         {
@@ -42,13 +36,15 @@ namespace PIKA.Servicio.GestionDocumental
                         typeof(EntradaClasificacion),
                         typeof(ValoracionEntradaClasificacion)
                     },
-                    EventosAuditables = EventosAuditablesModuloCuadroClasif()
+                     EventosAuditables = new List<TipoEventoAuditoria>()
+                     {
+
+                     }
                 },
                 new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_ACTIVOS ) {
                     Titulo = "Gestión del acervo",
                     Descripcion = "Permite administrar el acervo para su gestión documental",
-                    Tipos = new List<Type> { typeof(Activo), typeof(Ampliacion) },
-                    EventosAuditables = EventosAuditablesModuloActivos()
+                    Tipos = new List<Type> { typeof(Activo), typeof(Ampliacion) }
                 },
                 new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_CATALOGOSCC ) {
                     Titulo = "Catálogos gestión documental",
@@ -64,8 +60,7 @@ namespace PIKA.Servicio.GestionDocumental
                     Descripcion = "Permite administrar los archivos para la localización del inventario",
                     Tipos = new List<Type> { typeof(Archivo), typeof(AlmacenArchivo), typeof(PermisosArchivo),
                         typeof(ZonaAlmacen), typeof(PosicionAlmacen), typeof(ContenedorAlmacen),
-                        typeof(ActivoContenedorAlmacen) },
-                      EventosAuditables = EventosAuditablesModuloArchivo()
+                        typeof(ActivoContenedorAlmacen) }
                 },
                 new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_UNIDADESADMIN ) {
                     Titulo = "Gestión de unidades administrativas",
@@ -92,8 +87,7 @@ namespace PIKA.Servicio.GestionDocumental
                     Descripcion = "Permite realizar la gestión de las trasnferencias de inventarios entre archivos",
                     Tipos = new List<Type> { typeof(Transferencia), typeof(EventoTransferencia),
                         typeof(ComentarioTransferencia),typeof(ActivoTransferencia),
-                    typeof(HistorialArchivoActivo)},
-                     EventosAuditables = EventosAuditablesModuloTransferencias()
+                    typeof(HistorialArchivoActivo)}
                 },
                 new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_CAT_TRANSFERENCIA ) {
                     Titulo = "Catálogos transferencias",
@@ -110,31 +104,7 @@ namespace PIKA.Servicio.GestionDocumental
             return m;
         }
 
-        public static List<TipoEventoAuditoria> EventosAuditablesModuloCuadroClasif()
-        {
-            var l = new List<TipoEventoAuditoria>();
-            l.AddRange(SeguridadGestionDocumental.EventosAuditoria());
-            return l;
-        }
 
-
-        public static List<TipoEventoAuditoria> EventosAuditablesModuloActivos()
-        {
-            var l = new List<TipoEventoAuditoria>();
-            return l;
-        }
-
-        public static List<TipoEventoAuditoria> EventosAuditablesModuloArchivo()
-        {
-            var l = new List<TipoEventoAuditoria>();
-            return l;
-        }
-
-        public static List<TipoEventoAuditoria> EventosAuditablesModuloTransferencias()
-        {
-            var l = new List<TipoEventoAuditoria>();
-            return l;
-        }
 
     }
 }

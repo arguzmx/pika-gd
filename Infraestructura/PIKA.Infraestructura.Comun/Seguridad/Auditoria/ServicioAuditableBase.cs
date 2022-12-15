@@ -320,7 +320,7 @@ namespace PIKA.Infraestructura.Comun.Seguridad.Auditoria
             {
                 this.NombreEntidad = Nombre;
                 this.IdEntidad = Id;
-                return await RegistraEvento((int)EventosComunesAuditables.Actualiza,  true, delta);
+                return await RegistraEvento((int)EventosComunesAuditables.Actualizar,  true, delta);
 
             }
             return null;
@@ -330,7 +330,7 @@ namespace PIKA.Infraestructura.Comun.Seguridad.Auditoria
         public virtual async Task<EventoAuditoria> RegistraEvento(int tipoEvento, bool Exitoso = true, string Delta = null, int? TipoFalla = null)
         {
 
-            if (!EventosActivos.Any(e => e.TipoEvento == tipoEvento && e.FuenteEventoId == this.APP_ID && e.ModuloId == this.MODULO_ID))
+            if (!EventosActivos.Any(e => e.TipoEvento == tipoEvento && e.AppId == this.APP_ID && e.ModuloId == this.MODULO_ID))
             {
                 return null;
             }

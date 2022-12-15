@@ -8,15 +8,14 @@ namespace PIKA.Infraestructura.Comun.Seguridad.Auditoria
     {
 
         /// <summary>
-        /// Identificador único de la fuente del evanto por ejemplo un servicio o controlado
+        /// Identificador único de la fuente del evento por ejemplo un servicio o controlador
         /// </summary>
-        public string FuenteEventoId { get; set; }
+        public string AppId { get; set; }
 
         /// <summary>
         /// Identificador único del módulo que origina el evento en la fuente
         /// </summary>
         public string ModuloId { get; set; }
-
 
         /// <summary>
         /// Identificador único del tipo de evento de acuerdo al orígen, 
@@ -27,7 +26,7 @@ namespace PIKA.Infraestructura.Comun.Seguridad.Auditoria
         /// <summary>
         /// Descripción del evento
         /// </summary>
-        public string Desripción { get; set; }
+        public string Desripcion { get; set; }
 
         /// <summary>
         /// Plantilla default del evento para la producción de lectura humana, 

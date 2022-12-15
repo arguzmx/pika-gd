@@ -48,10 +48,10 @@ namespace PIKA.Servicio.Seguridad.Data.Configuracion
             builder.Property(x => x.Id).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
 
             builder.Property(x => x.UAId).IsRequired().HasMaxLength(LongitudDatos.GUID);
-            builder.Property(x => x.FuenteEventoId).IsRequired().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.AppId).IsRequired().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.TipoEvento).IsRequired();
             builder.Property(x => x.ModuloId).IsRequired().HasMaxLength(LongitudDatos.GUID);
-            builder.Property(x => x.Auditable).IsRequired();
+            builder.Property(x => x.Auditar).IsRequired();
             builder.Property(x => x.DominioId).IsRequired();
             builder.Property(x => x.UAId).IsRequired();
             builder.HasIndex(i => new { i.DominioId, i.UAId });
@@ -65,13 +65,12 @@ namespace PIKA.Servicio.Seguridad.Data.Configuracion
         public void Configure(EntityTypeBuilder<TipoEventoAuditoria> builder)
         {
             builder.ToTable(DbContextSeguridad.TablaTipoEventoAuditoria);
-            builder.HasKey(x => new { x.FuenteEventoId, x.TipoEvento, x.ModuloId } );
+            builder.HasKey(x => new { x.AppId, x.TipoEvento, x.ModuloId } );
 
             builder.Property(x => x.ModuloId).IsRequired().HasMaxLength(LongitudDatos.GUID);
-            builder.Property(x => x.FuenteEventoId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
+            builder.Property(x => x.AppId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.PlantillaEvento).IsRequired(false);
             builder.Property(x => x.Desripción).IsRequired().HasMaxLength(LongitudDatos.Descripcion);
         }
-
     }
 }

@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PIKA.Servicio.Seguridad;
 
-namespace PIKA.Servicio.Seguridad.Data.Migrations
+namespace PIKA.Servicio.Seguridad.data.migrations
 {
     [DbContext(typeof(DbContextSeguridad))]
-    partial class DbContextSeguridadModelSnapshot : ModelSnapshot
+    [Migration("20221214224532_removeauditoria")]
+    partial class removeauditoria
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,119 +111,6 @@ namespace PIKA.Servicio.Seguridad.Data.Migrations
                     b.HasIndex("ModuloPadreId");
 
                     b.ToTable("seguridad$moduloaplicacion");
-                });
-
-            modelBuilder.Entity("PIKA.Infraestructura.Comun.Seguridad.EventoAuditoria", b =>
-                {
-                    b.Property<long>("Id")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("AppId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("Delta")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<string>("DireccionRed")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("DominioId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<bool>("Exitoso")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Fuente")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("IdEntidad")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("IdSesion")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("ModuloId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("NombreEntidad")
-                        .HasColumnType("varchar(500) CHARACTER SET utf8mb4")
-                        .HasMaxLength(500);
-
-                    b.Property<string>("TipoEntidad")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<int>("TipoEvento")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TipoFalla")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UAId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("UsuarioId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DominioId", "UAId", "AppId", "ModuloId", "UsuarioId");
-
-                    b.ToTable("seguridad$eventosaud");
-                });
-
-            modelBuilder.Entity("PIKA.Infraestructura.Comun.Seguridad.EventoAuditoriaActivo", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("AppId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<bool>("Auditar")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("DominioId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
-
-                    b.Property<string>("ModuloId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.Property<int>("TipoEvento")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UAId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DominioId", "UAId");
-
-                    b.ToTable("seguridad$eventosaudconf");
                 });
 
             modelBuilder.Entity("PIKA.Infraestructura.Comun.Seguridad.PermisoAplicacion", b =>

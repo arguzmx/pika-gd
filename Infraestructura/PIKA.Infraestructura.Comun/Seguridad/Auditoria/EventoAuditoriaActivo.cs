@@ -27,10 +27,9 @@ namespace PIKA.Infraestructura.Comun.Seguridad
 
 
         /// <summary>
-        /// Identificador único de la fuente del evanto por ejemplo un servicio o controlado
+        /// Identificador único de la aplicaicón que origina el evento
         /// </summary>
-        public string FuenteEventoId { get; set; }
-
+        public string AppId { get; set; }
 
         /// <summary>
         /// Identificador único del módulo que origina el evento en la fuente
@@ -46,6 +45,6 @@ namespace PIKA.Infraestructura.Comun.Seguridad
         /// <summary>
         /// Identifica si el evento se encuentra activo para ser auditado
         /// </summary>
-        public bool Auditable { get; set; }
+        public bool Auditar { get; set; }
     }
 }

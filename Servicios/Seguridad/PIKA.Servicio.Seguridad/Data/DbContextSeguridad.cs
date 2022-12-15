@@ -184,7 +184,7 @@ namespace PIKA.Servicio.Seguridad
             builder.ApplyConfiguration(new DbConfTraduccionAplicacionModulo());
             builder.ApplyConfiguration(new DbConfEventoAuditoria());
             builder.ApplyConfiguration(new DbConfEventoAuditoriaActivo());
-            builder.ApplyConfiguration(new DbConfTipoEventoAuditoria());
+            //builder.ApplyConfiguration(new DbConfTipoEventoAuditoria());
         }
 
     }

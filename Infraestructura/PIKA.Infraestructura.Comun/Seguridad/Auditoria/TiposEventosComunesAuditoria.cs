@@ -7,7 +7,7 @@ namespace PIKA.Infraestructura.Comun.Seguridad.Auditoria
 
     public enum EventosComunesAuditables
     {
-        Crear = 1, Actualiza = 2, Eliminar = 3, Leer = 4, Purgar=5
+        Crear = 1, Actualizar = 2, Eliminar = 3, Leer = 4, Purgar = 5
     }
 
     public enum CodigoComunesFalla
@@ -17,4 +17,6 @@ namespace PIKA.Infraestructura.Comun.Seguridad.Auditoria
         DatosIncorectos = 2,
         DatosSesionIncorrectos = 3
     }
+
+
 }

@@ -16,14 +16,12 @@ namespace PIKA.Infraestructura.Comun
         {
             _IdPadre = IdPadre;
             _IdModulo = IdModulo;
-            EventosAuditables = new List<TipoEventoAuditoria>();
         }
 
         public string IdModulo { get { return $"{_IdPadre}-{_IdModulo}"; }  }
         public string Titulo { get; set; }
         public string Descripcion { get; set; }
         public List<Type> Tipos { get; set; }
-
         public List<TipoEventoAuditoria> EventosAuditables { get; set; }
 
         public static ModuloAplicacion CreaModuloTipico(string AppId, string IdModuloRaiz, string IdModulo,

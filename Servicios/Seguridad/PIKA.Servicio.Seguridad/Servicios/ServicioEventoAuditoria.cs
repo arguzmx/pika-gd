@@ -177,8 +177,9 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
         public async Task<List<EventoAuditoriaActivo>> EventosAuditables(string DominioId, string OUId)
         {
-            var r = await this.UDT.Context.EventosActivosAuditoria.Where(e=>e.DominioId == DominioId && e.UAId == OUId && e.Auditable == true).ToListAsync();
-            return r;
+            //var r = await this.UDT.Context.EventosActivosAuditoria.Where(e=>e.DominioId == DominioId && e.UAId == OUId && e.Auditable == true).ToListAsync();
+            //return r;
+            throw new NotImplementedException();
         }
 
 
