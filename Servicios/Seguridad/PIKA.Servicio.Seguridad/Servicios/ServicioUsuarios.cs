@@ -6,14 +6,18 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using LazyCache;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using PIKA.Constantes.Aplicaciones.Seguridad;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Seguridad;
 using PIKA.Modelo.Seguridad.Base;
 using PIKA.Modelo.Seguridad.Validadores;
@@ -35,14 +39,15 @@ namespace PIKA.Servicio.Seguridad.Servicios
         private IRepositorioAsync<ApplicationUser> repoAppUser;
         private IRepositorioAsync<UsuarioDominio> repoUsuarioDominio;
         private IRepositorioAsync<UserClaim> repoClaims;
-        private UnidadDeTrabajo<DbContextSeguridad> UDT;
 
         public ServicioUsuarios(
+              IAppCache cache,
+         IRegistroAuditoria registroAuditoria,
          IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
-         ILogger<ServicioUsuarios> Logger) :
-            base(proveedorOpciones, Logger)
+                  ILogger<ServicioLog> Logger
+         ) : base(registroAuditoria, proveedorOpciones, Logger,
+                 cache, ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_AUDITORIA)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<PropiedadesUsuario>(new QueryComposer<PropiedadesUsuario>());
             this.repoAppUser = UDT.ObtenerRepositoryAsync<ApplicationUser>(new QueryComposer<ApplicationUser>());
             this.repoClaims = UDT.ObtenerRepositoryAsync<UserClaim>(new QueryComposer<UserClaim>());

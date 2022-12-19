@@ -28,7 +28,7 @@ namespace PIKA.Servicio.GestionDocumental.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseMySql("Server=localhost;Port=3306;Database=pika-ca;Uid=pika;Pwd=Pa$$w0rd;");
+            //optionsBuilder.UseMySql("Server=localhost;Port=3306;Database=pika-gd;Uid=pika;Pwd=Pa$$w0rd;");
             optionsBuilder.EnableSensitiveDataLogging();
             base.OnConfiguring(optionsBuilder);
         }

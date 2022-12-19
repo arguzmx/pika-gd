@@ -13,6 +13,7 @@ using PIKA.GD.API.Model;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Servicio.AplicacionPlugin;
+using PIKA.Servicio.GestionDocumental.Servicios;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
 
@@ -29,7 +30,9 @@ namespace PIKA.GD.API.Controllers.Sistema
         private IServicioInfoAplicacion servicioAplicacion;
         private IServicioSeguridadAplicaciones servicioSeguridad;
         private IServicioUsuarios servicioUsuarios;
+        private IServicioEventoAuditoriaActivo servicioEventoAuditoriaActivo;
         public SeguridadController(
+            IServicioEventoAuditoriaActivo servicioEventoAuditoriaActivo,
             IServicioSeguridadAplicaciones servicioSeguridad,
             IServicioUsuarios servicioUsuarios,
             ILogger<SeguridadController> logger,
@@ -39,6 +42,7 @@ namespace PIKA.GD.API.Controllers.Sistema
             this.servicioUsuarios = servicioUsuarios;
             this.logger = logger;
             this.servicioAplicacion = servicioAplicacion;
+            this.servicioEventoAuditoriaActivo = servicioEventoAuditoriaActivo;
         }
 
         [HttpGet("aplicaciones", Name = "GetPageAplicaciones")]
@@ -52,6 +56,30 @@ namespace PIKA.GD.API.Controllers.Sistema
             return Ok(data);
         }
 
+
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            servicioEventoAuditoriaActivo.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+        }
+
+        [HttpGet("eventosauditoria", Name = "GetEventosBitacora")]
+        [TypeFilter(typeof(AsyncACLActionFilter),
+            Arguments = new object[] { ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_AUDITORIA })]
+        public async Task<ActionResult<IEnumerable<EventoAuditoriaActivo>>> GetEventosBitacora()
+        {
+            var data = await servicioEventoAuditoriaActivo.ObtieneEventosActivos().ConfigureAwait(false);
+            return Ok(data);
+        }
+
+
+        [HttpPost("eventosauditoria", Name = "SetEventosBitacora")]
+        [TypeFilter(typeof(AsyncACLActionFilter),
+            Arguments = new object[] { ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_AUDITORIA })]
+        public async Task<ActionResult> PostEventosBitacora([FromBody] List<EventoAuditoriaActivo> eventos)
+        {
+            await servicioEventoAuditoriaActivo.ActualizaEventosActivos(eventos).ConfigureAwait(false);
+            return Ok();
+        }
 
         [HttpPost("permisos/aplicar", Name = "PostPermisosCrear")]
         [TypeFilter(typeof(AsyncACLActionFilter),

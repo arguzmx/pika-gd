@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Seguridad.Servicios
@@ -32,11 +33,11 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
         public async Task<List<Aplicacion>> ObtieneAplicaciones(string AppPath)
         {
-
-            return await cache.GetOrAddAsync(APP_CACHE_KEYS, async () =>
-            {
-                return await this.ObtieneAplicacionesEnsamblados(AppPath);
-            }, cacheExpiry);
+            return await this.ObtieneAplicacionesEnsamblados(AppPath);
+            //return await cache.GetOrAddAsync(APP_CACHE_KEYS, async () =>
+            //{
+            //    return await this.ObtieneAplicacionesEnsamblados(AppPath);
+            //}, cacheExpiry);
            
        }
 
@@ -61,15 +62,16 @@ namespace PIKA.Servicio.Seguridad.Servicios
                        TipoAdministradorModulo s = new TipoAdministradorModulo();
                         var instancia = assembly.CreateInstance(t.FullName);
                         Aplicacion tmp = ((IInformacionAplicacion)instancia).Info().Copia();
+
                         Aplicacion existente = l.Where(x => x.Id == tmp.Id).SingleOrDefault();
                         if(existente == null)
                         {
-                            l.Add(tmp.Copia());
+                            l.Add(tmp);
                         } else
                         {
-                            foreach(var m in tmp.Modulos)
+                            foreach(ModuloAplicacion m in tmp.Modulos)
                             {
-                                if ( existente.Modulos.Where(x=>x.Id == m.Id).Count() == 0)
+                                if (existente.Modulos.Where(x=>x.Id == m.Id).Count() == 0)
                                 {
                                     existente.Modulos.Add(m);
                                 }

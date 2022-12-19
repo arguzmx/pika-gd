@@ -56,6 +56,9 @@ namespace PIKA.GD.API.Controllers.Sistema
         public async Task<ActionResult<bool>> AplicacionActivada()
         {
             var valida = await this.registroPIKA.LicenciaValida();
+#if DEBUG
+            valida = true;
+#endif
             return Ok(valida);
         }
 

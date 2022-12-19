@@ -4,12 +4,17 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Bogus;
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using PIKA.Constantes.Aplicaciones.GestorDocumental;
+using PIKA.Constantes.Aplicaciones.Seguridad;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
 
@@ -24,20 +29,57 @@ namespace PIKA.Servicio.Seguridad.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<EventoAuditoriaActivo> repo;
-        private UnidadDeTrabajo<DbContextSeguridad> UDT;
-
-        public UsuarioAPI usuario { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public ContextoRegistroActividad RegistroActividad { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public PermisoAplicacion permisos { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public ServicioEventoAuditoriaActivo(
+         IAppCache cache,
+         IRegistroAuditoria registroAuditoria,
          IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
-         ILogger<ServicioEventoAuditoriaActivo> Logger) :
-            base(proveedorOpciones, Logger)
+         ILogger<ServicioLog> Logger) :
+            base(registroAuditoria, proveedorOpciones, Logger, 
+                 cache, ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_AUDITORIA)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
-            this.repo = UDT.ObtenerRepositoryAsync<EventoAuditoriaActivo>(new QueryComposer<EventoAuditoriaActivo>());
+            this.repo = UDT.ObtenerRepositoryAsync(new QueryComposer<EventoAuditoriaActivo>());
+        }
 
+        public async Task<List<EventoAuditoriaActivo>> ObtieneEventosActivos()
+        {
+            return await UDT.Context.EventosActivosAuditoria.Where(x => x.DominioId == RegistroActividad.DominioId && x.Auditar == true).ToListAsync();
+        }
+
+        public async Task ActualizaEventosActivos(List<EventoAuditoriaActivo> eventos)
+        {
+            foreach(var e in eventos)
+            {
+                EventoAuditoriaActivo tmp = UDT.Context.EventosActivosAuditoria.FirstOrDefault(x => x.DominioId == RegistroActividad.DominioId
+                    && x.UAId == RegistroActividad.UnidadOrgId && x.TipoEntidad == e.TipoEntidad && x.TipoEvento == e.TipoEvento 
+                    && x.AppId == e.AppId && x.ModuloId == e.ModuloId);
+                if(tmp == null )
+                {
+                    if(e.Auditar == true)
+                    {
+                        e.Id = System.Guid.NewGuid().ToString();
+                        e.DominioId = RegistroActividad.DominioId;
+                        e.UAId = RegistroActividad.UnidadOrgId;
+                        UDT.Context.EventosActivosAuditoria.Add(e);
+                        await UDT.Context.SaveChangesAsync();
+                    }
+                } else
+                {
+                    if(tmp.Auditar!= e.Auditar)
+                    {
+                        if(!e.Auditar)
+                        {
+                            UDT.Context.Entry(tmp).State = EntityState.Deleted;
+                        } else
+                        {
+                            tmp.Auditar = e.Auditar;
+                            UDT.Context.Entry(tmp).State = EntityState.Modified;
+                        }
+                        await UDT.Context.SaveChangesAsync();
+                    }
+                }
+            }
+            
         }
 
         public async Task<bool> Existe(Expression<Func<EventoAuditoriaActivo, bool>> predicado)
@@ -182,16 +224,10 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
-        public void EstableceContextoSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<EventoAuditoriaActivo> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
         {
             throw new NotImplementedException();
         }
-
 
 
         #endregion

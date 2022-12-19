@@ -419,7 +419,30 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             JArray arr = d.Id;
             var ids = arr.ToObject<List<string>>();
 
-            string sqls = @$"select t.* from {DBContextGestionDocumental.TablaActivosTransferencia} a
+            if(ids ==null || ids.Count ==0)
+            {
+                throw new ExDatosNoValidos();
+            }
+
+
+            string sqls = $@"SELECT t.* FROM gd$transferencia t
+inner join gd$activotransferencia at on t.Id = at.TransferenciaId
+where at.Id = '{ids[0]}'";
+
+            Transferencia tx = UDT.Context.Transferencias.FromSqlRaw(sqls).FirstOrDefault();
+            if(tx== null)
+            {
+                throw new EXNoEncontrado();
+            }
+
+
+            if(tx.EstadoTransferenciaId != EstadoTransferencia.ESTADO_ESPERA_APROBACION)
+            {
+                throw new ExDatosNoValidos("APICODE-TX-TRANSFERENCIA-NOENREVISION");
+            }
+
+
+            sqls = @$"select t.* from {DBContextGestionDocumental.TablaActivosTransferencia} a
 inner join {DBContextGestionDocumental.TablaActivos} t on a.ActivoId = t.Id
 where t.EnTransferencia =1;";
 
@@ -461,7 +484,7 @@ where t.EnTransferencia =1;";
                 case "aceptar-activos-tx":
 
                     sqls = @$"update {DBContextGestionDocumental.TablaActivosTransferencia} 
-set Aceptado=1, FechaVoto=UTC_DATE(), UsuarioReceptorId='{usuario.Id}' where Id In ({ids.MergeSQLStringList()})";
+set Aceptado=1, Declinado=0, FechaVoto=UTC_DATE(), UsuarioReceptorId='{usuario.Id}' where Id In ({ids.MergeSQLStringList()})";
                     await UDT.Context.Database.ExecuteSqlRawAsync(sqls);
 
                     r.MensajeId = $"{command}-ok";
@@ -471,7 +494,7 @@ set Aceptado=1, FechaVoto=UTC_DATE(), UsuarioReceptorId='{usuario.Id}' where Id 
 
                 case "declinar-activos-tx":
                     sqls = @$"update {DBContextGestionDocumental.TablaActivosTransferencia} 
-set Declinado=1, FechaVoto=UTC_DATE(), UsuarioReceptorId='{usuario.Id}', MotivoDeclinado='{(string)d.data.motivo}' 
+set Declinado=1, Aceptado=0, FechaVoto=UTC_DATE(), UsuarioReceptorId='{usuario.Id}', MotivoDeclinado='{(string)d.data.motivo}' 
 where Id In ({ids.MergeSQLStringList()})";
                     await UDT.Context.Database.ExecuteSqlRawAsync(sqls);
 

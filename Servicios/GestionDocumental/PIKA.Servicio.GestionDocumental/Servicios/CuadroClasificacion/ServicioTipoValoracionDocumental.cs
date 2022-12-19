@@ -167,7 +167,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 {
                     if (VerificarDominio())
                     {
-                        await seguridad.IdEnDominio(o.Id);
+                        await seguridad.IdEnDominio(o.DominioId);
                     }
 
                     // verifica que no exista un elemento asigando al catálogo

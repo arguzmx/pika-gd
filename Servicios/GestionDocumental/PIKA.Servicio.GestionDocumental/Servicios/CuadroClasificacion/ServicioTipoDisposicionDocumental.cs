@@ -168,7 +168,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                     }
 
                     // verifica que no exista un elemento asigando al catálogo
-                    if(!UDT.Context.EntradaClasificacion.Any(x=>x.TipoDisposicionDocumentalId == o.Id))
+                    if(UDT.Context.EntradaClasificacion.Any(x=>x.TipoDisposicionDocumentalId == o.Id))
                     {
                         throw new ExElementoExistente();
 

@@ -1,19 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
+﻿using LazyCache;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using PIKA.Infraestructura.Comun.Constantes;
+using PIKA.Constantes.Aplicaciones.Seguridad;
 using PIKA.Infraestructura.Comun.Interfaces;
-using PIKA.Infraestructura.Comun.Menus;
 using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Seguridad.Servicios
@@ -22,14 +17,15 @@ namespace PIKA.Servicio.Seguridad.Servicios
         IServicioInyectable, IServicioSeguridadAplicaciones
     {
         private IRepositorioAsync<PermisoAplicacion> repo;
-        private UnidadDeTrabajo<DbContextSeguridad> UDT;
 
         public ServicioSeguridadAplicaciones(
-        IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
-        ILogger<ServicioAplicacion> Logger
-        ) : base(proveedorOpciones, Logger)
+            IAppCache cache,
+            IRegistroAuditoria registroAuditoria,
+            IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
+            ILogger<ServicioLog> Logger
+         ) : base(registroAuditoria, proveedorOpciones, Logger,
+                 cache, ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_AUDITORIA)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<PermisoAplicacion>(new QueryComposer<PermisoAplicacion>());
         }
 

@@ -52,8 +52,9 @@ namespace PIKA.Servicio.Seguridad.Data.Configuracion
             builder.Property(x => x.TipoEvento).IsRequired();
             builder.Property(x => x.ModuloId).IsRequired().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.Auditar).IsRequired();
-            builder.Property(x => x.DominioId).IsRequired();
-            builder.Property(x => x.UAId).IsRequired();
+            builder.Property(x => x.DominioId).IsRequired().HasMaxLength(LongitudDatos.GUID); ;
+            builder.Property(x => x.UAId).IsRequired().HasMaxLength(LongitudDatos.GUID); ;
+            builder.Property(x => x.TipoEntidad).IsRequired().HasMaxLength(LongitudDatos.GUID); ;
             builder.HasIndex(i => new { i.DominioId, i.UAId });
 
         }
@@ -70,7 +71,7 @@ namespace PIKA.Servicio.Seguridad.Data.Configuracion
             builder.Property(x => x.ModuloId).IsRequired().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.AppId).ValueGeneratedNever().HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.PlantillaEvento).IsRequired(false);
-            builder.Property(x => x.Desripción).IsRequired().HasMaxLength(LongitudDatos.Descripcion);
+            builder.Property(x => x.Descripcion).IsRequired().HasMaxLength(LongitudDatos.Descripcion);
         }
     }
 }

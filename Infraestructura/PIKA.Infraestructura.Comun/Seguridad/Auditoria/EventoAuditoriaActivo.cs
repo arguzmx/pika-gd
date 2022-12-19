@@ -36,6 +36,13 @@ namespace PIKA.Infraestructura.Comun.Seguridad
         /// </summary>
         public string ModuloId { get; set; }
 
+
+        /// <summary>
+        /// Entidad emisora del evento
+        /// </summary>
+        public string TipoEntidad { get; set; }
+
+
         /// <summary>
         /// Identificador único del tipo de evento de acuerdo al orígen, 
         /// es un catálogo que publica la fuente, puede baserse en un ENUM al interior del servicio

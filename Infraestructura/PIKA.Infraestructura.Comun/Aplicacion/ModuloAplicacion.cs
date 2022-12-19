@@ -1,5 +1,7 @@
-﻿using RepositorioEntidades;
+﻿using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
+using RepositorioEntidades;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using System.Xml.Serialization;
 
@@ -116,7 +118,8 @@ namespace PIKA.Infraestructura.Comun
         [JsonIgnore]
         public ICollection<TipoAdministradorModulo> TiposAdministrados { get; set; }
 
-
+        [NotMapped]
+        public ICollection<TipoEventoAuditoria> EventosAuditables { get; set; }
 
     }
 }

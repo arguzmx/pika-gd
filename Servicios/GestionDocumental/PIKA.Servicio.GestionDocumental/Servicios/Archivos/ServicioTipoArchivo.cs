@@ -37,7 +37,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             IOptions<ConfiguracionServidor> ConfiguracionServidor,
             IRegistroAuditoria registroAuditoria, IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
             ILogger<ServicioLog> Logger) : base(registroAuditoria, proveedorOpciones, Logger,
-            cache, ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_ARCHIVOS)
+            cache, ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_CATALOGOSCC)
         {
             this.ConfiguracionServidor = ConfiguracionServidor.Value;
             this.repo = UDT.ObtenerRepositoryAsync<TipoArchivo>(new QueryComposer<TipoArchivo>());

@@ -330,7 +330,7 @@ namespace PIKA.Infraestructura.Comun.Seguridad.Auditoria
         public virtual async Task<EventoAuditoria> RegistraEvento(int tipoEvento, bool Exitoso = true, string Delta = null, int? TipoFalla = null)
         {
 
-            if (!EventosActivos.Any(e => e.TipoEvento == tipoEvento && e.AppId == this.APP_ID && e.ModuloId == this.MODULO_ID))
+            if (!EventosActivos.Any(e => e.TipoEvento == tipoEvento && e.AppId == this.APP_ID && e.ModuloId == this.MODULO_ID && e.TipoEntidad == IdEntidad))
             {
                 return null;
             }

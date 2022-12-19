@@ -53,15 +53,15 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                      {
                          new TipoEventoAuditoria() {
                              TipoEvento = (int)EventosAuditables.Crear,
-                             Desripción ="Notifica la creación de activos"
+                             Descripcion ="Notifica la creación de activos"
                          },
                          new TipoEventoAuditoria() {
                              TipoEvento = (int)EventosAuditables.Actualiza,
-                             Desripción ="Notifica la actualización de activos"
+                             Descripcion ="Notifica la actualización de activos"
                          },
                          new TipoEventoAuditoria() {
                              TipoEvento = (int)EventosAuditables.Eliminar,
-                             Desripción ="Notifica la eliminación de activos"
+                             Descripcion ="Notifica la eliminación de activos"
                          },
                      };
         }

@@ -1,4 +1,5 @@
-﻿using PIKA.Modelo.GestorDocumental;
+﻿using Microsoft.EntityFrameworkCore;
+using PIKA.Modelo.GestorDocumental;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,6 +25,36 @@ namespace PIKA.Servicio.GestionDocumental.Data
 
             TipoValoracionDocumental t = new TipoValoracionDocumental();
             List<TipoValoracionDocumental> tipos = t.Seed();
+
+            if(dbContext.Database.GetDbConnection().State == System.Data.ConnectionState.Closed)
+            {
+                dbContext.Database.GetDbConnection().Open();
+            }
+
+
+            // Actualiza los catálogos al nuevo esquema de seguridad
+            var cmd = dbContext.Database.GetDbConnection().CreateCommand();
+            cmd.CommandText = $"UPDATE {DBContextGestionDocumental.TablaTipoAmpliacion} SET DominioId='principal', UOId='principal' WHERE DominioId IS NULL";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = $"UPDATE {DBContextGestionDocumental.TablaTiposArchivo} SET DominioId='principal', UOId='principal' WHERE DominioId IS NULL";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = $"UPDATE {DBContextGestionDocumental.TablaTiposArchivo} SET Tipo=1 WHERE Id = 'a-tra'";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = $"UPDATE {DBContextGestionDocumental.TablaTiposArchivo} SET Tipo=2 WHERE Id = 'a-con'";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = $"UPDATE {DBContextGestionDocumental.TablaTiposArchivo} SET Tipo=3 WHERE Id = 'a-his'";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = $"UPDATE {DBContextGestionDocumental.TablaTipoDisposicionDocumental} SET DominioId='principal', UOId='principal' WHERE DominioId IS NULL";
+            cmd.ExecuteNonQuery();
+
+            cmd.CommandText = $"UPDATE {DBContextGestionDocumental.TablaTipoValoracionDocumental} SET DominioId='principal', UOId='principal' WHERE DominioId IS NULL";
+            cmd.ExecuteNonQuery();
+
 
 
             foreach (TipoValoracionDocumental tipo in tipos)

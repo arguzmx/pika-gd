@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PIKA.Servicio.Seguridad;
 
-namespace PIKA.Servicio.Seguridad.Data.Migrations
+namespace PIKA.Servicio.Seguridad.data.migrations
 {
     [DbContext(typeof(DbContextSeguridad))]
-    partial class DbContextSeguridadModelSnapshot : ModelSnapshot
+    [Migration("20221217151043_EventosAuditoria")]
+    partial class EventosAuditoria
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,8 +204,7 @@ namespace PIKA.Servicio.Seguridad.Data.Migrations
 
                     b.Property<string>("DominioId")
                         .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<string>("ModuloId")
                         .IsRequired()
@@ -211,9 +212,7 @@ namespace PIKA.Servicio.Seguridad.Data.Migrations
                         .HasMaxLength(128);
 
                     b.Property<string>("TipoEntidad")
-                        .IsRequired()
-                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
-                        .HasMaxLength(128);
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<int>("TipoEvento")
                         .HasColumnType("int");

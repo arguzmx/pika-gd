@@ -3,6 +3,7 @@ using JsonDiffPatchDotNet.Formatters.JsonPatch;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 
 namespace PIKA.Infraestructura.Comun.Seguridad.Auditoria
@@ -41,31 +42,25 @@ namespace PIKA.Infraestructura.Comun.Seguridad.Auditoria
             };
         }
 
-        public static List<TipoEventoAuditoria> ObtieneTiposEvento<T>(string  AppId, string ModuloId, string Nombre, bool TodosComunes = true, List<EventosComunesAuditables> EventosIndividuales = null )
+        public static List<TipoEventoAuditoria> EventoComunes<T>(this string PLuralEntidad, string AppId, string ModuloId)
         {
-            List<TipoEventoAuditoria> l = new List<TipoEventoAuditoria>();
 
+            Type t = typeof(T);
 
-
-            if(TodosComunes)
+            List<TipoEventoAuditoria> l = new List<TipoEventoAuditoria>
             {
-                
-            } else
-            {
-                if (EventosIndividuales != null)
-                {
-
-                }
-            }
-
-
-
+                CreaTipoEvento(AppId, ModuloId, EventosComunesAuditables.Crear.GetHashCode(), $"C-{PLuralEntidad}", t.Name),
+                CreaTipoEvento(AppId, ModuloId, EventosComunesAuditables.Actualizar.GetHashCode(), $"U-{PLuralEntidad}", t.Name),
+                CreaTipoEvento(AppId, ModuloId, EventosComunesAuditables.Eliminar.GetHashCode(), $"D-{PLuralEntidad}", t.Name),
+                CreaTipoEvento(AppId, ModuloId, EventosComunesAuditables.Leer.GetHashCode(), $"R-{PLuralEntidad}", t.Name),
+            };
+            //l.Add(CreaTipoEvento(AppId, ModuloId, EventosComunesAuditables.Purgar.GetHashCode(), $"Purgar {PLuralEntidad}"));
             return l;
         }
 
-        public static TipoEventoAuditoria CreaTipoEvento(string AppId, string ModuloId, int Tipo, string Descripcion)
+        public static TipoEventoAuditoria CreaTipoEvento(string AppId, string ModuloId, int Tipo, string Descripcion, string TipoEntidad)
         {
-            return  new TipoEventoAuditoria() { AppId = AppId, Desripcion = Descripcion, ModuloId = ModuloId, PlantillaEvento = null, TipoEvento = Tipo };
+            return  new TipoEventoAuditoria() { AppId = AppId, Descripcion = Descripcion, ModuloId = ModuloId, PlantillaEvento = null, TipoEvento = Tipo, TipoEntidad = TipoEntidad };
         }
 
     }

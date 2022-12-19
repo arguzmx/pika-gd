@@ -4,12 +4,15 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using PIKA.Constantes.Aplicaciones.Seguridad;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
 
@@ -24,20 +27,14 @@ namespace PIKA.Servicio.Seguridad.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<EventoAuditoria> repo;
-        private UnidadDeTrabajo<DbContextSeguridad> UDT;
-
-        public UsuarioAPI usuario { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public ContextoRegistroActividad RegistroActividad { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public PermisoAplicacion permisos { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
         public ServicioEventoAuditoria(
+         IAppCache cache,
          IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
-         ILogger<ServicioEventoAuditoria> Logger) :
-            base(proveedorOpciones, Logger)
+         ILogger<ServicioLog> Logger
+         ) : base(null, proveedorOpciones, Logger,
+                 cache, ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_AUDITORIA)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
-            this.repo = UDT.ObtenerRepositoryAsync<EventoAuditoria>(new QueryComposer<EventoAuditoria>());
-
+            this.repo = UDT.ObtenerRepositoryAsync(new QueryComposer<EventoAuditoria>());
         }
 
         public async Task<bool> Existe(Expression<Func<EventoAuditoria, bool>> predicado)
@@ -179,7 +176,9 @@ namespace PIKA.Servicio.Seguridad.Servicios
         {
             //var r = await this.UDT.Context.EventosActivosAuditoria.Where(e=>e.DominioId == DominioId && e.UAId == OUId && e.Auditable == true).ToListAsync();
             //return r;
-            throw new NotImplementedException();
+            List<EventoAuditoriaActivo> l = new List<EventoAuditoriaActivo>();
+            return l;
+
         }
 
 

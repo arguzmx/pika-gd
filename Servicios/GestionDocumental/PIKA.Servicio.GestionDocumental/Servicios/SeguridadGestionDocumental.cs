@@ -43,18 +43,72 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                      {
                          new TipoEventoAuditoria() {
                              TipoEvento = (int)EventosComunesAuditables.Crear,
-                             Desripción ="Notifica la creación de elementos del cuadro de clasificación"
+                             Descripcion ="Notifica la creación de elementos del cuadro de clasificación"
                          },
                          new TipoEventoAuditoria() {
-                             TipoEvento = (int)EventosComunesAuditables.Actualiza,
-                             Desripción ="Notifica la actualización de elementos del cuadro de clasificación"
+                             TipoEvento = (int)EventosComunesAuditables.Actualizar,
+                             Descripcion ="Notifica la actualización de elementos del cuadro de clasificación"
                          },
                          new TipoEventoAuditoria() {
                              TipoEvento = (int)EventosComunesAuditables.Eliminar,
-                             Desripción ="Notifica la eliminación de cuadros de clasificación del cuadro de clasificación"
+                             Descripcion ="Notifica la eliminación de cuadros de clasificación del cuadro de clasificación"
                          },
                      };
         }
+
+
+        public async Task<bool> AccesoCacheArchivo(string ArchivoId)
+        {
+            var cached = await cache.GetAsync<List<string>>($"archivo-{usuario.Id}");
+            bool valid = false;
+            bool search = false;
+
+            if (cached != null)
+            {
+                if (cached.IndexOf(ArchivoId) >= 0)
+                {
+                    valid = true;
+                }
+                else if (cached.IndexOf($"~{ArchivoId}") >= 0)
+                {
+                    valid = false;
+                }
+                else
+                {
+                    search = true;
+                }
+            }
+            else
+            {
+                search = true;
+                cached = new List<string>();
+            }
+
+            if (search)
+            {
+                var ca = UDT.Context.Archivos.FirstOrDefault(x => x.Id == ArchivoId);
+                if (ca != null)
+                {
+                    if (usuario.Accesos.Any(x => x.OU.Equals(ca.OrigenId)))
+                    {
+                        cached.Add(ArchivoId);
+                        valid = true;
+                    }
+                    else
+                    {
+                        cached.Add($"~{ArchivoId}");
+                    }
+                }
+                else
+                {
+                    cached.Add($"~{ArchivoId}");
+                }
+                cache.Add($"archivo-{usuario.Id}", cached, DateTimeOffset.Now.AddMinutes(5));
+            }
+
+            return valid;
+        }
+
 
         public async Task<bool> AccesoCacheContenedorAlmacen(string ContenedorAlmacenId)
         {
@@ -599,7 +653,7 @@ where u.Id = '{usuario.Id}' and ua.OrigenId in ({ASQLList(usuario.Accesos.Select
                 }
             }
 
-            return unidades;
+            return unidades == null ? new List<string>() : unidades;
         }
 
 
@@ -612,7 +666,7 @@ where u.Id = '{usuario.Id}' and ua.OrigenId in ({ASQLList(usuario.Accesos.Select
                 if (ArchivosUsuario == null)
                 {
                     string sqls = $@"SELECT DISTINCT a.*  FROM gd$archivo a 
-INNER JOIN  gd$permisosrchivo pa 
+INNER JOIN  gd$permisosrchivo pa ON a.Id = pa.ArchivoId  
 INNER JOIN org$usuarios_rol  r ON r.RolId = pa.DestinatarioId
 INNER JOIN aspnetusers u ON r.ApplicationUserId = u.Id
 WHERE u.Id = '{usuario.Id}' AND a.OrigenId in ({ASQLList(usuario.Accesos.Select(a => a.OU).ToList())})";
@@ -627,7 +681,7 @@ WHERE u.Id = '{usuario.Id}' AND a.OrigenId in ({ASQLList(usuario.Accesos.Select(
                 }
             }
 
-            return ArchivosUsuario;
+            return ArchivosUsuario == null ? new List<string>() : ArchivosUsuario;
         }
 
 

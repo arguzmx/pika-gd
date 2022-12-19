@@ -18,6 +18,7 @@ using PIKA.Constantes.Aplicaciones.GestorDocumental;
 using LazyCache;
 using Newtonsoft.Json;
 using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
+using DocumentFormat.OpenXml.Vml.Office;
 
 namespace PIKA.Servicio.GestionDocumental.Servicios
 {
@@ -49,7 +50,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task<PermisosArchivo> CrearAsync(PermisosArchivo entity, CancellationToken cancellationToken = default)
         {
             seguridad.EstableceDatosProceso<PermisosArchivo>();
-            await seguridad.AccesoValidoPermisosArchivo(entity);
+
+            var ok = await seguridad.AccesoCacheArchivo(entity.ArchivoId);
+            if (!ok)
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
 
             var permiso = await UDT.Context.PermisosArchivo.Where(x => x.DestinatarioId == entity.DestinatarioId
                 && x.ArchivoId == entity.ArchivoId).SingleOrDefaultAsync();
@@ -88,7 +94,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         public async Task ActualizarAsync(PermisosArchivo entity)
         {
             seguridad.EstableceDatosProceso<PermisosArchivo>();
-            await seguridad.AccesoValidoPermisosArchivo(entity);
+            
+            var ok = await seguridad.AccesoCacheArchivo(entity.ArchivoId);
+            if (!ok)
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
 
             PermisosArchivo o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
@@ -96,7 +107,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                 throw new EXNoEncontrado(entity.Id);
             }
-            string original = JsonConvert.SerializeObject(o);
+            string original = JsonConvert.SerializeObject(o.Copia());
 
             o.ActualizarAcervo = entity.ActualizarAcervo;
             o.CrearAcervo = entity.CrearAcervo;
@@ -111,7 +122,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
-            await seguridad.RegistraEventoActualizar( o.Id, "*", original.JsonDiff(JsonConvert.SerializeObject(o)));
+            await seguridad.RegistraEventoActualizar( o.Id, "*", original.JsonDiff(JsonConvert.SerializeObject(o.Copia())));
         }
 
         private Consulta GetDefaultQuery(Consulta query)
@@ -160,8 +171,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 PermisosArchivo c = await this.repo.UnicoAsync(x => x.Id == Id);
                 if (c != null)
                 {
-                   await seguridad.AccesoValidoPermisosArchivo(c);     
-                   listaEliminados.Add(c);
+                    var ok = await seguridad.AccesoCacheArchivo(c.ArchivoId);
+                    if (!ok)
+                    {
+                        await seguridad.EmiteDatosSesionIncorrectos();
+                    }
+                    listaEliminados.Add(c);
                 }
             }
 
@@ -194,7 +209,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             seguridad.EstableceDatosProceso<PermisosArchivo>();
             PermisosArchivo a = await this.repo.UnicoAsync(predicado);
-            await seguridad.AccesoValidoPermisosArchivo(a);
+            var ok = await seguridad.AccesoCacheArchivo(a.ArchivoId);
+            if (!ok)
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
             return a.Copia();
         }
 

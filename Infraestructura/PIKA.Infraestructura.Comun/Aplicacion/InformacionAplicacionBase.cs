@@ -23,8 +23,13 @@ namespace PIKA.Infraestructura.Comun
 
             foreach (var item in GetModulos())
             {
-                l.Add(ElementoAplicacion.CreaModuloTipico(appId, moduloBase,
-                    item.IdModulo, item.Titulo, item.Descripcion, item.Tipos));
+                ModuloAplicacion m = ElementoAplicacion.CreaModuloTipico(appId, moduloBase,
+                    item.IdModulo, item.Titulo, item.Descripcion, item.Tipos);
+
+
+                m.EventosAuditables = item.EventosAuditables;
+
+                l.Add(m);
             }
 
             return l;
