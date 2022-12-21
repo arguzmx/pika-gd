@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace PIKA.Infraestructura.Comun.Seguridad
@@ -90,5 +91,8 @@ namespace PIKA.Infraestructura.Comun.Seguridad
         /// </summary>
         public string Delta { get; set; }
 
+        [NotMapped]
+        public DateTime Fecha { get { return new DateTime(this.Id); }  set {  }  }
+       
     }
 }

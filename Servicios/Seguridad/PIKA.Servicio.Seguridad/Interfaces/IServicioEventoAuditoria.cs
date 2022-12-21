@@ -13,5 +13,6 @@ namespace PIKA.Servicio.Seguridad.Interfaces
     public interface IServicioEventoAuditoria : IServicioRepositorioAsync<EventoAuditoria, string>,
         IServicioAutenticado<EventoAuditoria>
     {
+        Task<IPaginado<EventoAuditoria>> Buscar(QueryBitacora query);
     }
 }

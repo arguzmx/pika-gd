@@ -136,7 +136,12 @@ namespace PIKA.Servicio.Seguridad.Modelos
             gd.Hijos.Add(el);
 
 
-            el = CreaElemento(40, "", "Permisos", "/pages/bitacora-config");
+            el = CreaElemento(40, "", "Configuración bitácora", "/pages/bitacora-config");
+            el.TokenApp = ConstantesAppSeguridad.APP_ID;
+            el.TokenMod = ConstantesAppSeguridad.MODULO_APLICACIONES;
+            gd.Hijos.Add(el);
+
+            el = CreaElemento(35, "", "Bitácora sistema", "/pages/bitacora");
             el.TokenApp = ConstantesAppSeguridad.APP_ID;
             el.TokenMod = ConstantesAppSeguridad.MODULO_APLICACIONES;
             gd.Hijos.Add(el);

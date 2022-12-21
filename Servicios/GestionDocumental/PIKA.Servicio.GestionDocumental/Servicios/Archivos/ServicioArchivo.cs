@@ -88,7 +88,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             await seguridad.AccesoValidoArchivo(entity);
 
             Archivo o = await this.repo.UnicoAsync(x => x.Id == entity.Id && x.OrigenId == entity.OrigenId);
-            string original = System.Text.Json.JsonSerializer.Serialize(o);
+            string original = o.Flat();
 
             if (o == null)
             {
@@ -115,11 +115,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
-            string delta = original.JsonDiff(JsonConvert.SerializeObject(o));
-
-            await seguridad.RegistraEventoActualizar(o.Id,  o.Nombre, original.JsonDiff(JsonConvert.SerializeObject(o)));
+            await seguridad.RegistraEventoActualizar(o.Id,  o.Nombre, original.JsonDiff(o.Flat()));
             
         }
+
+        
 
         private Consulta GetDefaultQuery(Consulta query)
         {

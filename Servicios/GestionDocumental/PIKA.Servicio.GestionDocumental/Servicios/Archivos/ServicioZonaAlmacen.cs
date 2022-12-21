@@ -90,7 +90,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new EXNoEncontrado(entity.Id);
             }
 
-            string original = JsonConvert.SerializeObject(o);
+            string original = o.Flat();
 
             if (await Existe(x =>
             x.Id != entity.Id && x.AlmacenArchivoId == o.AlmacenArchivoId
@@ -104,7 +104,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
-            await seguridad.RegistraEventoActualizar( o.Id, o.Nombre, original.JsonDiff(JsonConvert.SerializeObject(o)));
+            await seguridad.RegistraEventoActualizar( o.Id, o.Nombre, original.JsonDiff(o.Flat()));
 
         }
         private Consulta GetDefaultQuery(Consulta query)

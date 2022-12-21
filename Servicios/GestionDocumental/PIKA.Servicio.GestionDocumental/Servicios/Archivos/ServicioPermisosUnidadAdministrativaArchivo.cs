@@ -59,7 +59,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             if (permiso != null)
             {
-                string original = JsonConvert.SerializeObject(permiso);
+                string original = permiso.Flat();
 
                 permiso.ActualizarAcervo = entity.ActualizarAcervo;
                 permiso.CrearAcervo = entity.CrearAcervo;
@@ -67,7 +67,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 permiso.LeerAcervo = entity.LeerAcervo;
                 UDT.Context.Entry(permiso).State = EntityState.Modified;
                 entity = permiso;
-                await seguridad.RegistraEventoActualizar(entity.Id, "*", original.JsonDiff(JsonConvert.SerializeObject(entity)));
+                await seguridad.RegistraEventoActualizar(entity.Id, "*", original.JsonDiff(entity.Flat()));
             }
             else
             {
@@ -93,7 +93,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
 
             await seguridad.AccesoCacheUnidadesAdministrativas(o.UnidadAdministrativaArchivoId);
-            string original = JsonConvert.SerializeObject(o);
+            string original = o.Flat();
             o.ActualizarAcervo = entity.ActualizarAcervo;
             o.CrearAcervo = entity.CrearAcervo;
             o.ElminarAcervo = entity.ElminarAcervo;
@@ -102,7 +102,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
-            await seguridad.RegistraEventoActualizar(entity.Id, "*", original.JsonDiff(JsonConvert.SerializeObject(o)));
+            await seguridad.RegistraEventoActualizar(entity.Id, "*", original.JsonDiff(o.Flat()));
         }
 
 

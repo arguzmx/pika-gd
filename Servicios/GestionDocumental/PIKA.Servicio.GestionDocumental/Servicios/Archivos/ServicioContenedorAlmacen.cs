@@ -131,7 +131,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 await seguridad.AccesoValidoZonaAlmacen(z);
             }
 
-            string original = JsonConvert.SerializeObject(o);
+            string original = o.Flat();
 
 
             string pAnterior = o.PosicionAlmacenId;
@@ -156,7 +156,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
-            await seguridad.RegistraEventoActualizar(o.Id, o.Nombre, original.JsonDiff(JsonConvert.SerializeObject(o)));
+            await seguridad.RegistraEventoActualizar(o.Id, o.Nombre, original.JsonDiff(o.Flat()));
 
             if (pActual != pAnterior)
             {

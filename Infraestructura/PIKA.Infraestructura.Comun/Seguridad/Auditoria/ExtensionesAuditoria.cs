@@ -1,15 +1,64 @@
 ﻿using JsonDiffPatchDotNet;
 using JsonDiffPatchDotNet.Formatters.JsonPatch;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace PIKA.Infraestructura.Comun.Seguridad.Auditoria
 {
     public static class ExtensionesAuditoria
     {
+        public static JsonSerializerSettings FlatSettings(int depth =1)
+        {
+            return new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, MaxDepth = depth, 
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
+        }
+
+        /// <summary>
+        /// Serializa removiendo las propoedades nulas 
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="depth"></param>
+        /// <param name="NulificarColecciones"></param>
+        /// <returns></returns>
+        public static string Flat(this object o, int depth = 1, bool NulificarColecciones = true) 
+        {
+            o = Nulificar(o, NulificarColecciones);
+            return JsonConvert.SerializeObject(o, FlatSettings(depth));
+        }
+
+        /// <summary>
+        /// ASigna como null todos las propiedades que no están en el espacio de nombres System
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="NulificarColecciones"></param>
+        /// <returns></returns>
+        public static object Nulificar(object o, bool NulificarColecciones = true)
+        {
+            PropertyInfo[] info = o.GetType().GetProperties();
+            foreach(var p in info)
+            {
+                if (!p.PropertyType.Namespace.Equals("System"))
+                {
+                    if (p.PropertyType.Namespace.StartsWith("System.Collections"))
+                    {
+                        if (NulificarColecciones)
+                        {
+                            p.SetValue(o, null);
+                        }
+
+                    } else
+                    {
+                        p.SetValue(o, null);
+                    }
+                }
+            }
+
+            return o;
+        }
+
         /// <summary>
         /// Regresa la diferencia de la serialización JSON para los objetos
         /// </summary>
@@ -20,14 +69,8 @@ namespace PIKA.Infraestructura.Comun.Seguridad.Auditoria
         {
             var left = JObject.Parse(original);
             var right = JObject.Parse(modificado);
-            var patch = new JsonDiffPatch().Diff(left, right);
-            //var formatter = new JsonDeltaFormatter();
-            //var operations = formatter.Format(patch);
-
-            //if (operations.Count> 0)
-            //{
-            //    return JsonConvert.SerializeObject(operations);
-            //}
+            var patch = new JsonDiffPatch(new Options() {  TextDiff = TextDiffMode.Efficient }).Diff(left, right);
+            var formatter = new JsonDeltaFormatter();
             return (patch == null ? null : JsonConvert.SerializeObject(patch));
         }
 

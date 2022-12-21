@@ -93,7 +93,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             await seguridad.IdEnUnidadOrg(o.OrigenId);
 
-            string original = JsonConvert.SerializeObject(o.Copia());
+            string original = o.Flat();
 
             if (await Existe(x => x.UnidadAdministrativa.Equals(entity.UnidadAdministrativa, StringComparison.InvariantCultureIgnoreCase)
                && x.Id != entity.Id && x.OrigenId.Equals(entity.OrigenId, StringComparison.InvariantCultureIgnoreCase)
@@ -107,7 +107,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
-            await seguridad.RegistraEventoActualizar(o.Id, "*", original.JsonDiff(JsonConvert.SerializeObject(o)));
+            await seguridad.RegistraEventoActualizar(o.Id, "*", original.JsonDiff(o.Flat()));
         }
 
 

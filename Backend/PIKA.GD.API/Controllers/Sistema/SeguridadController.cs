@@ -12,6 +12,7 @@ using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Modelo.Seguridad;
 using PIKA.Servicio.AplicacionPlugin;
 using PIKA.Servicio.GestionDocumental.Servicios;
 using PIKA.Servicio.Seguridad.Interfaces;
@@ -31,18 +32,21 @@ namespace PIKA.GD.API.Controllers.Sistema
         private IServicioSeguridadAplicaciones servicioSeguridad;
         private IServicioUsuarios servicioUsuarios;
         private IServicioEventoAuditoriaActivo servicioEventoAuditoriaActivo;
+        private IServicioEventoAuditoria servicioEventoAuditoria;
         public SeguridadController(
             IServicioEventoAuditoriaActivo servicioEventoAuditoriaActivo,
             IServicioSeguridadAplicaciones servicioSeguridad,
             IServicioUsuarios servicioUsuarios,
             ILogger<SeguridadController> logger,
-            IServicioInfoAplicacion servicioAplicacion)
+            IServicioInfoAplicacion servicioAplicacion,
+            IServicioEventoAuditoria servicioEventoAuditoria)
         {
             this.servicioSeguridad = servicioSeguridad;
             this.servicioUsuarios = servicioUsuarios;
             this.logger = logger;
             this.servicioAplicacion = servicioAplicacion;
             this.servicioEventoAuditoriaActivo = servicioEventoAuditoriaActivo;
+            this.servicioEventoAuditoria = servicioEventoAuditoria;
         }
 
         [HttpGet("aplicaciones", Name = "GetPageAplicaciones")]
@@ -60,6 +64,7 @@ namespace PIKA.GD.API.Controllers.Sistema
         public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
         {
             servicioEventoAuditoriaActivo.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+            servicioEventoAuditoria.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
         }
 
         [HttpGet("eventosauditoria", Name = "GetEventosBitacora")]
@@ -71,7 +76,6 @@ namespace PIKA.GD.API.Controllers.Sistema
             return Ok(data);
         }
 
-
         [HttpPost("eventosauditoria", Name = "SetEventosBitacora")]
         [TypeFilter(typeof(AsyncACLActionFilter),
             Arguments = new object[] { ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_AUDITORIA })]
@@ -80,6 +84,16 @@ namespace PIKA.GD.API.Controllers.Sistema
             await servicioEventoAuditoriaActivo.ActualizaEventosActivos(eventos).ConfigureAwait(false);
             return Ok();
         }
+
+        [HttpPost("eventosauditoria/buscar", Name = "GetQueryBitacora")]
+        [TypeFilter(typeof(AsyncACLActionFilter),
+        Arguments = new object[] { ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_AUDITORIA })]
+        public async Task<ActionResult<IPaginado<EventoAuditoria>>> GetQueryBitacora([FromBody] QueryBitacora q)
+        {
+            var data = await servicioEventoAuditoria.Buscar(q).ConfigureAwait(false);
+            return Ok(data);
+        }
+
 
         [HttpPost("permisos/aplicar", Name = "PostPermisosCrear")]
         [TypeFilter(typeof(AsyncACLActionFilter),

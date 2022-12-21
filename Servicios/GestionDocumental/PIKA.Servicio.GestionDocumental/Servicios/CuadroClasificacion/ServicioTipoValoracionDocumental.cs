@@ -137,11 +137,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                 throw new EXNoEncontrado(entity.Id);
             }
-            string original = JsonConvert.SerializeObject(tmp);
+            string original = tmp.Flat();
             tmp.Nombre = entity.Nombre;
             UDT.Context.Entry(tmp).State = EntityState.Modified;
             UDT.SaveChanges();
-            await seguridad.RegistraEventoActualizar( entity.Id, entity.Nombre, original.JsonDiff(JsonConvert.SerializeObject(tmp)));
+            await seguridad.RegistraEventoActualizar( entity.Id, entity.Nombre, original.JsonDiff(tmp.Flat()));
         }
 
 

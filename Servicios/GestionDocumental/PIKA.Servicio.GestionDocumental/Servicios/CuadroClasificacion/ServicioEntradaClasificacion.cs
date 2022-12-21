@@ -151,7 +151,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
                 EntradaClasificacion o = await repo.UnicoAsync(x => x.Id == entity.Id && x.Eliminada == false);
 
-                string original = System.Text.Json.JsonSerializer.Serialize(o);
+                string original = o.Flat();
 
                 if (!await Existelemento(x => x.Id == entity.ElementoClasificacionId &&
                         x.Eliminada == false))
@@ -214,7 +214,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
                 UDT.Context.SaveChanges();
 
-                await seguridad.RegistraEventoActualizar(o.Id, o.Nombre, original.JsonDiff(JsonConvert.SerializeObject(o)));
+                await seguridad.RegistraEventoActualizar(o.Id, o.Nombre, original.JsonDiff(o.Flat()));
 
         }
 
@@ -354,12 +354,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             foreach (var c in listaEliminados)
             {
-                string original = System.Text.Json.JsonSerializer.Serialize(c);
+                string original = c.Flat();
                 c.Nombre = await RestaurarNombre(c.Clave, c.ElementoClasificacionId, c.Id, c.Nombre);
                 c.Eliminada = false;
                 UDT.Context.Entry(c).State = EntityState.Modified;
 
-                await seguridad.RegistraEventoActualizar( c.Id, c.Nombre, original.JsonDiff(JsonConvert.SerializeObject(c)));
+                await seguridad.RegistraEventoActualizar( c.Id, c.Nombre, original.JsonDiff(c.Flat()));
             }
 
             if (listaEliminados.Count > 0)

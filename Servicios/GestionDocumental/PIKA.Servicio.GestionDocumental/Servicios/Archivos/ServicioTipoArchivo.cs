@@ -102,7 +102,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             if (o == null)
                 throw new EXNoEncontrado(entity.Id);
             
-            string original = JsonConvert.SerializeObject(o);
+            string original = o.Flat();
 
             if (VerificarDominio())
             {
@@ -131,7 +131,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
-            await seguridad.RegistraEventoActualizar(o.Id, o.Nombre, original.JsonDiff(JsonConvert.SerializeObject(o)));
+            await seguridad.RegistraEventoActualizar(o.Id, o.Nombre, original.JsonDiff(o.Flat()));
         }
 
 

@@ -188,7 +188,7 @@ on s.Id = a.Id where s.TemaId = '{TemaId}';";
 
             await seguridad.AccesoValidoPrestamo(o);
 
-            string original = System.Text.Json.JsonSerializer.Serialize(o.Copia());
+            string original = o.Flat();
 
             if (await Existe(x =>
             x.Id != entity.Id && x.Folio == entity.Folio))
@@ -202,7 +202,7 @@ on s.Id = a.Id where s.TemaId = '{TemaId}';";
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
-            await seguridad.RegistraEventoActualizar( o.Id, o.Folio, original.JsonDiff(JsonConvert.SerializeObject(o.Copia())));
+            await seguridad.RegistraEventoActualizar( o.Id, o.Folio, original.JsonDiff(o.Flat()));
         }
 
 
@@ -379,7 +379,7 @@ on s.Id = a.Id where s.TemaId = '{TemaId}';";
             if (p != null)
             {
                 await seguridad.AccesoValidoPrestamo(p);
-                string original = JsonConvert.SerializeObject(p.Copia());
+                string original = p.Flat();
 
                 if (p.Entregado == false || p.Devuelto == true)
                 {
@@ -401,10 +401,10 @@ on s.Id = a.Id where s.TemaId = '{TemaId}';";
                 sql = @$"update {DBContextGestionDocumental.TablaActivosPrestamo} set Devuelto =1, FechaDevolucion='{p.FechaDevolucion.Value.ToString("s")}' where PrestamoId = '{p.Id}'";
                 await this.UDT.Context.Database.ExecuteSqlRawAsync(sql);
 
+                var e = SeguridadGestionDocumental.EventosAdicionales.DevolverPrestamo.GetHashCode();
+                await seguridad.RegistraEvento(e, true);
 
-
-                await seguridad.RegistraEventoActualizar( p.Id, p.Folio, original.JsonDiff(JsonConvert.SerializeObject(p.Copia())));
-
+                await seguridad.RegistraEventoActualizar(p.Id, p.Folio, original.JsonDiff(p.Flat()));
             }
             else
             {
@@ -423,7 +423,7 @@ on s.Id = a.Id where s.TemaId = '{TemaId}';";
             if (p != null)
             {
                 await seguridad.AccesoValidoPrestamo(p);
-                string original = JsonConvert.SerializeObject(p);
+                string original = p.Flat();
                 if (p.Entregado)
                 {
                     r.MensajeId = "error-prestamo-entregado";
@@ -434,7 +434,10 @@ on s.Id = a.Id where s.TemaId = '{TemaId}';";
                 r.MensajeId = "prestamo-entregado";
                 r.Estatus = true;
 
-                await seguridad.RegistraEventoActualizar(p.Id, p.Folio, original.JsonDiff(JsonConvert.SerializeObject(p)));
+                var e = SeguridadGestionDocumental.EventosAdicionales.EntregarPrestamo.GetHashCode();
+                await seguridad.RegistraEvento(e, true);
+
+                await seguridad.RegistraEventoActualizar(p.Id, p.Folio, original.JsonDiff(p.Flat()));
             }
             else
             {

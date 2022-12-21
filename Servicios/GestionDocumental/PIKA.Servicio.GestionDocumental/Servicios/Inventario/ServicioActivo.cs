@@ -141,7 +141,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
 
             Activo valido = await ActivoValidado(entity, true);
-            string original = System.Text.Json.JsonSerializer.Serialize(previo.Copia());
+            string original = previo.Flat();
 
             // Evita que se pierda el contenido asociado prwviamente al elemento actualizado
             if (!string.IsNullOrEmpty( previo.ElementoId))
@@ -161,7 +161,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.Context.Entry(valido).State = EntityState.Modified;
             UDT.SaveChanges();
 
-            await seguridad.RegistraEventoActualizar(valido.Id, valido.Nombre, original.JsonDiff(JsonConvert.SerializeObject(valido.Copia())));
+            await seguridad.RegistraEventoActualizar(valido.Id, valido.Nombre, original.JsonDiff(valido.Flat()));
 
             if (previo.ArchivoId != valido.ArchivoId || previo.UnidadAdministrativaArchivoId != valido.UnidadAdministrativaArchivoId
                 || previo.CuadroClasificacionId != valido.CuadroClasificacionId || previo.EntradaClasificacionId != valido.EntradaClasificacionId)
@@ -461,12 +461,12 @@ limit {Query.indice *  Query.tamano}, {Query.tamano};";
 
             foreach(var c in restaurados)
             {
-                string original = System.Text.Json.JsonSerializer.Serialize(c);
+                string original = c.Flat();
                 c.Nombre = await RestaurarNombre(c.Nombre, c.ArchivoId, c.Id, c.EntradaClasificacionId);
                 c.Eliminada = false;
                 UDT.Context.Entry(c).State = EntityState.Modified;
                 await servEstadisticas.ActualizaEstadistica(c.AEstadistica(), 1, 0);
-                await seguridad.RegistraEventoActualizar( c.Id, c.Nombre, original.JsonDiff(JsonConvert.SerializeObject(c)));
+                await seguridad.RegistraEventoActualizar( c.Id, c.Nombre, original.JsonDiff(c.Flat()));
             }
 
             if (restaurados.Count > 0) {

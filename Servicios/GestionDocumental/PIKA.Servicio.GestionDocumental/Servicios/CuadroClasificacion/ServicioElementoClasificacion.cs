@@ -229,7 +229,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new EXNoEncontrado(entity.Id);
             }
 
-            string original = System.Text.Json.JsonSerializer.Serialize(o.Copia());
+            string original = o.Flat();
 
             if (await Existe(x =>
             x.Id != entity.Id && x.Clave.Equals(entity.Clave.Trim(),
@@ -265,7 +265,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.SaveChanges();
 
             await ioCuadroClasificacion.EliminarCuadroCalsificacionExcel(entity.CuadroClasifiacionId, ConfiguracionServidor.ruta_cache_fisico, ConfiguracionServidor.separador_ruta);
-            await seguridad.RegistraEventoActualizar(o.Id, o.Nombre, original.JsonDiff(JsonConvert.SerializeObject(o.Copia())));
+            await seguridad.RegistraEventoActualizar(o.Id, o.Nombre, original.JsonDiff(o.Flat()));
         }
 
 
@@ -317,13 +317,13 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             foreach (var c in listaEliminados)
             {
-                string original = System.Text.Json.JsonSerializer.Serialize(c);
+                string original = c.Flat();
 
                 c.Nombre = await RestaurarNombre(c.Clave, c.CuadroClasifiacionId, c.Id, c.Nombre);
                 c.Eliminada = false;
                 UDT.Context.Entry(c).State = EntityState.Modified;
                 await ioCuadroClasificacion.EliminarCuadroCalsificacionExcel(c.CuadroClasifiacionId, ConfiguracionServidor.ruta_cache_fisico, ConfiguracionServidor.separador_ruta);
-                await seguridad.RegistraEventoActualizar( c.Id, c.Nombre,  original.JsonDiff(JsonConvert.SerializeObject(c)));
+                await seguridad.RegistraEventoActualizar( c.Id, c.Nombre,  original.JsonDiff(c.Flat()));
             }
 
             if (listaEliminados.Count > 0)

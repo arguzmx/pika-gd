@@ -313,7 +313,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new EXNoEncontrado(entity.Id);
             }
 
-            string original = JsonConvert.SerializeObject(o.Copia());
+            string original = o.Flat();
 
             bool reset = false;
             if (o.CuadroClasificacionId != entity.CuadroClasificacionId
@@ -349,7 +349,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
-            await seguridad.RegistraEventoActualizar(o.Id,  o.Nombre, original.JsonDiff(JsonConvert.SerializeObject(o.Copia())));
+            await seguridad.RegistraEventoActualizar(o.Id,  o.Nombre, original.JsonDiff(o.Flat()));
         }
 
 

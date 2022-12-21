@@ -41,7 +41,7 @@ namespace PIKA.Servicio.GestionDocumental
             List<TipoEventoAuditoria> l = new List<TipoEventoAuditoria>();
             l.AddRange("EV-CUADRO-CLASIFICACION".EventoComunes<CuadroClasificacion>(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_CUADROCLASIF));
             l.AddRange("EV-FOLDER-SERIE-DOCUMENTAL".EventoComunes<ElementoClasificacion>(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_CUADROCLASIF));
-            l.AddRange("EV-SERIE-DOCUMENTAL".EventoComunes<CuadroClasificacion>(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_CUADROCLASIF));
+            l.AddRange("EV-SERIE-DOCUMENTAL".EventoComunes<EntradaClasificacion>(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_CUADROCLASIF));
             l.AddRange("EV-VALORACION-ENTRADA".EventoComunes<ValoracionEntradaClasificacion>(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_CUADROCLASIF));
 
             return l;
@@ -92,8 +92,29 @@ namespace PIKA.Servicio.GestionDocumental
         private List<TipoEventoAuditoria> EventosModuloPrestamo()
         {
             List<TipoEventoAuditoria> l = new List<TipoEventoAuditoria>();
-            l.AddRange("EV-UNIDADES-ADMIN".EventoComunes<Prestamo>(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_PRESTAMO));
-            l.AddRange("EV-PERMISOS-UNIDADES-ADMIN".EventoComunes<ActivoPrestamo>(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_PRESTAMO));
+            l.AddRange("EV-PRESTAMO".EventoComunes<Prestamo>(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_PRESTAMO));
+            l.AddRange("EV-ACTIVOS-PRESTAMO".EventoComunes<ActivoPrestamo>(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_PRESTAMO));
+
+            Type t = typeof(Prestamo);
+
+            l.Add(new TipoEventoAuditoria()
+            {
+                AppId = ConstantesAppGestionDocumental.APP_ID,
+                Descripcion = "EV-ENTREGA-PRESTAMO",
+                ModuloId = ConstantesAppGestionDocumental.MODULO_PRESTAMO,
+                TipoEntidad = t.Name,
+                TipoEvento = 100
+            });
+
+            l.Add(new TipoEventoAuditoria()
+            {
+                AppId = ConstantesAppGestionDocumental.APP_ID,
+                Descripcion = "EV-DEVOLUCION-PRESTAMO",
+                ModuloId = ConstantesAppGestionDocumental.MODULO_PRESTAMO,
+                TipoEntidad = t.Name,
+                TipoEvento = 101
+            });
+
             // NO ESTA N USO l.AddRange("EV-PERMISOS-UNIDADES-ADMIN".EventoComunes<ComentarioPrestamo>(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_PRESTAMO));
             return l;
         }
@@ -178,7 +199,7 @@ namespace PIKA.Servicio.GestionDocumental
                         typeof(ComentarioTransferencia),
                         typeof(ActivoTransferencia),
                         typeof(HistorialArchivoActivo)},
-                     //EventosAuditables = EventosModuloTransferencias()
+                     EventosAuditables = EventosModuloTransferencias()
                 },
                 // SE INCLUYO EN LOS CATALOGOS new ElementoAplicacion(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_CAT_ARCHIVO ) {
                 //    Titulo = "Catálogos archivo",

@@ -232,7 +232,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new EXNoEncontrado(entity.Id);
             }
 
-            string original = JsonConvert.SerializeObject(temp);
+            string original = temp.Flat();
 
             var t = await this.UDT.Context.Transferencias.Where(x => x.Id == entity.TransferenciaId).FirstOrDefaultAsync();
             if (t == null)
@@ -250,7 +250,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.Context.Entry(temp).State = EntityState.Modified;
             UDT.SaveChanges();
 
-            await seguridad.RegistraEventoActualizar( temp.Id, null, original.JsonDiff(JsonConvert.SerializeObject(temp)));
+            await seguridad.RegistraEventoActualizar( temp.Id, null, original.JsonDiff(temp.Flat()));
 
         }
 

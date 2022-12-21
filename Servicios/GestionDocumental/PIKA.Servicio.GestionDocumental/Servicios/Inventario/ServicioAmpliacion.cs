@@ -153,7 +153,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                 throw new EXNoEncontrado(entity.Id);
             }
-            string original = System.Text.Json.JsonSerializer.Serialize(o.Copia());
+            string original = o.Flat();
 
             o.Vigente = entity.Vigente;
             o.TipoAmpliacionId = entity.TipoAmpliacionId.Trim();
@@ -169,7 +169,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
-            await seguridad.RegistraEventoActualizar(o.Id, "*", original.JsonDiff(JsonConvert.SerializeObject(o.Copia())));
+            await seguridad.RegistraEventoActualizar(o.Id, "*", original.JsonDiff(o.Flat()));
 
         }
         private Consulta GetDefaultQuery(Consulta query)

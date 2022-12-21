@@ -33,8 +33,14 @@ namespace PIKA.Infraestructura.Comun.Seguridad.Auditoria
         protected string NombreEntidad;
         protected string TipoEntidad;
 
-        public SevicioAuditableBase(string APP_ID, string MODULO_ID, UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> EventosActivos, 
-            IRegistroAuditoria registroAuditoria, IAppCache cache, Dictionary<string, string> Tablas, DbContext context)
+        public SevicioAuditableBase(string APP_ID, 
+            string MODULO_ID, UsuarioAPI usuario, 
+            ContextoRegistroActividad RegistroActividad, 
+            List<EventoAuditoriaActivo> EventosActivos, 
+            IRegistroAuditoria registroAuditoria, 
+            IAppCache cache, 
+            Dictionary<string, string> Tablas, 
+            DbContext context)
         {
             this.usuario = usuario;
             this.RegistroActividad = RegistroActividad;
@@ -330,7 +336,7 @@ namespace PIKA.Infraestructura.Comun.Seguridad.Auditoria
         public virtual async Task<EventoAuditoria> RegistraEvento(int tipoEvento, bool Exitoso = true, string Delta = null, int? TipoFalla = null)
         {
 
-            if (!EventosActivos.Any(e => e.TipoEvento == tipoEvento && e.AppId == this.APP_ID && e.ModuloId == this.MODULO_ID && e.TipoEntidad == IdEntidad))
+            if (!EventosActivos.Any(e => e.TipoEvento == tipoEvento && e.AppId == this.APP_ID && e.ModuloId == this.MODULO_ID && e.TipoEntidad == this.TipoEntidad))
             {
                 return null;
             }

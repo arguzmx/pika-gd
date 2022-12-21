@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -8,11 +9,15 @@ using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using MySql.Data.MySqlClient;
+using Nest;
+using Newtonsoft.Json;
 using PIKA.Constantes.Aplicaciones.Seguridad;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
+using PIKA.Modelo.Seguridad;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
 
@@ -57,6 +62,144 @@ namespace PIKA.Servicio.Seguridad.Servicios
             UDT.SaveChanges();
             return entity;
         }
+
+        public async Task<IPaginado<EventoAuditoria>> Buscar(QueryBitacora query)
+        {
+            Console.WriteLine(JsonConvert.SerializeObject(query));
+            if (!query.Indice.HasValue)
+            {
+                query.Indice = 0;
+            }
+
+            if (!query.TamanoPagina.HasValue)
+            {
+                query.TamanoPagina = 20;
+            }
+
+            if (string.IsNullOrEmpty(query.CampoOrdenamiento))
+            {
+                query.CampoOrdenamiento = "Id";
+            } else
+            {
+                if(query.CampoOrdenamiento.Equals("Fecha", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    query.CampoOrdenamiento = "Id";
+                }
+            }
+
+            if (string.IsNullOrEmpty(query.ModoOrdenamiento))
+            {
+                query.ModoOrdenamiento = "DESC";
+            }
+
+            Paginado<EventoAuditoria> p = new Paginado<EventoAuditoria>();
+            string sqls = SQLQuery(query);
+            Console.WriteLine(sqls);
+            string sqlsCount = SQLQuery(query, true);
+            Console.WriteLine(sqlsCount);
+            var connection = new MySqlConnection(UDT.Context.Database.GetDbConnection().ConnectionString);
+            await connection.OpenAsync();
+
+            p.Elementos= await UDT.Context.EventosAuditoria.FromSqlRaw(sqls).ToListAsync();
+            p.Indice = query.Indice.Value;
+            p.Tamano = query.TamanoPagina.Value;
+
+            MySqlCommand cmd = new MySqlCommand(sqlsCount, connection);
+            DbDataReader dr = await cmd.ExecuteReaderAsync();
+            if (dr.Read())
+            {
+                p.ConteoTotal = Convert.ToInt32(dr[0]);    
+            }
+            dr.Close();
+            await connection.CloseAsync();
+
+
+            return p;
+        }
+
+
+        private string SQLQuery(QueryBitacora query, bool Contar = false)
+        {
+            string Condidiones = $" WHERE (DominioId='{RegistroActividad.DominioId}' AND  UAId='{RegistroActividad.UnidadOrgId}') ";
+            string paginado = "";
+            string sqls = $"SELECT {(Contar? "COUNT(*)" : "*")} FROM {DbContextSeguridad.TablaEventoAuditoria} ";
+
+
+            if (!string.IsNullOrEmpty(query.AppId))
+            {
+                Condidiones += $" AND (AppId='{query.AppId}')";
+            }
+
+            if (!string.IsNullOrEmpty(query.ModuloId))
+            {
+                Condidiones += $" AND (ModuloId='{query.ModuloId}')";
+            }
+
+            if (query.FechaFinal.HasValue && query.FechaInicial.HasValue)
+            {
+                DateTime di = query.FechaInicial.Value.ToUniversalTime();
+                DateTime df = query.FechaFinal.Value.ToUniversalTime();
+
+                if (di.Ticks > df.Ticks)
+                {
+                    DateTime temp = di;
+                    di = df;
+                    df = temp;
+                }
+
+                Condidiones += $" AND (Id BETWEEN {di.Ticks} AND {df.Ticks})";
+            }
+            else
+            {
+                if (query.FechaFinal.HasValue)
+                {
+                    DateTime d = query.FechaFinal.Value.ToUniversalTime();
+                    Condidiones += $" AND (Id<={d.Ticks})";
+                }
+
+                if (query.FechaInicial.HasValue)
+                {
+                    DateTime d = query.FechaInicial.Value.ToUniversalTime();
+                    Condidiones += $" AND (Id>={d.Ticks})";
+                }
+            }
+
+
+            if (query.Eventos != null && query.Eventos.Count > 0)
+            {
+                string evs = "";
+                query.Eventos.ForEach(e =>
+                {
+                    evs += $"(TipoEntidad = '{e.TipoEntidad}' AND TipoEvento={e.TipoEvento})*";
+                });
+                evs = evs.TrimEnd('*');
+                evs.Replace("*", " OR ");
+                Condidiones += $" AND ({evs})";
+            }
+
+
+            if (query.UsuarioIds != null && query.UsuarioIds.Count > 0)
+            {
+                string usrs = "";
+                query.UsuarioIds.ForEach(e =>
+                {
+                    usrs += $"'{e}',";
+                });
+                usrs = usrs.TrimEnd(',');
+                Condidiones += $" AND (UsuarioId IN ({usrs}) )";
+            }
+
+           
+
+            if(!Contar)
+            {
+                paginado = $" ORDER BY {query.CampoOrdenamiento} {query.ModoOrdenamiento} LIMIT  {query.TamanoPagina * query.Indice},{query.TamanoPagina} ";
+            }
+
+            return $"{sqls} {Condidiones} {paginado}";
+        }
+
+
 
 
         public async Task ActualizarAsync(EventoAuditoria entity)
@@ -155,17 +298,22 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
         public async Task<EventoAuditoria> InsertaEvento(EventoAuditoria ev)
         {
-            await Task.Delay(0);
+            try
+            {
+                ev.Id = DateTime.UtcNow.Ticks;
+                await UDT.Context.EventosAuditoria.AddAsync(ev);
+                await UDT.Context.SaveChangesAsync();
+                return ev;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
 
-            Console.WriteLine("A+");
-            ev.Id =  DateTime.UtcNow.Ticks;
-            return ev;
         }
 
-        public void EstableceContextoSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
-        {
-            throw new NotImplementedException();
-        }
+        
 
         public Task<EventoAuditoria> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
         {
@@ -174,12 +322,10 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
         public async Task<List<EventoAuditoriaActivo>> EventosAuditables(string DominioId, string OUId)
         {
-            //var r = await this.UDT.Context.EventosActivosAuditoria.Where(e=>e.DominioId == DominioId && e.UAId == OUId && e.Auditable == true).ToListAsync();
-            //return r;
-            List<EventoAuditoriaActivo> l = new List<EventoAuditoriaActivo>();
-            return l;
-
+            var r = await this.UDT.Context.EventosActivosAuditoria.Where(e=>e.DominioId == DominioId && e.UAId == OUId && e.Auditar == true).ToListAsync();
+            return r;
         }
+
 
 
 

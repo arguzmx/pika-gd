@@ -105,7 +105,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new ExErrorDatosSesion();
             }
 
-            string original = System.Text.Json.JsonSerializer.Serialize(o);
+            string original = o.Flat();
 
             o.Devuelto = entity.Devuelto;
             o.FechaDevolucion = entity.FechaDevolucion;
@@ -113,7 +113,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
-            await seguridad.RegistraEventoActualizar(o.Id, null, original.JsonDiff(JsonConvert.SerializeObject(o)));
+            await seguridad.RegistraEventoActualizar(o.Id, null, original.JsonDiff(o.Flat()));
 
         }
         private Consulta GetDefaultQuery(Consulta query)

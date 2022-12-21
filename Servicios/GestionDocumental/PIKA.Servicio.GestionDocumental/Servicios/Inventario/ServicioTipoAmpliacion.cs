@@ -120,14 +120,14 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 throw new EXNoEncontrado(entity.Id);
             }
 
-            string original = JsonConvert.SerializeObject(o);
+            string original = o.Flat();
             
             o.Nombre = entity.Nombre.Trim();
             o.Id = entity.Id.Trim();
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
-            await seguridad.RegistraEventoActualizar(o.Id,  o.Nombre, original.JsonDiff(JsonConvert.SerializeObject(o)));
+            await seguridad.RegistraEventoActualizar(o.Id,  o.Nombre, original.JsonDiff(o.Flat()));
 
         }
 

@@ -17,7 +17,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
     public class SeguridadGestionDocumental : SevicioAuditableBase
     {
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
-        
+
         public SeguridadGestionDocumental(
             string APP_ID, string MODULO_ID,
             UsuarioAPI usuario,
@@ -35,27 +35,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             this.UDT = UDT;
         }
 
-
-
-        public static List<TipoEventoAuditoria> EventosAuditoria()
-        {
-            return new List<TipoEventoAuditoria>()
-                     {
-                         new TipoEventoAuditoria() {
-                             TipoEvento = (int)EventosComunesAuditables.Crear,
-                             Descripcion ="Notifica la creación de elementos del cuadro de clasificación"
-                         },
-                         new TipoEventoAuditoria() {
-                             TipoEvento = (int)EventosComunesAuditables.Actualizar,
-                             Descripcion ="Notifica la actualización de elementos del cuadro de clasificación"
-                         },
-                         new TipoEventoAuditoria() {
-                             TipoEvento = (int)EventosComunesAuditables.Eliminar,
-                             Descripcion ="Notifica la eliminación de cuadros de clasificación del cuadro de clasificación"
-                         },
-                     };
+        public enum EventosAdicionales { 
+            EntregarPrestamo =100, DevolverPrestamo = 101
         }
-
 
         public async Task<bool> AccesoCacheArchivo(string ArchivoId)
         {
@@ -431,8 +413,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             return valid;
         }
-
-
 
         public async Task<bool> AccesoValidoArchivo(string ArchivoId, bool EmitirExcepcion = true)
         {
