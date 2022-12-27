@@ -13,13 +13,13 @@ using System.Xml.Serialization;
 namespace PIKA.Modelo.GestorDocumental
 {
 
-    [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ALMACENARCHIVO,
+    [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ARCHIVOS,
         EntidadHijo: "PosicionAlmacen",
         Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id",
         PropiedadHijo: "ZonaAlmacenId")]
 
     [Entidad(PaginadoRelacional: false, EliminarLogico: true,
-       TokenMod: ConstantesAppGestionDocumental.MODULO_ALMACENARCHIVO,
+       TokenMod: ConstantesAppGestionDocumental.MODULO_ARCHIVOS,
        TokenApp: ConstantesAppGestionDocumental.APP_ID)]
     public class ZonaAlmacen : Entidad<string>, IEntidadNombrada
     {

@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using PIKA.Constantes.Aplicaciones.Metadatos;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Data;
 using PIKA.Servicio.Metadatos.Interfaces;
@@ -18,24 +21,27 @@ using Serilog.Data;
 
 namespace PIKA.Servicio.Metadatos.Servicios
 {
-  public  class ServicioAlmacenDatos : ContextoServicioMetadatos,
-        IServicioInyectable, IServicioAlmacenDatos
+    public class ServicioAlmacenDatos : ContextoServicioMetadatos,
+          IServicioInyectable, IServicioAlmacenDatos
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
-
         private IRepositorioAsync<AlmacenDatos> repo;
 
-        private UnidadDeTrabajo<DbContextMetadatos> UDT;
 
-        public ServicioAlmacenDatos(IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
-           ILogger<ServicioAlmacenDatos> Logger) : base(proveedorOpciones, Logger)
+        public ServicioAlmacenDatos(
+            IRegistroAuditoria registroAuditoria,
+            IAppCache cache,
+            IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
+            ILogger<ServicioLog> Logger
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppMetadatos.APP_ID, ConstantesAppMetadatos.MODULO_PLANTILLAS)
         {
            
-                this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
                 this.repo = UDT.ObtenerRepositoryAsync<AlmacenDatos>(new QueryComposer<AlmacenDatos>());
             
         }
+
         public async Task<bool> Existe(Expression<Func<AlmacenDatos, bool>> predicado)
         {
             List<AlmacenDatos> l = await this.repo.ObtenerAsync(predicado);
@@ -45,9 +51,9 @@ namespace PIKA.Servicio.Metadatos.Servicios
         
         public async Task<AlmacenDatos> CrearAsync(AlmacenDatos entity, CancellationToken cancellationToken = default)
         {
-           
+            throw new NotImplementedException();
             if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)
-            && x.Id != entity.Id ))
+            && x.Id != entity.Id))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
@@ -63,6 +69,8 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task ActualizarAsync(AlmacenDatos entity)
         {
+            throw new NotImplementedException();
+
             AlmacenDatos o = await this.repo.UnicoAsync(x => x.Id == entity.Id.Trim());
 
             if (o == null)
@@ -70,9 +78,9 @@ namespace PIKA.Servicio.Metadatos.Servicios
                 throw new EXNoEncontrado(entity.Id);
             }
 
-            
+
             if (await Existe(x => x.Nombre.Equals(entity.Nombre.Trim(), StringComparison.InvariantCultureIgnoreCase)
-            && x.Id != entity.Id   ))
+            && x.Id != entity.Id))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
@@ -105,6 +113,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
         }
         public async Task<IPaginado<AlmacenDatos>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<AlmacenDatos>, IIncludableQueryable<AlmacenDatos, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
+            throw new NotImplementedException();
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
 
@@ -113,6 +122,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
+            throw new NotImplementedException();
             AlmacenDatos o;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
@@ -142,20 +152,24 @@ namespace PIKA.Servicio.Metadatos.Servicios
             }
             UDT.SaveChanges();
 
-            return listaEliminados;
+            //return listaEliminados;
 
         }
         public Task<List<AlmacenDatos>> ObtenerAsync(string SqlCommand)
         {
+
+            throw new NotImplementedException();
             return this.repo.ObtenerAsync(SqlCommand);
         }
         public Task<List<AlmacenDatos>> ObtenerAsync(Expression<Func<AlmacenDatos, bool>> predicado)
         {
+            throw new NotImplementedException();
             return this.repo.ObtenerAsync(predicado);
         }
 
         public async Task<AlmacenDatos> UnicoAsync(Expression<Func<AlmacenDatos, bool>> predicado = null, Func<IQueryable<AlmacenDatos>, IOrderedQueryable<AlmacenDatos>> ordenarPor = null, Func<IQueryable<AlmacenDatos>, IIncludableQueryable<AlmacenDatos, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
+            throw new NotImplementedException();
             AlmacenDatos a = await this.repo.UnicoAsync(predicado);
             return a.Copia();
         }
@@ -163,6 +177,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
      
         public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
+            throw new NotImplementedException();
             AlmacenDatos c;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
@@ -181,6 +196,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
         {
+            throw new NotImplementedException();
             for (int i = 0; i < Query.Filtros.Count; i++)
             {
                 if (Query.Filtros[i].Propiedad.ToLower() == "texto")
@@ -215,6 +231,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<List<ValorListaOrdenada>> ObtenerParesPorId(List<string> Lista)
         {
+            throw new NotImplementedException();
             var resultados = await this.repo.ObtenerAsync(x => Lista.Contains(x.Id.Trim()));
             List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
             {
@@ -247,6 +264,11 @@ namespace PIKA.Servicio.Metadatos.Servicios
         }
 
         public async Task EjecutarSql(string sqlCommand)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AlmacenDatos> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
         {
             throw new NotImplementedException();
         }

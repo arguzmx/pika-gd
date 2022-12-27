@@ -38,7 +38,6 @@ namespace PIKA.GD.API.Filters
         private  string AppId;
 
         public AsyncACLActionFilter(
-            IRegistroAuditoria registroAuditoria,
             ILogger<AsyncACLActionFilter> Logger,
             ICacheSeguridad SecurityCache, IOptions<ConfiguracionServidor> Config, 
             string AppId="", string ModuleId="", string[] ids = null )

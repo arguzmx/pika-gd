@@ -16,8 +16,10 @@ using PIKA.Modelo.Aplicacion.Tareas;
 using PIKA.Modelo.Contenido;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.AplicacionPlugin.Interfaces;
+using PIKA.Servicio.Contenido;
 using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Contenido.Interfaces;
+using PIKA.Servicio.Contenido.Servicios;
 using PIKA.Servicio.Contenido.Servicios.TareasAutomaticas;
 using RepositorioEntidades;
 using ComunTreas = PIKA.Infraestructura.Comun.Tareas;
@@ -56,6 +58,12 @@ namespace PIKA.GD.API.Controllers.Contenido
         }
 
 
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            servicioEntidad.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+            servicioVol.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+        }
+
         [HttpGet("acl/{id}", Name = "ACLCarpetaContenido")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -70,7 +78,6 @@ namespace PIKA.GD.API.Controllers.Contenido
             }
             else
             {
-                servicioEntidad.Usuario = this.usuario;
                 permisos = await servicioEntidad.ACLPuntoMontaje(id).ConfigureAwait(false);
             }
 
@@ -279,6 +286,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         }
 
         [HttpPost("paginas/{id}/ordernar/alfabetico")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> OrdenarContenidoAlfabetico(string id)
         {
             // Obtiene el elemento y su contraparte en elasticsearch
@@ -309,12 +317,15 @@ namespace PIKA.GD.API.Controllers.Contenido
 
                 await repoContenido.EliminaOCRVersion(vElemento).ConfigureAwait(false);
                 await repoContenido.ActualizaVersion(vElemento.Id, vElemento, true).ConfigureAwait(false);
+
+                await servicioEntidad.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.ModificarPaginas.GetHashCode(), id).ConfigureAwait(false);
             }
 
             return Ok();
         }
 
         [HttpPost("paginas/{id}/rotar/{angulo}")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> RotarPagina(string id, int angulo, [FromBody] string[] ids)
         {
 
@@ -354,12 +365,13 @@ namespace PIKA.GD.API.Controllers.Contenido
             }
 
             await repoContenido.ActualizaVersion(vElemento.Id, vElemento, true).ConfigureAwait(false);
-
+            await servicioEntidad.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.ModificarPaginas.GetHashCode(), id).ConfigureAwait(false);
             return Ok();
 
         }
 
         [HttpPost("paginas/{id}/reflejar/{direccion}")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> ReflejarPagina(string id, string direccion, [FromBody] string[] ids)
         {
             if (ids == null || ids.Length == 0)
@@ -401,12 +413,13 @@ namespace PIKA.GD.API.Controllers.Contenido
             }
             
             await repoContenido.ActualizaVersion(vElemento.Id, vElemento, true).ConfigureAwait(false);
-
+            await servicioEntidad.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.ModificarPaginas.GetHashCode(), id).ConfigureAwait(false);
             return Ok();
         }
 
 
         [HttpPost("paginas/{id}/mover/{posicion}")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult> MoverPaginas(string id, int posicion, [FromBody] int[] paginas)
         {
 
@@ -485,9 +498,9 @@ namespace PIKA.GD.API.Controllers.Contenido
             }
 
             vElemento.Partes = Fijas;
-            // await repoContenido.EliminaOCRVersion(vElemento).ConfigureAwait(false);
+            
             await repoContenido.ActualizaVersion(vElemento.Id, vElemento, true).ConfigureAwait(false);
-
+            await servicioEntidad.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.ModificarPaginas.GetHashCode(), id).ConfigureAwait(false);
             return Ok();
         }
 
@@ -537,7 +550,7 @@ namespace PIKA.GD.API.Controllers.Contenido
             }
 
             await repoContenido.ActualizaVersion(elemento.VersionId, vElemento, false).ConfigureAwait(false);
-
+            await servicioEntidad.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.EliminarPaginas.GetHashCode(), id).ConfigureAwait(false);
             return Ok();
         }
 
@@ -561,7 +574,7 @@ namespace PIKA.GD.API.Controllers.Contenido
             {
                 return NotFound("elemento-inexistente");
             }
-
+                    
             Etiqueta = $"ZIP {e.Nombre}";
             Servicio.Contenido.TareasEnDemanda tareas = new Servicio.Contenido.TareasEnDemanda();
             var tzip = tareas.ObtieneTarea(Servicio.Contenido.TareasEnDemanda.TAREA_EXPPORTAR_ZIP);
@@ -621,6 +634,7 @@ namespace PIKA.GD.API.Controllers.Contenido
                     Etiqueta = Etiqueta
                 };
 
+                await servicioEntidad.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.ExportarZIP.GetHashCode(), id).ConfigureAwait(false);
                 return Ok(post);
             }
 
@@ -795,7 +809,7 @@ namespace PIKA.GD.API.Controllers.Contenido
                     TipoRespuesta = t.TipoRespuesta,
                     Etiqueta = Etiqueta
                 };
-
+                await servicioEntidad.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.ExportarPDF.GetHashCode(), id).ConfigureAwait(false);
                 return Ok(post);
             }
 

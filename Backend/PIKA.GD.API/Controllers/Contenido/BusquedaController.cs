@@ -1,7 +1,9 @@
 ﻿using LazyCache;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Servicio.Contenido.ElasticSearch;
+using PIKA.Servicio.GestionDocumental.Servicios;
 using PIKA.ServicioBusqueda.Contenido;
 using RepositorioEntidades;
 using System;
@@ -23,6 +25,13 @@ namespace PIKA.GD.API.Controllers.Contenido
             IServicioBusquedaContenido busqueda ) {
             this.busqueda = busqueda;
         }
+
+        //public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        //{
+        //    // busqueda.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+        //}
+
+
 
         [HttpPost]
         public async Task<ActionResult<Paginado<string>>> BuscarIds([FromBody] BusquedaContenido request)

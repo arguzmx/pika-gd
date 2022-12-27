@@ -327,7 +327,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             {
                 this.UDT.Context.AdicionaEventoTransferencia(t.Id, t.EstadoTransferenciaId, usuario.Id, "Activos eliminados");
             }
-            return listaEliminados.Select(c=>c.Id).ToList();
+            return listaEliminados.Select(c=>c.ActivoId).ToList();
         }
 
       
@@ -400,7 +400,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 }
                 UDT.SaveChanges();
 
-                await this.UDT.Context.ActualizaActivosEnTrasnferencia(listaEliminados.Select(x => x.Id).ToList(), false);
+                await this.UDT.Context.ActualizaActivosEnTrasnferencia(listaEliminados.Select(x => x.ActivoId).ToList(), false);
                 await this.UDT.Context.ActualizaConteoActivosTrasnferencia(conteo, txId);
 
             }

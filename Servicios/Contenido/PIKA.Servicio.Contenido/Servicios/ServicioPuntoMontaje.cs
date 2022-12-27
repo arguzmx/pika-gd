@@ -6,13 +6,16 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using PIKA.Constantes.Aplicaciones.Contenido;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Contenido;
 using PIKA.Servicio.Contenido.Interfaces;
@@ -25,20 +28,17 @@ namespace PIKA.Servicio.Contenido.Servicios
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
-
         private IRepositorioAsync<PuntoMontaje> repo;
         private IRepositorioAsync<VolumenPuntoMontaje> repoVPM;
-        private UnidadDeTrabajo<DbContextContenido> UDT;
-        public UsuarioAPI usuario { get; set; }
-        public PermisoAplicacion permisos { get; set; }
-        public ContextoRegistroActividad RegistroActividad { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public ServicioPuntoMontaje(
+            IRegistroAuditoria registroAuditoria,
+            IAppCache cache,
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
             ILogger<ServicioLog> Logger
-        ) : base(proveedorOpciones, Logger)
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_ADMIN_CONFIGURACION)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<PuntoMontaje>(new QueryComposer<PuntoMontaje>());
             this.repoVPM = UDT.ObtenerRepositoryAsync<VolumenPuntoMontaje>(new QueryComposer<VolumenPuntoMontaje>());
         }
@@ -46,9 +46,6 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<PermisosPuntoMontaje> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
         {
-            try
-            {
-
 
             bool esAdminOU = false;
             var acceso = usuario.Accesos.Where(x => x.OU == UnidaddOrganizacionalId).FirstOrDefault();
@@ -57,8 +54,15 @@ namespace PIKA.Servicio.Contenido.Servicios
                 esAdminOU = acceso.Admin;
             }
 
-            PermisosPuntoMontaje p = new PermisosPuntoMontaje() { Crear = false,  Actualizar  = false,  Elminar = false,   Leer = false, 
-                GestionContenido = false, GestionMetadatos = false, PuntoMontajeId = EntidadId
+            PermisosPuntoMontaje p = new PermisosPuntoMontaje()
+            {
+                Crear = false,
+                Actualizar = false,
+                Elminar = false,
+                Leer = false,
+                GestionContenido = false,
+                GestionMetadatos = false,
+                PuntoMontajeId = EntidadId
             };
 
             if (usuario.AdminGlobal || esAdminOU)
@@ -70,9 +74,10 @@ namespace PIKA.Servicio.Contenido.Servicios
                 p.GestionMetadatos = true;
                 p.Crear = true;
 
-            } else
+            }
+            else
             {
-                foreach(var r in usuario.Roles)
+                foreach (var r in usuario.Roles)
                 {
                     var pm = await this.UDT.Context.PermisosPuntoMontaje.Where(x => x.DestinatarioId == r && x.PuntoMontajeId == EntidadId).SingleOrDefaultAsync();
                     if (pm != null)
@@ -88,13 +93,6 @@ namespace PIKA.Servicio.Contenido.Servicios
             }
 
             return p;
-            }
-            catch (Exception ex)
-            {
-
-                Console.WriteLine(ex.ToString());
-                throw (ex);
-            }
         }
 
         public async Task<bool> Existe(Expression<Func<PuntoMontaje, bool>> predicado)
@@ -107,104 +105,91 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<PuntoMontaje> CrearAsync(PuntoMontaje entity, CancellationToken cancellationToken = default)
         {
+            seguridad.EstableceDatosProceso<PuntoMontaje>();
+            await seguridad.IdEnUnidadOrg(entity.OrigenId);
+            if (!string.IsNullOrEmpty(entity.VolumenDefaultId))
+            {
+                await seguridad.AccesoCacheVolumen(entity.VolumenDefaultId);
+            }
 
-          
-            if(await Existe(x=>x.Nombre == entity.Nombre 
+            if (await Existe(x=>x.Nombre == entity.Nombre 
             && x.OrigenId  == entity.OrigenId 
             && x.TipoOrigenId == entity.TipoOrigenId))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
 
+            entity.Id = System.Guid.NewGuid().ToString();
+            entity.FechaCreacion = DateTime.UtcNow;
+            entity.Eliminada = false;
 
-            try
+            if (!string.IsNullOrEmpty(entity.VolumenDefaultId))
             {
-
-                entity.Id = System.Guid.NewGuid().ToString();
-                entity.FechaCreacion = DateTime.UtcNow;
-                entity.Eliminada = false;
-
-
-                if (!string.IsNullOrEmpty(entity.VolumenDefaultId))
+                VolumenPuntoMontaje vpm = new VolumenPuntoMontaje()
                 {
-                    VolumenPuntoMontaje vpm = new VolumenPuntoMontaje() { 
-                        PuntoMontajeId = entity.Id, 
-                        VolumenId = entity.VolumenDefaultId };
-                    await repoVPM.CrearAsync(vpm);
-                }
-
-                await this.repo.CrearAsync(entity);
-
-                UDT.SaveChanges();
-
-                return entity.Copia();
+                    PuntoMontajeId = entity.Id,
+                    VolumenId = entity.VolumenDefaultId
+                };
+                this.UDT.Context.VolumenPuntosMontaje.Add(vpm);
             }
-            catch (DbUpdateException)
-            {
-                throw new ExErrorRelacional("El identificador de tipo de volumen por default no es válido");
-            }
-            catch (Exception ex)
-            {
-                
-                throw ex;
-            }
-           
 
+            this.UDT.Context.PuntosMontaje.Add(entity);
+            UDT.SaveChanges();
+
+            await seguridad.RegistraEventoCrear(entity.Id, entity.Nombre);
+
+            return entity.Copia();
         }
 
 
         public async Task ActualizarAsync(PuntoMontaje entity)
         {
+            seguridad.EstableceDatosProceso<PuntoMontaje>();
 
             PuntoMontaje o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
-
+            
             if (o == null)
             {
                 throw new EXNoEncontrado(entity.Id);
             }
+
+            string original = o.Flat();
+            await seguridad.IdEnUnidadOrg(entity.OrigenId);
+            if (!string.IsNullOrEmpty(entity.VolumenDefaultId))
+            {
+                await seguridad.AccesoCacheVolumen(entity.VolumenDefaultId);
+            }
+
 
             if (await Existe(x => x.Nombre == entity.Nombre && x.OrigenId == o.OrigenId
            && x.TipoOrigenId == o.TipoOrigenId && x.Id != entity.Id))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
- 
 
-            try
+            o.Nombre = entity.Nombre;
+            o.Eliminada = entity.Eliminada;
+            o.VolumenDefaultId = entity.VolumenDefaultId;
+
+            if (!string.IsNullOrEmpty(entity.VolumenDefaultId))
             {
-
-              
-               o.Nombre = entity.Nombre;
-               o.Eliminada = entity.Eliminada;
-                o.VolumenDefaultId = entity.VolumenDefaultId;
-
-                if (!string.IsNullOrEmpty(entity.VolumenDefaultId))
+                VolumenPuntoMontaje vpm = await repoVPM.UnicoAsync(x => x.VolumenId == entity.VolumenDefaultId
+                && x.PuntoMontajeId == o.Id);
+                if (vpm == null)
                 {
-                    VolumenPuntoMontaje vpm = await repoVPM.UnicoAsync(x => x.VolumenId == entity.VolumenDefaultId
-                    && x.PuntoMontajeId == o.Id);
-                    if (vpm == null)
+                    vpm = new VolumenPuntoMontaje()
                     {
-                        vpm = new VolumenPuntoMontaje()
-                        {
-                            PuntoMontajeId = entity.Id,
-                            VolumenId = entity.VolumenDefaultId
-                        };
-                        await repoVPM.CrearAsync(vpm);
-                    }
+                        PuntoMontajeId = entity.Id,
+                        VolumenId = entity.VolumenDefaultId
+                    };
+                    await repoVPM.CrearAsync(vpm);
                 }
-
-                UDT.Context.Entry(o).State = EntityState.Modified;
-               UDT.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                throw new ExErrorRelacional("El identificador de tipo de volumen por default no es válido");
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
 
+            UDT.Context.Entry(o).State = EntityState.Modified;
+            UDT.SaveChanges();
+
+            await seguridad.RegistraEventoActualizar(o.Id, o.Nombre, original.JsonDiff(o.Flat()));
         }
 
         private Consulta GetDefaultQuery(Consulta query)
@@ -221,17 +206,16 @@ namespace PIKA.Servicio.Contenido.Servicios
                 query = new Consulta() { indice = 0, tamano = 20, ord_columna = DEFAULT_SORT_COL, ord_direccion = DEFAULT_SORT_DIRECTION };
             }
 
-
-            foreach(var f in query.Filtros)
-            {
-                if (f.Propiedad == "TenantId") f.Propiedad = "OrigenId";
-            }
+            // Añade un filtro permanente para la unidad organizacional
+            query.Filtros.RemoveAll(x => x.Propiedad == "TenantId");
+            query.Filtros.RemoveAll(x => x.Propiedad == "OrigenId");
+            query.Filtros.Add(new FiltroConsulta() { Propiedad = "OrigenId", Operador = FiltroConsulta.OP_EQ, Valor = RegistroActividad.UnidadOrgId });
 
             return query;
         }
         public async Task<IPaginado<PuntoMontaje>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<PuntoMontaje>, IIncludableQueryable<PuntoMontaje, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
-
+            seguridad.EstableceDatosProceso<PuntoMontaje>();
             try
             {
                 Query = GetDefaultQuery(Query);
@@ -330,38 +314,59 @@ namespace PIKA.Servicio.Contenido.Servicios
       
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            PuntoMontaje d;
-            ICollection<string> listaEliminados = new HashSet<string>();
+            seguridad.EstableceDatosProceso<PuntoMontaje>();
+            
+            List<PuntoMontaje> listaEliminados = new List<PuntoMontaje>();
             foreach (var Id in ids.LimpiaIds())
             {
-                d = await this.repo.UnicoAsync(x => x.Id == Id);
+                PuntoMontaje d = await this.UDT.Context.PuntosMontaje.FirstOrDefaultAsync(x => x.Id == Id);
                 if (d != null)
+                {
+                    await seguridad.IdEnUnidadOrg(d.OrigenId);
+                    listaEliminados.Add(d);
+                }
+            }
+
+            if(listaEliminados.Count>0)
+            {
+                foreach(var d in listaEliminados)
                 {
                     d.Eliminada = true;
                     this.UDT.Context.Entry(d).State = EntityState.Modified;
-                    listaEliminados.Add(d.Id);
+                    await seguridad.RegistraEventoEliminar(d.Id, d.Nombre);
+
                 }
+                UDT.SaveChanges();
             }
-            UDT.SaveChanges();
-            return listaEliminados;
+            return listaEliminados.Select(x=>x.Id).ToList();
         }
 
         public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
-            PuntoMontaje d;
-            ICollection<string> listaEliminados = new HashSet<string>();
+            seguridad.EstableceDatosProceso<PuntoMontaje>();
+            List<PuntoMontaje> listaEliminados = new List<PuntoMontaje>();
             foreach (var Id in ids.LimpiaIds())
             {
-                d = await this.repo.UnicoAsync(x => x.Id == Id);
+                PuntoMontaje d = await this.UDT.Context.PuntosMontaje.FirstOrDefaultAsync(x => x.Id == Id);
                 if (d != null)
                 {
-                    d.Eliminada = false;
-                    this.UDT.Context.Entry(d).State = EntityState.Modified;
-                    listaEliminados.Add(d.Id);
+                    await seguridad.IdEnUnidadOrg(d.OrigenId);
+                    listaEliminados.Add(d);
                 }
             }
-            UDT.SaveChanges();
-            return listaEliminados;
+
+            if (listaEliminados.Count > 0)
+            {
+                foreach (var d in listaEliminados)
+                {
+                    string original = d.Flat();
+                    d.Eliminada = false;
+                    this.UDT.Context.Entry(d).State = EntityState.Modified;
+                    await seguridad.RegistraEventoActualizar(d.Id, d.Nombre, original.JsonDiff(false.Flat()));
+                }
+                UDT.SaveChanges();
+            }
+            return listaEliminados.Select(x => x.Id).ToList();
         }
 
 
@@ -385,6 +390,8 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
         {
+            seguridad.EstableceDatosProceso<PuntoMontaje>();
+
             for (int i = 0; i < Query.Filtros.Count; i++)
             {
                 if (Query.Filtros[i].Propiedad.ToLower() == "texto")
@@ -467,17 +474,6 @@ namespace PIKA.Servicio.Contenido.Servicios
         {
             throw new NotImplementedException();
         }
-
-        public void EstableceContextoSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
-        {
-            throw new NotImplementedException();
-        }
-
-
-
-
-
-
         #endregion
     }
 

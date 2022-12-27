@@ -1,13 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Bogus.Extensions;
+using ImageMagick;
+using LazyCache;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using MySqlConnector.Logging;
+using PIKA.Constantes.Aplicaciones.Contenido;
+using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Contenido;
 using PIKA.Servicio.Contenido.Interfaces;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -24,14 +33,15 @@ namespace PIKA.Servicio.Contenido.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<PermisosPuntoMontaje> repo;
-        private UnidadDeTrabajo<DbContextContenido> UDT;
         
         public ServicioPermisosPuntoMontaje(
+            IRegistroAuditoria registroAuditoria,
+            IAppCache cache,
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
             ILogger<ServicioLog> Logger
-        ) : base(proveedorOpciones, Logger)
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_ADMIN_CONFIGURACION)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<PermisosPuntoMontaje>(new QueryComposer<PermisosPuntoMontaje>());
         }
 
@@ -44,62 +54,110 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<PermisosPuntoMontaje> CrearAsync(PermisosPuntoMontaje entity, CancellationToken cancellationToken = default)
         {
-            try
+            seguridad.EstableceDatosProceso<PermisosPuntoMontaje>();
+            var p = await UDT.Context.PuntosMontaje.FirstOrDefaultAsync(x => x.Id == entity.PuntoMontajeId);
+            if(p == null)
             {
-                var pm = await this.repo.UnicoAsync(x => x.PuntoMontajeId == entity.PuntoMontajeId && x.DestinatarioId == entity.DestinatarioId);
-                if (pm != null)
-                {
-                    entity.Id = pm.Id;
-                    UDT.Context.Entry(entity).State = EntityState.Modified;
-                }
-                else
-                {
-                    entity.Id = Guid.NewGuid().ToString();
-                    await this.repo.CrearAsync(entity);
-                }
-
-                UDT.SaveChanges();
-                return entity.Copia();
+                throw new EXNoEncontrado();
             }
-            catch (Exception ex)
+
+            await seguridad.IdEnUnidadOrg(p.OrigenId);
+
+            var pm = await this.UDT.Context.PermisosPuntoMontaje.FirstOrDefaultAsync(x => x.PuntoMontajeId == entity.PuntoMontajeId && x.DestinatarioId == entity.DestinatarioId);
+            if (pm != null)
             {
-
-                Console.WriteLine(ex.ToString());
-                throw;
+                string original = p.Flat();
+                entity.Id = pm.Id;
+                UDT.Context.Entry(entity).State = EntityState.Modified;
+                await seguridad.RegistraEventoActualizar(entity.Id, p.Nombre, original.JsonDiff(entity.Flat()));
             }
+            else
+            {
+                entity.Id = Guid.NewGuid().ToString();
+                await this.repo.CrearAsync(entity);
+                await seguridad.RegistraEventoCrear(entity.Id, p.Nombre);
+            }
+
+            UDT.SaveChanges();
+
            
+
+            return entity.Copia();
+
         }
 
 
         public async Task ActualizarAsync(PermisosPuntoMontaje entity)
         {
-            var pm = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+            seguridad.EstableceDatosProceso<PermisosPuntoMontaje>();
+            var p = await UDT.Context.PuntosMontaje.FirstOrDefaultAsync(x => x.Id == entity.PuntoMontajeId);
+            if (p == null)
+            {
+                throw new EXNoEncontrado();
+            }
+
+            await seguridad.IdEnUnidadOrg(p.OrigenId);
+
+            var pm = await UDT.Context.PermisosPuntoMontaje.FirstOrDefaultAsync(x => x.Id == entity.Id);
             if (pm != null)
             {
-                entity.Id = pm.Id;
-                entity.PuntoMontajeId = pm.PuntoMontajeId;
-                entity.DestinatarioId = pm.DestinatarioId;
-                UDT.Context.Entry(entity).State = EntityState.Modified;
-                UDT.SaveChanges();
+                string original = p.Flat();
+                UDT.Context.Entry(pm).State = EntityState.Modified;
+
+                pm.Crear = entity.Crear;
+                pm.Actualizar = entity.Actualizar;
+                pm.Elminar = entity.Elminar;
+                pm.GestionContenido = entity.GestionContenido;
+                pm.GestionMetadatos = entity.GestionMetadatos;
+                pm.Leer = entity.Leer;
+                pm.PuntoMontajeId = entity.PuntoMontajeId;
+
+
+                try
+                {
+                    UDT.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                    throw;
+                }
+
+                
+
+                await seguridad.RegistraEventoActualizar(entity.Id, p.Nombre, original.JsonDiff(entity.Flat()));
             }
         }
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            PermisosPuntoMontaje d;
-            ICollection<string> listaEliminados = new HashSet<string>();
+            seguridad.EstableceDatosProceso<PermisosPuntoMontaje>();
+            List<PermisosPuntoMontaje> listaEliminados = new List<PermisosPuntoMontaje>();
             foreach (var Id in ids.LimpiaIds())
             {
-                Console.WriteLine(Id);
-                d = await this.repo.UnicoAsync(x => x.Id == Id);
+                PermisosPuntoMontaje d = await this.repo.UnicoAsync(x => x.Id == Id);
                 if (d != null)
                 {
-                    this.UDT.Context.Entry(d).State = EntityState.Deleted;
-                    listaEliminados.Add(d.Id);
+                    var p = await UDT.Context.PuntosMontaje.FirstOrDefaultAsync(x => x.Id == d.PuntoMontajeId);
+                    if (p == null)
+                    {
+                        throw new EXNoEncontrado();
+                    }
+
+                    await seguridad.IdEnUnidadOrg(p.OrigenId);
+                    listaEliminados.Add(d);
                 }
             }
-            UDT.SaveChanges();
-            return listaEliminados;
+            if (listaEliminados.Count > 0)
+            {
+                foreach(var o in listaEliminados)
+                {
+                    this.UDT.Context.Entry(o).State = EntityState.Deleted;
+                    await seguridad.RegistraEventoEliminar(o.Id, o.DestinatarioId);
+                }
+                UDT.SaveChanges();
+            }
+            return listaEliminados.Select(x=>x.Id).ToList();
         }
 
 
@@ -119,16 +177,30 @@ namespace PIKA.Servicio.Contenido.Servicios
             }
             return query;
         }
+
         public async Task<IPaginado<PermisosPuntoMontaje>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<PermisosPuntoMontaje>, IIncludableQueryable<PermisosPuntoMontaje, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
+
+            seguridad.EstableceDatosProceso<PermisosPuntoMontaje>();
             Query = GetDefaultQuery(Query);
+
+            if(!Query.Filtros.Any(f=>f.Propiedad == "PuntoMontajeId"))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
             return respuesta;
         }
         public async  Task<PermisosPuntoMontaje> UnicoAsync(Expression<Func<PermisosPuntoMontaje, bool>> predicado = null, Func<IQueryable<PermisosPuntoMontaje>, IOrderedQueryable<PermisosPuntoMontaje>> ordenarPor = null, Func<IQueryable<PermisosPuntoMontaje>, IIncludableQueryable<PermisosPuntoMontaje, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
             PermisosPuntoMontaje d = await this.repo.UnicoAsync(predicado, ordenarPor, incluir);
-
+            var p = await UDT.Context.PuntosMontaje.FirstOrDefaultAsync(x => x.Id == d.PuntoMontajeId);
+            if (p == null)
+            {
+                throw new EXNoEncontrado();
+            }
+            await seguridad.IdEnUnidadOrg(p.OrigenId);
             return d.Copia();
         }
 
@@ -179,7 +251,12 @@ namespace PIKA.Servicio.Contenido.Servicios
             throw new NotImplementedException();
         }
 
-  
+        public Task<PermisosPuntoMontaje> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
+
+
 
         #endregion
     }

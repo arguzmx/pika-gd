@@ -2,24 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Logging;
-using PIKA.Infraestructura.Comun;
+using PIKA.Constantes.Aplicaciones.Contenido;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
-using PIKA.Modelo.Contenido;
 using PIKA.Servicio.Contenido.Helpers;
 using PIKA.Servicio.Contenido.Interfaces;
 using RepositorioEntidades;
 using Parte = PIKA.Modelo.Contenido.Parte;
 using Version = PIKA.Modelo.Contenido.Version;
+
 namespace PIKA.Servicio.Contenido.Servicios
 {
     public class ServicioParte : ContextoServicioContenido,
@@ -30,14 +29,16 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         private IRepositorioAsync<Parte> repo;
         private IRepositorioAsync<Version> repoVer;
-        private UnidadDeTrabajo<DbContextContenido> UDT;
         private ComunesVolumen helperVolumen;
         private ComunesVersion helperVersion;
         public ServicioParte(
+            IRegistroAuditoria registroAuditoria,
+            IAppCache cache,
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-        ILogger<ServicioLog> Logger) : base(proveedorOpciones, Logger)
+            ILogger<ServicioLog> Logger
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Parte>( new QueryComposer<Parte>());
             this.repoVer = UDT.ObtenerRepositoryAsync<Version>(new QueryComposer<Version>());
             helperVolumen = new ComunesVolumen(UDT);
@@ -275,8 +276,13 @@ namespace PIKA.Servicio.Contenido.Servicios
             throw new NotImplementedException();
         }
 
-       
-        
+        public Task<Parte> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
 
 
         #endregion

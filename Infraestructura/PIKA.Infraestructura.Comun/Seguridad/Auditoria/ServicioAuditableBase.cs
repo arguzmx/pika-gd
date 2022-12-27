@@ -29,9 +29,9 @@ namespace PIKA.Infraestructura.Comun.Seguridad.Auditoria
         protected Dictionary<string, string> Tablas;
         protected DbContext Context;
         protected StackFrame MarcoLLanada;
-        protected string IdEntidad;
-        protected string NombreEntidad;
-        protected string TipoEntidad;
+        public string IdEntidad;
+        public string NombreEntidad;
+        public string TipoEntidad;
 
         public SevicioAuditableBase(string APP_ID, 
             string MODULO_ID, UsuarioAPI usuario, 

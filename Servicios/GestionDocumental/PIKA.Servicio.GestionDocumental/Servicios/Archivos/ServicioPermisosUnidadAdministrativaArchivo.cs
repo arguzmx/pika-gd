@@ -19,6 +19,7 @@ using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Constantes.Aplicaciones.GestorDocumental;
 using Newtonsoft.Json;
 using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
+using System.Runtime.InteropServices;
 
 namespace PIKA.Servicio.GestionDocumental.Servicios
 {
@@ -159,6 +160,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 foreach(var c in listaEliminados)
                 {
                     UDT.Context.Entry(c).State = EntityState.Deleted;
+                    await seguridad.RegistraEventoEliminar(c.Id, c.DestinatarioId);
                 }
                 UDT.SaveChanges();
             }

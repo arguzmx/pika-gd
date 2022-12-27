@@ -30,7 +30,7 @@ namespace PIKA.Modelo.GestorDocumental
         PropiedadHijo: "ArchivoId")]
 
 
-    [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ALMACENARCHIVO,
+    [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ARCHIVOS,
         EntidadHijo: "AlmacenArchivo",
         Cardinalidad: TipoCardinalidad.UnoVarios, PropiedadPadre: "Id",
         PropiedadHijo: "ArchivoId")]

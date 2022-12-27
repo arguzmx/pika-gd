@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Contenido;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Contenido.Interfaces;
@@ -33,6 +34,11 @@ namespace PIKA.GD.API.Controllers.Contenido
             this.logger = logger;
             this.servicioEntidad = servicioEntidad;
             this.metadataProvider = metadataProvider;
+        }
+
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            servicioEntidad.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
         }
 
 

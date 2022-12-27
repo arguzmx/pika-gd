@@ -2,27 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PIKA.Constantes.Aplicaciones.Contenido;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Contenido;
-using PIKA.Servicio.Contenido.data.Migrations;
 using PIKA.Servicio.Contenido.Gestores;
-using PIKA.Servicio.Contenido.Helpers;
 using PIKA.Servicio.Contenido.Interfaces;
 using RepositorioEntidades;
 using GestorLocalConfig = PIKA.Modelo.Contenido.GestorLocalConfig;
+
 namespace PIKA.Servicio.Contenido.Servicios
 {
     public class ServicioGestorLocalConfig : ContextoServicioContenido,
@@ -33,21 +33,23 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         private IRepositorioAsync<GestorLocalConfig> repo;
         private IRepositorioAsync<Volumen> repoVol;
-        private UnidadDeTrabajo<DbContextContenido> UDT;
         private IOptions<ConfiguracionServidor> configServer;
         private IConfiguration configuration;
-
         public ServicioGestorLocalConfig(
             IConfiguration configuration,
+            IOptions<ConfiguracionServidor> opciones,
+            IRegistroAuditoria registroAuditoria,
+            IAppCache cache,
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-        ILogger<ServicioLog> Logger, 
-        IOptions<ConfiguracionServidor> opciones) : base(proveedorOpciones, Logger)
+            ILogger<ServicioLog> Logger
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_ADMIN_CONFIGURACION)
         {
+            this.configuration = configuration;
             this.configServer = opciones;
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<GestorLocalConfig>( new QueryComposer<GestorLocalConfig>());
             this.repoVol = UDT.ObtenerRepositoryAsync<Volumen>(new QueryComposer<Volumen>());
-            this.configuration = configuration;
         }
 
         public async Task<bool> Existe(Expression<Func<GestorLocalConfig, bool>> predicado)
@@ -81,32 +83,29 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<GestorLocalConfig> CrearAsync(GestorLocalConfig entity, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                GestorLocalConfig o = await this.repo.UnicoAsync(x => x.VolumenId == entity.VolumenId);
-                if (o == null)
-                {
-                    await ValidaEntidad(entity);
-                    await this.repo.CrearAsync(entity);
-                    UDT.SaveChanges();
-                    await ActualizaEstadoVolumen(entity.VolumenId, true);
-                } else
-                {
-                    await ActualizarAsync(entity);
-                }
-                
+            seguridad.EstableceDatosProceso<GestorLocalConfig>();
 
-                return entity.Copia();
-            }
-            catch (DbUpdateException)
+            GestorLocalConfig o = await this.repo.UnicoAsync(x => x.VolumenId == entity.VolumenId);
+            if (o == null)
             {
-                throw new ExErrorRelacional("Alguno de los identificadores no es válido");
+            
+                if(!await seguridad.AccesoCacheVolumen(o.VolumenId))
+                {
+                    await seguridad.EmiteDatosSesionIncorrectos(entity.VolumenId);
+                }
+
+                await ValidaEntidad(entity);
+                await this.repo.CrearAsync(entity);
+                UDT.SaveChanges();
+                await ActualizaEstadoVolumen(entity.VolumenId, true);
             }
-            catch (Exception ex)
+            else
             {
-                
-                throw ex;
+                await ActualizarAsync(entity);
             }
+
+
+            return entity.Copia();
         }
 
         private async Task ActualizaEstadoVolumen(string Id, bool configuracionValida)
@@ -122,6 +121,7 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task ActualizarAsync(GestorLocalConfig entity)
         {
+            seguridad.EstableceDatosProceso<GestorLocalConfig>();
             GestorLocalConfig o =  await this.repo.UnicoAsync(x => x.VolumenId == entity.VolumenId);
 
                 if (o == null)
@@ -129,7 +129,14 @@ namespace PIKA.Servicio.Contenido.Servicios
                     throw new EXNoEncontrado(entity.VolumenId);
                 }
 
+
+            if (!await seguridad.AccesoCacheVolumen(entity.VolumenId))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(entity.VolumenId);
+            }
+
             await ValidaEntidad(entity);
+            string original = o.Flat();
 
             o.Ruta = entity.Ruta;
 
@@ -137,6 +144,7 @@ namespace PIKA.Servicio.Contenido.Servicios
             UDT.SaveChanges();
             await ActualizaEstadoVolumen(entity.VolumenId, true);
 
+            await seguridad.RegistraEventoActualizar(o.VolumenId, o.Ruta, original.JsonDiff(o.Flat()));
         }
 
         
@@ -158,6 +166,7 @@ namespace PIKA.Servicio.Contenido.Servicios
         }
         public async Task<IPaginado<GestorLocalConfig>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<GestorLocalConfig>, IIncludableQueryable<GestorLocalConfig, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
+            seguridad.EstableceDatosProceso<GestorLocalConfig>();
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
 
@@ -166,27 +175,62 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            GestorLocalConfig d;
-            ICollection<string> lista = new HashSet<string>();
-            foreach (var Id in ids.LimpiaIds())
-            {
-                d = await this.repo.UnicoAsync(x => x.VolumenId == Id);
-                if (d != null)
-                {
-                    lista.Add(Id);
-                    await repo.Eliminar(d);
-                 }
-            }
+            seguridad.EstableceDatosProceso<GestorLocalConfig>();
+            //GestorLocalConfig d;
+            //ICollection<string> lista = new HashSet<string>();
+            //foreach (var Id in ids.LimpiaIds())
+            //{
+            //    d = await this.repo.UnicoAsync(x => x.VolumenId == Id);
+            //    if (d != null)
+            //    {
+            //        lista.Add(Id);
+            //        await repo.Eliminar(d);
+            //     }
+            //}
 
-            UDT.SaveChanges();
-            return lista;
+            //UDT.SaveChanges();
+            //return lista;
+            throw new NotImplementedException();
         }
 
-       public async Task<GestorLocalConfig> UnicoAsync(Expression<Func<GestorLocalConfig, bool>> predicado = null, Func<IQueryable<GestorLocalConfig>, IOrderedQueryable<GestorLocalConfig>> ordenarPor = null, Func<IQueryable<GestorLocalConfig>, IIncludableQueryable<GestorLocalConfig, object>> incluir = null, bool inhabilitarSegumiento = true)
+
+        public async Task<GestorLocalConfig> ObtieneConfiguracionVolumen(string VolumenId)
         {
+            seguridad.EstableceDatosProceso<GestorLocalConfig>();
+            var v = await this.UDT.Context.Volumen.FirstOrDefaultAsync(x => x.Id == VolumenId);
+            if (v != null)
+            {
+                if(!await seguridad.AccesoCacheVolumen(VolumenId))
+                {
+                    await seguridad.EmiteDatosSesionIncorrectos(VolumenId);
+                }
 
+                if(v.TipoGestorESId != TipoGestorES.LOCAL_FOLDER)
+                {
+                    throw new ExDatosNoValidos();
+                }
+
+                var c = this.UDT.Context.GestorLocalConfig.FirstOrDefault(x => x.VolumenId == VolumenId);
+                if (c == null)
+                {
+                    c = new GestorLocalConfig() { Ruta = "", VolumenId = VolumenId };
+                    this.UDT.Context.GestorLocalConfig.Add(c);
+                    this.UDT.Context.SaveChanges();
+                }
+                return c;
+            }
+            throw new ExDatosNoValidos();
+        }
+
+
+        public async Task<GestorLocalConfig> UnicoAsync(Expression<Func<GestorLocalConfig, bool>> predicado = null, Func<IQueryable<GestorLocalConfig>, IOrderedQueryable<GestorLocalConfig>> ordenarPor = null, Func<IQueryable<GestorLocalConfig>, IIncludableQueryable<GestorLocalConfig, object>> incluir = null, bool inhabilitarSegumiento = true)
+        {
+            seguridad.EstableceDatosProceso<GestorLocalConfig>();
             var o = await this.repo.UnicoAsync(predicado);
-
+            if (!await seguridad.AccesoCacheVolumen(o.VolumenId))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(o.VolumenId);
+            }
             return o.Copia();
         }
 
@@ -235,6 +279,12 @@ namespace PIKA.Servicio.Contenido.Servicios
         {
             throw new NotImplementedException();
         }
+
+        public Task<GestorLocalConfig> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
+
 
 
         #endregion

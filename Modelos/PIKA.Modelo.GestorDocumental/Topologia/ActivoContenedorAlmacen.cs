@@ -15,7 +15,7 @@ namespace PIKA.Modelo.GestorDocumental
     /// </summary>
 
     [Entidad(EliminarLogico: false,
-        TokenApp: ConstantesAppGestionDocumental.APP_ID, TokenMod: ConstantesAppGestionDocumental.MODULO_ALMACENARCHIVO)]
+        TokenApp: ConstantesAppGestionDocumental.APP_ID, TokenMod: ConstantesAppGestionDocumental.MODULO_ARCHIVOS)]
     public class ActivoContenedorAlmacen
     {
         /// <summary>

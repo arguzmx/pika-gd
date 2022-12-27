@@ -39,7 +39,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             IRegistroAuditoria registroAuditoria, 
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
            ILogger<ServicioLog> Logger) : base(registroAuditoria, proveedorOpciones, Logger, cache,
-               ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_ACTIVOS)
+               ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_CATALOGOSCC)
         {
             this.ConfiguracionServidor = config.Value;
             this.repo = UDT.ObtenerRepositoryAsync<TipoAmpliacion>(new QueryComposer<TipoAmpliacion>());

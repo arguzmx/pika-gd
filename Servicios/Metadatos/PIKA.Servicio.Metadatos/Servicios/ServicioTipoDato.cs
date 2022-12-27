@@ -1,9 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LazyCache;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using PIKA.Constantes.Aplicaciones.Metadatos;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Data;
 using PIKA.Servicio.Metadatos.Interfaces;
@@ -24,16 +28,17 @@ namespace PIKA.Servicio.Metadatos.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<TipoDato> repo;
-        private ICompositorConsulta<TipoDato> compositor;
-        private UnidadDeTrabajo<DbContextMetadatos> UDT;
+
+
         public ServicioTipoDato(
-          IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
-          ICompositorConsulta<TipoDato> compositorConsulta,
-          ILogger<ServicioTipoDato> Logger) : base(proveedorOpciones, Logger)
+            IRegistroAuditoria registroAuditoria,
+            IAppCache cache,
+            IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
+            ILogger<ServicioLog> Logger
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppMetadatos.APP_ID, ConstantesAppMetadatos.MODULO_PLANTILLAS)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
-            this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<TipoDato>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<TipoDato>(new QueryComposer<TipoDato>());
         }
 
         public async Task<bool> Existe(Expression<Func<TipoDato, bool>> predicado)
@@ -233,6 +238,11 @@ namespace PIKA.Servicio.Metadatos.Servicios
         }
 
         public async Task EjecutarSql(string sqlCommand)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TipoDato> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
         {
             throw new NotImplementedException();
         }

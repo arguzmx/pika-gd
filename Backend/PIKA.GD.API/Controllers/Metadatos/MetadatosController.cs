@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.Modelo.Metadatos;
-using System;
-using PIKA.Servicio.Metadatos.ElasticSearch.Excepciones;
 using PIKA.GD.API.Filters;
 using PIKA.Modelo.Metadatos.Extractores;
 using Microsoft.AspNetCore.Http;
@@ -15,9 +13,9 @@ using PIKA.GD.API.Servicios.Caches;
 using RepositorioEntidades;
 using PIKA.Modelo.Metadatos.Instancias;
 using PIKA.Servicio.Metadatos.ElasticSearch.modelos;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
+using PIKA.Infraestructura.Comun.Seguridad;
 
 namespace PIKA.GD.API.Controllers.Metadatos
 {
@@ -27,7 +25,6 @@ namespace PIKA.GD.API.Controllers.Metadatos
     [Route("api/v{version:apiVersion}/[controller]")]
     public class MetadatosController : ACLController
     {
-        private ILogger<MetadatosController> logger;
         private readonly IRepositorioMetadatos repositorio;
         private readonly IAppCache appCache;
         private readonly IServicioPlantilla plantillas;
@@ -42,11 +39,15 @@ namespace PIKA.GD.API.Controllers.Metadatos
         {
             this.plantillas = plantillas;
             this.repositorio = repositorio;
-            this.logger = logger;
             this.appCache = cache;
             this.config = config.Value;
         }
 
+
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            plantillas.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+        }
 
 
         /// <summary>
@@ -131,6 +132,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
 
 
         [HttpPost("{plantillaid}/lista/")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<string>> CreaLista(string plantillaid, [FromBody] RequestCrearLista request)
         {
             string id = await repositorio.CreaLista(plantillaid, request).ConfigureAwait(false);

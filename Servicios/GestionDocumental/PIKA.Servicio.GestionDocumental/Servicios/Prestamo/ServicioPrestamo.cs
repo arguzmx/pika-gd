@@ -49,8 +49,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             IRegistroAuditoria registroAuditoria,
            ILogger<ServicioLog> Logger,
            IOptions<ConfiguracionServidor> Config,
-           IServicioReporteEntidad ServicioReporteEntidad) : base(registroAuditoria, proveedorOpciones, Logger,
-               cache, ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_PRESTAMO)
+           IServicioReporteEntidad ServicioReporteEntidad) : 
+            base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_PRESTAMO)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Prestamo>(new QueryComposer<Prestamo>());
@@ -401,7 +402,9 @@ on s.Id = a.Id where s.TemaId = '{TemaId}';";
                 sql = @$"update {DBContextGestionDocumental.TablaActivosPrestamo} set Devuelto =1, FechaDevolucion='{p.FechaDevolucion.Value.ToString("s")}' where PrestamoId = '{p.Id}'";
                 await this.UDT.Context.Database.ExecuteSqlRawAsync(sql);
 
-                var e = SeguridadGestionDocumental.EventosAdicionales.DevolverPrestamo.GetHashCode();
+                seguridad.NombreEntidad = p.Descripcion;
+                seguridad.IdEntidad = p.Id;
+                var e = AplicacionGestionDocumental.EventosAdicionales.DevolverPrestamo.GetHashCode();
                 await seguridad.RegistraEvento(e, true);
 
                 await seguridad.RegistraEventoActualizar(p.Id, p.Folio, original.JsonDiff(p.Flat()));
@@ -434,7 +437,9 @@ on s.Id = a.Id where s.TemaId = '{TemaId}';";
                 r.MensajeId = "prestamo-entregado";
                 r.Estatus = true;
 
-                var e = SeguridadGestionDocumental.EventosAdicionales.EntregarPrestamo.GetHashCode();
+                seguridad.NombreEntidad = p.Descripcion;
+                seguridad.IdEntidad = p.Id;
+                var e = AplicacionGestionDocumental.EventosAdicionales.EntregarPrestamo.GetHashCode();
                 await seguridad.RegistraEvento(e, true);
 
                 await seguridad.RegistraEventoActualizar(p.Id, p.Folio, original.JsonDiff(p.Flat()));

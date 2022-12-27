@@ -27,6 +27,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -68,26 +69,66 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             seguridad.EstableceDatosProceso<Transferencia>();
             RespuestaComandoWeb r = new RespuestaComandoWeb() { Estatus = false, MensajeId = RespuestaComandoWeb.Novalido, Payload = null };
-
+            int e = 0;
             dynamic d = JObject.Parse(System.Text.Json.JsonSerializer.Serialize(payload));
+            string id = (string)d.Id;
+            Transferencia t = await this.repo.UnicoAsync(x => x.Id == id);
+            seguridad.NombreEntidad = t.Nombre;
+            seguridad.IdEntidad = t.Id;
             switch (command)
             {
                 case "enviar-transferencia":
-                    await this.EstadoTrasnferencia((string)d.Id, EstadoTransferencia.ESTADO_ESPERA_APROBACION);
-                    r.MensajeId = $"{command}-ok";
-                    r.Estatus = true;
+                    try
+                    {
+
+                        await this.EstadoTrasnferencia((string)d.Id, EstadoTransferencia.ESTADO_ESPERA_APROBACION);
+                        r.MensajeId = $"{command}-ok";
+                        r.Estatus = true;
+
+                        e = AplicacionGestionDocumental.EventosAdicionales.EnviarTransferencia.GetHashCode();
+                        await seguridad.RegistraEvento(e, true);
+
+                    }
+                    catch (Exception)
+                    {
+                        e = AplicacionGestionDocumental.EventosAdicionales.EnviarTransferencia.GetHashCode();
+                        await seguridad.RegistraEvento(e, false);
+                        throw;
+                    }
                     break;
 
                 case "aceptar-transferencia":
-                    await this.EstadoTrasnferencia((string)d.Id, EstadoTransferencia.ESTADO_RECIBIDA);
-                    r.MensajeId = $"{command}-ok";
-                    r.Estatus = true;
+                    try
+                    {
+                        await this.EstadoTrasnferencia((string)d.Id, EstadoTransferencia.ESTADO_RECIBIDA);
+                        r.MensajeId = $"{command}-ok";
+                        r.Estatus = true;
+                        e = AplicacionGestionDocumental.EventosAdicionales.RecibirTransferencia.GetHashCode();
+                        await seguridad.RegistraEvento(e, true);
+                    }
+                    catch (Exception)
+                    {
+                        e = AplicacionGestionDocumental.EventosAdicionales.RecibirTransferencia.GetHashCode();
+                        await seguridad.RegistraEvento(e, false);
+                        throw;
+                    }
                     break;
 
                 case "declinar-transferencia":
-                    await this.EstadoTrasnferencia((string)d.Id, EstadoTransferencia.ESTADO_DECLINADA);
-                    r.MensajeId = $"{command}-ok";
-                    r.Estatus = true;
+                    try
+                    {
+                        await this.EstadoTrasnferencia((string)d.Id, EstadoTransferencia.ESTADO_DECLINADA);
+                        r.MensajeId = $"{command}-ok";
+                        r.Estatus = true;
+                        e = AplicacionGestionDocumental.EventosAdicionales.DeclinarTrasnferencia.GetHashCode();
+                        await seguridad.RegistraEvento(e, true);
+                    }
+                    catch (Exception)
+                    {
+                        e = AplicacionGestionDocumental.EventosAdicionales.DeclinarTrasnferencia.GetHashCode();
+                        await seguridad.RegistraEvento(e, false);
+                        throw;
+                    }
                     break;
 
             }
@@ -631,13 +672,15 @@ Id IN (SELECT ActivoId FROM {DBContextGestionDocumental.TablaActivosTransferenci
                 case EstadoTransferencia.ESTADO_RECIBIDA:
                     List<string> aceptados = UDT.Context.ActivosTransferencia.Where(x => x.TransferenciaId == tx.Id && x.Aceptado == true).Select(x => x.ActivoId).ToList();
                     List<string> declinados = UDT.Context.ActivosTransferencia.Where(x => x.TransferenciaId == tx.Id && x.Declinado == true).Select(x => x.ActivoId).ToList();
+                    List<string> totales = UDT.Context.ActivosTransferencia.Where(x => x.TransferenciaId == tx.Id).Select(x => x.ActivoId).ToList();
 
-                    if(aceptados.Count == 0)
+
+                    if (aceptados.Count == 0)
                     {
                         throw new ExDatosNoValidos("APICODE-TX-SIN-ACPTADOS");
                     }
 
-                    if(aceptados.Count + declinados.Count != tx.CantidadActivos)
+                    if(aceptados.Count + declinados.Count != totales.Count)
                     {
                         throw new ExDatosNoValidos("APICODE-TX-SIN-VALIDAR");
                     }

@@ -1,4 +1,5 @@
-﻿using RepositorioEntidades;
+﻿using PIKA.Infraestructura.Comun;
+using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Modelo.Metadatos
 {
-    public interface IServicioBusqueda<T, U>
+    public interface IServicioBusqueda<T, U>: IServicioAutenticado<T>
     {
         Task<MetadataInfo> ObtieneMetadatosBusqueda();
         Task<IPaginado<T>> ObtenerPaginadoAsync(Consulta consulta, CancellationToken tokenCancelacion = default);

@@ -13,7 +13,7 @@ namespace PIKA.Modelo.GestorDocumental
 {
 
     [Entidad(PaginadoRelacional: false, EliminarLogico: true,
-       TokenMod: ConstantesAppGestionDocumental.MODULO_ALMACENARCHIVO,
+       TokenMod: ConstantesAppGestionDocumental.MODULO_ARCHIVOS,
        TokenApp: ConstantesAppGestionDocumental.APP_ID)]
 
     public class PosicionAlmacen : Entidad<string>, IEntidadNombrada

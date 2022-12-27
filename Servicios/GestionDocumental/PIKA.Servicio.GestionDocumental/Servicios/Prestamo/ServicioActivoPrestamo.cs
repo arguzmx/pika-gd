@@ -223,7 +223,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 UDT.SaveChanges();
             }
             
-            var l = listaEliminados.Select(p => p.Id).ToList();
+            var l = listaEliminados.Select(p => p.ActivoId).ToList();
             EstableceEnPrestamo(l, false);
             return l;
         }

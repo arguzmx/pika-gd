@@ -136,8 +136,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
             query.Filtros.RemoveAll(x => x.Propiedad == "OrigenId");
             query.Filtros.Add(new FiltroConsulta() { Propiedad = "OrigenId", Operador = FiltroConsulta.OP_EQ, Valor = RegistroActividad.DominioId });
-            ;
-
             return query;
         }
 

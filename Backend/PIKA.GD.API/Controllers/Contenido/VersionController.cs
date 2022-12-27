@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
-using PIKA.GD.API.Model;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Contenido;
 using PIKA.Modelo.Metadatos;
+using PIKA.Servicio.Contenido;
 using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Contenido.Interfaces;
 using RepositorioEntidades;
@@ -44,6 +43,11 @@ namespace PIKA.GD.API.Controllers.Contenido
             this.servicioElemento = servicioElemento;
         }
 
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            servicioVol.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+            servicioElemento.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+        }
 
         /// <summary>
         /// Otiene los metadatos asociados a la Version
@@ -68,6 +72,9 @@ namespace PIKA.GD.API.Controllers.Contenido
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Version>> Post([FromBody]Modelo.Contenido.Version entidad)
         {
+
+            await servicioElemento.AccesoValidoElemento(entidad.ElementoId, true).ConfigureAwait(false);
+
             await repoContenido.CreaRepositorio().ConfigureAwait(false);
             entidad.CreadorId = this.UsuarioId;
          
@@ -81,7 +88,7 @@ namespace PIKA.GD.API.Controllers.Contenido
             await this.servicioElemento.ActualizaConteoPartes(entidad.ElementoId, entidad.Partes.Count).ConfigureAwait(false);
             await this.servicioElemento.ActualizaTamanoBytes(entidad.ElementoId, entidad.Partes.Sum(x=>x.LongitudBytes)).ConfigureAwait(false);
 
-            // entidad = await servicioEntidad.CrearAsync(entidad).ConfigureAwait(false);
+            await servicioElemento.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.CrearVersion.GetHashCode(), id).ConfigureAwait(false);
 
             return Ok(CreatedAtAction("GetVersion", new { id }, entidad).Value);
         }
@@ -104,6 +111,9 @@ namespace PIKA.GD.API.Controllers.Contenido
             {
                 return BadRequest();
             }
+
+            await servicioElemento.AccesoValidoElemento(entidad.ElementoId, true).ConfigureAwait(false);
+
             await this.repoContenido.ActualizaVersion(id, entidad, true).ConfigureAwait(false);
 
             if (entidad.Partes == null)
@@ -112,7 +122,9 @@ namespace PIKA.GD.API.Controllers.Contenido
             }
             await this.servicioElemento.ActualizaConteoPartes(entidad.ElementoId, entidad.Partes.Count).ConfigureAwait(false);
             await this.servicioElemento.ActualizaTamanoBytes(entidad.ElementoId, entidad.Partes.Sum(x => x.LongitudBytes)).ConfigureAwait(false);
-            // await servicioEntidad.ActualizarAsync(entidad).ConfigureAwait(false);
+
+            await servicioElemento.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.ActualizarVersion.GetHashCode(), id).ConfigureAwait(false);
+
             return NoContent();
 
         }
@@ -146,8 +158,8 @@ namespace PIKA.GD.API.Controllers.Contenido
         public async Task<ActionResult<Version>> Get(string id)
         {
             var o = await this.repoContenido.ObtieneVersion(id).ConfigureAwait(false);
-            // var o = await servicioEntidad.UnicoAsync(x => x.Id == id).ConfigureAwait(false);
-            if (o != null) return Ok(o);
+            await servicioElemento.AccesoValidoElemento(o.ElementoId).ConfigureAwait(false);
+                        if (o != null) return Ok(o);
             return NotFound(id);
         }
 
@@ -196,33 +208,19 @@ namespace PIKA.GD.API.Controllers.Contenido
             string[] lids = IdsTrim.Split(',').ToList()
            .Where(x => !string.IsNullOrEmpty(x)).ToArray();
 
+
+
             foreach(string id  in lids)
             {
+                var o = await this.repoContenido.ObtieneVersion(id).ConfigureAwait(false);
+                await servicioElemento.AccesoValidoElemento(o.ElementoId, true).ConfigureAwait(false);
                 await this.repoContenido.EliminaVersion(id).ConfigureAwait(false);
+                await servicioElemento.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.EliminarVersion.GetHashCode(), id).ConfigureAwait(false);
             };
 
             return Ok(lids);
         }
 
-        ///// <summary>
-        ///// Restaura una lista de Versioness eliminados en base al arreglo de identificadores recibidos
-        ///// </summary>
-        ///// <param name="ids">Arreglo de identificadores string</param>
-        ///// <returns></returns>
-        //[HttpPatch("restaurar/{ids}", Name = "RestaurarVersion")]
-        //[TypeFilter(typeof(AsyncACLActionFilter))]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //public async Task<ActionResult> Undelete(string ids)
-        //{
-        //    string IdsTrim = "";
-        //    foreach (string item in ids.Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray())
-        //    {
-        //        IdsTrim += item.Trim() + ",";
-        //    }
-        //    string[] lids = IdsTrim.Split(',').ToList()
-        //   .Where(x => !string.IsNullOrEmpty(x)).ToArray();
-        //    return Ok(await servicioEntidad.Restaurar(lids).ConfigureAwait(false));
-        //}
 
     }
 }

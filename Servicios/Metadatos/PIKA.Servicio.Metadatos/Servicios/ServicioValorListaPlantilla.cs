@@ -5,11 +5,15 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using PIKA.Constantes.Aplicaciones.Metadatos;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Data;
 using PIKA.Servicio.Metadatos.Interfaces;
@@ -25,14 +29,16 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         private IRepositorioAsync<ValorListaPlantilla> repo;
 
-        private UnidadDeTrabajo<DbContextMetadatos> UDT;
-
-        public ServicioValorListaPlantilla(IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
-           ILogger<ServicioValorListaPlantilla> Logger) : base(proveedorOpciones, Logger)
+        public ServicioValorListaPlantilla(IRegistroAuditoria registroAuditoria,
+            IAppCache cache,
+            IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
+            ILogger<ServicioLog> Logger
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppMetadatos.APP_ID, ConstantesAppMetadatos.MODULO_PLANTILLAS)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
-            this.repo = UDT.ObtenerRepositoryAsync<ValorListaPlantilla>(new QueryComposer<ValorListaPlantilla>());
+            this.repo = UDT.ObtenerRepositoryAsync(new QueryComposer<ValorListaPlantilla>());
         }
+
         public async Task<bool> Existe(Expression<Func<ValorListaPlantilla, bool>> predicado)
         {
             List<ValorListaPlantilla> l = await this.repo.ObtenerAsync(predicado);
@@ -261,7 +267,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
             throw new NotImplementedException();
         }
 
-        
+        public Task<ValorListaPlantilla> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
+
+
 
 
         #endregion

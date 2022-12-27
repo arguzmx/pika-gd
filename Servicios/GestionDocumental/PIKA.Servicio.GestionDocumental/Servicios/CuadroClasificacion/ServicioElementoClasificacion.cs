@@ -455,6 +455,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 UDT.Context.Database.ExecuteSqlRaw(sqls);
             });
 
+            await seguridad.RegistraEventoEliminar(entrada.Id, entrada.Nombre);
 
             return true;
         }

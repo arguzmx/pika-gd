@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LazyCache;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
-using PIKA.Infraestructura.Comun;
+using PIKA.Constantes.Aplicaciones.Metadatos;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Data;
 using PIKA.Servicio.Metadatos.Interfaces;
@@ -12,7 +15,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,14 +27,16 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         private IRepositorioAsync<AtributoTabla> repo;
         private ICompositorConsulta<AtributoTabla> compositor;
-        private UnidadDeTrabajo<DbContextMetadatos> UDT;
+        
         public ServicioAtributoTabla(
-           IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
-           ICompositorConsulta<AtributoTabla> compositorConsulta,
-           ILogger<ServicioAtributoTabla> Logger) : base(proveedorOpciones, Logger)
+            IRegistroAuditoria registroAuditoria,
+            IAppCache cache,
+            IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
+            ILogger<ServicioLog> Logger
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppMetadatos.APP_ID, ConstantesAppMetadatos.MODULO_PLANTILLAS)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
-            this.compositor = compositorConsulta;
+            
             this.repo = UDT.ObtenerRepositoryAsync<AtributoTabla>(compositor);
         }
 
@@ -43,6 +47,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<bool> Existe(Expression<Func<AtributoTabla, bool>> predicado)
         {
+            throw new NotImplementedException();
             List<AtributoTabla> l = await this.repo.ObtenerAsync(predicado);
             if (l.Count() == 0) return false;
             return true;
@@ -51,6 +56,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<AtributoTabla> CrearAsync(AtributoTabla entity, CancellationToken cancellationToken = default)
         {
+            throw new NotImplementedException();
 
             if (await Existe(x => x.Id.Equals(entity.Id, StringComparison.InvariantCultureIgnoreCase)))
             {
@@ -65,7 +71,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task ActualizarAsync(AtributoTabla entity)
         {
-
+            throw new NotImplementedException();
             AtributoTabla o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
             if (o == null)
@@ -108,6 +114,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
         }
         public async Task<IPaginado<AtributoTabla>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<AtributoTabla>, IIncludableQueryable<AtributoTabla, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
+            throw new NotImplementedException();
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
 
@@ -136,6 +143,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
+            throw new NotImplementedException();
             AtributoTabla at;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
@@ -179,6 +187,11 @@ namespace PIKA.Servicio.Metadatos.Servicios
             AtributoTabla d = await this.repo.UnicoAsync(predicado);
 
             return d.Copia();
+        }
+
+        public Task<AtributoTabla> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

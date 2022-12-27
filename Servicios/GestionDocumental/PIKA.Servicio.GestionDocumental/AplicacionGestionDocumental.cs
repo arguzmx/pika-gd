@@ -35,6 +35,11 @@ namespace PIKA.Servicio.GestionDocumental
             return this.ModulosAplicacionLocales(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.APP_ID);
         }
 
+        public enum EventosAdicionales
+        {
+            EntregarPrestamo = 100, DevolverPrestamo = 101, EnviarTransferencia = 102, RecibirTransferencia = 103,
+            RecibirTrasnferenciaParcial = 104, DeclinarTrasnferencia = 105
+        }
 
         private List<TipoEventoAuditoria> EventosModuloCuadroClasificacion()
         {
@@ -125,6 +130,47 @@ namespace PIKA.Servicio.GestionDocumental
             List<TipoEventoAuditoria> l = new List<TipoEventoAuditoria>();
             l.AddRange("EV-TRANSFERENCIA".EventoComunes<Transferencia>(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_TRANSFERENCIA));
             l.AddRange("EV-ACTIVO-TRANSFERENCIA".EventoComunes<ActivoTransferencia>(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_TRANSFERENCIA));
+
+
+            Type t = typeof(Transferencia);
+
+            l.Add(new TipoEventoAuditoria()
+            {
+                AppId = ConstantesAppGestionDocumental.APP_ID,
+                Descripcion = "EV-ENVIAR-TX",
+                ModuloId = ConstantesAppGestionDocumental.MODULO_TRANSFERENCIA,
+                TipoEntidad = t.Name,
+                TipoEvento = 102
+            });
+
+            l.Add(new TipoEventoAuditoria()
+            {
+                AppId = ConstantesAppGestionDocumental.APP_ID,
+                Descripcion = "EV-ACEPTAR-OK-TX",
+                ModuloId = ConstantesAppGestionDocumental.MODULO_TRANSFERENCIA,
+                TipoEntidad = t.Name,
+                TipoEvento = 103
+            });
+
+            l.Add(new TipoEventoAuditoria()
+            {
+                AppId = ConstantesAppGestionDocumental.APP_ID,
+                Descripcion = "EV-ACEPTAR-PARCIAL-TX",
+                ModuloId = ConstantesAppGestionDocumental.MODULO_TRANSFERENCIA,
+                TipoEntidad = t.Name,
+                TipoEvento = 104
+            });
+
+            l.Add(new TipoEventoAuditoria()
+            {
+                AppId = ConstantesAppGestionDocumental.APP_ID,
+                Descripcion = "EV-DECLINAR-TX",
+                ModuloId = ConstantesAppGestionDocumental.MODULO_TRANSFERENCIA,
+                TipoEntidad = t.Name,
+                TipoEvento = 105
+            });
+
+
             //NO EN USO l.AddRange("EV-UNIDADES-ADMIN".EventoComunes<HistorialArchivoActivo>(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_TRANSFERENCIA));
             //NO EN USO l.AddRange("EV-UNIDADES-ADMIN".EventoComunes<EventoTransferencia>(ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_TRANSFERENCIA));
             return l;
@@ -198,6 +244,7 @@ namespace PIKA.Servicio.GestionDocumental
                         typeof(EventoTransferencia),
                         typeof(ComentarioTransferencia),
                         typeof(ActivoTransferencia),
+                        typeof(EstadoTransferencia),
                         typeof(HistorialArchivoActivo)},
                      EventosAuditables = EventosModuloTransferencias()
                 },

@@ -41,7 +41,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
          ILogger<ServicioLog> Logger,
          IOptions<ConfiguracionServidor> Config) :
             base(registroAuditoria, proveedorOpciones, Logger, cache,
-                ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_CUADROCLASIF)
+                ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_CATALOGOSCC)
         {
             this.ConfiguracionServidor = Config.Value;
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);

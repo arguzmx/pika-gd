@@ -35,10 +35,6 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             this.UDT = UDT;
         }
 
-        public enum EventosAdicionales { 
-            EntregarPrestamo =100, DevolverPrestamo = 101
-        }
-
         public async Task<bool> AccesoCacheArchivo(string ArchivoId)
         {
             var cached = await cache.GetAsync<List<string>>($"archivo-{usuario.Id}");

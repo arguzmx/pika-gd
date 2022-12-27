@@ -34,7 +34,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             IAppCache cache,
             IRegistroAuditoria registroAuditoria, IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
             ILogger<ServicioLog> Logger) : base(registroAuditoria, proveedorOpciones, Logger,
-            cache, ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_ALMACENARCHIVO)
+            cache, ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_ARCHIVOS)
         {
             this.repo = UDT.ObtenerRepositoryAsync<AlmacenArchivo>(new QueryComposer<AlmacenArchivo>());
         }
@@ -169,7 +169,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
                         // no es posible eliminar el contenedor si:
                         // Tiene activos alojados
-                        if(UDT.Context.ActivoContenedorAlmacen.Any(x=>x.ContenedorAlmacenId == o.Id))
+                        if (UDT.Context.ContenedoresAlmacen.Any(x => x.AlmacenArchivoId == o.Id))
+                        {
+                            throw new ExElementoExistente();
+                        }
+
+                        if (UDT.Context.ZonasAlmacen.Any(x=>x.AlmacenArchivoId == o.Id))
                         {
                             throw new ExElementoExistente();
                         }

@@ -44,7 +44,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             IOptions<ConfiguracionServidor> Config,
             IServicioReporteEntidad ServicioReporteEntidad,
             ILogger<ServicioLog> Logger) : base(registroAuditoria, proveedorOpciones, Logger,
-            cache, ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_ALMACENARCHIVO)
+            cache, ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_ARCHIVOS)
         {
             this.Config = Config;
             this.ServicioReporteEntidad = ServicioReporteEntidad;
@@ -244,6 +244,12 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 if (o != null)
                 {
                     await seguridad.AccesoValidoContenedorAlmacen(o);
+
+                    if ( UDT.Context.ActivoContenedorAlmacen.Any(x => x.ContenedorAlmacenId == o.Id))
+                    {
+                        throw new ExElementoExistente();
+                    }
+
                     listaEliminados.Add(o);
                 }               
             }
@@ -254,7 +260,7 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
                 foreach(var c in listaEliminados)
                 {
                     string pActual = c.PosicionAlmacenId;
-                    UDT.Context.Entry(c).State = EntityState.Modified;
+                    UDT.Context.Entry(c).State = EntityState.Deleted;
                     await seguridad.RegistraEventoEliminar(c.Id, c.Nombre);
 
                     if (pActual != null)

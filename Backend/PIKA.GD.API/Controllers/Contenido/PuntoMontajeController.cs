@@ -40,6 +40,10 @@ namespace PIKA.GD.API.Controllers.Contenido
             this.ServicioTokenSeguridad = ServicioTokenSeguridad;
         }
 
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            servicioEntidad.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+        }
 
         /// <summary>
         /// Otiene los metadatos asociados al punto de montaje
