@@ -51,13 +51,16 @@ namespace PIKA.Servicio.Contenido.Servicios
             this.helperCarpetas = new ComunesCarpetas(this.repoCarpetas);
         }
 
-        public async Task EventoActualizarVersionElemento(int EventoID, string ElementoId, bool Exitoso = true, string ElementoNombre = null)
+        public async Task EventoActualizarVersionElemento(int EventoID, string ElementoId, bool Exitoso = true, string ElementoNombre = null, string Delta = null)
         {
 
             if (string.IsNullOrEmpty(ElementoNombre))
             {
                 var el = await UDT.Context.Elemento.FirstOrDefaultAsync(x => x.Id == ElementoId);
-                seguridad.NombreEntidad = el.Nombre;
+                if(el != null)
+                {
+                    seguridad.NombreEntidad = el.Nombre;
+                }
             } else
             {
                 seguridad.NombreEntidad = ElementoNombre;
@@ -66,7 +69,8 @@ namespace PIKA.Servicio.Contenido.Servicios
             seguridad.IdEntidad = ElementoId;
             
             seguridad.EstableceDatosProceso<Elemento>();
-            await seguridad.RegistraEvento(EventoID, Exitoso);
+            await seguridad.RegistraEvento(EventoID, Exitoso, Delta);
+
         }
 
         public async Task ActualizaTamanoBytes(string Id, long Tamano)

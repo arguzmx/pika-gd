@@ -156,9 +156,10 @@ namespace PIKA.Servicio.Metadatos.ElasticSearch
                     IndiceJerarquia = doc.IndiceJerarquia
 
                 };
+                var x = valores.ActualizarDocumento(plantilla);
+                var body = ES.PostData.String(x);
 
-                var body = ES.PostData.String(valores.ActualizarDocumento(plantilla));
-                var response = await cliente.LowLevel.UpdateAsync<StringResponse>(plantilla.Id, valores.Id, body);
+                var response = cliente.LowLevel.Update<IndexResponse>(plantilla.Id, valores.Id, body);
                 if (response.ApiCall.Success)
                 {
                     return true;

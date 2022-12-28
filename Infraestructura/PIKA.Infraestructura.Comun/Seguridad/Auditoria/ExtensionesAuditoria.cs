@@ -70,7 +70,6 @@ namespace PIKA.Infraestructura.Comun.Seguridad.Auditoria
             var left = JObject.Parse(original);
             var right = JObject.Parse(modificado);
             var patch = new JsonDiffPatch(new Options() {  TextDiff = TextDiffMode.Efficient }).Diff(left, right);
-            var formatter = new JsonDeltaFormatter();
             return (patch == null ? null : JsonConvert.SerializeObject(patch));
         }
 

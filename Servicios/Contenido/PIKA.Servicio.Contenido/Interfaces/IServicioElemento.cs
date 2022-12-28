@@ -11,7 +11,7 @@ namespace PIKA.Servicio.Contenido.Interfaces
 {
     public interface IServicioElemento : IServicioRepositorioAsync<Elemento, string>, IServicioAutenticado<Elemento>
     {
-        Task EventoActualizarVersionElemento(int EventoID, string ElementoId, bool Exitoso = true, string ElementoNombre = null);
+        Task EventoActualizarVersionElemento(int EventoID, string ElementoId, bool Exitoso = true, string ElementoNombre = null, string Delta = null);
         Task<bool> AccesoValidoElemento(string ElementoId, bool Escritura = false);
         Task<List<Elemento>> ObtenerPaginadoByIdsAsync(ConsultaAPI q);
         Task<List<string>> Purgar();
