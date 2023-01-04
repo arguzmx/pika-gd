@@ -1,4 +1,5 @@
-﻿using PIKA.Modelo.Organizacion;
+﻿using PIKA.Infraestructura.Comun;
+using PIKA.Modelo.Organizacion;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PIKA.Servicio.Organizacion.Interfaces
 {
-    public interface IServicioRol : IServicioRepositorioAsync<Rol,string>, IServicioValorTextoAsync<Rol>
+    public interface IServicioRol : IServicioRepositorioAsync<Rol,string>, IServicioValorTextoAsync<Rol>, IServicioAutenticado<Rol>
     {
 
         Task<ICollection<Rol>> ObtieneRoles(string idDominio);

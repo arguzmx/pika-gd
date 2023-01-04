@@ -27,7 +27,7 @@ namespace PIKA.Servicio.Contenido
         public enum EventosAdicionales
         {
             AdicionarPaginas=100, EliminarPaginas=101, ModificarPaginas=102, ExportarPDF=103, ExportarZIP=104, AdicionarMetadatos =15, ModificarMetadatos=106, EliminarMetadatos = 107, 
-            CrearVersion = 108, EliminarVersion=109, ActualizarVersion = 110
+            CrearVersion = 108, EliminarVersion=109, ActualizarVersion = 110, RotarPaginas=111, ReflejarPaginas= 112, MoverPaginas=113
         }
 
         private List<TipoEventoAuditoria> EventosAdminConfiguracion()
@@ -86,6 +86,33 @@ namespace PIKA.Servicio.Contenido
                 TipoEvento = EventosAdicionales.ModificarPaginas.GetHashCode()
             });
 
+
+            l.Add(new TipoEventoAuditoria()
+            {
+                AppId = ConstantesAppContenido.APP_ID,
+                Descripcion = "EV-VERSION-ROT-PAG",
+                ModuloId = ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO,
+                TipoEntidad = t.Name,
+                TipoEvento = EventosAdicionales.RotarPaginas.GetHashCode()
+            });
+
+            l.Add(new TipoEventoAuditoria()
+            {
+                AppId = ConstantesAppContenido.APP_ID,
+                Descripcion = "EV-VERSION-MV-PAG",
+                ModuloId = ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO,
+                TipoEntidad = t.Name,
+                TipoEvento = EventosAdicionales.MoverPaginas.GetHashCode()
+            });
+
+            l.Add(new TipoEventoAuditoria()
+            {
+                AppId = ConstantesAppContenido.APP_ID,
+                Descripcion = "EV-VERSION-RX-PAG",
+                ModuloId = ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO,
+                TipoEntidad = t.Name,
+                TipoEvento = EventosAdicionales.ReflejarPaginas.GetHashCode()
+            });
 
             l.Add(new TipoEventoAuditoria()
             {

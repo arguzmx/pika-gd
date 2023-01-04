@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Organizacion;
 using PIKA.Servicio.Organizacion.Interfaces;
@@ -36,6 +37,12 @@ namespace PIKA.GD.API.Controllers.Organizacion
             this.servicioRol = servicioRol;
             this.metadataProvider = metadataProvider;
         }
+
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            servicioRol.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+        }
+
 
         /// <summary>
         /// Obtiene los metadatos relacionados con la entidad Rol
@@ -189,6 +196,7 @@ namespace PIKA.GD.API.Controllers.Organizacion
             var resultado = await servicioRol.Desvincular(rolid, ids).ConfigureAwait(false);
             return Ok(resultado.ToList());
         }
+
 
         [HttpGet("pares", Name = "GetParesRol")]
         [TypeFilter(typeof(AsyncACLActionFilter))]

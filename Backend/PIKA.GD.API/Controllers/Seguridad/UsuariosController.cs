@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Seguridad;
 using PIKA.Servicio.Seguridad.Interfaces;
@@ -35,6 +36,10 @@ namespace PIKA.GD.API.Controllers.Seguridad
             this.metadataProvider = metadataProvider;
         }
 
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            servicioEntidad.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+        }
 
         /// <summary>
         /// Obtiene los metadatos relacionados con la entidad Dominio

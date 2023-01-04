@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text;
 
 namespace PIKA.Infraestructura.Comun.Seguridad
@@ -13,6 +14,8 @@ namespace PIKA.Infraestructura.Comun.Seguridad
         public string DireccionInternet { get; set; }
         public string IdConexion { get; set; }
         public DateTime FechaUTC { get; set; }
+        public string  JWT { get; set; }
+        public List<Claim> Claims { get; set; }
 
     }
 }

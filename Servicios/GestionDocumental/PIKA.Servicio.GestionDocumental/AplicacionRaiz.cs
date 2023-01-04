@@ -13,7 +13,7 @@ namespace PIKA.Servicio.GestionDocumental
             {
                 Id = ConstantesAppGestionDocumental.APP_ID,
                 Descripcion = "Permite los procesos de gestión documental en la aplicación",
-                Nombre = "Administrador de gestión documental",
+                Nombre = "Administrador de Gestión Documental",
                 UICulture = "es-MX",
                 Version = Version,
                 ReleaseIndex = 0

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Nest;
 using PIKA.Constantes.Aplicaciones.Aplicaciones;
 using PIKA.Constantes.Aplicaciones.Seguridad;
 using PIKA.GD.API.Filters;
@@ -13,9 +12,8 @@ using PIKA.GD.API.Model;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Seguridad;
-using PIKA.Servicio.AplicacionPlugin;
-using PIKA.Servicio.GestionDocumental.Servicios;
 using PIKA.Servicio.Seguridad.Interfaces;
+using PIKA.Servicio.Seguridad.Servicios;
 using RepositorioEntidades;
 
 namespace PIKA.GD.API.Controllers.Sistema
@@ -63,6 +61,9 @@ namespace PIKA.GD.API.Controllers.Sistema
 
         public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
         {
+
+            servicioUsuarios.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+            servicioSeguridad.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
             servicioEventoAuditoriaActivo.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
             servicioEventoAuditoria.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
         }
@@ -101,7 +102,7 @@ namespace PIKA.GD.API.Controllers.Sistema
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<int>> PostPermisosCrear([FromBody] List<PermisoAplicacion> permisos)
         {
-            await servicioSeguridad.CrearActualizarAsync(this.DominioId, permisos.ToArray()).ConfigureAwait(false);
+            await servicioSeguridad.CrearActualizarAsync(permisos.ToArray()).ConfigureAwait(false);
             return Ok();
         }
 
@@ -111,7 +112,7 @@ namespace PIKA.GD.API.Controllers.Sistema
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<int>> PostPermisosEliminar([FromBody] List<PermisoAplicacion> permisos)
         {
-            await servicioSeguridad.EliminarAsync(this.DominioId, permisos.ToArray()).ConfigureAwait(false);
+            await servicioSeguridad.EliminarAsync(permisos.ToArray()).ConfigureAwait(false);
             return Ok();
         }
 

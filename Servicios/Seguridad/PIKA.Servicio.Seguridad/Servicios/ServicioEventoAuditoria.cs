@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
-using Nest;
 using Newtonsoft.Json;
 using PIKA.Constantes.Aplicaciones.Seguridad;
 using PIKA.Infraestructura.Comun.Excepciones;
@@ -63,9 +62,13 @@ namespace PIKA.Servicio.Seguridad.Servicios
             return entity;
         }
 
+
+
         public async Task<IPaginado<EventoAuditoria>> Buscar(QueryBitacora query)
         {
-            Console.WriteLine(JsonConvert.SerializeObject(query));
+            seguridad.EstableceDatosProceso<EventoAuditoria>();
+            seguridad.EstableceRegistroAuditoria(this);
+            // await seguridad.RegistraEvento(AplicacionSeguridad.EventosAdicionales.LecturaEventosAuditoria.GetHashCode(), true, JsonConvert.SerializeObject(query));
             if (!query.Indice.HasValue)
             {
                 query.Indice = 0;
@@ -94,9 +97,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
             Paginado<EventoAuditoria> p = new Paginado<EventoAuditoria>();
             string sqls = SQLQuery(query);
-            Console.WriteLine(sqls);
             string sqlsCount = SQLQuery(query, true);
-            Console.WriteLine(sqlsCount);
             var connection = new MySqlConnection(UDT.Context.Database.GetDbConnection().ConnectionString);
             await connection.OpenAsync();
 

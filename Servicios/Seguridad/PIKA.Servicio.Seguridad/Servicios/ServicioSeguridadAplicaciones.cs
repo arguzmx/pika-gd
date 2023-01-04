@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using PIKA.Constantes.Aplicaciones.Seguridad;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
@@ -24,24 +25,25 @@ namespace PIKA.Servicio.Seguridad.Servicios
             IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
             ILogger<ServicioLog> Logger
          ) : base(registroAuditoria, proveedorOpciones, Logger,
-                 cache, ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_AUDITORIA)
+                 cache, ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_ACL)
         {
             this.repo = UDT.ObtenerRepositoryAsync<PermisoAplicacion>(new QueryComposer<PermisoAplicacion>());
         }
 
 
-        public async Task<ICollection<PermisoAplicacion>> ObtienePermisosAsync(string tipo, string id, string dominioid)
+        public async Task<ICollection<PermisoAplicacion>> ObtienePermisosAsync(string tipo, string id, string DominioId)
         {
             var lista = await repo.ObtenerAsync(x => x.EntidadAccesoId == id &&
-             x.TipoEntidadAcceso == tipo && x.DominioId == dominioid);
+             x.TipoEntidadAcceso == tipo && x.DominioId == DominioId);
             return lista;
         }
 
 
-        public async Task<int> CrearActualizarAsync(string DominioId, params PermisoAplicacion[] entities)
+        public async Task<int> CrearActualizarAsync(params PermisoAplicacion[] entities)
         {
 
             int cantidad = 0;
+            seguridad.EstableceDatosProceso<PermisoAplicacion>();
 
             foreach(string key in  entities.ToList().Select(x => x.EntidadAccesoId).Distinct())
             {
@@ -52,7 +54,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             List<PermisoAplicacion> adicionadas = new List<PermisoAplicacion>();
             foreach (var p in entities)
             {
-                PermisoAplicacion permisoAdicionado = adicionadas.Where(x => x.DominioId == DominioId
+                PermisoAplicacion permisoAdicionado = adicionadas.Where(x => x.DominioId == RegistroActividad.DominioId
                 && x.AplicacionId == p.AplicacionId
                 && x.ModuloId == p.ModuloId
                 && x.TipoEntidadAcceso == p.TipoEntidadAcceso
@@ -61,7 +63,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
                 if (permisoAdicionado == null)
                 {
 
-                    p.DominioId = DominioId;
+                    p.DominioId = RegistroActividad.DominioId;
                     if (p.NegarAcceso)
                     {
                         p.Admin = false;
@@ -86,23 +88,30 @@ namespace PIKA.Servicio.Seguridad.Servicios
                         NegarAcceso = p.NegarAcceso,
                         TipoEntidadAcceso = p.TipoEntidadAcceso
                     };
-                    await repo.CrearAsync(permiso);
+                    UDT.Context.PermisosAplicacion.Add(p);
+                    UDT.Context.Entry(p).State = EntityState.Added;
+                    UDT.SaveChanges();
                     adicionadas.Add(permiso);
                 }
+
+                string original = "{}";
+                seguridad.IdEntidad = p.EntidadAccesoId;
+                seguridad.NombreEntidad = p.ModuloId;
+                await seguridad.RegistraEvento(AplicacionSeguridad.EventosAdicionales.CambioACL.GetHashCode(), true, original.JsonDiff(p.Flat()));
             }
 
 
-            UDT.SaveChanges();
+            
             return cantidad;
         }
 
-        public async Task<int> EliminarAsync(string DominioId, params PermisoAplicacion[] entities)
+        public async Task<int> EliminarAsync(params PermisoAplicacion[] entities)
         {
             int cantidad = 0;
 
             foreach(var p in entities)
             {
-                var entidad = await repo.UnicoAsync(x => x.DominioId == DominioId
+                var entidad = await repo.UnicoAsync(x => x.DominioId == RegistroActividad.DominioId
                     && x.AplicacionId == p.AplicacionId
                     && x.ModuloId == p.ModuloId
                     && x.TipoEntidadAcceso == p.TipoEntidadAcceso
@@ -119,6 +128,9 @@ namespace PIKA.Servicio.Seguridad.Servicios
             return cantidad;
         }
 
-
+        public Task<PermisoAplicacion> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

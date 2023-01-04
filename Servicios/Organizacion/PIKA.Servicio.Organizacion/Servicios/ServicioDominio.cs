@@ -1,11 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LazyCache;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using PIKA.Constantes.Aplicaciones.Organizacion;
+using PIKA.Constantes.Aplicaciones.Seguridad;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Organizacion;
 using PIKA.Modelo.Organizacion.Estructura;
 using RepositorioEntidades;
@@ -27,25 +33,27 @@ namespace PIKA.Servicio.Organizacion.Servicios
 
         private IRepositorioAsync<Dominio> repo;
         private IRepositorioAsync<UnidadOrganizacional> repoOU;
-        private UnidadDeTrabajo<DbContextOrganizacion> UDT;
+
         public ServicioDominio(
-            IProveedorOpcionesContexto<DbContextOrganizacion> proveedorOpciones,
-            ILogger<ServicioDominio> Logger
-        ) : base(proveedorOpciones, Logger)
+         IAppCache cache,
+         IRegistroAuditoria registroAuditoria,
+         IProveedorOpcionesContexto<DbContextOrganizacion> proveedorOpciones,
+                  ILogger<ServicioLog> Logger
+         ) : base(registroAuditoria, proveedorOpciones, Logger,
+                 cache, ConstantesAppOrganizacion.APP_ID, ConstantesAppOrganizacion.MODULO_DOMINIO)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextOrganizacion>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Dominio>(
                 new QueryComposer<Dominio>());
             this.repoOU = UDT.ObtenerRepositoryAsync<UnidadOrganizacional>(
                 new QueryComposer<UnidadOrganizacional>());
-
         }
 
 
         public async Task<ActDominioOU> OntieneDominioOU(string DominioId, string OUId)
         {
-            var d = await this.UDT.Context.Dominios.Where(x => x.Id == DominioId).SingleOrDefaultAsync();
-            var ou = await this.UDT.Context.UnidadesOrganizacionales.Where(x => x.Id == OUId).SingleOrDefaultAsync();
+            seguridad.EstableceDatosProceso<Dominio>();
+            var d = await this.UDT.Context.Dominios.Where(x => x.Id == RegistroActividad.DominioId).SingleOrDefaultAsync();
+            var ou = await this.UDT.Context.UnidadesOrganizacionales.Where(x => x.Id == RegistroActividad.UnidadOrgId).SingleOrDefaultAsync();
 
             if (d != null && ou != null)
             {
@@ -57,8 +65,10 @@ namespace PIKA.Servicio.Organizacion.Servicios
 
         public async Task<bool> ActualizaDominioOU(ActDominioOU request, string DominioId, string OUId )
         {
-            var d = await this.UDT.Context.Dominios.Where(x => x.Id == DominioId).SingleOrDefaultAsync();
-            var ou = await this.UDT.Context.UnidadesOrganizacionales.Where(x => x.Id == OUId).SingleOrDefaultAsync();
+            seguridad.EstableceDatosProceso<Dominio>();
+
+            var d = await this.UDT.Context.Dominios.Where(x => x.Id == RegistroActividad.DominioId).SingleOrDefaultAsync();
+            var ou = await this.UDT.Context.UnidadesOrganizacionales.Where(x => x.Id == RegistroActividad.UnidadOrgId).SingleOrDefaultAsync();
 
             if(d!=null && ou != null)
             {
@@ -67,6 +77,7 @@ namespace PIKA.Servicio.Organizacion.Servicios
                     d.Nombre = request.Dominio;
                     ou.Nombre = request.OU;
                     await this.UDT.Context.SaveChangesAsync();
+                    await seguridad.RegistraEvento(AplicacionOrganizacion.EventosAdicionales.ActualizaDatosOrganizacion.GetHashCode(), true, JsonConvert.SerializeObject(request));
                     return true;
                 }
             }
@@ -83,6 +94,10 @@ namespace PIKA.Servicio.Organizacion.Servicios
 
         public async Task<Dominio> CrearAsync(Dominio entity, CancellationToken cancellationToken = default)
         {
+            if(!RegistroActividad.Claims.Any(c=>c.Subject.Equals("administracion")))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
 
             if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
@@ -97,6 +112,10 @@ namespace PIKA.Servicio.Organizacion.Servicios
 
         public async Task ActualizarAsync(Dominio entity)
         {
+            if (!RegistroActividad.Claims.Any(c => c.Subject.Equals("administracion")))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
 
             Dominio o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
@@ -117,9 +136,6 @@ namespace PIKA.Servicio.Organizacion.Servicios
             UDT.SaveChanges();
 
             await MarcaOUDelDominio(o.Id, entity.Eliminada);
-
-
-
 
         }
 
@@ -176,6 +192,11 @@ namespace PIKA.Servicio.Organizacion.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
+            if (!RegistroActividad.Claims.Any(c => c.Subject.Equals("administracion")))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+
             Dominio o;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
@@ -209,9 +230,6 @@ namespace PIKA.Servicio.Organizacion.Servicios
 
         }
 
-
-
-
         public Task<List<Dominio>> ObtenerAsync(Expression<Func<Dominio, bool>> predicado)
         {
             return this.repo.ObtenerAsync(predicado);
@@ -222,12 +240,12 @@ namespace PIKA.Servicio.Organizacion.Servicios
             return this.repo.ObtenerAsync(SqlCommand);
         }
 
-
-
-
-
         public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
+            if (!RegistroActividad.Claims.Any(c => c.Subject.Equals("administracion")))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
             Dominio d;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
@@ -255,17 +273,17 @@ namespace PIKA.Servicio.Organizacion.Servicios
 
             Dominio d = await this.repo.UnicoAsync(predicado);
 
-            //Cuando llamas a serializar objetos con propiedades de navegación pueden crearse referencias circulares
-            //por eso devolvemos una instancia filtrada
-            //Hayq que implmenbatrlo como un método de extensión en ExtensionesDominio
-            //estudiar https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/extension-methods
-
             return d.CopiaDominio();
         }
 
 
         public async Task<string[]> Purgar()
         {
+            if (!RegistroActividad.Claims.Any(c => c.Subject.Equals("administracion")))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+
             List<Dominio> ListaDominio = await this.repo.ObtenerAsync(x=>x.Eliminada==true).ConfigureAwait(false);
             if (ListaDominio.Count() > 0)
             {
@@ -297,7 +315,12 @@ namespace PIKA.Servicio.Organizacion.Servicios
             throw new NotImplementedException();
         }
 
-       
+        public Task<Dominio> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
+
+
         #endregion
 
 

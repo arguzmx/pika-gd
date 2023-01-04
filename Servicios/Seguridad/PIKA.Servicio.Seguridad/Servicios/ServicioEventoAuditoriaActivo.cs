@@ -36,7 +36,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
          IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
          ILogger<ServicioLog> Logger) :
             base(registroAuditoria, proveedorOpciones, Logger, 
-                 cache, ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_AUDITORIA)
+                 cache, ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_CONFIG_AUDITORIA)
         {
             this.repo = UDT.ObtenerRepositoryAsync(new QueryComposer<EventoAuditoriaActivo>());
         }
@@ -48,12 +48,18 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
         public async Task ActualizaEventosActivos(List<EventoAuditoriaActivo> eventos)
         {
+            seguridad.EstableceDatosProceso<EventoAuditoriaActivo>();
             foreach(var e in eventos)
             {
                 EventoAuditoriaActivo tmp = UDT.Context.EventosActivosAuditoria.FirstOrDefault(x => x.DominioId == RegistroActividad.DominioId
                     && x.UAId == RegistroActividad.UnidadOrgId && x.TipoEntidad == e.TipoEntidad && x.TipoEvento == e.TipoEvento 
                     && x.AppId == e.AppId && x.ModuloId == e.ModuloId);
-                if(tmp == null )
+
+                seguridad.IdEntidad = e.TipoEvento.ToString();
+                seguridad.NombreEntidad = e.TipoEntidad.ToString();
+                await seguridad.RegistraEvento(AplicacionSeguridad.EventosAdicionales.CambioConfigAuditoria.GetHashCode(),true,$"{e.Auditar}");
+
+                if (tmp == null )
                 {
                     if(e.Auditar == true)
                     {
@@ -78,6 +84,8 @@ namespace PIKA.Servicio.Seguridad.Servicios
                         await UDT.Context.SaveChangesAsync();
                     }
                 }
+
+                
             }
             
         }
@@ -173,6 +181,10 @@ namespace PIKA.Servicio.Seguridad.Servicios
             {
                 query = new Consulta() { indice = 0, tamano = 20, ord_columna = DEFAULT_SORT_COL, ord_direccion = DEFAULT_SORT_DIRECTION };
             }
+
+            query.Filtros.RemoveAll(x => x.Propiedad == "DominioId");
+            query.Filtros.Add(new FiltroConsulta() { Propiedad = "DominioId", Operador = FiltroConsulta.OP_EQ, Valor = RegistroActividad.DominioId });
+
             return query;
         }
 

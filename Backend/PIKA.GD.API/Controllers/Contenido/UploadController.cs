@@ -9,10 +9,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using PIKA.Constantes.Aplicaciones.Contenido;
 using PIKA.GD.API.Filters;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 using PIKA.Modelo.Contenido;
 using PIKA.Modelo.Contenido.Extensiones;
 using PIKA.Modelo.Contenido.ui;
@@ -115,6 +117,7 @@ namespace PIKA.GD.API.Controllers.Contenido
                     }
 
                     Modelo.Contenido.Version v = await this.repoContenido.ObtieneVersion(version).ConfigureAwait(false);
+                    
                     if (v == null)
                     {
 
@@ -136,6 +139,8 @@ namespace PIKA.GD.API.Controllers.Contenido
 
                         var id = await this.repoContenido.CreaVersion(v).ConfigureAwait(false);
                     }
+
+                    string original = JsonConvert.SerializeObject(v, ExtensionesAuditoria.FlatSettings(1));
 
                     int indice = 1;
                     int inicio = 1;
@@ -230,15 +235,17 @@ namespace PIKA.GD.API.Controllers.Contenido
                     await this.servicioElemento.ActualizaConteoPartes(elementoId, v.Partes.Count).ConfigureAwait(false);
                     await this.servicioElemento.ActualizaTamanoBytes(elementoId, v.Partes.Sum(x=>x.LongitudBytes)).ConfigureAwait(false);
 
+                    string modificada = JsonConvert.SerializeObject(v, ExtensionesAuditoria.FlatSettings(1));
+                    string delta = original.JsonDiff(modificada);
+                    await servicioElemento.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.ModificarPaginas.GetHashCode(), elementoId, true, null, delta).ConfigureAwait(false);
+
                     try
                     {
                         Directory.Delete(ruta, true);
                     }
                     catch (Exception ex) {
                     }
-
                     await this.servicioTransaccionCarga.EliminarTransaccion(TransaccionId, VolId, conteoBytes).ConfigureAwait(false);
-                    await servicioElemento.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.AdicionarPaginas.GetHashCode(), elementoId, true).ConfigureAwait(false);
                     return Ok(v.Partes.APaginas());
                 }
             }

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
 using PIKA.Infraestructura.Comun.Constantes;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Organizacion;
 using PIKA.Servicio.Organizacion;
@@ -35,6 +36,12 @@ namespace PIKA.GD.API.Controllers.Organizacion
             this.logger = logger;
             this.servicioUO = servicioUO;
             this.metadataProvider = metadataProvider;
+        }
+
+
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            servicioUO.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
         }
 
 

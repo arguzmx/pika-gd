@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using PIKA.Identity.Server.Data;
-using PIKA.Identity.Server.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -22,12 +20,15 @@ using IdentityServer4.Configuration;
 using PIKA.Modelo.Seguridad;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
-using IdentityServer4.Hosting;
 using PIKA.Identity.Server.Services;
 using PIKA.Servicio.Usuarios;
 using RepositorioEntidades;
 using System;
 using System.Linq;
+using IdentityServer4.Services;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Servicio.Seguridad.Servicios;
+using PIKA.Servicio.Seguridad.Interfaces;
 
 namespace PIKA.Identity.Server
 {
@@ -103,8 +104,13 @@ namespace PIKA.Identity.Server
 
             services.AddControllersWithViews();
 
+            services.AddTransient<IServicioUsuarios, ServicioUsuarios>();
             services.AddTransient<IServicioPerfilUsuario, ServicioPerfilUsuario>();
             services.AddTransient(typeof(IProveedorOpcionesContexto<>), typeof(ProveedorOpcionesContexto<>));
+            services.AddTransient<IRegistroAuditoria, ServicioEventoAuditoria>();
+
+            //Servicios de cache de la aplicación basaodo en LazyCache
+            services.AddLazyCache();
 
             services.AddDbContext<ApplicationDbContext>(options =>
                  options.UseMySql(dbconnstr));
@@ -114,7 +120,7 @@ namespace PIKA.Identity.Server
                 .AddDefaultTokenProviders();
 
             services.AddHealthChecks();
-
+            services.AddTransient<IEventSink, CustomEventSink>();
             var builder = services.AddIdentityServer(options =>
             {
                 // options.PublicOrigin = Configuration["PublicOrigin"];

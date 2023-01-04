@@ -10,9 +10,11 @@ using PIKA.Constantes.Aplicaciones.Organizacion;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
 using PIKA.GD.API.Servicios.Registro;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Organizacion.Estructura;
 using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Organizacion;
+using PIKA.Servicio.Organizacion.Servicios;
 
 namespace PIKA.GD.API.Controllers.Sistema
 {
@@ -41,6 +43,11 @@ namespace PIKA.GD.API.Controllers.Sistema
             this.servDominio = servDominio;
             this.appCache = appCache;
             this.repoContenido = repoContenido;
+        }
+
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            servDominio.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
         }
 
         [HttpGet("fingerprint")]

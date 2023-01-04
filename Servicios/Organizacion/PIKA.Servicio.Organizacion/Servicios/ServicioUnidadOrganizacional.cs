@@ -1,11 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LazyCache;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
-using PIKA.Infraestructura.Comun;
+using PIKA.Constantes.Aplicaciones.Organizacion;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Organizacion;
-using PIKA.Servicio.Organizacion.Servicios;
 using RepositorioEntidades;
 using System;
 using System.Collections.Generic;
@@ -26,14 +29,15 @@ namespace PIKA.Servicio.Organizacion.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<UnidadOrganizacional> repo;
-        private UnidadDeTrabajo<DbContextOrganizacion> UDT;
         
         public ServicioUnidadOrganizacional(
-            IProveedorOpcionesContexto<DbContextOrganizacion> proveedorOpciones,
-            ILogger<ServicioUnidadOrganizacional> Logger): 
-            base(proveedorOpciones, Logger)
+         IAppCache cache,
+         IRegistroAuditoria registroAuditoria,
+         IProveedorOpcionesContexto<DbContextOrganizacion> proveedorOpciones,
+                  ILogger<ServicioLog> Logger
+         ) : base(registroAuditoria, proveedorOpciones, Logger,
+                 cache, ConstantesAppOrganizacion.APP_ID, ConstantesAppOrganizacion.MODULO_UNIDADORGANIZACIONAL)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextOrganizacion>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<UnidadOrganizacional>(
                 new QueryComposer<UnidadOrganizacional>());
         }
@@ -46,43 +50,50 @@ namespace PIKA.Servicio.Organizacion.Servicios
         }
         public async Task<UnidadOrganizacional> CrearAsync(UnidadOrganizacional entity, CancellationToken cancellationToken = default)
         {
-
-            try
+            if (!RegistroActividad.Claims.Any(c => c.Subject.Equals("administracion")))
             {
-                // los nombres de unidad organizacional pueden repetirse en los diferetes dominios
-                if (await Existe(x => 
-                x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase) &&
-                x.DominioId.Equals(entity.DominioId, StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    throw new ExElementoExistente(entity.Nombre);
-                }
+                await seguridad.EmiteDatosSesionIncorrectos();
 
-                entity.Id = System.Guid.NewGuid().ToString();
-                await this.repo.CrearAsync(entity);
-                UDT.SaveChanges();
-                return entity;
             }
-            catch (DbUpdateException)
-            {
-                throw new ExErrorRelacional("Identificador de dominio no válido");
-            }
-            catch (Exception ex)
-            {
+            seguridad.EstableceDatosProceso<UnidadOrganizacional>();
 
-                throw ex;
+            await seguridad.IdEnDominio(entity.DominioId);
+
+            // los nombres de unidad organizacional pueden repetirse en los diferetes dominios
+            if (await Existe(x =>
+            x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase) &&
+            x.DominioId.Equals(entity.DominioId, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                throw new ExElementoExistente(entity.Nombre);
             }
+
+            entity.Id = System.Guid.NewGuid().ToString();
+            await this.repo.CrearAsync(entity);
+            UDT.SaveChanges();
+
+            await seguridad.RegistraEventoCrear(entity.Id, entity.Nombre);
+
+            return entity;
 
         }
 
 
         public async Task ActualizarAsync(UnidadOrganizacional entity)
         {
+            if (!RegistroActividad.Claims.Any(c => c.Subject.Equals("administracion")))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+
+            seguridad.EstableceDatosProceso<UnidadOrganizacional>();
             UnidadOrganizacional uo = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
             if (uo == null)
             {
                 throw new EXNoEncontrado(entity.Id);
             }
+            await seguridad.IdEnDominio(uo.DominioId);
+            string original = uo.Flat();
 
             if (await Existe(x =>
             x.Id != entity.Id && x.Id == entity.Id
@@ -93,6 +104,8 @@ namespace PIKA.Servicio.Organizacion.Servicios
             uo.Eliminada = entity.Eliminada;
             uo.Nombre = entity.Nombre;
             UDT.Context.Entry(uo).State = EntityState.Modified;
+
+            await seguridad.RegistraEventoActualizar(uo.Id, uo.Nombre, original.JsonDiff(uo.Flat()));
             UDT.SaveChanges();
 
         }
@@ -109,10 +122,19 @@ namespace PIKA.Servicio.Organizacion.Servicios
             {
                 query = new Consulta() { indice = 0, tamano = 20, ord_columna  = DEFAULT_SORT_COL, ord_direccion = DEFAULT_SORT_DIRECTION };
             }
+
+            query.Filtros.RemoveAll(x => x.Propiedad == "DominioId");
+            query.Filtros.Add(new FiltroConsulta() { Propiedad = "DominioId", Operador = FiltroConsulta.OP_EQ, Valor = RegistroActividad.DominioId });
+
             return query;
         }
         public async Task<IPaginado<UnidadOrganizacional>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<UnidadOrganizacional>, IIncludableQueryable<UnidadOrganizacional, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
+            if (!RegistroActividad.Claims.Any(c => c.Subject.Equals("administracion")))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
             return respuesta;
@@ -135,6 +157,11 @@ namespace PIKA.Servicio.Organizacion.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
+            if (!RegistroActividad.Claims.Any(c => c.Subject.Equals("administracion")))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+
+            }
             UnidadOrganizacional uo;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
@@ -151,26 +178,43 @@ namespace PIKA.Servicio.Organizacion.Servicios
             return listaEliminados;
         }
 
-        public Task<List<UnidadOrganizacional>> ObtenerAsync(Expression<Func<UnidadOrganizacional, bool>> predicado)
+        public async Task<List<UnidadOrganizacional>> ObtenerAsync(Expression<Func<UnidadOrganizacional, bool>> predicado)
         {
-            return this.repo.ObtenerAsync(predicado);
+            if (!RegistroActividad.Claims.Any(c => c.Subject.Equals("administracion")))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+            return await this.repo.ObtenerAsync(predicado);
         }
 
-        public Task<List<UnidadOrganizacional>> ObtenerAsync(string SqlCommand)
+        public async Task<List<UnidadOrganizacional>> ObtenerAsync(string SqlCommand)
         {
-            return this.repo.ObtenerAsync(SqlCommand);
+            if (!RegistroActividad.Claims.Any(c => c.Subject.Equals("administracion")))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+            return await this.repo.ObtenerAsync(SqlCommand);
         }
 
 
 
         public async Task<UnidadOrganizacional> UnicoAsync(Expression<Func<UnidadOrganizacional, bool>> predicado = null, Func<IQueryable<UnidadOrganizacional>, IOrderedQueryable<UnidadOrganizacional>> ordenarPor = null, Func<IQueryable<UnidadOrganizacional>, IIncludableQueryable<UnidadOrganizacional, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
+            if (!RegistroActividad.Claims.Any(c => c.Subject.Equals("administracion")))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+
             UnidadOrganizacional uo = await this.repo.UnicoAsync(predicado);
             return uo.CopiaUO();
         }
 
         public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
+            if (!RegistroActividad.Claims.Any(c => c.Subject.Equals("administracion")))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
             UnidadOrganizacional uo;
             ICollection<string> lista = new HashSet<string>();
             foreach (var Id in ids)
@@ -207,7 +251,12 @@ namespace PIKA.Servicio.Organizacion.Servicios
             throw new NotImplementedException();
         }
 
-        
+        public Task<UnidadOrganizacional> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
+
+
         #endregion
 
     }

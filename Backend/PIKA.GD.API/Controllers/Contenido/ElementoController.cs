@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
-using PIKA.GD.API.Servicios;
 using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Aplicacion.Tareas;
 using PIKA.Modelo.Contenido;
@@ -19,7 +17,6 @@ using PIKA.Servicio.AplicacionPlugin.Interfaces;
 using PIKA.Servicio.Contenido;
 using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Contenido.Interfaces;
-using PIKA.Servicio.Contenido.Servicios;
 using PIKA.Servicio.Contenido.Servicios.TareasAutomaticas;
 using RepositorioEntidades;
 using ComunTreas = PIKA.Infraestructura.Comun.Tareas;
@@ -318,7 +315,7 @@ namespace PIKA.GD.API.Controllers.Contenido
                 await repoContenido.EliminaOCRVersion(vElemento).ConfigureAwait(false);
                 await repoContenido.ActualizaVersion(vElemento.Id, vElemento, true).ConfigureAwait(false);
 
-                await servicioEntidad.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.ModificarPaginas.GetHashCode(), id).ConfigureAwait(false);
+                await servicioEntidad.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.ModificarPaginas.GetHashCode(), id,true, null, id).ConfigureAwait(false);
             }
 
             return Ok();
@@ -365,7 +362,7 @@ namespace PIKA.GD.API.Controllers.Contenido
             }
 
             await repoContenido.ActualizaVersion(vElemento.Id, vElemento, true).ConfigureAwait(false);
-            await servicioEntidad.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.ModificarPaginas.GetHashCode(), id).ConfigureAwait(false);
+            await servicioEntidad.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.RotarPaginas.GetHashCode(), id, true, null, Newtonsoft.Json.JsonConvert.SerializeObject(ids.ToList())).ConfigureAwait(false);
             return Ok();
 
         }
@@ -413,7 +410,7 @@ namespace PIKA.GD.API.Controllers.Contenido
             }
             
             await repoContenido.ActualizaVersion(vElemento.Id, vElemento, true).ConfigureAwait(false);
-            await servicioEntidad.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.ModificarPaginas.GetHashCode(), id).ConfigureAwait(false);
+            await servicioEntidad.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.ReflejarPaginas.GetHashCode(), id, true, null, Newtonsoft.Json.JsonConvert.SerializeObject(ids.ToList())).ConfigureAwait(false);
             return Ok();
         }
 
@@ -500,7 +497,7 @@ namespace PIKA.GD.API.Controllers.Contenido
             vElemento.Partes = Fijas;
             
             await repoContenido.ActualizaVersion(vElemento.Id, vElemento, true).ConfigureAwait(false);
-            await servicioEntidad.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.ModificarPaginas.GetHashCode(), id).ConfigureAwait(false);
+            await servicioEntidad.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.MoverPaginas.GetHashCode(), id, true, null, Newtonsoft.Json.JsonConvert.SerializeObject(paginas.ToList())).ConfigureAwait(false);
             return Ok();
         }
 
@@ -550,7 +547,7 @@ namespace PIKA.GD.API.Controllers.Contenido
             }
 
             await repoContenido.ActualizaVersion(elemento.VersionId, vElemento, false).ConfigureAwait(false);
-            await servicioEntidad.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.EliminarPaginas.GetHashCode(), id).ConfigureAwait(false);
+            await servicioEntidad.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.EliminarPaginas.GetHashCode(), id, true, null, Newtonsoft.Json.JsonConvert.SerializeObject(paginas)).ConfigureAwait(false);
             return Ok();
         }
 

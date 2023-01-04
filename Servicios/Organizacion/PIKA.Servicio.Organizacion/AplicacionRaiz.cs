@@ -13,8 +13,8 @@ namespace PIKA.Servicio.Organizacion
             Aplicacion a = new Aplicacion()
             {
                 Id = ConstantesAppOrganizacion.APP_ID,
-                Descripcion = "Permite la gestión de elemtos de la organización",
-                Nombre = "Administrador de organización",
+                Descripcion = "Permite la gestión de elementos de la organización",
+                Nombre = "Administrador de Organización",
                 UICulture = "es-MX",
                 Version = Version,
                 ReleaseIndex = 0

@@ -12,8 +12,10 @@ using RepositorioEntidades;
 namespace PIKA.Servicio.Seguridad.Interfaces
 {
     public interface IServicioUsuarios : IServicioRepositorioAsync<PropiedadesUsuario, string>,
-          IServicioValorTextoAsync<PropiedadesUsuario>
+          IServicioValorTextoAsync<PropiedadesUsuario>, IServicioAutenticado<PropiedadesUsuario>
     {
+
+        Task RegistroLogin(string Usaurio, bool Valido, string DireccionRed);
         Task<ICollection<string>> Inactivar(string[] ids);
         Task<ICollection<string>> Activar(string[] ids);
 

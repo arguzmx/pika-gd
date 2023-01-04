@@ -12,6 +12,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
+using System.Net;
 
 namespace PIKA.GD.API.Filters
 {
@@ -186,7 +188,20 @@ namespace PIKA.GD.API.Filters
                         var u = ObtieneUsuarioAPI(UserId, ((ACLController)context.Controller).Roles, ((ACLController)context.Controller).AdminGlobal, ((ACLController)context.Controller).Accesos);
                         u.gmtOffset = context.HttpContext.Request.Headers.Any(x=>x.Key== "gmtoffset") ?  int.Parse(context.HttpContext.Request.Headers.First(x => x.Key == "gmtoffset").Value) * -1 : 0;
                         ((ACLController)context.Controller).usuario = u;
-   
+
+                        string jwt = null;
+                        if(context.HttpContext.Request.Headers.Any(h=>h.Key == "Authorization"))
+                        {
+                            jwt = context.HttpContext.Request.Headers["Authorization"];
+                            if (jwt.StartsWith("Bearer", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                jwt = jwt.Split(' ')[1];
+                            } else
+                            {
+                                jwt = null;
+                            }
+                        }
+
                         ContextoRegistroActividad a = new ContextoRegistroActividad()
                         {
                             DominioId = DomainId,
@@ -194,7 +209,9 @@ namespace PIKA.GD.API.Filters
                             DireccionInternet = context.HttpContext.Connection.RemoteIpAddress.ToString(),
                             FechaUTC = DateTime.UtcNow,
                             IdConexion = context.HttpContext.Connection.Id,
-                            UsuarioId = UserId
+                            UsuarioId = UserId, 
+                            JWT = jwt,
+                            Claims = identity.Claims.ToList()
                         };
 
                         ((ACLController)context.Controller).contextoRegistro = a;

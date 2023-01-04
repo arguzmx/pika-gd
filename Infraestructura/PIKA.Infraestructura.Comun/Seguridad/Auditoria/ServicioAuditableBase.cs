@@ -54,6 +54,11 @@ namespace PIKA.Infraestructura.Comun.Seguridad.Auditoria
         }
 
 
+        public void EstableceRegistroAuditoria(IRegistroAuditoria registroAuditoria)
+        {
+            this.registroAuditoria = registroAuditoria;
+        }
+
         /// <summary>
         /// Establace el tipo de entidad y el marco de llamada actual
         /// </summary>
@@ -332,13 +337,20 @@ namespace PIKA.Infraestructura.Comun.Seguridad.Auditoria
             return null;
         }
 
-
-        public virtual async Task<EventoAuditoria> RegistraEvento(int tipoEvento, bool Exitoso = true, string Delta = null, int? TipoFalla = null)
+        public virtual async Task<EventoAuditoria> RegistraEvento(EventoAuditoria ev)
         {
+            ev = await registroAuditoria.InsertaEvento(ev);
+            return ev;
+        }
 
-            if (!EventosActivos.Any(e => e.TipoEvento == tipoEvento && e.AppId == this.APP_ID && e.ModuloId == this.MODULO_ID && e.TipoEntidad == this.TipoEntidad))
+        public virtual async Task<EventoAuditoria> RegistraEvento(int tipoEvento, bool Exitoso = true, string Delta = null, int? TipoFalla = null, bool ForzarRegistro =false)
+        {
+            if(!ForzarRegistro)
             {
-                return null;
+                if (!EventosActivos.Any(e => e.TipoEvento == tipoEvento && e.AppId == this.APP_ID && e.ModuloId == this.MODULO_ID && e.TipoEntidad == this.TipoEntidad))
+                {
+                    return null;
+                }
             }
 
             string fuente = "";

@@ -49,6 +49,8 @@ namespace PIKA.GD.API.Controllers.GestorDocumental
         {
             servicioEntidad.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
             servicioAlmacen.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+            servicioDominio.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+            servicioUO.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
         }
 
         [HttpGet()]
