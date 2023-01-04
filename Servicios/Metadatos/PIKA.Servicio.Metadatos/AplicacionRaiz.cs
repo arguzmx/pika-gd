@@ -14,7 +14,7 @@ namespace PIKA.Servicio.Metadatos
             {
                 Id = ConstantesAppMetadatos.APP_ID,
                 Descripcion = "Permite la gestión modelos de metadatos de la aplicación",
-                Nombre = "Administrador de metadatos",
+                Nombre = "Administrador de Metadatos",
                 UICulture = "es-MX",
                 Version = Version,
                 ReleaseIndex = 0

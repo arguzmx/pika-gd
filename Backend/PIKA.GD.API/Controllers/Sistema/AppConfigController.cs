@@ -10,9 +10,11 @@ using PIKA.Constantes.Aplicaciones.Organizacion;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
 using PIKA.GD.API.Servicios.Registro;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Organizacion.Estructura;
 using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Organizacion;
+using PIKA.Servicio.Organizacion.Servicios;
 
 namespace PIKA.GD.API.Controllers.Sistema
 {
@@ -43,6 +45,11 @@ namespace PIKA.GD.API.Controllers.Sistema
             this.repoContenido = repoContenido;
         }
 
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            servDominio.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+        }
+
         [HttpGet("fingerprint")]
         [AllowAnonymous]
         public async Task<ActionResult<string>> ObtenerFingerprint()
@@ -56,6 +63,9 @@ namespace PIKA.GD.API.Controllers.Sistema
         public async Task<ActionResult<bool>> AplicacionActivada()
         {
             var valida = await this.registroPIKA.LicenciaValida();
+#if DEBUG
+            valida = true;
+#endif
             return Ok(valida);
         }
 

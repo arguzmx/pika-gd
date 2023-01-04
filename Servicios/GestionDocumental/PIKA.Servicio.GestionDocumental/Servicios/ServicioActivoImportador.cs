@@ -11,10 +11,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
     {
         public async Task<byte[]> ImportarActivos(byte[] file, string ArchivId, string TipoId, string OrigenId, string formatoFecha)
         {
-            IoImportarActivos importador = new IoImportarActivos(this, this.logger,
-                proveedorOpciones, Config);
-            byte[] archivo = await importador.ImportandoDatos(file, ArchivId, TipoId, OrigenId, formatoFecha);
-            return archivo;
+            //IoImportarActivos importador = new IoImportarActivos(this, this.logger,
+            //    proveedorOpciones, Config);
+            //byte[] archivo = await importador.ImportandoDatos(file, ArchivId, TipoId, OrigenId, formatoFecha);
+            //return archivo;
+            return null;
         }
 
 

@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Interfaces;
 using RepositorioEntidades;
@@ -43,6 +44,13 @@ namespace PIKA.GD.API.Controllers.Metadatos
             this.repositorioMetadatos = repositorioMetadatos;
             this.servicioPlantilla = servicioPlantilla;
         }
+
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            servicioEntidad.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+            servicioPlantilla.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+        }
+
 
         /// <summary>
         /// Obtiene los metadatos relacionados con la entidad  PropiedadPlantilla

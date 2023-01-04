@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using PIKA.Infraestructura.Comun;
+using PIKA.Constantes.Aplicaciones.Contenido;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Contenido;
 using PIKA.Servicio.Contenido.Helpers;
@@ -20,19 +21,16 @@ namespace PIKA.Servicio.Contenido.Servicios
    public class ServicioElementoTransaccionCarga : ContextoServicioContenido,
         IServicioInyectable, IServicioElementoTransaccionCarga
     {
-
-
         private IRepositorioAsync<ElementoTransaccionCarga> repo;
-        private ConfiguracionServidor configuracionServidor;
-        private UnidadDeTrabajo<DbContextContenido> UDT;
 
         public ServicioElementoTransaccionCarga(
+            IRegistroAuditoria registroAuditoria,
+            IAppCache cache,
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-            ILogger<ServicioLog> Logger,
-            IOptions<ConfiguracionServidor> opciones
-        ) : base(proveedorOpciones, Logger)
+            ILogger<ServicioLog> Logger
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO)
         {
-            this.configuracionServidor = opciones.Value;
             this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<ElementoTransaccionCarga>(new QueryComposer<ElementoTransaccionCarga>());
         }
@@ -83,6 +81,10 @@ namespace PIKA.Servicio.Contenido.Servicios
             return l.OrderBy(x => x.Indice).ToList();
         }
 
+        public Task<ElementoTransaccionCarga> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

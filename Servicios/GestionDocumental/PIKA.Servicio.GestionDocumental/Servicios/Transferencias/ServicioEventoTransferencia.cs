@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
@@ -29,8 +30,8 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private IRepositorioAsync<EventoTransferencia> repo;
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
 
-        public ServicioEventoTransferencia(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
-            ILogger<ServicioLog> Logger) : base(proveedorOpciones,Logger)
+        public ServicioEventoTransferencia(IRegistroAuditoria registroAuditoria, IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
+            ILogger<ServicioLog> Logger) : base(registroAuditoria, proveedorOpciones,Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<EventoTransferencia>(new QueryComposer<EventoTransferencia>());
@@ -186,6 +187,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         {
             EventoTransferencia t = await this.repo.UnicoAsync(predicado);
             return t.Copia();
+        }
+
+        public Task<EstadoTransferencia> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using LazyCache;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
-using PIKA.Infraestructura.Comun;
+using PIKA.Constantes.Aplicaciones.Seguridad;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Seguridad;
 using PIKA.Modelo.Seguridad.Base;
 using PIKA.Modelo.Seguridad.Validadores;
@@ -35,24 +36,73 @@ namespace PIKA.Servicio.Seguridad.Servicios
         private IRepositorioAsync<ApplicationUser> repoAppUser;
         private IRepositorioAsync<UsuarioDominio> repoUsuarioDominio;
         private IRepositorioAsync<UserClaim> repoClaims;
-        private UnidadDeTrabajo<DbContextSeguridad> UDT;
 
         public ServicioUsuarios(
-         IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
-         ILogger<ServicioUsuarios> Logger) :
-            base(proveedorOpciones, Logger)
+              IAppCache cache,
+              IRegistroAuditoria registroAuditoria,
+              IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
+              ILogger<ServicioLog> Logger
+         ) : base(registroAuditoria, proveedorOpciones, Logger,
+                 cache, ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_USUARIOS)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<PropiedadesUsuario>(new QueryComposer<PropiedadesUsuario>());
             this.repoAppUser = UDT.ObtenerRepositoryAsync<ApplicationUser>(new QueryComposer<ApplicationUser>());
             this.repoClaims = UDT.ObtenerRepositoryAsync<UserClaim>(new QueryComposer<UserClaim>());
             this.repoUsuarioDominio = UDT.ObtenerRepositoryAsync<UsuarioDominio>(new QueryComposer<UsuarioDominio>());
         }
 
+        public async Task RegistroLogin(string Usaurio, bool Valido, string DireccionRed)
+        {
+            Type t = typeof(ApplicationUser);
+            var u = UDT.Context.Usuarios.Where(x => x.UserName == Usaurio).FirstOrDefault();
+            if(u!=null)
+            {
+                seguridad = new Seguridad(ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_USUARIOS, null, null, null, this.registroAuditoria, this.cache, this.UDT, null);
+
+                List<UsuarioDominio> l = UDT.Context.UsuariosDominio.Where(x => x.ApplicationUserId == u.Id).ToList();
+                foreach(var d in l)
+                {
+                    
+                    EventoAuditoria ev = new EventoAuditoria()
+                    {
+                        DireccionRed = DireccionRed,
+                        DominioId = d.DominioId,
+                        Exitoso = Valido,
+                        IdSesion = "",
+                        ModuloId = ConstantesAppSeguridad.MODULO_USUARIOS,
+                        TipoEvento = AplicacionSeguridad.EventosAdicionales.AccesoAlSistema.GetHashCode(),
+                        UAId = d.UnidadOrganizacionalId,
+                        UsuarioId = "",
+                        TipoFalla = null,
+                        IdEntidad = Usaurio,
+                        Delta = $"{Valido}",
+                        TipoEntidad = t.Name,
+                        Id = DateTime.UtcNow.Ticks,
+                        AppId = ConstantesAppSeguridad.APP_ID,
+                        Fuente = "Login",
+                        NombreEntidad = Usaurio
+                    };
+                    await seguridad.RegistraEvento(ev);
+                }
+            }
+
+           
+        }
+
+
 
         public async Task<int> ActualizarContrasena(string UsuarioId, string nueva)
         {
+            seguridad.EstableceDatosProceso<ApplicationUser>();
+
+            bool valido = await seguridad.UsuarioEnDominio(UsuarioId, RegistroActividad.DominioId);
+            if(!valido)
+            {
+                return 400;
+            }
+            
             var u = await this.UDT.Context.Usuarios.Where(x => x.Id == UsuarioId).FirstAsync();
+            
             if (u != null)
             {
                 PasswordHasher<ApplicationUser> hasher = new PasswordHasher<ApplicationUser>();
@@ -62,6 +112,11 @@ namespace PIKA.Servicio.Seguridad.Servicios
                     u.SecurityStamp = Guid.NewGuid().ToString();
                     u.ConcurrencyStamp = Guid.NewGuid().ToString();
                     await this.UDT.Context.SaveChangesAsync();
+
+                    seguridad.IdEntidad = u.Id;
+                    seguridad.NombreEntidad = u.Email;
+                    await seguridad.RegistraEvento(AplicacionSeguridad.EventosAdicionales.CambioContrasenaAdmin.GetHashCode());
+
                     return 200;
 
                 }
@@ -76,6 +131,19 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
         public async Task<int> ActutalizarContrasena(string UsuarioId, string Actual, string nueva)
         {
+            seguridad.EstableceDatosProceso<ApplicationUser>();
+
+            if (UsuarioId!= RegistroActividad.UsuarioId)
+            {
+                return 400;
+            }
+
+            bool valido = await seguridad.UsuarioEnDominio(UsuarioId, RegistroActividad.DominioId);
+            if (!valido)
+            {
+                return 400;
+            }
+
             var u = await this.UDT.Context.Usuarios.Where(x => x.Id == UsuarioId).FirstAsync();
             if (u != null)
             {
@@ -89,6 +157,11 @@ namespace PIKA.Servicio.Seguridad.Servicios
                         u.SecurityStamp = Guid.NewGuid().ToString();
                         u.ConcurrencyStamp = Guid.NewGuid().ToString();
                         await this.UDT.Context.SaveChangesAsync();
+
+                        seguridad.IdEntidad = u.Id;
+                        seguridad.NombreEntidad = u.Email;
+                        await seguridad.RegistraEvento(AplicacionSeguridad.EventosAdicionales.CambioContrasenaUsuario.GetHashCode());
+
                         return 200;
                     
                     } else
@@ -112,7 +185,7 @@ namespace PIKA.Servicio.Seguridad.Servicios
             return true;
         }
 
-        public async Task<Boolean> EsAdmin(string dominioId, string UnidadOrgId, string Id) {
+        public async Task<bool> EsAdmin(string dominioId, string UnidadOrgId, string Id) {
 
             var a = await this.repoAppUser.UnicoAsync(x => x.Id == Id);
             var u = await this.repoUsuarioDominio.UnicoAsync(x => x.DominioId == dominioId && x.UnidadOrganizacionalId == UnidadOrgId
@@ -126,40 +199,36 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
         public async Task<PropiedadesUsuario> CrearAsync(string dominioId, string UnidadOrgId, PropiedadesUsuario entity, CancellationToken cancellationToken = default)
         {
-            try
+            seguridad.EstableceDatosProceso<PropiedadesUsuario>();
+            if (this.RegistroActividad.DominioId != dominioId)
             {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
 
-                
 
-                if (string.IsNullOrEmpty(dominioId) || string.IsNullOrEmpty(UnidadOrgId))
-                {
-                    throw new ExDatosNoValidos("Dominio/OU");
-                }
+            if (string.IsNullOrEmpty(dominioId) || string.IsNullOrEmpty(UnidadOrgId))
+            {
+                throw new ExDatosNoValidos("Dominio/OU");
+            }
 
-                if (!ValidadorUsuario.ContrasenaValida(entity.password, this.logger))
-                {
-                    throw new ExLoginInfoInvalida($"p:{entity.password}");
-                }
+            if (!ValidadorUsuario.ContrasenaValida(entity.password, this.logger))
+            {
+                throw new ExLoginInfoInvalida($"p:{entity.password}");
+            }
 
-                if (!ValidadorUsuario.IsValidEmail(entity.username))
-                {
-                    throw new ExLoginInfoInvalida($"e:{entity.username}");
-                }
+            if (!ValidadorUsuario.IsValidEmail(entity.username))
+            {
+                throw new ExLoginInfoInvalida($"e:{entity.username}");
+            }
 
-                if (!ValidadorUsuario.UsernameValido(entity.username))
-                {
-                    throw new ExLoginInfoInvalida($"n:{entity.username}");
-                }
+            if (!ValidadorUsuario.UsernameValido(entity.username))
+            {
+                throw new ExLoginInfoInvalida($"n:{entity.username}");
+            }
 
-                ApplicationUser tmp = await repoAppUser.UnicoAsync(
-                    x => x.NormalizedUserName == entity.username.ToUpper() ||
-                    x.NormalizedEmail == entity.username.ToUpper());
-                if (tmp != null)
-                {
-                    throw new ExElementoExistente(entity.username);
-                }
-
-                IRepositorioAsync<UsuarioDominio> repoud = UDT.ObtenerRepositoryAsync<UsuarioDominio>(new QueryComposer<UsuarioDominio>());
+            ApplicationUser tmp = await UDT.Context.Usuarios.FirstOrDefaultAsync(x => x.NormalizedUserName == entity.username.ToUpper() || x.NormalizedEmail == entity.username.ToUpper());
+            if (tmp == null)
+            {
                 PasswordHasher<ApplicationUser> hasher = new PasswordHasher<ApplicationUser>();
                 tmp = new ApplicationUser()
                 {
@@ -182,15 +251,13 @@ namespace PIKA.Servicio.Seguridad.Servicios
                 tmp.PasswordHash = hasher.HashPassword(tmp, entity.password);
 
                 // Añade el suaurio
-                await this.repoAppUser.CrearAsync(tmp);
-                UDT.SaveChanges();
+                UDT.Context.Usuarios.Add(tmp);
 
                 // Añade sus propiedades
                 entity.UsuarioId = tmp.Id;
                 entity.Inactiva = false;
                 entity.Eliminada = false;
-                await repo.CrearAsync(entity);
-                UDT.SaveChanges();
+                
 
                 UsuarioDominio ud = new UsuarioDominio()
                 {
@@ -199,20 +266,46 @@ namespace PIKA.Servicio.Seguridad.Servicios
                     UnidadOrganizacionalId = UnidadOrgId,
                     EsAdmin = false
                 };
-                await repoud.CrearAsync(ud);
+                UDT.Context.UsuariosDominio.Add(ud);
                 UDT.SaveChanges();
 
-                // actualiza los claims
                 await UpdateClaims(entity);
 
-                return entity.Copia();
-
-            }
-            catch (Exception ex)
+            } else
             {
-                Console.WriteLine($"{ex}");
-                throw ex;
+
+                entity.UsuarioId = tmp.Id;
+                entity.Inactiva = false;
+                entity.Eliminada = false;
+
+                var u = UDT.Context.PropiedadesUsuario.FirstOrDefault(x=>x.UsuarioId == tmp.Id);
+
+                if (u == null)
+                {
+                    UDT.Context.PropiedadesUsuario.Add(entity);
+                    UDT.SaveChanges();
+                }
+
+                
+                var d = await UDT.Context.UsuariosDominio.FirstOrDefaultAsync(x => x.ApplicationUserId == tmp.Id && x.DominioId == RegistroActividad.DominioId);
+                if (d == null)
+                {
+                    UsuarioDominio ud = new UsuarioDominio()
+                    {
+                        ApplicationUserId = tmp.Id,
+                        DominioId = dominioId,
+                        UnidadOrganizacionalId = UnidadOrgId,
+                        EsAdmin = false
+                    };
+                    UDT.Context.UsuariosDominio.Add(ud);
+                    UDT.SaveChanges();
+                }
             }
+
+            await seguridad.RegistraEventoCrear(entity.UsuarioId, entity.email);
+
+            return entity.Copia();
+
         }
 
 
@@ -222,51 +315,51 @@ namespace PIKA.Servicio.Seguridad.Servicios
         /// <param name="p"></param>
         private async Task UpdateClaims(PropiedadesUsuario p)
         {
-            List<UserClaim> claims = await this.repoClaims.ObtenerAsync(x => x.UserId == p.UsuarioId);
+            List<UserClaim> claims = UDT.Context.ClaimsUsuario.Where(x => x.UserId == p.UsuarioId).ToList();
 
             string val = string.IsNullOrEmpty(p.name) ? "" : p.name;
             if (claims.Where(x => x.ClaimType == "name").Count() == 0)
             {
-                await this.repoClaims.CrearAsync(new UserClaim() { ClaimType = "name", ClaimValue = val, UserId = p.UsuarioId });
+                UDT.Context.ClaimsUsuario.Add(new UserClaim() { ClaimType = "name", ClaimValue = val, UserId = p.UsuarioId });
             }
             else
             {
                 claims.Where(x => x.ClaimType == "name").First().ClaimValue = val;
-                UDT.Context.Entry(claims.Where(x => x.ClaimType == "name").First()).State = EntityState.Modified;
+                UDT.Context.ClaimsUsuario.Update(claims.Where(x => x.ClaimType == "name").First());
             }
 
             val = string.IsNullOrEmpty(p.family_name) ? "" : p.family_name;
             if (claims.Where(x => x.ClaimType == "family_name").Count() == 0)
             {
-                await this.repoClaims.CrearAsync(new UserClaim() { ClaimType = "family_name", ClaimValue = val, UserId = p.UsuarioId });
+                UDT.Context.ClaimsUsuario.Add(new UserClaim() { ClaimType = "family_name", ClaimValue = val, UserId = p.UsuarioId });
             }
             else
             {
                 claims.Where(x => x.ClaimType == "family_name").First().ClaimValue = val;
-                UDT.Context.Entry(claims.Where(x => x.ClaimType == "family_name").First()).State = EntityState.Modified;
+                UDT.Context.ClaimsUsuario.Update(claims.Where(x => x.ClaimType == "family_name").First());
             }
 
             val = string.IsNullOrEmpty(p.given_name) ? "" : p.given_name;
             if (claims.Where(x => x.ClaimType == "given_name").Count() == 0)
             {
-                await this.repoClaims.CrearAsync(new UserClaim() { ClaimType = "given_name", ClaimValue = val, UserId = p.UsuarioId });
+                UDT.Context.ClaimsUsuario.Add(new UserClaim() { ClaimType = "given_name", ClaimValue = val, UserId = p.UsuarioId });
             }
             else
             {
                 claims.Where(x => x.ClaimType == "given_name").First().ClaimValue = val;
-                UDT.Context.Entry(claims.Where(x => x.ClaimType == "given_name").First()).State = EntityState.Modified;
+                UDT.Context.ClaimsUsuario.Update(claims.Where(x => x.ClaimType == "given_name").First());
             }
 
 
             val = string.IsNullOrEmpty(p.middle_name) ? "" : p.middle_name;
             if (claims.Where(x => x.ClaimType == "middle_name").Count() == 0)
             {
-                await this.repoClaims.CrearAsync(new UserClaim() { ClaimType = "middle_name", ClaimValue = val, UserId = p.UsuarioId });
+                UDT.Context.ClaimsUsuario.Add(new UserClaim() { ClaimType = "middle_name", ClaimValue = val, UserId = p.UsuarioId });
             }
             else
             {
                 claims.Where(x => x.ClaimType == "middle_name").First().ClaimValue = val;
-                UDT.Context.Entry(claims.Where(x => x.ClaimType == "middle_name").First()).State = EntityState.Modified;
+                UDT.Context.ClaimsUsuario.Update(claims.Where(x => x.ClaimType == "middle_name").First());
             }
 
 
@@ -275,12 +368,12 @@ namespace PIKA.Servicio.Seguridad.Servicios
             if (val != "")
                 if (claims.Where(x => x.ClaimType == "nickname").Count() == 0)
                 {
-                    await this.repoClaims.CrearAsync(new UserClaim() { ClaimType = "nickname", ClaimValue = val, UserId = p.UsuarioId });
+                    UDT.Context.ClaimsUsuario.Add(new UserClaim() { ClaimType = "nickname", ClaimValue = val, UserId = p.UsuarioId });
                 }
                 else
                 {
                     claims.Where(x => x.ClaimType == "nickname").First().ClaimValue = val;
-                    UDT.Context.Entry(claims.Where(x => x.ClaimType == "nickname").First()).State = EntityState.Modified;
+                    UDT.Context.ClaimsUsuario.Update(claims.Where(x => x.ClaimType == "nickname").First());
                 }
 
 
@@ -288,12 +381,12 @@ namespace PIKA.Servicio.Seguridad.Servicios
             if (val != "")
                 if (claims.Where(x => x.ClaimType == "picture").Count() == 0)
                 {
-                    await this.repoClaims.CrearAsync(new UserClaim() { ClaimType = "picture", ClaimValue = val, UserId = p.UsuarioId });
+                    UDT.Context.ClaimsUsuario.Add(new UserClaim() { ClaimType = "picture", ClaimValue = val, UserId = p.UsuarioId });
                 }
                 else
                 {
                     claims.Where(x => x.ClaimType == "picture").First().ClaimValue = val;
-                    UDT.Context.Entry(claims.Where(x => x.ClaimType == "picture").First()).State = EntityState.Modified;
+                    UDT.Context.ClaimsUsuario.Update(claims.Where(x => x.ClaimType == "picture").First());
                 }
 
 
@@ -302,24 +395,24 @@ namespace PIKA.Servicio.Seguridad.Servicios
             if (val != "")
                 if (claims.Where(x => x.ClaimType == "picture").Count() == 0)
                 {
-                    await this.repoClaims.CrearAsync(new UserClaim() { ClaimType = "picture", ClaimValue = val, UserId = p.UsuarioId });
+                    UDT.Context.ClaimsUsuario.Add(new UserClaim() { ClaimType = "picture", ClaimValue = val, UserId = p.UsuarioId });
                 }
                 else
                 {
                     claims.Where(x => x.ClaimType == "picture").First().ClaimValue = val;
-                    UDT.Context.Entry(claims.Where(x => x.ClaimType == "picture").First()).State = EntityState.Modified;
+                    UDT.Context.ClaimsUsuario.Update(claims.Where(x => x.ClaimType == "picture").First());
                 }
 
             val = p.email_verified.HasValue ? p.email_verified.ToString() : "false";
             if (val != "")
                 if (claims.Where(x => x.ClaimType == "email_verified").Count() == 0)
                 {
-                    await this.repoClaims.CrearAsync(new UserClaim() { ClaimType = "email_verified", ClaimValue = val, UserId = p.UsuarioId });
+                    UDT.Context.ClaimsUsuario.Add(new UserClaim() { ClaimType = "email_verified", ClaimValue = val, UserId = p.UsuarioId });
                 }
                 else
                 {
                     claims.Where(x => x.ClaimType == "email_verified").First().ClaimValue = val;
-                    UDT.Context.Entry(claims.Where(x => x.ClaimType == "email_verified").First()).State = EntityState.Modified;
+                    UDT.Context.ClaimsUsuario.Update(claims.Where(x => x.ClaimType == "email_verified").First());
                 }
 
 
@@ -327,158 +420,96 @@ namespace PIKA.Servicio.Seguridad.Servicios
             if (val != "")
                 if (claims.Where(x => x.ClaimType == "email").Count() == 0)
                 {
-                    await this.repoClaims.CrearAsync(new UserClaim() { ClaimType = "email", ClaimValue = val, UserId = p.UsuarioId });
+                    UDT.Context.ClaimsUsuario.Add(new UserClaim() { ClaimType = "email", ClaimValue = val, UserId = p.UsuarioId });
                 }
                 else
                 {
                     claims.Where(x => x.ClaimType == "email").First().ClaimValue = val;
-                    UDT.Context.Entry(claims.Where(x => x.ClaimType == "email").First()).State = EntityState.Modified;
+                    UDT.Context.ClaimsUsuario.Update(claims.Where(x => x.ClaimType == "email").First());
                 }
 
-
             UDT.SaveChanges();
-
         }
 
         public async Task ActualizarAsync(PropiedadesUsuario entity)
         {
-            try
+            seguridad.EstableceDatosProceso<PropiedadesUsuario>();
+
+            PropiedadesUsuario p = await UDT.Context.PropiedadesUsuario.FirstOrDefaultAsync(x => x.UsuarioId == entity.UsuarioId);
+
+            if (p == null)
             {
-                ApplicationUser o = await this.repoAppUser.UnicoAsync(x => x.Id == entity.UsuarioId);
-
-                if (o == null)
-                {
-                    throw new EXNoEncontrado(entity.UsuarioId);
-                }
-
-                if (!string.IsNullOrEmpty(entity.email))
-                {
-
-                    if (!ValidadorUsuario.IsValidEmail(entity.email))
-                    {
-                        throw new ExLoginInfoInvalida($"e:{entity.email}");
-                    }
-
-                    ApplicationUser m = await this.repoAppUser.UnicoAsync(x => x.Id != entity.UsuarioId
-                        && x.NormalizedEmail == entity.email.ToUpper());
-
-                    if (m != null)
-                    {
-                        throw new ExElementoExistente(entity.email);
-                    }
-
-                    if (entity.email != o.Email)
-                    {
-                        o.Email = entity.email;
-                        o.NormalizedEmail = entity.email.ToUpper();
-                        UDT.Context.Entry(o).State = EntityState.Modified;
-                    }
-                }
-
-
-
-                PropiedadesUsuario p = await this.repo.UnicoAsync(x => x.UsuarioId == entity.UsuarioId);
-
-                string gmt = null;
-                double gmt_offset = 0;
-
-                if (!string.IsNullOrEmpty(entity.gmt))
-                {
-
-                    gmt = entity.gmt;
-                    try
-                    {
-                        TimeZoneInfo tz = TZConvert.GetTimeZoneInfo(entity.gmt);
-                        TimeSpan offset = tz.GetUtcOffset(DateTime.UtcNow);
-                        gmt_offset = tz.BaseUtcOffset.TotalMinutes;
-                    }
-                    catch (Exception)
-                    {
-                    }
-
-
-                }
-
-                if (p != null)
-                {
-                    p.nickname = entity.nickname;
-                    p.middle_name = entity.middle_name;
-                    p.given_name = entity.given_name;
-                    p.family_name = entity.family_name;
-                    p.name = entity.name;
-                    p.UsuarioId = entity.UsuarioId;
-                    if(!string.IsNullOrEmpty(entity.generoid))
-                    {
-                        p.generoid = entity.generoid;
-                    }
-                    if (!string.IsNullOrEmpty(entity.paisid))
-                    {
-                        p.paisid = entity.paisid;
-                    }
-
-                    if (!string.IsNullOrEmpty(entity.estadoid))
-                    {
-                        p.estadoid = entity.estadoid;
-                    }
-
-                    p.updated_at = DateTime.UtcNow;
-                    p.gmt = gmt;
-
-                    if ((gmt != null))
-                    {
-                        p.gmt_offset = (float)gmt_offset;
-                    }
-                    else
-                    {
-                        p.gmt_offset = null;
-                    }
-
-
-                    UDT.Context.Entry(p).State = EntityState.Modified;
-                }
-                else
-                {
-
-                    PropiedadesUsuario prop = new PropiedadesUsuario()
-                    {
-                        nickname = entity.nickname,
-                        middle_name = entity.middle_name,
-                        given_name = entity.given_name,
-                        family_name = entity.family_name,
-                        UsuarioId = entity.UsuarioId,
-                        generoid = entity.generoid,
-                        paisid = entity.password,
-                        estadoid = entity.estadoid,
-                        updated_at = DateTime.UtcNow,
-                        name = entity.name
-                    };
-
-                    p.gmt = gmt;
-                    if ((gmt != null))
-                    {
-                        p.gmt_offset = (float)gmt_offset;
-                    }
-                    else
-                    {
-                        p.gmt_offset = null;
-                    }
-                    // Añade sus propiedades
-                    await repo.CrearAsync(prop);
-
-                }
-
-                UDT.SaveChanges();
-                await UpdateClaims(entity);
+                throw new EXNoEncontrado(entity.UsuarioId);
             }
-            catch (Exception ex)
+
+            if (!await seguridad.UsuarioEnDominio(p.UsuarioId, RegistroActividad.DominioId))
             {
-                Console.WriteLine(ex.ToString());
-                throw;
+                await seguridad.EmiteDatosSesionIncorrectos(entity.UsuarioId);
             }
+
+                    
+            string gmt = null;
+            double gmt_offset = 0;
+
+            if (!string.IsNullOrEmpty(entity.gmt))
+            {
+                gmt = entity.gmt;
+                try
+                {
+                    TimeZoneInfo tz = TZConvert.GetTimeZoneInfo(entity.gmt);
+                    TimeSpan offset = tz.GetUtcOffset(DateTime.UtcNow);
+                    gmt_offset = tz.BaseUtcOffset.TotalMinutes;
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            string original = p.Flat();
+            p.nickname = entity.nickname;
+            p.middle_name = entity.middle_name;
+            p.given_name = entity.given_name;
+            p.family_name = entity.family_name;
+            p.name = entity.name;
+
+            if (!string.IsNullOrEmpty(entity.generoid))
+            {
+                p.generoid = entity.generoid;
+            }
+            if (!string.IsNullOrEmpty(entity.paisid))
+            {
+                p.paisid = entity.paisid;
+            }
+
+            if (!string.IsNullOrEmpty(entity.estadoid))
+            {
+                p.estadoid = entity.estadoid;
+            }
+
+            p.updated_at = DateTime.UtcNow;
+            p.gmt = gmt;
+
+            if ((gmt != null))
+            {
+                p.gmt_offset = (float)gmt_offset;
+            }
+            else
+            {
+                p.gmt_offset = null;
+            }
+
+            UDT.Context.Entry(p).State= EntityState.Modified;
+            UDT.SaveChanges();
+
+           // await UpdateClaims(entity);
+
+            await seguridad.RegistraEventoActualizar(p.UsuarioId, p.email, original.JsonDiff(p.Flat()));
+                        
+            
 
         }
 
- 
+
         private Consulta GetDefaultQuery(Consulta query)
         {
             if (query != null)
@@ -497,14 +528,62 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
         public async Task<IPaginado<PropiedadesUsuario>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<PropiedadesUsuario>, IIncludableQueryable<PropiedadesUsuario, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
+
+            seguridad.EstableceDatosProceso<PropiedadesUsuario>();
             Query = GetDefaultQuery(Query);
-            var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
+
+            long offset = Query.indice == 0 ? 0 : ((Query.indice) * Query.tamano) - 1;
+            string sqls = @$"SELECT COUNT(*)  FROM  {DbContextSeguridad.TablaPropiedadesUsuario} up INNER JOIN {DbContextSeguridad.TablaUsuariosOominio} ud ON up.UsuarioId = ud.ApplicationUserId WHERE ud.DominioId = '{RegistroActividad.DominioId}' ";
+            string sqlsCount = "";
+            int total = 0;
+            
+
+            if (Query.Filtros != null)
+            {
+                List<string> condiciones = MySQLQueryComposer.Condiciones<PropiedadesUsuario>(Query, "");
+                foreach (string s in condiciones)
+                {
+                    sqls += $" and ({s})";
+                }
+            }
+
+            // Consulta de conteo sin ordenamiento ni limites
+            sqlsCount = sqls;
+            sqls += $" order by {Query.ord_columna} {Query.ord_direccion} ";
+            sqls += $" LIMIT {offset},{Query.tamano}";
+            sqls = sqls.Replace("COUNT(*)", "DISTINCT up.*");
+
+            using (var command = UDT.Context.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = sqlsCount;
+                UDT.Context.Database.OpenConnection();
+                using (var result = await command.ExecuteReaderAsync())
+                {
+                    if (result.Read())
+                    {
+                        total = result.GetInt32(0);
+                    }
+                }
+            }
+
+            Paginado<PropiedadesUsuario> respuesta = new Paginado<PropiedadesUsuario>()
+            {
+                ConteoFiltrado = total,
+                ConteoTotal = total,
+                Desde = Query.indice * Query.tamano,
+                Indice = Query.indice,
+                Tamano = Query.tamano,
+                Paginas = (int)Math.Ceiling(total / (double)Query.tamano)
+            };
+            respuesta.Elementos = this.UDT.Context.PropiedadesUsuario.FromSqlRaw(sqls).ToList();
+
             return respuesta;
         }
 
 
         public async Task<IPaginado<PropiedadesUsuario>> ObtenerPaginadoIdsAsync(List<string> ids, Consulta Query, Func<IQueryable<PropiedadesUsuario>, IIncludableQueryable<PropiedadesUsuario, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
+            seguridad.EstableceDatosProceso<PropiedadesUsuario>();
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(x => ids.Contains(x.UsuarioId), Query, include);
             return respuesta;
@@ -512,61 +591,46 @@ namespace PIKA.Servicio.Seguridad.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            ApplicationUser o;
-            PropiedadesUsuario p;
-            ICollection<string> listaEliminados = new HashSet<string>();
+            seguridad.EstableceDatosProceso<PropiedadesUsuario>();
+            List<PropiedadesUsuario> listaEliminados = new List<PropiedadesUsuario>();
             foreach (var Id in ids)
             {
 
-                p = await this.repo.UnicoAsync(x => x.UsuarioId == Id);
+                PropiedadesUsuario p = await this.UDT.Context.PropiedadesUsuario.FirstOrDefaultAsync(x => x.UsuarioId == Id);
                 if (p != null)
                 {
-                    p.Eliminada = true;
-                    UDT.Context.Entry(p).State = EntityState.Modified;
-                }
 
-                o = await this.repoAppUser.UnicoAsync(x => x.Id == Id);
-                if (o != null)
-                {
-                    o.Eliminada = true;
-                    UDT.Context.Entry(o).State = EntityState.Modified;
-                    listaEliminados.Add(Id);
+                    if(!await seguridad.UsuarioEnDominio(Id, RegistroActividad.DominioId))
+                    {
+                        await seguridad.EmiteDatosSesionIncorrectos(Id);
+                    }
+
+                    listaEliminados.Add(p);
                 }
             }
-            UDT.SaveChanges();
 
+            if (listaEliminados.Count > 0)
+            {
+                foreach(var p in listaEliminados)
+                {
+                    List<UsuarioDominio> d = UDT.Context.UsuariosDominio.Where(x => x.ApplicationUserId == p.UsuarioId && x.DominioId == RegistroActividad.DominioId).ToList();
+                    if (d.Count > 0)
+                    {
+                        UDT.Context.UsuariosDominio.RemoveRange(d);
+                        UDT.SaveChanges();
 
-            return listaEliminados;
+                        await seguridad.RegistraEventoEliminar(p.UsuarioId, p.email);
+                    }
+                }
+                UDT.SaveChanges();
+            }
+            return listaEliminados.Select(x=>x.UsuarioId).ToList();
 
         }
 
         public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
-            ApplicationUser o;
-            PropiedadesUsuario p;
-            ICollection<string> listaEliminados = new HashSet<string>();
-            foreach (var Id in ids)
-            {
-
-                p = await this.repo.UnicoAsync(x => x.UsuarioId == Id);
-                if (p != null)
-                {
-                    p.Eliminada = false;
-                    UDT.Context.Entry(p).State = EntityState.Modified;
-                }
-
-                o = await this.repoAppUser.UnicoAsync(x => x.Id == Id);
-                if (o != null)
-                {
-                    o.Eliminada = false;
-                    UDT.Context.Entry(o).State = EntityState.Modified;
-                    listaEliminados.Add(Id);
-                }
-            }
-            UDT.SaveChanges();
-
-
-            return listaEliminados;
+            throw new NotImplementedException();
         }
 
         public async Task<ICollection<string>> Activar(string[] ids)
@@ -657,12 +721,14 @@ namespace PIKA.Servicio.Seguridad.Servicios
             }
 
             Query = GetDefaultQuery(Query);
-            //Console.WriteLine($"--->>{nombre}");
 
-            //var resultados = await this.repo.ObtenerAsync(x => ((x.name ?? "") + (x.nickname ?? "") + (x.email ?? "") +
-            //(x.family_name ?? "") + (x.given_name ?? "") + (x.username ?? "")).Contains(nombre));
 
-            var usuarios = UDT.Context.PropiedadesUsuario.Where(x=>x.username.Contains(nombre, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            string sqls = $@"select p.*   from seguridad$usuarioprops p
+ inner join seguridad$usuariosdominio d on p.UsuarioId = d.ApplicationUserId
+ where d.DominioId='{RegistroActividad.DominioId}' and 
+concat(COALESCE(p.username,''), COALESCE(p.name,''), COALESCE(p.family_name,''), COALESCE(p.given_name,'')) like '{nombre}%'";
+
+            var usuarios = UDT.Context.PropiedadesUsuario.FromSqlRaw(sqls);
             List<ValorListaOrdenada> l = usuarios.Select(x => new ValorListaOrdenada()
             {
                 Id = x.UsuarioId,
@@ -726,6 +792,10 @@ namespace PIKA.Servicio.Seguridad.Servicios
             throw new NotImplementedException();
         }
 
+        public Task<PropiedadesUsuario> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
 
 
 

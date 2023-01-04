@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using PIKA.Modelo.Metadatos;
 using PIKA.Modelo.Metadatos.Atributos;
 using PIKA.Constantes.Aplicaciones.GestorDocumental;
+using PIKA.Infraestructura.Comun;
 
 namespace PIKA.Modelo.GestorDocumental
 {
@@ -34,6 +35,23 @@ namespace PIKA.Modelo.GestorDocumental
         [Prop(Required: true, isId: true, Visible: true, OrderIndex: 10)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXT, Accion: Acciones.addupdate)]
         public override string Nombre { get => base.Nombre; set => base.Nombre = value; }
+
+        /// <summary>
+        /// Identificaor único del dominio al que pertenece el catáloco
+        /// </summary>
+        [Prop(Required: false, isId: false, Visible: false, OrderIndex: 200, Contextual: true, ShowInTable: false, IdContextual: ConstantesModelo.GLOBAL_DOMINIOID)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
+        public string DominioId { get; set; }
+
+        /// <summary>
+        /// Identificaor único de la unidad  organizacional al que pertenece el catáloco
+        /// </summary>
+        [Prop(Required: false, isId: false, Visible: false, OrderIndex: 200, Contextual: true, ShowInTable: false, IdContextual: ConstantesModelo.GLOBAL_UOID)]
+        [VistaUI(ControlUI: ControlUI.HTML_HIDDEN, Accion: Acciones.addupdate)]
+        public string UOId { get; set; }
+
+
+
 
         public override List<TipoDisposicionDocumental> Seed()
         {

@@ -86,7 +86,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         [Prop(Required: true, OrderIndex: 110)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
-        [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false)]
+        [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false, FiltroBusqueda: true)]
         public string ArchivoTramiteId { get; set; }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         [Prop(Required: false, OrderIndex: 115)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
-        [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false)]
+        [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false, FiltroBusqueda: true)]
         public string ArchivoConcentracionId { get; set; }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         [Prop(Required: false, OrderIndex: 1200)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
-        [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false)]
+        [List(Entidad: "Archivo", DatosRemotos: true, TypeAhead: false, FiltroBusqueda: true)]
         public string ArchivoHistoricoId { get; set; }
 
         /// <summary>

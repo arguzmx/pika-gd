@@ -2,19 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PIKA.Constantes.Aplicaciones.Contenido;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Contenido;
 using PIKA.Servicio.Contenido.ElasticSearch.modelos;
@@ -31,24 +32,22 @@ namespace PIKA.Servicio.Contenido.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<Volumen> repo;
-        public UnidadDeTrabajo<DbContextContenido> UDT;
-        private static TimeSpan volCacheExpiry = new TimeSpan(0, 1, 0); 
-        private readonly IAppCache lazycache;
-        private readonly IConfiguration configuration;
-        private IOptions<ConfiguracionServidor> opciones;
+        private static TimeSpan volCacheExpiry = new TimeSpan(0, 1, 0);
+        private IConfiguration configuration;
+        IOptions<ConfiguracionServidor> opciones;
         public ServicioVolumen(
-            IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
-            ILogger<ServicioLog> Logger,
-            IAppCache lazycache,
             IOptions<ConfiguracionServidor> opciones,
-            IConfiguration configuration
-        ) : base(proveedorOpciones, Logger)
+            IConfiguration configuration,
+            IRegistroAuditoria registroAuditoria,
+            IAppCache cache,
+            IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
+            ILogger<ServicioLog> Logger
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_ADMIN_CONFIGURACION)
         {
             this.opciones = opciones;
-            this.lazycache = lazycache;
-            this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
+            this.configuration= configuration;
             this.repo = UDT.ObtenerRepositoryAsync<Volumen>(new QueryComposer<Volumen>());
-            this.configuration = configuration;
         }
 
         private string GetCacheVolKey(string VolumenId)
@@ -63,18 +62,24 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<IGestorES> ObtienInstanciaGestor(string VolumenId)
         {
+            seguridad.EstableceDatosProceso<Volumen>();
+            if (!await seguridad.AccesoCacheVolumen(VolumenId))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(VolumenId);
+            }
+
             Volumen vol = null;
             IGestorES gestor = null;
             if (!string.IsNullOrEmpty(VolumenId))
             {
                 string key = GetCacheVolKey(VolumenId);
-                vol = lazycache.Get<Volumen>(key);
+                vol = cache.Get<Volumen>(key);
                 if (vol == null)
                 {
-                    vol = await repo.UnicoAsync(x => x.Id.Equals(VolumenId.Trim(), StringComparison.InvariantCultureIgnoreCase));
+                    vol = await this.UDT.Context.Volumen.FirstOrDefaultAsync(x => x.Id.Equals(VolumenId.Trim(), StringComparison.InvariantCultureIgnoreCase));
                     if (vol != null)
                     {
-                        this.lazycache.Add<Volumen>(key, vol, volCacheExpiry);
+                        this.cache.Add<Volumen>(key, vol, volCacheExpiry);
                     }
                 }
             }
@@ -85,14 +90,14 @@ namespace PIKA.Servicio.Contenido.Servicios
                 switch (vol.TipoGestorESId)
                 {
                     case TipoGestorES.LOCAL_FOLDER:
-                        GestorLocalConfig config = lazycache.Get<GestorLocalConfig>(key);
+                        GestorLocalConfig config = cache.Get<GestorLocalConfig>(key);
                         if (config == null)
                         {
                             IRepositorioAsync<GestorLocalConfig> repoconfig = UDT.ObtenerRepositoryAsync<GestorLocalConfig>(new QueryComposer<GestorLocalConfig>()); ;
-                            config = await repoconfig.UnicoAsync(x => x.VolumenId.Equals(VolumenId.Trim(), StringComparison.InvariantCultureIgnoreCase));
+                            config = await this.UDT.Context.GestorLocalConfig.FirstOrDefaultAsync(x => x.VolumenId.Equals(VolumenId.Trim(), StringComparison.InvariantCultureIgnoreCase));
                             if (config != null)
                             {
-                                this.lazycache.Add<GestorLocalConfig>(key, config, volCacheExpiry);
+                                this.cache.Add<GestorLocalConfig>(key, config, volCacheExpiry);
                             }
                         }
 
@@ -103,14 +108,14 @@ namespace PIKA.Servicio.Contenido.Servicios
                         break;
 
                     case TipoGestorES.LaserFiche:
-                        GestorLaserficheConfig configlf = lazycache.Get<GestorLaserficheConfig>(key);
+                        GestorLaserficheConfig configlf = cache.Get<GestorLaserficheConfig>(key);
                         if (configlf == null)
                         {
                             IRepositorioAsync<GestorLaserficheConfig> repoconfig = UDT.ObtenerRepositoryAsync<GestorLaserficheConfig>(new QueryComposer<GestorLaserficheConfig>()); ;
-                            configlf = await repoconfig.UnicoAsync(x => x.VolumenId.Equals(VolumenId.Trim(), StringComparison.InvariantCultureIgnoreCase));
+                            configlf = await this.UDT.Context.GestorLaserficheConfig.FirstOrDefaultAsync(x => x.VolumenId.Equals(VolumenId.Trim(), StringComparison.InvariantCultureIgnoreCase));
                             if (configlf != null)
                             {
-                                this.lazycache.Add<GestorLaserficheConfig>(key, configlf, volCacheExpiry);
+                                this.cache.Add<GestorLaserficheConfig>(key, configlf, volCacheExpiry);
                             }
                         }
 
@@ -137,6 +142,8 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<List<ValorListaOrdenada>> ObtenerParesAsync(Consulta Query)
         {
+            seguridad.EstableceDatosProceso<Volumen>();
+
             for (int i = 0; i < Query.Filtros.Count; i++)
             {
                 if (Query.Filtros[i].Propiedad.ToLower() == "texto")
@@ -170,6 +177,7 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<List<ValorListaOrdenada>> ObtenerParesPorId(List<string> Lista)
         {
+
             this.UDT.Context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
             var resultados = await this.repo.ObtenerAsync(x => Lista.Contains(x.Id));
             List<ValorListaOrdenada> l = resultados.Select(x => new ValorListaOrdenada()
@@ -194,55 +202,50 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<Volumen> CrearAsync(Volumen entity, CancellationToken cancellationToken = default)
         {
+            seguridad.EstableceDatosProceso<Volumen>();
+            await seguridad.IdEnDominio(entity.OrigenId);
 
-          
-            if(await Existe(x=>x.Nombre == entity.Nombre 
-            && x.OrigenId  != entity.OrigenId 
+
+            if (await Existe(x => x.Nombre == entity.Nombre
+            && x.OrigenId != entity.OrigenId
             && x.TipoOrigenId == entity.TipoOrigenId))
             {
                 throw new ExElementoExistente(entity.Nombre);
             }
 
 
-            try
-            {
+            entity.Id = System.Guid.NewGuid().ToString();
+            // Se actualizará a activo cuando se configure la conexión del tipo de gestor
 
-                entity.Id = System.Guid.NewGuid().ToString();
-                // Se actualizará a activo cuando se configure la conexión del tipo de gestor
+            entity.Activo = true;
+            entity.EscrituraHabilitada = true;
+            entity.Eliminada = false;
+            entity.ConsecutivoVolumen = 0;
+            entity.CanidadPartes = 0;
+            entity.CanidadElementos = 0;
+            await this.repo.CrearAsync(entity);
 
-                entity.Activo = true; 
-                entity.EscrituraHabilitada = true;
-                entity.Eliminada = false;
-                entity.ConsecutivoVolumen = 0;
-                entity.CanidadPartes = 0;
-                entity.CanidadElementos = 0;
-                await this.repo.CrearAsync(entity);
+            UDT.SaveChanges();
 
-                UDT.SaveChanges();
-
-                return entity.Copia();
-            }
-            catch (DbUpdateException)
-            {
-                throw new ExErrorRelacional("El identificador de tipo de gestor no es válido");
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-           
-
+            await seguridad.RegistraEventoCrear(entity.Id, entity.Nombre);
+            return entity.Copia();
         }
 
 
         public async Task ActualizarAsync(Volumen entity)
         {
+            seguridad.EstableceDatosProceso<Volumen>();
 
-            Volumen o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+            Volumen o = await this.UDT.Context.Volumen.FirstOrDefaultAsync(x => x.Id == entity.Id);
 
             if (o == null)
             {
                 throw new EXNoEncontrado(entity.Id);
+            }
+
+            if (!await seguridad.AccesoCacheVolumen(o.Id))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(o.Id);
             }
 
             if (await Existe(x => x.Nombre == entity.Nombre && x.OrigenId == o.OrigenId
@@ -251,43 +254,33 @@ namespace PIKA.Servicio.Contenido.Servicios
                 throw new ExElementoExistente(entity.Nombre);
             }
 
-            if ((entity.TamanoMaximo> 0) && (o.Tamano > entity.TamanoMaximo))
+            if ((entity.TamanoMaximo > 0) && (o.Tamano > entity.TamanoMaximo))
             {
                 throw new ExDatosNoValidos("El tamaño máximo es menor al actual");
             }
 
-            try
+            string original = o.Flat();
+
+            /// Solo se permiten cambios en el estao una vez que l aconfiguración es válida
+            if (o.ConfiguracionValida)
             {
-
-                /// Solo se permiten cambios en el estao una vez que l aconfiguración es válida
-                if( o.ConfiguracionValida)
-                {
-                    o.Activo = entity.Activo;
-                }
-
-
-                if(o.TipoGestorESId != entity.TipoGestorESId)
-                {
-                    o.TipoGestorESId = entity.TipoGestorESId;
-                    o.ConfiguracionValida = false;
-                }
-
-                o.Nombre = entity.Nombre;
-               o.EscrituraHabilitada = entity.EscrituraHabilitada;
-               o.TamanoMaximo = entity.TamanoMaximo;
-
-               UDT.Context.Entry(o).State = EntityState.Modified;
-               UDT.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                throw new ExErrorRelacional("El identificador de tipo de gestor no es válido");
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                o.Activo = entity.Activo;
             }
 
+            if (o.TipoGestorESId != entity.TipoGestorESId)
+            {
+                o.TipoGestorESId = entity.TipoGestorESId;
+                o.ConfiguracionValida = false;
+            }
+
+            o.Nombre = entity.Nombre;
+            o.EscrituraHabilitada = entity.EscrituraHabilitada;
+            o.TamanoMaximo = entity.TamanoMaximo;
+
+            UDT.Context.Entry(o).State = EntityState.Modified;
+            UDT.SaveChanges();
+
+            await seguridad.RegistraEventoActualizar(o.Id, o.Nombre, original.JsonDiff(o.Flat()));
         }
 
         private Consulta GetDefaultQuery(Consulta query)
@@ -303,6 +296,12 @@ namespace PIKA.Servicio.Contenido.Servicios
             {
                 query = new Consulta() { indice = 0, tamano = 20, ord_columna = DEFAULT_SORT_COL, ord_direccion = DEFAULT_SORT_DIRECTION };
             }
+
+            // Añade un filtro permanente para la unidad organizacional
+            query.Filtros.RemoveAll(x => x.Propiedad == "OrigenId");
+            query.Filtros.Add(new FiltroConsulta() { Propiedad = "OrigenId", Operador = FiltroConsulta.OP_EQ, Valor = RegistroActividad.DominioId });
+
+
             return query;
         }
         public async Task<IPaginado<Volumen>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Volumen>, IIncludableQueryable<Volumen, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
@@ -316,67 +315,85 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            Volumen d;
-            ICollection<string> listaEliminados = new HashSet<string>();
+            seguridad.EstableceDatosProceso<Volumen>();
+            List<Volumen> listaEliminados = new List<Volumen>();
             foreach (var Id in ids.LimpiaIds())
             {
-                d = await this.repo.UnicoAsync(x => x.Id == Id);
+                Volumen d = await this.UDT.Context.Volumen.FirstOrDefaultAsync(x => x.Id == Id);
                 if (d != null)
+                {
+                    if(!await seguridad.AccesoCacheVolumen(d.Id))
+                    {
+                        await seguridad.EmiteDatosSesionIncorrectos(d.Id);
+                    }
+
+                    listaEliminados.Add(d);
+                }
+            }
+
+            if (listaEliminados.Count > 0)
+            {
+                foreach(var d in listaEliminados)
                 {
                     d.Eliminada = true;
                     this.UDT.Context.Entry(d).State = EntityState.Modified;
-                    listaEliminados.Add(d.Id);
+                    await seguridad.RegistraEventoEliminar(d.Id, d.Nombre);
                 }
+                UDT.SaveChanges();
             }
-            UDT.SaveChanges();
-            return listaEliminados;
+
+            return listaEliminados.Select(x=>x.Id).ToList();
         }
 
         public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
-            Volumen d;
-            ICollection<string> listaEliminados = new HashSet<string>();
+            seguridad.EstableceDatosProceso<Volumen>();
+            List<Volumen> listaEliminados = new List<Volumen>();
             foreach (var Id in ids.LimpiaIds())
             {
-                d = await this.repo.UnicoAsync(x => x.Id == Id);
+                Volumen d = await this.UDT.Context.Volumen.FirstOrDefaultAsync(x => x.Id == Id);
                 if (d != null)
                 {
-                    d.Eliminada = false;
-                    this.UDT.Context.Entry(d).State = EntityState.Modified;
-                    listaEliminados.Add(d.Id);
+                    if (!await seguridad.AccesoCacheVolumen(d.Id))
+                    {
+                        await seguridad.EmiteDatosSesionIncorrectos(d.Id);
+                    }
+
+                    listaEliminados.Add(d);
                 }
             }
-            UDT.SaveChanges();
-            return listaEliminados;
+
+            if (listaEliminados.Count > 0)
+            {
+                foreach (var d in listaEliminados)
+                {
+                    string original = d.Flat();
+
+                    d.Eliminada = false;
+                    this.UDT.Context.Entry(d).State = EntityState.Modified;
+                    await seguridad.RegistraEventoActualizar(d.Id, d.Nombre, original.JsonDiff(d.Flat()));
+                }
+                UDT.SaveChanges();
+            }
+
+            return listaEliminados.Select(x => x.Id).ToList();
         }
 
 
 
         public async Task<Volumen> UnicoAsync(Expression<Func<Volumen, bool>> predicado = null, Func<IQueryable<Volumen>, IOrderedQueryable<Volumen>> ordenarPor = null, Func<IQueryable<Volumen>, IIncludableQueryable<Volumen, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
-
+            seguridad.EstableceDatosProceso<Volumen>();
             Volumen d = await this.repo.UnicoAsync(predicado, ordenarPor, incluir);
-
-
+            if (!await seguridad.AccesoCacheVolumen(d.Id))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(d.Id);
+            }
             return d.Copia();
         }
         public async Task<List<string>> Purgar()
         {
-            List<Volumen> ListaVolumenEli = await this.repo.ObtenerAsync(x=>x.Eliminada==true).ConfigureAwait(false);
-            string[] IdsEliminar = ListaVolumenEli.Select(x=>x.Id).ToArray();
-            // ServicioElemento se = new ServicioElemento(this.proveedorOpciones,this.logger);
-            ServicioVolumenPuntoMontaje svpm = new ServicioVolumenPuntoMontaje(this.proveedorOpciones, this.logger);
-            ServicioTipoGestorES sTes = new ServicioTipoGestorES(this.proveedorOpciones, this.logger);
-            ServicioParte sp = new ServicioParte(this.proveedorOpciones, this.logger);
-            ServicioVersion sv = new ServicioVersion(this.proveedorOpciones, this.logger);
-            ServicioGestorAzureConfig sgvc = new ServicioGestorAzureConfig(this.proveedorOpciones, this.logger);
-            ServicioGestorLocalConfig sglc = new ServicioGestorLocalConfig(configuration, this.proveedorOpciones, this.logger,opciones);
-            ServicioGestorSMBConfig sgsmb = new ServicioGestorSMBConfig(this.proveedorOpciones, this.logger);
-            await sgvc.Eliminar(IdsEliminar);
-            await sglc.Eliminar(IdsEliminar);
-            await sgsmb.Eliminar(IdsEliminar);
-            //await se.Purgar();
-
+    
             throw new NotImplementedException();
         }
 
@@ -420,9 +437,15 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task ActualizaEstadisticas(EstadisticaVolumen s, string Id)
         {
+            seguridad.EstableceDatosProceso<Volumen>();
             string x = $"update {DbContextContenido.TablaVolumen} set CanidadPartes={s.ConteoPartes}, CanidadElementos={s.ConteoElementos}, Tamano={s.TamanoBytes} where Id='{Id}'";
             await this.UDT.Context.Database.ExecuteSqlRawAsync(x);
 
+        }
+
+        public Task<Volumen> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
         }
 
 

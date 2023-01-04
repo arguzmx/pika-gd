@@ -11,7 +11,7 @@ namespace RepositorioEntidades
 
         public static IQueryable<T> OrdenarPor<T>(this IQueryable<T> origen, string columna, bool ascendente = true)
         {
-            if (String.IsNullOrEmpty(columna))
+            if (string.IsNullOrEmpty(columna))
             {
                 return origen;
             }

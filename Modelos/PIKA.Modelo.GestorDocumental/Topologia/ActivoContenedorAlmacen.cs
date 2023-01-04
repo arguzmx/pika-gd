@@ -15,7 +15,7 @@ namespace PIKA.Modelo.GestorDocumental
     /// </summary>
 
     [Entidad(EliminarLogico: false,
-        TokenApp: ConstantesAppGestionDocumental.APP_ID, TokenMod: ConstantesAppGestionDocumental.MODULO_ALMACENARCHIVO)]
+        TokenApp: ConstantesAppGestionDocumental.APP_ID, TokenMod: ConstantesAppGestionDocumental.MODULO_ARCHIVOS)]
     public class ActivoContenedorAlmacen
     {
         /// <summary>
@@ -31,7 +31,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// </summary>
         [Prop(Required: true, Visible: true, OrderIndex: 20)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT_MULTI, Accion: Acciones.addupdate)]
-        [List(Entidad: "Activo", DatosRemotos: true, TypeAhead: true)]
+        [List(Entidad: "Activo", DatosRemotos: true, TypeAhead: true, FiltroBusqueda: true)]
         public string ActivoId { get; set; }
 
         [XmlIgnore]

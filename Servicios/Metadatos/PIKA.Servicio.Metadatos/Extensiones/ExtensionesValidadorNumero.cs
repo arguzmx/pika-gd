@@ -16,7 +16,9 @@ namespace PIKA.Servicio.Metadatos
                 PropiedadId = d.PropiedadId,
                 valordefault = d.valordefault,
                 max = d.max,
-                min = d.min
+                min = d.min,
+                UtilizarMax = d.UtilizarMax,
+                UtilizarMin = d.UtilizarMin
             };
         }
     }

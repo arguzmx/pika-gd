@@ -44,6 +44,11 @@ namespace PIKA.GD.API.Controllers.Contenido
             _elementos = elementos;
         }
 
+        //public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        //{
+        //    servicioEntidad.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+        //}
+
 
         #region Funciones de soporte
         private ContenidoTextoCompleto ParteAContenidoTextoCompleto(string ElementoId, string ParteId, string VolumenId, string VersionId, string Texto, string PuntoMontajeId = "", string CarpetaId = "", int Pagina = 1)

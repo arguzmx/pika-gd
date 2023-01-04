@@ -8,6 +8,8 @@ namespace PIKA.Constantes.Aplicaciones.Seguridad
     {
         public const string APP_ID = "PIKA-GD-SEGURIDAD";
         public const string MODULO_USUARIOS = "USUARIOS";
+        public const string MODULO_AUDITORIA = "AUDITORIA";
+        public const string MODULO_CONFIG_AUDITORIA = "CONFIG_AUDITORIA";
         public const string MODULO_CAT_USUARIOS = "CAT-USUARIOS";
         public const string MODULO_ACL = "ACL";
         public const string MODULO_APLICACIONES = "APLICACIONES";

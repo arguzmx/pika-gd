@@ -2,23 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net.Mail;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ImageMagick;
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
-using PIKA.Infraestructura.Comun;
+using PIKA.Constantes.Aplicaciones.Contenido;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Contenido;
 using PIKA.Modelo.Contenido.Request;
 using PIKA.Servicio.Contenido.Helpers;
 using PIKA.Servicio.Contenido.Interfaces;
 using RepositorioEntidades;
-using SixLabors.ImageSharp.ColorSpaces;
+
 
 namespace PIKA.Servicio.Contenido.Servicios
 {
@@ -29,15 +31,16 @@ namespace PIKA.Servicio.Contenido.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<Carpeta> repo;
-        private UnidadDeTrabajo<DbContextContenido> UDT;
         private ComunesCarpetas helperCarpetas;
         public ServicioCarpeta(
+            IRegistroAuditoria registroAuditoria,
+            IAppCache cache,
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
             ILogger<ServicioLog> Logger
-        ) : base(proveedorOpciones, Logger)
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
-            this.repo = UDT.ObtenerRepositoryAsync<Carpeta>(new QueryComposer<Carpeta>());
+            this.repo = UDT.ObtenerRepositoryAsync(new QueryComposer<Carpeta>());
             this.helperCarpetas = new ComunesCarpetas(this.repo);
         }
 
@@ -49,6 +52,13 @@ namespace PIKA.Servicio.Contenido.Servicios
         }
         public async Task<Carpeta> CrearAsync(Carpeta entity, CancellationToken cancellationToken = default)
         {
+            seguridad.EstableceDatosProceso<Carpeta>();
+            var valido = await seguridad.AccesoCachePuntoMontaje(entity.PuntoMontajeId);
+            if (!valido)
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(entity.PuntoMontajeId);
+            }
+
 
             if (string.IsNullOrEmpty(entity.CarpetaPadreId))
             {
@@ -70,34 +80,29 @@ namespace PIKA.Servicio.Contenido.Servicios
             }
 
 
+            entity.Id = System.Guid.NewGuid().ToString();
+            entity.FechaCreacion = DateTime.Now;
+            entity.Eliminada = false;
 
-            try
-            {
+            await this.repo.CrearAsync(entity);
 
-                entity.Id = System.Guid.NewGuid().ToString();
-                entity.FechaCreacion = DateTime.Now;
-                entity.Eliminada = false;
+            UDT.SaveChanges();
 
-                await this.repo.CrearAsync(entity);
+            await seguridad.RegistraEventoCrear(entity.Id, entity.Nombre);
 
-                UDT.SaveChanges();
-
-                return entity.Copia();
-            }
-            catch (DbUpdateException)
-            {
-                throw new ExErrorRelacional("El identificador de la carpeta padre no es válido");
-            }
-            catch (Exception ex)
-            {
-                
-                throw ex;
-            }
-           
+            return entity.Copia();
 
         }
+
         public async Task ActualizarAsync(Carpeta entity)
         {
+            seguridad.EstableceDatosProceso<Carpeta>();
+            var valido = await seguridad.AccesoCachePuntoMontaje(entity.PuntoMontajeId);
+            if (!valido)
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(entity.PuntoMontajeId);
+            }
+
             Carpeta o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
             if (string.IsNullOrEmpty(entity.CarpetaPadreId))
             {
@@ -119,9 +124,7 @@ namespace PIKA.Servicio.Contenido.Servicios
                     throw new ExElementoExistente(entity.Nombre);
                 }
             }
-
-            try
-            {
+            string original = o.Flat();
 
                 // No debe permitir mover a una carpeta hija
                 bool eshija = await this.helperCarpetas.EsCarpetaHija(entity.Id, entity.CarpetaPadreId);
@@ -143,18 +146,10 @@ namespace PIKA.Servicio.Contenido.Servicios
 
                 UDT.Context.Entry(o).State = EntityState.Modified;
                 UDT.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                throw new ExErrorRelacional("El identificador de la carpeta padre no es válido");
-            }
-            catch (Exception ex)
-            {
-                
-                throw ex;
-            }
 
+            await seguridad.RegistraEventoActualizar(o.Id, o.Nombre, original.JsonDiff(o.Flat()));
         }
+
         private Consulta GetDefaultQuery(Consulta query)
         {
             if (query != null)
@@ -170,63 +165,120 @@ namespace PIKA.Servicio.Contenido.Servicios
             }
             return query;
         }
+
         public async Task<IPaginado<Carpeta>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Carpeta>, IIncludableQueryable<Carpeta, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
             Query = GetDefaultQuery(Query);
+
+            seguridad.EstableceDatosProceso<Carpeta>();
+            if (!Query.Filtros.Any(x=>x.Propiedad == "PuntoMontajeID"))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+
+            }
+
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
             return respuesta;
         }
+
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            Carpeta o;
-            ICollection<string> listaEliminados = new HashSet<string>();
+            seguridad.EstableceDatosProceso<Carpeta>();
+            List<Carpeta> listaEliminados = new List<Carpeta>();
             foreach (var Id in ids)
             {
-                o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
+                Carpeta o = await this.UDT.Context.Carpetas.FirstOrDefaultAsync(x => x.Id == Id.Trim());
                 if (o != null)
+                {
+                    var valido = await seguridad.AccesoCachePuntoMontaje(o.PuntoMontajeId);
+                    if (!valido)
+                    {
+                        await seguridad.EmiteDatosSesionIncorrectos(o.PuntoMontajeId);
+                    }
+                    listaEliminados.Add(o);
+
+                }
+            }
+
+            if (listaEliminados.Count > 0)
+            {
+                foreach(var o in listaEliminados)
                 {
                     o.Eliminada = true;
                     UDT.Context.Entry(o).State = EntityState.Modified;
-                    listaEliminados.Add(o.Id);
-
+                    await seguridad.RegistraEventoEliminar(o.Id, o.Nombre);
                 }
+                UDT.SaveChanges();
             }
             UDT.SaveChanges();
-            return listaEliminados;
+            return listaEliminados.Select(x => x.Id).ToList();
         }
+
+
         public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
-            Carpeta o;
-            ICollection<string> listaEliminados = new HashSet<string>();
+            seguridad.EstableceDatosProceso<Carpeta>();
+            List<Carpeta> listaEliminados = new List<Carpeta>();
             foreach (var Id in ids)
             {
-                o = await this.repo.UnicoAsync(x => x.Id == Id);
+                Carpeta o = await this.UDT.Context.Carpetas.FirstOrDefaultAsync(x => x.Id == Id.Trim());
                 if (o != null)
                 {
+                    var valido = await seguridad.AccesoCachePuntoMontaje(o.PuntoMontajeId);
+                    if (!valido)
+                    {
+                        await seguridad.EmiteDatosSesionIncorrectos(o.PuntoMontajeId);
+                    }
+                    listaEliminados.Add(o);
+
+                }
+            }
+
+            if (listaEliminados.Count > 0)
+            {
+                foreach (var o in listaEliminados)
+                {
+                    string original = o.Flat();
                     o.Eliminada = false;
                     UDT.Context.Entry(o).State = EntityState.Modified;
-                    listaEliminados.Add(o.Id);
+                    await seguridad.RegistraEventoActualizar(o.Id, o.Nombre, original.JsonDiff(o.Flat()));
                 }
-
+                UDT.SaveChanges();
             }
             UDT.SaveChanges();
-            return listaEliminados;
+            return listaEliminados.Select(x => x.Id).ToList();
         }
+
+
         public async Task<Carpeta> UnicoAsync(Expression<Func<Carpeta, bool>> predicado = null, Func<IQueryable<Carpeta>, IOrderedQueryable<Carpeta>> ordenarPor = null, Func<IQueryable<Carpeta>, IIncludableQueryable<Carpeta, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
 
             Carpeta d = await this.repo.UnicoAsync(predicado, ordenarPor, incluir);
-
+            seguridad.EstableceDatosProceso<Carpeta>();
+            var valido = await seguridad.AccesoCachePuntoMontaje(d.PuntoMontajeId);
+            if (!valido)
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(d.PuntoMontajeId);
+            }
 
             return d.Copia();
         }
         public async Task<List<NodoJerarquico>> ObtenerRaices(string IdJerarquia, int N)
         {
+            seguridad.EstableceDatosProceso<Carpeta>();
+            var valido = await seguridad.AccesoCachePuntoMontaje(IdJerarquia);
+            if (!valido)
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(IdJerarquia);
+            }
+
             int nivel = 0;
             List<NodoJerarquico> lista = new List<NodoJerarquico>();
             lista = await this.ObtenerRaices(IdJerarquia, "", N, nivel);
             return lista;
         }
+
+
         private async Task<List<NodoJerarquico>> ObtenerRaices(string IdJerarquia,
         string Id, int N, int Actual)
         {
@@ -280,11 +332,18 @@ namespace PIKA.Servicio.Contenido.Servicios
         }
         public async  Task<List<NodoJerarquico>> ObtenerDescendientes(string IdJerarquia, string Id, int N)
         {
+            seguridad.EstableceDatosProceso<Carpeta>();
+            var valido = await seguridad.AccesoCachePuntoMontaje(IdJerarquia);
+            if (!valido)
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(IdJerarquia);
+            }
             int nivel = 0;
             List<NodoJerarquico> lista = new List<NodoJerarquico>();
             lista = await this.ObtenerDescendientes(IdJerarquia, Id, N, nivel);
             return lista;
         }
+
         private async Task<List<NodoJerarquico>> ObtenerDescendientes(string IdJerarquia, 
             string Id, int N, int Actual)
         {
@@ -330,6 +389,13 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<List<Carpeta>> ObtenerHijosAsync(string PadreId, string JerquiaId)
         {
+            seguridad.EstableceDatosProceso<Carpeta>();
+            var valido = await seguridad.AccesoCachePuntoMontaje(JerquiaId);
+            if (!valido)
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(JerquiaId);
+            }
+
             var l = await this.repo.ObtenerAsync(x => x.PuntoMontajeId == JerquiaId
            && x.CarpetaPadreId == PadreId && x.Eliminada == false);
 
@@ -337,6 +403,14 @@ namespace PIKA.Servicio.Contenido.Servicios
         }
         public async Task<List<Carpeta>> ObtenerRaicesAsync(string JerquiaId)
         {
+            seguridad.EstableceDatosProceso<Carpeta>();
+            var valido = await seguridad.AccesoCachePuntoMontaje(JerquiaId);
+            if (!valido)
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(JerquiaId);
+            }
+
+
             var l = await this.repo.ObtenerAsync(x => x.PuntoMontajeId == JerquiaId
             && x.EsRaiz == true && x.Eliminada == false);
             return l.ToList().OrderBy(x => x.NombreJerarquico).ToList();
@@ -345,6 +419,14 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<Carpeta> ObtenerCrearPorRuta(CarpetaDeRuta entidad)
         {
+            seguridad.EstableceDatosProceso<Carpeta>();
+            var valido = await seguridad.AccesoCachePuntoMontaje(entidad.PuntoMontajeId);
+            if (!valido)
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(entidad.PuntoMontajeId);
+            }
+
+
             entidad.Ruta= entidad.Ruta.TrimStart('/');
             List<string> nombres = entidad.Ruta.Split('/').ToList();
             bool primera = true;
@@ -462,6 +544,11 @@ namespace PIKA.Servicio.Contenido.Servicios
             //return ListaCarpeta.Select(x => x.Id).ToList();
 
             return await Task.FromResult(new List<string>());
+        }
+
+        public Task<Carpeta> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
         }
 
 

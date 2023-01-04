@@ -1,10 +1,16 @@
-﻿using Microsoft.AspNetCore.Razor.Language;
+﻿using LazyCache;
+using Microsoft.AspNetCore.Razor.Language;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using Nest;
+using PIKA.Constantes.Aplicaciones.Organizacion;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Organizacion;
 using PIKA.Servicio.Organizacion.Interfaces;
 using RepositorioEntidades;
@@ -26,13 +32,15 @@ namespace PIKA.Servicio.Organizacion.Servicios
 
         private IRepositorioAsync<Rol> repo;
         private IRepositorioAsync<UsuariosRol> repoU;
-        private UnidadDeTrabajo<DbContextOrganizacion> UDT;
         
         public ServicioRol(
-        IProveedorOpcionesContexto<DbContextOrganizacion> proveedorOpciones,
-        ILogger<ServicioRol> Logger) : base(proveedorOpciones, Logger)
+         IAppCache cache,
+         IRegistroAuditoria registroAuditoria,
+         IProveedorOpcionesContexto<DbContextOrganizacion> proveedorOpciones,
+                  ILogger<ServicioLog> Logger
+         ) : base(registroAuditoria, proveedorOpciones, Logger,
+                 cache, ConstantesAppOrganizacion.APP_ID, ConstantesAppOrganizacion.MODULO_ROL)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextOrganizacion>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Rol>(
                 new QueryComposer<Rol>());
             this.repoU = UDT.ObtenerRepositoryAsync<UsuariosRol>(
@@ -49,6 +57,9 @@ namespace PIKA.Servicio.Organizacion.Servicios
 
         public async Task<Rol> CrearAsync(Rol entity, CancellationToken cancellationToken = default)
         {
+            seguridad.EstableceDatosProceso<Rol>();
+            await seguridad.IdEnDominio(entity.OrigenId);
+
             if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.Nombre);
@@ -57,18 +68,28 @@ namespace PIKA.Servicio.Organizacion.Servicios
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
+
+            await seguridad.RegistraEventoCrear(entity.Id, entity.Nombre);
+
             return entity;
         }
 
 
         public async Task ActualizarAsync(Rol entity)
         {
+            seguridad.EstableceDatosProceso<Rol>();
+            
+
             Rol rol = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
             if (rol == null)
             {
                 throw new EXNoEncontrado(entity.Id);
             }
+
+            await seguridad.IdEnDominio(rol.OrigenId);
+
+            string original = rol.Flat();
 
             if (await Existe(x =>
             x.Id != entity.Id && x.Id == entity.Id
@@ -81,6 +102,9 @@ namespace PIKA.Servicio.Organizacion.Servicios
             rol.Descripcion = entity.Descripcion;
             UDT.Context.Entry(rol).State = EntityState.Modified;
             UDT.SaveChanges();
+
+            await seguridad.RegistraEventoActualizar(rol.Id, rol.Nombre, original.JsonDiff(rol.Flat()));
+
         }
         private Consulta GetDefaultQuery(Consulta query)
         {
@@ -95,6 +119,11 @@ namespace PIKA.Servicio.Organizacion.Servicios
             {
                 query = new Consulta() { indice = 0, tamano = 20, ord_columna = DEFAULT_SORT_COL, ord_direccion = DEFAULT_SORT_DIRECTION };
             }
+
+            query.Filtros.RemoveAll(x => x.Propiedad == "OrigenId");
+            query.Filtros.Add(new FiltroConsulta() { Propiedad = "OrigenId", Operador = FiltroConsulta.OP_EQ, Valor = RegistroActividad.DominioId });
+
+
             return query;
         }
         public async Task<IPaginado<Rol>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Rol>, IIncludableQueryable<Rol, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
@@ -104,34 +133,37 @@ namespace PIKA.Servicio.Organizacion.Servicios
             return respuesta;
         }
 
-        
+
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            try
+            seguridad.EstableceDatosProceso<Rol>();
+            List<Rol> listaEliminados = new List<Rol>();
+            foreach (var Id in ids)
             {
-                Rol r;
-                ICollection<string> listaEliminados = new HashSet<string>();
-                foreach (var Id in ids)
+                Rol r = await this.repo.UnicoAsync(x => x.Id == Id);
+
+                if (r != null)
                 {
-
-
-                    r = await this.repo.UnicoAsync(x => x.Id == Id);
-
-                    if (r != null)
+                    await seguridad.IdEnDominio(r.OrigenId);
+                    if (this.UDT.Context.UsuariosRoles.Any(x=>x.RolId == r.Id))
                     {
-                        UDT.Context.Entry(r).State = EntityState.Deleted;
-                        listaEliminados.Add(r.Id);
+                        throw new ExElementoExistente();
                     }
+                    listaEliminados.Add(r);
+                }
+            }
+
+            if (listaEliminados.Count > 0)
+            {
+                foreach(var r in listaEliminados)
+                {
+                    UDT.Context.Entry(r).State = EntityState.Deleted;
+                    await seguridad.RegistraEventoEliminar(r.Id, r.Nombre);
                 }
                 UDT.SaveChanges();
-                return listaEliminados;
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            
+            return listaEliminados.Select(x=>x.Id).ToList();
         }
 
 
@@ -142,15 +174,24 @@ namespace PIKA.Servicio.Organizacion.Servicios
         /// <returns></returns>
         public async Task<ICollection<string>> Vincular(string rolId, string[] ids)
         {
-
+            seguridad.EstableceDatosProceso<Rol>();
             UsuariosRol r;
+            Rol rol = await this.repo.UnicoAsync(x => x.Id == rolId);
+            await seguridad.IdEnDominio(rol.OrigenId);
+
+
             ICollection<string> lista = new HashSet<string>();
             foreach (var Id in ids)
             {
-                r = await this.repoU.UnicoAsync(x => x.RolId == rolId && x.ApplicationUserId == Id);
+                r = await UDT.Context.UsuariosRoles.FirstOrDefaultAsync(x => x.RolId == rolId && x.ApplicationUserId == Id);
                 if (r == null)
                 {
                     await this.repoU.CrearAsync(new UsuariosRol() { ApplicationUserId = Id, RolId = rolId });
+                    seguridad.IdEntidad = r.ApplicationUserId;
+                    seguridad.NombreEntidad = rol.Nombre;
+
+                    await seguridad.RegistraEvento(AplicacionOrganizacion.EventosAdicionales.VincularUsuariosRol.GetHashCode());
+
                 }
                 lista.Add(Id);
             }
@@ -165,8 +206,11 @@ namespace PIKA.Servicio.Organizacion.Servicios
         /// <returns></returns>
         public async Task<ICollection<string>> Desvincular(string rolId, string[] ids)
         {
-
+            seguridad.EstableceDatosProceso<Rol>();
             UsuariosRol r;
+            Rol rol = await this.repo.UnicoAsync(x => x.Id == rolId);
+            await seguridad.IdEnDominio(rol.OrigenId);
+
             ICollection<string> lista = new HashSet<string>();
             foreach (var Id in ids)
             {
@@ -174,6 +218,10 @@ namespace PIKA.Servicio.Organizacion.Servicios
                 if (r != null)
                 {
                     await this.repoU.Eliminar(new UsuariosRol() { ApplicationUserId = Id, RolId = rolId });
+                    seguridad.IdEntidad = r.ApplicationUserId;
+                    seguridad.NombreEntidad = rol.Nombre;
+
+                    await seguridad.RegistraEvento(AplicacionOrganizacion.EventosAdicionales.DesVincularUsuariosRol.GetHashCode());
                     lista.Add(Id);
                 }
             }
@@ -188,8 +236,7 @@ namespace PIKA.Servicio.Organizacion.Servicios
         /// <returns></returns>
         public async Task<ICollection<Rol>> ObtieneRoles(string idDominio)
         {
-            return (await this.repo.ObtenerAsync(x => x.TipoOrigenId == ConstantesModelo.IDORIGEN_DOMINIO 
-                 && x.OrigenId == idDominio))
+            return (await this.repo.ObtenerAsync(x => x.OrigenId == RegistroActividad.DominioId))
                 .OrderBy(x => x.Nombre).ToList();
         }
 
@@ -277,6 +324,11 @@ namespace PIKA.Servicio.Organizacion.Servicios
         }
 
         public Task EjecutarSqlBatch(List<string> sqlCommand)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Rol> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
         {
             throw new NotImplementedException();
         }

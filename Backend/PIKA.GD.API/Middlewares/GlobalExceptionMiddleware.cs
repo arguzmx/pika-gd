@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun.Excepciones;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -15,12 +13,10 @@ namespace PIKA.GD.API.Middlewares
     public class GlobalExceptionMiddleware
     {
 
-        private readonly ILogger<GlobalExceptionMiddleware> _logger;
         private readonly RequestDelegate _next;
 
         public GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExceptionMiddleware> logger)
         {
-            _logger = logger;
             _next = next;
         }
 
@@ -75,6 +71,11 @@ namespace PIKA.GD.API.Middlewares
                 //    context.Response.StatusCode = (int)ex.StatusCode;
                 //    detail.Message = ex.Message;
                 //    break;
+                case Type InvDataType when InvDataType == typeof(ExErrorDatosSesion):
+                    detail.Message = exception.Message == null ? "" : exception.Message;
+                    context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    break;
+
 
                 default:
                     context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;

@@ -16,6 +16,7 @@ using PIKA.Modelo.Organizacion;
 using PIKA.Servicio.Organizacion;
 using RepositorioEntidades;
 using PIKA.Servicio.Organizacion.Servicios;
+using PIKA.Infraestructura.Comun.Seguridad;
 
 namespace PIKA.GD.API.Controllers.Organizacion
 {
@@ -39,6 +40,11 @@ namespace PIKA.GD.API.Controllers.Organizacion
             this.logger = logger;
             this.servicioEntidad = servicioEntidad;
             this.metadataProvider = metadataProvider;
+        }
+
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            servicioEntidad.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
         }
 
         /// <summary>

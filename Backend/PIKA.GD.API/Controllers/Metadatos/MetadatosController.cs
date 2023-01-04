@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.Modelo.Metadatos;
-using System;
-using PIKA.Servicio.Metadatos.ElasticSearch.Excepciones;
 using PIKA.GD.API.Filters;
 using PIKA.Modelo.Metadatos.Extractores;
 using Microsoft.AspNetCore.Http;
@@ -15,9 +13,13 @@ using PIKA.GD.API.Servicios.Caches;
 using RepositorioEntidades;
 using PIKA.Modelo.Metadatos.Instancias;
 using PIKA.Servicio.Metadatos.ElasticSearch.modelos;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Servicio.Contenido.Interfaces;
+using PIKA.Servicio.Contenido;
+using Newtonsoft.Json;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 
 namespace PIKA.GD.API.Controllers.Metadatos
 {
@@ -27,12 +29,13 @@ namespace PIKA.GD.API.Controllers.Metadatos
     [Route("api/v{version:apiVersion}/[controller]")]
     public class MetadatosController : ACLController
     {
-        private ILogger<MetadatosController> logger;
         private readonly IRepositorioMetadatos repositorio;
         private readonly IAppCache appCache;
+        private readonly IServicioElemento servicioElemento;
         private readonly IServicioPlantilla plantillas;
         private readonly ConfiguracionServidor config;
         public MetadatosController(
+            IServicioElemento servicioElemento,
             IOptions<ConfiguracionServidor> config,
             IRepositorioMetadatos repositorio,
             IServicioPlantilla plantillas,
@@ -42,11 +45,17 @@ namespace PIKA.GD.API.Controllers.Metadatos
         {
             this.plantillas = plantillas;
             this.repositorio = repositorio;
-            this.logger = logger;
             this.appCache = cache;
             this.config = config.Value;
+            this.servicioElemento = servicioElemento;
         }
 
+
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            plantillas.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+            servicioElemento.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+        }
 
 
         /// <summary>
@@ -121,7 +130,10 @@ namespace PIKA.GD.API.Controllers.Metadatos
             {
                 DocumentoPlantilla documento = await repositorio.Inserta("dominio", this.TenantId,
                     false, null, plantilla, valores, "").ConfigureAwait(false);
-                if (documento != null) return Ok(documento);
+                if (documento != null) {
+                    await servicioElemento.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.AdicionarMetadatos.GetHashCode(), valores.Id);
+                    return Ok(documento); 
+                };
             }
 
             return BadRequest(valores);
@@ -131,6 +143,7 @@ namespace PIKA.GD.API.Controllers.Metadatos
 
 
         [HttpPost("{plantillaid}/lista/")]
+        [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<string>> CreaLista(string plantillaid, [FromBody] RequestCrearLista request)
         {
             string id = await repositorio.CreaLista(plantillaid, request).ConfigureAwait(false);
@@ -188,8 +201,21 @@ namespace PIKA.GD.API.Controllers.Metadatos
             bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
             if (existe)
             {
+                var o = await repositorio.Unico(plantilla, id).ConfigureAwait(false);
                 bool r = await repositorio.Actualiza(id, plantilla, valores).ConfigureAwait(false);
-                if (r) return NoContent();
+                
+
+                if (r) {
+                    var u = await repositorio.Unico(plantilla, id).ConfigureAwait(false);
+                    string original = JsonConvert.SerializeObject(o, ExtensionesAuditoria.FlatSettings(1));
+                    string modificada = JsonConvert.SerializeObject(u, ExtensionesAuditoria.FlatSettings(1));
+                    string delta = original.JsonDiff(modificada);
+                    if (!string.IsNullOrEmpty(delta))
+                    {
+                        await servicioElemento.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.ModificarMetadatos.GetHashCode(), valores.Id, true, null, delta);
+                    }
+                    return NoContent();
+                }
                 return BadRequest(valores);
             }
 
@@ -207,7 +233,6 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [TypeFilter(typeof(AsyncIdentityFilter))]
         public async Task<ActionResult<DocumentoPlantilla>> Unico(string id, string plantillaid)
         {
-            DocumentoPlantilla p = new DocumentoPlantilla();
             Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas, config.seguridad_cache_segundos)
                      .ConfigureAwait(false);
 
@@ -311,8 +336,22 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [TypeFilter(typeof(AsyncIdentityFilter))]
         public async Task<ActionResult<string>> Eliminar(string docid, string plantillaid)
         {
-            await repositorio.EliminaDocumento(docid, plantillaid).ConfigureAwait(false);
-            return Ok(System.Text.Json.JsonSerializer.Serialize(docid));
+            Plantilla plantilla = await CacheMetadatos.ObtienePlantillaPorId(plantillaid, appCache, plantillas, config.seguridad_cache_segundos)
+                    .ConfigureAwait(false);
+            
+            if (plantilla == null) return NotFound(plantillaid);
+
+            bool existe = await PLantillaGenerada(plantilla).ConfigureAwait(false);
+            if (existe)
+            {
+                var r = await repositorio.Unico(plantilla, docid).ConfigureAwait(false);
+                await repositorio.EliminaDocumento(docid, plantillaid).ConfigureAwait(false);
+                await servicioElemento.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.EliminarMetadatos.GetHashCode(), r.DatoId);
+                return Ok(System.Text.Json.JsonSerializer.Serialize(docid));
+            }
+
+            return BadRequest();
+
         }
 
         /// <summary>

@@ -25,6 +25,7 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
 
             builder.HasMany(x => x.Hijos).WithOne(y => y.Padre).HasForeignKey(z => z.ElementoClasificacionId).OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasIndex(x => x.CuadroClasifiacionId);
         }
     }
 }

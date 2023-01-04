@@ -97,7 +97,7 @@ namespace PIKA.Servicio.GestionDocumental
         {
             string fileName;
 
-            if (!String.IsNullOrEmpty(separador))
+            if (!string.IsNullOrEmpty(separador))
              fileName = $@"{ruta}{separador}{id}{separador}{nombre}.xlsx";
             else
                 fileName= $@"{ruta}{nombre}.xlsx";

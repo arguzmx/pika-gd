@@ -64,7 +64,7 @@ namespace PIKA.Modelo.Contenido
         /// <summary>
         /// Identificador único del volumen por default para el punto de montaje
         /// </summary>
-        [Prop(Required: false, OrderIndex: 70)]
+        [Prop(Required: true, OrderIndex: 70)]
         [VistaUI(ControlUI: ControlUI.HTML_SELECT, Accion: Acciones.addupdate)]
         [List(Entidad: "Volumen", DatosRemotos: true, TypeAhead: false)]
         public string VolumenDefaultId { get; set; }

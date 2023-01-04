@@ -1,14 +1,20 @@
 ﻿
+using DocumentFormat.OpenXml.Bibliography;
+using FluentValidation.Validators;
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PIKA.Constantes.Aplicaciones.GestorDocumental;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
@@ -20,6 +26,8 @@ using System.Data.Common;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,53 +40,95 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<Transferencia> repo;
-        private IRepositorioAsync<EstadoTransferencia> repoET;
-        private IRepositorioAsync<Archivo> repoA;
-        private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
+
         private readonly ConfiguracionServidor ConfiguracionServidor;
         private IOTransferencia ioT;
-        private ILogger<ServicioCuadroClasificacion> LoggerCC;
 
-        public UsuarioAPI usuario { get; set; }
-        public PermisoAplicacion permisos { get; set; }
 
         public ServicioTransferencia(
+            IAppCache cache,
+            IRegistroAuditoria registroAuditoria,
             IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones,
             ILogger<ServicioLog> Logger,
-            IOptions<ConfiguracionServidor> Config) : base(proveedorOpciones, Logger)
+            IOptions<ConfiguracionServidor> Config) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_TRANSFERENCIA)
         {
-            this.ConfiguracionServidor = Config.Value;
-            this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
-            this.repo = UDT.ObtenerRepositoryAsync<Transferencia>(new QueryComposer<Transferencia>());
-            this.repoET = UDT.ObtenerRepositoryAsync<EstadoTransferencia>(new QueryComposer<EstadoTransferencia>());
-            this.repoA = UDT.ObtenerRepositoryAsync<Archivo>(new QueryComposer<Archivo>());
-            this.ioT = new IOTransferencia(Logger, proveedorOpciones);
 
+            this.ConfiguracionServidor = Config.Value;
+            this.repo = UDT.ObtenerRepositoryAsync<Transferencia>(new QueryComposer<Transferencia>());
+            this.ioT = new IOTransferencia(registroAuditoria, Logger, proveedorOpciones);
+        }
+
+
+        public Task<Transferencia> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<RespuestaComandoWeb> ComandoWeb(string command, object payload)
         {
+            seguridad.EstableceDatosProceso<Transferencia>();
             RespuestaComandoWeb r = new RespuestaComandoWeb() { Estatus = false, MensajeId = RespuestaComandoWeb.Novalido, Payload = null };
-
+            int e = 0;
             dynamic d = JObject.Parse(System.Text.Json.JsonSerializer.Serialize(payload));
+            string id = (string)d.Id;
+            Transferencia t = await this.repo.UnicoAsync(x => x.Id == id);
+            seguridad.NombreEntidad = t.Nombre;
+            seguridad.IdEntidad = t.Id;
             switch (command)
             {
                 case "enviar-transferencia":
-                    await this.EstadoTrasnferencia((string)d.Id, EstadoTransferencia.ESTADO_ESPERA_APROBACION);
-                    r.MensajeId = $"{command}-ok";
-                    r.Estatus = true;
+                    try
+                    {
+
+                        await this.EstadoTrasnferencia((string)d.Id, EstadoTransferencia.ESTADO_ESPERA_APROBACION);
+                        r.MensajeId = $"{command}-ok";
+                        r.Estatus = true;
+
+                        e = AplicacionGestionDocumental.EventosAdicionales.EnviarTransferencia.GetHashCode();
+                        await seguridad.RegistraEvento(e, true);
+
+                    }
+                    catch (Exception)
+                    {
+                        e = AplicacionGestionDocumental.EventosAdicionales.EnviarTransferencia.GetHashCode();
+                        await seguridad.RegistraEvento(e, false);
+                        throw;
+                    }
                     break;
 
                 case "aceptar-transferencia":
-                    await this.EstadoTrasnferencia((string)d.Id, EstadoTransferencia.ESTADO_RECIBIDA);
-                    r.MensajeId = $"{command}-ok";
-                    r.Estatus = true;
+                    try
+                    {
+                        await this.EstadoTrasnferencia((string)d.Id, EstadoTransferencia.ESTADO_RECIBIDA);
+                        r.MensajeId = $"{command}-ok";
+                        r.Estatus = true;
+                        e = AplicacionGestionDocumental.EventosAdicionales.RecibirTransferencia.GetHashCode();
+                        await seguridad.RegistraEvento(e, true);
+                    }
+                    catch (Exception)
+                    {
+                        e = AplicacionGestionDocumental.EventosAdicionales.RecibirTransferencia.GetHashCode();
+                        await seguridad.RegistraEvento(e, false);
+                        throw;
+                    }
                     break;
 
                 case "declinar-transferencia":
-                    await this.EstadoTrasnferencia((string)d.Id, EstadoTransferencia.ESTADO_DECLINADA);
-                    r.MensajeId = $"{command}-ok";
-                    r.Estatus = true;
+                    try
+                    {
+                        await this.EstadoTrasnferencia((string)d.Id, EstadoTransferencia.ESTADO_DECLINADA);
+                        r.MensajeId = $"{command}-ok";
+                        r.Estatus = true;
+                        e = AplicacionGestionDocumental.EventosAdicionales.DeclinarTrasnferencia.GetHashCode();
+                        await seguridad.RegistraEvento(e, true);
+                    }
+                    catch (Exception)
+                    {
+                        e = AplicacionGestionDocumental.EventosAdicionales.DeclinarTrasnferencia.GetHashCode();
+                        await seguridad.RegistraEvento(e, false);
+                        throw;
+                    }
                     break;
 
             }
@@ -91,27 +141,30 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             if (l.Count() == 0) return false;
             return true;
         }
-        public async Task<bool> ExisteET(Expression<Func<EstadoTransferencia, bool>> predicado)
-        {
-            List<EstadoTransferencia> l = await this.repoET.ObtenerAsync(predicado);
-            if (l.Count() == 0) return false;
-            return true;
-        }
-        public async Task<bool> ExisteA(Expression<Func<Archivo, bool>> predicado)
-        {
-            List<Archivo> l = await this.repoA.ObtenerAsync(predicado);
-            if (l.Count() == 0) return false;
-            return true;
-        }
 
-
+        /// <summary>
+        /// Obtiene una pagina de trasnferencias
+           /// </summary>
+        /// <param name="Texto"></param>
+        /// <param name="Query"></param>
+        /// <param name="include"></param>
+        /// <param name="disableTracking"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<IPaginado<Transferencia>> ObtenerPaginadoAsync(string Texto, Consulta Query, Func<IQueryable<Transferencia>, IIncludableQueryable<Transferencia, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
+            seguridad.EstableceDatosProceso<Transferencia>();
+            var ArchivosUsuario = await seguridad.CreaCacheArchivos();
 
             Query = this.GetDefaultQuery(Query);
 
             var filtro = Query.Filtros.Where(f => f.Propiedad == "ArchivoId").FirstOrDefault();
             string ArchivoId = filtro != null ? filtro.Valor : "-";
+
+            if (!ArchivosUsuario.Contains(ArchivoId))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
 
 
             Paginado<Transferencia> p = new Paginado<Transferencia>();
@@ -158,84 +211,105 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<Transferencia> CrearDesdeTemaAsync(Transferencia entity, string TemaId, bool EliminarTema = false, CancellationToken cancellationToken = default)
         {
+            seguridad.EstableceDatosProceso<Transferencia>();
+            await VerificaDatosCreacion(entity, false);
+            List<string> activos = (await this.UDT.Context.ActivosSeleccionados.Where(x => x.TemaId == TemaId).ToListAsync())
+                .Select(a => a.Id).ToList();
+            List<string> validos = await this.UDT.Context.ActivosValidosTransferencia(activos, entity.RangoDias, entity.ArchivoOrigenId, entity.CuadroClasificacionId, entity.EntradaClasificacionId);
 
-            try
+            var archivo = this.UDT.Context.Archivos.Where(x => x.Id == entity.ArchivoOrigenId).First();
+            var tipo = TipoArchivoDeArchivo(archivo.Id);
+
+            entity.Nombre = entity.Nombre.Trim();
+            entity.Id = System.Guid.NewGuid().ToString();
+            entity.FechaCreacion = DateTime.UtcNow;
+            entity.CantidadActivos = validos.Count;
+            await this.repo.CrearAsync(entity);
+            UDT.SaveChanges();
+            
+            await seguridad.RegistraEventoCrear(entity.Id, entity.Nombre);
+
+            foreach (string id in validos)
             {
-
-                await VerificaDatosCreacion(entity);
-                List<string> activos = (await this.UDT.Context.ActivosSeleccionados.Where(x => x.TemaId == TemaId).ToListAsync())
-                    .Select(a => a.Id).ToList();
-                List<string> validos = await this.UDT.Context.ActivosValidosTransferencia(activos, entity.RangoDias, entity.ArchivoOrigenId, entity.CuadroClasificacionId, entity.EntradaClasificacionId);
-
-                var archivo = this.UDT.Context.Archivos.Where(x => x.Id == entity.ArchivoOrigenId).First();
-
-                entity.Nombre = entity.Nombre.Trim();
-                entity.Id = System.Guid.NewGuid().ToString();
-                entity.FechaCreacion = DateTime.UtcNow;
-                entity.CantidadActivos = validos.Count;
-                await this.repo.CrearAsync(entity);
-                UDT.SaveChanges();
-
-
-
-                foreach(string id in validos )
-                {
-                    var activo = this.UDT.Context.Activos.Where(x => x.Id == id).First();
-                    var r = (archivo.TipoArchivoId == TipoArchivo.IDARCHIVO_TRAMITE) ? activo.FechaRetencionAT.Value : activo.FechaRetencionAC.Value;
-
-                    this.UDT.Context.ActivosTransferencia.Add(
-                        new ActivoTransferencia() { Id = Guid.NewGuid().ToString(), ActivoId = id, 
-                            Declinado = false,
-                            Aceptado = false,
-                            CuadroClasificacionId = activo.CuadroClasificacionId,
-                            EntradaClasificacionId = activo.EntradaClasificacionId,
-                            TransferenciaId = entity.Id,
-                            FechaRetencion = r,
-                            UsuarioId = this.usuario.Id
-                        }
-                        );
-                }
-                this.UDT.SaveChanges();
-
-                await this.UDT.Context.ActualizaActivosEnTrasnferencia(validos, true);
-
-
-                if(EliminarTema && validos.Count >0)
-                {
-                    string sqls = $"delete from {DBContextGestionDocumental.TablaActivoSelecionado} where TemaId = '{TemaId}' " +
-                        $"and Id in ({validos.MergeSQLStringList()})";
-                    await UDT.Context.Database.ExecuteSqlRawAsync(sqls);
-
-                    if(activos.Count == validos.Count)
-                    {
-                        sqls = $"delete from {DBContextGestionDocumental.TablaTemasActivos} where Id='{TemaId}'";
-                        await UDT.Context.Database.ExecuteSqlRawAsync(sqls);
-                    }
-                }
-
-                this.UDT.Context.AdicionaEventoTransferencia(entity.Id, EstadoTransferencia.ESTADO_NUEVA, usuario.Id);
+                var activo = this.UDT.Context.Activos.Where(x => x.Id == id).First();
                 
-                return entity.Copia();
+                var r = (tipo.Id == TipoArchivo.IDARCHIVO_TRAMITE || tipo.Tipo == ArchivoTipo.tramite ) ? activo.FechaRetencionAT.Value : activo.FechaRetencionAC.Value;
 
+                this.UDT.Context.ActivosTransferencia.Add(
+                    new ActivoTransferencia()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ActivoId = id,
+                        Declinado = false,
+                        Aceptado = false,
+                        CuadroClasificacionId = activo.CuadroClasificacionId,
+                        EntradaClasificacionId = activo.EntradaClasificacionId,
+                        TransferenciaId = entity.Id,
+                        FechaRetencion = r,
+                        UsuarioId = this.usuario.Id
+                    }
+                    );
             }
-            catch (Exception ex)
+            this.UDT.SaveChanges();
+
+            await this.UDT.Context.ActualizaActivosEnTrasnferencia(validos, true);
+
+
+            if (EliminarTema && validos.Count > 0)
             {
-                throw;
+                string sqls = $"delete from {DBContextGestionDocumental.TablaActivoSelecionado} where TemaId = '{TemaId}' " +
+                    $"and Id in ({validos.MergeSQLStringList()})";
+                await UDT.Context.Database.ExecuteSqlRawAsync(sqls);
+
+                if (activos.Count == validos.Count)
+                {
+                    sqls = $"delete from {DBContextGestionDocumental.TablaTemasActivos} where Id='{TemaId}'";
+                    await UDT.Context.Database.ExecuteSqlRawAsync(sqls);
+                }
             }
+
+            this.UDT.Context.AdicionaEventoTransferencia(entity.Id, EstadoTransferencia.ESTADO_NUEVA, usuario.Id);
+
+            return entity.Copia();
+
         }
 
- 
 
-        private async Task VerificaDatosCreacion(Transferencia entity)
+
+        private async Task VerificaDatosCreacion(Transferencia entity, bool update)
         {
-            if (!await ExisteET(x => x.Id.Equals(entity.EstadoTransferenciaId, StringComparison.InvariantCultureIgnoreCase)))
-            { throw new ExErrorRelacional(entity.EstadoTransferenciaId); }
-            if (!await ExisteA(x => x.Id.Equals(entity.ArchivoOrigenId, StringComparison.InvariantCultureIgnoreCase)))
-            { throw new ExErrorRelacional(entity.ArchivoOrigenId); }
-            if (!await ExisteA(x => x.Id.Equals(entity.ArchivoDestinoId, StringComparison.InvariantCultureIgnoreCase)))
-            { throw new ExErrorRelacional(entity.ArchivoDestinoId); }
-            if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
-            { throw new ExElementoExistente(entity.Nombre); }
+            var ArchivosUsuario = await seguridad.CreaCacheArchivos();
+            if (!update && !UDT.Context.EstadosTransferencia.Any(x => x.Id.Equals(entity.EstadoTransferenciaId, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                throw new ExErrorRelacional(entity.EstadoTransferenciaId);
+            }
+
+            if (!UDT.Context.Archivos.Any(x => x.Id.Equals(entity.ArchivoOrigenId, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                throw new ExErrorRelacional(entity.ArchivoOrigenId);
+            }
+
+            if (!UDT.Context.Archivos.Any(x => x.Id.Equals(entity.ArchivoDestinoId, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                throw new ExErrorRelacional(entity.ArchivoDestinoId);
+            }
+
+            if(!ArchivosUsuario.Contains(entity.ArchivoOrigenId) || !ArchivosUsuario.Contains(entity.ArchivoDestinoId))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+            
+            if(update)
+            {
+                if (await Existe(x => x.Id != entity.Id && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
+                { throw new ExElementoExistente(entity.Nombre); }
+            }
+            else
+            {
+                if (await Existe(x => x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
+                { throw new ExElementoExistente(entity.Nombre); }
+
+            }
 
             if (entity.ArchivoOrigenId == entity.ArchivoDestinoId)
             {
@@ -255,94 +329,71 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
 
         public async Task<Transferencia> CrearAsync(Transferencia entity, CancellationToken cancellationToken = default)
         {
-
-            await VerificaDatosCreacion(entity);
+            seguridad.EstableceDatosProceso<Transferencia>();
+            await VerificaDatosCreacion(entity, false);
             entity.Nombre = entity.Nombre.Trim();
             entity.Id = System.Guid.NewGuid().ToString();
             entity.FechaCreacion = DateTime.UtcNow;
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
+
+            await seguridad.RegistraEventoCrear( entity.Id, entity.Nombre);
+
             return entity.Copia();
         }
+
         public async Task ActualizarAsync(Transferencia entity)
         {
-            try
+            seguridad.EstableceDatosProceso<Transferencia>();
+            await VerificaDatosCreacion(entity, true);
+
+            Transferencia o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+
+            if (o == null)
             {
-                Transferencia o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
-
-                if (o == null)
-                {
-                    throw new EXNoEncontrado(entity.Id);
-                }
-                
-                if (!await ExisteA(x => x.Id.Equals(entity.ArchivoOrigenId, StringComparison.InvariantCultureIgnoreCase)))
-                { throw new ExErrorRelacional(entity.ArchivoOrigenId); }
-                
-                if (!await ExisteA(x => x.Id.Equals(entity.ArchivoDestinoId, StringComparison.InvariantCultureIgnoreCase)))
-                { throw new ExErrorRelacional(entity.ArchivoDestinoId); }
-                
-                if (await Existe(x => x.Id != entity.Id
-                && x.Nombre.Equals(entity.Nombre, StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    throw new ExElementoExistente(entity.Nombre);
-                }
-
-                if (entity.ArchivoOrigenId == entity.ArchivoDestinoId)
-                {
-                    throw new ExDatosNoValidos("APICODE-TRANSFERENCIAS-ODIDENTICO");
-                }
-
-                if (!string.IsNullOrEmpty(entity.CuadroClasificacionId) && !string.IsNullOrEmpty(entity.EntradaClasificacionId))
-                {
-                    if (!this.UDT.Context.EntradaClasificacion.Any(x => x.CuadroClasifiacionId == entity.CuadroClasificacionId && x.Id == entity.EntradaClasificacionId))
-                    {
-                        throw new ExDatosNoValidos("APICODE-TRANSFERENCIAS-ERRORCCEC");
-                    }
-                }
-
-                bool reset = false;
-                if (o.CuadroClasificacionId != entity.CuadroClasificacionId
-                    || o.EntradaClasificacionId != entity.EntradaClasificacionId
-                    || o.RangoDias != entity.RangoDias)
-                {
-                    var elementos = this.UDT.Context.ActivosTransferencia.Where(t => t.TransferenciaId == entity.Id).ToList();
-                    if (elementos.Count > 0)
-                    {
-                        string ids = elementos.Select(x => x.Id).ToList().MergeSQLStringList();
-                        string sqls = $"update {DBContextGestionDocumental.TablaActivos} set EnTransferencia=0 where Id in ({ids})";
-
-                        UDT.Context.Database.ExecuteSqlRaw(sqls);
-
-                        reset = true;
-                        this.UDT.Context.ActivosTransferencia.RemoveRange(elementos);
-                        this.UDT.Context.SaveChanges();
-                    }
-                }
-
-
-                o.Nombre = entity.Nombre.Trim();
-                o.Folio = entity.Folio;
-                o.ArchivoDestinoId = entity.ArchivoDestinoId;
-                o.EntradaClasificacionId = entity.EntradaClasificacionId;
-                o.CuadroClasificacionId = entity.CuadroClasificacionId;
-                o.RangoDias = entity.RangoDias;
-                if(reset)
-                {
-                    o.CantidadActivos = 0;
-                }
-
-                UDT.Context.Entry(o).State = EntityState.Modified;
-                UDT.SaveChanges();
-
-                this.UDT.Context.AdicionaEventoTransferencia(entity.Id, entity.EstadoTransferenciaId, usuario.Id, "Datos actualizados");
-
-            }
-            catch (Exception ex)
-            {
-                throw;
+                throw new EXNoEncontrado(entity.Id);
             }
 
+            string original = o.Flat();
+
+            bool reset = false;
+            if (o.CuadroClasificacionId != entity.CuadroClasificacionId
+                || o.EntradaClasificacionId != entity.EntradaClasificacionId
+                || o.RangoDias != entity.RangoDias)
+            {
+                var elementos = this.UDT.Context.ActivosTransferencia.Where(t => t.TransferenciaId == entity.Id).ToList();
+                if (elementos.Count > 0)
+                {
+                    string ids = elementos.Select(x => x.Id).ToList().MergeSQLStringList();
+                    string sqls = $"update {DBContextGestionDocumental.TablaActivos} set EnTransferencia=0 where Id in ({ids})";
+
+                    UDT.Context.Database.ExecuteSqlRaw(sqls);
+
+                    reset = true;
+                    this.UDT.Context.ActivosTransferencia.RemoveRange(elementos);
+                    this.UDT.Context.SaveChanges();
+                }
+            }
+
+
+            o.Nombre = entity.Nombre.Trim();
+            o.Folio = entity.Folio;
+            o.ArchivoDestinoId = entity.ArchivoDestinoId;
+            o.EntradaClasificacionId = entity.EntradaClasificacionId;
+            o.CuadroClasificacionId = entity.CuadroClasificacionId;
+            o.RangoDias = entity.RangoDias;
+            if (reset)
+            {
+                o.CantidadActivos = 0;
+            }
+
+            UDT.Context.Entry(o).State = EntityState.Modified;
+            UDT.SaveChanges();
+
+            await seguridad.RegistraEventoActualizar(o.Id,  o.Nombre, original.JsonDiff(o.Flat()));
         }
+
+
         private Consulta GetDefaultQuery(Consulta query)
         {
             if (query != null)
@@ -358,13 +409,23 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             }
             return query;
         }
+
+
         public async Task<IPaginado<Transferencia>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Transferencia>, IIncludableQueryable<Transferencia, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
+            seguridad.EstableceDatosProceso<Transferencia>();
+            var ArchivosUsuario = await seguridad.CreaCacheArchivos();
 
             var qArchivo = Query.Filtros.First(p => p.Propiedad == "ArchivoOrigenId");
+            string archivo = qArchivo.Valor;
+
+            if (!ArchivosUsuario.Contains(archivo))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+            
             var qRecibidas = Query.Filtros.FirstOrDefault(p => p.Propiedad == "filtro-recibidas");
             Query.Filtros.Remove(qArchivo);
-            string archivo = qArchivo.Valor;
             List<Expression<Func<Transferencia, bool>>> filtros = new List<Expression<Func<Transferencia, bool>>>();
             if(qRecibidas == null)
             {
@@ -384,40 +445,61 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null, filtros);
             return respuesta;
         }
+
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            Transferencia a;
-            ICollection<string> listaEliminados = new HashSet<string>();
+            seguridad.EstableceDatosProceso<Transferencia>();
+            var ArchivosUsuario = await seguridad.CreaCacheArchivos();
+
+            List<Transferencia> listaEliminados = new List<Transferencia>();
             foreach (var Id in ids)
             {
-                var tx = this.UDT.Context.Transferencias.FirstOrDefault(t => t.Id == Id);
+                Transferencia tx = this.UDT.Context.Transferencias.FirstOrDefault(t => t.Id == Id);
                 if(tx!=null)
+                {
+
+                    if (!(ArchivosUsuario.Contains(tx.ArchivoDestinoId) || ArchivosUsuario.Contains(tx.ArchivoDestinoId)))
+                    {
+                        await seguridad.EmiteDatosSesionIncorrectos();
+                    }
+
+                    listaEliminados.Add(tx);
+
+                    
+                }
+            }
+
+            if (listaEliminados.Count > 0)
+            {
+                foreach(var tx in listaEliminados)
                 {
                     string sqls;
 
                     // SI la trasnferencia tiene activos en proceso remover el estado
-                    if ((new List<string>() { EstadoTransferencia.ESTADO_NUEVA, 
-                        EstadoTransferencia.ESTADO_ESPERA_APROBACION }).IndexOf(tx.EstadoTransferenciaId) >=0)
+                    if ((new List<string>() { EstadoTransferencia.ESTADO_NUEVA,
+                        EstadoTransferencia.ESTADO_ESPERA_APROBACION }).IndexOf(tx.EstadoTransferenciaId) >= 0)
                     {
                         sqls = @$"UPDATE {DBContextGestionDocumental.TablaActivos} SET EnTransferencia=0 WHERE 
 Id IN (SELECT ActivoId FROM {DBContextGestionDocumental.TablaActivosTransferencia} WHERE  TransferenciaId='{tx.Id}')";
                         UDT.Context.Database.ExecuteSqlRaw(sqls);
                     }
 
-                    sqls = $"DELETE FROM {DBContextGestionDocumental.TablaEventosTransferencia} WHERE TransferenciaId='{Id}'";
+                    sqls = $"DELETE FROM {DBContextGestionDocumental.TablaEventosTransferencia} WHERE TransferenciaId='{tx.Id}'";
                     UDT.Context.Database.ExecuteSqlRaw(sqls);
 
-                    sqls = $"DELETE FROM {DBContextGestionDocumental.TablaActivosTransferencia} WHERE TransferenciaId='{Id}'";
+                    sqls = $"DELETE FROM {DBContextGestionDocumental.TablaActivosTransferencia} WHERE TransferenciaId='{tx.Id}'";
                     UDT.Context.Database.ExecuteSqlRaw(sqls);
 
-                    sqls = $"DELETE FROM {DBContextGestionDocumental.TablaTransferencias} WHERE Id='{Id}'";
+                    sqls = $"DELETE FROM {DBContextGestionDocumental.TablaTransferencias} WHERE Id='{tx.Id}'";
                     UDT.Context.Database.ExecuteSqlRaw(sqls);
 
-                    listaEliminados.Add(Id);
+                    await seguridad.RegistraEventoEliminar(tx.Id, tx.Nombre);
                 }
             }
-            return listaEliminados;
+
+            return listaEliminados.Select(x => x.Id).ToList(); ;
         }
+
         public Task<List<Transferencia>> ObtenerAsync(Expression<Func<Transferencia, bool>> predicado)
         {
             return this.repo.ObtenerAsync(predicado);
@@ -434,6 +516,7 @@ Id IN (SELECT ActivoId FROM {DBContextGestionDocumental.TablaActivosTransferenci
         }
         public async Task<byte[]> ReporteTransferencia(string TransferenciaId, string[] Columnas)
         {
+            seguridad.EstableceDatosProceso<Transferencia>();
             if (Columnas.Count() < 0)
                 Columnas = "EntradaClasificacion.Clave,EntradaClasificacion.Nombre,Nombre,Asunto,FechaApertura,FechaCierre,CodigoOptico,CodigoElectronico,Reservado,Confidencial,Ampliado".Split(',').ToList().Where(x => !string.IsNullOrEmpty(x)).ToArray();
 
@@ -461,11 +544,6 @@ Id IN (SELECT ActivoId FROM {DBContextGestionDocumental.TablaActivosTransferenci
 
 
             return null;
-        }
-
-        private string[] IdsEliminados(string[] ids)
-        {
-            return ids;
         }
 
         #region Sin Implementar
@@ -496,25 +574,25 @@ Id IN (SELECT ActivoId FROM {DBContextGestionDocumental.TablaActivosTransferenci
             throw new NotImplementedException();
         }
 
-
-
         public Task EjecutarSqlBatch(List<string> sqlCommand)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Transferencia> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task EstadoTrasnferencia(string TransferenciaId, string EstadoId)
         {
-
+            seguridad.EstableceDatosProceso<Transferencia>();
+            var ArchivosUsuario = await seguridad.CreaCacheArchivos();
             var tx = await this.UnicoAsync(t => t.Id.Equals(TransferenciaId, StringComparison.InvariantCultureIgnoreCase));
             if (tx == null)
             {
                 throw new EXNoEncontrado();
+            }
+
+            if (!(ArchivosUsuario.Contains(tx.ArchivoDestinoId) || ArchivosUsuario.Contains(tx.ArchivoDestinoId)))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
             }
 
             List<PermisosArchivo> permisos;
@@ -594,13 +672,15 @@ Id IN (SELECT ActivoId FROM {DBContextGestionDocumental.TablaActivosTransferenci
                 case EstadoTransferencia.ESTADO_RECIBIDA:
                     List<string> aceptados = UDT.Context.ActivosTransferencia.Where(x => x.TransferenciaId == tx.Id && x.Aceptado == true).Select(x => x.ActivoId).ToList();
                     List<string> declinados = UDT.Context.ActivosTransferencia.Where(x => x.TransferenciaId == tx.Id && x.Declinado == true).Select(x => x.ActivoId).ToList();
+                    List<string> totales = UDT.Context.ActivosTransferencia.Where(x => x.TransferenciaId == tx.Id).Select(x => x.ActivoId).ToList();
 
-                    if(aceptados.Count == 0)
+
+                    if (aceptados.Count == 0)
                     {
                         throw new ExDatosNoValidos("APICODE-TX-SIN-ACPTADOS");
                     }
 
-                    if(aceptados.Count + declinados.Count != tx.CantidadActivos)
+                    if(aceptados.Count + declinados.Count != totales.Count)
                     {
                         throw new ExDatosNoValidos("APICODE-TX-SIN-VALIDAR");
                     }
@@ -621,8 +701,6 @@ Id IN (SELECT ActivoId FROM {DBContextGestionDocumental.TablaActivosTransferenci
             this.UDT.Context.AdicionaEventoTransferencia(tx.Id, tx.EstadoTransferenciaId, usuario.Id);
 
         }
-
-
 
 
         #endregion

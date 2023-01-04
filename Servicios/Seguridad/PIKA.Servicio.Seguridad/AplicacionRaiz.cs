@@ -14,7 +14,7 @@ namespace PIKA.Servicio.Seguridad
             {
                 Id = ConstantesAppSeguridad.APP_ID,
                 Descripcion = "Permite la gestión de la seguridad de la aplicacion",
-                Nombre = "Administrador de seguridad",
+                Nombre = "Administrador de Seguridad",
                 UICulture = "es-MX",
                 Version = Version,
                 ReleaseIndex = 0

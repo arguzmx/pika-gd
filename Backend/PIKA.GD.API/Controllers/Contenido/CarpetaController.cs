@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Contenido;
 using PIKA.Modelo.Contenido.Request;
 using PIKA.Modelo.Metadatos;
@@ -36,8 +37,12 @@ namespace PIKA.GD.API.Controllers.Contenido
             this.metadataProvider = metadataProvider;
         }
 
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            servicioEntidad.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+        }
 
-    
+
         /// <summary>
         /// Otiene los metadatos asociados a la carpeta
         /// </summary>

@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Interfaces;
+using PIKA.Servicio.Metadatos.Servicios;
 using RepositorioEntidades;
 
 
@@ -31,6 +33,11 @@ namespace PIKA.GD.API.Controllers.Metadatos
             this.logger = logger;
             this.servicioEntidad = servicioTipoAlmacenMetadatos;
             this.metadataProvider = metadataProvider;
+        }
+
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            servicioEntidad.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
         }
 
 

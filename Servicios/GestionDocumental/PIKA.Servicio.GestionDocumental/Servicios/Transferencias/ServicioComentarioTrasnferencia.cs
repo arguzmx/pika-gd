@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
@@ -30,9 +31,9 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
         private IRepositorioAsync<Transferencia> repoT;
 
-        public ServicioComentarioTransferencia(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
+        public ServicioComentarioTransferencia(IRegistroAuditoria registroAuditoria,IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
             ILogger<ServicioLog> Logger)
-            : base(proveedorOpciones,Logger)
+            : base(registroAuditoria, proveedorOpciones, Logger)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<ComentarioTransferencia>(new QueryComposer<ComentarioTransferencia>());
@@ -177,6 +178,11 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         }
 
         public Task<IEnumerable<ComentarioTransferencia>> CrearAsync(IEnumerable<ComentarioTransferencia> entities, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ComentarioTransferencia> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
         {
             throw new NotImplementedException();
         }

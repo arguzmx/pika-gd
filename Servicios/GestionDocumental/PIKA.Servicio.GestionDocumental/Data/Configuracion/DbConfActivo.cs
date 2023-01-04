@@ -50,6 +50,9 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.Property(x => x.UbicacionCaja).IsRequired(false).HasMaxLength(100);
             builder.Property(x => x.UbicacionRack).IsRequired(false).HasMaxLength(100);
 
+            builder.Property(x => x.FechaCreacion).IsRequired(false);
+            builder.Property(x => x.UsuarioId).IsRequired(false).HasMaxLength(LongitudDatos.GUID);
+
             builder.Property(x => x.AlmacenArchivoId).IsRequired(false).HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.ZonaAlmacenId).IsRequired(false).HasMaxLength(LongitudDatos.GUID);
             builder.Property(x => x.ContenedorAlmacenId).IsRequired(false).HasMaxLength(LongitudDatos.GUID);
@@ -68,16 +71,16 @@ namespace PIKA.Servicio.GestionDocumental.Data.Configuracion
             builder.HasIndex(i => new { i.EntradaClasificacionId });
             builder.HasIndex(i => new { i.CuadroClasificacionId });
             builder.HasIndex(i => new { i.Eliminada });
-            builder.HasIndex(i => new { i.Nombre });
+            builder.HasIndex(i => new { i.Nombre});
             builder.HasIndex(i => new { i.CodigoElectronico });
             builder.HasIndex(i => new { i.CodigoOptico });
             builder.HasIndex(i => new { i.ArchivoId });
             builder.HasIndex(i => new { i.TieneContenido });
             builder.HasIndex(i => new { i.EnTransferencia });
+            builder.HasIndex(i => new { i.FechaCreacion });
+            builder.HasIndex(i => new { i.UsuarioId });
 
             builder.HasMany(x => x.HistorialArchivosActivo).WithOne(y => y.Activo).HasForeignKey(z => z.ActivoId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(x => x.Asuntos).WithOne(y => y.Activo).HasForeignKey<Asunto>(z=>z.ActivoId).OnDelete(DeleteBehavior.Cascade);
-
         }
     }
 }

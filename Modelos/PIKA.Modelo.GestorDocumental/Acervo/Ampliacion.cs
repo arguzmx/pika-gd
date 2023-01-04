@@ -76,7 +76,7 @@ namespace PIKA.Modelo.GestorDocumental
         /// <summary>
         /// Funcamento para la reserva
         /// </summary>
-        [Prop(Required: false, OrderIndex: 300, Visible: false)]
+        [Prop(Required: true, OrderIndex: 300, Visible: false)]
         [VistaUI(ControlUI: ControlUI.HTML_TEXTAREA, Accion: Acciones.addupdate)]
         [ValidString(minlen: 2, maxlen: 2000)]
         public string FundamentoLegal { get; set; }

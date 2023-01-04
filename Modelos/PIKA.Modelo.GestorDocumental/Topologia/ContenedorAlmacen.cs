@@ -13,7 +13,7 @@ using System.Xml.Serialization;
 
 namespace PIKA.Modelo.GestorDocumental
 {
-    [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ALMACENARCHIVO, 
+    [EntidadVinculada(TokenSeguridad: ConstantesAppGestionDocumental.MODULO_ARCHIVOS, 
         EntidadHijo: "activocontenedoralmacen", 
         Cardinalidad: TipoCardinalidad.UnoVarios,
         PropiedadPadre: "Id", 
@@ -22,7 +22,7 @@ namespace PIKA.Modelo.GestorDocumental
         TipoDespliegueVinculo: TipoDespliegueVinculo.Membresia)]
 
     [Entidad(PaginadoRelacional: false, EliminarLogico: true,
-     TokenMod: ConstantesAppGestionDocumental.MODULO_ALMACENARCHIVO,
+     TokenMod: ConstantesAppGestionDocumental.MODULO_ARCHIVOS,
      TokenApp: ConstantesAppGestionDocumental.APP_ID)]
 
     /// <summary>

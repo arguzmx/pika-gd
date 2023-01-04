@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using PIKA.Infraestructura.Comun;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 
 namespace PIKA.Servicio.Seguridad
 {
@@ -59,20 +61,29 @@ namespace PIKA.Servicio.Seguridad
                 Tipo = mod.Tipo,
                 UICulture = mod.UICulture,
                 TiposAdministrados = new List<TipoAdministradorModulo>(),
-                Traducciones = new List<TraduccionAplicacionModulo>()
+                Traducciones = new List<TraduccionAplicacionModulo>(), 
+                EventosAuditables = new List<TipoEventoAuditoria>()
             };
 
-            if (m.TiposAdministrados != null)
+            if (mod.TiposAdministrados != null)
             {
-                foreach (var t in m.TiposAdministrados)
+                foreach (var t in mod.TiposAdministrados)
                 {
                     m.TiposAdministrados.Add(t.Copia());
                 }
             }
 
-            if (m.Traducciones != null)
+            if(mod.EventosAuditables!= null && mod.EventosAuditables.Count > 0)
             {
-                foreach (var t in m.Traducciones)
+                foreach(var te in mod.EventosAuditables)
+                {
+                    m.EventosAuditables.Add(te);
+                }
+            }
+
+            if (mod.Traducciones != null)
+            {
+                foreach (var t in mod.Traducciones)
                 {
                     m.Traducciones.Add(t.Copia());
                 }

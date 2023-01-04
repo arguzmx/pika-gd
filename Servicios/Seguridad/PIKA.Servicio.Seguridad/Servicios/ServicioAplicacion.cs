@@ -5,12 +5,16 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using PIKA.Constantes.Aplicaciones.Seguridad;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Servicio.Seguridad.Interfaces;
 using RepositorioEntidades;
 
@@ -23,16 +27,16 @@ namespace PIKA.Servicio.Seguridad.Servicios
     {
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
-
         private IRepositorioAsync<Aplicacion> repo;
-        private UnidadDeTrabajo<DbContextSeguridad> UDT;
 
         public ServicioAplicacion(
+         IAppCache cache,
+         IRegistroAuditoria registroAuditoria,
          IProveedorOpcionesContexto<DbContextSeguridad> proveedorOpciones,
-         ILogger<ServicioAplicacion> Logger
-         ) : base(proveedorOpciones, Logger)
+         ILogger<ServicioLog> Logger
+         ) : base(registroAuditoria, proveedorOpciones, Logger,
+                 cache, ConstantesAppSeguridad.APP_ID, ConstantesAppSeguridad.MODULO_AUDITORIA)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextSeguridad>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Aplicacion>(new QueryComposer<Aplicacion>());
         }
 

@@ -1,40 +1,30 @@
 using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Middlewares;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Metadatos;
-using PIKA.Servicio.Organizacion;
 using RepositorioEntidades;
-using PIKA.Servicio.GestionDocumental.Data;
 using PIKA.Servicio.Seguridad;
-using PIKA.Servicio.Metadatos.Data;
-using PIKA.Servicio.AplicacionPlugin;
-using PIKA.Servicio.Contenido;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Serilog;
 using PIKA.GD.API.Servicios;
 using Serilog.Events;
-using PIKA.Servicio.Contacto;
 using PIKA.Servicio.Usuarios;
 using PIKA.GD.API.JsonConverters;
 using PIKA.Servicio.Seguridad.Servicios;
 using PIKA.Servicio.Seguridad.Interfaces;
-using PIKA.Servicio.Reportes.Data;
 using Microsoft.AspNetCore.HttpOverrides;
 using PIKA.ServicioBusqueda.Contenido;
 using Microsoft.IdentityModel.Logging;
-using PIKA.GD.API.Servicios.TareasAutomaticas;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -141,7 +131,7 @@ namespace PIKA.GD.API
             services.AddTransient<IServicioPerfilUsuario, ServicioPerfilUsuario>();
             services.AddTransient(typeof(IProveedorMetadatos<>), typeof(ReflectionMetadataExtractor<>));
             services.AddTransient<IServicioBusquedaContenido, ServicioBusquedaContenido>();
-
+            services.AddTransient<IRegistroAuditoria, ServicioEventoAuditoria>();
             services.AddTransient<IServicioInfoAplicacion, ServicioInfoAplicacionReflectivo>();
             services.AddScoped<AsyncACLActionFilter>();
             services.AddScoped<AsyncIdentityFilter>();
@@ -158,8 +148,8 @@ namespace PIKA.GD.API
             //            services.AddDbContext<DbContextContacto>(options => 
             //            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
-            //            services.AddDbContext<DbContextSeguridad>(options =>
-            //            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+            services.AddDbContext<DbContextSeguridad>(options =>
+            options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
             //services.AddDbContext<DbContextContenido>(options =>
             //options.UseMySql(Configuration.GetConnectionString("pika-gd")));
@@ -167,8 +157,8 @@ namespace PIKA.GD.API
             //            services.AddDbContext<DbContextReportes>(options =>
             //options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
-            services.AddDbContext<DBContextGestionDocumental>(options =>
-                options.UseMySql(Configuration.GetConnectionString("pika-gd")));
+            //services.AddDbContext<DBContextGestionDocumental>(options =>
+            //    options.UseMySql(Configuration.GetConnectionString("pika-gd")));
 
 
             //services.AddDbContext<DbContextMetadatos>(options =>
@@ -213,7 +203,7 @@ namespace PIKA.GD.API
                 .AddElasticsearch(
                     name: "elasticsearch", 
                     elasticsearchUri: elastic.CadenaConexion(), 
-                    failureStatus: HealthStatus.Degraded, 
+                    failureStatus: HealthStatus.Unhealthy, 
                     tags: new string[] { "elasticsearch" } )
                 .AddRabbitMQ(name: "rabbitmq", 
                     failureStatus: HealthStatus.Unhealthy, 

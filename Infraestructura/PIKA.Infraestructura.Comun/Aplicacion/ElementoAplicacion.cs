@@ -1,5 +1,6 @@
 ﻿using PIKA.Infraestructura.Comun.Constantes;
 using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,6 +22,7 @@ namespace PIKA.Infraestructura.Comun
         public string Titulo { get; set; }
         public string Descripcion { get; set; }
         public List<Type> Tipos { get; set; }
+        public List<TipoEventoAuditoria> EventosAuditables { get; set; }
 
         public static ModuloAplicacion CreaModuloTipico(string AppId, string IdModuloRaiz, string IdModulo,
                  string Titulo, string Descripcion, List<Type> Tipos)

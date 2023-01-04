@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using PIKA.GD.API.Filters;
 using PIKA.GD.API.Model;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Interfaces;
 using RepositorioEntidades;
@@ -33,6 +34,11 @@ namespace PIKA.GD.API.Controllers.Metadatos
             this.metadataProvider = metadataProvider;
         }
 
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+           servicioValidadorTexto.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+        }
+
         [HttpGet("metadata", Name = "MetadataValidadorTexto")]
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<ActionResult<MetadataInfo>> GetMetadata([FromQuery]Consulta query = null)
@@ -57,14 +63,6 @@ namespace PIKA.GD.API.Controllers.Metadatos
         [TypeFilter(typeof(AsyncACLActionFilter))]
         public async Task<IActionResult> Put(string id, [FromBody]ValidadorTexto entidad)
         {
-            var x = ObtieneFiltrosIdentidad();
-
-
-            if (id != entidad.Id)
-            {
-                return BadRequest();
-            }
-
             await servicioValidadorTexto.ActualizarAsync(entidad).ConfigureAwait(false);
             return NoContent();
 

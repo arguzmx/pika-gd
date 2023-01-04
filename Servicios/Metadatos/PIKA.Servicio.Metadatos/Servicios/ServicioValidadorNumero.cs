@@ -1,9 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LazyCache;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using PIKA.Constantes.Aplicaciones.Metadatos;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Data;
 using PIKA.Servicio.Metadatos.Interfaces;
@@ -24,16 +29,16 @@ namespace PIKA.Servicio.Metadatos.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<ValidadorNumero> repo;
-        private ICompositorConsulta<ValidadorNumero> compositor;
-        private UnidadDeTrabajo<DbContextMetadatos> UDT;
+
         public ServicioValidadorNumero(
-         IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
-         ICompositorConsulta<ValidadorNumero> compositorConsulta,
-         ILogger<ServicioValidadorNumero> Logger) : base(proveedorOpciones, Logger)
+            IRegistroAuditoria registroAuditoria,
+            IAppCache cache,
+            IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
+            ILogger<ServicioLog> Logger
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppMetadatos.APP_ID, ConstantesAppMetadatos.MODULO_PLANTILLAS)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
-            this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<ValidadorNumero>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync<ValidadorNumero>(new QueryComposer<ValidadorNumero>());
         }
 
         public async Task<bool> Existe(Expression<Func<ValidadorNumero, bool>> predicado)
@@ -46,15 +51,23 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<ValidadorNumero> CrearAsync(ValidadorNumero entity, CancellationToken cancellationToken = default)
         {
-
-            if (await Existe(x => x.PropiedadId.Equals(entity.PropiedadId, StringComparison.InvariantCultureIgnoreCase)))
-            {
+            seguridad.EstableceDatosProceso<ValidadorNumero>();
+            var propiedad = UDT.Context.PropiedadPlantilla.FirstOrDefault(x => x.Id == entity.PropiedadId);
+            if (propiedad == null) {
                 throw new ExElementoExistente(entity.PropiedadId);
+            };
+
+            if(!await seguridad.AccesoCachePlantillas(propiedad.PlantillaId))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(propiedad.PlantillaId);
             }
 
             entity.Id = System.Guid.NewGuid().ToString();
             await this.repo.CrearAsync(entity);
             UDT.SaveChanges();
+
+            await seguridad.RegistraEventoCrear(entity.Id, entity.PropiedadId);
+
             return entity.Copia();
         }
 
@@ -68,8 +81,23 @@ namespace PIKA.Servicio.Metadatos.Servicios
                 throw new EXNoEncontrado(entity.Id);
             }
 
+            seguridad.EstableceDatosProceso<ValidadorNumero>();
+            var propiedad = UDT.Context.PropiedadPlantilla.FirstOrDefault(x => x.Id == o.PropiedadId);
+            if (propiedad == null)
+            {
+                throw new ExElementoExistente(entity.PropiedadId);
+            };
+
+            if (!await seguridad.AccesoCachePlantillas(propiedad.PlantillaId))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(propiedad.PlantillaId);
+            }
+
+            string original = o.Flat();
             o.max = entity.max;
             o.min = entity.min;
+            o.UtilizarMin = entity.UtilizarMin;
+            o.UtilizarMax= entity.UtilizarMax;
             o.PropiedadId = entity.PropiedadId;
             o.valordefault = entity.valordefault;
             o.valordefault = 0;
@@ -78,7 +106,10 @@ namespace PIKA.Servicio.Metadatos.Servicios
             UDT.Context.Entry(o).State = EntityState.Modified;
             UDT.SaveChanges();
 
+            await seguridad.RegistraEventoActualizar(o.Id, o.PropiedadId, original.JsonDiff(o.Flat()));
+
         }
+
         private Consulta GetDefaultQuery(Consulta query)
         {
             if (query != null)
@@ -96,6 +127,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
         }
         public async Task<IPaginado<ValidadorNumero>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<ValidadorNumero>, IIncludableQueryable<ValidadorNumero, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
+            seguridad.EstableceDatosProceso<ValidadorNumero>();
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
 
@@ -124,19 +156,38 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            ServicioValidadorNumero svn;
-            ICollection<string> listaEliminados = new HashSet<string>();
-            //foreach (var Id in ids)
-            //{
-            //    svn = await this.repo.UnicoAsync(x => x.Id == Id);
-            //    if (svn != null)
-            //    {
-            //        UDT.Context.Entry(svn).State = EntityState.Deleted;
-            //        listaEliminados.Add(svn.Id);
-            //    }
-            //}
-            //UDT.SaveChanges();
-            return listaEliminados;
+            seguridad.EstableceDatosProceso<ValidadorNumero>();
+            List<ValidadorNumero> listaEliminados = new List<ValidadorNumero>();
+            foreach (var Id in ids)
+            {
+                ValidadorNumero o = await this.UDT.Context.ValidadorNumero.FirstOrDefaultAsync(x => x.Id == Id);
+                if (o != null)
+                {
+                    var propiedad = UDT.Context.PropiedadPlantilla.FirstOrDefault(x => x.Id == o.PropiedadId);
+                    if (propiedad == null)
+                    {
+                        throw new ExElementoExistente(o.PropiedadId);
+                    };
+
+                    if (!await seguridad.AccesoCachePlantillas(propiedad.PlantillaId))
+                    {
+                        await seguridad.EmiteDatosSesionIncorrectos(propiedad.PlantillaId);
+                    }
+                    listaEliminados.Add(o);
+                }
+            }
+
+            if (listaEliminados.Count > 0)
+            {
+                foreach(var o in listaEliminados)
+                {
+                    UDT.Context.Entry(o).State = EntityState.Deleted;
+                    await seguridad.RegistraEventoEliminar(o.Id, o.PropiedadId);
+                }
+                UDT.SaveChanges();
+            }
+                        
+            return listaEliminados.Select(x=>x.Id).ToList();
         }
 
         public Task<List<ValidadorNumero>> ObtenerAsync(Expression<Func<ValidadorNumero, bool>> predicado)
@@ -167,6 +218,11 @@ namespace PIKA.Servicio.Metadatos.Servicios
             ValidadorNumero d = await this.repo.UnicoAsync(predicado);
 
             return d.Copia();
+        }
+
+        public Task<ValidadorNumero> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
         }
     }
 

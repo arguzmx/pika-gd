@@ -67,5 +67,10 @@ namespace PIKA.Infraestructura.Comun
         /// su asociacion al almacén y la zona o sólo del contenedor
         /// </summary>
         public bool? activo_desasociar_total { get; set; }
+
+        /// <summary>
+        /// DEermina si los catálogos deben tener el CRUD utilizando el dominio/OU
+        /// </summary>
+        public bool? dominio_en_catalogos { get; set; }
     }
 }

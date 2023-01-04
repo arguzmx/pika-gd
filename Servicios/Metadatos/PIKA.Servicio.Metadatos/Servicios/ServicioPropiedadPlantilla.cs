@@ -1,8 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LazyCache;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using PIKA.Constantes.Aplicaciones.Metadatos;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Data;
 using PIKA.Servicio.Metadatos.Interfaces;
@@ -24,16 +30,18 @@ namespace PIKA.Servicio.Metadatos.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<PropiedadPlantilla> repo;
-        private UnidadDeTrabajo<DbContextMetadatos> UDT;
         private IRepositorioMetadatos repositorioMetadatos;
 
         public ServicioPropiedadPlantilla(
            IRepositorioMetadatos repositorioMetadatos,
-           IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
-           ILogger<ServicioPropiedadPlantilla> Logger) : base(proveedorOpciones, Logger)
+            IRegistroAuditoria registroAuditoria,
+            IAppCache cache,
+            IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
+            ILogger<ServicioLog> Logger
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppMetadatos.APP_ID, ConstantesAppMetadatos.MODULO_PLANTILLAS)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
-            this.repo = UDT.ObtenerRepositoryAsync<PropiedadPlantilla>(new QueryComposer<PropiedadPlantilla>());
+            this.repo = UDT.ObtenerRepositoryAsync(new QueryComposer<PropiedadPlantilla>());
             this.repositorioMetadatos = repositorioMetadatos;
         }
 
@@ -98,26 +106,26 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<PropiedadPlantilla> CrearAsync(PropiedadPlantilla entity, CancellationToken cancellationToken = default)
         {
-            try
+
+            seguridad.EstableceDatosProceso<PropiedadPlantilla>();
+            if (!await seguridad.AccesoCachePlantillas(entity.PlantillaId))
             {
-                entity = ValidaPropiedadPlantilla(entity, false);
-                var elementos = await this.repo.ObtenerAsync(x => x.PlantillaId == entity.PlantillaId);
-
-                entity.IdNumericoPlantilla = elementos.Count == 0 ? 1 : elementos.Max(x => x.IdNumericoPlantilla) + 1;
-                await this.repo.CrearAsync(entity);
-
-                UDT.SaveChanges();
-
-                await PlantillaActualizada(entity.PlantillaId);
-
-                return entity.Copia();
+                await seguridad.EmiteDatosSesionIncorrectos(entity.PlantillaId);
             }
-            catch (Exception ex)
-            {
-                logger.LogError($"{ex}");
-                throw;
-            }
-            
+
+            entity = ValidaPropiedadPlantilla(entity, false);
+            var elementos = await this.repo.ObtenerAsync(x => x.PlantillaId == entity.PlantillaId);
+
+            entity.IdNumericoPlantilla = elementos.Count == 0 ? 1 : elementos.Max(x => x.IdNumericoPlantilla) + 1;
+            await this.repo.CrearAsync(entity);
+
+            UDT.SaveChanges();
+
+            await PlantillaActualizada(entity.PlantillaId);
+
+            await seguridad.RegistraEventoCrear(entity.Id, entity.Nombre);
+
+            return entity.Copia();
         }
 
 
@@ -163,33 +171,38 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task ActualizarAsync(PropiedadPlantilla entity)
         {
-          
-                PropiedadPlantilla o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
+            seguridad.EstableceDatosProceso<PropiedadPlantilla>();
+            PropiedadPlantilla o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
-                if (o == null)
-                {
-                    throw new EXNoEncontrado(entity.Id);
-                }
+            if (o == null)
+            {
+                throw new EXNoEncontrado(entity.Id);
+            }
 
-                entity = ValidaPropiedadPlantilla(entity, true);
+            if (!await seguridad.AccesoCachePlantillas(o.PlantillaId))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(o.PlantillaId);
+            }
 
-                o.IndiceOrdenamiento = entity.IndiceOrdenamiento;
-                o.Nombre = entity.Nombre;
-                o.Requerido = entity.Requerido;
-                o.AtributoTabla = entity.AtributoTabla;
-                o.Autogenerado = entity.Autogenerado;
-                o.Buscable = entity.Buscable;
-                o.ControlHTML = entity.ControlHTML;
-                o.EsFiltroJerarquia = entity.EsFiltroJerarquia;
-                o.EsIdClaveExterna = entity.EsIdClaveExterna;
-                o.EsIdRegistro = entity.EsIdRegistro;
+            string original = o.Flat();
+            entity = ValidaPropiedadPlantilla(entity, true);
 
-                UDT.Context.Entry(o).State = EntityState.Modified;
-                UDT.SaveChanges();
+            o.IndiceOrdenamiento = entity.IndiceOrdenamiento;
+            o.Nombre = entity.Nombre;
+            o.Requerido = entity.Requerido;
+            o.AtributoTabla = entity.AtributoTabla;
+            o.Autogenerado = entity.Autogenerado;
+            o.Buscable = entity.Buscable;
+            o.ControlHTML = entity.ControlHTML;
+            o.EsFiltroJerarquia = entity.EsFiltroJerarquia;
+            o.EsIdClaveExterna = entity.EsIdClaveExterna;
+            o.EsIdRegistro = entity.EsIdRegistro;
 
-
-         
+            UDT.Context.Entry(o).State = EntityState.Modified;
+            UDT.SaveChanges();
+            await seguridad.RegistraEventoActualizar(o.Id, o.Nombre, original.JsonDiff(o.Flat()));
         }
+
         private Consulta GetDefaultQuery(Consulta query)
         {
             if (query != null)
@@ -208,6 +221,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<IPaginado<PropiedadPlantilla>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<PropiedadPlantilla>, IIncludableQueryable<PropiedadPlantilla, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
+            seguridad.EstableceDatosProceso<PropiedadPlantilla>();
+            if (!Query.Filtros.Any(x=>x.Propiedad == "PlantillaId"))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
             return respuesta;
@@ -220,26 +239,43 @@ namespace PIKA.Servicio.Metadatos.Servicios
         }
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            PropiedadPlantilla pp;
-            ICollection<string> listaEliminados = new HashSet<string>();
+            seguridad.EstableceDatosProceso<PropiedadPlantilla>();
+            List<PropiedadPlantilla> listaEliminados = new List<PropiedadPlantilla>();
             foreach (var Id in ids)
             {
-                pp = await this.repo.UnicoAsync(x => x.Id == Id);
+                PropiedadPlantilla pp = await this.repo.UnicoAsync(x => x.Id == Id);
                 if (pp != null)
                 {
-                    UDT.Context.Entry(pp).State = EntityState.Deleted;
-                    listaEliminados.Add(pp.Id);
+
+                    if (!await seguridad.AccesoCachePlantillas(pp.PlantillaId))
+                    {
+                        await seguridad.EmiteDatosSesionIncorrectos(pp.PlantillaId);
+                    }
+                    listaEliminados.Add(pp);
                 }
             }
-            UDT.SaveChanges();
-            return listaEliminados;
+
+            if (listaEliminados.Count > 0)
+            {
+                foreach(var pp in listaEliminados)
+                {
+                    UDT.Context.Entry(pp).State = EntityState.Deleted;
+                    await seguridad.RegistraEventoEliminar(pp.Id, pp.Nombre);
+                }
+                UDT.SaveChanges();
+            }
+            
+            return listaEliminados.Select(x=>x.Id).ToList();
         }
 
         public async Task<PropiedadPlantilla> UnicoAsync(Expression<Func<PropiedadPlantilla, bool>> predicado = null, Func<IQueryable<PropiedadPlantilla>, IOrderedQueryable<PropiedadPlantilla>> ordenarPor = null, Func<IQueryable<PropiedadPlantilla>, IIncludableQueryable<PropiedadPlantilla, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
 
             PropiedadPlantilla d = await this.repo.UnicoAsync(predicado);
-
+            if (!await seguridad.AccesoCachePlantillas(d.PlantillaId))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(d.PlantillaId);
+            }
             return d.Copia();
         }
 
@@ -283,7 +319,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
             throw new NotImplementedException();
         }
 
+        public Task<PropiedadPlantilla> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
-        
+
     }
 }

@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LazyCache;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using PIKA.Constantes.Aplicaciones.Contenido;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Contenido;
 using PIKA.Modelo.Metadatos;
@@ -19,17 +22,18 @@ namespace PIKA.Servicio.Contenido.Servicios.Busqueda
     public class ServicioBiusquedaElemento : ContextoServicioContenido, IServicioBusqueda<Elemento, string>
     {
         private IRepositorioAsync<Elemento> repo;
-        private UnidadDeTrabajo<DbContextContenido> UDT;
         private const string DEFAULT_SORT_COL = "Nombre";
         private const string DEFAULT_SORT_DIRECTION = "asc";
         protected readonly DbSet<Elemento> _dbSet;
 
         public ServicioBiusquedaElemento(
+            IRegistroAuditoria registroAuditoria,
+            IAppCache cache,
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
             ILogger<ServicioLog> Logger
-        ) : base(proveedorOpciones, Logger)
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Elemento>(new QueryComposer<Elemento>());
             _dbSet = contexto.Set<Elemento>();
         }
@@ -189,6 +193,11 @@ namespace PIKA.Servicio.Contenido.Servicios.Busqueda
                 IndiceOrdenamientoTabla = 3
             });
             return m;
+        }
+
+        public Task<Elemento> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

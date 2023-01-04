@@ -14,6 +14,18 @@ namespace PIKA.Infraestructura.Comun
         UsuarioAPI usuario { get; set; }
         
         /// <summary>
+        /// Almacena la instancia de contexto de registro
+        /// </summary>
+        ContextoRegistroActividad RegistroActividad { set; get; }
+
+        /// <summary>
+        /// Establace el contexto de seguridad del servicio
+        /// </summary>
+        /// <param name="usuario"></param>
+        /// <param name="RegistroActividad"></param>
+        void EstableceContextoSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos);
+
+        /// <summary>
         /// Sobre el controlador de acuerdo al usuario en sesión
         /// </summary>
         PermisoAplicacion permisos { get; set; }

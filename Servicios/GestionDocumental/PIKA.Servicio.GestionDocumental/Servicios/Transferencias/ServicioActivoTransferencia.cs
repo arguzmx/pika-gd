@@ -1,12 +1,16 @@
 ﻿
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PIKA.Constantes.Aplicaciones.GestorDocumental;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.GestorDocumental;
 using PIKA.Servicio.GestionDocumental.Data;
@@ -29,84 +33,17 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
         private const string DEFAULT_SORT_DIRECTION = "asc";
 
         private IRepositorioAsync<ActivoTransferencia> repo;
-        private UnidadDeTrabajo<DBContextGestionDocumental> UDT;
         private IRepositorioAsync<Transferencia> repoT;
         private IRepositorioAsync<Archivo> repoAr;
         private IRepositorioAsync<Activo> repoAct;
 
-        public UsuarioAPI usuario { get; set ; }
-        public PermisoAplicacion permisos { get; set; }
 
-
-        public async Task<RespuestaComandoWeb> ComandoWeb(string command, object payload)
-        {
-            var r = new RespuestaComandoWeb() { Estatus = false, MensajeId = RespuestaComandoWeb.Novalido, Payload = null };
-
-
-            dynamic d = JObject.Parse(System.Text.Json.JsonSerializer.Serialize(payload));
-            JArray arr = d.Id;
-            var ids = arr.ToObject<List<string>>();
-
-            string sqls = @$"select t.* from {DBContextGestionDocumental.TablaActivosTransferencia} a
-inner join {DBContextGestionDocumental.TablaActivos} t on a.ActivoId = t.Id
-where t.EnTransferencia =1;"; 
-
-
-            var activos = UDT.Context.Activos.FromSqlRaw(sqls).ToList();
-
-            bool permisoArchivo = true;
-            List<string> archivos = activos.Select(x => x.ArchivoId).Distinct().ToList();
-            List<PermisosArchivo> permisos = this.contexto.PermisosArchivo(this.usuario.Id);
-
-            archivos.ForEach(a =>
-            {
-              if(! permisos.Any(p=>p.ArchivoId == a && p.RecibirTrasnferencia == true))
-                {
-                    permisoArchivo = false;
-                } 
-            });
-
-            if(!permisoArchivo)
-            {
-                if (!permisoArchivo)
-                {
-                    throw new ExDatosNoValidos("APICODE-TX-PERMISO-INVALIDO");
-                }
-            }
-            
-            switch (command)
-            {
-                case "aceptar-activos-tx":
-
-                    sqls = @$"update {DBContextGestionDocumental.TablaActivosTransferencia} 
-set Aceptado=1, FechaVoto=UTC_DATE(), UsuarioReceptorId='{usuario.Id}' where Id In ({ids.MergeSQLStringList()})";
-                    await UDT.Context.Database.ExecuteSqlRawAsync(sqls);
-
-                    r.MensajeId = $"{command}-ok";
-                    r.Estatus = true;
-                    break;
-
-
-                case "declinar-activos-tx":
-                    sqls = @$"update {DBContextGestionDocumental.TablaActivosTransferencia} 
-set Declinado=1, FechaVoto=UTC_DATE(), UsuarioReceptorId='{usuario.Id}', MotivoDeclinado='{(string)d.data.motivo}' 
-where Id In ({ids.MergeSQLStringList()})";
-                    await UDT.Context.Database.ExecuteSqlRawAsync(sqls);
-
-
-                    r.MensajeId = $"{command}-ok";
-                    r.Estatus = true;
-                    break;
-            }
-           
-            return r;
-        }
-
-
-
-        public ServicioActivoTransferencia(IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
+        public ServicioActivoTransferencia(
+            IAppCache cache,
+            IRegistroAuditoria registroAuditoria, IProveedorOpcionesContexto<DBContextGestionDocumental> proveedorOpciones, 
             ILogger<ServicioLog> Logger) 
-            : base(proveedorOpciones,Logger)
+            : base(registroAuditoria, proveedorOpciones, Logger,
+              cache, ConstantesAppGestionDocumental.APP_ID, ConstantesAppGestionDocumental.MODULO_TRANSFERENCIA)
         {
             this.UDT = new UnidadDeTrabajo<DBContextGestionDocumental>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<ActivoTransferencia>(new QueryComposer<ActivoTransferencia>());
@@ -115,13 +52,21 @@ where Id In ({ids.MergeSQLStringList()})";
             this.repoAct = UDT.ObtenerRepositoryAsync<Activo>(new QueryComposer<Activo>());
         }
 
+
+
         public async Task<IPaginado<ActivoTransferencia>> ObtenerPaginadoAsync(string Texto, Consulta Query, Func<IQueryable<ActivoTransferencia>, IIncludableQueryable<ActivoTransferencia, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
-
+            seguridad.EstableceDatosProceso<ActivoTransferencia>();
             Query = this.GetDefaultQuery(Query);
 
             var filtro = Query.Filtros.Where(f => f.Propiedad == "TransferenciaId").FirstOrDefault();
             string TransferenciaId = filtro != null ? filtro.Valor : "-";
+
+            bool valido = await seguridad.AccesoCacheTransferencia(TransferenciaId);
+            if (!valido)
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
 
 
             Paginado<ActivoTransferencia> p = new Paginado<ActivoTransferencia>();
@@ -147,23 +92,16 @@ where Id In ({ids.MergeSQLStringList()})";
             dr.Close();
             await connection.CloseAsync();
 
-            try
-            {
-                p.Elementos = await this.UDT.Context.ActivosTransferencia.FromSqlRaw(sqls, new object[] { }).ToListAsync();
-                p.ConteoFiltrado = 0;
-                p.ConteoTotal = conteo;
+            p.Elementos = await this.UDT.Context.ActivosTransferencia.FromSqlRaw(sqls, new object[] { }).ToListAsync();
+            p.ConteoFiltrado = 0;
+            p.ConteoTotal = conteo;
 
-                p.Indice = Query.indice;
-                p.Paginas = 0;
-                p.Tamano = Query.tamano;
-                p.Desde = Query.indice * Query.tamano;
+            p.Indice = Query.indice;
+            p.Paginas = 0;
+            p.Tamano = Query.tamano;
+            p.Desde = Query.indice * Query.tamano;
 
-                return p;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return p;
         }
 
         public async Task<bool> Existe(Expression<Func<ActivoTransferencia, bool>> predicado)
@@ -177,10 +115,17 @@ where Id In ({ids.MergeSQLStringList()})";
 
         public async Task EliminarVinculosTodos(string Id)
         {
+            seguridad.EstableceDatosProceso<ActivoTransferencia>();
+            var ArchivosUsuario = await seguridad.CreaCacheArchivos();
             var t = await this.UDT.Context.Transferencias.Where(x => x.Id == Id).FirstOrDefaultAsync();
             if (t == null)
             {
                 throw new EXNoEncontrado();
+            }
+
+            if (!(ArchivosUsuario.Any(x => x.Equals(t.ArchivoOrigenId)) || ArchivosUsuario.Any(x => x.Equals(t.ArchivoDestinoId))))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos(t.Id);
             }
 
             if (t.EstadoTransferenciaId != EstadoTransferencia.ESTADO_NUEVA)
@@ -197,9 +142,24 @@ where Id In ({ids.MergeSQLStringList()})";
             this.UDT.Context.AdicionaEventoTransferencia(t.Id, t.EstadoTransferenciaId, usuario.Id, "Todos los activos eliminados");
         }
 
-
+        
         public async Task<ActivoTransferencia> CrearAsync(ActivoTransferencia entity, CancellationToken cancellationToken = default)
         {
+            seguridad.EstableceDatosProceso<ActivoTransferencia>();
+            bool valido = await seguridad.AccesoCacheTransferencia(entity.TransferenciaId);
+            if (!valido)
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+
+            var activo = UDT.Context.Activos.FirstOrDefault(x => x.Id == entity.ActivoId);
+            if(activo == null)
+            {
+                throw new EXNoEncontrado(entity.ActivoId);
+            }
+            
+            await seguridad.AccesoValidoActivo(activo);
+
             if (await Existe(x => x.ActivoId == entity.ActivoId && x.TransferenciaId ==entity.TransferenciaId))
             {
                 throw new ExElementoExistente(entity.ActivoId);
@@ -220,8 +180,8 @@ where Id In ({ids.MergeSQLStringList()})";
             if(validos.Count>0)
             {
 
-                var activo = this.UDT.Context.Activos.Where(x => x.Id == entity.ActivoId).First();
                 var archivo = this.UDT.Context.Archivos.Where(x => x.Id == activo.ArchivoId).First();
+                var tipo = TipoArchivoDeArchivo(archivo.Id);
 
                 entity.Id = Guid.NewGuid().ToString();
                 entity.UsuarioId = this.usuario.Id;
@@ -229,7 +189,7 @@ where Id In ({ids.MergeSQLStringList()})";
                 entity.Aceptado = false;
                 entity.EntradaClasificacionId = activo.EntradaClasificacionId;
                 entity.CuadroClasificacionId = activo.CuadroClasificacionId;
-                entity.FechaRetencion = (archivo.TipoArchivoId == TipoArchivo.IDARCHIVO_TRAMITE) ? activo.FechaRetencionAT.Value : activo.FechaRetencionAC.Value;
+                entity.FechaRetencion = (tipo.Id == TipoArchivo.IDARCHIVO_TRAMITE || tipo.Tipo == ArchivoTipo.tramite) ? activo.FechaRetencionAT.Value : activo.FechaRetencionAC.Value;
                 await this.repo.CrearAsync(entity);
                 UDT.SaveChanges();
 
@@ -237,6 +197,8 @@ where Id In ({ids.MergeSQLStringList()})";
                 await this.UDT.Context.ActualizaActivosEnTrasnferencia(new List<string>() {  entity.ActivoId }, true);
 
                 this.UDT.Context.AdicionaEventoTransferencia(t.Id, t.EstadoTransferenciaId, usuario.Id, "Activos adicionados");
+
+                await seguridad.RegistraEventoCrear(entity.Id);
 
                 return entity.Copia();
             } else
@@ -249,11 +211,28 @@ where Id In ({ids.MergeSQLStringList()})";
 
         public async Task ActualizarAsync(ActivoTransferencia entity)
         {
+            seguridad.EstableceDatosProceso<ActivoTransferencia>();
+            bool valido = await seguridad.AccesoCacheTransferencia(entity.TransferenciaId);
+            if (!valido)
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+
+            var activo = UDT.Context.Activos.FirstOrDefault(x => x.Id == entity.ActivoId);
+            if (activo == null)
+            {
+                throw new EXNoEncontrado(entity.ActivoId);
+            }
+
+            await seguridad.AccesoValidoActivo(activo);
+
             var temp = await UnicoAsync(x => x.Id == entity.Id);
             if (temp==null)
             {
                 throw new EXNoEncontrado(entity.Id);
             }
+
+            string original = temp.Flat();
 
             var t = await this.UDT.Context.Transferencias.Where(x => x.Id == entity.TransferenciaId).FirstOrDefaultAsync();
             if (t == null)
@@ -270,6 +249,9 @@ where Id In ({ids.MergeSQLStringList()})";
             temp.Notas = entity.Notas;
             UDT.Context.Entry(temp).State = EntityState.Modified;
             UDT.SaveChanges();
+
+            await seguridad.RegistraEventoActualizar( temp.Id, null, original.JsonDiff(temp.Flat()));
+
         }
 
         private Consulta GetDefaultQuery(Consulta query)
@@ -287,8 +269,10 @@ where Id In ({ids.MergeSQLStringList()})";
             }
             return query;
         }
+
         public async Task<IPaginado<ActivoTransferencia>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<ActivoTransferencia>, IIncludableQueryable<ActivoTransferencia, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
+            seguridad.EstableceDatosProceso<ActivoTransferencia>();
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
 
@@ -298,17 +282,23 @@ where Id In ({ids.MergeSQLStringList()})";
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            ActivoTransferencia a;
-            ICollection<string> listaEliminados = new HashSet<string>();
-            List<ActivoTransferencia> activosElminar = new List<ActivoTransferencia>();
+            seguridad.EstableceDatosProceso<ActivoTransferencia>();
+            List<ActivoTransferencia> listaEliminados = new List<ActivoTransferencia>();
             Transferencia t = null;
             foreach (var Id in ids)
             {
-                a = await this.repo.UnicoAsync(x => x.ActivoId == Id);
+                ActivoTransferencia a = await this.repo.UnicoAsync(x => x.ActivoId == Id);
                 t = await this.UDT.Context.Transferencias.Where(x => x.Id == a.TransferenciaId).FirstOrDefaultAsync();
+
                 if (t == null)
                 {
                     throw new EXNoEncontrado();
+                }
+
+                var valido = await seguridad.AccesoCacheTransferencia(t.Id);
+                if (!valido)
+                {
+                    await seguridad.EmiteDatosSesionIncorrectos(t.Id);
                 }
 
                 if (t.EstadoTransferenciaId != EstadoTransferencia.ESTADO_NUEVA)
@@ -318,23 +308,26 @@ where Id In ({ids.MergeSQLStringList()})";
 
                 if (a != null)
                 {
-                    activosElminar.Add(a);
-                    listaEliminados.Add(a.ActivoId);
+                    
+                    listaEliminados.Add(a);
                 }
             }
 
-            foreach(var al in activosElminar)
+            if (listaEliminados.Count > 0)
             {
-
-                await this.repo.Eliminar(al);
+                foreach (var al in listaEliminados)
+                {
+                    await this.repo.Eliminar(al);
+                    await seguridad.RegistraEventoEliminar(al.Id);
+                }
+                UDT.SaveChanges();
             }
+
             if(t!=null)
             {
                 this.UDT.Context.AdicionaEventoTransferencia(t.Id, t.EstadoTransferenciaId, usuario.Id, "Activos eliminados");
             }
-            UDT.SaveChanges();
-
-            return listaEliminados;
+            return listaEliminados.Select(c=>c.ActivoId).ToList();
         }
 
       
@@ -356,29 +349,165 @@ where Id In ({ids.MergeSQLStringList()})";
 
         public async Task<ICollection<string>> EliminarActivoTransferencia(string[] ids)
         {
+            seguridad.EstableceDatosProceso<ActivoTransferencia>();
+            var ArchivosUsuario = await seguridad.CreaCacheArchivos();
+            List<ActivoTransferencia> listaEliminados = new List<ActivoTransferencia>();
             ActivoTransferencia a;
+            Transferencia t=null;
             int conteo = 0;
             string txId = "";
-            List<string> listaEliminados = new List<string>();
             foreach (var Id in ids)
             {
                 a = await this.repo.UnicoAsync(x => x.Id == Id);
                 if (a != null)
                 {
-                    txId = a.TransferenciaId;
-                    UDT.Context.Entry(a).State = EntityState.Deleted;
-                    listaEliminados.Add(a.ActivoId);
+                    if( t==null || t.Id != a.TransferenciaId)
+                    {
+                        t = UDT.Context.Transferencias.FirstOrDefault(x => x.Id == a.TransferenciaId);
+                    }
+
+                    
+
+                    if (t != null)
+                    {
+                        if (!(ArchivosUsuario.Any(x => x.Equals(t.ArchivoOrigenId)) || ArchivosUsuario.Any(x => x.Equals(t.ArchivoDestinoId))))
+                        {
+                            await seguridad.EmiteDatosSesionIncorrectos(t.Id);
+                        }
+
+                        if ((new List<string>() { EstadoTransferencia.ESTADO_NUEVA,
+                            EstadoTransferencia.ESTADO_DECLINADA }).IndexOf(t.EstadoTransferenciaId) >= 0)
+                        {
+                            listaEliminados.Add(a);
+
+                        } else
+                        {
+                            throw new ExDatosNoValidos("APICODE-TX-ESTADO-INVALIDO");
+                        }
+                        
+                    }
+
                     conteo--;
                 }
             }
-            UDT.SaveChanges();
-            await this.UDT.Context.ActualizaActivosEnTrasnferencia(listaEliminados, false);
-            await this.UDT.Context.ActualizaConteoActivosTrasnferencia(conteo, txId);
 
-            return listaEliminados;
+            if (listaEliminados.Count > 0)
+            {
+                foreach(var at in listaEliminados)
+                {
+                    UDT.Context.Entry(at).State = EntityState.Deleted;
+                    await seguridad.RegistraEventoEliminar(at.Id);
+                }
+                UDT.SaveChanges();
+
+                await this.UDT.Context.ActualizaActivosEnTrasnferencia(listaEliminados.Select(x => x.ActivoId).ToList(), false);
+                await this.UDT.Context.ActualizaConteoActivosTrasnferencia(conteo, txId);
+
+            }
+            return listaEliminados.Select(x => x.Id).ToList();
         }
-        
-       
+
+
+        public async Task<RespuestaComandoWeb> ComandoWeb(string command, object payload)
+        {
+            seguridad.EstableceDatosProceso<ActivoTransferencia>();
+            var ArchivosUsuario = await seguridad.CreaCacheArchivos();
+            var r = new RespuestaComandoWeb() { Estatus = false, MensajeId = RespuestaComandoWeb.Novalido, Payload = null };
+
+
+            dynamic d = JObject.Parse(System.Text.Json.JsonSerializer.Serialize(payload));
+            JArray arr = d.Id;
+            var ids = arr.ToObject<List<string>>();
+
+            if(ids ==null || ids.Count ==0)
+            {
+                throw new ExDatosNoValidos();
+            }
+
+
+            string sqls = $@"SELECT t.* FROM gd$transferencia t
+inner join gd$activotransferencia at on t.Id = at.TransferenciaId
+where at.Id = '{ids[0]}'";
+
+            Transferencia tx = UDT.Context.Transferencias.FromSqlRaw(sqls).FirstOrDefault();
+            if(tx== null)
+            {
+                throw new EXNoEncontrado();
+            }
+
+
+            if(tx.EstadoTransferenciaId != EstadoTransferencia.ESTADO_ESPERA_APROBACION)
+            {
+                throw new ExDatosNoValidos("APICODE-TX-TRANSFERENCIA-NOENREVISION");
+            }
+
+
+            sqls = @$"select t.* from {DBContextGestionDocumental.TablaActivosTransferencia} a
+inner join {DBContextGestionDocumental.TablaActivos} t on a.ActivoId = t.Id
+where t.EnTransferencia =1;";
+
+
+            var activos = UDT.Context.Activos.FromSqlRaw(sqls).ToList();
+
+
+            foreach(var t in activos)
+            {
+                if (!(ArchivosUsuario.Any(x => x.Equals(t.ArchivoId))))
+                {
+                    await seguridad.EmiteDatosSesionIncorrectos(t.Id);
+                }
+            }
+
+
+            bool permisoArchivo = true;
+            List<string> archivos = activos.Select(x => x.ArchivoId).Distinct().ToList();
+            List<PermisosArchivo> permisos = this.contexto.PermisosArchivo(this.usuario.Id);
+
+            archivos.ForEach(a =>
+            {
+                if (!permisos.Any(p => p.ArchivoId == a && p.RecibirTrasnferencia == true))
+                {
+                    permisoArchivo = false;
+                }
+            });
+
+            if (!permisoArchivo)
+            {
+                if (!permisoArchivo)
+                {
+                    throw new ExDatosNoValidos("APICODE-TX-PERMISO-INVALIDO");
+                }
+            }
+
+            switch (command)
+            {
+                case "aceptar-activos-tx":
+
+                    sqls = @$"update {DBContextGestionDocumental.TablaActivosTransferencia} 
+set Aceptado=1, Declinado=0, FechaVoto=UTC_DATE(), UsuarioReceptorId='{usuario.Id}' where Id In ({ids.MergeSQLStringList()})";
+                    await UDT.Context.Database.ExecuteSqlRawAsync(sqls);
+
+                    r.MensajeId = $"{command}-ok";
+                    r.Estatus = true;
+                    break;
+
+
+                case "declinar-activos-tx":
+                    sqls = @$"update {DBContextGestionDocumental.TablaActivosTransferencia} 
+set Declinado=1, Aceptado=0, FechaVoto=UTC_DATE(), UsuarioReceptorId='{usuario.Id}', MotivoDeclinado='{(string)d.data.motivo}' 
+where Id In ({ids.MergeSQLStringList()})";
+                    await UDT.Context.Database.ExecuteSqlRawAsync(sqls);
+
+
+                    r.MensajeId = $"{command}-ok";
+                    r.Estatus = true;
+                    break;
+            }
+
+            return r;
+        }
+
+
 
         #region Sin Implementar
         public Task<IEnumerable<string>> Restaurar(string[] ids)
@@ -418,6 +547,11 @@ where Id In ({ids.MergeSQLStringList()})";
         }
 
         public Task<ActivoTransferencia> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void EstableceContextoSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad)
         {
             throw new NotImplementedException();
         }

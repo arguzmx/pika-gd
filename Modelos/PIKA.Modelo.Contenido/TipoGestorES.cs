@@ -40,8 +40,8 @@ namespace PIKA.Modelo.Contenido
         {
             List<TipoGestorES> lista = new List<TipoGestorES>();
             lista.Add(new TipoGestorES() { Id = LOCAL_FOLDER, Nombre = "Carpeta local" });
-            lista.Add(new TipoGestorES() { Id = SMB, Nombre = "Sistema archivos SMB" });
-            lista.Add(new TipoGestorES() { Id = LaserFiche, Nombre = "Volumen Laserfiche" });
+            //lista.Add(new TipoGestorES() { Id = SMB, Nombre = "Sistema archivos SMB" });
+            //lista.Add(new TipoGestorES() { Id = LaserFiche, Nombre = "Volumen Laserfiche" });
             //lista.Add(new TipoGestorES() { Id = AzureBlob, Nombre = "BLOB de Azure" });
             return lista;
         }

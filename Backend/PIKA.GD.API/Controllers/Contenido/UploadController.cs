@@ -9,12 +9,19 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using PIKA.Constantes.Aplicaciones.Contenido;
+using PIKA.GD.API.Filters;
 using PIKA.Infraestructura.Comun;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 using PIKA.Modelo.Contenido;
 using PIKA.Modelo.Contenido.Extensiones;
 using PIKA.Modelo.Contenido.ui;
+using PIKA.Servicio.Contenido;
 using PIKA.Servicio.Contenido.ElasticSearch;
 using PIKA.Servicio.Contenido.Interfaces;
+using RepositorioEntidades;
 using shortid;
 using shortid.Configuration;
 
@@ -66,6 +73,11 @@ namespace PIKA.GD.API.Controllers.Contenido
 
         }
 
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            servicioVol.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+            servicioElemento.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+        }
 
         /// <summary>
         /// Añade las nuevas páginas y devulve la lista de páginas actualizadas
@@ -74,6 +86,7 @@ namespace PIKA.GD.API.Controllers.Contenido
         /// <returns></returns>
         [RequestSizeLimit(long.MaxValue)]
         [HttpPost("completar/{TransaccionId}")]
+        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO })]
         public async Task<ActionResult<List<Pagina>>> FinalizarLote(string TransaccionId)
         {
             await repoContenido.CreaRepositorio().ConfigureAwait(false);
@@ -92,6 +105,8 @@ namespace PIKA.GD.API.Controllers.Contenido
                     int PosicionInicio = elementos[0].PosicionInicio;
                     PosicionCarga Posicion = elementos[0].Posicion;
 
+                    await servicioElemento.AccesoValidoElemento(elementoId, true).ConfigureAwait(false);
+
                     long conteoBytes = 0;
                     IGestorES gestor = await servicioVol.ObtienInstanciaGestor(VolId)
                            .ConfigureAwait(false);
@@ -102,6 +117,7 @@ namespace PIKA.GD.API.Controllers.Contenido
                     }
 
                     Modelo.Contenido.Version v = await this.repoContenido.ObtieneVersion(version).ConfigureAwait(false);
+                    
                     if (v == null)
                     {
 
@@ -123,6 +139,8 @@ namespace PIKA.GD.API.Controllers.Contenido
 
                         var id = await this.repoContenido.CreaVersion(v).ConfigureAwait(false);
                     }
+
+                    string original = JsonConvert.SerializeObject(v, ExtensionesAuditoria.FlatSettings(1));
 
                     int indice = 1;
                     int inicio = 1;
@@ -217,13 +235,16 @@ namespace PIKA.GD.API.Controllers.Contenido
                     await this.servicioElemento.ActualizaConteoPartes(elementoId, v.Partes.Count).ConfigureAwait(false);
                     await this.servicioElemento.ActualizaTamanoBytes(elementoId, v.Partes.Sum(x=>x.LongitudBytes)).ConfigureAwait(false);
 
+                    string modificada = JsonConvert.SerializeObject(v, ExtensionesAuditoria.FlatSettings(1));
+                    string delta = original.JsonDiff(modificada);
+                    await servicioElemento.EventoActualizarVersionElemento(AplicacionContenido.EventosAdicionales.ModificarPaginas.GetHashCode(), elementoId, true, null, delta).ConfigureAwait(false);
+
                     try
                     {
                         Directory.Delete(ruta, true);
                     }
                     catch (Exception ex) {
                     }
-
                     await this.servicioTransaccionCarga.EliminarTransaccion(TransaccionId, VolId, conteoBytes).ConfigureAwait(false);
                     return Ok(v.Partes.APaginas());
                 }
@@ -239,6 +260,7 @@ namespace PIKA.GD.API.Controllers.Contenido
 
 
         [HttpPost()]
+        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO })]
         public async Task<IActionResult> PostContenido([FromForm] ElementoCargaContenido model)
         {
             try
@@ -292,36 +314,7 @@ namespace PIKA.GD.API.Controllers.Contenido
             //return BadRequest(ModelState);
         }
 
-        private bool extensionValida(IFormFile file, ICollection<string> extensionesV)
-        {
-            var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-            if (string.IsNullOrEmpty(ext) || !extensionesV.Contains(ext)) return false;
-            if (!firmaValida(file.OpenReadStream(), ext)) return false;
-            return true;
-        }
-        private bool firmaValida(Stream file, string ext)
-        {
-            bool valida = false;
-            var firmasValidas = FiltroArchivos.firmasArchivo;
-            using (var reader = new BinaryReader(file))
-            {
-                var signatures = firmasValidas[ext] != null ? firmasValidas[ext] : null;
-                if (signatures != null)
-                {
-                    var headerBytes = reader.ReadBytes(signatures.Max(m => m.Length));
-                    valida = signatures.Any(signature =>
-                             headerBytes.Take(signature.Length).SequenceEqual(signature));
-                }
-            }
-            return valida;
-        }
-        private bool tamanoValido(long size, long min, long max)
-        {
-            if (size > 0)
-                if (size > min && size <= max)
-                    return true;
-            return false;
-        }
+
 
     }
 }

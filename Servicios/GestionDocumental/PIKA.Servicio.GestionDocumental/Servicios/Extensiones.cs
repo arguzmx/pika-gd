@@ -19,6 +19,17 @@ namespace PIKA.Servicio.GestionDocumental.Servicios
     public static class ExtensionesGestionDocumental
     {
 
+
+        public static string AListaSQL(this List<string>l)
+        {
+            string s = "";
+            l.ForEach(i =>
+            {
+                s += $"'{i}',";
+            });
+
+            return s.TrimEnd(',');
+        }
         public static List<PermisosArchivo> PermisosArchivo(this DBContextGestionDocumental c, string UsuarioId, string ArchivoId=null)
       { 
             string sqls = @$"select p.*  from {DBContextGestionDocumental.TablaPermisosArchivo} p
@@ -105,10 +116,11 @@ inner join org$usuarios_rol u on r.Id = u.RolId where
         public static async Task<List<string>> ActivosValidosTransferencia(this DBContextGestionDocumental c, List<string> ActivosIds, int RangoDias, string ArchivoOrigenId, string CuadroClasificacionId=null, string EntradaClasificacionId=null)
         {
             var archivo = await c.Archivos.Where(t => t.Id == ArchivoOrigenId).FirstOrDefaultAsync();
+            var tipoArchivo = await c.TiposArchivo.FirstOrDefaultAsync(x => x.Id == archivo.TipoArchivoId);
             string plantilla = null;
 
             string retencion = "";
-            if (archivo.TipoArchivoId == TipoArchivo.IDARCHIVO_TRAMITE)
+            if (tipoArchivo.Id == TipoArchivo.IDARCHIVO_TRAMITE || tipoArchivo.Tipo == ArchivoTipo.tramite)
             {
                 retencion = "FechaRetencionAT";
             }

@@ -49,7 +49,13 @@ namespace PIKA.GD.API.Controllers
             this.servicioUsuarios = servicioUsuarios;
         }
 
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            servicioUsuarios.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+        }
+
         [HttpGet()]
+        [TypeFilter(typeof(AsyncIdentityFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PropiedadesUsuario>> ObtieneUsuario()
         {
@@ -62,6 +68,7 @@ namespace PIKA.GD.API.Controllers
         }
 
         [HttpPut()]
+        [TypeFilter(typeof(AsyncIdentityFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> ActualizaPropieades([FromBody] PropiedadesUsuario propiedades)
         {
@@ -79,12 +86,14 @@ namespace PIKA.GD.API.Controllers
 
         [HttpPost("contrasena/actualizar", Name = "ActualizarContrasena")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [TypeFilter(typeof(AsyncIdentityFilter))]
         public async Task<ActionResult> ActualizarContrasena([FromBody] ActualizarContrasena request)
         {
             return StatusCode(await this.servicioUsuarios.ActutalizarContrasena(this.GetUserId(), request.Actual, request.Nueva).ConfigureAwait(false));
         }
 
         [HttpGet("dominios", Name = "DominiosUsuario")]
+        [TypeFilter(typeof(AsyncIdentityFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<DominioActivo>>> Dominios()
         {
@@ -95,6 +104,7 @@ namespace PIKA.GD.API.Controllers
 
 
         [HttpGet("acl", Name = "ACLAplicacion")]
+        [TypeFilter(typeof(AsyncIdentityFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [TypeFilter(typeof(AsyncIdentityFilter))]
         public async Task<ActionResult<DefinicionSeguridadUsuario>> ObtieneACLAplicacion()
@@ -106,6 +116,7 @@ namespace PIKA.GD.API.Controllers
         }
 
         [HttpGet("menu/{id}", Name = "MenuAplicacion")]
+        [TypeFilter(typeof(AsyncIdentityFilter))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [TypeFilter(typeof(AsyncIdentityFilter))]
         public async Task<ActionResult<MenuAplicacion>> ObtieneMenuAplicacion(string id)

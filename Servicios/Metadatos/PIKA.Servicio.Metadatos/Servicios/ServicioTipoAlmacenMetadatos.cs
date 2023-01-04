@@ -5,12 +5,16 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using PIKA.Constantes.Aplicaciones.Metadatos;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Data;
 using PIKA.Servicio.Metadatos.Interfaces;
@@ -25,16 +29,18 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         private IRepositorioAsync<TipoAlmacenMetadatos> repo;
         private ICompositorConsulta<TipoAlmacenMetadatos> compositor;
-        private UnidadDeTrabajo<DbContextMetadatos> UDT;
+
         public ServicioTipoAlmacenMetadatos(
-          IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
-          ICompositorConsulta<TipoAlmacenMetadatos> compositorConsulta,
-          ILogger<ServicioTipoAlmacenMetadatos> Logger) : base(proveedorOpciones, Logger)
+            IRegistroAuditoria registroAuditoria,
+            IAppCache cache,
+            IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
+            ILogger<ServicioLog> Logger
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppMetadatos.APP_ID, ConstantesAppMetadatos.MODULO_PLANTILLAS)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
-            this.compositor = compositorConsulta;
-            this.repo = UDT.ObtenerRepositoryAsync<TipoAlmacenMetadatos>(compositor);
+            this.repo = UDT.ObtenerRepositoryAsync(compositor);
         }
+
         public async Task<bool> Existe(Expression<Func<TipoAlmacenMetadatos, bool>> predicado)
         {
             List<TipoAlmacenMetadatos> l = await this.repo.ObtenerAsync(predicado);
@@ -238,7 +244,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
         {
             throw new NotImplementedException();
         }
-   
+
+        public Task<TipoAlmacenMetadatos> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 }

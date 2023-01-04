@@ -23,6 +23,7 @@ namespace PIKA.GD.API.Servicios
         private const string CACHE_P_ROLES = "pr";
         private const string CACHE_ROLES_USUARIO = "ru";
         private const string CACHE_USUARIO_API = "uapi";
+        private const string CACHE_EVENTOS_AUDITABLES = "eaudi";
 
         private readonly ConfiguracionServidor Config;
         private readonly IServicioPerfilUsuario ServicioPerfilUsuario;
@@ -67,6 +68,29 @@ namespace PIKA.GD.API.Servicios
         private string ObtieneClaveCacheUsuarioAPI(string uid)
         {
             return $"{CACHE_USUARIO_API}-{uid}";
+        }
+
+        private string ObtieneClaveEventosAuditables(string dominioId, string OUid)
+        {
+            return $"{CACHE_EVENTOS_AUDITABLES}-{dominioId}-{OUid}";
+        }
+
+        public async Task EventosAuditablesSet(string dominioId, string OUid, List<EventoAuditoriaActivo> eventos)
+        {
+            string key = ObtieneClaveEventosAuditables(dominioId, OUid);
+            var cacheEventos = await cache.GetAsync<EventoAuditoriaActivo>(key).ConfigureAwait(false);
+            if (cacheEventos != null)
+            {
+                cache.Remove(key);
+            }
+            cache.Add(key, eventos, DateTimeOffset.UtcNow.AddSeconds(Config.seguridad_cache_segundos));
+        }
+
+        public async Task<List<EventoAuditoriaActivo>> EventosAuditablesGet(string dominioId, string OUid)
+        {
+            string key = ObtieneClaveEventosAuditables(dominioId, OUid);
+            return await cache.GetAsync<List<EventoAuditoriaActivo>>(key).ConfigureAwait(false);
+
         }
 
         public async Task DatosUsuarioSet(UsuarioAPI usuario)

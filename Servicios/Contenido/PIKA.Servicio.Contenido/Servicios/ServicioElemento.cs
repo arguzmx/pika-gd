@@ -8,16 +8,17 @@ using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using PIKA.Constantes.Aplicaciones.Contenido;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
 using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Seguridad.Auditoria;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Contenido;
 using PIKA.Servicio.Contenido.Helpers;
 using PIKA.Servicio.Contenido.Interfaces;
-using PIKA.Servicio.Contenido.Servicios.Busqueda;
 using RepositorioEntidades;
-using Version = PIKA.Modelo.Contenido.Version;
+
 
 namespace PIKA.Servicio.Contenido.Servicios
 {
@@ -30,40 +31,46 @@ namespace PIKA.Servicio.Contenido.Servicios
         private IRepositorioAsync<Elemento> repo;
         private IRepositorioAsync<Volumen> repoVol;
         private IRepositorioAsync<PuntoMontaje> repoPM;
-        private IRepositorioAsync<VolumenPuntoMontaje> repoVPM;
         private IRepositorioAsync<Permiso> repoPerm;
         private IRepositorioAsync<Carpeta> repoCarpetas;
-        private UnidadDeTrabajo<DbContextContenido> UDT;
         private ComunesCarpetas helperCarpetas;
-        private IAppCache appcache;
-
-        public UsuarioAPI Usuario { get; set; }
 
         public ServicioElemento(
+            IRegistroAuditoria registroAuditoria,
             IAppCache cache,
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
             ILogger<ServicioLog> Logger
-        ) : base(proveedorOpciones, Logger)
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO)
         {
-            this.appcache = cache;
-            try
-            {
-                this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
-                this.repo = UDT.ObtenerRepositoryAsync<Elemento>(new QueryComposer<Elemento>(cache));
-                this.repoVol = UDT.ObtenerRepositoryAsync<Volumen>(new QueryComposer<Volumen>());
-                this.repoVPM = UDT.ObtenerRepositoryAsync<VolumenPuntoMontaje>(new QueryComposer<VolumenPuntoMontaje>());
-                this.repoPerm = UDT.ObtenerRepositoryAsync<Permiso>(new QueryComposer<Permiso>());
-                this.repoPM = UDT.ObtenerRepositoryAsync<PuntoMontaje>(new QueryComposer<PuntoMontaje>());
-                this.repoCarpetas = UDT.ObtenerRepositoryAsync<Carpeta>(new QueryComposer<Carpeta>());
-                this.helperCarpetas = new ComunesCarpetas(this.repoCarpetas);
-            }
-            catch (Exception ex)
-            {
+            this.repo = UDT.ObtenerRepositoryAsync<Elemento>(new QueryComposer<Elemento>(cache));
+            this.repoVol = UDT.ObtenerRepositoryAsync<Volumen>(new QueryComposer<Volumen>());
+            this.repoPerm = UDT.ObtenerRepositoryAsync<Permiso>(new QueryComposer<Permiso>());
+            this.repoPM = UDT.ObtenerRepositoryAsync<PuntoMontaje>(new QueryComposer<PuntoMontaje>());
+            this.repoCarpetas = UDT.ObtenerRepositoryAsync<Carpeta>(new QueryComposer<Carpeta>());
+            this.helperCarpetas = new ComunesCarpetas(this.repoCarpetas);
+        }
 
-                
-                throw ex;
+        public async Task EventoActualizarVersionElemento(int EventoID, string ElementoId, bool Exitoso = true, string ElementoNombre = null, string Delta = null)
+        {
+
+            if (string.IsNullOrEmpty(ElementoNombre))
+            {
+                var el = await UDT.Context.Elemento.FirstOrDefaultAsync(x => x.Id == ElementoId);
+                if(el != null)
+                {
+                    seguridad.NombreEntidad = el.Nombre;
+                }
+            } else
+            {
+                seguridad.NombreEntidad = ElementoNombre;
             }
+
+            seguridad.IdEntidad = ElementoId;
             
+            seguridad.EstableceDatosProceso<Elemento>();
+            await seguridad.RegistraEvento(EventoID, Exitoso, Delta);
+
         }
 
         public async Task ActualizaTamanoBytes(string Id, long Tamano)
@@ -87,13 +94,13 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<int> ACLPuntoMontaje(string PuntoMontajeId)
         {
-            if (Usuario == null) return 0;
+            if (usuario == null) return 0;
             int mascara = int.MaxValue;
 
             var pm = UDT.Context.PuntosMontaje.Where(x => x.Id == PuntoMontajeId).SingleOrDefault();
             if (pm != null)
             {
-                foreach (var a in Usuario.Accesos) {
+                foreach (var a in usuario.Accesos) {
                     if (a.Admin && pm.OrigenId == a.OU)
                     {
                         return mascara - MascaraPermisos.PDenegarAcceso;
@@ -101,7 +108,7 @@ namespace PIKA.Servicio.Contenido.Servicios
                 }
             }
 
-            foreach(string r in Usuario.Roles)
+            foreach(string r in usuario.Roles)
             {
                 var permiso = await UDT.Context.PermisosPuntoMontaje.Where(x => x.DestinatarioId == r && x.PuntoMontajeId == PuntoMontajeId).SingleOrDefaultAsync();
                 if(permiso!=null)
@@ -130,6 +137,52 @@ namespace PIKA.Servicio.Contenido.Servicios
             return true;
         }
 
+        public async Task<bool> AccesoValidoElemento(string ElementoId, bool Escritura = false)
+        {
+
+            seguridad.EstableceDatosProceso<Elemento>();
+
+            var d = UDT.Context.Elemento.FirstOrDefault(x => x.Id == ElementoId);
+            
+            if(d == null) return false;
+            
+            var permisos = await this.ACLPuntoMontaje(d.PuntoMontajeId);
+            var m = new MascaraPermisos();
+            m.EstablacerMascara(permisos);
+            if(Escritura)
+            {
+                if (!m.Escribir)
+                {
+                    await seguridad.EmiteDatosSesionIncorrectos();
+                }
+
+            } else
+            {
+                if (!m.Leer)
+                {
+                    await seguridad.EmiteDatosSesionIncorrectos();
+                }
+            }
+            
+
+            if (!await seguridad.AccesoCachePuntoMontaje(d.PuntoMontajeId))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+
+            var pm = await repoPM.UnicoAsync(x => x.Id == d.PuntoMontajeId);
+            if (!string.IsNullOrEmpty(pm.VolumenDefaultId))
+            {
+                if(!await seguridad.AccesoCacheVolumen(pm.VolumenDefaultId))
+                {
+                    await seguridad.EmiteDatosSesionIncorrectos();
+                }
+
+            }
+            return await seguridad.AccesoCacheElementos(ElementoId);
+        }
+
+
         private async Task ValidaEntidad(Elemento entity, Elemento instancia,  bool esActualizacion)
         {
             if (!string.IsNullOrEmpty(entity.Nombre)) entity.Nombre = entity.Nombre.Trim();
@@ -141,10 +194,10 @@ namespace PIKA.Servicio.Contenido.Servicios
                     throw new EXNoEncontrado(entity.Id);
                 }
 
-                if (entity.VolumenId != instancia.VolumenId)
-                {
-                    throw new ExDatosNoValidos($"No es posible modificar el volumen de un elemento");
-                }
+                //if (entity.VolumenId != instancia.VolumenId)
+                //{
+                //    throw new ExDatosNoValidos($"No es posible modificar el volumen de un elemento");
+                //}
             }
 
             if(!esActualizacion)
@@ -231,69 +284,85 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         public async Task<Elemento> CrearAsync(Elemento entity, CancellationToken cancellationToken = default)
         {
-            await this.ValidaEntidad(entity, null, false);
-            try
+            seguridad.EstableceDatosProceso<Elemento>();
+
+            var permisos = await this.ACLPuntoMontaje(entity.PuntoMontajeId);
+            var m = new MascaraPermisos();
+            m.EstablacerMascara(permisos);
+            if (!m.Escribir)
             {
-
-                var pm = await repoPM.UnicoAsync(x => x.Id == entity.PuntoMontajeId);
-
-                entity.VolumenId = pm.VolumenDefaultId;
-                entity.Id = System.Guid.NewGuid().ToString();
-                entity.FechaCreacion = DateTime.Now;
-                entity.Eliminada = false;
-                entity.Versionado = true;
-                entity.VersionId = entity.Id;
-
-                await this.repo.CrearAsync(entity);
-
-
-                UDT.SaveChanges();
-
-                return entity.Copia();
+                await seguridad.EmiteDatosSesionIncorrectos();
             }
-            catch (DbUpdateException)
+
+            if (!await seguridad.AccesoCachePuntoMontaje(entity.PuntoMontajeId))
             {
-                throw new ExErrorRelacional("El identificador de relació no es válido");
+                await seguridad.EmiteDatosSesionIncorrectos();
             }
-            catch (Exception ex)
-            {
-                
-                throw ex;
-            }
-           
 
+            var pm = await repoPM.UnicoAsync(x => x.Id == entity.PuntoMontajeId);
+            if (!string.IsNullOrEmpty(pm.VolumenDefaultId))
+            {
+                await seguridad.AccesoCacheVolumen(pm.VolumenDefaultId);
+            }
+
+
+            entity.VolumenId = pm.VolumenDefaultId;
+            entity.Id = System.Guid.NewGuid().ToString();
+            entity.FechaCreacion = DateTime.Now;
+            entity.Eliminada = false;
+            entity.Versionado = true;
+            entity.VersionId = entity.Id;
+
+            await this.repo.CrearAsync(entity);
+            UDT.SaveChanges();
+
+            await seguridad.RegistraEventoCrear(entity.Id, entity.Nombre);
+
+            return entity.Copia();
         }
 
         public async Task ActualizarAsync(Elemento entity)
         {
-
+            seguridad.EstableceDatosProceso<Elemento>();
             Elemento o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
-       
+            if(o == null)
+            {
+                throw new EXNoEncontrado();
+            }
 
+            var permisos = await this.ACLPuntoMontaje(entity.PuntoMontajeId);
+            var m = new MascaraPermisos();
+            m.EstablacerMascara(permisos);
+            if (!m.Escribir)
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+
+            if (!await seguridad.AccesoCachePuntoMontaje(entity.PuntoMontajeId))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+
+            var pm = await repoPM.UnicoAsync(x => x.Id == entity.PuntoMontajeId);
+            if (!string.IsNullOrEmpty(pm.VolumenDefaultId))
+            {
+                await seguridad.AccesoCacheVolumen(pm.VolumenDefaultId);
+            }
+
+            string original = o.Flat();
             await this.ValidaEntidad(entity, o, true);
-        
 
-            try
-            {
-                o.Nombre = entity.Nombre;
-                o.CarpetaId = entity.CarpetaId;
-                o.Eliminada = entity.Eliminada;
-                o.PermisoId = entity.PermisoId;
-                o.Versionado = entity.Versionado;
+            o.Nombre = entity.Nombre;
+            o.CarpetaId = entity.CarpetaId;
+            o.Eliminada = entity.Eliminada;
+            o.PermisoId = entity.PermisoId;
+            o.Versionado = entity.Versionado;
 
-                UDT.Context.Entry(o).State = EntityState.Modified;
-                UDT.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                throw new ExErrorRelacional("El identificador de la Elemento padre no es válido");
-            }
-            catch (Exception ex)
-            {
-                
-                throw ex;
-            }
+            UDT.Context.Entry(o).State = EntityState.Modified;
+            UDT.SaveChanges();
+
+            await seguridad.RegistraEventoActualizar(o.Id, o.Nombre, original.JsonDiff(o.Flat()));
 
         }
 
@@ -312,17 +381,43 @@ namespace PIKA.Servicio.Contenido.Servicios
             }
             return query;
         }
+
+
         public async Task<IPaginado<Elemento>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<Elemento>, IIncludableQueryable<Elemento, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
-                Query = GetDefaultQuery(Query);
-                var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
+            seguridad.EstableceDatosProceso<Elemento>();
+            string id = "";
+            Query = GetDefaultQuery(Query);
+            if(!Query.Filtros.Any(f=>f.Propiedad== "PuntoMontajeId"))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            } else
+            {
+                id = Query.Filtros.First(f => f.Propiedad == "PuntoMontajeId").Valor;
+            }
+
+
+            var permisos = await this.ACLPuntoMontaje(id);
+            var m = new MascaraPermisos();
+            m.EstablacerMascara(permisos);
+            if (!m.Leer)
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+
+            if (!await seguridad.AccesoCachePuntoMontaje(id))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+
+            var respuesta = await this.repo.ObtenerPaginadoAsync(Query, include);
                 return respuesta;
           
         }
 
         public async Task<List<Elemento>> ObtenerPaginadoByIdsAsync(ConsultaAPI q)
         {
-
+            seguridad.EstableceDatosProceso<Elemento>();
             if (!string.IsNullOrEmpty(q.IdCache))
             {
                 q.ord_columna = "";
@@ -366,66 +461,127 @@ namespace PIKA.Servicio.Contenido.Servicios
             }
         }
 
+
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
-            Elemento o;
-            ICollection<string> listaEliminados = new HashSet<string>();
+            seguridad.EstableceDatosProceso<Elemento>();
+            List<Elemento> listaEliminados = new List<Elemento>();
             foreach (var Id in ids)
             {
-                o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
+                Elemento o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
                 if (o != null)
+                {
+                    
+                    var permisos = await this.ACLPuntoMontaje(o.PuntoMontajeId);
+                    var m = new MascaraPermisos();
+                    m.EstablacerMascara(permisos);
+                    if (!m.Eliminar)
+                    {
+                        await seguridad.EmiteDatosSesionIncorrectos();
+                    }
+
+                    if (!await seguridad.AccesoCachePuntoMontaje(o.PuntoMontajeId))
+                    {
+                        await seguridad.EmiteDatosSesionIncorrectos();
+                    }
+
+                    var pm = await repoPM.UnicoAsync(x => x.Id == o.PuntoMontajeId);
+                    if (!string.IsNullOrEmpty(pm.VolumenDefaultId))
+                    {
+                        await seguridad.AccesoCacheVolumen(pm.VolumenDefaultId);
+                    }
+                    listaEliminados.Add(o);
+
+                }
+            }
+
+            if(listaEliminados.Count>0)
+            {
+                foreach(var o in listaEliminados)
                 {
                     o.Eliminada = true;
                     UDT.Context.Entry(o).State = EntityState.Modified;
-                    listaEliminados.Add(o.Id);
-
+                    await seguridad.RegistraEventoEliminar(o.Id, o.Nombre);
                 }
+                UDT.SaveChanges();
             }
-            UDT.SaveChanges();
-            return listaEliminados;
+            
+            return listaEliminados.Select(x=>x.Id).ToList();
         }
-        public async Task<ICollection<string>> Eliminar(List<Elemento> ListaElemento)
-        {
-            Elemento o;
-            ICollection<string> listaEliminados = new HashSet<string>();
-            foreach (var elemento in ListaElemento)
-            {
-                o = await this.repo.UnicoAsync(x => x.Id == elemento.Id.Trim());
-                if (o != null)
-                {
-                    o.Eliminada = true;
-                    UDT.Context.Entry(o).State = EntityState.Deleted;
-                    listaEliminados.Add(o.Id);
 
-                }
-            }
-            UDT.SaveChanges();
-            return listaEliminados;
-        }
+
+
         public async Task<IEnumerable<string>> Restaurar(string[] ids)
         {
-            Elemento o;
-            ICollection<string> listaEliminados = new HashSet<string>();
+            seguridad.EstableceDatosProceso<Elemento>();
+            List<Elemento> listaEliminados = new List<Elemento>();
             foreach (var Id in ids)
             {
-                o = await this.repo.UnicoAsync(x => x.Id == Id);
+                Elemento o = await this.repo.UnicoAsync(x => x.Id == Id.Trim());
                 if (o != null)
+                {
+
+                    var permisos = await this.ACLPuntoMontaje(o.PuntoMontajeId);
+                    var m = new MascaraPermisos();
+                    m.EstablacerMascara(permisos);
+                    if (!m.Escribir)
+                    {
+                        await seguridad.EmiteDatosSesionIncorrectos();
+                    }
+
+                    if (!await seguridad.AccesoCachePuntoMontaje(o.PuntoMontajeId))
+                    {
+                        await seguridad.EmiteDatosSesionIncorrectos();
+                    }
+
+                    var pm = await repoPM.UnicoAsync(x => x.Id == o.PuntoMontajeId);
+                    if (!string.IsNullOrEmpty(pm.VolumenDefaultId))
+                    {
+                        await seguridad.AccesoCacheVolumen(pm.VolumenDefaultId);
+                    }
+                    listaEliminados.Add(o);
+
+                }
+            }
+
+            if (listaEliminados.Count > 0)
+            {
+                foreach (var o in listaEliminados)
                 {
                     o.Eliminada = false;
                     UDT.Context.Entry(o).State = EntityState.Modified;
-                    listaEliminados.Add(o.Id);
+                    await seguridad.RegistraEventoEliminar(o.Id, o.Nombre);
                 }
-
+                UDT.SaveChanges();
             }
-            UDT.SaveChanges();
-            return listaEliminados;
+
+            return listaEliminados.Select(x => x.Id).ToList();
         }
+
 
         public async Task<Elemento> UnicoAsync(Expression<Func<Elemento, bool>> predicado = null, Func<IQueryable<Elemento>, IOrderedQueryable<Elemento>> ordenarPor = null, Func<IQueryable<Elemento>, IIncludableQueryable<Elemento, object>> incluir = null, bool inhabilitarSegumiento = true)
         {
 
             Elemento d = await this.repo.UnicoAsync(predicado, ordenarPor, incluir);
 
+            var permisos = await this.ACLPuntoMontaje(d.PuntoMontajeId);
+            var m = new MascaraPermisos();
+            m.EstablacerMascara(permisos);
+            if (!m.Leer)
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+
+            if (!await seguridad.AccesoCachePuntoMontaje(d.PuntoMontajeId))
+            {
+                await seguridad.EmiteDatosSesionIncorrectos();
+            }
+
+            var pm = await repoPM.UnicoAsync(x => x.Id == d.PuntoMontajeId);
+            if (!string.IsNullOrEmpty(pm.VolumenDefaultId))
+            {
+                await seguridad.AccesoCacheVolumen(pm.VolumenDefaultId);
+            }
 
             return d.Copia();
         }
@@ -501,9 +657,10 @@ namespace PIKA.Servicio.Contenido.Servicios
             return ListaElementos.Select(x=>x.Id).ToList();
         }
 
-
-        
-
+        public Task<Elemento> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
     }

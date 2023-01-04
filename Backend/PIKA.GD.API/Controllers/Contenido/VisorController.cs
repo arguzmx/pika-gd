@@ -11,7 +11,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PIKA.Constantes.Aplicaciones.Contenido;
+using PIKA.GD.API.Filters;
 using PIKA.Infraestructura.Comun;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Modelo.Contenido;
 using PIKA.Modelo.Contenido.Extensiones;
 using PIKA.Modelo.Contenido.ui;
@@ -39,7 +42,13 @@ namespace PIKA.GD.API.Controllers.Contenido
             this.repoContenido = repoContenido;
         }
 
+        public override void EmiteConfiguracionSeguridad(UsuarioAPI usuario, ContextoRegistroActividad RegistroActividad, List<EventoAuditoriaActivo> Eventos)
+        {
+            servicioVisor.EstableceContextoSeguridad(usuario, RegistroActividad, Eventos);
+        }
+
         [HttpPost("documento/{id}/ordernar/alfabetico")]
+        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO })]
         public async Task<ActionResult> OrdenarContenidoAlfabetico(string id)
         {
             Documento d = await servicioVisor.ObtieneDocumento(id)
@@ -67,6 +76,7 @@ namespace PIKA.GD.API.Controllers.Contenido
 
 
         [HttpGet("documento/{id}")]
+        [TypeFilter(typeof(AsyncACLActionFilter), Arguments = new object[] { ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO })]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<Documento>> GetDocumento(string id)
         {

@@ -131,8 +131,19 @@ namespace PIKA.Servicio.Seguridad.Modelos
 
             el = CreaElemento(30, "", "Tareas automáticas", "/pages/tabular/");
             el.Parametros.Add(new ParametroMenu() { Id = "tipo", Valor = "TareaAutomatica" });
-            el.TokenApp = ConstantesAppGestionDocumental.APP_ID;
+            el.TokenApp = ConstantesAppAplicacionPlugin.APP_ID;
             el.TokenMod = ConstantesAppAplicacionPlugin.MODULO_APLICACIONES;
+            gd.Hijos.Add(el);
+
+
+            el = CreaElemento(40, "", "Configuración bitácora", "/pages/bitacora-config");
+            el.TokenApp = ConstantesAppSeguridad.APP_ID;
+            el.TokenMod = ConstantesAppSeguridad.MODULO_CONFIG_AUDITORIA;
+            gd.Hijos.Add(el);
+
+            el = CreaElemento(35, "", "Bitácora sistema", "/pages/bitacora");
+            el.TokenApp = ConstantesAppSeguridad.APP_ID;
+            el.TokenMod = ConstantesAppSeguridad.MODULO_AUDITORIA;
             gd.Hijos.Add(el);
 
             return gd;
@@ -179,6 +190,7 @@ namespace PIKA.Servicio.Seguridad.Modelos
             el.TokenApp = ConstantesAppSeguridad.APP_ID;
             el.TokenMod = ConstantesAppSeguridad.MODULO_ACL;
             gd.Hijos.Add(el);
+
 
             return gd;
         }

@@ -5,12 +5,16 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using PIKA.Constantes.Aplicaciones.Metadatos;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
+using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Metadatos;
 using PIKA.Servicio.Metadatos.Data;
 using PIKA.Servicio.Metadatos.Interfaces;
@@ -25,18 +29,20 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         private IRepositorioAsync<AsociacionPlantilla> repo;
         private ICompositorConsulta<AsociacionPlantilla> compositor;
-        private UnidadDeTrabajo<DbContextMetadatos> UDT;
+        
         public ServicioAsociacionPlantilla(
-          IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
-          ICompositorConsulta<AsociacionPlantilla> compositorConsulta,
-          ILogger<ServicioAsociacionPlantilla> Logger) : base(proveedorOpciones, Logger)
+           IRegistroAuditoria registroAuditoria,
+            IAppCache cache,
+            IProveedorOpcionesContexto<DbContextMetadatos> proveedorOpciones,
+            ILogger<ServicioLog> Logger
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppMetadatos.APP_ID, ConstantesAppMetadatos.MODULO_PLANTILLAS)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextMetadatos>(contexto);
-            this.compositor = compositorConsulta;
             this.repo = UDT.ObtenerRepositoryAsync<AsociacionPlantilla>(compositor);
         }
         public async Task<bool> Existe(Expression<Func<AsociacionPlantilla, bool>> predicado)
         {
+            throw new NotImplementedException();
             List<AsociacionPlantilla> l = await this.repo.ObtenerAsync(predicado);
             if (l.Count() == 0) return false;
             return true;
@@ -45,7 +51,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<AsociacionPlantilla> CrearAsync(AsociacionPlantilla entity, CancellationToken cancellationToken = default)
         {
-
+            throw new NotImplementedException();
             if (await Existe(x => x.PlantillaId.Equals(entity.PlantillaId, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ExElementoExistente(entity.PlantillaId);
@@ -75,7 +81,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task ActualizarAsync(AsociacionPlantilla entity)
         {
-
+            throw new NotImplementedException();
             AsociacionPlantilla o = await this.repo.UnicoAsync(x => x.Id == entity.Id);
 
             if (o == null)
@@ -125,6 +131,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
         }
         public async Task<IPaginado<AsociacionPlantilla>> ObtenerPaginadoAsync(Consulta Query, Func<IQueryable<AsociacionPlantilla>, IIncludableQueryable<AsociacionPlantilla, object>> include = null, bool disableTracking = true, CancellationToken cancellationToken = default)
         {
+            throw new NotImplementedException();
             Query = GetDefaultQuery(Query);
             var respuesta = await this.repo.ObtenerPaginadoAsync(Query, null);
 
@@ -153,6 +160,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public async Task<ICollection<string>> Eliminar(string[] ids)
         {
+            throw new NotImplementedException();
             AsociacionPlantilla o;
             ICollection<string> listaEliminados = new HashSet<string>();
             foreach (var Id in ids)
@@ -187,6 +195,7 @@ namespace PIKA.Servicio.Metadatos.Servicios
 
         public Task<List<AsociacionPlantilla>> ObtenerAsync(Expression<Func<AsociacionPlantilla, bool>> predicado)
         {
+            throw new NotImplementedException();
             return this.repo.ObtenerAsync(predicado);
         }
 
@@ -215,7 +224,12 @@ namespace PIKA.Servicio.Metadatos.Servicios
             throw new NotImplementedException();
         }
 
-   
+        public Task<AsociacionPlantilla> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
+
+
         #endregion
     }
 }

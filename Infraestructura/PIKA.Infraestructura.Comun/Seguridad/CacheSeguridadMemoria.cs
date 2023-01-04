@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using PIKA.Infraestructura.Comun.Menus;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -17,9 +18,10 @@ namespace PIKA.Infraestructura.Comun.Seguridad
         private readonly ConfiguracionServidor Config;
         private readonly IServicioTokenSeguridad SecurityTokenService;
         private readonly ILogger<CacheSeguridadMemoria> Logger;
-        
+        private readonly IRegistroAuditoria registroAuditoria;
 
         public CacheSeguridadMemoria(
+            IRegistroAuditoria registroAuditoria,
             IServicioTokenSeguridad SecurityTokenService, 
             IOptions<ConfiguracionServidor> Config,
             ILogger<CacheSeguridadMemoria> Logger)
@@ -27,6 +29,7 @@ namespace PIKA.Infraestructura.Comun.Seguridad
             this.SecurityTokenService = SecurityTokenService;
             this.Config = Config.Value;
             this.Logger = Logger;
+            this.registroAuditoria = registroAuditoria;
         }
 
 
@@ -98,6 +101,26 @@ namespace PIKA.Infraestructura.Comun.Seguridad
         public async Task DatosUsuarioSet(UsuarioAPI Usuario)
         {
             await  SecurityTokenService.DatosUsuarioSet(Usuario);
+        }
+
+        /// <summary>
+        /// Obtiene los eventos auditables de un dominio/unidad organziacional
+        /// </summary>
+        /// <param name="DomainId"></param>
+        /// <param name="OUId"></param>
+        /// <returns></returns>
+        public async Task<List<EventoAuditoriaActivo>> EventosAuditables(string DomainId, string OUId)
+        {
+            var eventos = await SecurityTokenService.EventosAuditablesGet(DomainId, OUId);
+            if(eventos == null)
+            {
+                eventos = await registroAuditoria.EventosAuditables(DomainId, OUId);
+                if(eventos!=null )
+                {
+                    await SecurityTokenService.EventosAuditablesSet(DomainId, OUId, eventos);
+                }
+            }
+            return eventos;
         }
 
         private int ObtienePermisos(List<PermisoAplicacion> Permisos, bool Minimos, string ApppId, string ModuleId)

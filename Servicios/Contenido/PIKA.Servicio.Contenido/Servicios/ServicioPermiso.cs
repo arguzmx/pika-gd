@@ -5,12 +5,15 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LazyCache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using PIKA.Constantes.Aplicaciones.Contenido;
 using PIKA.Infraestructura.Comun;
 using PIKA.Infraestructura.Comun.Excepciones;
 using PIKA.Infraestructura.Comun.Interfaces;
+using PIKA.Infraestructura.Comun.Seguridad;
 using PIKA.Infraestructura.Comun.Servicios;
 using PIKA.Modelo.Contenido;
 using PIKA.Servicio.Contenido.Interfaces;
@@ -26,14 +29,16 @@ namespace PIKA.Servicio.Contenido.Servicios
 
         private IRepositorioAsync<Permiso> repo;
         private IRepositorioAsync<DestinatarioPermiso> repoDestinatariosPermiso;
-        private UnidadDeTrabajo<DbContextContenido> UDT;
+
 
         public ServicioPermiso(
+            IRegistroAuditoria registroAuditoria,
+            IAppCache cache,
             IProveedorOpcionesContexto<DbContextContenido> proveedorOpciones,
             ILogger<ServicioLog> Logger
-        ) : base(proveedorOpciones, Logger)
+        ) : base(registroAuditoria, proveedorOpciones, Logger,
+            cache, ConstantesAppContenido.APP_ID, ConstantesAppContenido.MODULO_ESTRUCTURA_CONTENIDO)
         {
-            this.UDT = new UnidadDeTrabajo<DbContextContenido>(contexto);
             this.repo = UDT.ObtenerRepositoryAsync<Permiso>(new QueryComposer<Permiso>());
             this.repoDestinatariosPermiso = UDT.ObtenerRepositoryAsync<DestinatarioPermiso>(new QueryComposer<DestinatarioPermiso>());
         }
@@ -210,7 +215,12 @@ namespace PIKA.Servicio.Contenido.Servicios
         {
             throw new NotImplementedException();
         }
- 
+
+        public Task<Permiso> ObtienePerrmisos(string EntidadId, string DominioId, string UnidaddOrganizacionalId)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 

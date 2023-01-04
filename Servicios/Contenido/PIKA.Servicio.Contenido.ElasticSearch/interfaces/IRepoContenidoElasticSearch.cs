@@ -1,4 +1,5 @@
-﻿using PIKA.Modelo.Contenido;
+﻿using PIKA.Infraestructura.Comun;
+using PIKA.Modelo.Contenido;
 using PIKA.Servicio.Contenido.ElasticSearch.modelos;
 using System;
 using System.Collections.Generic;
